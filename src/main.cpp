@@ -43,7 +43,6 @@ void meshSetup();
 void startAsyncServer();
 void OTAConfig();
 void enableTasks();
-void pirCntrl();
 void autoSwitchTimer();
 void laserSafetyLoop();
 void switchPirRelays(const uint8_t state);
@@ -233,7 +232,6 @@ const unsigned long UL_PIR_INTERVAL = 60000UL;   // interval of the PIR cycle
 
 // after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
 const unsigned int UI_PIR_START_UP_DELAY = 6;  // This var stores the delay for which the Pir value shall not be read
-bool pirStartedUp = false;           // Once the Pir timer will be expired, we will turn this var to true. It will be evaluated at each main loop, in the pirCntrl, to check whether to execute.
 
 unsigned int highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
                                                               0 = even pins are [high] and odds are [low];
@@ -293,7 +291,6 @@ bool onEnablePirStartUpDelayBlinkLaser() {
 void onDisablePirStartUpDelayBlinkLaser() {
   directPinsSwitch(HIGH);
   stPirStartUpComplete.signalComplete();
-  pirStartedUp = true;
 }
 
 void pirStartUpDelayPrintDash() {
@@ -343,7 +340,6 @@ void setup() {
 void loop() {
   ArduinoOTA.handle();
   userScheduler.execute();   // it will run mesh scheduler as well
-  pirCntrl();
   myMesh.update();
   autoSwitchTimer();         // TO ANALYSE: Should probably be before the laser safety loop. Why did I put it after???
   laserSafetyLoop();
@@ -397,10 +393,6 @@ Task tPirCntrl ( &userScheduler, 0, TASK_FOREVER, &tcbPirCntrl, false);
 void tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
-}
-
-void pirCntrl() {
-  tPirCntrl.waitFor(&stPirStartUpComplete);
 }
 
 void setPirValue() {
