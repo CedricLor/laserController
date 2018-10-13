@@ -265,13 +265,13 @@ void onDisablePirStartUpDelayBlinkLaser();
 Task tPirStartUpDelayBlinkLaser( &userScheduler, 10000UL, UI_PIR_START_UP_DELAY, &pirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
 void pirStartUpDelayPrintDash();
-Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &pirStartUpDelayPrintDash, &userScheduler );
+Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &pirStartUpDelayPrintDash );
 
 void cbtLaserOff();
-Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff, &userScheduler );
+Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
 
 void cbtLaserOn();
-Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn, &userScheduler );
+Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
 
 void pirStartUpDelayBlinkLaser() {
   Serial.print("+");
@@ -393,7 +393,7 @@ void tcbOnDisablePirCycle() {
 //////////////////////
 // TASK FOR PIR CONTROL
 void tcbPirCntrl();
-Task tPirCntrl ( &userScheduler, 0, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false);
+Task tPirCntrl ( &userScheduler, 0, TASK_FOREVER, &tcbPirCntrl, false);
 void tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
