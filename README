@@ -1,0 +1,26 @@
+LASER CONTROLLER
+
+Link to the libraries: /Users/cedriclor/.platformio/lib
+
+Includes the following refactored libraries:
+
+-- TaskScheduler: TaskSchedulerDeclarations.h
+INLINE Task() {};
+added a default constructor to the Task class
+
+-- painlessMesh: TaskScheduler.cpp:
+line 15 commented out.
+//#include <TaskScheduler.h>
+The inclusion of TaskScheduler.h was conflicting with its inclusion into main.cpp and resulted in multiple function definitions.
+
+Defined Tasks in painlessMesh source files:
+- painlessMesh.h (composites of class painlessMesh)
+line 268: Task              droppedConnectionTask;
+line 269: Task              newConnectionTask;
+- painlessMeshConnection.h (composites of class MeshConnection)
+line 85: Task          nodeSyncTask;
+line 86: Task          timeSyncTask;
+line 87: Task          readBufferTask;
+line 88: Task          sentBufferTask;
+- painlessMeshSTA.h (composites of class StationScan)
+line 29: Task task;
