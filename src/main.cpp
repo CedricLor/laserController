@@ -50,7 +50,7 @@ void switchPirRelays(const uint8_t state);
 void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void setPirValue();
-void startOrRestartPirCycleIfValPirIsHigh();
+void startOrRestartPirCycleIfPirValueIsHigh();
 void switchOnOffVariables(const int thisPin, const int targetState);
 void switchAllRelays(const int targetState);
 void manualSwitchOneRelay(const int thisPin, const int targetState);
@@ -395,7 +395,8 @@ void tcbOnDisablePirCycle() {
 void tcbPirCntrl();
 Task tPirCntrl ( &userScheduler, 0, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false);
 void tcbPirCntrl() {
-
+  setPirValue();
+  startOrRestartPirCycleIfPirValueIsHigh();
 }
 
 void enableTasks() {
@@ -405,17 +406,17 @@ void enableTasks() {
 
 void pirCntrl() {
   tPirCntrl.waitFor(&stPirStartUpComplete);
-  if (pirStartedUp == true) {
-    setPirValue();
-    startOrRestartPirCycleIfValPirIsHigh();
-  }
+  //if (pirStartedUp == true) {
+  //  setPirValue();
+  //  startOrRestartPirCycleIfValPirIsHigh();
+  //}
 }
 
 void setPirValue() {
   valPir = digitalRead(inputPin); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(inputPin) will be HIGH.  Serial.println(valPir);
 }
 
-void startOrRestartPirCycleIfValPirIsHigh() {
+void startOrRestartPirCycleIfPirValueIsHigh() {
   if (valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
     if (!(tPirCycle.isEnabled())) {
       tPirCycle.setIterations(UL_PIR_INTERVAL);
