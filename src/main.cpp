@@ -382,7 +382,7 @@ void tcbOnDisablePirCycle() {
 //////////////////////
 // TASK FOR PIR CONTROL
 void tcbPirCntrl();
-Task tPirCntrl ( &userScheduler, 0, TASK_FOREVER, &tcbPirCntrl, false);
+Task tPirCntrl ( &userScheduler, &tcbPirCntrl);
 void tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
@@ -398,9 +398,7 @@ void startOrRestartPirCycleIfPirValueIsHigh() {
       tPirCycle.setIterations(SI_PIR_ITERATIONS);
       tPirCycle.restart();
     } else {
-      long _done_its = tPirCycle.getRunCounter();
-      long _remaining_its = tPirCycle.getIterations();
-      tPirCycle.setIterations(_remaining_its + _done_its * 2);
+      tPirCycle.setIterations(SI_PIR_ITERATIONS);
     }
   }
   valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
@@ -801,7 +799,7 @@ void manualSwitchOneRelay(const short thisPin, const bool targetState) {
 }
 
 void switchOnOffVariables(const short thisPin, const bool targetState) {
-  Serial.printf("MANUAL SWITCHES:switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState =%s \n", thisPin + 1, (targetState == 0 ? "on (LOW)" : "off (HIGH)."));
+  Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)."));
   switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off
   pin[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
                                                                           // the actual pin will be turned on or off in the LASER SAFETY TIMER
@@ -1396,7 +1394,7 @@ String createMeshMessage(const char* myStatus) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void enableTasks() {
   tPirStartUpDelayBlinkLaser.enable();
-  tPirCntrl.waitFor(&srPirStartUpComplete);
+  tPirCntrl.waitFor(&srPirStartUpComplete, TASK_IMMEDIATE, TASK_FOREVER);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
