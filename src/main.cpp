@@ -17,6 +17,8 @@
  *  HIGH: Combine logic of directPinsSwitch() and LaserSafetyLoop()
  *        Rewrite all the things type thisPin % 2 == 0 with the logic of directPinsSwitch(
  *  HIGH: Rename directPinsSwitch() to give it a more explicit name
+ *  HIGH: Add a true laserSafetyLoop that turns lasers off in whichever situations if they have been on for more than 30 seconds
+          and prevents them from being turned back on by any process for a corresponding cooling off time
  *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
  *  MIDDLE: pair - unpair proc: pass the unpairing to the slave or this is going to produce unexpected results
  *  LOW: refactor all part where String is still used to replace them with arrays of char*
