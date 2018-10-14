@@ -6,7 +6,9 @@ Includes the following refactored libraries:
 
 -- TaskScheduler: TaskSchedulerDeclarations.h
 INLINE Task() {};
-added a default constructor to the Task class
+- added a default constructor to the Task class
+- reordered the params in the existing Task constructors -> scheduler has been put first
+- undefaulted the scheduler param in the existing Task constructors (so that they not be interpreted as conflicting default constructors by the compiler, which triggers the ambiguous constructor call error)
 
 -- painlessMesh: TaskScheduler.cpp:
 line 15 commented out.
