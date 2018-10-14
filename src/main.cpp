@@ -80,10 +80,10 @@ void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned lo
 void changeTheMasterBoxId(const short masterBoxNumber);
 void changeSlaveReaction(const char* action);
 void blinkLaserIfBlinking(const short thisPin);
-void ifPairedUpdateOnOff(const short thisPin);
+void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin);
 void executeUpdates(const short thisPin);
 void blinkLaserIfTimeIsDue(const short thisPin);
-void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const short thisPin);
+void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(const short thisPin);
 void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget);
 void broadcastStatusOverMesh(const char* state);
 void startOTA();
@@ -870,7 +870,7 @@ void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned lo
 // CHANGE MASTER BOX Control
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// TO REDRAFT AND TO ADD COMMENTS TO THE CODE OF THE WHOLE BLOCK
+// REDRAFT AND ADD COMMENTS TO THE CODE OF THE WHOLE BLOCK
 void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action) {
   changeTheMasterBoxId(masterBoxNumber);
   changeSlaveReaction(action);
@@ -943,59 +943,92 @@ void laserSafetyLoop() {
   // and then, execute the updates.
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     blinkLaserIfBlinking(thisPin);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
-    ifPairedUpdateOnOff(thisPin);                           // update the on/off status of any paired laser and its paired companion
+    ifMasterPairedThenUpdateOnOffOfSlave(thisPin);          // update the on/off status of slave
     executeUpdates(thisPin);                                // transform the update to the struct to analogical updates in the status of the related pin
   }
 }
 
 void blinkLaserIfBlinking(const short thisPin) {
-  if (pin[thisPin].blinking == true && (pin[thisPin].paired == 8 || thisPin % 2 == 0)) {          // check if the laser is in blinking mode and is either non-paired or master in a pair
-    blinkLaserIfTimeIsDue(thisPin);                                                               // if so, switch its on/off state
+  /*
+     Called for each pin by laserSafetyLoop()
+     If a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair,
+     if so, switch its on/off state
+  */
+  if (pin[thisPin].blinking == true && (pin[thisPin].paired == 8 || thisPin % 2 == 0)) {
+    blinkLaserIfTimeIsDue(thisPin);
   }
 }
 
 void blinkLaserIfTimeIsDue(const short thisPin) {
-  // function called when a laser is in blinking mode to check if the blinking interval has elapsed
+  /*
+     Called when a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair
+     Checks if the blinking interval of this laser has elapsed
+     If so, switches the pin on/off target variable to the contrary of the current pin on/off
+     TO ANALYSE: this may overwrite other changes that have been requested at other stages
+  */
   const unsigned long currentTime = millis();
-  if (currentTime - pin[thisPin].previous_time > pin[thisPin].blinking_interval) {    // if blinking interval of the specific laser has elapsed
-      pin[thisPin].on_off_target = !pin[thisPin].on_off;                              // switch the pin on/off target variable to the contrary of the pin on/off TO ANALYSE: this may overwrite other changes that have been requested at other stages
+  if (currentTime - pin[thisPin].previous_time > pin[thisPin].blinking_interval) {
+      pin[thisPin].on_off_target = !pin[thisPin].on_off;
   }
 }
 
-void ifPairedUpdateOnOff(const short thisPin) {
-  if (!(pin[thisPin].paired == 8) && (thisPin % 2 == 0)) {                  // if the laser is not unpaired (if paired is set at 8, it means it is not paired)
-                                                                            // AND if it is a master
-    evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(thisPin);
+void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin) {
+  /*
+      Called from within the laser safety loop for each pin
+      Test whether the laser in unpaired or if it is a master in a pair
+      If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
+  */
+  if (!(pin[thisPin].paired == 8) && (thisPin % 2 == 0)) {
+    evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(thisPin);
   }
 }
 
-void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const short thisPin) {
-  // evaluate if (i) the pin is NOT blinking and (i) whether its on_off_target state is to turn off
-  // if so, it means that the master pin has been turned off. The slave pin should then be turned off.
+void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(const short thisPin) {
+  /*
+      Called by ifMasterPairedThenUpdateOnOffOfSlave() for pins which are master in a pair.
+      A. If the pin is NOT in blinking mode AND its on_off_target state is to turn off,
+      it means that the master pin has been turned off (off and off blinking mode) => The slave pin should then be turned off.
+      Comment: raisonnement bancal:
+        Le fait que le on_off_target_state soit sur off quand un laser est "not in blinking mode" ne veut pas nécessairement dire qu'il vient d'être turned off.
+        En tout état de cause, ceci permet bien sur de tourner l'interrupteur du slave sur off (mais ceci le fait même si l'interrupteur était déjà éteint).
+      B. Else:
+        either the master pin is in blinking mode and its on_off_target is to turn off (A = false and B = true),
+                                                      or on_off_target is to turn on (A = false and B = false),
+                  which means that the master pin, in blinking mode, has received a status change.
+        or the master pin is not in blinking mode and its on_off_target is to turn on (A = true and B = false).
+                  which means that the master pin has received the instruction to start a blinking cycle.
+        In each case, the slave will receive the instruction to put its on_off_target to the opposite of that of its master.
+  */
   if ((pin[thisPin].blinking == false) && (pin[thisPin].on_off_target == HIGH)) {
-    // if master is off, update the variables of the slaves to turn it off
-    updatePairedSlave(thisPin, pin[thisPin].on_off_target);
-  } else {
-    // if not, inverse the on_off_target of the slave
-    updatePairedSlave(thisPin, !pin[thisPin].on_off_target);
+    updatePairedSlave(thisPin, HIGH);
+    return;
   }
+  updatePairedSlave(thisPin, !pin[thisPin].on_off_target);
 }
 
 void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget) {
-  pin[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser
-  pin[thisPin + 1].blinking = pin[thisPin].blinking;                            // update the blinking state of the paired slave laser
-  pin[thisPin + 1].pir_state = pin[thisPin].pir_state;                          // update the IR state of the paired slave laser
-  pin[thisPin + 1].paired = thisPin;                                            // update the paired pin of the slave to this pin
+  pin[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
+  pin[thisPin + 1].blinking = pin[thisPin].blinking;                            // align the blinking state of the paired slave laser
+  pin[thisPin + 1].pir_state = pin[thisPin].pir_state;                          // align the IR state of the paired slave laser
+  pin[thisPin + 1].paired = thisPin;                                            // align the paired pin of the slave to this pin
 }
 
 void executeUpdates(const short thisPin) {
-  if (pin[thisPin].on_off != pin[thisPin].on_off_target) {         // check whether the target on_off state is different than the current on_off state
-                                                                   // TO ANALYSE: I have the feeling that the condition to be tested shall be different
-                                                                   // in the case a) a laser is in a blinking mode and in the case b) a laser is not in
-                                                                   // a blinking mode and cooling off
-    digitalWrite(pin[thisPin].number, pin[thisPin].on_off_target); // if so, turn on or off the laser as requested in the target_state
-    pin[thisPin].on_off = pin[thisPin].on_off_target;              // align the on_off with the on_off_target
-    pin[thisPin].previous_time = millis();                         // reset the safety blinking timer of this pin
+  /*
+      Called from within the laser safety loop for each pin
+      Checks whether the current on_off_target state is different than the current on_off state
+      If so:
+      1. turn on or off the laser as requested in the on_off_target_state
+      2. align the on_off state with the on_off_target state
+      3. reset the safety blinking timer of this pin
+      // TO ANALYSE: I have the feeling that the condition to be tested shall be different
+      // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
+      // a blinking cycle and cooling off
+  */
+  if (pin[thisPin].on_off != pin[thisPin].on_off_target) {
+    digitalWrite(pin[thisPin].number, pin[thisPin].on_off_target);
+    pin[thisPin].on_off = pin[thisPin].on_off_target;
+    pin[thisPin].previous_time = millis();
   }
 }
 
