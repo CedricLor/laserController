@@ -14,9 +14,6 @@
 
 /*  DONE:
  *  TO DO:
- *  HIGH:
- *  HIGH: write a process that updates the structs that stores the IPs of the other boxes, in particular the station ips, on new connection
- *  HIGH: write a process that sends its own IPs
  *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
  *  MIDDLE: pair - unpair proc: pass the unpairing to the slave or this is going to produce unexpected results
  *  LOW: refactor all part where String is still used to replace them with arrays of char*
@@ -33,10 +30,10 @@
  */
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
-void directPinsSwitch(const int targetState);
+void directPinsSwitch(bool targetState);
 void serialInit();
 void loadPreferences();
-void initStruct(int thisPin);
+void initStruct(short thisPin);
 void initStructs();
 void initPir();
 void meshSetup();
@@ -45,44 +42,44 @@ void OTAConfig();
 void enableTasks();
 void autoSwitchTimer();
 void laserSafetyLoop();
-void switchPirRelays(const uint8_t state);
+void switchPirRelays(const bool state);
 void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
-void switchOnOffVariables(const int thisPin, const int targetState);
-void switchAllRelays(const int targetState);
-void manualSwitchOneRelay(const int thisPin, const int targetState);
-void inclExclAllRelaysInPir(const int targetState);
-void inclExclOneRelayInPir(const int thisPin, const int targetState);
+void switchOnOffVariables(const short thisPin, const bool targetState);
+void switchAllRelays(const bool targetState);
+void manualSwitchOneRelay(const short thisPin, const bool targetState);
+void inclExclAllRelaysInPir(const bool targetState);
+void inclExclOneRelayInPir(const short thisPin, const bool targetState);
 void changeGlobalBlinkingDelay(const unsigned long blinkingDelay);
-void changeIndividualBlinkingDelay(const int pinNumberFromGetRequest, const unsigned long blinkingDelay);
-void changeGlobalMasterBoxAndSlaveReaction(const int masterBoxNumber, const char* action);
+void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay);
+void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
 String printAllLasersCntrl();
 String printIndivLaserCntrls();
 String printLinksToBoxes();
-String printBlinkingDelayWebCntrl(const int thisPin);
+String printBlinkingDelayWebCntrl(const short thisPin);
 String printMasterCntrl();
 String printLabel(const String labelText, const String labelFor);
 String printMasterSelect();
 String printSlaveReactionSelect();
-String printCurrentStatus(const int thisPin);
-String printOnOffControl(const int thisPin);
-String printPirStatusCntrl(const int thisPin);
-String printPairingCntrl(const int thisPin);
-String printDelaySelect(const int thisPin);
-String printHiddenLaserNumb(const int thisPin);
-void changeTheBlinkingIntervalInTheStruct(const int thisPin, const unsigned long blinkingDelay);
+String printCurrentStatus(const short thisPin);
+String printOnOffControl(const short thisPin);
+String printPirStatusCntrl(const short thisPin);
+String printPairingCntrl(const short thisPin);
+String printDelaySelect(const short thisPin);
+String printHiddenLaserNumb(const short thisPin);
+void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay);
 void savePreferences();
-void changeTheBlinkingIntervalInTheStruct(const int thisPin, const unsigned long blinkingDelay);
-void changeTheMasterBoxId(const int masterBoxNumber);
+void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay);
+void changeTheMasterBoxId(const short masterBoxNumber);
 void changeSlaveReaction(const char* action);
-void blinkLaserIfBlinking(const int thisPin);
-void ifPairedUpdateOnOff(const int thisPin);
-void executeUpdates(const int thisPin);
-void blinkLaserIfTimeIsDue(const int thisPin);
-void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const int thisPin);
-void updatePairedSlave(const int thisPin, const bool nextPinOnOffTarget);
+void blinkLaserIfBlinking(const short thisPin);
+void ifPairedUpdateOnOff(const short thisPin);
+void executeUpdates(const short thisPin);
+void blinkLaserIfTimeIsDue(const short thisPin);
+void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const short thisPin);
+void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget);
 void broadcastStatusOverMesh(const char* state);
 void startOTA();
 void endOTA();
@@ -93,23 +90,20 @@ void onBody();
 void meshController(uint32_t senderNodeId, String &msg);
 void boxTypeSelfUpdate();
 IPAddress parseIpString(JsonObject& root, String rootKey);
-void autoSwitchAllRelaysMeshWrapper(const char* masterState, const bool reaction, const int iSenderNodeName);
+void autoSwitchAllRelaysMeshWrapper(const char* masterState, const bool reaction, const short iSenderNodeName);
 String createMeshMessage(const char* myStatus);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // KEY BOX variables //////////////////////////////////////////////////////////////////////////////////////////////
-const int BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
-// int iDefaultMasterNodesNames[10] = {201,202};
-const int I_NODE_NAME = 202;                                                                                                // BOX BY BOX
-const int I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
-/*
-int relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };   // an array of pin numbers to which relays are attached               // BOX BY BOX
-const int PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
-*/
-int relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
-const int PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
+const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
+// short iDefaultMasterNodesNames[10] = {201,202};
+const short I_NODE_NAME = 202;                                                                                                // BOX BY BOX
+const short I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
 
-const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
+short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
+const short PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
+
+const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
 
 unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                // BOX BY BOX
 
@@ -125,7 +119,7 @@ const bool MESH_ROOT = true;                                                    
 painlessMesh  myMesh;
 
 char nodeNameBuf[4];
-char* nodeNameBuilder(const int _I_NODE_NAME, char _nodeNameBuf[4]) {
+char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
   String _sNodeName = String(_I_NODE_NAME);
   _sNodeName.toCharArray(_nodeNameBuf, 4);
   return _nodeNameBuf;
@@ -138,7 +132,7 @@ char* nodeNameBuilder(const int _I_NODE_NAME, char _nodeNameBuf[4]) {
 
 const char PREFIX_AP_SSID[5] = "box_";
 char myApSsidBuf[8];
-char* apSsidBuilder(const int _I_NODE_NAME, char _apSsidBuf[8]) {
+char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
   strcat(_apSsidBuf, PREFIX_AP_SSID);
   char _nodeName[4];
   itoa(I_NODE_NAME, _nodeName, 10);
@@ -158,18 +152,18 @@ struct box_type {
   IPAddress stationIP;
   IPAddress APIP;
 };
-// const int BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
+// const short BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
 box_type box[BOXES_COUNT];
 
-const int BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
+const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 ///////////////////////////////
 // definition of master node //
-// const int I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
-int iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
-const int I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
+// const short I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
+short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
+const short I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
 ///////////////////////////////
 // definition of reactions to master node state
 const char* slaveReaction[4] = {"opposed: on - off & off - on", "synchronous: on - on & off - off", "always on: off - on & on - on", "always off: on - off & off - off"};
@@ -177,9 +171,9 @@ const char* slaveReactionHtml[4] = {"opp", "syn", "aon", "aof"};
 
 // I_DEFAULT_SLAVE_ON_OFF_REACTION
 // I_DEFAULT_SLAVE_ON_OFF_REACTION is: this box is opposed to its master (when the master is on, this box is off)
-// const int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
+// const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
 
-unsigned int iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool char of the choosen reaction to the master states
+short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool char of the choosen reaction to the master states
 const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 // HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous: When the master box is on, turn me on AND when the master box is off, turn me off
 // LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed: When the master box is on, turn me off AND when the master box is off, turn me on
@@ -190,28 +184,28 @@ const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HI
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RELAYS variables /////////////////////////////
 struct pin_type {
-  int number;        // pin number to which the relays are attached
+  short number;        // pin number to which the relays are attached
   bool on_off;       // is the pin HIGH or LOW (LOW = the relay is closed, HIGH = the relay is open)
   bool on_off_target;// a variable to store the on / off change requests by the various functions
   bool blinking;     // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
   unsigned long previous_time;
   unsigned long blinking_interval;
-  int pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
-  int paired;        // a variable to store with which other pin is paired (8 means it is not paired)
+  bool pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
+  short paired;        // a variable to store with which other pin this pin is paired (8 means it is not paired)
 };
 
-// int relayPins[] = {
+// short relayPins[] = {
 //   22, 21, 19, 18, 5, 17, 16, 4
 // };                                    // an array of pin numbers to which relays are attached   // See BOX KEY VARIABLES     // BOX BY BOX
 //
-// int const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
+// short const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
 
 bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
 // unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
 unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
-int const default_pin_pir_state_value = HIGH;       // by default, the pin is controlled by the PIR
+bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 // declare and size an array to contain the structs as a global variable
 pin_type pin[PIN_COUNT];
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,15 +219,15 @@ bool autoSwitchCycle = false;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
-int inputPin = 23;                // choose the input pin (for PIR sensor)
+short inputPin = 23;                // choose the input pin (for PIR sensor)
                                   // we start assuming no motion detected
-int valPir = LOW;                 // variable for reading the pin status
+bool valPir = LOW;                 // variable for reading the pin status
 const unsigned long UL_PIR_INTERVAL = 60000UL;   // interval of the PIR cycle
 
 // after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
-const unsigned int UI_PIR_START_UP_DELAY = 6;  // This var stores the delay for which the Pir value shall not be read
+const short UI_PIR_START_UP_DELAY = 6;  // This var stores the delay for which the Pir value shall not be read
 
-unsigned int highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
+short highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
                                                               0 = even pins are [high] and odds are [low];
                                                               1 = odd pins are [low] and evens are [high];
                                                           */
@@ -243,7 +237,7 @@ unsigned int highPinsParityDuringStartup = 0;             /*  variable to store 
 // Web server variables ///////////////////////////////////////////////////////////////////////////////////////////
 AsyncWebServer asyncServer(80);
 char linebuf[80];
-int charcount=0;
+short charcount=0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,19 +416,19 @@ void stopPirCycle() {
 
 
 // loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
-void switchPirRelays(const uint8_t state) {
-  Serial.printf("PIR: switchPirRelays(const int state): starting -------\n");
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+void switchPirRelays(const bool state) {
+  Serial.printf("PIR: switchPirRelays(const bool state): starting -------\n");
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     if (pin[thisPin].pir_state == HIGH) {
       switchOnOffVariables(thisPin, state);
     }
   }
-  Serial.printf("PIR: switchPirRelays(const int state): leaving -------\n");
+  Serial.printf("PIR: switchPirRelays(const bool state): leaving -------\n");
 }
 
 // TO DO: Combine logic of directPinsSwitch() and switchOnOffVariables()
-void directPinsSwitch(const int targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (int thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
+void directPinsSwitch(const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+  for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     digitalWrite(pin[thisPin].number, targetState);           // switch on or off
   }
 }
@@ -543,7 +537,7 @@ String returnTheResponse() {
 String printLinksToBoxes() {
   String linksToBoxes = "<div class=\"box_links_wrapper\">";
   IPAddress testIp(0,0,0,0);
-  for (int i = 0; i < 10; i++) {
+  for (short i = 0; i < 10; i++) {
     if (!(box[i].stationIP == testIp)) {
       linksToBoxes += "<div class=\"box_link_wrapper\">Station IP: ";
       linksToBoxes += "<a href=\"http://";
@@ -594,7 +588,7 @@ String printOption(const String optionValue, const String optionText, const Stri
 
 String printMasterSelect() {
   String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
-  for (int i = 1; i < 11; i++) {
+  for (short i = 1; i < 11; i++) {
     String selected = "";
     if (i + I_MASTER_NODE_PREFIX == iMasterNodeName) {
       selected += "selected";
@@ -609,7 +603,7 @@ String printMasterSelect() {
 
 String printSlaveReactionSelect() {
   String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
-  for (int i = 0; i < 4; i++) {
+  for (short i = 0; i < 4; i++) {
     String selected = "";
     if (i == iSlaveOnOffReaction) {
       selected += "selected";
@@ -642,7 +636,7 @@ String printOption(const String optionValue, const String optionText, const Stri
 
 String printIndivLaserCntrls() {
   String laserCntrl;
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     laserCntrl += "<div>Laser # ";
     laserCntrl += thisPin + 1;
 
@@ -666,7 +660,7 @@ String printIndivLaserCntrls() {
   return laserCntrl;
 }
 
-String printCurrentStatus(const int thisPin) {
+String printCurrentStatus(const short thisPin) {
   String currentStatus;
   if (pin[thisPin].blinking == true) {
     currentStatus += " ON ";
@@ -681,7 +675,7 @@ String printCurrentStatus(const int thisPin) {
   return currentStatus;
 }
 
-String printOnOffControl(const int thisPin) {
+String printOnOffControl(const short thisPin) {
   String onOffCntrl;
   onOffCntrl += "<a href=\"?manualStatus=on&laser=";
   onOffCntrl += thisPin + 1;
@@ -691,7 +685,7 @@ String printOnOffControl(const int thisPin) {
   return onOffCntrl;
 }
 
-String printPirStatusCntrl(const int thisPin) {
+String printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
   if (pin[thisPin].pir_state == LOW) {
     pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
@@ -706,7 +700,7 @@ String printPirStatusCntrl(const int thisPin) {
   return pirStatusCntrl;
 }
 
-String printBlinkingDelayWebCntrl(const int thisPin) {
+String printBlinkingDelayWebCntrl(const short thisPin) {
   String blinkingDelayWebCntrl;
   blinkingDelayWebCntrl += "Blinking delay: ";
   blinkingDelayWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
@@ -717,7 +711,7 @@ String printBlinkingDelayWebCntrl(const int thisPin) {
   return blinkingDelayWebCntrl;
 }
 
-String printPairingCntrl(const int thisPin) {
+String printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
   if (pin[thisPin].paired == 8) {
     pairingWebCntrl += " Unpaired ";
@@ -738,7 +732,7 @@ String printPairingCntrl(const int thisPin) {
   return pairingWebCntrl;
 }
 
-String printDelaySelect(const int thisPin) {
+String printDelaySelect(const short thisPin) {
   String delaySelect;
   delaySelect += "<select name=\"blinkingDelay\">";
   for (unsigned long delayValue = 5000; delayValue < 35000; delayValue = delayValue + 5000) {
@@ -760,7 +754,7 @@ String printDelaySelect(const int thisPin) {
   return delaySelect;
 }
 
-String printHiddenLaserNumb(const int thisPin) {
+String printHiddenLaserNumb(const short thisPin) {
   String hiddenLaserCntrl;
   hiddenLaserCntrl += "<input type=\"hidden\" name=\"laser\" value=\"";
   hiddenLaserCntrl += thisPin + 1;
@@ -776,7 +770,7 @@ String printHiddenLaserNumb(const int thisPin) {
 // MODELS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void switchPointerBlinkCycleState(const int thisPin, const int state) {
+void switchPointerBlinkCycleState(const short thisPin, const bool state) {
   // If the state passed on to the function is LOW (i.e.
   // probably the targetState in the calling function),
   // marks that the pin is in a blinking cycle.
@@ -796,21 +790,21 @@ void switchPointerBlinkCycleState(const int thisPin, const int state) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Manually switches all the lasers
-void switchAllRelays(const int state) {
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+void switchAllRelays(const bool state) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     manualSwitchOneRelay(thisPin, state);
   }
 }
 
 // Manually switches a single laser
-void manualSwitchOneRelay(const int thisPin, const int targetState) {
-  Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const int thisPin, const int targetState): switching pin[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
+void manualSwitchOneRelay(const short thisPin, const bool targetState) {
+  Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching pin[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(thisPin, targetState);
   pin[thisPin].pir_state = LOW;
 }
 
-void switchOnOffVariables(const int thisPin, const int targetState) {
-  Serial.printf("MANUAL SWITCHES:switchOnOffVariables(const int thisPin, const int targetState): switching on/off variables for pin[%u] with targetState =%s \n", thisPin + 1, (targetState == 0 ? "on (LOW)" : "off (HIGH)."));
+void switchOnOffVariables(const short thisPin, const bool targetState) {
+  Serial.printf("MANUAL SWITCHES:switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState =%s \n", thisPin + 1, (targetState == 0 ? "on (LOW)" : "off (HIGH)."));
   switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off
   pin[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
                                                                           // the actual pin will be turned on or off in the LASER SAFETY TIMER
@@ -825,15 +819,15 @@ void switchOnOffVariables(const int thisPin, const int targetState) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
-void inclExclAllRelaysInPir(const int state) {
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+void inclExclAllRelaysInPir(const bool state) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     pin[thisPin].pir_state = state;
   }
 }
 
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects one relay to or releases it from the control of the PIR
-void inclExclOneRelayInPir(const int thisPin, const int state) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
+void inclExclOneRelayInPir(const short thisPin, const bool state) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pin[thisPin].pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(thisPin, HIGH);
 }
@@ -846,7 +840,7 @@ void inclExclOneRelayInPir(const int thisPin, const int state) {     // state ma
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     Serial.println("WEB CONTROLLER: Changing pin blinking delay");
     changeTheBlinkingIntervalInTheStruct(thisPin, blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
@@ -854,13 +848,13 @@ void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
   }
 }
 
-void changeIndividualBlinkingDelay(const int pinNumberFromGetRequest, const unsigned long blinkingDelay) {
+void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay) {
   changeTheBlinkingIntervalInTheStruct(pinNumberFromGetRequest, blinkingDelay);
 }
 
-void changeTheBlinkingIntervalInTheStruct(const int thisPin, const unsigned long blinkingDelay) {
+void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay) {
   pin[thisPin].blinking_interval = blinkingDelay;
-  Serial.print("WEB CONTROLLER: changeTheBlinkingIntervalInTheStruct(const int thisPin): This pin's blinking delay is now: ");Serial.println(pin[thisPin].blinking_interval);
+  Serial.printf("WEB CONTROLLER: changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay): This pin's blinking delay is now: ");Serial.println(pin[thisPin].blinking_interval);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -872,16 +866,16 @@ void changeTheBlinkingIntervalInTheStruct(const int thisPin, const unsigned long
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TO REDRAFT AND TO ADD COMMENTS TO THE CODE OF THE WHOLE BLOCK
-void changeGlobalMasterBoxAndSlaveReaction(const int masterBoxNumber, const char* action) {
+void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action) {
   changeTheMasterBoxId(masterBoxNumber);
   changeSlaveReaction(action);
   savePreferences();
 }
 
-void changeTheMasterBoxId(const int masterBoxNumber) {
-  Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Starting with masterBoxNumber = ");Serial.println(masterBoxNumber);
+void changeTheMasterBoxId(const short masterBoxNumber) {
+  Serial.printf("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Starting with masterBoxNumber = %u\n", masterBoxNumber);
   iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber;
-  Serial.println("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Done");
+  Serial.printf("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Done\n");
 }
 
 void savePreferences() {
@@ -899,18 +893,17 @@ void savePreferences() {
 }
 
 void changeSlaveReaction(const char* action) {
-  Serial.print("WEB CONTROLLER: changeSlaveReaction(char *action): starting with action (char argument) =");Serial.println(action);
-  int i;
-  for (i=0; i < 4; i++) {
-    Serial.println("WEB CONTROLLER: changeSlaveReaction(): looping over the slaveReactionHtml[] array");
+  Serial.printf("WEB CONTROLLER: changeSlaveReaction(char *action): starting with action (char argument) =%s\n", action);
+  for (short i=0; i < 4; i++) {
+    Serial.printf("WEB CONTROLLER: changeSlaveReaction(): looping over the slaveReactionHtml[] array\n");
     if (strcmp(slaveReactionHtml[i], action) > 0) {
-      Serial.println("WEB CONTROLLER: changeSlaveReaction(): saving iSlaveOnOffReaction");
-      unsigned int t = i;
+      Serial.printf("WEB CONTROLLER: changeSlaveReaction(): saving iSlaveOnOffReaction\n");
+      short t = i;
       iSlaveOnOffReaction = t;
       break; // break for
     }
   }
-  Serial.println("WEB CONTROLLER: changeSlaveReaction(): done");
+  Serial.printf("WEB CONTROLLER: changeSlaveReaction(): done\n");
 }
 
 void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
@@ -943,20 +936,20 @@ void laserSafetyLoop() {
   // - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);
   // - update the paired laser or its pair if the lasers are paired;
   // and then, execute the updates.
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     blinkLaserIfBlinking(thisPin);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     ifPairedUpdateOnOff(thisPin);                           // update the on/off status of any paired laser and its paired companion
     executeUpdates(thisPin);                                // transform the update to the struct to analogical updates in the status of the related pin
   }
 }
 
-void blinkLaserIfBlinking(const int thisPin) {
+void blinkLaserIfBlinking(const short thisPin) {
   if (pin[thisPin].blinking == true && (pin[thisPin].paired == 8 || thisPin % 2 == 0)) {          // check if the laser is in blinking mode and is either non-paired or master in a pair
     blinkLaserIfTimeIsDue(thisPin);                                                               // if so, switch its on/off state
   }
 }
 
-void blinkLaserIfTimeIsDue(const int thisPin) {
+void blinkLaserIfTimeIsDue(const short thisPin) {
   // function called when a laser is in blinking mode to check if the blinking interval has elapsed
   const unsigned long currentTime = millis();
   if (currentTime - pin[thisPin].previous_time > pin[thisPin].blinking_interval) {    // if blinking interval of the specific laser has elapsed
@@ -976,7 +969,7 @@ bool isTimerDue(const long previous_time, const long interval) {
 }
 */
 
-void ifPairedUpdateOnOff(const int thisPin) {
+void ifPairedUpdateOnOff(const short thisPin) {
   // Serial.println("SAFETY LOOP: ifPairedUpdateOnOff(): starting");
   if (!(pin[thisPin].paired == 8) && (thisPin % 2 == 0)) {                  // if the laser is not unpaired (if paired is set at 8, it means it is not paired)
                                                                             // AND if it is a master
@@ -986,7 +979,7 @@ void ifPairedUpdateOnOff(const int thisPin) {
   }
 }
 
-void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const int thisPin) {
+void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const short thisPin) {
   // Serial.print("xxxxxxxxx eval i) blinking status and ii) of pin[");Serial.print(thisPin + 1);Serial.println("]: xxxxxxxxx");
   // evaluate if (i) the pin is NOT blinking and (i) whether its on_off_target state is to turn off
   // if so, it means that the master pin has been turned off. The slave pin should then be turned off.
@@ -999,14 +992,14 @@ void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const int thisPin) {
   }
 }
 
-void updatePairedSlave(const int thisPin, const bool nextPinOnOffTarget) {
+void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget) {
   pin[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser
   pin[thisPin + 1].blinking = pin[thisPin].blinking;                            // update the blinking state of the paired slave laser
   pin[thisPin + 1].pir_state = pin[thisPin].pir_state;                          // update the IR state of the paired slave laser
   pin[thisPin + 1].paired = thisPin;                                            // update the paired pin of the slave to this pin
 }
 
-void executeUpdates(const int thisPin) {
+void executeUpdates(const short thisPin) {
   if (pin[thisPin].on_off != pin[thisPin].on_off_target) {         // check whether the target on_off state is different than the current on_off state
                                                                    // TO ANALYSE: I have the feeling that the condition to be tested shall be different
                                                                    // in the case a) a laser is in a blinking mode and in the case b) a laser is not in
@@ -1021,16 +1014,13 @@ void executeUpdates(const int thisPin) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void subAutoSwitchRelaysMsg(const char* masterState, const bool reaction) {
-  Serial.print(" is ");                                  // Serial print the word " is "
-  Serial.print(masterState);
-  Serial.print("Turning myself to ");
-  Serial.println(reaction == LOW ? "on." : "off.");
+  Serial.printf(" is %s. Turning myself to %s.\n", masterState, (reaction == LOW ? "on." : "off."));
 }
 
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void autoSwitchAllRelays(const int targetState) {
+void autoSwitchAllRelays(const bool targetState) {
   ulAutoSwitchStartTime = millis();                                  // start the timer of the auto switch upon starting the autoSwitch
   switchAllRelays(targetState);                                       // put the pin in manual mode, with the desired state
   autoSwitchCycle = true;                                             // Mark that the autoSwitch cycle has started. Necessary to deactivate other functions.
@@ -1052,7 +1042,7 @@ void autoSwitchTimer() {
 }
 // Function checked dans une situation où autoSwitchCycle == false.
 
-void autoSwitchOneRelay(const int thisPin, const int targetState) {
+void autoSwitchOneRelay(const short thisPin, const bool targetState) {
   /*  A REDIGER LORSQUE CE SERA NECESSAIRE
       switchOnOffVariables(thisPin, targetState);
       switchPointerBlinkCycleState(thisPin, targetState);
@@ -1120,28 +1110,18 @@ void loadPreferences() {
 }
 
 void initStructs() {
-  Serial.println("SETUP: initStructs(): starting");
-  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+  Serial.printf("SETUP: initStructs(): starting\n");
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize structs
     initStruct(thisPin);
     pinMode(pin[thisPin].number, OUTPUT);     // initialization of the pin connected to each of the relay as output
     digitalWrite(pin[thisPin].number, HIGH);  // setting default value of the pins at HIGH (relay closed)
   }
-  Serial.println("SETUP: initStructs(): done");
+  Serial.printf("SETUP: initStructs(): done\n");
 }
 
-void initStruct(int thisPin) {
-  /*
-  Intializing each of the structs representing the pins.
-  Default variable for the structs:
-  bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-  bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-  bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-  long const default_pin_blinking_interval = 10000;   // default blinking interval of the pin is 10 s
-  int const default_pin_pir_state_value = HIGH;       // by default, the pin is controlled by the PIR
-  */
-
-
+void initStruct(short thisPin) {
+  short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
   pin[thisPin] = {
     relayPins[thisPin],
     default_pin_on_off_state,        // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
@@ -1149,8 +1129,8 @@ void initStruct(int thisPin) {
     default_pin_blinking_state,      // by default, pin starts as in a blinking-cycle TO ANALYSE
     millis(),
     pinBlinkingInterval,            // default blinking interval of the pin is 10 s, unless some settings have been saved to EEPROM
-    default_pin_pir_state_value,     // by default, the pin is controlled by the PIR
-    (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1)  // by default, the pins are paired
+    default_pin_pir_state_value,     // by default, the pin is not controlled by the PIR
+    pairedPinNumber  // by default, the pins are paired
   };
 }
 
@@ -1218,8 +1198,7 @@ void errorOTA(ota_error_t error) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void listAllCollectedHeaders(AsyncWebServerRequest *request) {
   int headers = request->headers();
-  int i;
-  for(i=0;i<headers;i++){
+  for(int i=0;i<headers;i++){
     AsyncWebHeader* h = request->getHeader(i);
     Serial.printf("HEADER[%s]: %s\n", h->name().c_str(), h->value().c_str());
   }
@@ -1377,8 +1356,8 @@ void boxTypeUpdate(uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& 
   Serial.printf("    MESH CONTROLLER: boxTypeUpdate(...) storing the IP adresses of the sender: done \n");
 }
 
-int jsonToInt(JsonObject& root, String rootKey) {
-  int iValue;
+short jsonToInt(JsonObject& root, String rootKey) {
+  short iValue;
   const char* sValue = root[rootKey];
   iValue = atoi(sValue);
   return iValue;
@@ -1400,7 +1379,7 @@ void meshController(uint32_t senderNodeId, String &msg) {
   JsonObject& root = jsonBuffer.parseObject(msg.c_str());
   Serial.printf("    MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg): jsonBuffer parsed into JsonObject& root\n");
 
-  const int iSenderNodeName = jsonToInt(root, "senderNodeName");
+  const short iSenderNodeName = jsonToInt(root, "senderNodeName");
   Serial.printf("    MESH CONTROLLER: meshController(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
   const char* senderStatus = root["senderStatus"];
   Serial.printf("    MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", senderStatus);
@@ -1426,12 +1405,10 @@ void meshController(uint32_t senderNodeId, String &msg) {
   }
 }
 
-void autoSwitchAllRelaysMeshWrapper(const char* masterState, const bool reaction, const int iSenderNodeName) {
+void autoSwitchAllRelaysMeshWrapper(const char* masterState, const bool reaction, const short iSenderNodeName) {
   // print to console a sentence such as "192.168.1.202 is on. Turning myself to on"
   // then call the autoSwitchAllRelays
-  Serial.println("    MESH: autoSwitchAllRelaysMeshWrapper(masterState, reaction, iSenderNodeName) starting");
-  Serial.print("    MESH: autoSwitchAllRelaysMeshWrapper(). iSenderNodeName = ");Serial.println(iSenderNodeName);    // Serial print the remote adress
-  Serial.printf("    MESH: autoSwitchAllRelaysMeshWrapper().Box %u", iSenderNodeName);
+  Serial.printf("    MESH: autoSwitchAllRelaysMeshWrapper(masterState, reaction, iSenderNodeName) starting with iSenderNodeName = %u\n", iSenderNodeName);
   subAutoSwitchRelaysMsg(masterState, reaction);
   autoSwitchAllRelays(reaction);
   Serial.println("    MESH: autoSwitchAllRelaysMeshWrapper(): done");
