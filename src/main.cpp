@@ -30,7 +30,6 @@
  */
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
-void directPinsSwitch(bool targetState);
 void serialInit();
 void loadPreferences();
 void initStruct(short thisPin);
@@ -43,6 +42,7 @@ void enableTasks();
 void autoSwitchTimer();
 void laserSafetyLoop();
 void switchPirRelays(const bool state);
+void directPinsSwitch(bool targetState);
 void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void setPirValue();
@@ -249,7 +249,7 @@ void sendMessage();
 
 /////////////////////////////////
 // Tasks related to the IR startup
-StatusRequest stPirStartUpComplete;
+StatusRequest srPirStartUpComplete;
 
 void cbtPirStartUpDelayBlinkLaser();
 bool onEnablePirStartUpDelayBlinkLaser();
@@ -279,13 +279,14 @@ void cbtPirStartUpDelayBlinkLaser() {
 }
 
 bool onEnablePirStartUpDelayBlinkLaser() {
-  stPirStartUpComplete.setWaiting();
+  srPirStartUpComplete.setWaiting();
   return true;
 }
 
 void onDisablePirStartUpDelayBlinkLaser() {
   directPinsSwitch(HIGH);
-  stPirStartUpComplete.signalComplete();
+  inclExclAllRelaysInPir(HIGH);                                     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
+  srPirStartUpComplete.signalComplete();
 }
 
 void cbtPirStartUpDelayPrintDash() {
@@ -429,7 +430,7 @@ void switchPirRelays(const bool state) {
 // TO DO: Combine logic of directPinsSwitch() and switchOnOffVariables()
 void directPinsSwitch(const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
-    digitalWrite(pin[thisPin].number, targetState);           // switch on or off
+    switchOnOffVariables(thisPin, targetState);
   }
 }
 
@@ -1260,7 +1261,7 @@ void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t in
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void enableTasks() {
   tPirStartUpDelayBlinkLaser.enable();
-  tPirCntrl.waitFor(&stPirStartUpComplete);
+  tPirCntrl.waitFor(&srPirStartUpComplete);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
