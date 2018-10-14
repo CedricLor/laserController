@@ -12,22 +12,6 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  DONE:
- *  TO DO:
- *  HIGH: Combine logic of directPinsSwitch() and LaserSafetyLoop()
- *        Rewrite all the things type thisPin % 2 == 0 with the logic of directPinsSwitch(
- *  HIGH: Rename directPinsSwitch() to give it a more explicit name
- *  HIGH: Add a true laserSafetyLoop that turns lasers off in whichever situations if they have been on for more than 30 seconds
-          and prevents them from being turned back on by any process for a corresponding cooling off time
- *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
- *  MIDDLE: pair - unpair proc: pass the unpairing to the slave or this is going to produce unexpected results
- *  LOW: refactor all part where String is still used to replace them with arrays of char*
- *  LOW: refactoring: get rid of repetitive code where generating html tags
- *  LOW: refactor: use TEMPLATE markers in html code
- *  LOW: refactor: store html code in PROGMEM
- *  LOW: refactor: response to response-> as shown in the ESPAsyncWebServer github page
-*/
-
 /*
  * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
  * 2752932713, 10.177.49.1 = box 202, master 201
@@ -109,7 +93,7 @@ void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSende
 String createMeshMessage(const char* myStatus);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// KEY BOX variables //////////////////////////////////////////////////////////////////////////////////////////////
+// KEY box variables //////////////////////////////////////////////////////////////////////////////////////////////
 const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
 // short iDefaultMasterNodesNames[10] = {201,202};
 const short I_NODE_NAME = 202;                                                                                                // BOX BY BOX
