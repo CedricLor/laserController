@@ -14,6 +14,9 @@
 
 /*  DONE:
  *  TO DO:
+ *  HIGH: Combine logic of directPinsSwitch() and LaserSafetyLoop()
+ *        Rewrite all the things type thisPin % 2 == 0 with the logic of directPinsSwitch(
+ *  HIGH: Rename directPinsSwitch() to give it a more explicit name
  *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
  *  MIDDLE: pair - unpair proc: pass the unpairing to the slave or this is going to produce unexpected results
  *  LOW: refactor all part where String is still used to replace them with arrays of char*
@@ -116,7 +119,7 @@ const bool MESH_ROOT = true;                                                    
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-painlessMesh  myMesh;
+painlessMesh myMesh;
 
 char nodeNameBuf[4];
 char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
@@ -427,7 +430,7 @@ void switchPirRelays(const bool state) {
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
 }
 
-// TO DO: Combine logic of directPinsSwitch() and switchOnOffVariables()
+// Switches relay pins on and off during PIRStartUp
 void directPinsSwitch(const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     switchOnOffVariables(thisPin, targetState);
@@ -957,30 +960,14 @@ void blinkLaserIfTimeIsDue(const short thisPin) {
   }
 }
 
-/*
-TO DO: DRAFT WITH A LAMBDA AND USE EVERYWHERE
-bool isTimerDue(const long previous_time, const long interval) {
-  unsigned long currentTime = millis();
-  if (currentTime - previous_time > interval) {
-    return true;
-  } else {
-    return false;
-  }
-}
-*/
-
 void ifPairedUpdateOnOff(const short thisPin) {
-  // Serial.print("SAFETY LOOP: ifPairedUpdateOnOff(): starting\n");
   if (!(pin[thisPin].paired == 8) && (thisPin % 2 == 0)) {                  // if the laser is not unpaired (if paired is set at 8, it means it is not paired)
                                                                             // AND if it is a master
-    // Serial.print("xxxxxxxxx paired pin[");Serial.print(thisPin + 1);Serial.println("] is paired xxxxxxxxx");
-    // Serial.println("xxxxxxxxx calling evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate for this pin xxxxxxxxx");
     evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(thisPin);
   }
 }
 
 void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const short thisPin) {
-  // Serial.print("xxxxxxxxx eval i) blinking status and ii) of pin[");Serial.print(thisPin + 1);Serial.println("]: xxxxxxxxx");
   // evaluate if (i) the pin is NOT blinking and (i) whether its on_off_target state is to turn off
   // if so, it means that the master pin has been turned off. The slave pin should then be turned off.
   if ((pin[thisPin].blinking == false) && (pin[thisPin].on_off_target == HIGH)) {
