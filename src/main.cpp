@@ -257,13 +257,13 @@ void sendMessage();
 // Tasks related to the IR startup
 StatusRequest stPirStartUpComplete;
 
-void pirStartUpDelayBlinkLaser();
+void cbtPirStartUpDelayBlinkLaser();
 bool onEnablePirStartUpDelayBlinkLaser();
 void onDisablePirStartUpDelayBlinkLaser();
-Task tPirStartUpDelayBlinkLaser( &userScheduler, 10000UL, UI_PIR_START_UP_DELAY, &pirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+Task tPirStartUpDelayBlinkLaser( &userScheduler, 10000UL, UI_PIR_START_UP_DELAY, &cbtPirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
-void pirStartUpDelayPrintDash();
-Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &pirStartUpDelayPrintDash );
+void cbtPirStartUpDelayPrintDash();
+Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &cbtPirStartUpDelayPrintDash );
 
 void cbtLaserOff();
 Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
@@ -271,8 +271,9 @@ Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
 void cbtLaserOn();
 Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
 
-void pirStartUpDelayBlinkLaser() {
+void cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
+
   directPinsSwitch(HIGH);
   highPinsParityDuringStartup = (highPinsParityDuringStartup == 0) ? 1 : 0;
   directPinsSwitch(LOW);
@@ -293,7 +294,7 @@ void onDisablePirStartUpDelayBlinkLaser() {
   stPirStartUpComplete.signalComplete();
 }
 
-void pirStartUpDelayPrintDash() {
+void cbtPirStartUpDelayPrintDash() {
   Serial.print("-");
 }
 
@@ -425,15 +426,13 @@ void switchPirRelays(const uint8_t state) {
   Serial.printf("PIR: switchPirRelays(const int state): starting -------\n");
   for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     if (pin[thisPin].pir_state == HIGH) {
-    Serial.printf("PIR: switchPirRelays(const int state = %u): pin %u is under pir control -------\n", state, (thisPin + 1));
-    // only act if the pin is controlled by the PIR
       switchOnOffVariables(thisPin, state);
     }
   }
-  Serial.println("------ leaving switchPirRelays -------");
+  Serial.printf("PIR: switchPirRelays(const int state): leaving -------\n");
 }
 
-// TO DO: Combine logic of directPinsSwitch() and switchPirRelays()
+// TO DO: Combine logic of directPinsSwitch() and switchOnOffVariables()
 void directPinsSwitch(const int targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (int thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     digitalWrite(pin[thisPin].number, targetState);           // switch on or off
@@ -805,14 +804,13 @@ void switchAllRelays(const int state) {
 
 // Manually switches a single laser
 void manualSwitchOneRelay(const int thisPin, const int targetState) {
-  Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const int thisPin, const int targetState): switching relay %u %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
+  Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const int thisPin, const int targetState): switching pin[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(thisPin, targetState);
   pin[thisPin].pir_state = LOW;
 }
 
 void switchOnOffVariables(const int thisPin, const int targetState) {
-  Serial.printf("MANUAL SWITCHES:switchOnOffVariables(const int thisPin, const int targetState): switching on/off variables for pin[%u]\n", thisPin + 1);
-  Serial.printf("+*+*+ targetState is %s\n", (targetState == 0 ? "on (LOW)" : "off (HIGH)."));
+  Serial.printf("MANUAL SWITCHES:switchOnOffVariables(const int thisPin, const int targetState): switching on/off variables for pin[%u] with targetState =%s \n", thisPin + 1, (targetState == 0 ? "on (LOW)" : "off (HIGH)."));
   switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off
   pin[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
                                                                           // the actual pin will be turned on or off in the LASER SAFETY TIMER
