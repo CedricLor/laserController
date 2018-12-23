@@ -927,6 +927,8 @@ void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) 
 // LASER SAFETY TIMER -- EXECUTED AT THE END OF EACH LOOP
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+short pinParityWitness = 0;
 void laserSafetyLoop() {
   // Loop around each struct representing a pin connected to a laser before restarting a global loop and
   // make any update that may be required. For instance:
@@ -937,6 +939,7 @@ void laserSafetyLoop() {
     blinkLaserIfBlinking(thisPin);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     ifMasterPairedThenUpdateOnOffOfSlave(thisPin);          // update the on/off status of slave
     executeUpdates(thisPin);                                // transform the update to the struct to analogical updates in the status of the related pin
+    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
 }
 
@@ -946,7 +949,7 @@ void blinkLaserIfBlinking(const short thisPin) {
      If a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair,
      if so, switch its on/off state
   */
-  if (pin[thisPin].blinking == true && (pin[thisPin].paired == 8 || thisPin % 2 == 0)) {
+  if (pin[thisPin].blinking == true && (pin[thisPin].paired == 8 || pinParityWitness == 0)) {
     blinkLaserIfTimeIsDue(thisPin);
   }
 }
@@ -967,10 +970,10 @@ void blinkLaserIfTimeIsDue(const short thisPin) {
 void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin) {
   /*
       Called from within the laser safety loop for each pin
-      Test whether the laser in unpaired or if it is a master in a pair
+      Test if the laser is paired and if it is a master in a pair
       If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
   */
-  if (!(pin[thisPin].paired == 8) && (thisPin % 2 == 0)) {
+  if (!(pin[thisPin].paired == 8) && (pinParityWitness == 0)) {
     evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(thisPin);
   }
 }
@@ -1110,7 +1113,7 @@ void loadPreferences() {
     iMasterNodeName = preferences.getShort("iMasterNName", iMasterNodeName);
     Serial.printf("SETUP: loadPreferences(). iMasterNodeName set to: %u\n", iMasterNodeName);
     pinBlinkingInterval = preferences.getULong("pinBlinkInt", pinBlinkingInterval);
-    Serial.print("SETUP: loadPreferences(). pinBlinkingInterval set to: \n");Serial.println(pinBlinkingInterval);
+    Serial.print("SETUP: loadPreferences(). pinBlinkingInterval set to: ");Serial.println(pinBlinkingInterval);
   }
   preferences.end();
   Serial.print("SETUP: loadPreferences(): done\n");
