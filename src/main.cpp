@@ -266,8 +266,10 @@ Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
 void cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
-  directPinsSwitch(HIGH);
-  highPinsParityDuringStartup = (highPinsParityDuringStartup == 0) ? 1 : 0;
+  if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
+    directPinsSwitch(HIGH);
+    highPinsParityDuringStartup = (highPinsParityDuringStartup == 0) ? 1 : 0;
+  }
   directPinsSwitch(LOW);
   tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
