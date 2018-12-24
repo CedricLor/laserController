@@ -252,16 +252,20 @@ StatusRequest srPirStartUpComplete;
 void cbtPirStartUpDelayBlinkLaser();
 bool onEnablePirStartUpDelayBlinkLaser();
 void onDisablePirStartUpDelayBlinkLaser();
-Task tPirStartUpDelayBlinkLaser( &userScheduler, L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+// Task tPirStartUpDelayBlinkLaser( &userScheduler, L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
 void cbtPirStartUpDelayPrintDash();
-Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &cbtPirStartUpDelayPrintDash );
+// Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &cbtPirStartUpDelayPrintDash );
+Task tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
 
 void cbtLaserOff();
-Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
+// Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
+Task tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 
 void cbtLaserOn();
-Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
+// Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
+Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 
 void cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
@@ -366,7 +370,8 @@ void loop() {
 // TASK FOR PIR CYCLE ON/OFF
 bool tcbOnEnablePirCycle();
 void tcbOnDisablePirCycle();
-Task tPirCycle ( &userScheduler, I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
+// Task tPirCycle ( &userScheduler, I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
+Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
 
 bool tcbOnEnablePirCycle() {
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
@@ -384,7 +389,8 @@ void tcbOnDisablePirCycle() {
 //////////////////////
 // TASK FOR PIR CONTROL
 void tcbPirCntrl();
-Task tPirCntrl ( &userScheduler, &tcbPirCntrl);
+// Task tPirCntrl ( &userScheduler, &tcbPirCntrl );
+Task tPirCntrl ( &tcbPirCntrl, &userScheduler );
 void tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
@@ -1032,7 +1038,8 @@ void executeUpdates(const short thisPin) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool tcbOaAutoSwitchAllRelays();
 void tcbOdAutoSwitchAllRelays();
-Task tAutoSwitchAllRelays( &userScheduler, 1000, siAutoSwitchInterval, NULL, false, &tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
+// Task tAutoSwitchAllRelays( &userScheduler, 1000, siAutoSwitchInterval, NULL, false, &tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
+Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
 
 bool tcbOaAutoSwitchAllRelays() {
   switchAllRelays(LOW);
