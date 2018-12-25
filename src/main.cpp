@@ -12,6 +12,8 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
+// v. 3.0.0
+
 /*
  * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
  * 2752932713, 10.177.49.1 = box 202, master 201
@@ -41,6 +43,10 @@ void startOrRestartPirCycleIfPirValueIsHigh();
 void switchAllRelays(const bool targetState);
 void manualSwitchOneRelay(const short thisPin, const bool targetState);
 void switchOnOffVariables(const short thisPin, const bool targetState);
+
+void pairAllPins(const bool targetPairingState);
+void pairPin(const short thisPin, const bool targetPairingState);
+void rePairPin(const short thisPin, const short thePairedPin);
 
 void inclExclAllRelaysInPir(const bool targetState);
 void inclExclOneRelayInPir(const short thisPin, const bool targetState);
@@ -96,8 +102,8 @@ String createMeshMessage(const char* myStatus);
 // KEY box variables //////////////////////////////////////////////////////////////////////////////////////////////
 const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
 // short iDefaultMasterNodesNames[10] = {201,202};
-const short I_NODE_NAME = 202;                                                                                                // BOX BY BOX
-const short I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
+const short I_NODE_NAME = 201;                                                                                                // BOX BY BOX
+const short I_DEFAULT_MASTER_NODE_NAME = 210;                                                                                 // BOX BY BOX
 
 short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
 const short PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
@@ -207,6 +213,12 @@ unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 // declare and size an array to contain the structs as a global variable
 pin_type pin[PIN_COUNT];
+short pinParityWitness = 0;  // pinParityWitness is a variable that can be used when loop around the pins structs array.
+                             // it avoids using the modulo.
+                             // by switching it to 0 and 1 at each iteration of the loop
+                             // in principle, the switch takes the following footprint: pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+                             // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
+                             // once the loop is over, it should be reset to 0: pinParityWitness = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,19 +228,19 @@ short siAutoSwitchInterval = 60;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
-short inputPin = 23;                // choose the input pin (for PIR sensor)
-                                  // we start assuming no motion detected
-bool valPir = LOW;                 // variable for reading the pin status
-const int I_PIR_INTERVAL = 1000;   // interval in the PIR cycle task (runs every second)
+short inputPin = 23;                  // choose the input pin (for PIR sensor)
+                                      // we start assuming no motion detected
+bool valPir = LOW;                    // variable for reading the pin status
+const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
 const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
 // after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
-const short SI_PIR_START_UP_DELAY_ITERATIONS = 6;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
+const short SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
 const long L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
 short highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
                                                               0 = even pins are [high] and odds are [low];
                                                               1 = odd pins are [low] and evens are [high];
-                                                          */
+                                                   */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,11 +295,13 @@ void cbtPirStartUpDelayBlinkLaser() {
 }
 
 bool onEnablePirStartUpDelayBlinkLaser() {
+  pairAllPins(false);
   srPirStartUpComplete.setWaiting();
   return true;
 }
 
 void onDisablePirStartUpDelayBlinkLaser() {
+  pairAllPins(true);
   directPinsSwitch(HIGH);
   inclExclAllRelaysInPir(HIGH);                                     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   srPirStartUpComplete.signalComplete();
@@ -778,11 +792,7 @@ void switchPointerBlinkCycleState(const short thisPin, const bool state) {
   // probably the targetState in the calling function),
   // marks that the pin is in a blinking cycle.
   // If not, marks that the blinking cycle for this pin is off.
-  if (state == LOW) {
-    pin[thisPin].blinking = true;
-  } else {
-    pin[thisPin].blinking = false;
-  }
+  (state == LOW) ? pin[thisPin].blinking = true : pin[thisPin].blinking = false;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -801,17 +811,49 @@ void switchAllRelays(const bool state) {
 
 // Manually switches a single laser
 void manualSwitchOneRelay(const short thisPin, const bool targetState) {
-  Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching pin[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
+  // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching pin[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(thisPin, targetState);
   pin[thisPin].pir_state = LOW;
 }
 
 void switchOnOffVariables(const short thisPin, const bool targetState) {
-  Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
+  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off
   pin[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
                                                                           // the actual pin will be turned on or off in the LASER SAFETY TIMER
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PAIRING SWITCHES: Pairing and unpairing of pins
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void pairAllPins(const bool targetPairingState) {
+  // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin = thisPin + 2) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    pairPin(thisPin, targetPairingState);
+    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+  }
+  pinParityWitness = 0;
+}
+
+void pairPin(const short thisPin, const bool targetPairingState) {
+  const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  if  (targetPairingState == false) {
+    pin[thisPin].paired = 8;
+    (pinParityWitness == 0) ? pin[thePairedPin].paired = 8 : pin[thePairedPin].paired = 8;
+  } else {
+    rePairPin(thisPin, thePairedPin);
+  }
+}
+
+void rePairPin(const short thisPin, const short thePairedPin) {
+  pin[thisPin].paired = thePairedPin;
+  pin[thePairedPin].paired = thisPin;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -934,7 +976,6 @@ void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-short pinParityWitness = 0;
 void laserSafetyLoop() {
   // Loop around each struct representing a pin connected to a laser before restarting a global loop and
   // make any update that may be required. For instance:
@@ -947,6 +988,7 @@ void laserSafetyLoop() {
     executeUpdates(thisPin);                                // transform the update to the struct to analogical updates in the status of the related pin
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
+  pinParityWitness = 0;
 }
 
 void blinkLaserIfBlinking(const short thisPin) {
@@ -1011,7 +1053,7 @@ void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget) {
   pin[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
   pin[thisPin + 1].blinking = pin[thisPin].blinking;                            // align the blinking state of the paired slave laser
   pin[thisPin + 1].pir_state = pin[thisPin].pir_state;                          // align the IR state of the paired slave laser
-  pin[thisPin + 1].paired = thisPin;                                            // align the paired pin of the slave to this pin
+  // pin[thisPin + 1].paired = thisPin;                                            // align the paired pin of the slave to this pin
 }
 
 void executeUpdates(const short thisPin) {

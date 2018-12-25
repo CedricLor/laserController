@@ -1,10 +1,22 @@
 LASER CONTROLLER
 
-/*  DONE:
+DONE:
+v.3.0.0
+HIGH: Combine logic of directPinsSwitch() and LaserSafetyLoop()
+      Rewrite all the things type thisPin % 2 == 0 with the logic of directPinsSwitch()
+      The combination of the logic of the directPinsSwitch has been done by:
+1. adding three functions to switch the pairing:
+void pairAllPins(const bool targetPairingState): loops over each of the pins to pair or unpair them in slave or master state
+void pairPin(const short thisPin, const bool targetPairingState): called from within the loop in pairAllPins(). Pairs or unpairs individual pins.
+void rePairPin(const short thisPin): sub called from pairPin in case the instruction is to pair the pins together. Checks whether the current pin is an odd or an even.
+2. making two calls to pairAllPins from:
+- onEnablePirStartUpDelayBlinkLaser() on first iteration: pairAllPins(false);
+- onDisablePirStartUpDelayBlinkLaser() on last iteration: pairAllPins(true);
+Detail: added an additional iteration to SI_PIR_START_UP_DELAY_ITERATIONS (set at 7 now) because when task tPirStartUpDelayBlinkLaser gets disabled, it immediately kills any actions related to itself (including the subtasks tLaserOff and tLaserOff which produce this little blinking at the beginning of the pir startup cycle).
+Note: in tPirStartUpDelayBlinkLaser(), the if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) condition for the sub tasks was kept.
+
  *  TO DO:
  *  HIGH: Line 418: do a few prints to understand if setIterations resets the iteration counter.
- *  HIGH: Combine logic of directPinsSwitch() and LaserSafetyLoop()
- *        Rewrite all the things type thisPin % 2 == 0 with the logic of directPinsSwitch(
  *  HIGH: Rename directPinsSwitch() to give it a more explicit name
  *  HIGH: Add a true laserSafetyLoop that turns lasers off in whichever situations if they have been on for more than 30 seconds
           and prevents them from being turned back on by any process for a corresponding cooling off time
@@ -15,6 +27,7 @@ LASER CONTROLLER
  *  LOW: refactor: use TEMPLATE markers in html code
  *  LOW: refactor: store html code in PROGMEM
  *  LOW: refactor: response to response-> as shown in the ESPAsyncWebServer github page
+ *  LOW: in the web controller, add reading the pairing / unpairing control and connect to pairPin
 */
 
 Link to the libraries: .platformio/lib
