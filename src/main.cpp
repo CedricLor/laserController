@@ -7,7 +7,7 @@
 #define _TASK_PRIORITY
 #define _TASK_STD_FUNCTION
 #define _TASK_STATUS_REQUEST
-#include <TaskScheduler.h>
+//#include <TaskScheduler.h>
 #include <painlessMesh.h>
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
@@ -102,13 +102,13 @@ String createMeshMessage(const char* myStatus);
 // KEY box variables //////////////////////////////////////////////////////////////////////////////////////////////
 const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
 // short iDefaultMasterNodesNames[10] = {201,202};
-const short I_NODE_NAME = 201;                                                                                                // BOX BY BOX
-const short I_DEFAULT_MASTER_NODE_NAME = 210;                                                                                 // BOX BY BOX
+const short I_NODE_NAME = 204;                                                                                                // BOX BY BOX
+const short I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
 
 short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
 const short PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
 
-const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
+const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 1;                                                                     // BOX BY BOX
 
 unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                // BOX BY BOX
 
@@ -179,9 +179,9 @@ const char* slaveReactionHtml[4] = {"opp", "syn", "aon", "aof"};
 // const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool array of the choosen reaction to the master states
-const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
-// HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous: When the master box is on, turn me on AND when the master box is off, turn me off
+const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{LOW, HIGH}, {HIGH, LOW}, {HIGH, HIGH}, {LOW, LOW}};
 // LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed: When the master box is on, turn me off AND when the master box is off, turn me on
+// HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous: When the master box is on, turn me on AND when the master box is off, turn me off
 // HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off: When the master box is on, turn me off AND when the master box is off, turn me off
 // LOW, LOW = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always on: When the master box is on, turn me off AND when the master box is off, turn me off
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1315,7 +1315,7 @@ void delayReceivedCallback(uint32_t from, int32_t delay) {
 }
 
 void meshSetup() {
-  myMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
+  myMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE );
 
   myMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
@@ -1426,8 +1426,16 @@ void broadcastStatusOverMesh(const char* state) {
 String createMeshMessage(const char* myStatus) {
   Serial.printf("MESH: createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
 
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject& msg = jsonBuffer.createObject();
+  #if ARDUINOJSON_VERSION_MAJOR==6
+          DynamicJsonDocument jsonBuffer;
+          JsonObject msg = jsonBuffer.to<JsonObject>();
+  #else
+          DynamicJsonBuffer jsonBuffer;
+          JsonObject& msg = jsonBuffer.createObject();
+  #endif
+
+  //DynamicJsonBuffer jsonBuffer;
+  //JsonObject& msg = jsonBuffer.createObject();
 
   msg["senderNodeName"] = nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
   msg["senderAPIP"] = (box[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
@@ -1435,7 +1443,12 @@ String createMeshMessage(const char* myStatus) {
   msg["senderStatus"] = myStatus;
 
   String str;
-  msg.printTo(str);
+  #if ARDUINOJSON_VERSION_MAJOR==6
+      serializeJson(msg, str);
+  #else
+      msg.printTo(str);
+  #endif
+  //msg.printTo(str);
   Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
   return str;
 }
