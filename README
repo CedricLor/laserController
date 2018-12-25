@@ -32,12 +32,19 @@ Note: in tPirStartUpDelayBlinkLaser(), the if (!(tPirStartUpDelayBlinkLaser.isLa
 
 Link to the libraries: .platformio/lib
 
+
+
+
 Includes the following refactored libraries:
+TaskScheduler: https://github.com/arkhipenko/TaskScheduler/tree/v2.6.1
+painlessMesh: https://gitlab.com/painlessMesh/painlessMesh/tree/v1.2.6
 
 -- TaskScheduler: TaskSchedulerDeclarations.h
 INLINE Task() {};
 - added a default constructor to the Task class
+/* The following step has been undone and the code in main.cpp has been rewritten to match the author version
 - reordered the params in the existing Task constructors -> scheduler has been put first
+*/
 - undefaulted the scheduler param in the existing Task constructors (so that they not be interpreted as conflicting default constructors by the compiler, which triggers the ambiguous constructor call error)
 INLINE Task(Scheduler* aScheduler, unsigned long aInterval=0, long aIterations=0, TaskCallback aCallback=NULL, bool aEnable=false, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
 INLINE Task(Scheduler* aScheduler, TaskCallback aCallback=NULL, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
@@ -58,3 +65,10 @@ line 87: Task          readBufferTask;
 line 88: Task          sentBufferTask;
 - painlessMeshSTA.h (composites of class StationScan)
 line 29: Task task;
+
+If using painlessMesh v. 1.3.0 (it didn't work for me so far), painlessMeshConnection.cpp needs to be modified:
+Replace:
+auto syncInterval = NODE_TIMEOUT/2;
+By:
+auto syncInterval = NODE_TIMEOUT;
+syncInterval = syncInterval / 2;
