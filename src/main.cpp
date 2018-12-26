@@ -8,10 +8,14 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  v.4.10.
-    DONE:
+/*  v.4.11 DONE:
  *  HIGH: some settings are read from non-volatile storage (loadPreferences())
  *  IN COURSE:
+ *  A GERER:
+ *  - what to do if controlling box is not connected
+ *  - check the web stuff which delivers the links to the others boxes
+ *  - implement the scheduler
+ *  - set some priorities between instructions
  *  HIGH: some settings are saved to non-volatile storage (global blinking delay, masternode, slavereaction)
  *  But some of them do not save properly (blinking delay, slavereaction). --> DONE (v. 4.8): TO BE TESTED
  *  HIGH: Removed all udp stuffs --> DONE (v. 4.9): TO BE TESTED
@@ -28,8 +32,8 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // KEY BOX variables /////////////////////////////////////////////////////////////////////////////////////////
-const int I_NODE_NAME = 203;                                                                                                // BOX BY BOX
-const int I_DEFAULT_MASTER_NODE_NAME = 202;                                                                                 // BOX BY BOX
+const int I_NODE_NAME = 202;                                                                                                // BOX BY BOX
+const int I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
 int relayPins[] = {
   22, 21, 19, 18, 5, 17, 16, 4
 };                                    // an array of pin numbers to which relays are attached                                // BOX BY BOX
@@ -65,6 +69,8 @@ char* nodeNameBuilder(const int _I_NODE_NAME, char _nodeNameBuf[4]) {
   return _nodeNameBuf;
 }
 
+IPAddress myAPIP(0, 0, 0, 0);
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NETWORK variables /////////////////////////////////////////////////////////////////////////////////////////
 #define   STATION_SSID     "Livebox-CF01"                                                                                   // NETWORK BY NETWORK
@@ -84,6 +90,7 @@ const int SECOND_BYTE_LOCAL_NETWORK = 1;                                        
 IPAddress MY_STA_IP(192, 168, SECOND_BYTE_LOCAL_NETWORK, I_NODE_NAME); // the desired IP Address for the station          // NETWORK BY NETWORK
 
 struct box_type {
+  uint32_t nodeId;
   IPAddress stationIP;
   IPAddress APIP;
 };
@@ -484,8 +491,7 @@ String returnTheResponse() {
   myResponse += "<body>";
   myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   myResponse += "<h1>";
-  IPAddress stationIP = myMesh.getStationIP();
-  myResponse += stationIP.toString();
+  myResponse += myAPIP.toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -495,19 +501,18 @@ String returnTheResponse() {
   return myResponse;
 }
 String printLinksToBoxes() {
-  String myResponse;
-  myResponse += "<div class=\"box_links_wrapper\">";
-  for (int i = 0; i++; i < 10) {
-    myResponse += "<div class=\"box_link_wrapper\">";
-    myResponse += "<a href=\"http://";
-    myResponse += (box[i].stationIP).toString();
-    myResponse +=  "/\">Box number: ";
-    myResponse += i + 1;
-    myResponse += "</a>";
-    myResponse += "</div>";
+  String linksToBoxes = "<div class=\"box_links_wrapper\">";
+  for (int i = 0; i < 10; i++) {
+    linksToBoxes += "<div class=\"box_link_wrapper\">";
+    linksToBoxes += "<a href=\"http://";
+    linksToBoxes += (box[i].APIP).toString();
+    linksToBoxes +=  "/\">Box number: ";
+    linksToBoxes += i + 1;
+    linksToBoxes += "</a>";
+    linksToBoxes += "</div>";
   }
-  myResponse += "</div>";
-  return myResponse;
+  linksToBoxes += "</div>";
+  return linksToBoxes;
 }
 
 String printAllLasersCntrl() {
@@ -1292,6 +1297,7 @@ void meshSetup() {
   myMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
   //myMesh.stationManual(STATION_SSID, STATION_PASSWORD);
+  //myMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
   myMesh.setHostname(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
   if (MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
@@ -1299,6 +1305,9 @@ void meshSetup() {
     // This and all other mesh should ideally now the mesh contains a root
     myMesh.setContainsRoot(true);
   }
+
+  myAPIP = IPAddress(myMesh.getAPIP().addr);
+  box[iSenderNodeName - BOXES_I_PREFIX].APIP = myAPIP;
 
   myMesh.onReceive(&receivedCallback);
   myMesh.onNewConnection(&newConnectionCallback);
@@ -1331,6 +1340,7 @@ void meshController(uint32_t senderNodeId, String &msg) {
   Serial.printf("    MESH CONTROLLER: meshController(...) storing the IP adresses of the sender in a box struct in the boxes array \n");
   box[iSenderNodeName - BOXES_I_PREFIX].stationIP = parseIpString(root, "senderStationIP");
   box[iSenderNodeName - BOXES_I_PREFIX].APIP = parseIpString(root, "senderAPIP");
+  box[iSenderNodeName - BOXES_I_PREFIX].nodeId = senderNodeId;
   Serial.printf("    MESH CONTROLLER: meshController(...) storing the IP adresses of the sender: done \n");
   Serial.printf("    MESH CONTROLLER: meshController(...). Now testing if iSenderNodeName == iMasterNodeName:\n");
   if (!(iSenderNodeName == iMasterNodeName)) {                 // do not react to broadcast message if message not sent by relevant sender
@@ -1375,13 +1385,12 @@ void broadcastStatusOverMesh(const char* state) {
 
 String createMeshMessage(const char* myStatus) {
   Serial.print("MESH: CreateMeshJsonMessage(const char* myStatus) starting with myStatus = ");Serial.println(myStatus);
-  IPAddress APIP = myMesh.getAPIP();
   IPAddress stationIP = myMesh.getStationIP();
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
   msg["senderNodeName"] = nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
   msg["senderNodeId"] = myMesh.getNodeId();
-  msg["senderAPIP"] = APIP.toString();
+  msg["senderAPIP"] = myAPIP.toString();
   msg["senderStationIP"] = stationIP.toString();
   msg["senderStatus"] = myStatus;
   String str;
