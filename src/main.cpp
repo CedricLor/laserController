@@ -95,6 +95,23 @@ IPAddress parseIpString(JsonObject& root, String rootKey);
 void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName);
 String createMeshMessage(const char* myStatus);
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// KEY box variables //////////////////////////////////////////////////////////////////////////////////////////////
+const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
+// short iDefaultMasterNodesNames[10] = {201,202};
+const short I_NODE_NAME = 201;                                                                                                // BOX BY BOX
+const short I_DEFAULT_MASTER_NODE_NAME = 211;                                                                                 // BOX BY BOX
+
+short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
+const short PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
+
+const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
+
+unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                // BOX BY BOX
+
+
+const bool MESH_ROOT = true;                                                                                                // BOX BY BOX
+
 // FROM PAINLESSMESH BASIC
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
