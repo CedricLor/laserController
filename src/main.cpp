@@ -19,6 +19,82 @@ painlessMesh  mesh;
 
 // User stub
 void serialInit();
+void loadPreferences();
+void initStruct(short thisPin);
+void initStructs();
+void initPir();
+void meshSetup();
+void startAsyncServer();
+void OTAConfig();
+void enableTasks();
+
+void laserSafetyLoop();
+
+void switchPirRelays(const bool state);
+void directPinsSwitch(bool targetState);
+void broadcastPirStatus(const char* state);
+void stopPirCycle();
+void setPirValue();
+void startOrRestartPirCycleIfPirValueIsHigh();
+
+void switchAllRelays(const bool targetState);
+void manualSwitchOneRelay(const short thisPin, const bool targetState);
+void switchOnOffVariables(const short thisPin, const bool targetState);
+
+void pairAllPins(const bool targetPairingState);
+void pairPin(const short thisPin, const bool targetPairingState);
+void rePairPin(const short thisPin, const short thePairedPin);
+
+void inclExclAllRelaysInPir(const bool targetState);
+void inclExclOneRelayInPir(const short thisPin, const bool targetState);
+
+void changeGlobalBlinkingDelay(const unsigned long blinkingDelay);
+void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay);
+void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay);
+
+String printAllLasersCntrl();
+String printIndivLaserCntrls();
+String printLinksToBoxes();
+String printBlinkingDelayWebCntrl(const short thisPin);
+String printMasterCntrl();
+String printLabel(const String labelText, const String labelFor);
+String printMasterSelect();
+String printSlaveReactionSelect();
+String printCurrentStatus(const short thisPin);
+String printOnOffControl(const short thisPin);
+String printPirStatusCntrl(const short thisPin);
+String printPairingCntrl(const short thisPin);
+String printDelaySelect(const short thisPin);
+String printHiddenLaserNumb(const short thisPin);
+
+void savePreferences();
+void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
+void changeTheMasterBoxId(const short masterBoxNumber);
+void changeSlaveReaction(const char* action);
+
+void blinkLaserIfBlinking(const short thisPin);
+void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin);
+void executeUpdates(const short thisPin);
+void blinkLaserIfTimeIsDue(const short thisPin);
+void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(const short thisPin);
+void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget);
+
+void broadcastStatusOverMesh(const char* state);
+
+void startOTA();
+void endOTA();
+void progressOTA();
+void errorOTA();
+
+void onRequest();
+void onBody();
+
+void meshController(uint32_t senderNodeId, String &msg);
+void boxTypeSelfUpdate();
+IPAddress parseIpString(JsonObject& root, String rootKey);
+void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName);
+String createMeshMessage(const char* myStatus);
+
 // FROM PAINLESSMESH BASIC
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
