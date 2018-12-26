@@ -8,8 +8,8 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  DONE:
- *  v.4.13
+/*  v.14.
+    DONE:
  *  TO DO:
  *  HIGH:
  *  HIGH: write a process that updates the structs that stores the IPs of the other boxes, in particular the station ips, on new connection
