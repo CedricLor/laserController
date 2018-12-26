@@ -10,9 +10,11 @@
 #include <painlessMesh.h>
 #include <FS.h>
 #include <ESPAsyncWebServer.h>
-#define _TASK_PRIORITY
-#define _TASK_STD_FUNCTION
+#define _TASK_PRIORITY         // TODO: Check if remove
+#define _TASK_STD_FUNCTION     // TODO: Check if remove
 #define _TASK_STATUS_REQUEST
+#include <IPAddress.h>         // TODO: Check if remove
+#include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
