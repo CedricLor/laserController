@@ -8,15 +8,6 @@
 #include <IPAddress.h>         // TODO: Check if remove
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-// FROM PAINLESSMESH BASIC
-#define   MESH_PREFIX     "whateverYouLike"
-#define   MESH_PASSWORD   "somethingSneaky"
-#define   MESH_PORT       5555
-
-Scheduler userScheduler; // to control your personal task
-painlessMesh  mesh;
-// END FROM PAINLESSMESH BASIC
-
 // User stub
 void serialInit();
 void loadPreferences();
@@ -112,6 +103,25 @@ unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                    
 
 const bool MESH_ROOT = true;                                                                                                // BOX BY BOX
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MESH variables /////////////////////////////////////////////////////////////////////////////////////////////////
+#define   MESH_PREFIX     "laser_boxes"
+#define   MESH_PASSWORD   "somethingSneaky"
+#define   MESH_PORT       5555
+
+painlessMesh myMesh;
+
+char nodeNameBuf[4];
+char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
+  String _sNodeName = String(_I_NODE_NAME);
+  _sNodeName.toCharArray(_nodeNameBuf, 4);
+  return _nodeNameBuf;
+}
+
+// FROM PAINLESSMESH BASIC
+Scheduler userScheduler; // to control your personal task
+// END FROM PAINLESSMESH BASIC
+
 // FROM PAINLESSMESH BASIC
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
@@ -119,8 +129,8 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 void sendMessage() {
   String msg = "Hello from node ";
-  msg += mesh.getNodeId();
-  mesh.sendBroadcast( msg );
+  msg += myMesh.getNodeId();
+  myMesh.sendBroadcast( msg );
   taskSendMessage.setInterval( random( TASK_SECOND * 1, TASK_SECOND * 5 ));
 }
 
@@ -134,11 +144,11 @@ void newConnectionCallback(uint32_t nodeId) {
 }
 
 void changedConnectionCallback() {
-    Serial.printf("Changed connections %s\n",mesh.subConnectionJson().c_str());
+    Serial.printf("Changed connections %s\n",myMesh.subConnectionJson().c_str());
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-    Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+    Serial.printf("Adjusted time %u. Offset = %d\n", myMesh.getNodeTime(),offset);
 }
 // END FROM PAINLESSMESH BASIC
 
@@ -146,15 +156,15 @@ void setup() {
   Serial.begin(115200);
 
   // FROM PAINLESSMESH BASIC
-  //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
-  //mesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
-  //mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
+  //myMesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
+  //myMesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
+  //myMesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
 
-  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
-  mesh.onReceive(&receivedCallback);
-  mesh.onNewConnection(&newConnectionCallback);
-  mesh.onChangedConnections(&changedConnectionCallback);
-  mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  myMesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
+  myMesh.onReceive(&receivedCallback);
+  myMesh.onNewConnection(&newConnectionCallback);
+  myMesh.onChangedConnections(&changedConnectionCallback);
+  myMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
 
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
@@ -164,6 +174,6 @@ void setup() {
 void loop() {
   // FROM PAINLESSMESH BASIC
   userScheduler.execute(); // it will run mesh scheduler as well
-  mesh.update();
+  myMesh.update();
   // END FROM PAINLESSMESH BASIC
 }
