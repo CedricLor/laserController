@@ -9,8 +9,8 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  v.4.7 (stable)
-DONE:
+/*  v.4.8
+    DONE:
  *  HIGH: some settings are read from non-volatile storage (loadPreferences())
  *  IN COURSE:
  *  HIGH: some settings are saved to non-volatile storage (global blinking delay, masternode, slavereaction)
@@ -40,7 +40,7 @@ int const pinCount = 8;               // the number of pins (i.e. the length of 
 
 const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                      // BOX BY BOX
 
-unsigned long const default_pin_blinking_interval = 10000UL;                                                                 // BOX BY BOX
+unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                 // BOX BY BOX
 
 
 bool MESH_ROOT = true;                                                                                                       // BOX BY BOX
@@ -156,7 +156,7 @@ bool const default_pin_on_off_state = HIGH;         // by default, the pin start
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
 // unsigned long const default_pin_blinking_interval = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
-unsigned long pin_blinking_interval = default_pin_blinking_interval;
+unsigned long pinBlinkingInterval = default_pin_blinking_interval;
 int const default_pin_pir_state_value = HIGH;       // by default, the pin is controlled by the PIR
 // intialize the structs as a global variable
 pin_type pin[pinCount];
@@ -688,7 +688,7 @@ String printDelaySelect(const int thisPin) {
       if (delayValue == pin[thisPin].blinking_interval) {
         delaySelect += "selected";
       }
-    } else if (delayValue == pin_blinking_interval) {
+    } else if (delayValue == pinBlinkingInterval) {
       delaySelect += "selected";
     }
     delaySelect += ">";
@@ -791,7 +791,7 @@ void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
   for (int thisPin = 0; thisPin < pinCount; thisPin++) {
     Serial.println("WEB CONTROLLER: Changing pin blinking delay");
     changeTheBlinkingIntervalInTheStruct(thisPin, blinkingDelay);
-    pin_blinking_interval = blinkingDelay;
+    pinBlinkingInterval = blinkingDelay;
     savePreferences();
   }
 }
@@ -843,16 +843,16 @@ void savePreferences() {
   preferences.putUInt("savedSettings", preferences.getUInt("savedSettings", 0) + 1);
 
   Serial.println("PREFERENCES: savePreferences(). Saving iSlaveOnOffReaction to NVS");
-  preferences.putUInt("iSlaveOnOffReaction", iSlaveOnOffReaction);
+  preferences.putUInt("iSlavOnOffReac", iSlaveOnOffReaction);
   Serial.print("PREFERENCES: savePreferences(). iSlaveOnOffReaction saved as: ");Serial.println(iSlaveOnOffReaction);
 
   Serial.println("PREFERENCES: savePreferences(). Saving iMasterNodeName to NVS");
-  preferences.putUInt("iMasterNodeName", iMasterNodeName);
+  preferences.putUInt("iMasterNName", iMasterNodeName);
   Serial.print("PREFERENCES: savePreferences(). iMasterNodeName saved as: ");Serial.println(iMasterNodeName);
 
-  Serial.println("PREFERENCES: savePreferences(). Saving pin_blinking_interval to NVS");
-  preferences.putULong("pinBlinkingInterval", pin_blinking_interval);
-  Serial.print("PREFERENCES: savePreferences(). pin_blinking_interval saved as: ");Serial.println(pin_blinking_interval);
+  Serial.println("PREFERENCES: savePreferences(). Saving pinBlinkingInterval to NVS");
+  preferences.putULong("pinBlinkInt", pinBlinkingInterval);
+  Serial.print("PREFERENCES: savePreferences(). pinBlinkingInterval saved as: ");Serial.println(pinBlinkingInterval);
 
   preferences.end();
   Serial.println("WEB CONTROLLER: savePreferences(): done");
@@ -1133,13 +1133,13 @@ void loadPreferences() {
   preferences.begin("savedSettingsNS", true);        // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
   unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
   if (savedSettings > 0) {
-    Serial.println("SETUP: loadPreferences(). NVS has saved settings. Loading values.");
-    iSlaveOnOffReaction = preferences.getUInt("iSlaveOnOffReaction", I_DEFAULT_SLAVE_ON_OFF_REACTION);
+    Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
+    iSlaveOnOffReaction = preferences.getUInt("iSlavOnOffReac", I_DEFAULT_SLAVE_ON_OFF_REACTION);
     Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
-    iMasterNodeName = preferences.getUInt("iMasterNodeName", iMasterNodeName);
+    iMasterNodeName = preferences.getUInt("iMasterNName", iMasterNodeName);
     Serial.print("SETUP: loadPreferences(). iMasterNodeName set to: ");Serial.println(iMasterNodeName);
-    pin_blinking_interval = preferences.getULong("pinBlinkingInterval", 10000);
-    Serial.print("SETUP: loadPreferences(). pin_blinking_interval set to: ");Serial.println(pin_blinking_interval);
+    pinBlinkingInterval = preferences.getULong("pinBlinkInt", pinBlinkingInterval);
+    Serial.print("SETUP: loadPreferences(). pinBlinkingInterval set to: ");Serial.println(pinBlinkingInterval);
   }
   preferences.end();
   Serial.println("SETUP: loadPreferences(): done");
