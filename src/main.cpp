@@ -4,11 +4,15 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
+#define _TASK_PRIORITY
+#define _TASK_STD_FUNCTION
+#define _TASK_STATUS_REQUEST
+#include <TaskScheduler.h>
 #include <painlessMesh.h>
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  v.14.
+/*  v.4.15
     DONE:
  *  TO DO:
  *  HIGH:
@@ -28,6 +32,72 @@
  * 2752932713, 10.177.49.1 = box 202, master 201
  * 2752577349, 10.255.69.1 = box 204, master 201
  */
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
+void directPinsSwitch(const int targetState);
+void serialInit();
+void loadPreferences();
+void initStruct(int thisPin);
+void initStructs();
+void initPir();
+void meshSetup();
+void startAsyncServer();
+void OTAConfig();
+void enableTasks();
+void pirCntrl();
+void autoSwitchTimer();
+void laserSafetyLoop();
+void switchPirRelays(const uint8_t state);
+void broadcastPirStatus(const char* state);
+void stopPirCycle();
+void setPirValue();
+void startOrRestartPirCycleIfValPirIsHigh();
+void switchOnOffVariables(const int thisPin, const int targetState);
+void switchAllRelays(const int targetState);
+void manualSwitchOneRelay(const int thisPin, const int targetState);
+void inclExclAllRelaysInPir(const int targetState);
+void inclExclOneRelayInPir(const int thisPin, const int targetState);
+void changeGlobalBlinkingDelay(const unsigned long blinkingDelay);
+void changeIndividualBlinkingDelay(const int pinNumberFromGetRequest, const unsigned long blinkingDelay);
+void changeGlobalMasterBoxAndSlaveReaction(const int masterBoxNumber, const char* action);
+String printAllLasersCntrl();
+String printIndivLaserCntrls();
+String printLinksToBoxes();
+String printBlinkingDelayWebCntrl(const int thisPin);
+String printMasterCntrl();
+String printLabel(const String labelText, const String labelFor);
+String printMasterSelect();
+String printSlaveReactionSelect();
+String printCurrentStatus(const int thisPin);
+String printOnOffControl(const int thisPin);
+String printPirStatusCntrl(const int thisPin);
+String printPairingCntrl(const int thisPin);
+String printDelaySelect(const int thisPin);
+String printHiddenLaserNumb(const int thisPin);
+void changeTheBlinkingIntervalInTheStruct(const int thisPin, const unsigned long blinkingDelay);
+void savePreferences();
+void changeTheBlinkingIntervalInTheStruct(const int thisPin, const unsigned long blinkingDelay);
+void changeTheMasterBoxId(const int masterBoxNumber);
+void changeSlaveReaction(const char* action);
+void blinkLaserIfBlinking(const int thisPin);
+void ifPairedUpdateOnOff(const int thisPin);
+void executeUpdates(const int thisPin);
+void blinkLaserIfTimeIsDue(const int thisPin);
+void evalIfIsNotBlinkingAndIsDueToTurnOffToSetUpdate(const int thisPin);
+void updatePairedSlave(const int thisPin, const bool nextPinOnOffTarget);
+void broadcastStatusOverMesh(const char* state);
+void startOTA();
+void endOTA();
+void progressOTA();
+void errorOTA();
+void onRequest();
+void onBody();
+void meshController(uint32_t senderNodeId, String &msg);
+void boxTypeSelfUpdate();
+IPAddress parseIpString(JsonObject& root, String rootKey);
+void autoSwitchAllRelaysMeshWrapper(const char* masterState, const bool reaction, const int iSenderNodeName);
+String createMeshMessage(const char* myStatus);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // KEY BOX variables //////////////////////////////////////////////////////////////////////////////////////////////
 const int BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
@@ -127,7 +197,7 @@ struct pin_type {
   bool on_off_target;// a variable to store the on / off change requests by the various functions
   bool blinking;     // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
   unsigned long previous_time;
-  int blinking_interval;
+  unsigned long blinking_interval;
   int pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
   int paired;        // a variable to store with which other pin is paired (8 means it is not paired)
 };
@@ -217,13 +287,13 @@ void pirStartUpDelayBlinkLaser() {
 }
 
 bool onEnablePirStartUpDelayBlinkLaser() {
-//  stPirStartUpComplete.setWaiting();
+  stPirStartUpComplete.setWaiting();
   return true;
 }
 
 void onDisablePirStartUpDelayBlinkLaser() {
   directPinsSwitch(HIGH);
-//  stPirStartUpComplete.signalComplete();
+  stPirStartUpComplete.signalComplete();
   pirStartedUp = true;
 }
 
@@ -237,11 +307,6 @@ void cbtLaserOff() {
 
 void cbtLaserOn() {
   directPinsSwitch(LOW);
-}
-
-void enableTasks() {
-  tPirStartUpDelayBlinkLaser.enable();
-//  tPirCntrl.waitFor(&stPirStartUpComplete);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,8 +398,14 @@ Task tPirCntrl (0, TASK_FOREVER, &tcbPirCntrl, &userScheduler);
 void tcbPirCntrl() {
 
 }
+
+void enableTasks() {
+  tPirStartUpDelayBlinkLaser.enable();
+  tPirCntrl.waitFor(&stPirStartUpComplete);
+}
+
 void pirCntrl() {
-//  tPirCntrl.waitFor(&stPirStartUpComplete);
+  tPirCntrl.waitFor(&stPirStartUpComplete);
   if (pirStartedUp == true) {
     setPirValue();
     startOrRestartPirCycleIfValPirIsHigh();
@@ -1118,8 +1189,8 @@ void OTAConfig() {
   Serial.println("SETUP: OTAConfig(): starting");
   ArduinoOTA.onStart( startOTA ); //startOTA is a function created to simplificate the code
   ArduinoOTA.onEnd( endOTA ); //endOTA is a function created to simplificate the code
-  ArduinoOTA.onProgress( progressOTA ); //progressOTA is a function created to simplificate the code
-  ArduinoOTA.onError( errorOTA );//errorOTA is a function created to simplificate the code
+  //ArduinoOTA.onProgress( progressOTA ); //progressOTA is a function created to simplificate the code
+  //ArduinoOTA.onError( errorOTA );//errorOTA is a function created to simplificate the code
   ArduinoOTA.begin();
 
   //prints the ip address used by ESP
@@ -1208,8 +1279,8 @@ void startAsyncServer() {
     request->send(response);                                                    // send the response
   });
 
-  asyncServer.onNotFound(onRequest);
-  asyncServer.onRequestBody(onBody);
+  // asyncServer.onNotFound(onRequest);  // error: no matching function for call to 'AsyncWebServer::onNotFound(void (&)())'
+  // asyncServer.onRequestBody(onBody);  // error: no matching function for call to 'AsyncWebServer::onRequestBody(void (&)())'
 
   asyncServer.begin();
 }
