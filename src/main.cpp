@@ -1,11 +1,3 @@
-//************************************************************
-// this is a simple example that uses the painlessMesh library
-//
-// 1. sends a silly message to every node on the mesh at a random time between 1 and 5 seconds
-// 2. prints anything it receives to Serial.print
-//
-//
-//************************************************************
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
 #include <painlessMesh.h>
 #include <FS.h>
@@ -16,14 +8,18 @@
 #include <IPAddress.h>         // TODO: Check if remove
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
+// FROM PAINLESSMESH BASIC
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
+// END FROM PAINLESSMESH BASIC
 
 // User stub
+void serialInit();
+// FROM PAINLESSMESH BASIC
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
@@ -51,10 +47,12 @@ void changedConnectionCallback() {
 void nodeTimeAdjustedCallback(int32_t offset) {
     Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
 }
+// END FROM PAINLESSMESH BASIC
 
 void setup() {
   Serial.begin(115200);
 
+  // FROM PAINLESSMESH BASIC
   //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
   //mesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
   //mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
@@ -67,9 +65,12 @@ void setup() {
 
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
+  // END FROM PAINLESSMESH BASIC
 }
 
 void loop() {
+  // FROM PAINLESSMESH BASIC
   userScheduler.execute(); // it will run mesh scheduler as well
   mesh.update();
+  // END FROM PAINLESSMESH BASIC
 }
