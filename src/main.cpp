@@ -10,6 +10,10 @@
 #include <painlessMesh.h>
 #include <FS.h>
 #include <ESPAsyncWebServer.h>
+#define _TASK_PRIORITY
+#define _TASK_STD_FUNCTION
+#define _TASK_STATUS_REQUEST
+
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
