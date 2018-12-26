@@ -118,6 +118,126 @@ char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
   return _nodeNameBuf;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// NETWORK variables //////////////////////////////////////////////////////////////////////////////////////////////
+//#define   STATION_SSID     "Livebox-CF01"                                                                                   // NETWORK BY NETWORK
+//#define   STATION_PASSWORD "BencNiels!"                                                                                     // NETWORK BY NETWORK
+
+const char PREFIX_AP_SSID[5] = "box_";
+char myApSsidBuf[8];
+char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
+  strcat(_apSsidBuf, PREFIX_AP_SSID);
+  char _nodeName[4];
+  itoa(I_NODE_NAME, _nodeName, 10);
+  strcat(_apSsidBuf, _nodeName);
+  return _apSsidBuf;
+}
+
+//const int SECOND_BYTE_LOCAL_NETWORK = 1;                                                                                    // NETWORK BY NETWORK
+//const IPAddress MY_STA_IP(192, 168, SECOND_BYTE_LOCAL_NETWORK, I_NODE_NAME); // the desired IP Address for the station      // NETWORK BY NETWORK
+
+//const IPAddress MY_AP_IP(10, 0, 0, I_NODE_NAME);
+//const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
+//const IPAddress MY_N_MASK(255, 0, 0, 0);
+
+struct box_type {
+  uint32_t nodeId;
+  IPAddress stationIP;
+  IPAddress APIP;
+};
+// const short BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
+box_type box[BOXES_COUNT];
+
+const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// VARIABLES FOR REACTION TO NETWORK REQUESTS
+///////////////////////////////
+// definition of master node //
+// const short I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
+short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
+const short I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
+///////////////////////////////
+// definition of reactions to master node state
+const char* slaveReaction[4] = {"opposed: on - off & off - on", "synchronous: on - on & off - off", "always on: off - on & on - on", "always off: on - off & off - off"};
+const char* slaveReactionHtml[4] = {"opp", "syn", "aon", "aof"};
+
+// I_DEFAULT_SLAVE_ON_OFF_REACTION
+// I_DEFAULT_SLAVE_ON_OFF_REACTION is: this box is opposed to its master (when the master is on, this box is off)
+// const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
+
+short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool array of the choosen reaction to the master states
+const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
+// HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous: When the master box is on, turn me on AND when the master box is off, turn me off
+// LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed: When the master box is on, turn me off AND when the master box is off, turn me on
+// HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off: When the master box is on, turn me off AND when the master box is off, turn me off
+// LOW, LOW = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always on: When the master box is on, turn me off AND when the master box is off, turn me off
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RELAYS variables /////////////////////////////
+struct pin_type {
+  short number;        // pin number to which the relays are attached
+  bool on_off;       // is the pin HIGH or LOW (LOW = the relay is closed, HIGH = the relay is open)
+  bool on_off_target;// a variable to store the on / off change requests by the various functions
+  bool blinking;     // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
+  unsigned long previous_time;
+  unsigned long blinking_interval;
+  bool pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
+  short paired;        // a variable to store with which other pin this pin is paired (8 means it is not paired)
+};
+
+// short relayPins[] = {
+//   22, 21, 19, 18, 5, 17, 16, 4
+// };                                    // an array of pin numbers to which relays are attached   // See BOX KEY VARIABLES     // BOX BY BOX
+//
+// short const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
+
+bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
+bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
+bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+// unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
+unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
+bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
+// declare and size an array to contain the structs as a global variable
+pin_type pin[PIN_COUNT];
+short pinParityWitness = 0;  // pinParityWitness is a variable that can be used when loop around the pins structs array.
+                             // it avoids using the modulo.
+                             // by switching it to 0 and 1 at each iteration of the loop
+                             // in principle, the switch takes the following footprint: pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+                             // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
+                             // once the loop is over, it should be reset to 0: pinParityWitness = 0;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AutoSwitch variables /////////////////////////////
+short siAutoSwitchInterval = 60;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
+short inputPin = 23;                  // choose the input pin (for PIR sensor)
+                                      // we start assuming no motion detected
+bool valPir = LOW;                    // variable for reading the pin status
+const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
+const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
+
+// after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
+const short SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
+const long L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
+short highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
+                                                              0 = even pins are [high] and odds are [low];
+                                                              1 = odd pins are [low] and evens are [high];
+                                                   */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Web server variables ///////////////////////////////////////////////////////////////////////////////////////////
+AsyncWebServer asyncServer(80);
+char linebuf[80];
+short charcount=0;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // FROM PAINLESSMESH BASIC
 Scheduler userScheduler; // to control your personal task
 // END FROM PAINLESSMESH BASIC
