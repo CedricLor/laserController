@@ -1,6 +1,5 @@
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
 #include <ESPmDNS.h>            //lib to the network communication
-#include <WiFiUdp.h>            //lib to the network communication
 #include <FS.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
@@ -9,16 +8,14 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  v.4.8
+/*  v.4.9
     DONE:
  *  HIGH: some settings are read from non-volatile storage (loadPreferences())
  *  IN COURSE:
  *  HIGH: some settings are saved to non-volatile storage (global blinking delay, masternode, slavereaction)
- *  But some of them do not save properly (blinking delay, slavereaction). They come from the website...
+ *  But some of them do not save properly (blinking delay, slavereaction). --> DONE: TO BE TESTED
+ *  HIGH: Removed all udp stuffs --> DONE: TO BE TESTED
  *  TO DO:
- *  HIGH: make a switch:
- *    either the slave has access to its master in the mesh network and the box listens (and reacts) to mesh messages;
- *    or the slave has no access to its master via the mesh and the box listens (and reacts) to udp messages;
  *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
  *  MIDDLE: pair - unpair proc: pass the unpairing to the slave or this is going to produce unexpected results
  *  LOW: refactor all part where String is still used to replace them with arrays of char*
@@ -91,22 +88,6 @@ IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network    
 IPAddress MY_AP_IP(192, 168, 4, I_NODE_NAME); // the desired IP Address for the access point // BOX BY BOX
 
 
-///////////////////////////////////////////////////////
-// UDP variables (to communicate orders to the other boxes) ///////////////////////////////////////////
-const char * udpAddressOfTarget = "192.168.1.255";  // broadcast address or adress of a specific host                       // NETWORK BY NETWORK
-const int udpPort = 3333;
-
-const int UDP_TX_PACKET_MAX_SIZE = 50;
-char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
-char ReplyBuffer[] = "ok";                  // a string to send back
-
-const int UDP_RX_PACKET_MAX_SIZE = 5;       //
-char udpMessageBuf[UDP_RX_PACKET_MAX_SIZE]; // buffer to hold outgoing packet
-
-boolean connected = false;                  // Are we currently connected?
-
-WiFiUDP udp;                                // The udp library class
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,8 +97,7 @@ int iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
 const int I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Variables for reaction in udpController ///////////////////////////////////////////
-IPAddress masterIp(192, 168, SECOND_BYTE_LOCAL_NETWORK, iMasterNodeName);       // Ip of the box to serve as master to this one in udp communication
+// Variables for reaction to messages ///////////////////////////////////////////
 const char* slaveReaction[4] = {"opposed: on - off & off - on", "synchronous: on - on & off - off", "always on: off - on & on - on", "always off: on - off & off - off"};
 const char* slaveReactionHtml[4] = {"opp", "syn", "aon", "aof"};
 
@@ -155,8 +135,8 @@ struct pin_type {
 bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-// unsigned long const default_pin_blinking_interval = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
-unsigned long pinBlinkingInterval = default_pin_blinking_interval;
+// unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
+unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 int const default_pin_pir_state_value = HIGH;       // by default, the pin is controlled by the PIR
 // intialize the structs as a global variable
 pin_type pin[pinCount];
@@ -220,9 +200,6 @@ void setup() {
   // configure the soft ap
   // softApConfig();
 
-  // connect to the network
-  // networkConfig();
-
   // initializing mesh network
   meshSetup();
 
@@ -241,7 +218,6 @@ void setup() {
 void loop() {
   ArduinoOTA.handle();
   pirCntrl();
-  //++ udpReceiver();          // TO BE MODIFIED FOR MESH --> meshReceiver(); or equivalent in mesh
   userScheduler.execute();   // it will run mesh scheduler as well
   myMesh.update();
   autoSwitchTimer();         // TO ANALYSE: Should probably be before the laser safety loop. Why did I put it after???
@@ -822,16 +798,7 @@ void changeGlobalMasterBoxAndSlaveReaction(const int masterBoxNumber, const char
 
 void changeTheMasterBoxId(const int masterBoxNumber) {
   Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Starting with masterBoxNumber = ");Serial.println(masterBoxNumber);
-  // UDP/IP processing
-  Serial.println("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Starting UDP-IP processing");
-  byte _masterBoxIp[4] = {192, 168, SECOND_BYTE_LOCAL_NETWORK, I_MASTER_NODE_PREFIX + masterBoxNumber};
-  masterIp = _masterBoxIp;                             // allocate the value of local variable masterBoxIp to the public variable masterIp
-  Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): UDP-IP processing done. masterIp changed to ");Serial.println(masterIp);
-
-  // Mesh processing
-  Serial.println("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Starting Mesh processing");
   iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber;
-  Serial.println("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Mesh processing done. masterNodeName changed to ");
   Serial.println("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Done");
 }
 
@@ -980,58 +947,6 @@ void executeUpdates(const int thisPin) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// RECEIVING UDP PACKETS
-void udpReceiver() {
-  Serial.println("UDP RECEIVER: UDPReceiver() starting -_- -_-");
-  int packetSize = udp.parsePacket();
-  if (packetSize) {
-    Serial.print("UDP RECEIVER: UDPReceiver(): received UDP packet of size ");Serial.print(packetSize);Serial.print(" from ");Serial.print(udp.remoteIP());Serial.print(", port ");Serial.println(udp.remotePort());
-    // read the packet into packetBufffer
-    udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    Serial.print("UDP RECEIVER: UDPReceiver(): Content of udp packet: ");Serial.println(packetBuffer);
-
-    udpController(udp.remoteIP(), packetBuffer);
-
-    // send a reply to the IP address and port that sent us the packet we received
-    // udp.beginPacket(udp.remoteIP(), udp.remotePort());
-    // udp.write(ReplyBuffer);
-    // udp.endPacket();
-  }
-}
-
-void udpController(IPAddress udpRemoteIP, char * packetBuffer) {
-  // 1. Serial print something like "192.168.1.202 is on"
-  // 2. React depending on the on or off status of the remote
-  if (!(udpRemoteIP == masterIp)) {                 // do not react to broadcast message if message not sent by relevant sender
-    return;
-  }
-  if (strstr(packetBuffer, "on")  > 0) {            // if packetBuffer contains "on", it means that the master box (the UDP sender) is turned on
-    autoSwitchAllRelaysUdpWrapper("on. ", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0], udpRemoteIP);  //
-                                                                                                  // First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
-                                                                                                  // First index number has already be replaced by the iSlaveOnOffReaction variable, which is set either:
-                                                                                                  // - at startup in the global variables definition;
-                                                                                                  // - via the changeSlaveReaction sub.
-                                                                                                  // Second index number is the reaction to the on state of the master box if 1, to the off state if 2
-  } else {                                          // if packetBuffer contains "off", it means that the master box (the UDP sender) is turned off
-    // Serial.print("off. ");
-    // autoSwitchAllRelaysWrapper("off. ", off_reaction, udpRemoteIP);
-    autoSwitchAllRelaysUdpWrapper("off. ", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1], udpRemoteIP);  //
-                                                                                                  // First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
-                                                                                                  // First index number has already be replaced by the iSlaveOnOffReaction variable, which is set either:
-                                                                                                  // - at startup in the global variables definition;
-                                                                                                  // - via the changeSlaveReaction sub.
-                                                                                                  // Second index number is the reaction to the on state of the master box if 1, to the off state if 2
-  }
-}
-
-void autoSwitchAllRelaysUdpWrapper(const char* masterState, const bool reaction, IPAddress udpRemoteIP) {
-  // print to console a sentence such as "192.168.1.202 is on. Turning myself to on."
-  // then call the autoSwitchAllRelays
-  Serial.println(udpRemoteIP);
-  subAutoSwitchRelaysMsg(masterState, reaction);
-  autoSwitchAllRelays(reaction);
-}
-
 void subAutoSwitchRelaysMsg(const char* masterState, const bool reaction) {
   Serial.print(" is ");                                  // Serial print the word " is "
   Serial.print(masterState);
@@ -1086,19 +1001,6 @@ void broadcastPirStatus(const char* state) {     // state is "on" or "off". When
                                                   // the Pir block calls this function with the "on" parameter. Alternatively,
                                                   //  when the the pir cycle stops, it calls this function with the "off" parameter.
   Serial.print("PIR - broadcastPirStatus(const char* state) starting with state = ");Serial.println(state);
-
-  // UDP broadcast
-  Serial.println("PIR - broadcastPirStatus(): Broadcasting status over UDP");
-  if (connected) {
-    Serial.println("PIR - broadcastPirStatus(): We are connected. Sending UDP packet.");
-    udp.beginPacket(udpAddressOfTarget,udpPort);
-    udp.printf(state);
-    udp.endPacket();
-    Serial.println("PIR - broadcastPirStatus(): UDP packet sent.");
-  } else {
-    Serial.println("PIR - broadcastPirStatus(): Not connected. UDP packet not sent.");
-  }
-
   Serial.print("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = ");Serial.println(state);
   broadcastStatusOverMesh(state);
 
@@ -1205,32 +1107,6 @@ void softApConfig() {
   WiFi.softAP(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
   WiFi.softAPConfig(MY_AP_IP, gateway, subnet);
   Serial.println("SETUP: softApConfig(): done");
-}
-
-void networkConfig() {
-  Serial.println("SETUP: networkConfig(): starting");
-  WiFi.config(MY_STA_IP, gateway, subnet);
-  // WiFi.onEvent(WiFiEvent);                          // Inserted for UDP
-  Serial.println("SETUP: networkConfig(): done");
-}
-
-//wifi event handler
-void WiFiEvent(WiFiEvent_t event){
-  switch(event) {
-    case SYSTEM_EVENT_STA_GOT_IP:
-        //When connected set
-        Serial.print("SETUP: WifiEvent(WiFiEvent_t event): WiFi connected! IP address: ");
-        Serial.println(WiFi.localIP());
-        //initializes the UDP state
-        //This initializes the transfer buffer
-        udp.begin(WiFi.localIP(),udpPort);
-        connected = true;
-        break;
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-        Serial.println("WiFi lost connection");
-        connected = false;
-        break;
-  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
