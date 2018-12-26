@@ -9,12 +9,14 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  DONE:
+/* v.4.6
+    DONE:
  *  HIGH: some settings are read from non-volatile storage (loadPreferences())
  *  IN COURSE:
  *  HIGH: some settings are saved to non-volatile storage (global blinking delay, masternode, slavereaction)
+ *  But some of them do not save properly (blinking delay, slavereaction). They come from the website...
  *  TO DO:
- *  HIGH: make a switch: 
+ *  HIGH: make a switch:
  *    either the slave has access to its master in the mesh network and the box listens (and reacts) to mesh messages;
  *    or the slave has no access to its master via the mesh and the box listens (and reacts) to udp messages;
  *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
@@ -36,7 +38,12 @@ int relayPins[] = {
 
 int const pinCount = 8;               // the number of pins (i.e. the length of the array)                                   // BOX BY BOX
 
-const int defaultSlaveOnOffReaction = 0;                                                                                     // BOX BY BOX
+const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 1;                                                                      // BOX BY BOX
+
+unsigned long const default_pin_blinking_interval = 10000UL;                                                                 // BOX BY BOX
+
+
+bool MESH_ROOT = true;                                                                                                       // BOX BY BOX
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +111,7 @@ WiFiUDP udp;                                // The udp library class
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Variables for reaction in meshController ///////////////////////////////////////////
-// const int I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX                        
+// const int I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
 int iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
 const int I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
 //////////////////////////////////////////////////////////////////////////////////////
@@ -114,12 +121,12 @@ IPAddress masterIp(192, 168, SECOND_BYTE_LOCAL_NETWORK, iMasterNodeName);       
 const char* slaveReaction[4] = {"opposed: on - off & off - on", "synchronous: on - on & off - off", "always on: off - on & on - on", "always off: on - off & off - off"};
 const char* slaveReactionHtml[4] = {"opp", "syn", "aon", "aof"};
 
-// defaultSlaveOnOffReaction 
-// defaultSlaveOnOffReaction is: this box is opposed to its master (when the master is on, this box is off)
-// const int defaultSlaveOnOffReaction = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
+// I_DEFAULT_SLAVE_ON_OFF_REACTION
+// I_DEFAULT_SLAVE_ON_OFF_REACTION is: this box is opposed to its master (when the master is on, this box is off)
+// const int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
 
-int slaveOnOffReaction = defaultSlaveOnOffReaction;       // saves the index in the slaveOnOffReactions bool char of the choosen reaction to the master states
-const bool slaveOnOffReactions[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
+unsigned int iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_A_SLAVE_ON_OFF_REACTIONS bool char of the choosen reaction to the master states
+const bool B_A_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 // HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous: When the master box is on, turn me on AND when the master box is off, turn me off
 // LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed: When the master box is on, turn me off AND when the master box is off, turn me on
 // HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off: When the master box is on, turn me off AND when the master box is off, turn me off
@@ -148,8 +155,8 @@ struct pin_type {
 bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-long const default_pin_blinking_interval = 10000;   // default blinking interval of the pin is 10 s
-long pin_blinking_interval = default_pin_blinking_interval;
+// unsigned long const default_pin_blinking_interval = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
+unsigned long pin_blinking_interval = default_pin_blinking_interval;
 int const default_pin_pir_state_value = HIGH;       // by default, the pin is controlled by the PIR
 // intialize the structs as a global variable
 pin_type pin[pinCount];
@@ -203,7 +210,7 @@ void setup() {
   //Serial.print("SETUP: buf");Serial.println(buf);
   // read saved settings from non volatil storage and change the variables to match the saved settings
   loadPreferences();
-  
+
   // initialize the structs representing the relay pins as output:
   initStructs();
 
@@ -213,11 +220,11 @@ void setup() {
   // configure the soft ap
   // softApConfig();
 
-  // initializing mesh network
-  meshSetup();
-
   // connect to the network
   // networkConfig();
+
+  // initializing mesh network
+  meshSetup();
 
   // start the AsyncWebServer
   startAsyncServer();
@@ -414,7 +421,7 @@ void webSwitchRelays(AsyncWebParameter* _p2, bool targetState) {
     switchAllRelays(targetState);
   } else {
     manualSwitchOneRelay(_p2->value().toInt(), targetState);
-  }      
+  }
 }
 
 void webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState) {
@@ -422,7 +429,7 @@ void webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState) {
     inclExclAllRelaysInPir(targetState);
   } else {
     inclExclOneRelayInPir(_p2->value().toInt(), targetState);
-  }      
+  }
 }
 
 
@@ -532,7 +539,7 @@ String printMasterSelect() {
       selected += "selected";
     };
     if (!(i + I_MASTER_NODE_PREFIX == I_NODE_NAME)) {
-      masterSelect += printOption(String(i), String(i), selected);      
+      masterSelect += printOption(String(i), String(i), selected);
     }
   }
   masterSelect += "</select>";
@@ -543,7 +550,7 @@ String printSlaveReactionSelect() {
   String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
   for (int i = 0; i < 4; i++) {
     String selected = "";
-    if (i == slaveOnOffReaction) {
+    if (i == iSlaveOnOffReaction) {
       selected += "selected";
      };
     slaveReactionSelect += printOption(slaveReactionHtml[i], slaveReaction[i], selected);
@@ -673,7 +680,7 @@ String printPairingCntrl(const int thisPin) {
 String printDelaySelect(const int thisPin) {
   String delaySelect;
   delaySelect += "<select name=\"blinkingDelay\">";
-  for (int delayValue = 5000; delayValue < 35000; delayValue = delayValue + 5000) {
+  for (unsigned long delayValue = 5000; delayValue < 35000; delayValue = delayValue + 5000) {
     delaySelect += "<option value=\"";
     delaySelect += delayValue;
     delaySelect += "\"";
@@ -784,6 +791,7 @@ void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
   for (int thisPin = 0; thisPin < pinCount; thisPin++) {
     Serial.println("WEB CONTROLLER: Changing pin blinking delay");
     changeTheBlinkingIntervalInTheStruct(thisPin, blinkingDelay);
+    pin_blinking_interval = blinkingDelay;
     savePreferences();
   }
 }
@@ -819,7 +827,7 @@ void changeTheMasterBoxId(const int masterBoxNumber) {
   byte _masterBoxIp[4] = {192, 168, SECOND_BYTE_LOCAL_NETWORK, I_MASTER_NODE_PREFIX + masterBoxNumber};
   masterIp = _masterBoxIp;                             // allocate the value of local variable masterBoxIp to the public variable masterIp
   Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): UDP-IP processing done. masterIp changed to ");Serial.println(masterIp);
-  
+
   // Mesh processing
   Serial.println("WEB CONTROLLER: changeTheMasterBoxId(const int masterBoxNumber): Starting Mesh processing");
   iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber;
@@ -828,26 +836,26 @@ void changeTheMasterBoxId(const int masterBoxNumber) {
 }
 
 void savePreferences() {
-  Serial.println("WEB CONTROLLER: savePreferences(): starting");
+  Serial.println("PREFERENCES: savePreferences(): starting");
   Preferences preferences;
   preferences.begin("savedSettingsNS", false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
-  
-  preferences.putUInt("savedSettings", preferences.getUInt("savedSettings", 0) + 1);
-  
-  Serial.println("WEB CONTROLLER: savePreferences(). Saving slaveOnOffReaction to NVS");
-  preferences.putInt("slaveOnOffReaction", slaveOnOffReaction);
-  Serial.print("WEB CONTROLLER: savePreferences(). slaveOnOffReaction saved as: ");Serial.println(slaveOnOffReaction);
 
-  Serial.println("WEB CONTROLLER: savePreferences(). Saving iMasterNodeName to NVS");
-  preferences.putInt("slaveOnOffReaction", iMasterNodeName);
-  Serial.print("WEB CONTROLLER: savePreferences(). iMasterNodeName saved as: ");Serial.println(iMasterNodeName);
-  
-  Serial.println("WEB CONTROLLER: savePreferences(). Saving pin_blinking_interval to NVS");
+  preferences.putUInt("savedSettings", preferences.getUInt("savedSettings", 0) + 1);
+
+  Serial.println("PREFERENCES: savePreferences(). Saving iSlaveOnOffReaction to NVS");
+  preferences.putUInt("iSlaveOnOffReaction", iSlaveOnOffReaction);
+  Serial.print("PREFERENCES: savePreferences(). iSlaveOnOffReaction saved as: ");Serial.println(iSlaveOnOffReaction);
+
+  Serial.println("PREFERENCES: savePreferences(). Saving iMasterNodeName to NVS");
+  preferences.putUInt("iMasterNodeName", iMasterNodeName);
+  Serial.print("PREFERENCES: savePreferences(). iMasterNodeName saved as: ");Serial.println(iMasterNodeName);
+
+  Serial.println("PREFERENCES: savePreferences(). Saving pin_blinking_interval to NVS");
   preferences.putULong("pinBlinkingInterval", pin_blinking_interval);
-  Serial.print("WEB CONTROLLER: savePreferences(). pin_blinking_interval saved as: ");Serial.println(pin_blinking_interval);
-  
+  Serial.print("PREFERENCES: savePreferences(). pin_blinking_interval saved as: ");Serial.println(pin_blinking_interval);
+
   preferences.end();
-  Serial.println("WEB CONTROLLER: savePreferences(): done");  
+  Serial.println("WEB CONTROLLER: savePreferences(): done");
 }
 
 void changeSlaveReaction(const char* action) {
@@ -856,8 +864,9 @@ void changeSlaveReaction(const char* action) {
   for (i=0; i < 4; i++) {
     Serial.println("WEB CONTROLLER: changeSlaveReaction(): looping over the slaveReactionHtml[] array");
     if (strcmp(slaveReactionHtml[i], action) > 0) {
-      Serial.println("WEB CONTROLLER: changeSlaveReaction(): saving slaveOnOffReaction");
-      slaveOnOffReaction = i;
+      Serial.println("WEB CONTROLLER: changeSlaveReaction(): saving iSlaveOnOffReaction");
+      unsigned int t = i;
+      iSlaveOnOffReaction = t;
       break; // break for
     }
   }
@@ -958,8 +967,8 @@ void updatePairedSlave(const int thisPin, const bool nextPinOnOffTarget) {
 }
 
 void executeUpdates(const int thisPin) {
-  if (pin[thisPin].on_off != pin[thisPin].on_off_target) {         // check whether the target on_off state is different than the current on_off state 
-                                                                   // TO ANALYSE: I have the feeling that the condition to be tested shall be different 
+  if (pin[thisPin].on_off != pin[thisPin].on_off_target) {         // check whether the target on_off state is different than the current on_off state
+                                                                   // TO ANALYSE: I have the feeling that the condition to be tested shall be different
                                                                    // in the case a) a laser is in a blinking mode and in the case b) a laser is not in
                                                                    // a blinking mode and cooling off
     digitalWrite(pin[thisPin].number, pin[thisPin].on_off_target); // if so, turn on or off the laser as requested in the target_state
@@ -997,18 +1006,18 @@ void udpController(IPAddress udpRemoteIP, char * packetBuffer) {
     return;
   }
   if (strstr(packetBuffer, "on")  > 0) {            // if packetBuffer contains "on", it means that the master box (the UDP sender) is turned on
-    autoSwitchAllRelaysUdpWrapper("on. ", slaveOnOffReactions[slaveOnOffReaction][0], udpRemoteIP);  // 
+    autoSwitchAllRelaysUdpWrapper("on. ", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0], udpRemoteIP);  //
                                                                                                   // First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
-                                                                                                  // First index number has already be replaced by the slaveOnOffReaction variable, which is set either:
+                                                                                                  // First index number has already be replaced by the iSlaveOnOffReaction variable, which is set either:
                                                                                                   // - at startup in the global variables definition;
                                                                                                   // - via the changeSlaveReaction sub.
                                                                                                   // Second index number is the reaction to the on state of the master box if 1, to the off state if 2
   } else {                                          // if packetBuffer contains "off", it means that the master box (the UDP sender) is turned off
     // Serial.print("off. ");
     // autoSwitchAllRelaysWrapper("off. ", off_reaction, udpRemoteIP);
-    autoSwitchAllRelaysUdpWrapper("off. ", slaveOnOffReactions[slaveOnOffReaction][1], udpRemoteIP);  // 
+    autoSwitchAllRelaysUdpWrapper("off. ", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1], udpRemoteIP);  //
                                                                                                   // First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
-                                                                                                  // First index number has already be replaced by the slaveOnOffReaction variable, which is set either:
+                                                                                                  // First index number has already be replaced by the iSlaveOnOffReaction variable, which is set either:
                                                                                                   // - at startup in the global variables definition;
                                                                                                   // - via the changeSlaveReaction sub.
                                                                                                   // Second index number is the reaction to the on state of the master box if 1, to the off state if 2
@@ -1027,7 +1036,7 @@ void subAutoSwitchRelaysMsg(const char* masterState, const bool reaction) {
   Serial.print(" is ");                                  // Serial print the word " is "
   Serial.print(masterState);
   Serial.print("Turning myself to ");
-  Serial.println(reaction == LOW ? "on." : "off.");  
+  Serial.println(reaction == LOW ? "on." : "off.");
 }
 
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
@@ -1044,13 +1053,13 @@ void autoSwitchTimer() {
   if (autoSwitchCycle == false) {                                     // Do not execute the autoSwitchTimer if no autoSwitchCycle has started
     return;
   }
-  Serial.println("Auto switch is on (I am the slave of another box). Checking the autoSwitch timer.");
+  // Serial.println("      SLAVE MODE: autoSwitchTimer(): Auto switch is on (I am the slave of another box). Checking the autoSwitch timer.");
   long currentTime = millis();
   if (currentTime - auto_switch_start_time > auto_switch_interval) {  // if the autoSwitch time interval has elapsed
-    Serial.println("Auto Switch Timer has expired. I am released of my slavery.");
+    Serial.println("      SLAVE MODE: autoSwitchTimer(): Auto Switch Timer has expired. I am released of my slavery.");
     autoSwitchCycle = false;                                          // Mark that the autoSwitch cycle has started. Necessary to deactivate other functions.
     inclExclAllRelaysInPir(HIGH);                                     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
-    Serial.println("-------- Auto Switch cycle ended............ --------");
+    Serial.println("      SLAVE MODE: autoSwitchTimer(): -------- Auto Switch cycle ended............ --------");
   }
 }
 // Function checked dans une situation où autoSwitchCycle == false.
@@ -1089,10 +1098,10 @@ void broadcastPirStatus(const char* state) {     // state is "on" or "off". When
   } else {
     Serial.println("PIR - broadcastPirStatus(): Not connected. UDP packet not sent.");
   }
-  
+
   Serial.print("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = ");Serial.println(state);
   broadcastStatusOverMesh(state);
-  
+
   Serial.println("PIR - broadcastPirStatus(): ending.");
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1125,15 +1134,15 @@ void loadPreferences() {
   unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
   if (savedSettings > 0) {
     Serial.println("SETUP: loadPreferences(). NVS has saved settings. Loading values.");
-    slaveOnOffReaction = preferences.getInt("slaveOnOffReaction", 0);
-    Serial.print("SETUP: loadPreferences(). slaveOnOffReaction set to: ");Serial.println(slaveOnOffReaction);
-    iMasterNodeName = preferences.getInt("iMasterNodeName", iMasterNodeName);
+    iSlaveOnOffReaction = preferences.getUInt("iSlaveOnOffReaction", I_DEFAULT_SLAVE_ON_OFF_REACTION);
+    Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
+    iMasterNodeName = preferences.getUInt("iMasterNodeName", iMasterNodeName);
     Serial.print("SETUP: loadPreferences(). iMasterNodeName set to: ");Serial.println(iMasterNodeName);
     pin_blinking_interval = preferences.getULong("pinBlinkingInterval", 10000);
     Serial.print("SETUP: loadPreferences(). pin_blinking_interval set to: ");Serial.println(pin_blinking_interval);
   }
   preferences.end();
-  Serial.println("SETUP: loadPreferences(): done");  
+  Serial.println("SETUP: loadPreferences(): done");
 }
 
 void initStructs() {
@@ -1185,7 +1194,7 @@ void initStruct(int thisPin) {
 void initPir() {
   Serial.println("SETUP: initPir(): starting");
   pinMode(inputPin, INPUT);                  // declare sensor as input
-  pirStartUpTime = millis();    
+  pirStartUpTime = millis();
   Serial.println("SETUP: initPir(): done");
 }
 
@@ -1194,14 +1203,14 @@ void softApConfig() {
   // esp_wifi_set_protocol(WIFI_IF_AP, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N|WIFI_PROTOCOL_LR);
   // Set the AP name
   WiFi.softAP(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
-  WiFi.softAPConfig(MY_AP_IP, gateway, subnet);    
+  WiFi.softAPConfig(MY_AP_IP, gateway, subnet);
   Serial.println("SETUP: softApConfig(): done");
 }
 
 void networkConfig() {
   Serial.println("SETUP: networkConfig(): starting");
   WiFi.config(MY_STA_IP, gateway, subnet);
-  WiFi.onEvent(WiFiEvent);                          // Inserted for UDP
+  // WiFi.onEvent(WiFiEvent);                          // Inserted for UDP
   Serial.println("SETUP: networkConfig(): done");
 }
 
@@ -1365,10 +1374,9 @@ void sendMessage() {
   // taskSendMessage.setInterval(TASK_SECOND * 1);
 }
 
-// Needed for painless library                                                
+// Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
-  Serial.println("-----------------xxxxxxxxx----------------");
-  Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
+  Serial.printf("   MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   meshController(from, msg);
 }
 
@@ -1395,19 +1403,20 @@ void meshSetup() {
 
   myMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
-  // TEST: REMOVING ROOT
   //myMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   myMesh.setHostname(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
-  // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
-  // myMesh.setRoot(true);
-  // This and all other mesh should ideally now the mesh contains a root
-  // myMesh.setContainsRoot(true);
+  if (MESH_ROOT == true) {
+    // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
+    myMesh.setRoot(true);
+    // This and all other mesh should ideally now the mesh contains a root
+    myMesh.setContainsRoot(true);
+  }
 
   myMesh.onReceive(&receivedCallback);
-  //myMesh.onNewConnection(&newConnectionCallback);
-  //myMesh.onChangedConnections(&changedConnectionCallback);
-  //myMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  //myMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
+  myMesh.onNewConnection(&newConnectionCallback);
+  myMesh.onChangedConnections(&changedConnectionCallback);
+  myMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  myMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
 
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
@@ -1416,41 +1425,53 @@ void meshSetup() {
 void meshController(uint32_t senderNodeId, String &msg) {
   // 1. Serial print something like "192.168.1.202 is on"
   // 2. React depending on the on or off status of the remote
-  
+
+  Serial.printf("    MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(msg.c_str());
   const int iSenderNodeName = atoi(root["senderNodeName"]);
+  Serial.printf("    MESH CONTROLLER: meshController(...) %u alloted to root[\"senderNodeName\"] \n", iSenderNodeName);
   const char* senderStatus = root["senderStatus"];
-  if (iSenderNodeName == iMasterNodeName) {                 // do not react to broadcast message if message not sent by relevant sender
+  Serial.printf("    MESH CONTROLLER: meshController(...) %s alloted to root[\"senderStatus\"] \n", senderStatus);
+  Serial.printf("    MESH CONTROLLER: meshController(...). Now testing if iSenderNodeName == iMasterNodeName:\n");
+  if (!(iSenderNodeName == iMasterNodeName)) {                 // do not react to broadcast message if message not sent by relevant sender
+    Serial.printf("    MESH CONTROLLER: meshController(...). %u is not equal to %u", iSenderNodeName, iMasterNodeName);
     return;
   }
+  Serial.printf("    MESH CONTROLLER: meshController(...). %u == %u\n", iSenderNodeName, iMasterNodeName);
+  Serial.printf("    MESH CONTROLLER: meshController(...). Now testing if senderStatus == on or of:\n");
   if (strstr(senderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
-    autoSwitchAllRelaysMeshWrapper("on. ", slaveOnOffReactions[slaveOnOffReaction][1], iSenderNodeName);  // index numbers in array slaveOnOffReactions[]:
+    Serial.printf("    MESH CONTROLLER: meshController(...). %s == \"on\"\n", senderStatus, iMasterNodeName);
+    Serial.printf("    MESH CONTROLLER: meshController(...). now calling autoSwitchAllRelaysMeshWrapper with params: \"on .\", %b and %u\n", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0], iSenderNodeName);
+    autoSwitchAllRelaysMeshWrapper("on. ", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0], iSenderNodeName);  // index numbers in array B_A_SLAVE_ON_OFF_REACTIONS[]:
                                                                                                   // First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
-                                                                                                  // First index number has already been replaced by the slaveOnOffReaction variable, which is set either:
+                                                                                                  // First index number has already been replaced by the iSlaveOnOffReaction variable, which is set either:
                                                                                                   // - at startup in the global variables definition;
                                                                                                   // - via the changeSlaveReaction sub.
                                                                                                   // Second index number is the reaction to the on state of the master box if 1, to the off state if 2
   } else {                                                            // if senderStatus does not contain "on", it means that the master box (the mesh sender) is turned off.
-    autoSwitchAllRelaysMeshWrapper("off. ", slaveOnOffReactions[slaveOnOffReaction][2], iSenderNodeName);
+    Serial.printf("    MESH CONTROLLER: meshController(...). %s == \"of\"\n", senderStatus, iMasterNodeName);
+    Serial.printf("    MESH CONTROLLER: meshController(...). now calling autoSwitchAllRelaysMeshWrapper with params: \"of .\", %b and %u\n", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1], iSenderNodeName);
+    autoSwitchAllRelaysMeshWrapper("off. ", B_A_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1], iSenderNodeName);
   }
 }
 
 void autoSwitchAllRelaysMeshWrapper(const char* masterState, const bool reaction, const int iSenderNodeName) {
   // print to console a sentence such as "192.168.1.202 is on. Turning myself to on"
   // then call the autoSwitchAllRelays
-  Serial.println("MESH: autoSwitchAllRelaysMeshWrapper(masterState, reaction, iSenderNodeName) starting");
-  Serial.print("MESH: autoSwitchAllRelaysMeshWrapper(). iSenderNodeName = ");Serial.println(iSenderNodeName);    // Serial print the remote adress
+  Serial.println("    MESH: autoSwitchAllRelaysMeshWrapper(masterState, reaction, iSenderNodeName) starting");
+  Serial.print("    MESH: autoSwitchAllRelaysMeshWrapper(). iSenderNodeName = ");Serial.println(iSenderNodeName);    // Serial print the remote adress
+  Serial.printf("    MESH: autoSwitchAllRelaysMeshWrapper().Box %u", iSenderNodeName);
   subAutoSwitchRelaysMsg(masterState, reaction);
   autoSwitchAllRelays(reaction);
-  Serial.println("MESH: autoSwitchAllRelaysMeshWrapper(): done");
+  Serial.println("    MESH: autoSwitchAllRelaysMeshWrapper(): done");
 }
 
 void broadcastStatusOverMesh(const char* state) {
   Serial.print("MESH: broadcastStatusOverMesh(const char* state): starting with state = ");Serial.println(state);
   String str = createMeshMessage(state);
   Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
-  myMesh.sendBroadcast(str);   // MESH SENDER  
+  myMesh.sendBroadcast(str);   // MESH SENDER
 }
 
 String createMeshMessage(const char* myStatus) {
