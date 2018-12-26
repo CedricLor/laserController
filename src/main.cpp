@@ -6,7 +6,8 @@
 //
 //
 //************************************************************
-#include "painlessMesh.h"
+#include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
+#include <painlessMesh.h>
 
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
@@ -48,6 +49,7 @@ void setup() {
   Serial.begin(115200);
 
   mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
+  mesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
   //mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
 
   mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
