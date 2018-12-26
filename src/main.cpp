@@ -8,7 +8,8 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/*  v.4.11 DONE:
+/*  v.4.12
+    DONE:
  *  HIGH: some settings are read from non-volatile storage (loadPreferences())
  *  IN COURSE:
  *  A GERER:
@@ -30,22 +31,30 @@
  *  LOW: refactor: response to response-> as shown in the ESPAsyncWebServer github page
 */
 
+/*
+ * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
+ * 2752932713, 10.177.49.1 = box 202, master 201
+ * 2752577349, 10.255.69.1 = box 204, master 201
+ */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // KEY BOX variables /////////////////////////////////////////////////////////////////////////////////////////
-const int I_NODE_NAME = 202;                                                                                                // BOX BY BOX
+const int BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
+// int iDefaultMasterNodesNames[10] = {201,202};
+const int I_NODE_NAME = 204;                                                                                                // BOX BY BOX
 const int I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
-int relayPins[] = {
-  22, 21, 19, 18, 5, 17, 16, 4
-};                                    // an array of pin numbers to which relays are attached                                // BOX BY BOX
+/*
+int relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };   // an array of pin numbers to which relays are attached               // BOX BY BOX
+const int PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
+*/
+int relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
+const int PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
 
-int const pinCount = 8;               // the number of pins (i.e. the length of the array)                                   // BOX BY BOX
+const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
 
-const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                      // BOX BY BOX
-
-unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                 // BOX BY BOX
+unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                // BOX BY BOX
 
 
-bool MESH_ROOT = true;                                                                                                       // BOX BY BOX
+const bool MESH_ROOT = true;                                                                                                // BOX BY BOX
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,8 +78,6 @@ char* nodeNameBuilder(const int _I_NODE_NAME, char _nodeNameBuf[4]) {
   return _nodeNameBuf;
 }
 
-IPAddress myAPIP(0, 0, 0, 0);
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NETWORK variables /////////////////////////////////////////////////////////////////////////////////////////
 #define   STATION_SSID     "Livebox-CF01"                                                                                   // NETWORK BY NETWORK
@@ -86,15 +93,19 @@ char* apSsidBuilder(const int _I_NODE_NAME, char _apSsidBuf[8]) {
   return _apSsidBuf;
 }
 
-const int SECOND_BYTE_LOCAL_NETWORK = 1;                                                                                  // NETWORK BY NETWORK
-IPAddress MY_STA_IP(192, 168, SECOND_BYTE_LOCAL_NETWORK, I_NODE_NAME); // the desired IP Address for the station          // NETWORK BY NETWORK
+const int SECOND_BYTE_LOCAL_NETWORK = 1;                                                                                    // NETWORK BY NETWORK
+const IPAddress MY_STA_IP(192, 168, SECOND_BYTE_LOCAL_NETWORK, I_NODE_NAME); // the desired IP Address for the station      // NETWORK BY NETWORK
+
+const IPAddress MY_AP_IP(10, 0, 0, I_NODE_NAME);
+const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
+const IPAddress MY_N_MASK(255, 0, 0, 0);
 
 struct box_type {
   uint32_t nodeId;
   IPAddress stationIP;
   IPAddress APIP;
 };
-const int BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
+// const int BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
 box_type box[BOXES_COUNT];
 
 const int BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
@@ -102,7 +113,7 @@ const int BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Variables for reaction in meshController ///////////////////////////////////////////
+// Variables for reaction in .ler ///////////////////////////////////////////
 // const int I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
 int iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
 const int I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
@@ -141,7 +152,7 @@ struct pin_type {
 //   22, 21, 19, 18, 5, 17, 16, 4
 // };                                    // an array of pin numbers to which relays are attached   // See BOX KEY VARIABLES     // BOX BY BOX
 //
-// int const pinCount = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
+// int const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
 
 bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
@@ -150,7 +161,7 @@ bool const default_pin_blinking_state = false;       // by default, pin starts a
 unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 int const default_pin_pir_state_value = HIGH;       // by default, the pin is controlled by the PIR
 // declare and size an array to contain the structs as a global variable
-pin_type pin[pinCount];
+pin_type pin[PIN_COUNT];
 //////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////
@@ -180,10 +191,13 @@ const unsigned long ONE_TICK = 1000UL;
 const unsigned long OFF_TICKING_INTERVAL = ONE_TICK * 10;
 const unsigned long BASE_TICKING_INTERVAL = ONE_TICK;
 const unsigned long ON_TICKING_INTERVAL = ONE_TICK;
-unsigned long last_pir_start_up_base_tick = 0UL;
-unsigned long last_pir_start_up_off_tick = 0UL;
-unsigned long last_pir_start_up_on_tick = 0UL;
-unsigned int oddOrEvenPinsCurrentlyHighDuringStartUp = 0;
+unsigned long lastPirStartUpBaseTick = 0UL;
+unsigned long lastPirStartUpOffTick = 0UL;
+unsigned long lastPirStartUpOnTick = 0UL;
+unsigned int highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
+                                                              0 = even pins are [high] and odds are [low];
+                                                              1 = odd pins are [low] and evens are [high];
+                                                          */
 //////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////
@@ -193,6 +207,22 @@ char linebuf[80];
 int charcount=0;
 //////////////////////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAIN SUBS - SETUP AND LOOP
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 void setup() {
   delay(2000);
@@ -233,7 +263,7 @@ void loop() {
   laserSafetyLoop();
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,14 +312,14 @@ void pirStartupTimer() {
   } else {                                                                     // else, this is the case where the pir startup timer has elapsed
     directPinsSwitch(HIGH);                                                    // turn all the lasers off
     pirStartedUp = true;                                                       // turn the pirStartedUpVariable to true
-    last_pir_start_up_base_tick = 0UL;                                         // reset the last_pir_start_up ticks variable to 0UL (freeing memory)
-    last_pir_start_up_off_tick = 0UL;
-    last_pir_start_up_on_tick = 0UL;
+    lastPirStartUpBaseTick = 0UL;                                         // reset the last_pir_start_up ticks variable to 0UL (freeing memory)
+    lastPirStartUpOffTick = 0UL;
+    lastPirStartUpOnTick = 0UL;
   }
 }
 
 void tellHumanUser(const unsigned long pirStartUpTimerCurrentTime) {
-  unsigned long timeSinceLastOffTicking = pirStartUpTimerCurrentTime - last_pir_start_up_off_tick;
+  unsigned long timeSinceLastOffTicking = pirStartUpTimerCurrentTime - lastPirStartUpOffTick;
   if (timeSinceLastOffTicking >= 50UL) {  // every 0.5 seconds after a 10 second interval
     if (timeSinceLastOffTicking >= 100UL) {  // every second after a 10 second interval
       directPinsSwitch(LOW);
@@ -297,17 +327,17 @@ void tellHumanUser(const unsigned long pirStartUpTimerCurrentTime) {
       directPinsSwitch(HIGH);
     }
   }
-  if ((pirStartUpTimerCurrentTime - last_pir_start_up_base_tick) >= BASE_TICKING_INTERVAL) {     // every second
+  if ((pirStartUpTimerCurrentTime - lastPirStartUpBaseTick) >= BASE_TICKING_INTERVAL) {     // every second
     Serial.print("-");                                                    // print a "-" to the console
-    last_pir_start_up_base_tick += BASE_TICKING_INTERVAL;                 // increment the ticking counter by one tick (one second)
-    if ((pirStartUpTimerCurrentTime - last_pir_start_up_off_tick) >= OFF_TICKING_INTERVAL) {  // every 10 seconds
-      last_pir_start_up_off_tick += OFF_TICKING_INTERVAL;                 // increment the ticking counter by the OFF_TICKING_INTERVAL tick (one second)
+    lastPirStartUpBaseTick += BASE_TICKING_INTERVAL;                 // increment the ticking counter by one tick (one second)
+    if ((pirStartUpTimerCurrentTime - lastPirStartUpOffTick) >= OFF_TICKING_INTERVAL) {  // every 10 seconds
+      lastPirStartUpOffTick += OFF_TICKING_INTERVAL;                 // increment the ticking counter by the OFF_TICKING_INTERVAL tick (one second)
       Serial.print("+");                                                  // print a "+" to the console
       directPinsSwitch(HIGH);                                             // turn off the lasers
-      if (oddOrEvenPinsCurrentlyHighDuringStartUp == 0) {
-        oddOrEvenPinsCurrentlyHighDuringStartUp = 1;
+      if (highPinsParityDuringStartup == 0) {
+        highPinsParityDuringStartup = 1;
       } else {
-        oddOrEvenPinsCurrentlyHighDuringStartUp = 0;
+        highPinsParityDuringStartup = 0;
       }
       directPinsSwitch(LOW);                                              // blink the laser for one second
     }
@@ -385,7 +415,7 @@ void startNewPirCycle() {
 // loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
 void switchPirRelays(const int state) {
   Serial.println("------ inside switchPirRelays -------");
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     if (pin[thisPin].pir_state == HIGH) {
     Serial.print("------ pin ");Serial.print(thisPin + 1);Serial.println(" is under pir control -------");
     // only act if the pin is controlled by the PIR
@@ -396,7 +426,7 @@ void switchPirRelays(const int state) {
 }
 
 void directPinsSwitch(const int targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (int thisPin = oddOrEvenPinsCurrentlyHighDuringStartUp; thisPin < pinCount; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
+  for (int thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     digitalWrite(pin[thisPin].number, targetState);           // switch on or off
   }
 }
@@ -491,7 +521,7 @@ String returnTheResponse() {
   myResponse += "<body>";
   myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   myResponse += "<h1>";
-  myResponse += myAPIP.toString();
+  myResponse += (box[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -594,7 +624,7 @@ String printOption(const String optionValue, const String optionText, const Stri
 
 String printIndivLaserCntrls() {
   String laserCntrl;
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     laserCntrl += "<div>Laser # ";
     laserCntrl += thisPin + 1;
 
@@ -749,7 +779,7 @@ void switchPointerBlinkCycleState(const int thisPin, const int state) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Manually switches all the lasers
 void switchAllRelays(const int state) {
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     manualSwitchOneRelay(thisPin, state);
   }
 }
@@ -781,7 +811,7 @@ void switchOnOffVariables(const int thisPin, const int targetState) {
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
 void inclExclAllRelaysInPir(const int state) {
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     pin[thisPin].pir_state = state;
   }
 }
@@ -801,7 +831,7 @@ void inclExclOneRelayInPir(const int thisPin, const int state) {     // state ma
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     Serial.println("WEB CONTROLLER: Changing pin blinking delay");
     changeTheBlinkingIntervalInTheStruct(thisPin, blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
@@ -907,7 +937,7 @@ void laserSafetyLoop() {
   // - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);
   // - update the paired laser or its pair if the lasers are paired;
   // and then, execute the updates.
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     blinkLaserIfBlinking(thisPin);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     ifPairedUpdateOnOff(thisPin);                           // update the on/off status of any paired laser and its paired companion
     executeUpdates(thisPin);                                // transform the update to the struct to analogical updates in the status of the related pin
@@ -1086,7 +1116,7 @@ void loadPreferences() {
 
 void initStructs() {
   Serial.println("SETUP: initStructs(): starting");
-  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+  for (int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize structs
     initStruct(thisPin);
     pinMode(pin[thisPin].number, OUTPUT);     // initialization of the pin connected to each of the relay as output
@@ -1141,7 +1171,7 @@ void OTAConfig() {
   ArduinoOTA.begin();
 
   //prints the ip address used by ESP
-  Serial.println("SETUP: OTA Ready");
+  Serial.printf("SETUP: OTAConfig(): ready\n");
   Serial.print("SETUP: OTAConfig(): IP address: ");Serial.println(WiFi.localIP());
 }
 
@@ -1306,8 +1336,19 @@ void meshSetup() {
     myMesh.setContainsRoot(true);
   }
 
-  myAPIP = IPAddress(myMesh.getAPIP().addr);
-  box[iSenderNodeName - BOXES_I_PREFIX].APIP = myAPIP;
+  // TEST TEST TEST
+  //Serial.println("------------------------> Set softAPConfig");
+  //WiFi.softAPConfig(MY_AP_IP, MY_GATEWAY_IP, MY_N_MASK);
+
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("------------------------> APIP address: ");
+  Serial.println(myIP);
+  // TEST TEST TEST
+
+  box[I_NODE_NAME - BOXES_I_PREFIX].APIP = myMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
+  box[I_NODE_NAME - BOXES_I_PREFIX].stationIP = myMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
+  box[I_NODE_NAME - BOXES_I_PREFIX].nodeId = myMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
+
 
   myMesh.onReceive(&receivedCallback);
   myMesh.onNewConnection(&newConnectionCallback);
@@ -1331,12 +1372,16 @@ void meshController(uint32_t senderNodeId, String &msg) {
   // 2. React depending on the on or off status of the remote
 
   Serial.printf("    MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
-  StaticJsonBuffer<200> jsonBuffer;
+  StaticJsonBuffer<250> jsonBuffer;
+  Serial.printf("    MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg): jsonBuffer created\n");
   JsonObject& root = jsonBuffer.parseObject(msg.c_str());
-  const int iSenderNodeName = atoi(root["senderNodeName"]);
-  Serial.printf("    MESH CONTROLLER: meshController(...) %u alloted to root[\"senderNodeName\"] \n", iSenderNodeName);
+  Serial.printf("    MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg): jsonBuffer parsed into JsonObject& root\n");
+  const char* cSenderNodeName = root["senderNodeName"];
+  Serial.printf("    MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg): root[\"senderNodeName\"] stored in cSenderNodeName as %s\n", cSenderNodeName);
+  const int iSenderNodeName = atoi(cSenderNodeName);
+  Serial.printf("    MESH CONTROLLER: meshController(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
   const char* senderStatus = root["senderStatus"];
-  Serial.printf("    MESH CONTROLLER: meshController(...) %s alloted to root[\"senderStatus\"] \n", senderStatus);
+  Serial.printf("    MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", senderStatus);
   Serial.printf("    MESH CONTROLLER: meshController(...) storing the IP adresses of the sender in a box struct in the boxes array \n");
   box[iSenderNodeName - BOXES_I_PREFIX].stationIP = parseIpString(root, "senderStationIP");
   box[iSenderNodeName - BOXES_I_PREFIX].APIP = parseIpString(root, "senderAPIP");
@@ -1344,7 +1389,7 @@ void meshController(uint32_t senderNodeId, String &msg) {
   Serial.printf("    MESH CONTROLLER: meshController(...) storing the IP adresses of the sender: done \n");
   Serial.printf("    MESH CONTROLLER: meshController(...). Now testing if iSenderNodeName == iMasterNodeName:\n");
   if (!(iSenderNodeName == iMasterNodeName)) {                 // do not react to broadcast message if message not sent by relevant sender
-    Serial.printf("    MESH CONTROLLER: meshController(...). %u is not equal to %u", iSenderNodeName, iMasterNodeName);
+    Serial.printf("    MESH CONTROLLER: meshController(...). %u is not equal to %u\n", iSenderNodeName, iMasterNodeName);
     return;
   }
   Serial.printf("    MESH CONTROLLER: meshController(...). %u == %u\n", iSenderNodeName, iMasterNodeName);
@@ -1390,7 +1435,7 @@ String createMeshMessage(const char* myStatus) {
   JsonObject& msg = jsonBuffer.createObject();
   msg["senderNodeName"] = nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
   msg["senderNodeId"] = myMesh.getNodeId();
-  msg["senderAPIP"] = myAPIP.toString();
+  msg["senderAPIP"] = (box[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
   msg["senderStationIP"] = stationIP.toString();
   msg["senderStatus"] = myStatus;
   String str;
