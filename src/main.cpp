@@ -9,8 +9,8 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-/* v.4.6
-    DONE:
+/*  v.4.7 (stable)
+DONE:
  *  HIGH: some settings are read from non-volatile storage (loadPreferences())
  *  IN COURSE:
  *  HIGH: some settings are saved to non-volatile storage (global blinking delay, masternode, slavereaction)
@@ -30,15 +30,15 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // KEY BOX variables /////////////////////////////////////////////////////////////////////////////////////////
-const int I_NODE_NAME = 202;                                                                                                // BOX BY BOX
-const int I_DEFAULT_MASTER_NODE_NAME = 201;                                                                                 // BOX BY BOX
+const int I_NODE_NAME = 210;                                                                                                // BOX BY BOX
+const int I_DEFAULT_MASTER_NODE_NAME = 205;                                                                                 // BOX BY BOX
 int relayPins[] = {
   22, 21, 19, 18, 5, 17, 16, 4
 };                                    // an array of pin numbers to which relays are attached                                // BOX BY BOX
 
 int const pinCount = 8;               // the number of pins (i.e. the length of the array)                                   // BOX BY BOX
 
-const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 1;                                                                      // BOX BY BOX
+const unsigned int I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                      // BOX BY BOX
 
 unsigned long const default_pin_blinking_interval = 10000UL;                                                                 // BOX BY BOX
 
