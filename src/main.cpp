@@ -333,6 +333,39 @@ void switchPointerBlinkCycleState(const short thisPin, const bool state) {
   (state == LOW) ? pin[thisPin].blinking = true : pin[thisPin].blinking = false;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PAIRING SWITCHES: Pairing and unpairing of pins
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void pairAllPins(const bool targetPairingState) {
+  // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin = thisPin + 2) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    pairPin(thisPin, targetPairingState);
+    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+  }
+  pinParityWitness = 0;
+}
+
+void pairPin(const short thisPin, const bool targetPairingState) {
+  const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  if  (targetPairingState == false) {
+    pin[thisPin].paired = 8;
+    (pinParityWitness == 0) ? pin[thePairedPin].paired = 8 : pin[thePairedPin].paired = 8;
+  } else {
+    rePairPin(thisPin, thePairedPin);
+  }
+}
+
+void rePairPin(const short thisPin, const short thePairedPin) {
+  pin[thisPin].paired = thePairedPin;
+  pin[thePairedPin].paired = thisPin;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // FROM PAINLESSMESH BASIC
 void sendMessage() {
   String msg = "Hello from node ";
