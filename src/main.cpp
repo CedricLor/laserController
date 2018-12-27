@@ -325,6 +325,13 @@ void switchOnOffVariables(const short thisPin, const bool targetState) {
                                                                           // the actual pin will be turned on or off in the LASER SAFETY TIMER
 }
 
+void switchPointerBlinkCycleState(const short thisPin, const bool state) {
+  // If the state passed on to the function is LOW (i.e.
+  // probably the targetState in the calling function),
+  // marks that the pin is in a blinking cycle.
+  // If not, marks that the blinking cycle for this pin is off.
+  (state == LOW) ? pin[thisPin].blinking = true : pin[thisPin].blinking = false;
+}
 
 // FROM PAINLESSMESH BASIC
 void sendMessage() {
