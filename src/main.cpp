@@ -421,11 +421,11 @@ void setup() {
   Serial.begin(115200);
 
   // FROM PAINLESSMESH BASIC
-  //myMesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
-  myMesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
+  myMesh.setDebugMsgTypes( STARTUP | ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
+  // myMesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
   //myMesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
 
-  myMesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
+  myMesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
   myMesh.onReceive(&receivedCallback);
   myMesh.onNewConnection(&newConnectionCallback);
   myMesh.onChangedConnections(&changedConnectionCallback);
