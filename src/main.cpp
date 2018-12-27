@@ -4,6 +4,7 @@
 #define _TASK_PRIORITY         // TODO: Check if remove
 #define _TASK_STD_FUNCTION     // TODO: Check if remove
 #define _TASK_STATUS_REQUEST
+#include <TaskScheduler.h>
 #include <painlessMesh.h>
 #include <IPAddress.h>         // TODO: Check if remove
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
@@ -247,7 +248,7 @@ Scheduler userScheduler; // to control your personal task
 // FROM PAINLESSMESH BASIC
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
-Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
+Task taskSendMessage( &userScheduler, TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 // END FROM PAINLESSMESH BASIC
 
 /////////////////////////////////
@@ -257,20 +258,20 @@ StatusRequest srPirStartUpComplete;
 void cbtPirStartUpDelayBlinkLaser();
 bool onEnablePirStartUpDelayBlinkLaser();
 void onDisablePirStartUpDelayBlinkLaser();
-// Task tPirStartUpDelayBlinkLaser( &userScheduler, L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
-Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+Task tPirStartUpDelayBlinkLaser( &userScheduler, L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+// Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
 void cbtPirStartUpDelayPrintDash();
-// Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &cbtPirStartUpDelayPrintDash );
-Task tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
+Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &cbtPirStartUpDelayPrintDash );
+// Task tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
 
 void cbtLaserOff();
-// Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
-Task tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
+Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
+// Task tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 
 void cbtLaserOn();
-// Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
-Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
+Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
+// Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 
 void cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
@@ -421,7 +422,7 @@ void setup() {
 
   // FROM PAINLESSMESH BASIC
   //myMesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
-  //myMesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
+  myMesh.setDebugMsgTypes( CONNECTION | COMMUNICATION ); // all types on
   //myMesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
 
   myMesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );

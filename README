@@ -30,26 +30,53 @@ Note: in tPirStartUpDelayBlinkLaser(), the if (!(tPirStartUpDelayBlinkLaser.isLa
  *  LOW: in the web controller, add reading the pairing / unpairing control and connect to pairPin
 */
 
-Link to the libraries: .platformio/lib
 
 
+What had to be done so that the Status Request would compile together with painlessMesh? (but still, while the following refactoring enables to compile properly, it does not WORK: when loaded, the ESP32 do not detect each other, do not connect and do not communicate)
 
-
-Includes the following refactored libraries:
+Version of included library:
 TaskScheduler: https://github.com/arkhipenko/TaskScheduler/tree/v2.6.1
 painlessMesh: https://gitlab.com/painlessMesh/painlessMesh/tree/v1.2.6
 
--- TaskScheduler: TaskSchedulerDeclarations.h
-INLINE Task() {};
-- added a default constructor to the Task class
-/* The following step has been undone and the code in main.cpp has been rewritten to match the author version
-- reordered the params in the existing Task constructors -> scheduler has been put first
-*/
-- undefaulted the scheduler param in the existing Task constructors (so that they not be interpreted as conflicting default constructors by the compiler, which triggers the ambiguous constructor call error)
-INLINE Task(Scheduler* aScheduler, unsigned long aInterval=0, long aIterations=0, TaskCallback aCallback=NULL, bool aEnable=false, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
-INLINE Task(Scheduler* aScheduler, TaskCallback aCallback=NULL, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+-- Refactoring to TaskScheduler: TaskSchedulerDeclarations.h
+From line 125 to 132:
 
--- painlessMesh: TaskScheduler.cpp:
+class Task {
+  friend class Scheduler;
+  public:
+    INLINE Task(unsigned long aInterval=0, long aIterations=0, TaskCallback aCallback=NULL, Scheduler* aScheduler=NULL, bool aEnable=false, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+
+#ifdef _TASK_STATUS_REQUEST
+    INLINE Task(TaskCallback aCallback=NULL, Scheduler* aScheduler=NULL, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+#endif  // _TASK_STATUS_REQUEST
+
+replaced by:
+
+class Task {
+  friend class Scheduler;
+  public:
+    INLINE Task() {};
+    INLINE Task(Scheduler* aScheduler, unsigned long aInterval=0, long aIterations=0, TaskCallback aCallback=NULL, bool aEnable=false, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+
+#ifdef _TASK_STATUS_REQUEST
+    INLINE Task(Scheduler* aScheduler, TaskCallback aCallback=NULL, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+#endif  // _TASK_STATUS_REQUEST
+
+-> what happened there?
+- added a default constructor to the Task class
+Line 128 (new): INLINE Task() {};
+- reordered the params in the existing Task constructors -> scheduler has been put first, in order to undefault the scheduler param in the existing Task constructors (so that they not be interpreted as conflicting default constructors by the compiler, which triggers the ambiguous constructor call error)
+Line 129 (new): INLINE Task(Scheduler* aScheduler, unsigned long aInterval=0, long aIterations=0, TaskCallback aCallback=NULL, bool aEnable=false, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+Line 132 (new): INLINE Task(Scheduler* aScheduler, TaskCallback aCallback=NULL, TaskOnEnable aOnEnable=NULL, TaskOnDisable aOnDisable=NULL);
+
+-- Refactoring to TaskScheduler: TaskScheduler.h
+
+Line 218 (old): Task::Task( unsigned long aInterval, long aIterations, TaskCallback aCallback, Scheduler* aScheduler, bool aEnable, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable ) {
+Line 218 (new): Task::Task( Scheduler* aScheduler, unsigned long aInterval, long aIterations, TaskCallback aCallback, bool aEnable, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable ) {
+Line 246 (old): Task::Task( TaskCallback aCallback, Scheduler* aScheduler, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable ) {
+Line 246 (new): Task::Task( Scheduler* aScheduler, TaskCallback aCallback, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable ) {
+
+-- Refactoring to painlessMesh: TaskScheduler.cpp:
 line 15 commented out.
 //#include <TaskScheduler.h>
 The inclusion of TaskScheduler.h was conflicting with its inclusion into main.cpp and resulted in multiple function definitions.
