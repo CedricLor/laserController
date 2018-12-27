@@ -70,6 +70,8 @@ void blinkLaserIfTimeIsDue(const short thisPin);
 void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(const short thisPin);
 void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget);
 
+void switchPointerBlinkCycleState(const short thisPin, const bool state);
+
 void broadcastStatusOverMesh(const char* state);
 
 void startOTA();
