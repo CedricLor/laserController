@@ -1,11 +1,10 @@
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
-#include <painlessMesh.h>
 #include <FS.h>
 #include <ESPAsyncWebServer.h>
-#include <TaskScheduler.h>
 #define _TASK_PRIORITY         // TODO: Check if remove
 #define _TASK_STD_FUNCTION     // TODO: Check if remove
 #define _TASK_STATUS_REQUEST
+#include <painlessMesh.h>
 #include <IPAddress.h>         // TODO: Check if remove
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
