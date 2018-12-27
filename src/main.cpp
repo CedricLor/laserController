@@ -318,6 +318,14 @@ void directPinsSwitch(const bool targetState) {              // targetState is H
   }
 }
 
+void switchOnOffVariables(const short thisPin, const bool targetState) {
+  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
+  switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off
+  pin[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
+                                                                          // the actual pin will be turned on or off in the LASER SAFETY TIMER
+}
+
+
 // FROM PAINLESSMESH BASIC
 void sendMessage() {
   String msg = "Hello from node ";
