@@ -254,8 +254,9 @@ void sendMessage();
 // Task taskSendMessage( &userScheduler, TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 /////////////////////////////////
+// IR STARTUP
 // Tasks related to the IR startup
-// StatusRequest srPirStartUpComplete;
+// Declarations
 
 void cbtPirStartUpDelayBlinkLaser();
 bool onEnablePirStartUpDelayBlinkLaser();
@@ -270,6 +271,31 @@ Task tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 
 void cbtLaserOn();
 Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
+
+
+/////////////////////////////////
+// PIR CONTROL
+// Tasks related to the PIR controller (placing the lasers under control of the PIR and waiting for a motion to be detected to turn the lasers on/off)
+// Declarations
+void tcbPirCntrl();
+// tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
+/* Task tPirCntrl is here defined to run every 4 seconds (4000), indefinitely,
+ * to run its main callback tcbPirCntrl() each time and is added to the userScheduler.
+ * It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
+ */
+Task tPirCntrl ( 3000, -1, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
+
+/////////////////////////////////
+// PIR CYCLE
+// Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
+// Declarations
+bool tcbOnEnablePirCycle();
+void tcbOnDisablePirCycle();
+Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
+
+/////////////////////////////////
+// IR STARTUP
+// Callback functions of the tasks relating to the start up delay of the IR sensor
 
 void cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
@@ -374,12 +400,7 @@ void loop() {
 // read the state of the PIR and turn the relays on or off depending on the state of the PIR
 
 //////////////////////
-// TASK FOR PIR CYCLE ON/OFF
-bool tcbOnEnablePirCycle();
-void tcbOnDisablePirCycle();
-// Task tPirCycle ( &userScheduler, I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
-Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
-
+// CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool tcbOnEnablePirCycle() {
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
   switchPirRelays(LOW);
@@ -394,17 +415,15 @@ void tcbOnDisablePirCycle() {
 }
 
 //////////////////////
-// TASK FOR PIR CONTROL
-void tcbPirCntrl();
-// Task tPirCntrl ( &userScheduler, &tcbPirCntrl );
-Task tPirCntrl ( &tcbPirCntrl, &userScheduler );
+// CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
 void tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
 }
 
 void setPirValue() {
-  valPir = digitalRead(inputPin); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(inputPin) will be HIGH.  Serial.println(valPir);
+  valPir = digitalRead(inputPin); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(inputPin) will be HIGH.
+  // Serial.printf(valPir\n);
 }
 
 void startOrRestartPirCycleIfPirValueIsHigh() {
