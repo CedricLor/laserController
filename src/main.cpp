@@ -279,11 +279,11 @@ Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 // Declarations
 void tcbPirCntrl();
 // tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
-/* Task tPirCntrl is here defined to run every 4 seconds (4000), indefinitely,
+/* Task tPirCntrl is here defined to run every 4 seconds (TASK_SECOND * 4), indefinitely (TASK_FOREVER),
  * to run its main callback tcbPirCntrl() each time and is added to the userScheduler.
  * It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
  */
-Task tPirCntrl ( 3000, -1, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
+Task tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
 
 /////////////////////////////////
 // PIR CYCLE
