@@ -4,10 +4,6 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#define _TASK_PRIORITY
-#define _TASK_STD_FUNCTION
-#define _TASK_STATUS_REQUEST
-#include <TaskScheduler.h>
 #include <painlessMesh.h>
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
@@ -259,24 +255,20 @@ void sendMessage();
 
 /////////////////////////////////
 // Tasks related to the IR startup
-StatusRequest srPirStartUpComplete;
+// StatusRequest srPirStartUpComplete;
 
 void cbtPirStartUpDelayBlinkLaser();
 bool onEnablePirStartUpDelayBlinkLaser();
 void onDisablePirStartUpDelayBlinkLaser();
-// Task tPirStartUpDelayBlinkLaser( &userScheduler, L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
 void cbtPirStartUpDelayPrintDash();
-// Task tPirStartUpDelayPrintDash( &userScheduler, 1000UL, 9, &cbtPirStartUpDelayPrintDash );
 Task tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
 
 void cbtLaserOff();
-// Task tLaserOff( &userScheduler, 0, 1, &cbtLaserOff );
 Task tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 
 void cbtLaserOn();
-// Task tLaserOn( &userScheduler, 0, 1, &cbtLaserOn );
 Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 
 void cbtPirStartUpDelayBlinkLaser() {
@@ -296,7 +288,7 @@ void cbtPirStartUpDelayBlinkLaser() {
 
 bool onEnablePirStartUpDelayBlinkLaser() {
   pairAllPins(false);
-  srPirStartUpComplete.setWaiting();
+  // srPirStartUpComplete.setWaiting();
   return true;
 }
 
@@ -304,7 +296,8 @@ void onDisablePirStartUpDelayBlinkLaser() {
   pairAllPins(true);
   directPinsSwitch(HIGH);
   inclExclAllRelaysInPir(HIGH);                                     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
-  srPirStartUpComplete.signalComplete();
+  // srPirStartUpComplete.signalComplete();
+  tPirCntrl.enable();
 }
 
 void cbtPirStartUpDelayPrintDash() {
@@ -1448,7 +1441,7 @@ String createMeshMessage(const char* myStatus) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void enableTasks() {
   tPirStartUpDelayBlinkLaser.enable();
-  tPirCntrl.waitFor(&srPirStartUpComplete, TASK_IMMEDIATE, TASK_FOREVER);
+  // tPirCntrl.waitFor(&srPirStartUpComplete, TASK_IMMEDIATE, TASK_FOREVER);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
