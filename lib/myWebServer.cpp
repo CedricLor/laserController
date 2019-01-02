@@ -14,6 +14,17 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval,
   _PIN_COUNT = PIN_COUNT;
 }
 
+String myWebServer::printOption(const String optionValue, const String optionText, const String selected) {
+  String optionCntrl = "<option value=\"";
+  optionCntrl += optionValue;
+  optionCntrl += "\" ";
+  optionCntrl += selected;
+  optionCntrl += ">";
+  optionCntrl += optionText;
+  optionCntrl += "</option>";
+  return optionCntrl;
+}
+
 String myWebServer::printIndivLaserCntrls() {
   String laserCntrl;
   for (short thisPin = 0; thisPin < _PIN_COUNT; thisPin++) {

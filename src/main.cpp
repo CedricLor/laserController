@@ -648,6 +648,7 @@ String printLabel(const String labelText, const String labelFor) {
   return labelCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printOption(const String optionValue, const String optionText, const String selected) {
   String optionCntrl = "<option value=\"";
   optionCntrl += optionValue;

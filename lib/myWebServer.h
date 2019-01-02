@@ -19,6 +19,7 @@ class myWebServer
     LaserPin *_LaserPins;
     short _PIN_COUNT;
 
+    String printOption(const String optionValue, const String optionText, const String selected);
     String printIndivLaserCntrls();
     String printCurrentStatus(const short thisPin);
     String printOnOffControl(const short thisPin);
