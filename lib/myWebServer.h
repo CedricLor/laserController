@@ -18,6 +18,7 @@ class myWebServer
     unsigned long _pinBlinkingInterval;
     LaserPin *_LaserPins;
 
+    String printOnOffControl(const short thisPin);
     String printPirStatusCntrl(const short thisPin);
     String printBlinkingDelayWebCntrl(const short thisPin);
     String printPairingCntrl(const short thisPin);

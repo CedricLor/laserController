@@ -13,6 +13,16 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval)
   *_LaserPins = *LaserPins;
 }
 
+String myWebServer::printOnOffControl(const short thisPin) {
+  String onOffCntrl;
+  onOffCntrl += "<a href=\"?manualStatus=on&laser=";
+  onOffCntrl += thisPin + 1;
+  onOffCntrl += "\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=";
+  onOffCntrl += thisPin + 1;
+  onOffCntrl += "\"><button>OFF</button></a>";
+  return onOffCntrl;
+}
+
 String myWebServer::printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
   if (_LaserPins[thisPin].pir_state == LOW) {

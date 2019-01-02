@@ -700,6 +700,7 @@ String printCurrentStatus(const short thisPin) {
   return currentStatus;
 }
 
+// Copied to class myWebServer - to delete
 String printOnOffControl(const short thisPin) {
   String onOffCntrl;
   onOffCntrl += "<a href=\"?manualStatus=on&laser=";
@@ -710,6 +711,7 @@ String printOnOffControl(const short thisPin) {
   return onOffCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
   if (LaserPins[thisPin].pir_state == LOW) {
