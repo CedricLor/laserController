@@ -13,8 +13,10 @@ class myOta
   public:
     myOta();
     void OTAConfig();
-    void dot();
-    void dash();
+    void startOTA();
+    void endOTA();
+    void progressOTA();
+    void errorOTA();
   private:
     int _pin;
 };

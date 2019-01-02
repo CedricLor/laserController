@@ -11,14 +11,22 @@ myOta::myOta()
 {
 }
 
-void myOta::dot()
-{
-}
-
-void myOta::dash()
-{
-}
-
 void myOta::OTAConfig()
+{
+}
+
+void myOta::startOTA()
+{
+}
+
+void myOta::endOTA()
+{
+}
+
+void myOta::progressOTA()
+{
+}
+
+void myOta::errorOTA()
 {
 }
