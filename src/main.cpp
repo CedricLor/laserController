@@ -66,7 +66,6 @@ void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const un
 void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay);
 
 
-void savePreferences();
 void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
 void changeTheMasterBoxId(const short masterBoxNumber);
 void changeSlaveReaction(const char* action);
@@ -345,7 +344,7 @@ void cbtLaserOn() {
 void setup() {
   delay(2000);
   serialInit();
-  loadPreferences();
+  mySavedPrefs::loadPreferences();
   initStructs();
   initPir();
   meshSetup();
@@ -665,21 +664,6 @@ void changeTheMasterBoxId(const short masterBoxNumber) {
   Serial.printf("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Starting with masterBoxNumber = %u\n", masterBoxNumber);
   iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber;
   Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Done\n");
-}
-
-// copied to mySavedPrefs - to delete
-void savePreferences() {
-  Serial.print("PREFERENCES: savePreferences(): starting\n");
-  Preferences preferences;
-  preferences.begin("savedSettingsNS", false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
-
-  preferences.putUInt("savedSettings", preferences.getUInt("savedSettings", 0) + 1);
-  preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
-  preferences.putShort("iMasterNName", iMasterNodeName);
-  preferences.putULong("pinBlinkInt", pinBlinkingInterval);
-
-  preferences.end();
-  Serial.print("WEB CONTROLLER: savePreferences(): done\n");
 }
 
 void changeSlaveReaction(const char* action) {

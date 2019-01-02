@@ -6,7 +6,6 @@
 #include "Arduino.h"
 #include "mySavedPrefs.h"
 
-// mySavedPrefs::mySavedPrefs(short iSlaveOnOffReaction, short iMasterNodeName, unsigned long pinBlinkingInterval, const short I_DEFAULT_SLAVE_ON_OFF_REACTION)
 mySavedPrefs::mySavedPrefs()
 {
 }
