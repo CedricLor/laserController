@@ -11,7 +11,7 @@
 class myOta
 {
   public:
-    myOta(int pin);
+    myOta();
     void dot();
     void dash();
   private:

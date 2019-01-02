@@ -12,7 +12,7 @@
 #include "../lib/myOta.cpp"
 
 // v. 3.0.0
-myOta myOta(13);
+myOta myOta();
 
 /*
  * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
