@@ -7,12 +7,31 @@
 #include "Arduino.h"
 #include "myWebServer.h"
 
-myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction)
+myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
   _PIN_COUNT = PIN_COUNT;
   _iSlaveOnOffReaction = iSlaveOnOffReaction;
+
+  _iMasterNodeName = iMasterNodeName;
+  _I_MASTER_NODE_PREFIX = I_MASTER_NODE_PREFIX;
+  _I_NODE_NAME = I_NODE_NAME;
+}
+
+String myWebServer::printMasterSelect() {
+  String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
+  for (short i = 1; i < 11; i++) {
+    String selected = "";
+    if (i + _I_MASTER_NODE_PREFIX == _iMasterNodeName) {
+      selected += "selected";
+    };
+    if (!(i + _I_MASTER_NODE_PREFIX == _I_NODE_NAME)) {
+      masterSelect += printOption(String(i), String(i), selected);
+    }
+  }
+  masterSelect += "</select>";
+  return masterSelect;
 }
 
 String myWebServer::printSlaveReactionSelect() {

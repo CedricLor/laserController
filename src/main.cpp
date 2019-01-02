@@ -612,6 +612,7 @@ String printMasterCntrl() {
 
 String printOption(const String optionValue, const String optionText, const String selected = "");
 
+// Copied to class myWebServer - to delete
 String printMasterSelect() {
   String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
   for (short i = 1; i < 11; i++) {

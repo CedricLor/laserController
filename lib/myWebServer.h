@@ -13,16 +13,21 @@
 class myWebServer
 {
   public:
-    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction);
+    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME);
   private:
     unsigned long _pinBlinkingInterval;
     LaserPin *_LaserPins;
     short _PIN_COUNT;
-    
+
     short _iSlaveOnOffReaction;
     const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
     const char* _slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
+    short _iMasterNodeName;
+    short _I_MASTER_NODE_PREFIX;
+    short _I_NODE_NAME;
+
+    String printMasterSelect();
     String printSlaveReactionSelect();
     String printLabel(const String labelText, const String labelFor);
     String printOption(const String optionValue, const String optionText, const String selected);
