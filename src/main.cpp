@@ -16,8 +16,10 @@
 #include "../lib/ControlerBox.cpp"
 #include "../lib/myWebServerViews.h"
 #include "../lib/myWebServerViews.cpp"
+#include "../lib/myWebServerControler.h"
+#include "../lib/myWebServerControler.cpp"
 
-// v. 3.0.0
+// v 3.0.8
 
 /*
  * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
