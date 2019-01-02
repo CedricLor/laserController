@@ -6,8 +6,9 @@
 
 #include "Arduino.h"
 #include "myWebServer.h"
+#include "LaserPin.h"
 
-myWebServer::myWebServer(pin_type pin, unsigned long pinBlinkingInterval)
+myWebServer::myWebServer(LaserPin pin, unsigned long pinBlinkingInterval)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   _pin = pin;

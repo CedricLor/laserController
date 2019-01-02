@@ -7,14 +7,16 @@
 #define myWebServer_h
 
 #include "Arduino.h"
+#include "LaserPin.h"
+#include "LaserPin.cpp"
 
 class myWebServer
 {
   public:
-    myWebServer(pin_type pin, unsigned long pinBlinkingInterval);
+    myWebServer(LaserPin pin, unsigned long pinBlinkingInterval);
   private:
     unsigned long _pinBlinkingInterval;
-    pin_type _pin;
+    LaserPin _pin;
 
     String printBlinkingDelayWebCntrl(const short thisPin);
     String printDelaySelect(const short thisPin);
