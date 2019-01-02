@@ -586,6 +586,7 @@ String printLinksToBoxes() {
   return linksToBoxes;
 }
 
+// Copied to class myWebServer - to delete
 String printAllLasersCntrl() {
   String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
@@ -598,8 +599,8 @@ String printAllLasersCntrl() {
   return laserCntrls;
 }
 
+// Copied to class myWebServer - to delete
 String printMasterCntrl() {
-
   String masterCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
   masterCntrl += printLabel("Master box: ", "master-select");
   masterCntrl += printMasterSelect();

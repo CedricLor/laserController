@@ -19,8 +19,19 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval,
   _I_NODE_NAME = I_NODE_NAME;
 }
 
-String myWebServer::printMasterCntrl() {
+String myWebServer::printAllLasersCntrl() {
+  String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
+  laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
+  laserCntrls += printBlinkingDelayWebCntrl(9);
+  laserCntrls += "</div>";
+  laserCntrls += "<div>";
+  laserCntrls += printMasterCntrl();
+  laserCntrls += "</div>";
+  laserCntrls += "<hr>";
+  return laserCntrls;
+}
 
+String myWebServer::printMasterCntrl() {
   String masterCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
   masterCntrl += printLabel("Master box: ", "master-select");
   masterCntrl += printMasterSelect();

@@ -27,6 +27,7 @@ class myWebServer
     short _I_MASTER_NODE_PREFIX;
     short _I_NODE_NAME;
 
+    String printAllLasersCntrl();
     String printMasterCntrl();
     String printMasterSelect();
     String printSlaveReactionSelect();
