@@ -981,12 +981,12 @@ void startAsyncServer() {
     myWebServerViews myWebServerView(LaserPins, pinBlinkingInterval, PIN_COUNT, iSlaveOnOffReaction, iMasterNodeName, I_MASTER_NODE_PREFIX, I_NODE_NAME, ControlerBoxes, BOXES_I_PREFIX, slaveReactionHtml);
     AsyncResponseStream *response = request->beginResponseStream("text/html");  // define a response stream
     response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
-    response->printf(myWebServerView.returnTheResponse().c_str());                              // converts the arduino String in C string (array of chars)
+    response->printf(myWebServerView.returnTheResponse().c_str());              // converts the arduino String in C string (array of chars)
     request->send(response);                                                    // send the response
   });
 
-  // asyncServer.onNotFound(onRequest);  // error: no matching function for call to 'AsyncWebServer::onNotFound(void (&)())'
-  // asyncServer.onRequestBody(onBody);  // error: no matching function for call to 'AsyncWebServer::onRequestBody(void (&)())'
+  // asyncServer.onNotFound(&onRequest);  // error: no matching function for call to 'AsyncWebServer::onNotFound(void (&)())'
+  // asyncServer.onRequestBody(&onBody);  // error: no matching function for call to 'AsyncWebServer::onRequestBody(void (&)())'
 
   asyncServer.begin();
 }
