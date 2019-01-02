@@ -685,6 +685,7 @@ String printIndivLaserCntrls() {
   return laserCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printCurrentStatus(const short thisPin) {
   String currentStatus;
   if (LaserPins[thisPin].blinking == true) {
