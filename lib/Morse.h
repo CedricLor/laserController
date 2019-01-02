@@ -11,13 +11,9 @@
 class Morse
 {
   public:
-    Morse();
+    Morse(int pin);
     void dot();
     void dash();
-    void startota();
-    void endota();
-    void progressota(unsigned int progress, unsigned int total);
-    void errorota(ota_error_t error);
   private:
     int _pin;
 };

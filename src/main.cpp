@@ -10,6 +10,10 @@
 
 #include "../lib/Myota.h"
 #include "../lib/Myota.cpp"
+#include "../lib/LaserPin.h"
+#include "../lib/LaserPin.cpp"
+// #include "../lib/myWebServer.h"
+// #include "../lib/myWebServer.cpp"
 
 // v. 3.0.0
 
@@ -742,6 +746,7 @@ String printBlinkingDelayWebCntrl(const short thisPin) {
   return blinkingDelayWebCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
   if (pin[thisPin].paired == 8) {
@@ -763,6 +768,7 @@ String printPairingCntrl(const short thisPin) {
   return pairingWebCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printDelaySelect(const short thisPin) {
   String delaySelect;
   delaySelect += "<select name=\"blinkingDelay\">";
@@ -785,6 +791,7 @@ String printDelaySelect(const short thisPin) {
   return delaySelect;
 }
 
+// Copied to class myWebServer - to delete
 String printHiddenLaserNumb(const short thisPin) {
   String hiddenLaserCntrl;
   hiddenLaserCntrl += "<input type=\"hidden\" name=\"laser\" value=\"";
