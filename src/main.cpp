@@ -8,11 +8,15 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
-#include "../lib/myOta.h"
-#include "../lib/myOta.cpp"
+#include "../lib/Myota.h"
+#include "../lib/Myota.cpp"
+
+#include "../lib/Morse.h"
+#include "../lib/Morse.cpp"
 
 // v. 3.0.0
-myOta myOta();
+Myota myota;
+Morse morse;
 
 /*
  * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
@@ -1485,6 +1489,8 @@ void OTAConfig() {
   //ArduinoOTA.onProgress( progressOTA ); //progressOTA is a function created to simplificate the code
   //ArduinoOTA.onError( errorOTA );//errorOTA is a function created to simplificate the code
   ArduinoOTA.begin();
+
+  delay(3000);
 
   //prints the ip address used by ESP
   Serial.print("SETUP: OTAConfig(): ready\n");

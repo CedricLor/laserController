@@ -5,32 +5,37 @@
 */
 
 #include "Arduino.h"
-#include "Myota.h"
+#include "Morse.h"
 
-Myota::Myota()
+Morse::Morse()
+{
+  // pinMode(pin, OUTPUT);
+}
+
+void Morse::dot()
 {
 }
 
-void Myota::OTAConfig()
+void Morse::dash()
 {
 }
 
-void Myota::startOTA()
+void Morse::startota()
 {
   Serial.print("Start updating filesystem\n");
 }
 
-void Myota::endOTA()
+void Morse::endota()
 {
   Serial.print("\nEnd\n");
 }
 
-void Myota::progressOTA(unsigned int progress, unsigned int total)
+void Morse::progressota(unsigned int progress, unsigned int total)
 {
   Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
 }
 
-void Myota::errorOTA(ota_error_t error)
+void Morse::errorota(ota_error_t error)
 {
   Serial.printf("Error[%u]: ", error);
   if (error == OTA_AUTH_ERROR)

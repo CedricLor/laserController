@@ -3,20 +3,20 @@
   Created by David A. Mellis, November 2, 2007.
   Released into the public domain.
 */
-#ifndef myOta_h
-#define myOta_h
+#ifndef Myota_h
+#define Myota_h
 
 #include "Arduino.h"
 
-class myOta
+class Myota
 {
   public:
-    myOta();
+    Myota();
     void OTAConfig();
     void startOTA();
     void endOTA();
-    void progressOTA();
-    void errorOTA();
+    void progressOTA(unsigned int progress, unsigned int total);
+    void errorOTA(ota_error_t error);
   private:
     int _pin;
 };
