@@ -11,9 +11,6 @@
 #include "../lib/Myota.h"
 #include "../lib/Myota.cpp"
 
-#include "../lib/Morse.h"
-#include "../lib/Morse.cpp"
-
 // v. 3.0.0
 
 /*
