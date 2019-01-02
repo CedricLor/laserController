@@ -8,12 +8,16 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
+#include "../lib/global.h"
+#include "../lib/global.cpp"
 #include "../lib/Myota.h"
 #include "../lib/Myota.cpp"
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
 #include "../lib/ControlerBox.h"
 #include "../lib/ControlerBox.cpp"
+#include "../lib/mySavedPrefs.h"
+#include "../lib/mySavedPrefs.cpp"
 #include "../lib/myWebServerViews.h"
 #include "../lib/myWebServerViews.cpp"
 #include "../lib/myWebServerControler.h"
@@ -90,14 +94,14 @@ String createMeshMessage(const char* myStatus);
 const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
 // short iDefaultMasterNodesNames[10] = {201,202};
 const short I_NODE_NAME = 201;                                                                                                // BOX BY BOX
-const short I_DEFAULT_MASTER_NODE_NAME = 211;                                                                                 // BOX BY BOX
+// const short I_DEFAULT_MASTER_NODE_NAME = 211;                                                                                 // BOX BY BOX
 
 short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };  // an array of pin numbers to which relays are attached                // BOX BY BOX
 const short PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)                                 // BOX BY BOX
 
-const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
+// const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;                                                                     // BOX BY BOX
 
-unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                // BOX BY BOX
+// unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;                                                                // BOX BY BOX
 
 
 const bool MESH_ROOT = true;                                                                                                // BOX BY BOX
@@ -149,7 +153,7 @@ const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the me
 ///////////////////////////////
 // definition of master node //
 // const short I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
-short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
+// short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
 const short I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
 ///////////////////////////////
 // definition of reactions to master node state
@@ -161,7 +165,7 @@ const short I_MASTER_NODE_PREFIX = 200;                                         
 
 // The following variable, at start up, corresponds to the default reaction of this box, when it receives the status of its parent box.
 // It is a number from 0 to 3. This number corresponds to the index in the following array (const bool B_SLAVE_ON_OFF_REACTIONS[4][2])
-short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool array of the choosen reaction to the master states
+// short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool array of the choosen reaction to the master states
 const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 // HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous (index 0): When the master box is on, turn me on AND when the master box is off, turn me off
 // LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed  (index 1): When the master box is on, turn me off AND when the master box is off, turn me on
@@ -186,7 +190,7 @@ bool const default_pin_on_off_state = HIGH;         // by default, the pin start
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
 // unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
-unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
+// unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 // declare and size an array to contain the LaserPins class instances as a global variable
 LaserPin LaserPins[PIN_COUNT];
@@ -663,6 +667,7 @@ void changeTheMasterBoxId(const short masterBoxNumber) {
   Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Done\n");
 }
 
+// copied to mySavedPrefs - to delete
 void savePreferences() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
   Preferences preferences;
@@ -890,6 +895,7 @@ void serialInit() {
   Serial.print("\nSETUP: serialInit(): done\n");
 }
 
+// Transfered to mySavedPrefs - to delete
 void loadPreferences() {
   Serial.print("\nSETUP: loadPreferences(): starting\n");
   Preferences preferences;
