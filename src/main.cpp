@@ -168,6 +168,7 @@ short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
 const short I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
 ///////////////////////////////
 // definition of reactions to master node state
+// Copied to myWebServer - to delete
 // The following variables are then used when generating the website
 const char* slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
@@ -626,6 +627,7 @@ String printMasterSelect() {
   return masterSelect;
 }
 
+// Copied to class myWebServer - to delete
 String printSlaveReactionSelect() {
   String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
   for (short i = 0; i < 4; i++) {

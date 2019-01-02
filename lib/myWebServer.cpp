@@ -7,11 +7,25 @@
 #include "Arduino.h"
 #include "myWebServer.h"
 
-myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT)
+myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
   _PIN_COUNT = PIN_COUNT;
+  _iSlaveOnOffReaction = iSlaveOnOffReaction;
+}
+
+String myWebServer::printSlaveReactionSelect() {
+  String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
+  for (short i = 0; i < 4; i++) {
+    String selected = "";
+    if (i == _iSlaveOnOffReaction) {
+      selected += "selected";
+     };
+    slaveReactionSelect += printOption(_slaveReactionHtml[i], _slaveReaction[i], selected);
+  }
+  slaveReactionSelect += "</select>";
+  return slaveReactionSelect;
 }
 
 String myWebServer::printLabel(const String labelText, const String labelFor) {
