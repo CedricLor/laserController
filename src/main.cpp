@@ -8,6 +8,8 @@
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 
+#include <../lib/myOta.h>
+
 // v. 3.0.0
 
 /*
