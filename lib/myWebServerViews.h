@@ -13,7 +13,7 @@
 class myWebServerViews
 {
   public:
-    myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX);
+    myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX, const char** slaveReactionHtml);
     String returnTheResponse();
   private:
     unsigned long _pinBlinkingInterval;
@@ -22,7 +22,7 @@ class myWebServerViews
 
     short _iSlaveOnOffReaction;
     const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
-    const char* _slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
+    const char** _slaveReactionHtml;
 
     short _iMasterNodeName;
     short _I_MASTER_NODE_PREFIX;

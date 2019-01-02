@@ -6,12 +6,14 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX)
+myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX, const char** slaveReactionHtml)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
   _PIN_COUNT = PIN_COUNT;
   _iSlaveOnOffReaction = iSlaveOnOffReaction;
+
+  _slaveReactionHtml = slaveReactionHtml;
 
   _iMasterNodeName = iMasterNodeName;
   _I_MASTER_NODE_PREFIX = I_MASTER_NODE_PREFIX;
