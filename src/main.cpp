@@ -27,7 +27,6 @@ void initStructs();
 void initPir();
 void meshSetup();
 void startAsyncServer();
-void OTAConfig();
 void enableTasks();
 
 void laserSafetyLoop();
@@ -368,7 +367,7 @@ void setup() {
   initPir();
   meshSetup();
   startAsyncServer();
-  OTAConfig();
+  Myota::OTAConfig();
   enableTasks();
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
 }
@@ -1465,25 +1464,3 @@ void enableTasks() {
   tPirStartUpDelayBlinkLaser.enable();
   // tPirCntrl.waitFor(&srPirStartUpComplete, TASK_IMMEDIATE, TASK_FOREVER);
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// SETUP: OTA
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void OTAConfig() {
-  Serial.print("\nSETUP: OTAConfig(): starting\n");
-  ArduinoOTA.onStart( Myota::startOTA ); //startOTA is a function created to simplificate the code
-  ArduinoOTA.onEnd( Myota::endOTA ); //endOTA is a function created to simplificate the code
-  ArduinoOTA.onProgress( Myota::progressOTA ); //progressOTA is a function created to simplificate the code
-  ArduinoOTA.onError( Myota::errorOTA );//errorOTA is a function created to simplificate the code
-  ArduinoOTA.begin();
-
-  delay(3000);
-
-  //prints the ip address used by ESP
-  Serial.print("SETUP: OTAConfig(): ready\n");
-  Serial.print("SETUP: OTAConfig(): IP address: ");Serial.println(WiFi.localIP());
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////

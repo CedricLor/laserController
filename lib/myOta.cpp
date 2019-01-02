@@ -1,6 +1,6 @@
 /*
-  Morse.cpp - Library for flashing Morse code.
-  Created by David A. Mellis, November 2, 2007.
+  Myota.cpp - Library to handle ArduinoOTA library.
+  Created by Cedric Lor, January 2, 2019.
   Released into the public domain.
 */
 
@@ -14,11 +14,11 @@ Myota::Myota()
 void Myota::OTAConfig()
 {
   Serial.print("\nSETUP: OTAConfig(): starting\n");
-  // ArduinoOTA.onStart( startOTA ); //startOTA is a function created to simplificate the code
-  // ArduinoOTA.onEnd( endOTA ); //endOTA is a function created to simplificate the code
-  // //ArduinoOTA.onProgress( progressOTA ); //progressOTA is a function created to simplificate the code
-  // //ArduinoOTA.onError( errorOTA );//errorOTA is a function created to simplificate the code
-  // ArduinoOTA.begin();
+  ArduinoOTA.onStart( startOTA ); //startOTA is a function created to simplificate the code
+  ArduinoOTA.onEnd( endOTA ); //endOTA is a function created to simplificate the code
+  ArduinoOTA.onProgress( progressOTA ); //progressOTA is a function created to simplificate the code
+  ArduinoOTA.onError( errorOTA );//errorOTA is a function created to simplificate the code
+  ArduinoOTA.begin();
 
   delay(3000);
 
