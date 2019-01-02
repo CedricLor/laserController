@@ -14,8 +14,8 @@
 #include "../lib/LaserPin.cpp"
 #include "../lib/ControlerBox.h"
 #include "../lib/ControlerBox.cpp"
-#include "../lib/myWebServer.h"
-#include "../lib/myWebServer.cpp"
+#include "../lib/myWebServerViews.h"
+#include "../lib/myWebServerViews.cpp"
 
 // v. 3.0.0
 
@@ -1263,9 +1263,10 @@ void startAsyncServer() {
     decodeRequest(request);
 
     //Send a response
+    myWebServerViews myWebServerView(LaserPins, pinBlinkingInterval, PIN_COUNT, iSlaveOnOffReaction, iMasterNodeName, I_MASTER_NODE_PREFIX, I_NODE_NAME, ControlerBoxes, BOXES_I_PREFIX);
     AsyncResponseStream *response = request->beginResponseStream("text/html");  // define a response stream
     response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
-    response->printf(returnTheResponse().c_str());                              // converts the arduino String in C string (array of chars)
+    response->printf(myWebServerView.returnTheResponse().c_str());                              // converts the arduino String in C string (array of chars)
     request->send(response);                                                    // send the response
   });
 

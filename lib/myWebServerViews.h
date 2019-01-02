@@ -1,19 +1,19 @@
 /*
-  myWebServer.h - Library to handle laser controller web server.
+  myWebServerViews.h - Library to serve the views of the laser controller web server.
   Created by Cedric Lor, January 2, 2019.
 */
 
-#ifndef myWebServer_h
-#define myWebServer_h
+#ifndef myWebServerViews_h
+#define myWebServerViews_h
 
 #include "Arduino.h"
 #include "LaserPin.h"
 #include "ControlerBox.h"
 
-class myWebServer
+class myWebServerViews
 {
   public:
-    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX);
+    myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX);
     String returnTheResponse();
   private:
     unsigned long _pinBlinkingInterval;

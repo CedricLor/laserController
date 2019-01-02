@@ -1,12 +1,12 @@
 /*
-  myWebServer.cpp - Library to handle laser controller web server.
+  myWebServerViews.cpp - Library to serve the views of the laser controller web server.
   Created by Cedric Lor, January 2, 2019.
 */
 
 #include "Arduino.h"
-#include "myWebServer.h"
+#include "myWebServerViews.h"
 
-myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX)
+myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
@@ -21,7 +21,7 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval,
   *_ControlerBoxes = *ControlerBoxes;
 }
 
-String myWebServer::returnTheResponse() {
+String myWebServerViews::returnTheResponse() {
   String myResponse = "<!DOCTYPE HTML><html>";
   myResponse += "<body>";
   myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
@@ -38,7 +38,7 @@ String myWebServer::returnTheResponse() {
   return myResponse;
 }
 
-String myWebServer::printLinksToBoxes() {
+String myWebServerViews::printLinksToBoxes() {
   String linksToBoxes = "<div class=\"box_links_wrapper\">";
   IPAddress testIp(0,0,0,0);
   for (short i = 0; i < 10; i++) {
@@ -61,7 +61,7 @@ String myWebServer::printLinksToBoxes() {
   return linksToBoxes;
 }
 
-String myWebServer::printAllLasersCntrl() {
+String myWebServerViews::printAllLasersCntrl() {
   String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += printBlinkingDelayWebCntrl(9);
@@ -73,7 +73,7 @@ String myWebServer::printAllLasersCntrl() {
   return laserCntrls;
 }
 
-String myWebServer::printMasterCntrl() {
+String myWebServerViews::printMasterCntrl() {
   String masterCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
   masterCntrl += printLabel("Master box: ", "master-select");
   masterCntrl += printMasterSelect();
@@ -87,7 +87,7 @@ String myWebServer::printMasterCntrl() {
   return masterCntrl;
 }
 
-String myWebServer::printMasterSelect() {
+String myWebServerViews::printMasterSelect() {
   String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
   for (short i = 1; i < 11; i++) {
     String selected = "";
@@ -102,7 +102,7 @@ String myWebServer::printMasterSelect() {
   return masterSelect;
 }
 
-String myWebServer::printSlaveReactionSelect() {
+String myWebServerViews::printSlaveReactionSelect() {
   String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
   for (short i = 0; i < 4; i++) {
     String selected = "";
@@ -115,7 +115,7 @@ String myWebServer::printSlaveReactionSelect() {
   return slaveReactionSelect;
 }
 
-String myWebServer::printLabel(const String labelText, const String labelFor) {
+String myWebServerViews::printLabel(const String labelText, const String labelFor) {
   String labelCntrl = "<label for=\"";
   labelCntrl += labelFor;
   labelCntrl += "\">";
@@ -124,7 +124,7 @@ String myWebServer::printLabel(const String labelText, const String labelFor) {
   return labelCntrl;
 }
 
-String myWebServer::printOption(const String optionValue, const String optionText, const String selected) {
+String myWebServerViews::printOption(const String optionValue, const String optionText, const String selected) {
   String optionCntrl = "<option value=\"";
   optionCntrl += optionValue;
   optionCntrl += "\" ";
@@ -135,7 +135,7 @@ String myWebServer::printOption(const String optionValue, const String optionTex
   return optionCntrl;
 }
 
-String myWebServer::printIndivLaserCntrls() {
+String myWebServerViews::printIndivLaserCntrls() {
   String laserCntrl;
   for (short thisPin = 0; thisPin < _PIN_COUNT; thisPin++) {
     laserCntrl += "<div>Laser # ";
@@ -161,7 +161,7 @@ String myWebServer::printIndivLaserCntrls() {
   return laserCntrl;
 }
 
-String myWebServer::printCurrentStatus(const short thisPin) {
+String myWebServerViews::printCurrentStatus(const short thisPin) {
   String currentStatus;
   if (_LaserPins[thisPin].blinking == true) {
     currentStatus += " ON ";
@@ -176,7 +176,7 @@ String myWebServer::printCurrentStatus(const short thisPin) {
   return currentStatus;
 }
 
-String myWebServer::printOnOffControl(const short thisPin) {
+String myWebServerViews::printOnOffControl(const short thisPin) {
   String onOffCntrl;
   onOffCntrl += "<a href=\"?manualStatus=on&laser=";
   onOffCntrl += thisPin + 1;
@@ -186,7 +186,7 @@ String myWebServer::printOnOffControl(const short thisPin) {
   return onOffCntrl;
 }
 
-String myWebServer::printPirStatusCntrl(const short thisPin) {
+String myWebServerViews::printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
   if (_LaserPins[thisPin].pir_state == LOW) {
     pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
@@ -201,7 +201,7 @@ String myWebServer::printPirStatusCntrl(const short thisPin) {
   return pirStatusCntrl;
 }
 
-String myWebServer::printBlinkingDelayWebCntrl(const short thisPin) {
+String myWebServerViews::printBlinkingDelayWebCntrl(const short thisPin) {
   String blinkingDelayWebCntrl;
   blinkingDelayWebCntrl += "Blinking delay: ";
   blinkingDelayWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
@@ -212,7 +212,7 @@ String myWebServer::printBlinkingDelayWebCntrl(const short thisPin) {
   return blinkingDelayWebCntrl;
 }
 
-String myWebServer::printPairingCntrl(const short thisPin) {
+String myWebServerViews::printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
   if (_LaserPins[thisPin].paired == 8) {
     pairingWebCntrl += " Unpaired ";
@@ -233,7 +233,7 @@ String myWebServer::printPairingCntrl(const short thisPin) {
   return pairingWebCntrl;
 }
 
-String myWebServer::printDelaySelect(const short thisPin) {
+String myWebServerViews::printDelaySelect(const short thisPin) {
   String delaySelect;
   delaySelect += "<select name=\"blinkingDelay\">";
   for (unsigned long delayValue = 5000UL; delayValue < 35000UL; delayValue = delayValue + 5000UL) {
@@ -256,7 +256,7 @@ String myWebServer::printDelaySelect(const short thisPin) {
 }
 
 
-String myWebServer::printHiddenLaserNumb(const short thisPin)
+String myWebServerViews::printHiddenLaserNumb(const short thisPin)
 {
   String hiddenLaserCntrl;
   hiddenLaserCntrl += "<input type=\"hidden\" name=\"laser\" value=\"";
