@@ -154,18 +154,9 @@ const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 //
 // short const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
 
-// To delete - moved to LaserPin
-bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-// To delete - moved to LaserPin
-
-// unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
-// unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
-bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 // declare and size an array to contain the LaserPins class instances as a global variable
 LaserPin LaserPins[PIN_COUNT];
-short pinParityWitness = 0;  // pinParityWitness is a variable that can be used when loop around the pins structs array.
+short pinParityWitness = 0;  // pinParityWitness is a variable that can be used when looping around the pins structs array.
                              // it avoids using the modulo.
                              // by switching it to 0 and 1 at each iteration of the loop
                              // in principle, the switch takes the following footprint: pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
@@ -180,7 +171,7 @@ short siAutoSwitchInterval = 60;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
-short inputPin = 23;                  // choose the input pin (for PIR sensor)
+short const INPUT_PIN = 23;                  // choose the input pin (for PIR sensor)
                                       // we start assuming no motion detected
 bool valPir = LOW;                    // variable for reading the pin status
 const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
@@ -378,7 +369,7 @@ void tcbPirCntrl() {
 }
 
 void setPirValue() {
-  valPir = digitalRead(inputPin); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(inputPin) will be HIGH.
+  valPir = digitalRead(INPUT_PIN); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(INPUT_PIN) will be HIGH.
   // Serial.printf(valPir\n);
 }
 
@@ -863,7 +854,7 @@ void initLaserPins() {
 
 void initPir() {
   Serial.print("SETUP: initPir(): starting\n");
-  pinMode(inputPin, INPUT);                  // declare sensor as input
+  pinMode(INPUT_PIN, INPUT);                  // declare sensor as input
   Serial.print("SETUP: initPir(): done\n");
 }
 
