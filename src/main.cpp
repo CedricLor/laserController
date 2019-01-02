@@ -884,10 +884,9 @@ void serialInit() {
 void initLaserPins() {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    // Initialize structs
+    // Initialize Laser Pin
     LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
-    pinMode(LaserPins[thisPin].number, OUTPUT);     // initialization of the pin connected to each of the relay as output
-    digitalWrite(LaserPins[thisPin].number, HIGH);  // setting default value of the pins at HIGH (relay closed)
+    LaserPins[thisPin].physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
 }

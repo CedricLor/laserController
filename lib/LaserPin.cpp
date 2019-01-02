@@ -33,3 +33,9 @@ void LaserPin::initLaserPin(short pinNumber /* pin number on the ESP board */, s
   short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
   paired = pairedPinNumber;
 }
+
+void LaserPin::physicalInitLaserPin()
+{
+  pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
+  digitalWrite(number, HIGH);  // setting default value of the pins at HIGH (relay closed)
+}
