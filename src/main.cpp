@@ -88,16 +88,6 @@ void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSende
 String createMeshMessage(const char* myStatus);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// KEY box variables //////////////////////////////////////////////////////////////////////////////////////////////
-const short BOXES_COUNT = 10;                                                                                                 // NETWORK BY NETWORK
-// short iDefaultMasterNodesNames[10] = {201,202};
-const short I_NODE_NAME = 201;                                                                                                // BOX BY BOX
-// const short I_DEFAULT_MASTER_NODE_NAME = 211;                                                                                 // BOX BY BOX
-
-
-const bool MESH_ROOT = true;                                                                                                // BOX BY BOX
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MESH variables /////////////////////////////////////////////////////////////////////////////////////////////////
 #define   MESH_PREFIX     "laser_boxes"
 #define   MESH_PASSWORD   "somethingSneaky"
@@ -134,7 +124,6 @@ char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
 //const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
 //const IPAddress MY_N_MASK(255, 0, 0, 0);
 
-// const short BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
 ControlerBox ControlerBoxes[BOXES_COUNT];
 
 const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
@@ -142,18 +131,6 @@ const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the me
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 ///////////////////////////////
-// definition of master node //
-// const short I_DEFAULT_MASTER_NODE_NAME = 202;            // See BOX KEY VARIABLES                                        // BOX BY BOX
-// short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
-const short I_MASTER_NODE_PREFIX = 200;                                                                                     // NETWORK BY NETWORK
-///////////////////////////////
-// definition of reactions to master node state
-
-// The following variable have been moved to BOX KEY VARIABLES
-// I_DEFAULT_SLAVE_ON_OFF_REACTION
-// I_DEFAULT_SLAVE_ON_OFF_REACTION is: this box is opposed to its master (when the master is on, this box is off)
-// const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;               // See BOX KEY VARIABLES                                        // BOX BY BOX
-
 // The following variable, at start up, corresponds to the default reaction of this box, when it receives the status of its parent box.
 // It is a number from 0 to 3. This number corresponds to the index in the following array (const bool B_SLAVE_ON_OFF_REACTIONS[4][2])
 // short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool array of the choosen reaction to the master states
