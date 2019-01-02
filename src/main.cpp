@@ -33,7 +33,6 @@
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
-void loadPreferences();
 void initStruct(short thisPin);
 void initStructs();
 void initPir();
@@ -832,7 +831,7 @@ void autoSwitchAllRelays(const bool targetState) {
 }
 
 void autoSwitchOneRelay(const short thisPin, const bool targetState) {
-  /*  A REDIGER LORSQUE CE SERA NECESSAIRE
+  /*  TO DRAFT PROPERLY WHEN NECESSARY
       switchOnOffVariables(thisPin, targetState);
       switchPointerBlinkCycleState(thisPin, targetState);
       isPirCycleOn = false;
@@ -877,25 +876,6 @@ void serialInit() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
   Serial.print("\nSETUP: serialInit(): done\n");
-}
-
-// Transfered to mySavedPrefs - to delete
-void loadPreferences() {
-  Serial.print("\nSETUP: loadPreferences(): starting\n");
-  Preferences preferences;
-  preferences.begin("savedSettingsNS", true);        // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
-  unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
-  if (savedSettings > 0) {
-    Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
-    iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", I_DEFAULT_SLAVE_ON_OFF_REACTION);
-    Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
-    iMasterNodeName = preferences.getShort("iMasterNName", iMasterNodeName);
-    Serial.printf("SETUP: loadPreferences(). iMasterNodeName set to: %u\n", iMasterNodeName);
-    pinBlinkingInterval = preferences.getULong("pinBlinkInt", pinBlinkingInterval);
-    Serial.print("SETUP: loadPreferences(). pinBlinkingInterval set to: ");Serial.println(pinBlinkingInterval);
-  }
-  preferences.end();
-  Serial.print("SETUP: loadPreferences(): done\n");
 }
 
 void initStructs() {
