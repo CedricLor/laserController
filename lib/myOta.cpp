@@ -13,38 +13,50 @@ Myota::Myota()
 
 void Myota::OTAConfig()
 {
+  Serial.print("\nSETUP: OTAConfig(): starting\n");
+  // ArduinoOTA.onStart( startOTA ); //startOTA is a function created to simplificate the code
+  // ArduinoOTA.onEnd( endOTA ); //endOTA is a function created to simplificate the code
+  // //ArduinoOTA.onProgress( progressOTA ); //progressOTA is a function created to simplificate the code
+  // //ArduinoOTA.onError( errorOTA );//errorOTA is a function created to simplificate the code
+  // ArduinoOTA.begin();
+
+  delay(3000);
+
+  //prints the ip address used by ESP
+  Serial.printf("SETUP: OTAConfig(): ready\n");
+  Serial.print("SETUP: OTAConfig(): IP address: ");Serial.println(WiFi.localIP());
 }
 
 void Myota::startOTA()
 {
-  Serial.print("Start updating filesystem\n");
+  Serial.printf("Start updating filesystem\n");
 }
 
 void Myota::endOTA()
 {
-  Serial.print("\nEnd\n");
+  Serial.printf("\nEnd\n");
 }
 
 void Myota::progressOTA(unsigned int progress, unsigned int total)
 {
-  Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  Serial.printf("Progress: %u%%\n", (progress / (total / 100)));
 }
 
 void Myota::errorOTA(ota_error_t error)
 {
-  Serial.printf("Error[%u]: ", error);
+  Serial.printf("Error[%u]: \n", error);
   if (error == OTA_AUTH_ERROR)
-    Serial.print("Auth Failed\n");
+    Serial.printf("Auth Failed\n");
   else
   if (error == OTA_BEGIN_ERROR)
-    Serial.print("Begin Failed\n");
+    Serial.printf("Begin Failed\n");
   else
   if (error == OTA_CONNECT_ERROR)
-    Serial.print("Connect Failed\n");
+    Serial.printf("Connect Failed\n");
   else
   if (error == OTA_RECEIVE_ERROR)
-    Serial.print("Receive Failed\n");
+    Serial.printf("Receive Failed\n");
   else
   if (error == OTA_END_ERROR)
-    Serial.print("End Failed\n");
+    Serial.printf("End Failed\n");
 }

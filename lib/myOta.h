@@ -12,11 +12,11 @@ class Myota
 {
   public:
     Myota();
-    void OTAConfig();
-    void startOTA();
-    void endOTA();
-    void progressOTA(unsigned int progress, unsigned int total);
-    void errorOTA(ota_error_t error);
+    static void OTAConfig();
+    static void startOTA();
+    static void endOTA();
+    static void progressOTA(unsigned int progress, unsigned int total);
+    static void errorOTA(ota_error_t error);
   private:
     int _pin;
 };
