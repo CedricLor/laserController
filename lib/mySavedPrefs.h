@@ -13,8 +13,8 @@ class mySavedPrefs
   public:
     // mySavedPrefs(short iSlaveOnOffReaction, short iMasterNodeName, unsigned long pinBlinkingInterval, const short I_DEFAULT_SLAVE_ON_OFF_REACTION);
     mySavedPrefs();
-    void savePreferences();
-    void loadPreferences();
+    static void savePreferences();
+    static void loadPreferences();
   private:
     // short _iSlaveOnOffReaction;
     // short _iMasterNodeName;

@@ -633,7 +633,7 @@ void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
     Serial.print("WEB CONTROLLER: Changing pin blinking delay\n");
     changeTheBlinkingIntervalInTheStruct(thisPin, blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
-    savePreferences();
+    mySavedPrefs::savePreferences();
   }
 }
 
@@ -658,7 +658,7 @@ void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned lo
 void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action) {
   changeTheMasterBoxId(masterBoxNumber);
   changeSlaveReaction(action);
-  savePreferences();
+  mySavedPrefs::savePreferences();
 }
 
 void changeTheMasterBoxId(const short masterBoxNumber) {
