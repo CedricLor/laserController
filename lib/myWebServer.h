@@ -13,11 +13,13 @@
 class myWebServer
 {
   public:
-    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval);
+    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT);
   private:
     unsigned long _pinBlinkingInterval;
     LaserPin *_LaserPins;
+    short _PIN_COUNT;
 
+    String printIndivLaserCntrls();
     String printCurrentStatus(const short thisPin);
     String printOnOffControl(const short thisPin);
     String printPirStatusCntrl(const short thisPin);

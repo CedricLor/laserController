@@ -7,10 +7,37 @@
 #include "Arduino.h"
 #include "myWebServer.h"
 
-myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval)
+myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
+  _PIN_COUNT = PIN_COUNT;
+}
+
+String myWebServer::printIndivLaserCntrls() {
+  String laserCntrl;
+  for (short thisPin = 0; thisPin < _PIN_COUNT; thisPin++) {
+    laserCntrl += "<div>Laser # ";
+    laserCntrl += thisPin + 1;
+
+    // on/off control
+    laserCntrl += printCurrentStatus(thisPin);
+
+    // on/off control
+    laserCntrl += printOnOffControl(thisPin);
+
+    // PIR status control
+    laserCntrl += printPirStatusCntrl(thisPin);
+
+    // pairing control
+    laserCntrl += printPairingCntrl(thisPin);
+
+    // blinking delay control
+    laserCntrl += printBlinkingDelayWebCntrl(thisPin);
+
+    laserCntrl += "</div>";
+  }
+  return laserCntrl;
 }
 
 String myWebServer::printCurrentStatus(const short thisPin) {

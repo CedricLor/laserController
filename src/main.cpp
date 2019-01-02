@@ -659,6 +659,7 @@ String printOption(const String optionValue, const String optionText, const Stri
   return optionCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printIndivLaserCntrls() {
   String laserCntrl;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
