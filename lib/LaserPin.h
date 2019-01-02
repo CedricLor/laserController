@@ -12,6 +12,7 @@ class LaserPin
 {
   public:
     LaserPin();
+    LaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     short number;        // pin number to which the relays are attached
     bool on_off;       // is the pin HIGH or LOW (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;// a variable to store the on / off change requests by the various functions
@@ -20,7 +21,14 @@ class LaserPin
     unsigned long blinking_interval;
     bool pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
     short paired;        // a variable to store with which other pin this pin is paired (8 means it is not paired)
+
+    void initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
   private:
+    static bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
+    static bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
+    static bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+    static bool const default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
+
 };
 
 #endif

@@ -33,8 +33,8 @@
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
-void initStruct(short thisPin);
-void initStructs();
+void initLaserPin(short thisPin);
+void initLaserPins();
 void initPir();
 void meshSetup();
 void startAsyncServer();
@@ -184,9 +184,12 @@ const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 //
 // short const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
 
+// To delete - moved to LaserPin
 bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+// To delete - moved to LaserPin
+
 // unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
 // unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
@@ -344,7 +347,7 @@ void setup() {
   delay(2000);
   serialInit();
   mySavedPrefs::loadPreferences();
-  initStructs();
+  initLaserPins();
   initPir();
   meshSetup();
   startAsyncServer();
@@ -878,27 +881,15 @@ void serialInit() {
   Serial.print("\nSETUP: serialInit(): done\n");
 }
 
-void initStructs() {
-  Serial.print("SETUP: initStructs(): starting\n");
+void initLaserPins() {
+  Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize structs
-    initStruct(thisPin);
+    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
     pinMode(LaserPins[thisPin].number, OUTPUT);     // initialization of the pin connected to each of the relay as output
     digitalWrite(LaserPins[thisPin].number, HIGH);  // setting default value of the pins at HIGH (relay closed)
   }
-  Serial.print("SETUP: initStructs(): done\n");
-}
-
-void initStruct(short thisPin) {
-  short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
-  LaserPins[thisPin].number = relayPins[thisPin];
-  LaserPins[thisPin].on_off = default_pin_on_off_state;
-  LaserPins[thisPin].on_off_target = default_pin_on_off_target_state;
-  LaserPins[thisPin].blinking = default_pin_blinking_state;
-  LaserPins[thisPin].previous_time = millis();
-  LaserPins[thisPin].blinking_interval = pinBlinkingInterval;
-  LaserPins[thisPin].pir_state = default_pin_pir_state_value;
-  LaserPins[thisPin].paired = pairedPinNumber;
+  Serial.print("SETUP: initLaserPins(): done\n");
 }
 
 void initPir() {
