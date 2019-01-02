@@ -39,3 +39,13 @@ void LaserPin::physicalInitLaserPin()
   pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
   digitalWrite(number, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
+
+void LaserPin::initLaserPins(LaserPin *LaserPins) {
+  Serial.print("SETUP: initLaserPins(): starting\n");
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    // Initialize Laser Pin
+    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
+    LaserPins[thisPin].physicalInitLaserPin();
+  }
+  Serial.print("SETUP: initLaserPins(): done\n");
+}
