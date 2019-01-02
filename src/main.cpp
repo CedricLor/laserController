@@ -71,6 +71,9 @@ String printPirStatusCntrl(const short thisPin);
 String printPairingCntrl(const short thisPin);
 String printDelaySelect(const short thisPin);
 String printHiddenLaserNumb(const short thisPin);
+// Copied to class myWebServer - to delete
+String printOption(const String optionValue, const String optionText, const String selected = "");
+
 
 void savePreferences();
 void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
@@ -609,8 +612,6 @@ String printMasterCntrl() {
 
   return masterCntrl;
 }
-
-String printOption(const String optionValue, const String optionText, const String selected = "");
 
 // Copied to class myWebServer - to delete
 String printMasterSelect() {

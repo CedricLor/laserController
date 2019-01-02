@@ -27,6 +27,7 @@ class myWebServer
     short _I_MASTER_NODE_PREFIX;
     short _I_NODE_NAME;
 
+    String printMasterCntrl();
     String printMasterSelect();
     String printSlaveReactionSelect();
     String printLabel(const String labelText, const String labelFor);

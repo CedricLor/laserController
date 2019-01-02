@@ -19,6 +19,21 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval,
   _I_NODE_NAME = I_NODE_NAME;
 }
 
+String myWebServer::printMasterCntrl() {
+
+  String masterCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
+  masterCntrl += printLabel("Master box: ", "master-select");
+  masterCntrl += printMasterSelect();
+
+  masterCntrl += printLabel(" Reaction: ", "reaction-select");
+  masterCntrl += printSlaveReactionSelect();
+
+  masterCntrl += "<button type=\"submit\">Submit</button>";
+  masterCntrl += "</form>";
+
+  return masterCntrl;
+}
+
 String myWebServer::printMasterSelect() {
   String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
   for (short i = 1; i < 11; i++) {
