@@ -189,16 +189,6 @@ const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HI
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RELAYS variables /////////////////////////////
-struct pin_type {
-  short number;        // pin number to which the relays are attached
-  bool on_off;       // is the pin HIGH or LOW (LOW = the relay is closed, HIGH = the relay is open)
-  bool on_off_target;// a variable to store the on / off change requests by the various functions
-  bool blinking;     // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
-  unsigned long previous_time;
-  unsigned long blinking_interval;
-  bool pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
-  short paired;        // a variable to store with which other pin this pin is paired (8 means it is not paired)
-};
 
 // The following variable have been moved to BOX KEY VARIABLES
 // short relayPins[] = {
@@ -213,8 +203,8 @@ bool const default_pin_blinking_state = false;       // by default, pin starts a
 // unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;   // default blinking interval of the pin is 10 s .   // See BOX KEY VARIABLES
 unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 bool default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
-// declare and size an array to contain the structs as a global variable
-pin_type pin[PIN_COUNT];
+// declare and size an array to contain the LaserPins class instances as a global variable
+LaserPin LaserPins[PIN_COUNT];
 short pinParityWitness = 0;  // pinParityWitness is a variable that can be used when loop around the pins structs array.
                              // it avoids using the modulo.
                              // by switching it to 0 and 1 at each iteration of the loop
@@ -455,7 +445,7 @@ void stopPirCycle() {
 void switchPirRelays(const bool state) {
   Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (pin[thisPin].pir_state == HIGH) {
+    if (LaserPins[thisPin].pir_state == HIGH) {
       switchOnOffVariables(thisPin, state);
     }
   }
@@ -697,12 +687,12 @@ String printIndivLaserCntrls() {
 
 String printCurrentStatus(const short thisPin) {
   String currentStatus;
-  if (pin[thisPin].blinking == true) {
+  if (LaserPins[thisPin].blinking == true) {
     currentStatus += " ON ";
   } else {
     currentStatus += " OFF ";
   }
-  if (pin[thisPin].pir_state == HIGH) {
+  if (LaserPins[thisPin].pir_state == HIGH) {
     currentStatus += " in IR mode ";
   } else {
     currentStatus += " in manual mode ";
@@ -722,7 +712,7 @@ String printOnOffControl(const short thisPin) {
 
 String printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
-  if (pin[thisPin].pir_state == LOW) {
+  if (LaserPins[thisPin].pir_state == LOW) {
     pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
     pirStatusCntrl += thisPin + 1;
     pirStatusCntrl += "\"><button>IR ON</button></a>&nbsp;";
@@ -749,7 +739,7 @@ String printBlinkingDelayWebCntrl(const short thisPin) {
 // Copied to class myWebServer - to delete
 String printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
-  if (pin[thisPin].paired == 8) {
+  if (LaserPins[thisPin].paired == 8) {
     pairingWebCntrl += " Unpaired ";
     pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
     pairingWebCntrl += thisPin + 1;
@@ -777,7 +767,7 @@ String printDelaySelect(const short thisPin) {
     delaySelect += delayValue;
     delaySelect += "\"";
     if (thisPin < 9) {
-      if (delayValue == pin[thisPin].blinking_interval) {
+      if (delayValue == LaserPins[thisPin].blinking_interval) {
         delaySelect += "selected";
       }
     } else if (delayValue == pinBlinkingInterval) {
@@ -813,7 +803,7 @@ void switchPointerBlinkCycleState(const short thisPin, const bool state) {
   // probably the targetState in the calling function),
   // marks that the pin is in a blinking cycle.
   // If not, marks that the blinking cycle for this pin is off.
-  (state == LOW) ? pin[thisPin].blinking = true : pin[thisPin].blinking = false;
+  (state == LOW) ? LaserPins[thisPin].blinking = true : LaserPins[thisPin].blinking = false;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -832,15 +822,15 @@ void switchAllRelays(const bool state) {
 
 // Manually switches a single laser
 void manualSwitchOneRelay(const short thisPin, const bool targetState) {
-  // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching pin[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
+  // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(thisPin, targetState);
-  pin[thisPin].pir_state = LOW;
+  LaserPins[thisPin].pir_state = LOW;
 }
 
 void switchOnOffVariables(const short thisPin, const bool targetState) {
-  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for pin[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
+  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off
-  pin[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
+  LaserPins[thisPin].on_off_target = targetState;                               // turn the on_off_target state of the struct on or off
                                                                           // the actual pin will be turned on or off in the LASER SAFETY TIMER
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -863,16 +853,16 @@ void pairAllPins(const bool targetPairingState) {
 void pairPin(const short thisPin, const bool targetPairingState) {
   const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   if  (targetPairingState == false) {
-    pin[thisPin].paired = 8;
-    (pinParityWitness == 0) ? pin[thePairedPin].paired = 8 : pin[thePairedPin].paired = 8;
+    LaserPins[thisPin].paired = 8;
+    (pinParityWitness == 0) ? LaserPins[thePairedPin].paired = 8 : LaserPins[thePairedPin].paired = 8;
   } else {
     rePairPin(thisPin, thePairedPin);
   }
 }
 
 void rePairPin(const short thisPin, const short thePairedPin) {
-  pin[thisPin].paired = thePairedPin;
-  pin[thePairedPin].paired = thisPin;
+  LaserPins[thisPin].paired = thePairedPin;
+  LaserPins[thePairedPin].paired = thisPin;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -887,14 +877,14 @@ void rePairPin(const short thisPin, const short thePairedPin) {
 // this function subjects or frees all the relays to or of the control of the PIR
 void inclExclAllRelaysInPir(const bool state) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    pin[thisPin].pir_state = state;
+    LaserPins[thisPin].pir_state = state;
   }
 }
 
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects one relay to or releases it from the control of the PIR
 void inclExclOneRelayInPir(const short thisPin, const bool state) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
-  pin[thisPin].pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
+  LaserPins[thisPin].pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(thisPin, HIGH);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -919,8 +909,8 @@ void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const un
 }
 
 void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay) {
-  pin[thisPin].blinking_interval = blinkingDelay;
-  Serial.print("WEB CONTROLLER: changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay): This pin's blinking delay is now: ");Serial.println(pin[thisPin].blinking_interval);
+  LaserPins[thisPin].blinking_interval = blinkingDelay;
+  Serial.print("WEB CONTROLLER: changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay): This pin's blinking delay is now: ");Serial.println(LaserPins[thisPin].blinking_interval);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1018,7 +1008,7 @@ void blinkLaserIfBlinking(const short thisPin) {
      If a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair,
      if so, switch its on/off state
   */
-  if (pin[thisPin].blinking == true && (pin[thisPin].paired == 8 || pinParityWitness == 0)) {
+  if (LaserPins[thisPin].blinking == true && (LaserPins[thisPin].paired == 8 || pinParityWitness == 0)) {
     blinkLaserIfTimeIsDue(thisPin);
   }
 }
@@ -1031,8 +1021,8 @@ void blinkLaserIfTimeIsDue(const short thisPin) {
      TO ANALYSE: this may overwrite other changes that have been requested at other stages
   */
   const unsigned long currentTime = millis();
-  if (currentTime - pin[thisPin].previous_time > pin[thisPin].blinking_interval) {
-      pin[thisPin].on_off_target = !pin[thisPin].on_off;
+  if (currentTime - LaserPins[thisPin].previous_time > LaserPins[thisPin].blinking_interval) {
+      LaserPins[thisPin].on_off_target = !LaserPins[thisPin].on_off;
   }
 }
 
@@ -1042,7 +1032,7 @@ void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin) {
       Test if the laser is paired and if it is a master in a pair
       If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
   */
-  if (!(pin[thisPin].paired == 8) && (pinParityWitness == 0)) {
+  if (!(LaserPins[thisPin].paired == 8) && (pinParityWitness == 0)) {
     evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(thisPin);
   }
 }
@@ -1063,18 +1053,18 @@ void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(const shor
                   which means that the master pin has received the instruction to start a blinking cycle.
         In each case, the slave will receive the instruction to put its on_off_target to the opposite of that of its master.
   */
-  if ((pin[thisPin].blinking == false) && (pin[thisPin].on_off_target == HIGH)) {
+  if ((LaserPins[thisPin].blinking == false) && (LaserPins[thisPin].on_off_target == HIGH)) {
     updatePairedSlave(thisPin, HIGH);
     return;
   }
-  updatePairedSlave(thisPin, !pin[thisPin].on_off_target);
+  updatePairedSlave(thisPin, !LaserPins[thisPin].on_off_target);
 }
 
 void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget) {
-  pin[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
-  pin[thisPin + 1].blinking = pin[thisPin].blinking;                            // align the blinking state of the paired slave laser
-  pin[thisPin + 1].pir_state = pin[thisPin].pir_state;                          // align the IR state of the paired slave laser
-  // pin[thisPin + 1].paired = thisPin;                                            // align the paired pin of the slave to this pin
+  LaserPins[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
+  LaserPins[thisPin + 1].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
+  LaserPins[thisPin + 1].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
+  // LaserPins[thisPin + 1].paired = thisPin;                                            // align the paired pin of the slave to this pin
 }
 
 void executeUpdates(const short thisPin) {
@@ -1089,10 +1079,10 @@ void executeUpdates(const short thisPin) {
       // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
       // a blinking cycle and cooling off
   */
-  if (pin[thisPin].on_off != pin[thisPin].on_off_target) {
-    digitalWrite(pin[thisPin].number, pin[thisPin].on_off_target);
-    pin[thisPin].on_off = pin[thisPin].on_off_target;
-    pin[thisPin].previous_time = millis();
+  if (LaserPins[thisPin].on_off != LaserPins[thisPin].on_off_target) {
+    digitalWrite(LaserPins[thisPin].number, LaserPins[thisPin].on_off_target);
+    LaserPins[thisPin].on_off = LaserPins[thisPin].on_off_target;
+    LaserPins[thisPin].previous_time = millis();
   }
 }
 
@@ -1194,24 +1184,22 @@ void initStructs() {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize structs
     initStruct(thisPin);
-    pinMode(pin[thisPin].number, OUTPUT);     // initialization of the pin connected to each of the relay as output
-    digitalWrite(pin[thisPin].number, HIGH);  // setting default value of the pins at HIGH (relay closed)
+    pinMode(LaserPins[thisPin].number, OUTPUT);     // initialization of the pin connected to each of the relay as output
+    digitalWrite(LaserPins[thisPin].number, HIGH);  // setting default value of the pins at HIGH (relay closed)
   }
   Serial.print("SETUP: initStructs(): done\n");
 }
 
 void initStruct(short thisPin) {
   short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
-  pin[thisPin] = {
-    relayPins[thisPin],
-    default_pin_on_off_state,        // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-    default_pin_on_off_target_state, // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-    default_pin_blinking_state,      // by default, pin starts as in a blinking-cycle TO ANALYSE
-    millis(),
-    pinBlinkingInterval,            // default blinking interval of the pin is 10 s, unless some settings have been saved to EEPROM
-    default_pin_pir_state_value,     // by default, the pin is not controlled by the PIR
-    pairedPinNumber  // by default, the pins are paired
-  };
+  LaserPins[thisPin].number = relayPins[thisPin];
+  LaserPins[thisPin].on_off = default_pin_on_off_state;
+  LaserPins[thisPin].on_off_target = default_pin_on_off_target_state;
+  LaserPins[thisPin].blinking = default_pin_blinking_state;
+  LaserPins[thisPin].previous_time = millis();
+  LaserPins[thisPin].blinking_interval = pinBlinkingInterval;
+  LaserPins[thisPin].pir_state = default_pin_pir_state_value;
+  LaserPins[thisPin].paired = pairedPinNumber;
 }
 
 void initPir() {
