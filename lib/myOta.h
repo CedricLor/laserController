@@ -1,9 +1,8 @@
 /*
-  myOta.h - Library for storing OTA related code in laserController.
-  Created by Cedric Lor, January 1, 2019.
+  Morse.h - Library for flashing Morse code.
+  Created by David A. Mellis, November 2, 2007.
   Released into the public domain.
 */
-
 #ifndef myOta_h
 #define myOta_h
 
