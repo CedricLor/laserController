@@ -639,6 +639,7 @@ String printSlaveReactionSelect() {
   return slaveReactionSelect;
 }
 
+// Copied to class myWebServer - to delete
 String printLabel(const String labelText, const String labelFor) {
   String labelCntrl = "<label for=\"";
   labelCntrl += labelFor;
