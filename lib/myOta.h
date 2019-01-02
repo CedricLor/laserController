@@ -12,6 +12,7 @@ class myOta
 {
   public:
     myOta();
+    void OTAConfig();
     void dot();
     void dash();
   private:
