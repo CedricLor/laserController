@@ -6,12 +6,11 @@
 
 #include "Arduino.h"
 #include "myWebServer.h"
-#include "LaserPin.h"
 
-myWebServer::myWebServer(LaserPin pin, unsigned long pinBlinkingInterval)
+myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
-  _pin = pin;
+  *_LaserPins = *LaserPins;
 }
 
 String myWebServer::printBlinkingDelayWebCntrl(const short thisPin) {
@@ -25,6 +24,27 @@ String myWebServer::printBlinkingDelayWebCntrl(const short thisPin) {
   return blinkingDelayWebCntrl;
 }
 
+String myWebServer::printPairingCntrl(const short thisPin) {
+  String pairingWebCntrl;
+  if (_LaserPins[thisPin].paired == 8) {
+    pairingWebCntrl += " Unpaired ";
+    pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
+    pairingWebCntrl += thisPin + 1;
+    pairingWebCntrl += "\"><button>PAIR</button></a>&nbsp;";
+  } else if (thisPin % 2 == 0) {
+    pairingWebCntrl += " Master ";
+    pairingWebCntrl += "<a href=\"pairingState=un&laser=";
+    pairingWebCntrl += thisPin + 1;
+    pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
+  } else {
+    pairingWebCntrl += " Slave ";
+    pairingWebCntrl += "<a href=\"pairingState=un&laser=";
+    pairingWebCntrl += thisPin + 1;
+    pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
+  }
+  return pairingWebCntrl;
+}
+
 String myWebServer::printDelaySelect(const short thisPin) {
   String delaySelect;
   delaySelect += "<select name=\"blinkingDelay\">";
@@ -33,7 +53,7 @@ String myWebServer::printDelaySelect(const short thisPin) {
     delaySelect += delayValue;
     delaySelect += "\"";
     if (thisPin < 9) {
-      if (delayValue == _pin[thisPin].blinking_interval) {
+      if (delayValue == _LaserPins[thisPin].blinking_interval) {
         delaySelect += "selected";
       }
     } else if (delayValue == _pinBlinkingInterval) {

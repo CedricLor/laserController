@@ -12,8 +12,8 @@
 #include "../lib/Myota.cpp"
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
-// #include "../lib/myWebServer.h"
-// #include "../lib/myWebServer.cpp"
+#include "../lib/myWebServer.h"
+#include "../lib/myWebServer.cpp"
 
 // v. 3.0.0
 
@@ -725,6 +725,7 @@ String printPirStatusCntrl(const short thisPin) {
   return pirStatusCntrl;
 }
 
+// Copied to class myWebServer - to delete
 String printBlinkingDelayWebCntrl(const short thisPin) {
   String blinkingDelayWebCntrl;
   blinkingDelayWebCntrl += "Blinking delay: ";

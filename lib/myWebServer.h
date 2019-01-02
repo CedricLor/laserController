@@ -8,17 +8,18 @@
 
 #include "Arduino.h"
 #include "LaserPin.h"
-#include "LaserPin.cpp"
+// #include "LaserPin.cpp"
 
 class myWebServer
 {
   public:
-    myWebServer(LaserPin pin, unsigned long pinBlinkingInterval);
+    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval);
   private:
     unsigned long _pinBlinkingInterval;
-    LaserPin _pin;
+    LaserPin *_LaserPins;
 
     String printBlinkingDelayWebCntrl(const short thisPin);
+    String printPairingCntrl(const short thisPin);
     String printDelaySelect(const short thisPin);
     String printHiddenLaserNumb(const short thisPin);
 };
