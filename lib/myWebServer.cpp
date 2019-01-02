@@ -6,7 +6,7 @@
 #include "Arduino.h"
 #include "myWebServer.h"
 
-myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes)
+myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
@@ -16,8 +16,26 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval,
   _iMasterNodeName = iMasterNodeName;
   _I_MASTER_NODE_PREFIX = I_MASTER_NODE_PREFIX;
   _I_NODE_NAME = I_NODE_NAME;
+  _BOXES_I_PREFIX = BOXES_I_PREFIX;
 
   *_ControlerBoxes = *ControlerBoxes;
+}
+
+String myWebServer::returnTheResponse() {
+  String myResponse = "<!DOCTYPE HTML><html>";
+  myResponse += "<body>";
+  myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
+  myResponse += "<h1>";
+  myResponse += String(_I_NODE_NAME);
+  myResponse += "  ";
+  myResponse += (_ControlerBoxes[_I_NODE_NAME - _BOXES_I_PREFIX].APIP).toString();
+  myResponse += "</h1>";
+  myResponse += printAllLasersCntrl();
+  myResponse += printIndivLaserCntrls();
+  myResponse += printLinksToBoxes();
+  myResponse += "</body></html>";
+  Serial.println(myResponse);
+  return myResponse;
 }
 
 String myWebServer::printLinksToBoxes() {

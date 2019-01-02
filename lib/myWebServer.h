@@ -13,7 +13,7 @@
 class myWebServer
 {
   public:
-    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes);
+    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const short BOXES_I_PREFIX);
   private:
     unsigned long _pinBlinkingInterval;
     LaserPin *_LaserPins;
@@ -26,9 +26,11 @@ class myWebServer
     short _iMasterNodeName;
     short _I_MASTER_NODE_PREFIX;
     short _I_NODE_NAME;
+    short _BOXES_I_PREFIX;
 
     ControlerBox *_ControlerBoxes;
 
+    String returnTheResponse();
     String printLinksToBoxes();
     String printAllLasersCntrl();
     String printMasterCntrl();
