@@ -1,5 +1,5 @@
 /*
-  LaserPin.cpp - Library to handle laser controller web server.
+  LaserPin.cpp - Library to handle the pins connected to the relays controlling the lasers.
   Created by Cedric Lor, January 2, 2019.
 */
 

@@ -12,6 +12,8 @@
 #include "../lib/Myota.cpp"
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
+#include "../lib/ControlerBox.h"
+#include "../lib/ControlerBox.cpp"
 #include "../lib/myWebServer.h"
 #include "../lib/myWebServer.cpp"
 
@@ -152,13 +154,8 @@ char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
 //const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
 //const IPAddress MY_N_MASK(255, 0, 0, 0);
 
-struct box_type {
-  uint32_t nodeId;
-  IPAddress stationIP;
-  IPAddress APIP;
-};
 // const short BOXES_COUNT = 10;                                                                                                // NETWORK BY NETWORK
-box_type box[BOXES_COUNT];
+ControlerBox ControlerBoxes[BOXES_COUNT];
 
 const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
 
@@ -554,7 +551,7 @@ String returnTheResponse() {
   myResponse += "<h1>";
   myResponse += String(I_NODE_NAME);
   myResponse += "  ";
-  myResponse += (box[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
+  myResponse += (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -563,19 +560,21 @@ String returnTheResponse() {
   Serial.println(myResponse);
   return myResponse;
 }
+
+// Copied to class myWebServer - to delete
 String printLinksToBoxes() {
   String linksToBoxes = "<div class=\"box_links_wrapper\">";
   IPAddress testIp(0,0,0,0);
   for (short i = 0; i < 10; i++) {
-    if (!(box[i].stationIP == testIp)) {
+    if (!(ControlerBoxes[i].stationIP == testIp)) {
       linksToBoxes += "<div class=\"box_link_wrapper\">Station IP: ";
       linksToBoxes += "<a href=\"http://";
-      linksToBoxes += (box[i].stationIP).toString();
+      linksToBoxes += (ControlerBoxes[i].stationIP).toString();
       linksToBoxes +=  "/\">Box number: ";
       linksToBoxes += i + 1;
       linksToBoxes += "</a> APIP: ";
       linksToBoxes += "<a href=\"http://";
-      linksToBoxes += (box[i].APIP).toString();
+      linksToBoxes += (ControlerBoxes[i].APIP).toString();
       linksToBoxes +=  "/\">Box number: ";
       linksToBoxes += i + 1;
       linksToBoxes += "</a>";
@@ -1362,15 +1361,15 @@ void meshSetup() {
 }
 
 void boxTypeSelfUpdate() {
-  box[I_NODE_NAME - BOXES_I_PREFIX].APIP = myMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
-  box[I_NODE_NAME - BOXES_I_PREFIX].stationIP = myMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  box[I_NODE_NAME - BOXES_I_PREFIX].nodeId = myMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP = myMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP = myMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].nodeId = myMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
 }
 
 void boxTypeUpdate(uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root) {
-  box[iSenderNodeName - BOXES_I_PREFIX].APIP = parseIpString(root, "senderAPIP");
-  box[iSenderNodeName - BOXES_I_PREFIX].stationIP = parseIpString(root, "senderStationIP");
-  box[iSenderNodeName - BOXES_I_PREFIX].nodeId = senderNodeId;
+  ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].APIP = parseIpString(root, "senderAPIP");
+  ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].stationIP = parseIpString(root, "senderStationIP");
+  ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].nodeId = senderNodeId;
 }
 
 short jsonToInt(JsonObject& root, String rootKey) {
@@ -1451,8 +1450,8 @@ String createMeshMessage(const char* myStatus) {
   JsonObject& msg = jsonBuffer.createObject();
 
   msg["senderNodeName"] = nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
-  msg["senderAPIP"] = (box[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
-  msg["senderStationIP"] = (box[I_NODE_NAME - BOXES_I_PREFIX].stationIP).toString();
+  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
+  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
 
   String str;

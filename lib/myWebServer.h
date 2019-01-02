@@ -8,12 +8,12 @@
 
 #include "Arduino.h"
 #include "LaserPin.h"
-// #include "LaserPin.cpp"
+#include "ControlerBox.h"
 
 class myWebServer
 {
   public:
-    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME);
+    myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes);
   private:
     unsigned long _pinBlinkingInterval;
     LaserPin *_LaserPins;
@@ -27,6 +27,9 @@ class myWebServer
     short _I_MASTER_NODE_PREFIX;
     short _I_NODE_NAME;
 
+    ControlerBox *_ControlerBoxes;
+
+    String printLinksToBoxes();
     String printAllLasersCntrl();
     String printMasterCntrl();
     String printMasterSelect();

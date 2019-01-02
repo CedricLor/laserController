@@ -1,13 +1,12 @@
 /*
   myWebServer.cpp - Library to handle laser controller web server.
   Created by Cedric Lor, January 2, 2019.
-  Released into the public domain.
 */
 
 #include "Arduino.h"
 #include "myWebServer.h"
 
-myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME)
+myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
@@ -17,6 +16,31 @@ myWebServer::myWebServer(LaserPin *LaserPins, unsigned long pinBlinkingInterval,
   _iMasterNodeName = iMasterNodeName;
   _I_MASTER_NODE_PREFIX = I_MASTER_NODE_PREFIX;
   _I_NODE_NAME = I_NODE_NAME;
+
+  *_ControlerBoxes = *ControlerBoxes;
+}
+
+String myWebServer::printLinksToBoxes() {
+  String linksToBoxes = "<div class=\"box_links_wrapper\">";
+  IPAddress testIp(0,0,0,0);
+  for (short i = 0; i < 10; i++) {
+    if (!(_ControlerBoxes[i].stationIP == testIp)) {
+      linksToBoxes += "<div class=\"box_link_wrapper\">Station IP: ";
+      linksToBoxes += "<a href=\"http://";
+      linksToBoxes += (_ControlerBoxes[i].stationIP).toString();
+      linksToBoxes +=  "/\">Box number: ";
+      linksToBoxes += i + 1;
+      linksToBoxes += "</a> APIP: ";
+      linksToBoxes += "<a href=\"http://";
+      linksToBoxes += (_ControlerBoxes[i].APIP).toString();
+      linksToBoxes +=  "/\">Box number: ";
+      linksToBoxes += i + 1;
+      linksToBoxes += "</a>";
+      linksToBoxes += "</div>";
+    }
+  }
+  linksToBoxes += "</div>";
+  return linksToBoxes;
 }
 
 String myWebServer::printAllLasersCntrl() {
