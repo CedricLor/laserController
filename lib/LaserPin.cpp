@@ -50,6 +50,7 @@ void LaserPin::initLaserPins(LaserPin *LaserPins) {
   }
   Serial.print("SETUP: initLaserPins(): done\n");
 }
+
 //////////////////////////////////////////////////////////////////////////
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
@@ -72,4 +73,20 @@ void LaserPin::switchPointerBlinkCycleState(const bool state) {
   // marks that the pin is in a blinking cycle.
   // If not, marks that the blinking cycle for this pin is off.
   (state == LOW) ? blinking = true : blinking = false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// MANUAL SWITCHES
+// Manually switches all the lasers
+void LaserPin::switchAllRelays(LaserPin *LaserPins, const bool state) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    LaserPins[thisPin].manualSwitchOneRelay(state);
+  }
+}
+
+// Manually switches a single laser
+void LaserPin::manualSwitchOneRelay(const bool targetState) {
+  // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
+  switchOnOffVariables(targetState);
+  pir_state = LOW;
 }
