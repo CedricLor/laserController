@@ -41,12 +41,13 @@ void enableTasks();
 void laserSafetyLoop();
 
 void switchPirRelays(const bool state);
-void directPinsSwitch(bool targetState);
 void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
+// Transfered to LaserPin - to delete
+void directPinsSwitch(const bool targetState);
 void switchAllRelays(const bool targetState);
 void manualSwitchOneRelay(const short thisPin, const bool targetState);
 void switchOnOffVariables(const short thisPin, const bool targetState);
@@ -178,10 +179,13 @@ const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 // after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
 const short SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
 const long L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
+// Transfered to LaserPin - to delete
 short highPinsParityDuringStartup = 0;             /*  variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
                                                               0 = even pins are [high] and odds are [low];
                                                               1 = odd pins are [low] and evens are [high];
                                                    */
+// Replaced by:
+short LaserPin::highPinsParityDuringStartup = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -385,6 +389,7 @@ void switchPirRelays(const bool state) {
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
 }
 
+// Transfered to LaserPin - to delete
 // Switches relay pins on and off during PIRStartUp
 void directPinsSwitch(const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
@@ -504,6 +509,7 @@ void manualSwitchOneRelay(const short thisPin, const bool targetState) {
   LaserPins[thisPin].pir_state = LOW;
 }
 
+// Transfered to LaserPin -- to delete
 void switchOnOffVariables(const short thisPin, const bool targetState) {
   // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(thisPin, targetState);                     // turn the blinking state of the struct representing the pin on or off

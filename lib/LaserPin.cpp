@@ -26,7 +26,8 @@ LaserPin::LaserPin(short pinNumber /* pin number on the ESP board */, short this
   pir_state = default_pin_pir_state_value;
   initLaserPin(pinNumber, thisPin);
 }
-
+/////////////////////////////////////////////////////////////////////////
+// INIT
 void LaserPin::initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
 {
   number = pinNumber;
@@ -48,4 +49,27 @@ void LaserPin::initLaserPins(LaserPin *LaserPins) {
     LaserPins[thisPin].physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
+}
+//////////////////////////////////////////////////////////////////////////
+// SWITCHES
+// Switches relay pins on and off during PIRStartUp
+void LaserPin::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+  for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
+    LaserPins[thisPin].switchOnOffVariables(targetState);
+  }
+}
+
+void LaserPin::switchOnOffVariables(const bool targetState) {
+  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
+  switchPointerBlinkCycleState(targetState);                        // turn the blinking state of the struct representing the pin on or off
+  on_off_target = targetState;                                               // turn the on_off_target state of the struct on or off
+                                                                             // the actual pin will be turned on or off in the LASER SAFETY TIMER
+}
+
+void LaserPin::switchPointerBlinkCycleState(const bool state) {
+  // If the state passed on to the function is LOW (i.e.
+  // probably the targetState in the calling function),
+  // marks that the pin is in a blinking cycle.
+  // If not, marks that the blinking cycle for this pin is off.
+  (state == LOW) ? blinking = true : blinking = false;
 }
