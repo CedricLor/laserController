@@ -46,9 +46,6 @@ void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
-void switchAllRelays(const bool targetState);
-void manualSwitchOneRelay(const short thisPin, const bool targetState);
-
 void pairAllPins(const bool targetPairingState);
 void pairPin(const short thisPin, const bool targetPairingState);
 void rePairPin(const short thisPin, const short thePairedPin);
@@ -394,9 +391,10 @@ void switchPirRelays(const bool state) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void webSwitchRelays(AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
-    switchAllRelays(targetState);
+    LaserPin::switchAllRelays(LaserPins, targetState);
   } else {
-    manualSwitchOneRelay(_p2->value().toInt(), targetState);
+    int val = _p2->value().toInt();
+    LaserPins[val].manualSwitchOneRelay(targetState);
   }
 }
 
@@ -455,28 +453,6 @@ void decodeRequest(AsyncWebServerRequest *request) {
     return;
   }
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MANUAL SWITCHES
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Manually switches all the lasers
-void switchAllRelays(const bool state) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    manualSwitchOneRelay(thisPin, state);
-  }
-}
-
-// Manually switches a single laser
-void manualSwitchOneRelay(const short thisPin, const bool targetState) {
-  // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
-  LaserPins[thisPin].switchOnOffVariables(targetState);
-  LaserPins[thisPin].pir_state = LOW;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -725,13 +701,13 @@ void tcbOdAutoSwitchAllRelays();
 Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
 
 bool tcbOaAutoSwitchAllRelays() {
-  switchAllRelays(LOW);
+  LaserPin::switchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
 void tcbOdAutoSwitchAllRelays() {
-  switchAllRelays(HIGH);
+  LaserPin::switchAllRelays(LaserPins, HIGH);
   inclExclAllRelaysInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
