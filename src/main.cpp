@@ -46,9 +46,10 @@ void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
-void pairAllPins(const bool targetPairingState);
-void pairPin(const short thisPin, const bool targetPairingState);
-void rePairPin(const short thisPin, const short thePairedPin);
+// To delete - transfered to LaserPin class
+// void pairAllPins(const bool targetPairingState);
+// void pairPin(const short thisPin, const bool targetPairingState);
+// void rePairPin(const short thisPin, const short thePairedPin);
 
 void changeGlobalBlinkingDelay(const unsigned long blinkingDelay);
 void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay);
@@ -146,12 +147,13 @@ const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
 // declare and size an array to contain the LaserPins class instances as a global variable
 LaserPin LaserPins[PIN_COUNT];
-short pinParityWitness = 0;  // pinParityWitness is a variable that can be used when looping around the pins structs array.
+short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
                              // it avoids using the modulo.
                              // by switching it to 0 and 1 at each iteration of the loop
-                             // in principle, the switch takes the following footprint: pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+                             // in principle, the switch takes the following footprint: LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
                              // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
-                             // once the loop is over, it should be reset to 0: pinParityWitness = 0;
+                             // once the loop is over, it should be reset to 0: LaserPin::pinParityWitness = 0;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,12 +250,12 @@ void cbtPirStartUpDelayBlinkLaser() {
 }
 
 bool onEnablePirStartUpDelayBlinkLaser() {
-  pairAllPins(false);
+  LaserPin::pairAllPins(LaserPins, false);
   return true;
 }
 
 void onDisablePirStartUpDelayBlinkLaser() {
-  pairAllPins(true);
+  LaserPin::pairAllPins(LaserPins, true);
   LaserPin::directPinsSwitch(LaserPins, HIGH);
   LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   tPirCntrl.enable();
@@ -457,29 +459,30 @@ void decodeRequest(AsyncWebServerRequest *request) {
 // PAIRING SWITCHES: Pairing and unpairing of pins
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void pairAllPins(const bool targetPairingState) {
-  // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin = thisPin + 2) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    pairPin(thisPin, targetPairingState);
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
-  }
-  pinParityWitness = 0;
-}
-
-void pairPin(const short thisPin, const bool targetPairingState) {
-  const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
-  if  (targetPairingState == false) {
-    LaserPins[thisPin].paired = 8;
-    (pinParityWitness == 0) ? LaserPins[thePairedPin].paired = 8 : LaserPins[thePairedPin].paired = 8;
-  } else {
-    rePairPin(thisPin, thePairedPin);
-  }
-}
-
-void rePairPin(const short thisPin, const short thePairedPin) {
-  LaserPins[thisPin].paired = thePairedPin;
-  LaserPins[thePairedPin].paired = thisPin;
-}
+// to delete -- transfered to LaserPin
+// void pairAllPins(const bool targetPairingState) {
+//   // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin = thisPin + 2) {
+//   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+//     pairPin(thisPin, targetPairingState);
+//     LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
+//   }
+//   LaserPin::pinParityWitness = 0;
+// }
+//
+// void pairPin(const short thisPin, const bool targetPairingState) {
+//   const short thePairedPin = (LaserPin::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+//   if  (targetPairingState == false) {
+//     LaserPins[thisPin].paired = 8;
+//     (LaserPin::pinParityWitness == 0) ? LaserPins[thePairedPin].paired = 8 : LaserPins[thePairedPin].paired = 8;
+//   } else {
+//     rePairPin(thisPin, thePairedPin);
+//   }
+// }
+//
+// void rePairPin(const short thisPin, const short thePairedPin) {
+//   LaserPins[thisPin].paired = thePairedPin;
+//   LaserPins[thePairedPin].paired = thisPin;
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -577,9 +580,9 @@ void laserSafetyLoop() {
     blinkLaserIfBlinking(thisPin);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     ifMasterPairedThenUpdateOnOffOfSlave(thisPin);          // update the on/off status of slave
     executeUpdates(thisPin);                                // transform the update to the struct to analogical updates in the status of the related pin
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+    LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
   }
-  pinParityWitness = 0;
+  LaserPin::pinParityWitness = 0;
 }
 
 void blinkLaserIfBlinking(const short thisPin) {
@@ -588,7 +591,7 @@ void blinkLaserIfBlinking(const short thisPin) {
      If a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair,
      if so, switch its on/off state
   */
-  if (LaserPins[thisPin].blinking == true && (LaserPins[thisPin].paired == 8 || pinParityWitness == 0)) {
+  if (LaserPins[thisPin].blinking == true && (LaserPins[thisPin].paired == 8 || LaserPin::pinParityWitness == 0)) {
     blinkLaserIfTimeIsDue(thisPin);
   }
 }
@@ -612,7 +615,7 @@ void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin) {
       Test if the laser is paired and if it is a master in a pair
       If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
   */
-  if (!(LaserPins[thisPin].paired == 8) && (pinParityWitness == 0)) {
+  if (!(LaserPins[thisPin].paired == 8) && (LaserPin::pinParityWitness == 0)) {
     evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(thisPin);
   }
 }

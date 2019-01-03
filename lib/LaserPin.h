@@ -41,6 +41,11 @@ class LaserPin
     static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state);
     void inclExclOneRelayInPir(const bool state);
 
+    static short pinParityWitness;
+    static void pairAllPins(LaserPin *LaserPins, const bool targetPairingState);
+    void pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState);
+    void rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
+
   private:
     static bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
     static bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP

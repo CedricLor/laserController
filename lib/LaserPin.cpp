@@ -91,7 +91,7 @@ void LaserPin::manualSwitchOneRelay(const bool targetState) {
   pir_state = LOW;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 // PIR SUBJECTION SWITCHES
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
@@ -107,4 +107,29 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
   pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(HIGH);
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// PAIRING SWITCHES: Pairing and unpairing of pins
+void LaserPin::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    LaserPins[thisPin].pairPin(LaserPins, thisPin, targetPairingState);
+    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
+  }
+  pinParityWitness = 0;
+}
+
+void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState) {
+  const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  if (targetPairingState == false) {
+    rePairPin(LaserPins, 8, 8);
+  } else {
+    rePairPin(LaserPins, thisPin, thePairedPin);
+  }
+}
+
+void LaserPin::rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin) {
+  paired = thePairedPin;
+  LaserPins[thePairedPin].paired = thisPin;
+}
+//////////////////////////////////////////////////////////////////////////
