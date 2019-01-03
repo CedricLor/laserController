@@ -50,9 +50,6 @@ void pairAllPins(const bool targetPairingState);
 void pairPin(const short thisPin, const bool targetPairingState);
 void rePairPin(const short thisPin, const short thePairedPin);
 
-void inclExclAllRelaysInPir(const bool targetState);
-void inclExclOneRelayInPir(const short thisPin, const bool targetState);
-
 void changeGlobalBlinkingDelay(const unsigned long blinkingDelay);
 void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay);
 void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay);
@@ -252,15 +249,13 @@ void cbtPirStartUpDelayBlinkLaser() {
 
 bool onEnablePirStartUpDelayBlinkLaser() {
   pairAllPins(false);
-  // srPirStartUpComplete.setWaiting();
   return true;
 }
 
 void onDisablePirStartUpDelayBlinkLaser() {
   pairAllPins(true);
   LaserPin::directPinsSwitch(LaserPins, HIGH);
-  inclExclAllRelaysInPir(HIGH);                                     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
-  // srPirStartUpComplete.signalComplete();
+  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   tPirCntrl.enable();
 }
 
@@ -400,9 +395,10 @@ void webSwitchRelays(AsyncWebParameter* _p2, bool targetState) {
 
 void webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
-    inclExclAllRelaysInPir(targetState);
+    LaserPin::inclExclAllRelaysInPir(LaserPins, targetState);
   } else {
-    inclExclOneRelayInPir(_p2->value().toInt(), targetState);
+    int val = _p2->value().toInt();
+    LaserPins[val].inclExclOneRelayInPir(targetState);
   }
 }
 
@@ -485,28 +481,6 @@ void rePairPin(const short thisPin, const short thePairedPin) {
   LaserPins[thePairedPin].paired = thisPin;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PIR SUBJECTION SWITCHES
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// When clicking on the "On" or "Off" button on the webpage in the PIR column,
-// this function subjects or frees all the relays to or of the control of the PIR
-void inclExclAllRelaysInPir(const bool state) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pir_state = state;
-  }
-}
-
-// When clicking on the "On" or "Off" button on the webpage in the PIR column,
-// this function subjects one relay to or releases it from the control of the PIR
-void inclExclOneRelayInPir(const short thisPin, const bool state) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
-  LaserPins[thisPin].pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
-  LaserPins[thisPin].switchOnOffVariables(HIGH);
-}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,7 +682,7 @@ bool tcbOaAutoSwitchAllRelays() {
 
 void tcbOdAutoSwitchAllRelays() {
   LaserPin::switchAllRelays(LaserPins, HIGH);
-  inclExclAllRelaysInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
 void autoSwitchAllRelays(const bool targetState) {
