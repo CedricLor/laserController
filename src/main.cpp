@@ -33,8 +33,6 @@
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
-void initLaserPin(short thisPin);
-void initLaserPins();
 void initPir();
 void meshSetup();
 void startAsyncServer();
@@ -308,7 +306,7 @@ void setup() {
   delay(2000);
   serialInit();
   mySavedPrefs::loadPreferences();
-  initLaserPins();
+  LaserPin::initLaserPins(LaserPins);
   initPir();
   meshSetup();
   startAsyncServer();
@@ -840,16 +838,6 @@ void serialInit() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
   Serial.print("\nSETUP: serialInit(): done\n");
-}
-
-void initLaserPins() {
-  Serial.print("SETUP: initLaserPins(): starting\n");
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    // Initialize Laser Pin
-    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
-    LaserPins[thisPin].physicalInitLaserPin();
-  }
-  Serial.print("SETUP: initLaserPins(): done\n");
 }
 
 void initPir() {
