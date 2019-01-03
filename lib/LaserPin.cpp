@@ -133,3 +133,22 @@ void LaserPin::rePairPin(LaserPin *LaserPins, const short thisPin, const short t
   LaserPins[thePairedPin].paired = thisPin;
 }
 //////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// BLINKING DELAY Control
+void LaserPin::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
+    pinBlinkingInterval = blinkingDelay;
+    mySavedPrefs::savePreferences();
+  }
+}
+
+void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) {
+  changeTheBlinkingInterval(blinkingDelay);
+}
+
+void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
+  blinking_interval = blinkingDelay;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////

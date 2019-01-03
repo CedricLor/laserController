@@ -12,12 +12,12 @@
 #include "../lib/global.cpp"
 #include "../lib/Myota.h"
 #include "../lib/Myota.cpp"
-#include "../lib/LaserPin.h"
-#include "../lib/LaserPin.cpp"
 #include "../lib/ControlerBox.h"
 #include "../lib/ControlerBox.cpp"
 #include "../lib/mySavedPrefs.h"
 #include "../lib/mySavedPrefs.cpp"
+#include "../lib/LaserPin.h"
+#include "../lib/LaserPin.cpp"
 #include "../lib/myWebServerViews.h"
 #include "../lib/myWebServerViews.cpp"
 #include "../lib/myWebServerControler.h"
@@ -45,16 +45,6 @@ void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
-
-// To delete - transfered to LaserPin class
-// void pairAllPins(const bool targetPairingState);
-// void pairPin(const short thisPin, const bool targetPairingState);
-// void rePairPin(const short thisPin, const short thePairedPin);
-
-void changeGlobalBlinkingDelay(const unsigned long blinkingDelay);
-void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay);
-void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay);
-
 
 void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
 void changeTheMasterBoxId(const short masterBoxNumber);
@@ -436,10 +426,13 @@ void decodeRequest(AsyncWebServerRequest *request) {
     Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingDelay %s\n", _p2->value().c_str());
     if (_p2->value() == "10") {
       Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
-      changeGlobalBlinkingDelay(_p1->value().toInt());
+      int targetBlinkingDelay = _p1->value().toInt();
+      LaserPin::changeGlobalBlinkingDelay(LaserPins, targetBlinkingDelay);
     }
     else {
-      changeIndividualBlinkingDelay(_p2->value().toInt(), _p1->value().toInt());
+      int pinIndexNumber = _p2->value().toInt();
+      int targetBlinkingDelay = _p1->value().toInt();
+      LaserPins[pinIndexNumber].changeIndividualBlinkingDelay(targetBlinkingDelay);
     }
     return;
   }
@@ -452,65 +445,6 @@ void decodeRequest(AsyncWebServerRequest *request) {
   }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PAIRING SWITCHES: Pairing and unpairing of pins
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// to delete -- transfered to LaserPin
-// void pairAllPins(const bool targetPairingState) {
-//   // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin = thisPin + 2) {
-//   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-//     pairPin(thisPin, targetPairingState);
-//     LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
-//   }
-//   LaserPin::pinParityWitness = 0;
-// }
-//
-// void pairPin(const short thisPin, const bool targetPairingState) {
-//   const short thePairedPin = (LaserPin::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
-//   if  (targetPairingState == false) {
-//     LaserPins[thisPin].paired = 8;
-//     (LaserPin::pinParityWitness == 0) ? LaserPins[thePairedPin].paired = 8 : LaserPins[thePairedPin].paired = 8;
-//   } else {
-//     rePairPin(thisPin, thePairedPin);
-//   }
-// }
-//
-// void rePairPin(const short thisPin, const short thePairedPin) {
-//   LaserPins[thisPin].paired = thePairedPin;
-//   LaserPins[thePairedPin].paired = thisPin;
-// }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// BLINKING DELAY Control
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void changeGlobalBlinkingDelay(const unsigned long blinkingDelay) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    Serial.print("WEB CONTROLLER: Changing pin blinking delay\n");
-    changeTheBlinkingIntervalInTheStruct(thisPin, blinkingDelay);
-    pinBlinkingInterval = blinkingDelay;
-    mySavedPrefs::savePreferences();
-  }
-}
-
-void changeIndividualBlinkingDelay(const short pinNumberFromGetRequest, const unsigned long blinkingDelay) {
-  changeTheBlinkingIntervalInTheStruct(pinNumberFromGetRequest, blinkingDelay);
-}
-
-void changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay) {
-  LaserPins[thisPin].blinking_interval = blinkingDelay;
-  Serial.print("WEB CONTROLLER: changeTheBlinkingIntervalInTheStruct(const short thisPin, const unsigned long blinkingDelay): This pin's blinking delay is now: ");Serial.println(LaserPins[thisPin].blinking_interval);
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
