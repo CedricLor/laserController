@@ -47,7 +47,7 @@ void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
 // Transfered to LaserPin - to delete
-void directPinsSwitch(const bool targetState);
+// void directPinsSwitch(const bool targetState);
 void switchAllRelays(const bool targetState);
 void manualSwitchOneRelay(const short thisPin, const bool targetState);
 void switchOnOffVariables(const short thisPin, const bool targetState);
@@ -250,10 +250,10 @@ void cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
-    directPinsSwitch(HIGH);
+    LaserPin::directPinsSwitch(LaserPins, HIGH);
     highPinsParityDuringStartup = (highPinsParityDuringStartup == 0) ? 1 : 0;
   }
-  directPinsSwitch(LOW);
+  LaserPin::directPinsSwitch(LaserPins, LOW);
   tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
     tLaserOff.restartDelayed(1000);
@@ -269,7 +269,7 @@ bool onEnablePirStartUpDelayBlinkLaser() {
 
 void onDisablePirStartUpDelayBlinkLaser() {
   pairAllPins(true);
-  directPinsSwitch(HIGH);
+  LaserPin::directPinsSwitch(LaserPins, HIGH);
   inclExclAllRelaysInPir(HIGH);                                     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   // srPirStartUpComplete.signalComplete();
   tPirCntrl.enable();
@@ -280,11 +280,11 @@ void cbtPirStartUpDelayPrintDash() {
 }
 
 void cbtLaserOff() {
-  directPinsSwitch(HIGH);
+  LaserPin::directPinsSwitch(LaserPins, HIGH);
 }
 
 void cbtLaserOn() {
-  directPinsSwitch(LOW);
+  LaserPin::directPinsSwitch(LaserPins, LOW);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,11 +391,11 @@ void switchPirRelays(const bool state) {
 
 // Transfered to LaserPin - to delete
 // Switches relay pins on and off during PIRStartUp
-void directPinsSwitch(const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
-    switchOnOffVariables(thisPin, targetState);
-  }
-}
+// void directPinsSwitch(const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+//   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
+//     switchOnOffVariables(thisPin, targetState);
+//   }
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
