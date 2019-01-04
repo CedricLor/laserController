@@ -13,12 +13,11 @@ class myWebServerControler
 {
   public:
     myWebServerControler();
-
-    void webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
-    void webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
-    void decodeRequest(LaserPin *LaserPins, AsyncWebServerRequest *request);
+    static void decodeRequest(LaserPin *LaserPins, AsyncWebServerRequest *request);
 
   private:
+    static void webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
+    static void webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
 };
 
 #endif

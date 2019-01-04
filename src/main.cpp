@@ -48,10 +48,6 @@ void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
-void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
-void changeTheMasterBoxId(const short masterBoxNumber);
-void changeSlaveReaction(const char* action);
-
 void blinkLaserIfBlinking(const short thisPin);
 void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin);
 void executeUpdates(const short thisPin);
@@ -367,119 +363,6 @@ void switchPirRelays(const bool state) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// WEB CONTROLLER
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void webSwitchRelays(AsyncWebParameter* _p2, bool targetState) {
-  if(_p2->value() == "a"){
-    LaserPin::switchAllRelays(LaserPins, targetState);
-  } else {
-    int val = _p2->value().toInt();
-    LaserPins[val].manualSwitchOneRelay(targetState);
-  }
-}
-
-void webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState) {
-  if(_p2->value() == "a"){
-    LaserPin::inclExclAllRelaysInPir(LaserPins, targetState);
-  } else {
-    int val = _p2->value().toInt();
-    LaserPins[val].inclExclOneRelayInPir(targetState);
-  }
-}
-
-
-void decodeRequest(AsyncWebServerRequest *request) {
-  Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
-
-  if(request->hasParam("manualStatus")) {
-    AsyncWebParameter* _p1 = request->getParam("manualStatus");
-    AsyncWebParameter* _p2 = request->getParam("laser");
-    if(_p1->value() == "on"){
-      webSwitchRelays(_p2, LOW);
-    } else {
-      webSwitchRelays(_p2, HIGH);
-    }
-    return;
-  }
-
-  if(request->hasParam("statusIr")) {
-    AsyncWebParameter* _p1 = request->getParam("statusIr");
-    AsyncWebParameter* _p2 = request->getParam("laser");
-    if(_p1->value() == "on"){
-      webInclExclRelaysInPir(_p2, HIGH);
-    } else {
-      webInclExclRelaysInPir(_p2, LOW);
-    }
-    return;
-  }
-
-  if(request->hasParam("blinkingDelay")) {
-    AsyncWebParameter* _p1 = request->getParam("blinkingDelay");
-    AsyncWebParameter* _p2 = request->getParam("laser");
-    Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingDelay %s\n", _p2->value().c_str());
-    if (_p2->value() == "10") {
-      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
-      int targetBlinkingDelay = _p1->value().toInt();
-      LaserPin::changeGlobalBlinkingDelay(LaserPins, targetBlinkingDelay);
-    }
-    else {
-      int pinIndexNumber = _p2->value().toInt();
-      int targetBlinkingDelay = _p1->value().toInt();
-      LaserPins[pinIndexNumber].changeIndividualBlinkingDelay(targetBlinkingDelay);
-    }
-    return;
-  }
-
-  if(request->hasParam("masterBox")) {
-    AsyncWebParameter* _p1 = request->getParam("masterBox");
-    AsyncWebParameter* _p2 = request->getParam("reactionToMaster");
-    changeGlobalMasterBoxAndSlaveReaction(_p1->value().toInt(), _p2->value().c_str());
-    return;
-  }
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CHANGE MASTER BOX Control
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// REDRAFT AND ADD COMMENTS TO THE CODE OF THE WHOLE BLOCK
-void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action) {
-  changeTheMasterBoxId(masterBoxNumber);
-  changeSlaveReaction(action);
-  mySavedPrefs::savePreferences();
-}
-
-void changeTheMasterBoxId(const short masterBoxNumber) {
-  Serial.printf("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Starting with masterBoxNumber = %u\n", masterBoxNumber);
-  iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber;
-  Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Done\n");
-}
-
-void changeSlaveReaction(const char* action) {
-  Serial.printf("WEB CONTROLLER: changeSlaveReaction(char *action): starting with action (char argument) =%s\n", action);
-  for (short i=0; i < 4; i++) {
-    Serial.print("WEB CONTROLLER: changeSlaveReaction(): looping over the slaveReactionHtml[] array\n");
-    if (strcmp(slaveReactionHtml[i], action) > 0) {
-      Serial.print("WEB CONTROLLER: changeSlaveReaction(): saving iSlaveOnOffReaction\n");
-      short t = i;
-      iSlaveOnOffReaction = t;
-      break; // break for
-    }
-  }
-  Serial.print("WEB CONTROLLER: changeSlaveReaction(): done\n");
-}
-
 void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
   // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
   /*  Call it this way:
@@ -724,8 +607,8 @@ void startAsyncServer() {
     // List all parameters
     listAllCollectedParams(request);
 
-    // List all parameters
-    decodeRequest(request);
+    // Decode request
+    myWebServerControler::decodeRequest(LaserPins, request);
 
     //Send a response
     myWebServerViews myWebServerView(LaserPins, pinBlinkingInterval, PIN_COUNT, iSlaveOnOffReaction, iMasterNodeName, I_MASTER_NODE_PREFIX, I_NODE_NAME, ControlerBoxes, BOXES_I_PREFIX, slaveReactionHtml);

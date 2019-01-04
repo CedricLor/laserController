@@ -13,11 +13,10 @@ class MasterSlaveBox
   public:
     MasterSlaveBox();
     static void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
-    static void changeTheMasterBoxId(const short masterBoxNumber);
-    static void changeSlaveReaction(const char* action);
 
   private:
-    int _pin;
+    static void changeTheMasterBoxId(const short masterBoxNumber);
+    static void changeSlaveReaction(const char* action);
 };
 
 #endif
