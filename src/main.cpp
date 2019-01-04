@@ -20,6 +20,8 @@
 #include "../lib/LaserPin.cpp"
 #include "../lib/myWebServerViews.h"
 #include "../lib/myWebServerViews.cpp"
+#include "../lib/MasterSlaveBox.h"
+#include "../lib/MasterSlaveBox.cpp"
 #include "../lib/myWebServerControler.h"
 #include "../lib/myWebServerControler.cpp"
 
@@ -121,8 +123,7 @@ const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HI
 // HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off  (index 2): When the master box is on, turn me off AND when the master box is off, turn me off
 // LOW, LOW = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always on  (index 3): When the master box is on, turn me off AND when the master box is off, turn me off
 // !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update slaveReaction
-// in class myWebServerViews
-const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
+// in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

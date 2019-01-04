@@ -1,4 +1,4 @@
-/*/*
+/*
   myWebServerControler.h - Library web server controller related functions.
   Created by Cedric Lor, January 2, 2007.
 */

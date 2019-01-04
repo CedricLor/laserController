@@ -7,15 +7,18 @@
 #define myWebServerControler_h
 
 #include "Arduino.h"
+#include "LaserPin.h"
 
 class myWebServerControler
 {
   public:
-    myWebServerControler(int pin);
-    void dot();
-    void dash();
+    myWebServerControler();
+
+    void webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
+    void webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
+    void decodeRequest(LaserPin *LaserPins, AsyncWebServerRequest *request);
+
   private:
-    int _pin;
 };
 
 #endif

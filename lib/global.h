@@ -25,4 +25,6 @@ extern short iSlaveOnOffReaction;
 extern short iMasterNodeName;
 extern unsigned long pinBlinkingInterval;
 
+extern const char* slaveReactionHtml[4];
+
 #endif
