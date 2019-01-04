@@ -11,11 +11,11 @@
 class myWebServerControler
 {
   public:
-    myWebServerControler(int pin);
+    myWebServerControler(/*int pin*/);
     void dot();
     void dash();
   private:
-    int _pin;
+    // int _pin;
 };
 
 #endif
