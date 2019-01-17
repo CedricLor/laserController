@@ -3,6 +3,12 @@
   Created by Cedric Lor, January 2, 2007.
 */
 
+/*
+ * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
+ * 2752932713, 10.177.49.1 = box 202, master 201
+ * 2752577349, 10.255.69.1 = box 204, master 201
+ */
+
 #include "Arduino.h"
 #include "global.h"
 
