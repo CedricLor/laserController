@@ -58,7 +58,7 @@ String createMeshMessage(const char* myStatus);
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-// painlessMesh myMesh;
+// painlessMesh laserControllerMesh;
 
 char nodeNameBuf[4];
 char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
@@ -271,7 +271,7 @@ void setup() {
 void loop() {
   ArduinoOTA.handle();
   userScheduler.execute();   // it will run mesh scheduler as well
-  myMesh.update();
+  laserControllerMesh.update();
   laserSafetyLoop::loop(LaserPins);
 }
 
@@ -533,13 +533,13 @@ void newConnectionCallback(uint32_t nodeId) {
 }
 
 void changedConnectionCallback() {
-  Serial.printf("Changed connections %s\n",myMesh.subConnectionJson().c_str());
+  Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
   ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
   broadcastStatusOverMesh("na");
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-  Serial.printf("Adjusted time %u. Offset = %d\n", myMesh.getNodeTime(),offset);
+  Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
 }
 
 void delayReceivedCallback(uint32_t from, int32_t delay) {
@@ -547,26 +547,26 @@ void delayReceivedCallback(uint32_t from, int32_t delay) {
 }
 
 void meshSetup() {
-  myMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
+  laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
 
-  myMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
+  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
-  //myMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
-  myMesh.setHostname(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
+  //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
+  laserControllerMesh.setHostname(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
   if (MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
-    myMesh.setRoot(true);
+    laserControllerMesh.setRoot(true);
     // This and all other mesh should ideally now the mesh contains a root
-    myMesh.setContainsRoot(true);
+    laserControllerMesh.setContainsRoot(true);
   }
 
   ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
 
-  myMesh.onReceive(&receivedCallback);
-  myMesh.onNewConnection(&newConnectionCallback);
-  myMesh.onChangedConnections(&changedConnectionCallback);
-  myMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  myMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
+  laserControllerMesh.onReceive(&receivedCallback);
+  laserControllerMesh.onNewConnection(&newConnectionCallback);
+  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
 
   //userScheduler.addTask( taskSendMessage );
   //taskSendMessage.enable();
@@ -630,7 +630,7 @@ void broadcastStatusOverMesh(const char* state) {
   ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
   String str = createMeshMessage(state);
   Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
-  myMesh.sendBroadcast(str);   // MESH SENDER
+  laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
 
 String createMeshMessage(const char* myStatus) {
