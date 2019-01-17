@@ -24,6 +24,8 @@
 #include "../lib/MasterSlaveBox.cpp"
 #include "../lib/myWebServerControler.h"
 #include "../lib/myWebServerControler.cpp"
+#include "../lib/myMesh.h"
+#include "../lib/myMesh.cpp"
 #include "../lib/laserSafetyLoop.h"
 #include "../lib/laserSafetyLoop.cpp"
 
