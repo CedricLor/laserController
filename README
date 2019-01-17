@@ -42,3 +42,4 @@ TO DO:
 - rename all the controlerBox refs to ControllerBox
 - add a function so that the paired lasers be on together (synchronously)
 - review all the current module to "privatize" as many member functions as possible
+- refactor the various arrays containing the controllerBoxes mode into a single class
