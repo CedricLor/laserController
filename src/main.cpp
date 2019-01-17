@@ -61,8 +61,6 @@ void onRequest();
 void onBody();
 
 void meshController(uint32_t senderNodeId, String &msg);
-void boxTypeSelfUpdate();
-IPAddress parseIpString(JsonObject& root, String rootKey);
 void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName);
 String createMeshMessage(const char* myStatus);
 
@@ -72,7 +70,7 @@ String createMeshMessage(const char* myStatus);
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-painlessMesh myMesh;
+// painlessMesh myMesh;
 
 char nodeNameBuf[4];
 char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
@@ -363,23 +361,6 @@ void switchPirRelays(const bool state) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
-  // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
-  /*  Call it this way:
-        const char* ipStr = "50.100.150.200";
-        byte ip[4];
-        parseBytes(ipStr, '.', ip, 4, 10);
-   */
-  for (int i = 0; i < maxBytes; i++) {
-    bytes[i] = strtoul(str, NULL, base);  // Convert byte
-    str = strchr(str, sep);               // Find next separator
-    if (str == NULL || *str == '\0') {
-        break;                            // No more separators, exit
-    }
-    str++;                                // Point to next character after separator
-  }
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -666,13 +647,13 @@ void receivedCallback( uint32_t from, String &msg ) {
 
 void newConnectionCallback(uint32_t nodeId) {
   Serial.printf("New Connection, nodeId = %u\n", nodeId);
-  boxTypeSelfUpdate();
+  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
   broadcastStatusOverMesh("na");
 }
 
 void changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",myMesh.subConnectionJson().c_str());
-  boxTypeSelfUpdate();
+  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
   broadcastStatusOverMesh("na");
 }
 
@@ -698,7 +679,7 @@ void meshSetup() {
     myMesh.setContainsRoot(true);
   }
 
-  boxTypeSelfUpdate();
+  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
 
   myMesh.onReceive(&receivedCallback);
   myMesh.onNewConnection(&newConnectionCallback);
@@ -710,30 +691,11 @@ void meshSetup() {
   //taskSendMessage.enable();
 }
 
-void boxTypeSelfUpdate() {
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP = myMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP = myMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].nodeId = myMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
-}
-
-void boxTypeUpdate(uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root) {
-  ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].APIP = parseIpString(root, "senderAPIP");
-  ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].stationIP = parseIpString(root, "senderStationIP");
-  ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].nodeId = senderNodeId;
-}
-
 short jsonToInt(JsonObject& root, String rootKey) {
   short iValue;
   const char* sValue = root[rootKey];
   iValue = atoi(sValue);
   return iValue;
-}
-
-IPAddress parseIpString(JsonObject& root, String rootKey) {
-  const char* ipStr = root[rootKey];
-  byte ip[4];
-  parseBytes(ipStr, '.', ip, 4, 10);
-  return ip;
 }
 
 void meshController(uint32_t senderNodeId, String &msg) {
@@ -750,9 +712,6 @@ void meshController(uint32_t senderNodeId, String &msg) {
 
   const char* cSenderStatus = root["senderStatus"];
   Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
-
-  // update the box struct corresponding to the sender with the data received from the sender
-  boxTypeUpdate(iSenderNodeName, senderNodeId, root);
 
   // Is the message addressed to me?
   if (!(iSenderNodeName == iMasterNodeName)) {                 // do not react to broadcast message if message not sent by relevant sender
@@ -787,7 +746,7 @@ void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSende
 
 void broadcastStatusOverMesh(const char* state) {
   Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
-  boxTypeSelfUpdate();
+  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
   String str = createMeshMessage(state);
   Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
   myMesh.sendBroadcast(str);   // MESH SENDER

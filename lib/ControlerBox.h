@@ -15,10 +15,11 @@ class ControlerBox
     IPAddress stationIP;
     IPAddress APIP;
 
-    // void dot();
-    // void dash();
+    static void boxTypeSelfUpdate(ControlerBox *ControlerBoxes, const short I_NODE_NAME, const short BOXES_I_PREFIX);
+    // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root, const short I_NODE_NAME, const short BOXES_I_PREFIX);
   private:
-    // int _pin;
+    static IPAddress parseIpString(JsonObject& root, String rootKey);
+    static void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
 };
 
 #endif

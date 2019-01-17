@@ -24,3 +24,5 @@ short iMasterNodeName = I_DEFAULT_MASTER_NODE_NAME;
 unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
+
+painlessMesh myMesh;

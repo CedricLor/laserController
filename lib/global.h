@@ -27,4 +27,6 @@ extern unsigned long pinBlinkingInterval;
 
 extern const char* slaveReactionHtml[4];
 
+extern painlessMesh myMesh;
+
 #endif
