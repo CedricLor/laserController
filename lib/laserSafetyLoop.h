@@ -11,17 +11,16 @@
 class laserSafetyLoop
 {
   public:
-    laserSafetyLoop(/*int pin*/);
+    laserSafetyLoop();
 
-    void laserSafetyLoop();
-    void blinkLaserIfBlinking(const short thisPin);
-    void blinkLaserIfTimeIsDue(const short thisPin);
-    void ifMasterPairedThenUpdateOnOffOfSlave(const short thisPin);
-    void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(const short thisPin);
-    void updatePairedSlave(const short thisPin, const bool nextPinOnOffTarget);
-    void executeUpdates(const short thisPin);
+    static void loop(LaserPin *LaserPins);
   private:
-    // int _pin;
+    static void blinkLaserIfBlinking(LaserPin &LaserPin);
+    static void blinkLaserIfTimeIsDue(LaserPin &LaserPin);
+    static void ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin);
+    static void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPin *LaserPins, const int thisPin);
+    static void updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget);
+    static void executeUpdates(LaserPin &LaserPin);
 };
 
 #endif
