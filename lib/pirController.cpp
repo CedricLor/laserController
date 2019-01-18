@@ -45,3 +45,20 @@ void pirController::stopPirCycle() {
   pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
   pirController::broadcastPirStatus("off");                              // broadcast current pir status
 }
+
+
+
+//////////////////////
+// CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
+bool pirController::tcbOnEnablePirCycle() {
+  Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
+  pirController::switchPirRelays(LaserPins, LOW);
+  pirController::broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
+  Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
+  return true;
+}
+
+void pirController::tcbOnDisablePirCycle() {
+  Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
+  pirController::stopPirCycle();
+}

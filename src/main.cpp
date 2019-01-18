@@ -138,9 +138,7 @@ Task tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, fa
 // PIR CYCLE
 // Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
 // Declarations
-bool tcbOnEnablePirCycle();
-void tcbOnDisablePirCycle();
-Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
+Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
 
 /////////////////////////////////
 // IR STARTUP
@@ -218,20 +216,6 @@ void loop() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // read the state of the PIR and turn the relays on or off depending on the state of the PIR
 
-//////////////////////
-// CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
-bool tcbOnEnablePirCycle() {
-  Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
-  pirController::switchPirRelays(LaserPins, LOW);
-  pirController::broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
-  Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
-  return true;
-}
-
-void tcbOnDisablePirCycle() {
-  Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
-  pirController::stopPirCycle();
-}
 
 //////////////////////
 // CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
