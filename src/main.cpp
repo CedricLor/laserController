@@ -48,7 +48,6 @@ void initPir();
 void startAsyncServer();
 void enableTasks();
 
-void stopPirCycle();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
 void onRequest(AsyncWebServerRequest *request);
@@ -230,8 +229,8 @@ bool tcbOnEnablePirCycle() {
 }
 
 void tcbOnDisablePirCycle() {
-  Serial.print("PIR: tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
-  stopPirCycle();
+  Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
+  pirController::stopPirCycle();
 }
 
 //////////////////////
@@ -252,13 +251,6 @@ void startOrRestartPirCycleIfPirValueIsHigh() {
   }
   pirController::valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
 }
-
-void stopPirCycle() {
-  Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
-  pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
-  pirController::broadcastPirStatus("off");                              // broadcast current pir status
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

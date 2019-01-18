@@ -38,3 +38,10 @@ void pirController::broadcastPirStatus(const char* state) {     // state is "on"
 
   Serial.print("PIR - broadcastPirStatus(): ending.\n");
 }
+
+// Stop the pirCycle
+void pirController::stopPirCycle() {
+  Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
+  pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
+  pirController::broadcastPirStatus("off");                              // broadcast current pir status
+}
