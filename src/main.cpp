@@ -51,7 +51,6 @@ void enableTasks();
 void switchPirRelays(const bool state);
 void broadcastPirStatus(const char* state);
 void stopPirCycle();
-void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
 void onRequest(AsyncWebServerRequest *request);
@@ -86,9 +85,6 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
-short const INPUT_PIN = 23;                  // choose the input pin (for PIR sensor)
-                                      // we start assuming no motion detected
-bool valPir = LOW;                    // variable for reading the pin status
 const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
 const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
@@ -229,7 +225,7 @@ void loop() {
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool tcbOnEnablePirCycle() {
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
-  switchPirRelays(LOW);
+  pirController::switchPirRelays(LaserPins, LOW);
   broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
   Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
   return true;
@@ -243,17 +239,12 @@ void tcbOnDisablePirCycle() {
 //////////////////////
 // CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
 void tcbPirCntrl() {
-  setPirValue();
+  pirController::setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
 }
 
-void setPirValue() {
-  valPir = digitalRead(INPUT_PIN); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(INPUT_PIN) will be HIGH.
-  // Serial.printf(valPir\n);
-}
-
 void startOrRestartPirCycleIfPirValueIsHigh() {
-  if (valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
+  if (pirController::valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
     if (!(tPirCycle.isEnabled())) {
       tPirCycle.setIterations(SI_PIR_ITERATIONS);
       tPirCycle.restart();
@@ -261,12 +252,12 @@ void startOrRestartPirCycleIfPirValueIsHigh() {
       tPirCycle.setIterations(SI_PIR_ITERATIONS);
     }
   }
-  valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
+  pirController::valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
 }
 
 void stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
-  switchPirRelays(HIGH);                                  // turn all the PIR controlled relays off
+  pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
   broadcastPirStatus("off");                              // broadcast current pir status
 }
 
@@ -291,7 +282,7 @@ void switchPirRelays(const bool state) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Called by the Pir block
 // Broadcasts over mesh
-void broadcastPirStatus(const char* state) {     // state is "on" or "off". When valPir is HIGH (the IR has detected a move),
+void broadcastPirStatus(const char* state) {     // state is "on" or "off". When pirController::valPir is HIGH (the IR has detected a move),
                                                  // the Pir block calls this function with the "on" parameter. Alternatively,
                                                  //  when the the pir cycle stops, it calls this function with the "off" parameter.
   Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = %s\n", state);
@@ -323,7 +314,7 @@ void serialInit() {
 
 void initPir() {
   Serial.print("SETUP: initPir(): starting\n");
-  pinMode(INPUT_PIN, INPUT);                  // declare sensor as input
+  pinMode(pirController::INPUT_PIN, INPUT);                  // declare sensor as input
   Serial.print("SETUP: initPir(): done\n");
 }
 

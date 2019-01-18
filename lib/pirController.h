@@ -12,6 +12,12 @@ class pirController
 {
   public:
     pirController();
+
+    static short const INPUT_PIN;
+    static bool valPir;
+    static void setPirValue();
+
+    static void switchPirRelays(LaserPin *LaserPins, const bool state);
   private:
 };
 
