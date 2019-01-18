@@ -291,24 +291,24 @@ void switchPirRelays(const bool state) {
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Task tAutoSwitchAllRelays( 1000, LaserPin::siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
+// Task tAutoSwitchAllRelays( 1000, LaserPin::siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
 
-void autoSwitchAllRelays(const bool targetState) {
-  if (targetState == LOW) {
-    tAutoSwitchAllRelays.enable();
-    return;
-  }
-  tAutoSwitchAllRelays.disable();
-}
-
-void autoSwitchOneRelay(const short thisPin, const bool targetState) {
-  /*  TO DRAFT PROPERLY WHEN NECESSARY
-      LaserPins[thisPin].switchOnOffVariables(targetState);
-      LaserPins[thisPin].switchPointerBlinkCycleState(targetState);
-      isPirCycleOn = false;
-      Serial.println("auto Switch request executed");
-   */
-}
+// void autoSwitchAllRelays(const bool targetState) {
+//   if (targetState == LOW) {
+//     LaserPin::tAutoSwitchAllRelays.enable();
+//     return;
+//   }
+//   LaserPin::tAutoSwitchAllRelays.disable();
+// }
+//
+// void autoSwitchOneRelay(const short thisPin, const bool targetState) {
+//   /*  TO DRAFT PROPERLY WHEN NECESSARY
+//       LaserPins[thisPin].switchOnOffVariables(targetState);
+//       LaserPins[thisPin].switchPointerBlinkCycleState(targetState);
+//       isPirCycleOn = false;
+//       Serial.println("auto Switch request executed");
+//    */
+// }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

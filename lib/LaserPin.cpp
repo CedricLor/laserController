@@ -157,6 +157,8 @@ void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 short LaserPin::siAutoSwitchInterval = 60;
 
+Task LaserPin::tAutoSwitchAllRelays( 1000, LaserPin::siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
+
 bool LaserPin::tcbOaAutoSwitchAllRelays() {
   LaserPin::switchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");

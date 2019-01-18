@@ -210,10 +210,10 @@ char* myMesh::nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
 
 void myMesh::autoSwitchAllRelays(const bool targetState) {
   if (targetState == LOW) {
-    // tAutoSwitchAllRelays.enable();
+    LaserPin::tAutoSwitchAllRelays.enable();
     return;
   }
-  // tAutoSwitchAllRelays.disable();
+  LaserPin::tAutoSwitchAllRelays.disable();
 }
 
 void myMesh::autoSwitchOneRelay(const short thisPin, const bool targetState) {
