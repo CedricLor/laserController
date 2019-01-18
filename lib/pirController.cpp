@@ -66,6 +66,15 @@ const int pirController::I_PIR_INTERVAL = 1000;      // interval in the PIR cycl
 const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
 //////////////////////
+/////////////////////////////////
+// PIR CONTROL
+// Tasks related to the PIR controller (placing the lasers under control of the PIR and waiting for a motion to be detected to turn the lasers on/off)
+/* Task tPirCntrl is here defined to run every 4 seconds (TASK_SECOND * 4), indefinitely (TASK_FOREVER),
+ * to run its main callback tcbPirCntrl() each time and is added to the userScheduler.
+ * It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
+ */
+Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &pirController::tcbPirCntrl, &userScheduler, false, NULL, NULL);
+
 // CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
 // tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
 void pirController::tcbPirCntrl() {
