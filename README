@@ -43,7 +43,6 @@ TO DO:
 - refactor the various arrays containing the controllerBoxes mode into a single class
 - put jsonToInt() and parseIp and its sister function (don't remember the name) in a special class
 - autoSwitchAllRelays has been added to myMesh lib --> move it to LaserPin (and break LaserPin into various libs) (idem for autoSwitchOneRelay)
-- TO DO URGENT: references to tAutoSwitchAllRelays have been commented out in myMesh.cpp --> need to refactor all the autoSwitch upon request from another box block into either:
--- the LaserPin class
--- the ControlerBox class
--- or a special class related to the switches
+- tAutoSwitchAllRelays and autoSwitchAllRelays are scattered around between myMesh (for autoSwitchAllRelays) and LaserPin (for tAutoSwitchAllRelays): consider moving everything into LaserPin class
+- myMesh library should be cleaned up of any direct relations to pins control (so that myMesh could be reused with ESP32 unconnected to any LaserPins)
+- all the autoSwitchAllRelays and tAutoSwitchAllRelays blocks look like they could serve as a base for controlling cycles of blinking of pins -- review and rethink the logic of this code
