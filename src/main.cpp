@@ -48,7 +48,6 @@ void initPir();
 void startAsyncServer();
 void enableTasks();
 
-void switchPirRelays(const bool state);
 void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void startOrRestartPirCycleIfPirValueIsHigh();
@@ -259,18 +258,6 @@ void stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
   pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
   broadcastPirStatus("off");                              // broadcast current pir status
-}
-
-
-// loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
-void switchPirRelays(const bool state) {
-  Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (LaserPins[thisPin].pir_state == HIGH) {
-      LaserPins[thisPin].switchOnOffVariables(state);
-    }
-  }
-  Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
 }
 
 
