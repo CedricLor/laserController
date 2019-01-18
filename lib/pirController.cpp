@@ -28,3 +28,13 @@ void pirController::switchPirRelays(LaserPin *LaserPins, const bool state) {
   }
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
 }
+
+// Broadcasts PIR status over mesh
+void pirController::broadcastPirStatus(const char* state) {     // state is "on" or "off". When pirController::valPir is HIGH (the IR has detected a move),
+                                                 // the Pir block calls this function with the "on" parameter. Alternatively,
+                                                 //  when the the pir cycle stops, it calls this function with the "off" parameter.
+  Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = %s\n", state);
+  myMesh::broadcastStatusOverMesh(state);
+
+  Serial.print("PIR - broadcastPirStatus(): ending.\n");
+}

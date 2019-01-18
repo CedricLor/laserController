@@ -7,6 +7,7 @@ Created by Cedric Lor, January 18, 2019.
 #define pirController_h
 
 #include "Arduino.h"
+#include "myMesh.h"
 
 class pirController
 {
@@ -18,6 +19,7 @@ class pirController
     static void setPirValue();
 
     static void switchPirRelays(LaserPin *LaserPins, const bool state);
+    static void broadcastPirStatus(const char* state);
   private:
 };
 

@@ -48,7 +48,6 @@ void initPir();
 void startAsyncServer();
 void enableTasks();
 
-void broadcastPirStatus(const char* state);
 void stopPirCycle();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
@@ -225,7 +224,7 @@ void loop() {
 bool tcbOnEnablePirCycle() {
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
   pirController::switchPirRelays(LaserPins, LOW);
-  broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
+  pirController::broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
   Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
   return true;
 }
@@ -257,26 +256,10 @@ void startOrRestartPirCycleIfPirValueIsHigh() {
 void stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
   pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
-  broadcastPirStatus("off");                              // broadcast current pir status
+  pirController::broadcastPirStatus("off");                              // broadcast current pir status
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// SENDING REQUEST TO OTHER CONTROLLER BOXES
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Called by the Pir block
-// Broadcasts over mesh
-void broadcastPirStatus(const char* state) {     // state is "on" or "off". When pirController::valPir is HIGH (the IR has detected a move),
-                                                 // the Pir block calls this function with the "on" parameter. Alternatively,
-                                                 //  when the the pir cycle stops, it calls this function with the "off" parameter.
-  Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = %s\n", state);
-  myMesh::broadcastStatusOverMesh(state);
-
-  Serial.print("PIR - broadcastPirStatus(): ending.\n");
-}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
