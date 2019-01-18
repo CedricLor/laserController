@@ -52,7 +52,8 @@ class LaserPin
 
     static bool tcbOaAutoSwitchAllRelays();
     static void tcbOdAutoSwitchAllRelays();
-    
+    static short siAutoSwitchInterval;
+
   private:
     static bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
     static bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP

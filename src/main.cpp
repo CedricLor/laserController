@@ -75,7 +75,7 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AutoSwitch variables /////////////////////////////
-short siAutoSwitchInterval = 60;
+// short siAutoSwitchInterval = 60;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,14 +295,8 @@ void switchPirRelays(const bool state) {
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// void tcbOdAutoSwitchAllRelays();
-Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
+Task tAutoSwitchAllRelays( 1000, LaserPin::siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
 
-// void tcbOdAutoSwitchAllRelays() {
-//   LaserPin::switchAllRelays(LaserPins, HIGH);
-//   LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
-// }
-//
 void autoSwitchAllRelays(const bool targetState) {
   if (targetState == LOW) {
     tAutoSwitchAllRelays.enable();
