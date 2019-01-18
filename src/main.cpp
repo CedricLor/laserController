@@ -122,13 +122,11 @@ bool onEnablePirStartUpDelayBlinkLaser();
 void onDisablePirStartUpDelayBlinkLaser();
 Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
-void cbtPirStartUpDelayPrintDash();
-Task tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
+// void cbtPirStartUpDelayPrintDash();
+Task tPirStartUpDelayPrintDash( 1000UL, 9, &pirStartupController::cbtPirStartUpDelayPrintDash, &userScheduler );
 
-void cbtLaserOff();
 Task tLaserOff( 0, 1, &pirStartupController::cbtLaserOff, &userScheduler );
 
-void cbtLaserOn();
 Task tLaserOn( 0, 1, &pirStartupController::cbtLaserOn, &userScheduler );
 
 
@@ -183,17 +181,10 @@ void onDisablePirStartUpDelayBlinkLaser() {
   tPirCntrl.enable();
 }
 
-void cbtPirStartUpDelayPrintDash() {
-  Serial.print("-");
-}
+// void cbtPirStartUpDelayPrintDash() {
+//   Serial.print("-");
+// }
 
-void cbtLaserOff() {
-  LaserPin::directPinsSwitch(LaserPins, HIGH);
-}
-
-void cbtLaserOn() {
-  LaserPin::directPinsSwitch(LaserPins, LOW);
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

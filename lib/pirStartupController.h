@@ -12,11 +12,12 @@ class pirStartupController
 {
   public:
     pirStartupController();
-    
+
     static void cbtPirStartUpDelayBlinkLaser();
     static bool onEnablePirStartUpDelayBlinkLaser();
     static void onDisablePirStartUpDelayBlinkLaser();
 
+    static void cbtPirStartUpDelayPrintDash();
     static void cbtLaserOff();
     static void cbtLaserOn();
   private:

@@ -10,6 +10,10 @@ pirStartupController::pirStartupController()
 {
 }
 
+void pirStartupController::cbtPirStartUpDelayPrintDash() {
+  Serial.print("-");
+}
+
 void pirStartupController::cbtLaserOff() {
   LaserPin::directPinsSwitch(LaserPins, HIGH);
 }
