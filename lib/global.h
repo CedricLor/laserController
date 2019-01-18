@@ -7,6 +7,7 @@
 #define global_h
 
 #include "Arduino.h"
+#include "ControlerBox.h"
 
 extern unsigned long const DEFAULT_PIN_BLINKING_INTERVAL;
 extern const short PIN_COUNT;                                                                                              // BOX BY BOX
@@ -27,6 +28,9 @@ extern unsigned long pinBlinkingInterval;
 
 extern const char* slaveReactionHtml[4];
 
+extern ControlerBox ControlerBoxes[];
+
 extern painlessMesh laserControllerMesh;
+extern Scheduler    userScheduler;             // to control your personal task
 
 #endif

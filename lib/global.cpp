@@ -31,4 +31,7 @@ unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
+ControlerBox ControlerBoxes[BOXES_COUNT];
+
 painlessMesh laserControllerMesh;
+Scheduler    userScheduler;             // to control your personal task

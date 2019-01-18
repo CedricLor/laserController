@@ -54,13 +54,6 @@ void meshController(uint32_t senderNodeId, String &msg);
 void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName);
 String createMeshMessage(const char* myStatus);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MESH variables /////////////////////////////////////////////////////////////////////////////////////////////////
-#define   MESH_PREFIX     "laser_boxes"
-#define   MESH_PASSWORD   "somethingSneaky"
-#define   MESH_PORT       5555
-
-// painlessMesh laserControllerMesh;
 
 char nodeNameBuf[4];
 char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
@@ -91,24 +84,6 @@ char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
 //const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
 //const IPAddress MY_N_MASK(255, 0, 0, 0);
 
-ControlerBox ControlerBoxes[BOXES_COUNT];
-
-const short BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// VARIABLES FOR REACTION TO NETWORK REQUESTS
-///////////////////////////////
-// The following variable, at start up, corresponds to the default reaction of this box, when it receives the status of its parent box.
-// It is a number from 0 to 3. This number corresponds to the index in the following array (const bool B_SLAVE_ON_OFF_REACTIONS[4][2])
-// short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;       // saves the index in the B_SLAVE_ON_OFF_REACTIONS bool array of the choosen reaction to the master states
-const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
-// HIGH, LOW = reaction if master is on = HIGH; reaction if master is off = LOW;  // Synchronous (index 0): When the master box is on, turn me on AND when the master box is off, turn me off
-// LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed  (index 1): When the master box is on, turn me off AND when the master box is off, turn me on
-// HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off  (index 2): When the master box is on, turn me off AND when the master box is off, turn me off
-// LOW, LOW = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always on  (index 3): When the master box is on, turn me off AND when the master box is off, turn me off
-// !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update slaveReaction
-// in class myWebServerViews and slaveReactionHtml in global.cpp
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RELAYS variables /////////////////////////////
@@ -160,7 +135,7 @@ short charcount=0;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Scheduler variables ////////////////////////////////////////////////////////////////////////////////////////////
-Scheduler     userScheduler;             // to control your personal task
+// Scheduler     userScheduler;             // to control your personal task
 
 void sendMessage();
 // Task taskSendMessage( &userScheduler, TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
@@ -356,7 +331,6 @@ void switchPirRelays(const bool state) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool tcbOaAutoSwitchAllRelays();
 void tcbOdAutoSwitchAllRelays();
-// Task tAutoSwitchAllRelays( &userScheduler, 1000, siAutoSwitchInterval, NULL, false, &tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
 Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
 
 bool tcbOaAutoSwitchAllRelays() {

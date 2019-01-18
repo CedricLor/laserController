@@ -16,8 +16,6 @@ Detail: added an additional iteration to SI_PIR_START_UP_DELAY_ITERATIONS (set a
 Note: in tPirStartUpDelayBlinkLaser(), the if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) condition for the sub tasks was kept.
 
  *  TO DO:
- *  HIGH: Line 418: do a few prints to understand if setIterations resets the iteration counter.
- *  HIGH: Rename directPinsSwitch() to give it a more explicit name
  *  HIGH: Add a true laserSafetyLoop that turns lasers off in whichever situations if they have been on for more than 30 seconds
           and prevents them from being turned back on by any process for a corresponding cooling off time
  *  MIDDLE: blinking delay: paired feature --> maybe already done / Check it
@@ -43,3 +41,9 @@ TO DO:
 - add a function so that the paired lasers be on together (synchronously)
 - review all the current module to "privatize" as many member functions as possible
 - refactor the various arrays containing the controllerBoxes mode into a single class
+- put jsonToInt() and parseIp and its sister function (don't remember the name) in a special class
+- autoSwitchAllRelays has been added to myMesh lib --> move it to LaserPin (and break LaserPin into various libs) (idem for autoSwitchOneRelay)
+- TO DO URGENT: references to tAutoSwitchAllRelays have been commented out in myMesh.cpp --> need to refactor all the autoSwitch upon request from another box block into either:
+-- the LaserPin class
+-- the ControlerBox class
+-- or a special class related to the switches
