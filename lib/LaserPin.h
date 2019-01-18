@@ -50,17 +50,17 @@ class LaserPin
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
-    static bool tcbOaAutoSwitchAllRelays();
-    static void tcbOdAutoSwitchAllRelays();
-    static short siAutoSwitchInterval;
     static Task tAutoSwitchAllRelays;
-    
+
   private:
     static bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
     static bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
     static bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
     static bool const default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 
+    static short siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
+    static bool tcbOaAutoSwitchAllRelays();
+    static void tcbOdAutoSwitchAllRelays();
 };
 
 #endif
