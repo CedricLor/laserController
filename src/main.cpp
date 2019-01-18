@@ -126,10 +126,10 @@ void cbtPirStartUpDelayPrintDash();
 Task tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
 
 void cbtLaserOff();
-Task tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
+Task tLaserOff( 0, 1, &pirStartupController::cbtLaserOff, &userScheduler );
 
 void cbtLaserOn();
-Task tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
+Task tLaserOn( 0, 1, &pirStartupController::cbtLaserOn, &userScheduler );
 
 
 /////////////////////////////////

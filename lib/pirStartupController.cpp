@@ -9,3 +9,11 @@ Created by Cedric Lor, January 18, 2019.
 pirStartupController::pirStartupController()
 {
 }
+
+void pirStartupController::cbtLaserOff() {
+  LaserPin::directPinsSwitch(LaserPins, HIGH);
+}
+
+void pirStartupController::cbtLaserOn() {
+  LaserPin::directPinsSwitch(LaserPins, LOW);
+}
