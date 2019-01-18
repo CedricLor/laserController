@@ -51,6 +51,7 @@ class LaserPin
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
     static bool tcbOaAutoSwitchAllRelays();
+    static void tcbOdAutoSwitchAllRelays();
     
   private:
     static bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP

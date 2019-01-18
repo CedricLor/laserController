@@ -160,3 +160,8 @@ bool LaserPin::tcbOaAutoSwitchAllRelays() {
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
+
+void LaserPin::tcbOdAutoSwitchAllRelays() {
+  LaserPin::switchAllRelays(LaserPins, HIGH);
+  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+}

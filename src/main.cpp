@@ -295,14 +295,14 @@ void switchPirRelays(const bool state) {
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void tcbOdAutoSwitchAllRelays();
-Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
+// void tcbOdAutoSwitchAllRelays();
+Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
 
-void tcbOdAutoSwitchAllRelays() {
-  LaserPin::switchAllRelays(LaserPins, HIGH);
-  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
-}
-
+// void tcbOdAutoSwitchAllRelays() {
+//   LaserPin::switchAllRelays(LaserPins, HIGH);
+//   LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+// }
+//
 void autoSwitchAllRelays(const bool targetState) {
   if (targetState == LOW) {
     tAutoSwitchAllRelays.enable();
