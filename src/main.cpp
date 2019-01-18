@@ -122,7 +122,6 @@ bool onEnablePirStartUpDelayBlinkLaser();
 void onDisablePirStartUpDelayBlinkLaser();
 Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
-// void cbtPirStartUpDelayPrintDash();
 Task tPirStartUpDelayPrintDash( 1000UL, 9, &pirStartupController::cbtPirStartUpDelayPrintDash, &userScheduler );
 
 Task tLaserOff( 0, 1, &pirStartupController::cbtLaserOff, &userScheduler );
@@ -180,11 +179,6 @@ void onDisablePirStartUpDelayBlinkLaser() {
   LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   tPirCntrl.enable();
 }
-
-// void cbtPirStartUpDelayPrintDash() {
-//   Serial.print("-");
-// }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
