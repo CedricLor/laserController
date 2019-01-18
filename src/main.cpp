@@ -64,15 +64,6 @@ void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t in
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RELAYS variables /////////////////////////////
 
-// The following variable have been moved to BOX KEY VARIABLES
-// short relayPins[] = {
-//   22, 21, 19, 18, 5, 17, 16, 4
-// };                                    // an array of pin numbers to which relays are attached   // See BOX KEY VARIABLES     // BOX BY BOX
-//
-// short const PIN_COUNT = 8;               // the number of pins (i.e. the length of the array)      // See BOX KEY VARIABLES     // BOX BY BOX
-
-// // declare and size an array to contain the LaserPins class instances as a global variable
-// LaserPin LaserPins[PIN_COUNT];
 short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
                              // it avoids using the modulo.
                              // by switching it to 0 and 1 at each iteration of the loop
@@ -304,15 +295,8 @@ void switchPirRelays(const bool state) {
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool tcbOaAutoSwitchAllRelays();
 void tcbOdAutoSwitchAllRelays();
 Task tAutoSwitchAllRelays( 1000, siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &tcbOdAutoSwitchAllRelays );
-
-bool tcbOaAutoSwitchAllRelays() {
-  LaserPin::switchAllRelays(LaserPins, LOW);
-  Serial.print("-------- Auto Switch cycle started............ --------\n");
-  return true;
-}
 
 void tcbOdAutoSwitchAllRelays() {
   LaserPin::switchAllRelays(LaserPins, HIGH);
