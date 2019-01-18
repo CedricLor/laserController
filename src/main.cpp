@@ -48,8 +48,6 @@ void initPir();
 void startAsyncServer();
 void enableTasks();
 
-void startOrRestartPirCycleIfPirValueIsHigh();
-
 void onRequest(AsyncWebServerRequest *request);
 void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
@@ -126,13 +124,13 @@ Task tLaserOn( 0, 1, &pirStartupController::cbtLaserOn, &userScheduler );
 // PIR CONTROL
 // Tasks related to the PIR controller (placing the lasers under control of the PIR and waiting for a motion to be detected to turn the lasers on/off)
 // Declarations
-void tcbPirCntrl();
+// void tcbPirCntrl();
 // tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
 /* Task tPirCntrl is here defined to run every 4 seconds (TASK_SECOND * 4), indefinitely (TASK_FOREVER),
  * to run its main callback tcbPirCntrl() each time and is added to the userScheduler.
  * It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
  */
-Task tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
+Task tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &pirController::tcbPirCntrl, &userScheduler, false, NULL, NULL);
 
 /////////////////////////////////
 // PIR CYCLE
@@ -219,22 +217,10 @@ void loop() {
 
 //////////////////////
 // CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
-void tcbPirCntrl() {
-  pirController::setPirValue();
-  startOrRestartPirCycleIfPirValueIsHigh();
-}
-
-void startOrRestartPirCycleIfPirValueIsHigh() {
-  if (pirController::valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
-    if (!(pirController::tPirCycle.isEnabled())) {
-      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
-      pirController::tPirCycle.restart();
-    } else {
-      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
-    }
-  }
-  pirController::valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
-}
+// void tcbPirCntrl() {
+//   pirController::setPirValue();
+//   pirController::startOrRestartPirCycleIfPirValueIsHigh();
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

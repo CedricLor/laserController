@@ -39,6 +39,20 @@ void pirController::broadcastPirStatus(const char* state) {     // state is "on"
   Serial.print("PIR - broadcastPirStatus(): ending.\n");
 }
 
+
+void pirController::startOrRestartPirCycleIfPirValueIsHigh() {
+  if (pirController::valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
+    if (!(pirController::tPirCycle.isEnabled())) {
+      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
+      pirController::tPirCycle.restart();
+    } else {
+      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
+    }
+  }
+  pirController::valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
+}
+
+
 // Stop the pirCycle
 void pirController::stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
@@ -46,12 +60,18 @@ void pirController::stopPirCycle() {
   pirController::broadcastPirStatus("off");                              // broadcast current pir status
 }
 
-
 /////////////////////////////////
 // PIR CYCLE
 const int pirController::I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
 const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
+//////////////////////
+// CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
+// tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
+void pirController::tcbPirCntrl() {
+  pirController::setPirValue();
+  pirController::startOrRestartPirCycleIfPirValueIsHigh();
+}
 
 // Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
 Task pirController::tPirCycle ( pirController::I_PIR_INTERVAL, pirController::SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
