@@ -35,7 +35,6 @@
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
 void initPir();
-void meshSetup();
 void startAsyncServer();
 void enableTasks();
 
@@ -45,37 +44,14 @@ void stopPirCycle();
 void setPirValue();
 void startOrRestartPirCycleIfPirValueIsHigh();
 
-void broadcastStatusOverMesh(const char* state);
-
-void onRequest();
-void onBody();
-
-void meshController(uint32_t senderNodeId, String &msg);
-void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName);
-String createMeshMessage(const char* myStatus);
-
-
-char nodeNameBuf[4];
-char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
-  String _sNodeName = String(_I_NODE_NAME);
-  _sNodeName.toCharArray(_nodeNameBuf, 4);
-  return _nodeNameBuf;
-}
+void onRequest(AsyncWebServerRequest *request);
+void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NETWORK variables //////////////////////////////////////////////////////////////////////////////////////////////
 //#define   STATION_SSID     "Livebox-CF01"                                                                                   // NETWORK BY NETWORK
 //#define   STATION_PASSWORD "BencNiels!"                                                                                     // NETWORK BY NETWORK
 
-const char PREFIX_AP_SSID[5] = "box_";
-char myApSsidBuf[8];
-char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
-  strcat(_apSsidBuf, PREFIX_AP_SSID);
-  char _nodeName[4];
-  itoa(I_NODE_NAME, _nodeName, 10);
-  strcat(_apSsidBuf, _nodeName);
-  return _apSsidBuf;
-}
 
 //const int SECOND_BYTE_LOCAL_NETWORK = 1;                                                                                    // NETWORK BY NETWORK
 //const IPAddress MY_STA_IP(192, 168, SECOND_BYTE_LOCAL_NETWORK, I_NODE_NAME); // the desired IP Address for the station      // NETWORK BY NETWORK
@@ -237,7 +213,7 @@ void setup() {
   mySavedPrefs::loadPreferences();
   LaserPin::initLaserPins(LaserPins);
   initPir();
-  meshSetup();
+  myMesh::meshSetup();
   startAsyncServer();
   Myota::OTAConfig();
   enableTasks();
@@ -373,7 +349,7 @@ void broadcastPirStatus(const char* state) {     // state is "on" or "off". When
                                                  // the Pir block calls this function with the "on" parameter. Alternatively,
                                                  //  when the the pir cycle stops, it calls this function with the "off" parameter.
   Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = %s\n", state);
-  broadcastStatusOverMesh(state);
+  myMesh::broadcastStatusOverMesh(state);
 
   Serial.print("PIR - broadcastPirStatus(): ending.\n");
 }
@@ -448,7 +424,7 @@ void startAsyncServer() {
     myWebServerControler::decodeRequest(LaserPins, request);
 
     //Send a response
-    myWebServerViews myWebServerView(LaserPins, pinBlinkingInterval, PIN_COUNT, iSlaveOnOffReaction, iMasterNodeName, I_MASTER_NODE_PREFIX, I_NODE_NAME, ControlerBoxes, BOXES_I_PREFIX, slaveReactionHtml);
+    myWebServerViews myWebServerView(LaserPins, pinBlinkingInterval, PIN_COUNT, iSlaveOnOffReaction, iMasterNodeName, I_MASTER_NODE_PREFIX, I_NODE_NAME, ControlerBoxes, myMesh::BOXES_I_PREFIX, slaveReactionHtml);
     AsyncResponseStream *response = request->beginResponseStream("text/html");  // define a response stream
     response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
     response->printf(myWebServerView.returnTheResponse().c_str());              // converts the arduino String in C string (array of chars)
@@ -468,161 +444,6 @@ void onRequest(AsyncWebServerRequest *request){
 
 void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
   //Handle body
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// SETUP: Mesh Network
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void sendMessage() {
-  // broadcastStatusOverMesh("on");
-  /*
-  JsonObject& msg = createMeshJsonMessage("on");
-  String str = createMeshStrMessage(msg);
-  if (logServerId == 0) // If we don't know the logServer yet
-    mesh.sendBroadcast(str);
-  else
-    mesh.sendSingle(logServerId, str);
-
-  String msg = "Hello from node ";
-  msg += mesh.getNodeId();
-  mesh.sendBroadcast(msg);
-  Serial.printf("Sending message: %s\n", msg.c_str());
-  mesh.sendSingle(destServerId, msg);
-  */
-  // taskSendMessage.setInterval(TASK_SECOND * 1);
-}
-
-// Needed for painless library
-void receivedCallback( uint32_t from, String &msg ) {
-  Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
-  meshController(from, msg);
-}
-
-void newConnectionCallback(uint32_t nodeId) {
-  Serial.printf("New Connection, nodeId = %u\n", nodeId);
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
-  broadcastStatusOverMesh("na");
-}
-
-void changedConnectionCallback() {
-  Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
-  broadcastStatusOverMesh("na");
-}
-
-void nodeTimeAdjustedCallback(int32_t offset) {
-  Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
-}
-
-void delayReceivedCallback(uint32_t from, int32_t delay) {
-  Serial.printf("Delay to node %u is %d us\n", from, delay);
-}
-
-void meshSetup() {
-  laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
-
-  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
-
-  //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
-  laserControllerMesh.setHostname(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
-  if (MESH_ROOT == true) {
-    // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
-    laserControllerMesh.setRoot(true);
-    // This and all other mesh should ideally now the mesh contains a root
-    laserControllerMesh.setContainsRoot(true);
-  }
-
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
-
-  laserControllerMesh.onReceive(&receivedCallback);
-  laserControllerMesh.onNewConnection(&newConnectionCallback);
-  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
-
-  //userScheduler.addTask( taskSendMessage );
-  //taskSendMessage.enable();
-}
-
-short jsonToInt(JsonObject& root, String rootKey) {
-  short iValue;
-  const char* sValue = root[rootKey];
-  iValue = atoi(sValue);
-  return iValue;
-}
-
-void meshController(uint32_t senderNodeId, String &msg) {
-  // React depending on wether the remote is myMaster and if so, on its on or off status
-
-  Serial.printf("MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
-  StaticJsonBuffer<250> jsonBuffer;
-  Serial.print("MESH CONTROLLER: meshController(...): jsonBuffer created\n");
-  JsonObject& root = jsonBuffer.parseObject(msg.c_str());
-  Serial.print("MESH CONTROLLER: meshController(...): jsonBuffer parsed into JsonObject& root\n");
-
-  const short iSenderNodeName = jsonToInt(root, "senderNodeName");
-  Serial.printf("MESH CONTROLLER: meshController(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
-
-  const char* cSenderStatus = root["senderStatus"];
-  Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
-
-  // Is the message addressed to me?
-  if (!(iSenderNodeName == iMasterNodeName)) {                 // do not react to broadcast message if message not sent by relevant sender
-    return;
-  }
-
-  // If so, act depending on the sender status
-  autoSwitchAllRelaysMeshWrapper(cSenderStatus, iSenderNodeName);
-}
-
-void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName) {
-  /*
-      Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
-      const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
-      - First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
-        It is set via the iSlaveOnOffReaction variable. It is itself set either:
-        - at startup and equal to the global constant I_DEFAULT_SLAVE_ON_OFF_REACTION (in the global variables definition);
-        - via the changeSlaveReaction sub (in case the user has decided to change it via a web control).
-      - Second index number is the reaction to the on state of the master box if 0, to its off state if 1.
-  */
-  Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(senderStatus, iSenderNodeName) starting.\niSenderNodeName = %u\n. senderStatus = %s.\n", iSenderNodeName, senderStatus);
-  const char* myFutureState = B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
-  if (strstr(senderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
-    Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
-    autoSwitchAllRelays(B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
-  } else if (strstr(senderStatus, "off")  > 0) {
-    Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
-    autoSwitchAllRelays(B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
-  }
-  Serial.print("MESH: autoSwitchAllRelaysMeshWrapper(...): done\n");
-}
-
-void broadcastStatusOverMesh(const char* state) {
-  Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
-  String str = createMeshMessage(state);
-  Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
-  laserControllerMesh.sendBroadcast(str);   // MESH SENDER
-}
-
-String createMeshMessage(const char* myStatus) {
-  Serial.printf("MESH: createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
-
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject& msg = jsonBuffer.createObject();
-
-  msg["senderNodeName"] = nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
-  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP).toString();
-  msg["senderStatus"] = myStatus;
-
-  String str;
-  msg.printTo(str);
-  Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
-  return str;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
