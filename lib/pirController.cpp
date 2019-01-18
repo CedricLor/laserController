@@ -47,6 +47,14 @@ void pirController::stopPirCycle() {
 }
 
 
+/////////////////////////////////
+// PIR CYCLE
+const int pirController::I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
+const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
+
+
+// Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
+Task pirController::tPirCycle ( pirController::I_PIR_INTERVAL, pirController::SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
 
 //////////////////////
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)

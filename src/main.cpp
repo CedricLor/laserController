@@ -82,8 +82,8 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
-const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
-const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
+// const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
+// const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
 // after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
 const short SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
@@ -138,7 +138,7 @@ Task tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, fa
 // PIR CYCLE
 // Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
 // Declarations
-Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
+// Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
 
 /////////////////////////////////
 // IR STARTUP
@@ -226,11 +226,11 @@ void tcbPirCntrl() {
 
 void startOrRestartPirCycleIfPirValueIsHigh() {
   if (pirController::valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
-    if (!(tPirCycle.isEnabled())) {
-      tPirCycle.setIterations(SI_PIR_ITERATIONS);
-      tPirCycle.restart();
+    if (!(pirController::tPirCycle.isEnabled())) {
+      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
+      pirController::tPirCycle.restart();
     } else {
-      tPirCycle.setIterations(SI_PIR_ITERATIONS);
+      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
     }
   }
   pirController::valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
