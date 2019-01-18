@@ -151,4 +151,12 @@ void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) 
 void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
+bool LaserPin::tcbOaAutoSwitchAllRelays() {
+  LaserPin::switchAllRelays(LaserPins, LOW);
+  Serial.print("-------- Auto Switch cycle started............ --------\n");
+  return true;
+}
