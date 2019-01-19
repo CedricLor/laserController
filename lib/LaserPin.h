@@ -22,7 +22,6 @@ class LaserPin
     bool pir_state;                 // variable to store whether the pin shall respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> controlled by the PIR
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
 
-    static void initLaserPins(LaserPin *LaserPins);
     void initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     void physicalInitLaserPin();
 
@@ -49,6 +48,7 @@ class LaserPin
 
     static void changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay);
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
+    void changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
     static Task tAutoSwitchAllRelays;
 
@@ -60,7 +60,6 @@ class LaserPin
 
     void _rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
 
-    void _changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
     static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOaAutoSwitchAllRelays();

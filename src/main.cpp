@@ -24,6 +24,8 @@
 
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
+#include "../lib/LaserPinsArray.h"
+#include "../lib/LaserPinsArray.cpp"
 
 #include "../lib/pirStartupController.h"
 #include "../lib/pirStartupController.cpp"
@@ -60,7 +62,7 @@ void setup() {
   delay(2000);
   serialInit();
   mySavedPrefs::loadPreferences();
-  LaserPin::initLaserPins(LaserPins);
+  LaserPinsArray::initLaserPins(LaserPins);
   pirController::initPir();
   myMesh::meshSetup();
   myWebServerBase::startAsyncServer();

@@ -51,16 +51,6 @@ void LaserPin::physicalInitLaserPin()
   digitalWrite(number, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
 
-void LaserPin::initLaserPins(LaserPin *LaserPins) {
-  Serial.print("SETUP: initLaserPins(): starting\n");
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    // Initialize Laser Pin
-    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
-    LaserPins[thisPin].physicalInitLaserPin();
-  }
-  Serial.print("SETUP: initLaserPins(): done\n");
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
@@ -168,7 +158,7 @@ void LaserPin::_rePairPin(LaserPin *LaserPins, const short thisPin, const short 
 // Called exclusively from myWebServerController
 void LaserPin::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin]._changeTheBlinkingInterval(blinkingDelay);
+    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
     mySavedPrefs::savePreferences();
   }
@@ -177,12 +167,12 @@ void LaserPin::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned lon
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController
 void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) {
-  _changeTheBlinkingInterval(blinkingDelay);
+  changeTheBlinkingInterval(blinkingDelay);
 }
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Private function: called from (i) changeGlobalBlinkingDelay and (ii) changeIndividualBlinkingDelay
-void LaserPin::_changeTheBlinkingInterval(const unsigned long blinkingDelay) {
+void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
 //////////////////////////////////////////////////////////////////////////

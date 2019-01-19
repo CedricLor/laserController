@@ -19,8 +19,7 @@ short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a 
                              // once the loop is over, it should be reset to 0: LaserPin::pinParityWitness = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
-// INITIALIZE LASER PINS
-
+// INITIALIZE LASER PINS ARRAY
 void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
@@ -82,7 +81,7 @@ void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingSt
 // Called exclusively from myWebServerController
 void LaserPinsArray::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin]._changeTheBlinkingInterval(blinkingDelay);
+    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
     mySavedPrefs::savePreferences();
   }
@@ -90,5 +89,17 @@ void LaserPinsArray::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsign
 
 //////////////////////////////////////////////////////////////////////////
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
+short LaserPinsArray::_siAutoSwitchInterval = 60;
 
-Task LaserPinsArray::tAutoSwitchAllRelays( 1000, LaserPin::_siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::_tcbOaAutoSwitchAllRelays, &LaserPin::_tcbOdAutoSwitchAllRelays );
+Task LaserPinsArray::tAutoSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaAutoSwitchAllRelays, &_tcbOdAutoSwitchAllRelays );
+
+bool LaserPinsArray::_tcbOaAutoSwitchAllRelays() {
+  LaserPin::switchAllRelays(LaserPins, LOW);
+  Serial.print("-------- Auto Switch cycle started............ --------\n");
+  return true;
+}
+
+void LaserPinsArray::_tcbOdAutoSwitchAllRelays() {
+  LaserPin::switchAllRelays(LaserPins, HIGH);
+  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+}
