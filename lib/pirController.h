@@ -16,6 +16,9 @@ class pirController
 
     static short const INPUT_PIN;
     static bool valPir;
+
+    static void initPir();
+
     static void setPirValue();
 
     static void switchPirRelays(LaserPin *LaserPins, const bool state);

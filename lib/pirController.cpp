@@ -13,6 +13,12 @@ pirController::pirController()
 short const pirController::INPUT_PIN = 23;               // choose the input pin (for PIR sensor)
 bool pirController::valPir = LOW;                        // we start assuming no motion detected // variable to store the pin status
 
+void pirController::initPir() {
+  Serial.print("SETUP: initPir(): starting\n");
+  pinMode(pirController::INPUT_PIN, INPUT);                  // declare sensor as input
+  Serial.print("SETUP: initPir(): done\n");
+}
+
 void pirController::setPirValue() {
   pirController::valPir = digitalRead(pirController::INPUT_PIN); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(INPUT_PIN) will be HIGH.
   // Serial.printf(pirController::valPir\n);

@@ -45,7 +45,6 @@
  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
-void initPir();
 void startAsyncServer();
 void enableTasks();
 
@@ -172,7 +171,7 @@ void setup() {
   serialInit();
   mySavedPrefs::loadPreferences();
   LaserPin::initLaserPins(LaserPins);
-  initPir();
+  pirController::initPir();
   myMesh::meshSetup();
   startAsyncServer();
   Myota::OTAConfig();
@@ -215,12 +214,6 @@ void serialInit() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
   Serial.print("\nSETUP: serialInit(): done\n");
-}
-
-void initPir() {
-  Serial.print("SETUP: initPir(): starting\n");
-  pinMode(pirController::INPUT_PIN, INPUT);                  // declare sensor as input
-  Serial.print("SETUP: initPir(): done\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
