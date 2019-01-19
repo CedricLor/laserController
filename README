@@ -47,3 +47,10 @@ TO DO:
 - myMesh library should be cleaned up of any direct relations to pins control (so that myMesh could be reused with ESP32 unconnected to any LaserPins)
 - all the autoSwitchAllRelays and tAutoSwitchAllRelays blocks look like they could serve as a base for controlling cycles of blinking of pins -- review and rethink the logic of this code
 - pinParityWitness and highPinsParityDuringStartup variables handle the same thing, I feel. Check it and clean this.
+- read the comments in pirController and pirStartupController --> this is where there is outstanding work:
+  - the tasks defined in pirController and pirStartupController should be integrated with (i.e. enabled and disabled):
+    - the auto mode defined in the LaserPin class
+    - the manual mode defined in the LaserPin class
+  - the delays used in pirStartupController should be changed at pin level and not through this directPinsSwitch thing
+  - the LaserSafetyLoop should be redrafted to rely on Tasks and not on timers
+  - all this will help add new functionalities to the whole thing
