@@ -10,9 +10,25 @@ pirStartupController::pirStartupController()
 {
 }
 
+
+
+bool pirStartupController::onEnablePirStartUpDelayBlinkLaser() {
+  LaserPin::pairAllPins(LaserPins, false);
+  return true;
+}
+
+void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
+  LaserPin::pairAllPins(LaserPins, true);
+  LaserPin::directPinsSwitch(LaserPins, HIGH);
+  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
+  pirController::tPirCntrl.enable();
+}
+
 void pirStartupController::cbtPirStartUpDelayPrintDash() {
   Serial.print("-");
 }
+
+
 
 Task pirStartupController::tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 

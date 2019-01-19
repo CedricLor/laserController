@@ -109,9 +109,7 @@ void sendMessage();
 // Declarations
 
 void cbtPirStartUpDelayBlinkLaser();
-bool onEnablePirStartUpDelayBlinkLaser();
-void onDisablePirStartUpDelayBlinkLaser();
-Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &pirStartupController::onEnablePirStartUpDelayBlinkLaser, &pirStartupController::onDisablePirStartUpDelayBlinkLaser );
 
 Task tPirStartUpDelayPrintDash( 1000UL, 9, &pirStartupController::cbtPirStartUpDelayPrintDash, &userScheduler );
 
@@ -135,17 +133,6 @@ void cbtPirStartUpDelayBlinkLaser() {
   }
 }
 
-bool onEnablePirStartUpDelayBlinkLaser() {
-  LaserPin::pairAllPins(LaserPins, false);
-  return true;
-}
-
-void onDisablePirStartUpDelayBlinkLaser() {
-  LaserPin::pairAllPins(LaserPins, true);
-  LaserPin::directPinsSwitch(LaserPins, HIGH);
-  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
-  pirController::tPirCntrl.enable();
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

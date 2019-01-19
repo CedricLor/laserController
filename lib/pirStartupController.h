@@ -7,6 +7,7 @@
 #define pirStartupController_h
 
 #include "Arduino.h"
+#include "pirController.h"
 
 class pirStartupController
 {
