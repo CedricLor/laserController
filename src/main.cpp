@@ -31,12 +31,6 @@
 #include "../lib/pirController.h"
 #include "../lib/pirController.cpp"
 
-#include "../lib/myWebServerViews.h"
-#include "../lib/myWebServerViews.cpp"
-
-#include "../lib/myWebServerControler.h"
-#include "../lib/myWebServerControler.cpp"
-
 #include "../lib/myWebServerBase.h"
 #include "../lib/myWebServerBase.cpp"
 

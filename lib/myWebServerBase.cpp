@@ -5,6 +5,8 @@
 
 #include "Arduino.h"
 #include "myWebServerBase.h"
+#include "myWebServerViews.cpp"
+#include "myWebServerControler.cpp"
 
 myWebServerBase::myWebServerBase(/*int pin*/)
 {
