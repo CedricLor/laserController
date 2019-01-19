@@ -25,14 +25,6 @@ class LaserPin
     void initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     void physicalInitLaserPin();
 
-    static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
-
-    /* variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
-                0 = even pins are [high] and odds are [low];
-                1 = odd pins are [low] and evens are [high];
-    */
-    static short highPinsParityDuringStartup;
-
     void switchOnOffVariables(const bool targetState);
     void switchPointerBlinkCycleState(const bool state);
 

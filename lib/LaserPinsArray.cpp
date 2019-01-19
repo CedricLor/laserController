@@ -20,6 +20,7 @@ short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a 
 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS ARRAY
+// Called from main.cpp exclusively
 void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
@@ -33,7 +34,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
-// Called from pirStartupController
+// Called from pirStartupController exclusively
 void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {           // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     LaserPins[thisPin].switchOnOffVariables(targetState);

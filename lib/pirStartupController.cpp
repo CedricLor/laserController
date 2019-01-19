@@ -14,7 +14,7 @@ pirStartupController::pirStartupController()
 const short pirStartupController::SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
 const long pirStartupController::L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
 
-short LaserPin::highPinsParityDuringStartup = 0;
+short LaserPinsArray::highPinsParityDuringStartup = 0;
 
 /*
    tPirStartUpDelayBlinkLaser is the first task to be enabled upon setup of the ESP32
@@ -46,10 +46,10 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
-    LaserPin::directPinsSwitch(LaserPins, HIGH);
-    LaserPin::highPinsParityDuringStartup = (LaserPin::highPinsParityDuringStartup == 0) ? 1 : 0;
+    LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
+    LaserPinsArray::highPinsParityDuringStartup = (LaserPinsArray::highPinsParityDuringStartup == 0) ? 1 : 0;
   }
-  LaserPin::directPinsSwitch(LaserPins, LOW);
+  LaserPinsArray::directPinsSwitch(LaserPins, LOW);
   tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
     tLaserOff.restartDelayed(1000);
@@ -64,7 +64,7 @@ bool pirStartupController::onEnablePirStartUpDelayBlinkLaser() {
 
 void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
   LaserPin::pairAllPins(LaserPins, true);
-  LaserPin::directPinsSwitch(LaserPins, HIGH);
+  LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
   LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   pirController::tPirCntrl.enable();
 }
@@ -76,9 +76,9 @@ Task pirStartupController::tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 Task pirStartupController::tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 
 void pirStartupController::cbtLaserOff() {
-  LaserPin::directPinsSwitch(LaserPins, HIGH);
+  LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
 }
 
 void pirStartupController::cbtLaserOn() {
-  LaserPin::directPinsSwitch(LaserPins, LOW);
+  LaserPinsArray::directPinsSwitch(LaserPins, LOW);
 }

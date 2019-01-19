@@ -53,16 +53,8 @@ void LaserPin::physicalInitLaserPin()
 
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
-// Switches relay pins on and off during PIRStartUp
-// Called from pirStartupController
-void LaserPin::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {           // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
-    LaserPins[thisPin].switchOnOffVariables(targetState);
-  }
-}
-
 // Switches relay pins on and off
-// Called from (i) pirController, (ii) myMesh and (iii) this class (LaserPin)
+// Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin)
 void LaserPin::switchOnOffVariables(const bool targetState) {
   // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(targetState);                        // turn the blinking state of the struct representing the pin on or off
