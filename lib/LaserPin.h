@@ -12,7 +12,6 @@ class LaserPin
 {
   public:
     LaserPin();
-    LaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     short number;                   // pin number of the ESP32 which is controling the relay
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions
@@ -23,7 +22,6 @@ class LaserPin
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
 
     static void initLaserPins(LaserPin *LaserPins);
-    void physicalInitLaserPin();
 
     static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
     /* variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
@@ -58,6 +56,7 @@ class LaserPin
     static bool const _default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 
     void _initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
+    void _physicalInitLaserPin();
 
     static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOaAutoSwitchAllRelays();

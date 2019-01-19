@@ -20,16 +20,6 @@ LaserPin::LaserPin()
   pir_state = _default_pin_pir_state_value;
 }
 
-LaserPin::LaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
-{
-  on_off = _default_pin_on_off_state;
-  on_off_target = _default_pin_on_off_target_state;
-  blinking = _default_pin_blinking_state;
-  previous_time = millis();
-  blinking_interval = pinBlinkingInterval;
-  pir_state = _default_pin_pir_state_value;
-  _initLaserPin(pinNumber, thisPin);
-}
 
 short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
                              // it avoids using the modulo.
@@ -38,8 +28,8 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
                              // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
                              // once the loop is over, it should be reset to 0: LaserPin::pinParityWitness = 0;
 
-/////////////////////////////////////////////////////////////////////////
-// INIT
+////////////////////////////////////////////////////////////////////////////////
+// INITIALIZE LASER PINS
 void LaserPin::_initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
 {
   number = pinNumber;
@@ -47,7 +37,7 @@ void LaserPin::_initLaserPin(short pinNumber /* pin number on the ESP board */, 
   paired = pairedPinNumber;
 }
 
-void LaserPin::physicalInitLaserPin()
+void LaserPin::_physicalInitLaserPin()
 {
   pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
   digitalWrite(number, HIGH);  // setting default value of the pins at HIGH (relay closed)
@@ -58,7 +48,7 @@ void LaserPin::initLaserPins(LaserPin *LaserPins) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
     LaserPins[thisPin]._initLaserPin(relayPins[thisPin], thisPin);
-    LaserPins[thisPin].physicalInitLaserPin();
+    LaserPins[thisPin]._physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
 }
