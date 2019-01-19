@@ -47,11 +47,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
-void startAsyncServer();
 void enableTasks();
-
-void onRequest(AsyncWebServerRequest *request);
-void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NETWORK variables //////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,22 +61,6 @@ void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t in
 //const IPAddress MY_AP_IP(10, 0, 0, I_NODE_NAME);
 //const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
 //const IPAddress MY_N_MASK(255, 0, 0, 0);
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// RELAYS variables /////////////////////////////
-
-short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
-                             // it avoids using the modulo.
-                             // by switching it to 0 and 1 at each iteration of the loop
-                             // in principle, the switch takes the following footprint: LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
-                             // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
-                             // once the loop is over, it should be reset to 0: LaserPin::pinParityWitness = 0;
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
