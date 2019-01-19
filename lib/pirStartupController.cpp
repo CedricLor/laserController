@@ -14,6 +14,10 @@ void pirStartupController::cbtPirStartUpDelayPrintDash() {
   Serial.print("-");
 }
 
+Task pirStartupController::tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
+
+Task pirStartupController::tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
+
 void pirStartupController::cbtLaserOff() {
   LaserPin::directPinsSwitch(LaserPins, HIGH);
 }

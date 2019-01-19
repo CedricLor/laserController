@@ -115,16 +115,6 @@ Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITE
 
 Task tPirStartUpDelayPrintDash( 1000UL, 9, &pirStartupController::cbtPirStartUpDelayPrintDash, &userScheduler );
 
-Task tLaserOff( 0, 1, &pirStartupController::cbtLaserOff, &userScheduler );
-
-Task tLaserOn( 0, 1, &pirStartupController::cbtLaserOn, &userScheduler );
-
-
-/////////////////////////////////
-// PIR CYCLE
-// Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
-// Declarations
-// Task tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
 
 /////////////////////////////////
 // IR STARTUP
@@ -140,8 +130,8 @@ void cbtPirStartUpDelayBlinkLaser() {
   LaserPin::directPinsSwitch(LaserPins, LOW);
   tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
-    tLaserOff.restartDelayed(1000);
-    tLaserOn.restartDelayed(2000);
+    pirStartupController::tLaserOff.restartDelayed(1000);
+    pirStartupController::tLaserOn.restartDelayed(2000);
   }
 }
 

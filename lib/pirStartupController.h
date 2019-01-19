@@ -18,9 +18,14 @@ class pirStartupController
     static void onDisablePirStartUpDelayBlinkLaser();
 
     static void cbtPirStartUpDelayPrintDash();
+
+    static Task tLaserOff;
+    static Task tLaserOn;
+
+  private:
     static void cbtLaserOff();
     static void cbtLaserOn();
-  private:
+
 };
 
 #endif
