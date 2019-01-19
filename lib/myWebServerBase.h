@@ -13,14 +13,14 @@ class myWebServerBase
   public:
     myWebServerBase(/*int pin*/);
 
-    static AsyncWebServer asyncServer;
-    static char linebuf[];
-    static short charcount;
-
     static void startAsyncServer();
 
   private:
     // int _pin;
+    static AsyncWebServer asyncServer;
+    static char linebuf[];
+    static short charcount;
+
     static void listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void listAllCollectedParams(AsyncWebServerRequest *request);
 
