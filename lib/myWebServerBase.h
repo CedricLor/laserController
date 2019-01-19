@@ -12,8 +12,20 @@ class myWebServerBase
 {
   public:
     myWebServerBase(/*int pin*/);
+
+    static AsyncWebServer asyncServer;
+    static char linebuf[];
+    static short charcount;
+
+    static void startAsyncServer();
+
   private:
     // int _pin;
+    static void listAllCollectedHeaders(AsyncWebServerRequest *request);
+    static void listAllCollectedParams(AsyncWebServerRequest *request);
+
+    static void onRequest(AsyncWebServerRequest *request);
+    static void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 };
 
 #endif
