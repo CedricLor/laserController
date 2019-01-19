@@ -27,14 +27,6 @@ LaserPin::LaserPin()
   pir_state = _default_pin_pir_state_value;
 }
 
-
-short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
-                             // it avoids using the modulo.
-                             // by switching it to 0 and 1 at each iteration of the loop
-                             // in principle, the switch takes the following footprint: LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
-                             // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
-                             // once the loop is over, it should be reset to 0: LaserPin::pinParityWitness = 0;
-
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
 // Called from LaserPinsArray
@@ -93,21 +85,9 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 
 //////////////////////////////////////////////////////////////////////////
 // PAIRING SWITCHES: Pairing and unpairing of pins
-// Called exclusively from pirStartupController
-// Loops around all the pins and pairs or unpairs them
-void LaserPin::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairPin(LaserPins, thisPin, targetPairingState);
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
-  }
-  pinParityWitness = 0;
-}
-
-
 // Pairs or unpairs two pins together
-// Private function: called exclusively by LaserPin::pairAllPins
-void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState) {
-  const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
+  const short thePairedPin = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   if (targetPairingState == false) {
     _rePairPin(LaserPins, 8, 8);
   } else {
