@@ -53,8 +53,8 @@ void LaserPin::physicalInitLaserPin()
 
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
-// Switches relay pins on and off
-// Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin)
+/* Switches relay pins on and off
+   Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
 void LaserPin::switchOnOffVariables(const bool targetState) {
   // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(targetState);                        // turn the blinking state of the struct representing the pin on or off
@@ -62,30 +62,19 @@ void LaserPin::switchOnOffVariables(const bool targetState) {
                                                                              // the actual pin will be turned on or off in the LASER SAFETY TIMER
 }
 
-// Switches the blinking state of the pin
-// Called from (i) myMesh and (ii) this class (LaserPin)
+/* Switches the blinking state of the pin
+   Called from (i) myMesh and (ii) this class (LaserPin)*/
 void LaserPin::switchPointerBlinkCycleState(const bool state) {
-  // If the state passed on to the function is LOW (i.e.
-  // probably the targetState in the calling function),
-  // marks that the pin is in a blinking cycle.
-  // If not, marks that the blinking cycle for this pin is off.
+  /* If the state passed on to the function is LOW (i.e.
+     probably the targetState in the calling function),
+     marks that the pin is in a blinking cycle.
+     If not, marks that the blinking cycle for this pin is off. */
   (state == LOW) ? blinking = true : blinking = false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// MANUAL SWITCHES
-// Switches on and off all the lasers
-// Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
-// Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserPin::switchAllRelays(LaserPin *LaserPins, const bool state) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].manualSwitchOneRelay(state);
-  }
-}
-
-// Switches on and off a single laser
-// Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
-// Called from (i) myWebServerController and (ii) this class (LaserPin)
+/* Switches on and off a single laser
+   Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
+   Called from (i) myWebServerController and (ii) this class (LaserPin) */
 void LaserPin::manualSwitchOneRelay(const bool targetState) {
   // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(targetState);
@@ -166,22 +155,4 @@ void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) 
 // Private function: called from (i) changeGlobalBlinkingDelay and (ii) changeIndividualBlinkingDelay
 void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
-}
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-// AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
-short LaserPin::_siAutoSwitchInterval = 60;
-
-Task LaserPin::tAutoSwitchAllRelays( 1000, LaserPin::_siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::_tcbOaAutoSwitchAllRelays, &LaserPin::_tcbOdAutoSwitchAllRelays );
-
-bool LaserPin::_tcbOaAutoSwitchAllRelays() {
-  LaserPin::switchAllRelays(LaserPins, LOW);
-  Serial.print("-------- Auto Switch cycle started............ --------\n");
-  return true;
-}
-
-void LaserPin::_tcbOdAutoSwitchAllRelays() {
-  LaserPin::switchAllRelays(LaserPins, HIGH);
-  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }

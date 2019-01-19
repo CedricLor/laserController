@@ -28,7 +28,6 @@ class LaserPin
     void switchOnOffVariables(const bool targetState);
     void switchPointerBlinkCycleState(const bool state);
 
-    static void switchAllRelays(LaserPin *LaserPins, const bool state);
     void manualSwitchOneRelay(const bool targetState);
 
     static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state);
@@ -51,11 +50,6 @@ class LaserPin
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     void _rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
-
-
-    static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
-    static bool _tcbOaAutoSwitchAllRelays();
-    static void _tcbOdAutoSwitchAllRelays();
 };
 
 #endif

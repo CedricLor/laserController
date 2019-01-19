@@ -95,12 +95,12 @@ short LaserPinsArray::_siAutoSwitchInterval = 60;
 Task LaserPinsArray::tAutoSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaAutoSwitchAllRelays, &_tcbOdAutoSwitchAllRelays );
 
 bool LaserPinsArray::_tcbOaAutoSwitchAllRelays() {
-  LaserPin::switchAllRelays(LaserPins, LOW);
+  switchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
 void LaserPinsArray::_tcbOdAutoSwitchAllRelays() {
-  LaserPin::switchAllRelays(LaserPins, HIGH);
-  LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+  switchAllRelays(LaserPins, HIGH);
+  inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
