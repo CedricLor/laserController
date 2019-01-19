@@ -54,3 +54,7 @@ TO DO:
   - the delays used in pirStartupController should be changed at pin level and not through this directPinsSwitch thing
   - the LaserSafetyLoop should be redrafted to rely on Tasks and not on timers
   - all this will help add new functionalities to the whole thing
+- LaserPin class:
+  - needs a good cleaning up;
+  - shall also be modularized;
+  
