@@ -6,6 +6,13 @@
 #include "Arduino.h"
 #include "LaserPin.h"
 
+
+bool const LaserPin::_default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
+bool const LaserPin::_default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
+bool const LaserPin::_default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+bool const LaserPin::_default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
+
+
 /* Default constructor: required by the global.cpp
    Upon initialization of the board, we create an array of LaserPins without which will be later initialized.
    Upon creating this array, the pins do not receive any parameters, except the default parameters

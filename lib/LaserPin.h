@@ -12,6 +12,7 @@ class LaserPin
 {
   public:
     LaserPin();
+    
     short number;                   // pin number of the ESP32 which is controling the relay
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions
@@ -30,7 +31,7 @@ class LaserPin
                 1 = odd pins are [low] and evens are [high];
     */
     static short highPinsParityDuringStartup;
-    
+
     void switchOnOffVariables(const bool targetState);
     void switchPointerBlinkCycleState(const bool state);
 
@@ -49,10 +50,10 @@ class LaserPin
     static Task tAutoSwitchAllRelays;
 
   private:
-    static bool const _default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-    static bool const _default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-    static bool const _default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-    static bool const _default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
+    static bool const _default_pin_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
+    static bool const _default_pin_on_off_target_state; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
+    static bool const _default_pin_blinking_state;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+    static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     void _initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     void _physicalInitLaserPin();
