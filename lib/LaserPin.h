@@ -24,11 +24,13 @@ class LaserPin
     static void initLaserPins(LaserPin *LaserPins);
 
     static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
+
     /* variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
                 0 = even pins are [high] and odds are [low];
                 1 = odd pins are [low] and evens are [high];
     */
     static short highPinsParityDuringStartup;
+    
     void switchOnOffVariables(const bool targetState);
     void switchPointerBlinkCycleState(const bool state);
 
@@ -40,12 +42,9 @@ class LaserPin
 
     static short pinParityWitness;
     static void pairAllPins(LaserPin *LaserPins, const bool targetPairingState);
-    void pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState);
-    void rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
 
     static void changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay);
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
-    void changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
     static Task tAutoSwitchAllRelays;
 
@@ -57,6 +56,11 @@ class LaserPin
 
     void _initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     void _physicalInitLaserPin();
+
+    void _pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState);
+    void _rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
+
+    void _changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
     static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOaAutoSwitchAllRelays();

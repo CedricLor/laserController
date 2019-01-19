@@ -8,7 +8,7 @@
 
 /* Default constructor: required by the global.cpp
    Upon initialization of the board, we create an array of LaserPins without which will be later initialized.
-   Upon creating this array, the pins do not receive any parameters
+   Upon creating this array, the pins do not receive any parameters, except the default parameters
 */
 LaserPin::LaserPin()
 {
@@ -53,15 +53,18 @@ void LaserPin::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): done\n");
 }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
-void LaserPin::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {              // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+// Called from pirStartupController
+void LaserPin::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {           // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     LaserPins[thisPin].switchOnOffVariables(targetState);
   }
 }
 
+// Switches relay pins on and off
+// Called from (i) pirController, (ii) myMesh and (iii) this class (LaserPin)
 void LaserPin::switchOnOffVariables(const bool targetState) {
   // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(targetState);                        // turn the blinking state of the struct representing the pin on or off
@@ -69,6 +72,8 @@ void LaserPin::switchOnOffVariables(const bool targetState) {
                                                                              // the actual pin will be turned on or off in the LASER SAFETY TIMER
 }
 
+// Switches the blinking state of the pin
+// Called from (i) myMesh and (ii) this class (LaserPin)
 void LaserPin::switchPointerBlinkCycleState(const bool state) {
   // If the state passed on to the function is LOW (i.e.
   // probably the targetState in the calling function),
@@ -77,16 +82,20 @@ void LaserPin::switchPointerBlinkCycleState(const bool state) {
   (state == LOW) ? blinking = true : blinking = false;
 }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // MANUAL SWITCHES
-// Manually switches all the lasers
+// Switches on and off all the lasers
+// Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
+// Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserPin::switchAllRelays(LaserPin *LaserPins, const bool state) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].manualSwitchOneRelay(state);
   }
 }
 
-// Manually switches a single laser
+// Switches on and off a single laser
+// Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
+// Called from (i) myWebServerController and (ii) this class (LaserPin)
 void LaserPin::manualSwitchOneRelay(const bool targetState) {
   // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(targetState);
@@ -97,6 +106,7 @@ void LaserPin::manualSwitchOneRelay(const bool targetState) {
 // PIR SUBJECTION SWITCHES
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
+// Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
 void LaserPin::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].pir_state = state;
@@ -105,6 +115,7 @@ void LaserPin::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state) {
 
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects one relay to or releases it from the control of the PIR
+// Called from (i) myWebServerController and (ii) this class (LaserPin)
 void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(HIGH);
@@ -113,24 +124,31 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 
 //////////////////////////////////////////////////////////////////////////
 // PAIRING SWITCHES: Pairing and unpairing of pins
+// Called exclusively from pirStartupController
+// Loops around all the pins and pairs or unpairs them
 void LaserPin::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairPin(LaserPins, thisPin, targetPairingState);
+    LaserPins[thisPin]._pairPin(LaserPins, thisPin, targetPairingState);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;
 }
 
-void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState) {
+
+// Pairs or unpairs two pins together
+// Private function: called exclusively by LaserPin::pairAllPins
+void LaserPin::_pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState) {
   const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   if (targetPairingState == false) {
-    rePairPin(LaserPins, 8, 8);
+    _rePairPin(LaserPins, 8, 8);
   } else {
-    rePairPin(LaserPins, thisPin, thePairedPin);
+    _rePairPin(LaserPins, thisPin, thePairedPin);
   }
 }
 
-void LaserPin::rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin) {
+// Helper function for LaserPin::_pairPin
+// Private function: called exclusively by LaserPin::_pairPin
+void LaserPin::_rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin) {
   paired = thePairedPin;
   LaserPins[thePairedPin].paired = thisPin;
 }
@@ -138,19 +156,25 @@ void LaserPin::rePairPin(LaserPin *LaserPins, const short thisPin, const short t
 
 //////////////////////////////////////////////////////////////////////////
 // BLINKING DELAY Control
+// Changes the blinking delay of each pin and saves such new blinking delay in Preferences
+// Called exclusively from myWebServerController
 void LaserPin::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
+    LaserPins[thisPin]._changeTheBlinkingInterval(blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
     mySavedPrefs::savePreferences();
   }
 }
 
+// Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
+// Called exclusively from myWebServerController
 void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) {
-  changeTheBlinkingInterval(blinkingDelay);
+  _changeTheBlinkingInterval(blinkingDelay);
 }
 
-void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
+// Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
+// Private function: called from (i) changeGlobalBlinkingDelay and (ii) changeIndividualBlinkingDelay
+void LaserPin::_changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
 //////////////////////////////////////////////////////////////////////////
