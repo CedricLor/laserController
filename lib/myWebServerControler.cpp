@@ -60,7 +60,7 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     if (_p2->value() == "10") {
       // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
       int targetBlinkingDelay = _p1->value().toInt();
-      LaserPin::changeGlobalBlinkingDelay(LaserPins, targetBlinkingDelay);
+      LaserPinsArray::changeGlobalBlinkingDelay(LaserPins, targetBlinkingDelay);
     }
     else {
       int pinIndexNumber = _p2->value().toInt();

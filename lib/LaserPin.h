@@ -34,7 +34,6 @@ class LaserPin
 
     void pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState, const short _pinParityWitness);
 
-    static void changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay);
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
 

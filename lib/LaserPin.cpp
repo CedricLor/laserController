@@ -81,10 +81,7 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
   pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(HIGH);
 }
-//////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////
-// PAIRING SWITCHES: Pairing and unpairing of pins
 // Pairs or unpairs two pins together
 void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
   const short thePairedPin = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
@@ -101,19 +98,6 @@ void LaserPin::_rePairPin(LaserPin *LaserPins, const short thisPin, const short 
   paired = thePairedPin;
   LaserPins[thePairedPin].paired = thisPin;
 }
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-// BLINKING DELAY Control
-// Changes the blinking delay of each pin and saves such new blinking delay in Preferences
-// Called exclusively from myWebServerController
-void LaserPin::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
-    pinBlinkingInterval = blinkingDelay;
-    mySavedPrefs::savePreferences();
-  }
-}
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController
@@ -122,7 +106,7 @@ void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) 
 }
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
-// Private function: called from (i) changeGlobalBlinkingDelay and (ii) changeIndividualBlinkingDelay
+// Called from (i) LaserPinsArray and (ii) changeIndividualBlinkingDelay
 void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
