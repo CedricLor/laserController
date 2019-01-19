@@ -21,7 +21,7 @@ void myWebServerControler::webSwitchRelays(LaserPin *LaserPins, AsyncWebParamete
 
 void myWebServerControler::webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
-    LaserPin::inclExclAllRelaysInPir(LaserPins, targetState);
+    LaserPinsArray::inclExclAllRelaysInPir(LaserPins, targetState);
   } else {
     int val = _p2->value().toInt();
     LaserPins[val].inclExclOneRelayInPir(targetState);

@@ -81,20 +81,10 @@ void LaserPin::manualSwitchOneRelay(const bool targetState) {
   pir_state = LOW;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// PIR SUBJECTION SWITCHES
-// When clicking on the "On" or "Off" button on the webpage in the PIR column,
-// this function subjects or frees all the relays to or of the control of the PIR
-// Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserPin::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pir_state = state;
-  }
-}
-
-// When clicking on the "On" or "Off" button on the webpage in the PIR column,
-// this function subjects one relay to or releases it from the control of the PIR
-// Called from (i) myWebServerController and (ii) this class (LaserPin)
+/* PIR SUBJECTION SWITCHES
+   When clicking on the "On" or "Off" button on the webpage in the PIR column,
+   this function subjects one relay to or releases it from the control of the PIR
+   Called from (i) myWebServerController and (ii) this class (LaserPin) */
 void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pir_state = state;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(HIGH);

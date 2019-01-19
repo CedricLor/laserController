@@ -30,7 +30,6 @@ class LaserPin
 
     void manualSwitchOneRelay(const bool targetState);
 
-    static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state);
     void inclExclOneRelayInPir(const bool state);
 
     static short pinParityWitness;
