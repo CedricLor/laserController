@@ -13,17 +13,16 @@ class LaserPin
   public:
     LaserPin();
     LaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
-    short number;        // pin number to which the relays are attached
-    bool on_off;       // is the pin HIGH or LOW (LOW = the relay is closed, HIGH = the relay is open)
-    bool on_off_target;// a variable to store the on / off change requests by the various functions
-    bool blinking;     // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
+    short number;                   // pin number of the ESP32 which is controling the relay
+    bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
+    bool on_off_target;             // variable to store the on / off change requests by the various functions
+    bool blinking;                  // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
     unsigned long previous_time;
-    unsigned long blinking_interval;
-    bool pir_state;     // HIGH or LOW: HIGH -> controlled by the PIR
-    short paired;        // a variable to store with which other pin this pin is paired (8 means it is not paired)
+    unsigned long blinking_interval;// variable to store for how long a pin shall blink
+    bool pir_state;                 // variable to store whether the pin shall respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> controlled by the PIR
+    short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
 
     static void initLaserPins(LaserPin *LaserPins);
-    void initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
     void physicalInitLaserPin();
 
     static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
@@ -53,14 +52,16 @@ class LaserPin
     static Task tAutoSwitchAllRelays;
 
   private:
-    static bool const default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-    static bool const default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-    static bool const default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-    static bool const default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
+    static bool const _default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
+    static bool const _default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
+    static bool const _default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+    static bool const _default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 
-    static short siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
-    static bool tcbOaAutoSwitchAllRelays();
-    static void tcbOdAutoSwitchAllRelays();
+    void _initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
+
+    static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
+    static bool _tcbOaAutoSwitchAllRelays();
+    static void _tcbOdAutoSwitchAllRelays();
 };
 
 #endif

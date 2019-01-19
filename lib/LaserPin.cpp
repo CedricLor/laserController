@@ -6,25 +6,29 @@
 #include "Arduino.h"
 #include "LaserPin.h"
 
+/* Default constructor: required by the global.cpp
+   Upon initialization of the board, we create an array of LaserPins without which will be later initialized.
+   Upon creating this array, the pins do not receive any parameters
+*/
 LaserPin::LaserPin()
 {
-  on_off = default_pin_on_off_state;
-  on_off_target = default_pin_on_off_target_state;
-  blinking = default_pin_blinking_state;
+  on_off = _default_pin_on_off_state;
+  on_off_target = _default_pin_on_off_target_state;
+  blinking = _default_pin_blinking_state;
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
-  pir_state = default_pin_pir_state_value;
+  pir_state = _default_pin_pir_state_value;
 }
 
 LaserPin::LaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
 {
-  on_off = default_pin_on_off_state;
-  on_off_target = default_pin_on_off_target_state;
-  blinking = default_pin_blinking_state;
+  on_off = _default_pin_on_off_state;
+  on_off_target = _default_pin_on_off_target_state;
+  blinking = _default_pin_blinking_state;
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
-  pir_state = default_pin_pir_state_value;
-  initLaserPin(pinNumber, thisPin);
+  pir_state = _default_pin_pir_state_value;
+  _initLaserPin(pinNumber, thisPin);
 }
 
 short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
@@ -36,7 +40,7 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
 
 /////////////////////////////////////////////////////////////////////////
 // INIT
-void LaserPin::initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
+void LaserPin::_initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
 {
   number = pinNumber;
   short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
@@ -53,7 +57,7 @@ void LaserPin::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
+    LaserPins[thisPin]._initLaserPin(relayPins[thisPin], thisPin);
     LaserPins[thisPin].physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
@@ -163,17 +167,17 @@ void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
 
 //////////////////////////////////////////////////////////////////////////
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
-short LaserPin::siAutoSwitchInterval = 60;
+short LaserPin::_siAutoSwitchInterval = 60;
 
-Task LaserPin::tAutoSwitchAllRelays( 1000, LaserPin::siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::tcbOaAutoSwitchAllRelays, &LaserPin::tcbOdAutoSwitchAllRelays );
+Task LaserPin::tAutoSwitchAllRelays( 1000, LaserPin::_siAutoSwitchInterval, NULL, &userScheduler, false, &LaserPin::_tcbOaAutoSwitchAllRelays, &LaserPin::_tcbOdAutoSwitchAllRelays );
 
-bool LaserPin::tcbOaAutoSwitchAllRelays() {
+bool LaserPin::_tcbOaAutoSwitchAllRelays() {
   LaserPin::switchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
-void LaserPin::tcbOdAutoSwitchAllRelays() {
+void LaserPin::_tcbOdAutoSwitchAllRelays() {
   LaserPin::switchAllRelays(LaserPins, HIGH);
   LaserPin::inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
