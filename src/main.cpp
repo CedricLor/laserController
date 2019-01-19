@@ -78,16 +78,7 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PIR variables //////////////////////////////////////////////////////////////////////////////////////////////////
-// const int I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
-// const short SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
-// after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
-const short SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
-const long L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
-
-short LaserPin::highPinsParityDuringStartup = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,37 +92,6 @@ short charcount=0;
 // Scheduler variables ////////////////////////////////////////////////////////////////////////////////////////////
 
 void sendMessage();
-// Task taskSendMessage( &userScheduler, TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
-
-/////////////////////////////////
-// IR STARTUP
-// Tasks related to the IR startup
-// Declarations
-
-void cbtPirStartUpDelayBlinkLaser();
-Task tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &pirStartupController::onEnablePirStartUpDelayBlinkLaser, &pirStartupController::onDisablePirStartUpDelayBlinkLaser );
-
-Task tPirStartUpDelayPrintDash( 1000UL, 9, &pirStartupController::cbtPirStartUpDelayPrintDash, &userScheduler );
-
-
-/////////////////////////////////
-// IR STARTUP
-// Callback functions of the tasks relating to the start up delay of the IR sensor
-
-void cbtPirStartUpDelayBlinkLaser() {
-  Serial.print("+");
-
-  if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
-    LaserPin::directPinsSwitch(LaserPins, HIGH);
-    LaserPin::highPinsParityDuringStartup = (LaserPin::highPinsParityDuringStartup == 0) ? 1 : 0;
-  }
-  LaserPin::directPinsSwitch(LaserPins, LOW);
-  tPirStartUpDelayPrintDash.restartDelayed();
-  if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
-    pirStartupController::tLaserOff.restartDelayed(1000);
-    pirStartupController::tLaserOn.restartDelayed(2000);
-  }
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,5 +225,5 @@ void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t in
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void enableTasks() {
-  tPirStartUpDelayBlinkLaser.enable();
+  pirStartupController::tPirStartUpDelayBlinkLaser.enable();
 }
