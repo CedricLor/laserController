@@ -26,12 +26,11 @@ class pirController
     static void stopPirCycle();
     static void startOrRestartPirCycleIfPirValueIsHigh();
 
-    static const int I_PIR_INTERVAL;      // interval in the PIR cycle task (runs every second)
-    static const short SI_PIR_ITERATIONS;   // iteration of the PIR cycle
-
     static Task tPirCntrl;
     static void tcbPirCntrl();
 
+    static const int I_PIR_INTERVAL;      // interval in the PIR cycle task (runs every second)
+    static const short SI_PIR_ITERATIONS;   // iteration of the PIR cycle
     static Task tPirCycle;
     static bool tcbOnEnablePirCycle();
     static void tcbOnDisablePirCycle();

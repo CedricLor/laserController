@@ -66,11 +66,6 @@ void pirController::stopPirCycle() {
   pirController::broadcastPirStatus("off");                              // broadcast current pir status
 }
 
-/////////////////////////////////
-// PIR CYCLE
-const int pirController::I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
-const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
-
 //////////////////////
 /////////////////////////////////
 // PIR CONTROL
@@ -87,21 +82,26 @@ void pirController::tcbPirCntrl() {
   pirController::setPirValue();
   pirController::startOrRestartPirCycleIfPirValueIsHigh();
 }
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// PIR CYCLE
+const int pirController::I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
+const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
 // Tasks related to the PIR cycle (on/off of the lasers upon detecting a motion)
-Task pirController::tPirCycle ( pirController::I_PIR_INTERVAL, pirController::SI_PIR_ITERATIONS, NULL, &userScheduler, false, &pirController::tcbOnEnablePirCycle, &pirController::tcbOnDisablePirCycle);
+Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
 
-//////////////////////
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool pirController::tcbOnEnablePirCycle() {
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
-  pirController::switchPirRelays(LaserPins, LOW);
-  pirController::broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
+  switchPirRelays(LaserPins, LOW);
+  broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
   Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
   return true;
 }
 
 void pirController::tcbOnDisablePirCycle() {
   Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
-  pirController::stopPirCycle();
+  stopPirCycle();
 }
