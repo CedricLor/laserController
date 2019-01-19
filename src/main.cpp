@@ -37,6 +37,9 @@
 #include "../lib/myWebServerControler.h"
 #include "../lib/myWebServerControler.cpp"
 
+#include "../lib/myWebServerBase.h"
+#include "../lib/myWebServerBase.cpp"
+
 #include "../lib/laserSafetyLoop.h"
 #include "../lib/laserSafetyLoop.cpp"
 
