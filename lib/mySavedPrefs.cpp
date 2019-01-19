@@ -1,6 +1,6 @@
 /*
   mySavedPrefs.cpp - Library for actions related to Preferences lib.
-  Created by Cedric Lor, January 2, 2007.
+  Created by Cedric Lor, January 2, 2019.
 */
 
 #include "Arduino.h"

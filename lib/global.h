@@ -1,6 +1,6 @@
 /*
   global.h - Library for storing global variables.
-  Created by Cedric Lor, January 2, 2007.
+  Created by Cedric Lor, January 2, 2019.
 */
 
 #ifndef global_h

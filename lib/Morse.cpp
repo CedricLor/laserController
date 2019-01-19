@@ -1,6 +1,6 @@
 /*
   myWebServerControler.cpp - Library to handle web server controller related functions.
-  Created by Cedric Lor, January 2, 2007.
+  Created by Cedric Lor, January 2, 2019.
 */
 
 #include "Arduino.h"

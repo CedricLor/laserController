@@ -1,7 +1,6 @@
 /*
   Myota.h - Library to handle ArduinoOTA library.
   Created by Cedric Lor, January 2, 2019.
-  Released into the public domain.
 */
 
 #ifndef Myota_h

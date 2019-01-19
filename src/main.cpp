@@ -16,6 +16,13 @@
 #include "../lib/ControlerBox.cpp"
 #include "../lib/mySavedPrefs.h"
 #include "../lib/mySavedPrefs.cpp"
+
+#include "../lib/MasterSlaveBox.h"
+#include "../lib/MasterSlaveBox.cpp"
+
+#include "../lib/myMesh.h"
+#include "../lib/myMesh.cpp"
+
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
 
@@ -27,14 +34,8 @@
 #include "../lib/myWebServerViews.h"
 #include "../lib/myWebServerViews.cpp"
 
-#include "../lib/MasterSlaveBox.h"
-#include "../lib/MasterSlaveBox.cpp"
-
 #include "../lib/myWebServerControler.h"
 #include "../lib/myWebServerControler.cpp"
-
-#include "../lib/myMesh.h"
-#include "../lib/myMesh.cpp"
 
 #include "../lib/laserSafetyLoop.h"
 #include "../lib/laserSafetyLoop.cpp"

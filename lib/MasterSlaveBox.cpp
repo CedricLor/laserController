@@ -1,6 +1,6 @@
 /*
   MasterSlaveBox.cpp - Library to handle relationship of this box with other controller box related functions.
-  Created by Cedric Lor, January 3, 2007.
+  Created by Cedric Lor, January 3, 2019.
 */
 
 #include "Arduino.h"

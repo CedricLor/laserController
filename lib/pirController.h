@@ -1,6 +1,6 @@
 /*
-pirController.h - Library to store infrared sensor related functions.
-Created by Cedric Lor, January 18, 2019.
+  pirController.h - Library to store infrared sensor related functions.
+  Created by Cedric Lor, January 18, 2019.
 */
 
 #ifndef pirController_h
