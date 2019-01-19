@@ -15,12 +15,12 @@ bool pirController::valPir = LOW;                        // we start assuming no
 
 void pirController::initPir() {
   Serial.print("SETUP: initPir(): starting\n");
-  pinMode(pirController::INPUT_PIN, INPUT);                  // declare sensor as input
+  pinMode(INPUT_PIN, INPUT);                  // declare sensor as input
   Serial.print("SETUP: initPir(): done\n");
 }
 
 void pirController::setPirValue() {
-  pirController::valPir = digitalRead(pirController::INPUT_PIN); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(INPUT_PIN) will be HIGH.
+  valPir = digitalRead(pirController::INPUT_PIN); // read input value from the pin connected to the IR. If IR has detected motion, digitalRead(INPUT_PIN) will be HIGH.
   // Serial.printf(pirController::valPir\n);
 }
 
@@ -47,12 +47,12 @@ void pirController::broadcastPirStatus(const char* state) {     // state is "on"
 
 
 void pirController::startOrRestartPirCycleIfPirValueIsHigh() {
-  if (pirController::valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
-    if (!(pirController::tPirCycle.isEnabled())) {
-      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
-      pirController::tPirCycle.restart();
+  if (valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
+    if (!(tPirCycle.isEnabled())) {
+      tPirCycle.setIterations(SI_PIR_ITERATIONS);
+      tPirCycle.restart();
     } else {
-      pirController::tPirCycle.setIterations(pirController::SI_PIR_ITERATIONS);
+      tPirCycle.setIterations(SI_PIR_ITERATIONS);
     }
   }
   pirController::valPir = LOW;                                                                                      // Reset the ValPir to low (no motion detected)
@@ -62,8 +62,8 @@ void pirController::startOrRestartPirCycleIfPirValueIsHigh() {
 // Stop the pirCycle
 void pirController::stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
-  pirController::switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
-  pirController::broadcastPirStatus("off");                              // broadcast current pir status
+  switchPirRelays(LaserPins, HIGH);                                  // turn all the PIR controlled relays off
+  broadcastPirStatus("off");                              // broadcast current pir status
 }
 
 //////////////////////
@@ -74,13 +74,13 @@ void pirController::stopPirCycle() {
  * to run its main callback tcbPirCntrl() each time and is added to the userScheduler.
  * It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
  */
-Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &pirController::tcbPirCntrl, &userScheduler, false, NULL, NULL);
+Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
 
 // CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
 // tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
 void pirController::tcbPirCntrl() {
-  pirController::setPirValue();
-  pirController::startOrRestartPirCycleIfPirValueIsHigh();
+  setPirValue();
+  startOrRestartPirCycleIfPirValueIsHigh();
 }
 ////////////////////////////////////////////////////////////////////////////////
 
