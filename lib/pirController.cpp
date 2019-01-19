@@ -12,17 +12,28 @@ pirController::pirController()
 
 void pirController::initPir() {
   Serial.print("SETUP: initPir(): starting\n");
-  pinMode(INPUT_PIN, INPUT);                  // declare sensor as input
+  pinMode(INPUT_PIN, INPUT);                                // declare sensor as input
   Serial.print("SETUP: initPir(): done\n");
 }
 
-//////////////////////
-/////////////////////////////////
-// PIR CONTROL
-// Tasks related to the PIR controller (placing the lasers under control of the PIR and waiting for a motion to be detected to turn the lasers on/off)
-/* Task tPirCntrl is here defined to run every 4 seconds (TASK_SECOND * 4), indefinitely (TASK_FOREVER),
- * to run its main callback tcbPirCntrl() each time and is added to the userScheduler.
- * It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
+/* When Task tPirCntrl is enabled, the lasers are placed under the control of the IR sensor.
+   This means that when the IR will detect a movement, it will start a PIR cycle (see below).
+   For the moment, tPirCntrl is disabled upon startup of the box for 60 (for the duration of the pirStartupController tasks).
+
+ - Task tPirCntrl is enabled at the end of the pirStartup cycle in the onDisablePirStartUpDelayBlinkLaser callback.
+   related to the PIR controller (placing the lasers under control of the PIR and waiting for a motion to be detected to turn the lasers on/off)
+
+ - Task tPirCntrl is here defined to run every 4 seconds (TASK_SECOND * 4) and indefinitely (TASK_FOREVER).
+   Upon each iteration, it runs its main callback tcbPirCntrl().
+   Its main callback:
+   a. read the state of pin connected to the IR sensor;
+   b. decides to start (or extend) a PIR cycle depending on the state of the pin connected to the IR sensor.
+   It is added to the userScheduler upon its creation, waiting to be enabled.
+   It is created without being enabled (false) and has no onEnable and onDisable callbacks (NULL, NULL).
+
+   TO DO:
+   1. add an onEnable and an onDisable callback to cleanup the LaserPins status
+   2. Task tPirCntrl shall be disabled, if the box is in slave mode and when, in slave mode, it receive an order to enter into automatic mode
  */
 Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,8 +48,10 @@ short const pirController::INPUT_PIN = 23;               // choose the input pin
 bool pirController::valPir = LOW;                        // we start assuming no motion detected // variable to store the pin status
 
 
-// CALLBACKS FOR PIR CONTROL Task tPirCntrl (the Task that places the lasers under control of the PIR, looping and waiting for a movement to be detected)
-// tcbPirCntrl() reads the status of the pin connected to the PIR controller; if HIGH, it enables tPirCycle.
+/* tcbPirCntrl():
+    1. reads the status of the pin connected to the IR sensor;
+    2. starts (or extends) a PIR cycle, if such pin (connected to the IR sensor) is HIGH,
+*/
 void pirController::tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
@@ -50,7 +63,7 @@ void pirController::setPirValue() {
   // Serial.printf(pirController::valPir\n);
 }
 
-// Starts the PIR Cycle
+// Starts (or extends) the PIR Cycle
 void pirController::startOrRestartPirCycleIfPirValueIsHigh() {
   if (valPir == HIGH) {                                                                              // if the PIR sensor has sensed a motion,
     if (!(tPirCycle.isEnabled())) {
@@ -64,12 +77,22 @@ void pirController::startOrRestartPirCycleIfPirValueIsHigh() {
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // PIR CYCLE
 const int pirController::I_PIR_INTERVAL = 1000;      // interval in the PIR cycle task (runs every second)
 const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cycle
 
-// Tasks that manages the PIR cycle (on/off of the lasers upon detecting a motion)
+/* Task tPirCycle mainly acts as a timer.
+   It is enabled for 60 seconds and iterates every second.
+   It is enabled when the IR sensor has detected a movement.
+
+   Upon being enabled and upon being disabled:
+   1. it switches the state of the property .pir_state of each of the LaserPin;
+   2. it sends a message via the mesh to the other box to inform them that it has started a pirCycle.
+
+   Note: the blinking delay of each laser or each pair of laser is not defined in the pirController but at the level of the LaserPins.
+ */
 Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userScheduler, false, &tcbOnEnablePirCycle, &tcbOnDisablePirCycle);
 
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)

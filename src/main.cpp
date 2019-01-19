@@ -289,5 +289,4 @@ void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t in
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void enableTasks() {
   tPirStartUpDelayBlinkLaser.enable();
-  // tPirCntrl.waitFor(&srPirStartUpComplete, TASK_IMMEDIATE, TASK_FOREVER);
 }
