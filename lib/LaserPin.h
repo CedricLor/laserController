@@ -12,7 +12,7 @@ class LaserPin
 {
   public:
     LaserPin();
-    
+
     short number;                   // pin number of the ESP32 which is controling the relay
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions
@@ -23,6 +23,8 @@ class LaserPin
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
 
     static void initLaserPins(LaserPin *LaserPins);
+    void initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
+    void physicalInitLaserPin();
 
     static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
 
@@ -43,6 +45,7 @@ class LaserPin
 
     static short pinParityWitness;
     static void pairAllPins(LaserPin *LaserPins, const bool targetPairingState);
+    void pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState);
 
     static void changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay);
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
@@ -55,10 +58,6 @@ class LaserPin
     static bool const _default_pin_blinking_state;       // by default, pin starts as in a blinking-cycle TO ANALYSE
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
-    void _initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
-    void _physicalInitLaserPin();
-
-    void _pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState);
     void _rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
 
     void _changeTheBlinkingInterval(const unsigned long blinkingDelay);

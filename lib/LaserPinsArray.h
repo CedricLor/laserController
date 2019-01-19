@@ -1,0 +1,44 @@
+/*
+  LaserPinsArray.h - Library to handle the pins connected to the relays controlling the lasers.
+  Created by Cedric Lor, January 19, 2019.
+*/
+
+#ifndef LaserPinsArray_h
+#define LaserPinsArray_h
+
+#include "Arduino.h"
+
+class LaserPinsArray
+{
+  public:
+    LaserPinsArray();
+
+    static void initLaserPins(LaserPin *LaserPins);
+
+    static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
+
+    /* variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
+                0 = even pins are [high] and odds are [low];
+                1 = odd pins are [low] and evens are [high];
+    */
+    static short highPinsParityDuringStartup;
+
+    static void switchAllRelays(LaserPin *LaserPins, const bool state);
+
+    static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state);
+
+    static short pinParityWitness;
+    static void pairAllPins(LaserPin *LaserPins, const bool targetPairingState);
+
+    static void changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay);
+
+    static Task tAutoSwitchAllRelays;
+
+  private:
+
+    static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
+    static bool _tcbOaAutoSwitchAllRelays();
+    static void _tcbOdAutoSwitchAllRelays();
+};
+
+#endif

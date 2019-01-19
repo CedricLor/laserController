@@ -37,14 +37,15 @@ short LaserPin::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variab
 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
-void LaserPin::_initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
+// Called from LaserPinsArray
+void LaserPin::initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
 {
   number = pinNumber;
   short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
   paired = pairedPinNumber;
 }
 
-void LaserPin::_physicalInitLaserPin()
+void LaserPin::physicalInitLaserPin()
 {
   pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
   digitalWrite(number, HIGH);  // setting default value of the pins at HIGH (relay closed)
@@ -54,8 +55,8 @@ void LaserPin::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin]._initLaserPin(relayPins[thisPin], thisPin);
-    LaserPins[thisPin]._physicalInitLaserPin();
+    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
+    LaserPins[thisPin].physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
 }
@@ -135,7 +136,7 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 // Loops around all the pins and pairs or unpairs them
 void LaserPin::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin]._pairPin(LaserPins, thisPin, targetPairingState);
+    LaserPins[thisPin].pairPin(LaserPins, thisPin, targetPairingState);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;
@@ -144,7 +145,7 @@ void LaserPin::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*
 
 // Pairs or unpairs two pins together
 // Private function: called exclusively by LaserPin::pairAllPins
-void LaserPin::_pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState) {
+void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState) {
   const short thePairedPin = (pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   if (targetPairingState == false) {
     _rePairPin(LaserPins, 8, 8);
