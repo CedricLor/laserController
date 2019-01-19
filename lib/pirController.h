@@ -14,27 +14,32 @@ class pirController
   public:
     pirController();
 
+    static void initPir();
+
+    static Task tPirCntrl;
+
+  private:
+    // PIR controller
     static short const INPUT_PIN;
     static bool valPir;
 
-    static void initPir();
-
-    static void setPirValue();
-
-    static void switchPirRelays(LaserPin *LaserPins, const bool state);
-    static void broadcastPirStatus(const char* state);
-    static void stopPirCycle();
-    static void startOrRestartPirCycleIfPirValueIsHigh();
-
-    static Task tPirCntrl;
     static void tcbPirCntrl();
 
+    static void setPirValue();
+    static void startOrRestartPirCycleIfPirValueIsHigh();
+
+    // PIR cycle
     static const int I_PIR_INTERVAL;      // interval in the PIR cycle task (runs every second)
     static const short SI_PIR_ITERATIONS;   // iteration of the PIR cycle
     static Task tPirCycle;
     static bool tcbOnEnablePirCycle();
     static void tcbOnDisablePirCycle();
-  private:
+
+    static void stopPirCycle();
+
+    static void switchPirRelays(LaserPin *LaserPins, const bool state);
+
+    static void broadcastPirStatus(const char* state);
 };
 
 #endif
