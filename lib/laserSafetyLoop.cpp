@@ -21,6 +21,7 @@ void laserSafetyLoop::loop(LaserPin *LaserPins) {
   // - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);
   // - update the paired laser or its pair if the lasers are paired;
   // and then, execute the updates.
+  LaserPinsArray::pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     blinkLaserIfBlinking(LaserPins[thisPin]);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     ifMasterPairedThenUpdateOnOffOfSlave(LaserPins, thisPin);          // update the on/off status of slave
@@ -29,6 +30,16 @@ void laserSafetyLoop::loop(LaserPin *LaserPins) {
   }
   LaserPinsArray::pinParityWitness = 0;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+  blinkLaserIfBlinking:
+  - this function seem equivocal:
+    1.  why should it be limited to non-parid or master pin?
+    2.  why does it update the on_off_target without checking first whether the on_off_target
+        has not been updated otherwise? Certes, it updates on_off_target only if blinking is
+        true and blinking_interval has elapsed, but still, this seems a second error in the logic of the thing
+*/
 
 void laserSafetyLoop::blinkLaserIfBlinking(LaserPin &LaserPin) {
   /*
@@ -39,6 +50,14 @@ void laserSafetyLoop::blinkLaserIfBlinking(LaserPin &LaserPin) {
   if (LaserPin.blinking == true && (LaserPin.paired == 8 || LaserPinsArray::pinParityWitness == 0)) {
     blinkLaserIfTimeIsDue(LaserPin);
   }
+  /*
+    Test: simplify => why should this apply only to a master or a non-paired?
+  */
+  /*
+  if (LaserPin.blinking == true) {
+    blinkLaserIfTimeIsDue(LaserPin);
+  }
+  */
 }
 
 void laserSafetyLoop::blinkLaserIfTimeIsDue(LaserPin &LaserPin) {
@@ -53,6 +72,7 @@ void laserSafetyLoop::blinkLaserIfTimeIsDue(LaserPin &LaserPin) {
       LaserPin.on_off_target = !LaserPin.on_off;
   }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void laserSafetyLoop::ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin) {
   /*
