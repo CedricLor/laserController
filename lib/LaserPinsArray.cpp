@@ -38,7 +38,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
 // Called from pirStartupController exclusively
-void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {           // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     LaserPins[thisPin].switchOnOffVariables(targetState);
   }

@@ -31,11 +31,16 @@ void laserSafetyLoop::loop(LaserPin *LaserPins) {
   LaserPinsArray::pinParityWitness = 0;
 }
 
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
   blinkLaserIfBlinking:
   - this function seem equivocal:
-    1.  why should it be limited to non-parid or master pin?
+    1.  why should it be limited to non-paired or master pin?
     2.  why does it update the on_off_target without checking first whether the on_off_target
         has not been updated otherwise? Certes, it updates on_off_target only if blinking is
         true and blinking_interval has elapsed, but still, this seems a second error in the logic of the thing
@@ -110,11 +115,13 @@ void laserSafetyLoop::_evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateF
 }
 
 void laserSafetyLoop::_updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget) {
-  LaserPins[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
-  LaserPins[thisPin + 1].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
-  LaserPins[thisPin + 1].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
+  LaserPins[LaserPins[thisPin].paired].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
+  LaserPins[LaserPins[thisPin].paired].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
+  LaserPins[LaserPins[thisPin].paired].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void laserSafetyLoop::_executeUpdates(LaserPin &LaserPin) {
   /*
       Called from within the laser safety loop for each pin
@@ -133,3 +140,4 @@ void laserSafetyLoop::_executeUpdates(LaserPin &LaserPin) {
     LaserPin.previous_time = millis();
   }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
