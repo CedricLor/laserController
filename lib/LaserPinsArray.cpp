@@ -25,7 +25,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].initLaserPin(thisPin);
+    LaserPins[thisPin].pairPin(thisPin);
     LaserPins[thisPin].physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
@@ -69,7 +69,7 @@ void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool stat
 // Loops around all the pins and pairs or unpairs them
 void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairPin(LaserPins, thisPin, targetPairingState/*, pinParityWitness*/);
+    LaserPins[thisPin].pairUnpairPin(thisPin, targetPairingState);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;

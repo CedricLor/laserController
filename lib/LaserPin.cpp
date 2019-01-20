@@ -29,13 +29,6 @@ LaserPin::LaserPin()
 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
-// Called from LaserPinsArray
-void LaserPin::initLaserPin(short thisPin /* index number of this pin in the array of LaserPin */)
-{
-  short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
-  paired = pairedPinNumber;
-}
-
 void LaserPin::physicalInitLaserPin()
 {
   pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
@@ -82,21 +75,24 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 }
 
 // Pairs or unpairs two pins together
-void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState/*, const short _pinParityWitness*/) {
-  const short thePairedPin = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+// Called from LaserPinsArray
+void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState) {
   if (targetPairingState == false) {
-    _rePairPin(LaserPins, 8, 8);
+    paired = 8;
   } else {
-    _rePairPin(LaserPins, thisPin, thePairedPin);
+    pairPin(thisPin);
   }
 }
 
-// Helper function for LaserPin::_pairPin
-// Private function: called exclusively by LaserPin::_pairPin
-void LaserPin::_rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin) {
-  paired = thePairedPin;
-  LaserPins[thePairedPin].paired = thisPin;
+// Called from (i) LaserPinsArray class and (ii) pairUnpairPin
+void LaserPin::pairPin(const short thisPin /* index number of this pin in LaserPinsArray */)
+{
+  const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  paired = thePairedPinIndexNumber;
 }
+
+// Helper function for LaserPin::_pairPin
+// Private function: called exclusively by LaserPin::pairPin
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController
