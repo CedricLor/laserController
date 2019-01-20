@@ -30,9 +30,8 @@ LaserPin::LaserPin()
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
 // Called from LaserPinsArray
-void LaserPin::initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
+void LaserPin::initLaserPin(short thisPin /* index number of this pin in the array of LaserPin */)
 {
-  number = pinNumber;
   short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
   paired = pairedPinNumber;
 }

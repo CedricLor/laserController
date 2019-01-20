@@ -22,7 +22,7 @@ class LaserPin
     bool pir_state;                 // variable to store whether the pin shall respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> controlled by the PIR
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
 
-    void initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */);
+    void initLaserPin(short thisPin /* index number of this pin in the array of LaserPin */);
     void physicalInitLaserPin();
 
     void switchOnOffVariables(const bool targetState);
