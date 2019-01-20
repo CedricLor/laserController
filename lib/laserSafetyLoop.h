@@ -16,14 +16,14 @@ class laserSafetyLoop
     static void loop(LaserPin *LaserPins);
 
   private:
-    static void blinkLaserIfBlinking(LaserPin &LaserPin);
-    static void blinkLaserIfTimeIsDue(LaserPin &LaserPin);
+    static void _blinkLaserIfBlinking(LaserPin &LaserPin);
+    static void _blinkLaserIfTimeIsDue(LaserPin &LaserPin);
 
-    static void ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin);
-    static void evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPin *LaserPins, const int thisPin);
-    static void updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget);
+    static void _ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin);
+    static void _evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPin *LaserPins, const int thisPin);
+    static void _updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget);
 
-    static void executeUpdates(LaserPin &LaserPin);
+    static void _executeUpdates(LaserPin &LaserPin);
 };
 
 #endif
