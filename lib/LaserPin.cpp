@@ -83,8 +83,8 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 }
 
 // Pairs or unpairs two pins together
-void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
-  const short thePairedPin = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState/*, const short _pinParityWitness*/) {
+  const short thePairedPin = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   if (targetPairingState == false) {
     _rePairPin(LaserPins, 8, 8);
   } else {

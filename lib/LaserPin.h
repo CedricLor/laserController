@@ -32,7 +32,7 @@ class LaserPin
 
     void inclExclOneRelayInPir(const bool state);
 
-    void pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState, const short _pinParityWitness);
+    void pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState/*, const short _pinParityWitness*/);
 
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
