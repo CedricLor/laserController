@@ -121,24 +121,3 @@ void laserSafetyLoop::_updatePairedSlave(LaserPin *LaserPins, const int thisPin,
   LaserPins[LaserPins[thisPin].paired].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void laserSafetyLoop::_executeUpdates(LaserPin &LaserPin) {
-  /*
-      Called from within the laser safety loop for each pin
-      Checks whether the current on_off_target state is different than the current on_off state
-      If so:
-      1. turn on or off the laser as requested in the on_off_target_state
-      2. align the on_off state with the on_off_target state
-      3. reset the safety blinking timer of this pin
-      // TO ANALYSE: I have the feeling that the condition to be tested shall be different
-      // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
-      // a blinking cycle and cooling off
-  */
-  if (LaserPin.on_off != LaserPin.on_off_target) {
-    digitalWrite(LaserPin.number, LaserPin.on_off_target);
-    LaserPin.on_off = LaserPin.on_off_target;
-    LaserPin.previous_time = millis();
-  }
-}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
