@@ -22,8 +22,6 @@ class laserSafetyLoop
     static void _ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin);
     static void _evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPin *LaserPins, const int thisPin);
     static void _updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget);
-
-    static void _executeUpdates(LaserPin &LaserPin);
 };
 
 #endif
