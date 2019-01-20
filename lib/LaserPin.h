@@ -23,6 +23,7 @@ class LaserPin
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
     unsigned long last_time_on;
     unsigned long last_time_off;
+    unsigned long last_interval_on;
 
     void physicalInitLaserPin();
 
@@ -39,6 +40,8 @@ class LaserPin
 
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
+
+    void laserProtectionSwitch();
 
   private:
     static bool const _default_pin_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP

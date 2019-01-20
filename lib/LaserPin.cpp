@@ -25,8 +25,9 @@ LaserPin::LaserPin()
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
   pir_state = _default_pin_pir_state_value;
-  last_time_on = 0;   // set at 0 at startup
-  last_time_off = 0;  // set at 0 at startup
+  last_time_on = 0;     // set at 0 at startup
+  last_time_off = 0;    // set at 0 at startup
+  last_interval_on = 0; // set at 0 at startup
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,3 +126,12 @@ void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) 
 void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
+
+// Laser Protection Loop
+// Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
+void LaserPin::laserProtectionSwitch() {
+  const unsigned long currentTime = millis();
+  if ((digitalRead(number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
+    digitalWrite(number, HIGH);
+  }
+};
