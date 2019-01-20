@@ -84,6 +84,7 @@ void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState,
   }
 }
 
+// Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Called from (i) LaserPinsArray class and (ii) pairUnpairPin
 void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinParityWitness)
 {
@@ -91,6 +92,8 @@ void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin i
   paired = thePairedPinIndexNumber;
 }
 
+// Pairs two adjacent pins together (adjacent in the LaserPinsArray)
+// Test function; not in use for the moment
 void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness)
 {
   const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? thisPin + 2 : thisPin - 2;
