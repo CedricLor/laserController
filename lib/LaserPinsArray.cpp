@@ -23,11 +23,14 @@ short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a 
 // Called from main.cpp exclusively
 void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
+  pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].pairWithNextPin(thisPin);
+    LaserPins[thisPin].pairWithNextPin(thisPin, pinParityWitness);
+    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].physicalInitLaserPin();
   }
+  pinParityWitness = 0;
   Serial.print("SETUP: initLaserPins(): done\n");
 }
 
@@ -68,8 +71,9 @@ void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool stat
 // Called exclusively from pirStartupController
 // Loops around all the pins and pairs or unpairs them
 void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
+  pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairUnpairPin(thisPin, targetPairingState);
+    LaserPins[thisPin].pairUnpairPin(thisPin, targetPairingState, pinParityWitness);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;

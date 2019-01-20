@@ -76,20 +76,38 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 
 // Pairs or unpairs two pins together
 // Called from LaserPinsArray
-void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState) {
+void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
   if (targetPairingState == false) {
     paired = 8;
   } else {
-    pairWithNextPin(thisPin);
+    pairWithNextPin(thisPin, _pinParityWitness);
   }
 }
 
 // Called from (i) LaserPinsArray class and (ii) pairUnpairPin
-void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */)
+void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinParityWitness)
 {
-  const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   paired = thePairedPinIndexNumber;
 }
+
+void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness)
+{
+  const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? thisPin + 2 : thisPin - 2;
+  paired = thePairedPinIndexNumber;
+}
+
+/*
+  Flexible pairing of pin: this function permits pairing this pin:
+  (i) with the next (or the previous) one of index +1 (or -1) or
+  (ii) with the next (or the previous) one of a higher index
+  The pairing index is defined in the pairingIndex variable
+*/
+// void LaserPin::flexiblePairPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short pairingIndex)
+// {
+//   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+//   paired = thePairedPinIndexNumber;
+// }
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController

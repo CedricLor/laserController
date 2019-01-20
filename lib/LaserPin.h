@@ -31,8 +31,9 @@ class LaserPin
 
     void inclExclOneRelayInPir(const bool state);
 
-    void pairUnpairPin(const short thisPin, const bool targetPairingState);
-    void pairWithNextPin(const short thisPin);
+    void pairUnpairPin(const short thisPin, const bool targetPairingState, const short _pinParityWitness);
+    void pairWithNextPin(const short thisPin, const short _pinParityWitness);
+    void pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness);
 
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
