@@ -26,7 +26,7 @@ LaserPin::LaserPin()
   blinking_interval = pinBlinkingInterval;
   pir_state = _default_pin_pir_state_value;
   last_time_on = 0;     // set at 0 at startup
-  last_time_off = 0;    // set at 0 at startup
+  last_time_off = millis();    // set at 0 at startup
   last_interval_on = 0; // set at 0 at startup
 }
 
@@ -127,6 +127,7 @@ void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
 // Execute Updates
 void LaserPin::executePinStateChange() {
   /*
@@ -141,12 +142,25 @@ void LaserPin::executePinStateChange() {
       // a blinking cycle and cooling off
   */
   if (on_off != on_off_target) {
+    _markTimeChanges();
     digitalWrite(number, on_off_target);
     on_off = on_off_target;
-    previous_time = millis();
-    (on_off_target == HIGH) ? last_time_off = previous_time : last_time_on = previous_time;
-
   }
+}
+
+// Helper function for execute updates
+void LaserPin::_markTimeChanges() {
+  const unsigned long currentTime = millis();
+  previous_time = currentTime;
+
+  // If instruction is to turn laserPin on
+  if (on_off_target == LOW) {
+    last_time_off = currentTime;
+    return;
+  }
+  // If instruction is to turn laserPin off
+  last_time_on = currentTime;
+  last_interval_on = last_time_on - last_time_off;
 }
 
 // Laser Protection Switch

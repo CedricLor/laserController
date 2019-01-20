@@ -51,6 +51,8 @@ class LaserPin
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     static const unsigned long _max_interval_on;
+
+    void _markTimeChanges();
 };
 
 #endif
