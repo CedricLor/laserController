@@ -11,7 +11,7 @@ bool const LaserPin::_default_pin_on_off_state = HIGH;         // by default, th
 bool const LaserPin::_default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const LaserPin::_default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
 bool const LaserPin::_default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
-
+const unsigned long LaserPin::_max_interval_on = 600000UL;
 
 /* Default constructor: required by the global.cpp
    Upon initialization of the board, we create an array of LaserPins without which will be later initialized.
@@ -25,6 +25,8 @@ LaserPin::LaserPin()
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
   pir_state = _default_pin_pir_state_value;
+  last_time_on = 0;   // set at 0 at startup
+  last_time_off = 0;  // set at 0 at startup
 }
 
 ////////////////////////////////////////////////////////////////////////////////

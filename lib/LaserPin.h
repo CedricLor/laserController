@@ -21,6 +21,8 @@ class LaserPin
     unsigned long blinking_interval;// variable to store for how long a pin shall blink
     bool pir_state;                 // variable to store whether the pin shall respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> controlled by the PIR
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
+    unsigned long last_time_on;
+    unsigned long last_time_off;
 
     void physicalInitLaserPin();
 
@@ -43,6 +45,8 @@ class LaserPin
     static bool const _default_pin_on_off_target_state; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
     static bool const _default_pin_blinking_state;       // by default, pin starts as in a blinking-cycle TO ANALYSE
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
+
+    static const unsigned long _max_interval_on;
 };
 
 #endif
