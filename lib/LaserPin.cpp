@@ -80,19 +80,16 @@ void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState)
   if (targetPairingState == false) {
     paired = 8;
   } else {
-    pairPin(thisPin);
+    pairWithNextPin(thisPin);
   }
 }
 
 // Called from (i) LaserPinsArray class and (ii) pairUnpairPin
-void LaserPin::pairPin(const short thisPin /* index number of this pin in LaserPinsArray */)
+void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */)
 {
   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
   paired = thePairedPinIndexNumber;
 }
-
-// Helper function for LaserPin::_pairPin
-// Private function: called exclusively by LaserPin::pairPin
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController

@@ -32,7 +32,7 @@ class LaserPin
     void inclExclOneRelayInPir(const bool state);
 
     void pairUnpairPin(const short thisPin, const bool targetPairingState);
-    void pairPin(const short thisPin);
+    void pairWithNextPin(const short thisPin);
 
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
@@ -42,8 +42,6 @@ class LaserPin
     static bool const _default_pin_on_off_target_state; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
     static bool const _default_pin_blinking_state;       // by default, pin starts as in a blinking-cycle TO ANALYSE
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
-
-    void _rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin);
 };
 
 #endif

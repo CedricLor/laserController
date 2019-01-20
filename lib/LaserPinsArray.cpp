@@ -25,7 +25,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].pairPin(thisPin);
+    LaserPins[thisPin].pairWithNextPin(thisPin);
     LaserPins[thisPin].physicalInitLaserPin();
   }
   Serial.print("SETUP: initLaserPins(): done\n");
