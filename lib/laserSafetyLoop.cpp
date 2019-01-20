@@ -88,11 +88,11 @@ void laserSafetyLoop::_ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins,
       If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
   */
   if (!(LaserPins[thisPin].paired == 8) && (LaserPinsArray::pinParityWitness == 0)) {
-    _evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPins, thisPin);
+    _updatePairedSlaveWrapper(LaserPins, thisPin);
   }
 }
 
-void laserSafetyLoop::_evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPin *LaserPins, const int thisPin) {
+void laserSafetyLoop::_updatePairedSlaveWrapper(LaserPin *LaserPins, const int thisPin) {
   /*
       Called by ifMasterPairedThenUpdateOnOffOfSlave() for pins which are master in a pair.
       A. If the pin is NOT in blinking mode AND its on_off_target state is to turn off,
