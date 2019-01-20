@@ -25,8 +25,9 @@ void laserSafetyLoop::loop(LaserPin *LaserPins) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     _blinkLaserIfBlinking(LaserPins[thisPin]);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     _ifMasterPairedThenUpdateOnOffOfSlave(LaserPins, thisPin);          // update the on/off status of slave
-    _executeUpdates(LaserPins[thisPin]);                                // transform the update to the struct to analogical updates in the status of the related pin
     LaserPinsArray::pinParityWitness = (LaserPinsArray::pinParityWitness == 0) ? 1 : 0;
+    LaserPins[thisPin].executePinStateChange();
+    LaserPins[thisPin].laserProtectionSwitch();
   }
   LaserPinsArray::pinParityWitness = 0;
 }

@@ -41,6 +41,7 @@ class LaserPin
     void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
     void changeTheBlinkingInterval(const unsigned long blinkingDelay);
 
+    void executePinStateChange();
     void laserProtectionSwitch();
 
   private:
