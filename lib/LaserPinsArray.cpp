@@ -30,7 +30,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
     LaserPins[thisPin].pairing_type = 1;                                    // by default, each pin is paired in alternance with the other (when the paired is on, this one is off)
     LaserPins[thisPin].index_number = thisPin;
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
-    LaserPins[thisPin].physicalInitLaserPin();
+    LaserPins[thisPin].physicalInitLaserPin(relayPins[thisPin]);
   }
   pinParityWitness = 0;
   Serial.print("SETUP: initLaserPins(): done\n");

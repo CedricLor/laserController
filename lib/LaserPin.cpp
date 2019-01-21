@@ -32,10 +32,10 @@ LaserPin::LaserPin()
 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
-void LaserPin::physicalInitLaserPin()
+void LaserPin::physicalInitLaserPin(const short physicalPinNumber)
 {
-  pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
-  digitalWrite(number, HIGH);  // setting default value of the pins at HIGH (relay closed)
+  pinMode(physicalPinNumber, OUTPUT);     // initialization of the pin connected to each of the relay as output
+  digitalWrite(physicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
 
 ////////////////////////////////////////////////////////////////////////////////

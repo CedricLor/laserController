@@ -27,7 +27,7 @@ class LaserPin
     unsigned long last_time_off;    // last time this pin was turned off
     unsigned long last_interval_on; // last interval during which this pin was turned on
 
-    void physicalInitLaserPin();
+    void physicalInitLaserPin(const short physicalPinNumber);
 
     void switchOnOffVariables(const bool targetState);
     void switchPointerBlinkCycleState(const bool state);
