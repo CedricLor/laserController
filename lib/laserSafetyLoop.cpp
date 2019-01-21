@@ -117,8 +117,8 @@ void laserSafetyLoop::_updatePairedSlaveWrapper(LaserPin *LaserPins, const int t
 }
 
 void laserSafetyLoop::_updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget) {
-  LaserPins[LaserPins[thisPin].paired].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
-  LaserPins[LaserPins[thisPin].paired].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
-  LaserPins[LaserPins[thisPin].paired].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
+  LaserPins[LaserPins[thisPin].paired_with].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
+  LaserPins[LaserPins[thisPin].paired_with].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
+  LaserPins[LaserPins[thisPin].paired_with].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

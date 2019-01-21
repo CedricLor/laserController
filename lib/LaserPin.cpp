@@ -40,28 +40,31 @@ void LaserPin::physicalInitLaserPin()
 
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
-/* Switches relay pins on and off
-   Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
-void LaserPin::switchOnOffVariables(const bool targetOnOffState) {
-  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
-  switchPointerBlinkCycleState(targetOnOffState);                        // turn the blinking state of the struct representing the pin on or off
-  on_off_target = targetOnOffState;                                               // turn the on_off_target state of the struct on or off
-                                                                             // the actual pin will be turned on or off in the LASER SAFETY TIMER
-}
-
 /* Switches the blinking state of the pin
    Called from (i) myMesh and (ii) this class (LaserPin)*/
 void LaserPin::switchPointerBlinkCycleState(const bool targetBlinkingState) {
-  /* If the state passed on to the function is LOW (i.e.
-     probably the targetState in the calling function),
-     marks that the pin is in a blinking cycle.
-     If not, marks that the blinking cycle for this pin is off. */
+  /* If the targetBlinkingState passed on to the function is LOW,
+     this function sets the blinking property of this LaserPin as true,
+     meaning it is in a blinking cycle.
+     If the targetBlinkingState passed on to the function is LOW,
+     this function sets the blinking property of this LaserPin as false,
+     meaning it is no longer a blinking cycle. */
   (targetBlinkingState == LOW) ? blinking = true : blinking = false;
 }
 
-/* Switches on and off a single laser
-   Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
-   Called from (i) myWebServerController and (ii) this class (LaserPin) */
+/* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
+   Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
+void LaserPin::switchOnOffVariables(const bool targetOnOffState) {
+  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
+  switchPointerBlinkCycleState(targetOnOffState);                       // turn the blinking state of the struct representing the pin on or off
+  on_off_target = targetOnOffState;                                     // turn the on_off_target state of the struct on or off
+                                                                        // the actual pin will be turned on or off in the LASER SAFETY TIMER
+}
+
+/* This function switches this LaserPin on and off (and sets the pir_state property of this LaserPin to LOW)
+   It is a manual switch in the sense that, by setting the pir_state of the pins to LOW,
+   the pin is no longer reacting to signals sent by the PIR (IR) sensor.
+   Called from (i) myWebServerController and (ii) LaserPinsArray */
 void LaserPin::manualSwitchOneRelay(const bool targetOnOffState) {
   // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(targetOnOffState);
@@ -71,7 +74,7 @@ void LaserPin::manualSwitchOneRelay(const bool targetOnOffState) {
 /* PIR SUBJECTION SWITCHES
    When clicking on the "On" or "Off" button on the webpage in the PIR column,
    this function subjects one relay to or releases it from the control of the PIR
-   Called from (i) myWebServerController and (ii) this class (LaserPin) */
+   Called from myWebServerController ONLY */
 void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pir_state = targetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(HIGH);
