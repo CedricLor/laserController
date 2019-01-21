@@ -171,7 +171,7 @@ void LaserPin::executePinStateChange() {
   */
   if (on_off != on_off_target) {
     _markTimeChanges();
-    digitalWrite(number, on_off_target);
+    digitalWrite(physical_pin_number, on_off_target);
     on_off = on_off_target;
   }
 }
@@ -195,7 +195,7 @@ void LaserPin::_markTimeChanges() {
 // Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
 void LaserPin::laserProtectionSwitch() {
   const unsigned long currentTime = millis();
-  if ((digitalRead(number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
-    digitalWrite(number, HIGH);
+  if ((digitalRead(physical_pin_number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
+    digitalWrite(physical_pin_number, HIGH);
   }
 };
