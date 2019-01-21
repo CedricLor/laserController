@@ -21,6 +21,7 @@ class LaserPin
     unsigned long blinking_interval;// variable to store for how long a pin shall blink
     bool pir_state;                 // variable to store whether the pin shall respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> controlled by the PIR
     short paired;                   // variable to store with which other pin this pin is paired (8 means it is not paired)
+    short pairing_type;             // variable to store the pairing type: -1 is unpaired, 0 is synchronous, 1 is alternate
     unsigned long last_time_on;
     unsigned long last_time_off;
     unsigned long last_interval_on;
