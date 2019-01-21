@@ -122,27 +122,8 @@ void LaserPin::_pairWithNextPin(const short _pinParityWitness)
   paired_with = thePairedPinIndexNumber;
 }
 
-// Pairs two adjacent pins together (adjacent in the LaserPinsArray)
-// Test function; not in use for the moment
-void LaserPin::_pairWithNextPinPlusOne(const short _pinQuaternaryWitness)
-{
-  const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? index_number + 2 : index_number - 2;
-  paired_with = thePairedPinIndexNumber;
-}
 
-/*
-  Flexible pairing of pin: this function permits pairing this pin:
-  (i) with the next (or the previous) one of index +1 (or -1) or
-  (ii) with the next (or the previous) one of a higher index
-  The pairing index is defined in the pairingIndex variable
-*/
-// void LaserPin::flexiblePairPin(const short pairingIndex)
-// {
-//   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? index_number + 1 : index_number - 1;
-//   paired_with = thePairedPinIndexNumber;
-// }
-
-// Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
+// Changes the blinking delay of a single pin
 // Called from (i) LaserPinsArray and (ii) myWebServerController
 void LaserPin::changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval) {
   blinking_interval = targetBlinkingInterval;
