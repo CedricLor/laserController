@@ -104,7 +104,14 @@ void LaserPin::pairUnpairPin(const short _pinParityWitness, const short pairingT
 // Called from pairUnpairPin
 void LaserPin::_pairPin(const short _pinParityWitness, const short pairingType) {
   pairing_type = pairingType;
-  _pairWithNextPin(_pinParityWitness);
+  if (pairing_type == 1) {
+    _cooperativePairing(_pinParityWitness);
+    return;
+  }
+  if (pairing_type == 0) {
+    _twinPairing(_pinParityWitness);
+    return;
+  }
 }
 
 // Unpair a pin from other pins
@@ -116,12 +123,17 @@ void LaserPin::_unpairPin() {
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Called from pairUnpairPin
-void LaserPin::_pairWithNextPin(const short _pinParityWitness)
+void LaserPin::_cooperativePairing(const short _pinParityWitness)
 {
   const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? index_number + 1 : index_number - 1;
   paired_with = thePairedPinIndexNumber;
 }
 
+void LaserPin::_twinPairing(const short _pinParityWitness)
+{
+  const short thePairedPinIndexNumber = (index_number < (PIN_COUNT / 2)) ? index_number + (PIN_COUNT / 2) : index_number - (PIN_COUNT / 2);
+  paired_with = thePairedPinIndexNumber;
+}
 
 // Changes the blinking delay of a single pin
 // Called from (i) LaserPinsArray and (ii) myWebServerController

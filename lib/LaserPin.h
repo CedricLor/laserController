@@ -55,7 +55,8 @@ class LaserPin
 
     void _pairPin(const short _pinParityWitness, const short pairingType);
     void _unpairPin();
-    void _pairWithNextPin(const short _pinParityWitness);
+    void _cooperativePairing(const short _pinParityWitness);
+    void _twinPairing(const short _pinParityWitness);
 
     void _markTimeChanges();
 };
