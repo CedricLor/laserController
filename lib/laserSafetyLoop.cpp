@@ -21,27 +21,53 @@ void laserSafetyLoop::loop(LaserPin *LaserPins) {
   // - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);
   // - update the paired laser or its pair if the lasers are paired;
   // and then, execute the updates.
+  LaserPinsArray::pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    blinkLaserIfBlinking(LaserPins[thisPin]);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
-    ifMasterPairedThenUpdateOnOffOfSlave(LaserPins, thisPin);          // update the on/off status of slave
-    executeUpdates(LaserPins[thisPin]);                                // transform the update to the struct to analogical updates in the status of the related pin
+    LaserPins[thisPin].blinkLaserInBlinkingCycle();
+    // _blinkLaserIfBlinking(LaserPins[thisPin]);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
+    // _ifMasterPairedThenUpdateOnOffOfSlave(LaserPins, thisPin);          // update the on/off status of slave
     LaserPinsArray::pinParityWitness = (LaserPinsArray::pinParityWitness == 0) ? 1 : 0;
+    LaserPins[thisPin].executePinStateChange();
+    LaserPins[thisPin].laserProtectionSwitch();
   }
   LaserPinsArray::pinParityWitness = 0;
 }
 
-void laserSafetyLoop::blinkLaserIfBlinking(LaserPin &LaserPin) {
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+  blinkLaserIfBlinking:
+  - this function seem equivocal:
+    1.  why should it be limited to non-paired or master pin?
+    2.  why does it update the on_off_target without checking first whether the on_off_target
+        has not been updated otherwise? Certes, it updates on_off_target only if blinking is
+        true and blinking_interval has elapsed, but still, this seems a second error in the logic of the thing
+*/
+
+void laserSafetyLoop::_blinkLaserIfBlinking(LaserPin &LaserPin) {
   /*
      Called for each pin by laserSafetyLoop()
      If a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair,
      if so, switch its on/off state
   */
-  if (LaserPin.blinking == true && (LaserPin.paired == 8 || LaserPinsArray::pinParityWitness == 0)) {
+  if (LaserPin.blinking == true && (LaserPin.paired == -1 || LaserPinsArray::pinParityWitness == 0)) {
+    _blinkLaserIfTimeIsDue(LaserPin);
+  }
+  /*
+    Test: simplify => why should this apply only to a master or a non-paired?
+  */
+  /*
+  if (LaserPin.blinking == true) {
     blinkLaserIfTimeIsDue(LaserPin);
   }
+  */
 }
 
-void laserSafetyLoop::blinkLaserIfTimeIsDue(LaserPin &LaserPin) {
+void laserSafetyLoop::_blinkLaserIfTimeIsDue(LaserPin &LaserPin) {
   /*
      Called when a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair
      Checks if the blinking interval of this laser has elapsed
@@ -53,19 +79,21 @@ void laserSafetyLoop::blinkLaserIfTimeIsDue(LaserPin &LaserPin) {
       LaserPin.on_off_target = !LaserPin.on_off;
   }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void laserSafetyLoop::ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin) {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void laserSafetyLoop::_ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin) {
   /*
       Called from within the laser safety loop for each pin
       Test if the laser is paired and if it is a master in a pair
       If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
   */
-  if (!(LaserPins[thisPin].paired == 8) && (LaserPinsArray::pinParityWitness == 0)) {
-    evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPins, thisPin);
+  if (!(LaserPins[thisPin].paired == -1) && (LaserPinsArray::pinParityWitness == 0)) {
+    _updatePairedSlaveWrapper(LaserPins, thisPin);
   }
 }
 
-void laserSafetyLoop::evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave(LaserPin *LaserPins, const int thisPin) {
+void laserSafetyLoop::_updatePairedSlaveWrapper(LaserPin *LaserPins, const int thisPin) {
   /*
       Called by ifMasterPairedThenUpdateOnOffOfSlave() for pins which are master in a pair.
       A. If the pin is NOT in blinking mode AND its on_off_target state is to turn off,
@@ -82,33 +110,15 @@ void laserSafetyLoop::evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateFo
         In each case, the slave will receive the instruction to put its on_off_target to the opposite of that of its master.
   */
   if ((LaserPins[thisPin].blinking == false) && (LaserPins[thisPin].on_off_target == HIGH)) {
-    updatePairedSlave(LaserPins, thisPin, HIGH);
+    _updatePairedSlave(LaserPins, thisPin, HIGH);
     return;
   }
-  updatePairedSlave(LaserPins, thisPin, !LaserPins[thisPin].on_off_target);
+  _updatePairedSlave(LaserPins, thisPin, !LaserPins[thisPin].on_off_target);
 }
 
-void laserSafetyLoop::updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget) {
-  LaserPins[thisPin + 1].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
-  LaserPins[thisPin + 1].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
-  LaserPins[thisPin + 1].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
+void laserSafetyLoop::_updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget) {
+  LaserPins[LaserPins[thisPin].paired].on_off_target = nextPinOnOffTarget;                          // update the on_off target of the paired slave laser depending on the received instruction
+  LaserPins[LaserPins[thisPin].paired].blinking = LaserPins[thisPin].blinking;                            // align the blinking state of the paired slave laser
+  LaserPins[LaserPins[thisPin].paired].pir_state = LaserPins[thisPin].pir_state;                          // align the IR state of the paired slave laser
 }
-
-void laserSafetyLoop::executeUpdates(LaserPin &LaserPin) {
-  /*
-      Called from within the laser safety loop for each pin
-      Checks whether the current on_off_target state is different than the current on_off state
-      If so:
-      1. turn on or off the laser as requested in the on_off_target_state
-      2. align the on_off state with the on_off_target state
-      3. reset the safety blinking timer of this pin
-      // TO ANALYSE: I have the feeling that the condition to be tested shall be different
-      // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
-      // a blinking cycle and cooling off
-  */
-  if (LaserPin.on_off != LaserPin.on_off_target) {
-    digitalWrite(LaserPin.number, LaserPin.on_off_target);
-    LaserPin.on_off = LaserPin.on_off_target;
-    LaserPin.previous_time = millis();
-  }
-}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

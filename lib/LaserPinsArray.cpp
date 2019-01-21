@@ -23,11 +23,14 @@ short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a 
 // Called from main.cpp exclusively
 void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   Serial.print("SETUP: initLaserPins(): starting\n");
+  pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].initLaserPin(relayPins[thisPin], thisPin);
+    LaserPins[thisPin].pairWithNextPin(thisPin, pinParityWitness);
+    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].physicalInitLaserPin();
   }
+  pinParityWitness = 0;
   Serial.print("SETUP: initLaserPins(): done\n");
 }
 
@@ -35,7 +38,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
 // Called from pirStartupController exclusively
-void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {           // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     LaserPins[thisPin].switchOnOffVariables(targetState);
   }
@@ -68,8 +71,9 @@ void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool stat
 // Called exclusively from pirStartupController
 // Loops around all the pins and pairs or unpairs them
 void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
+  pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairPin(LaserPins, thisPin, targetPairingState/*, pinParityWitness*/);
+    LaserPins[thisPin].pairUnpairPin(thisPin, targetPairingState, pinParityWitness);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;
@@ -82,7 +86,7 @@ void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingSt
 // Called exclusively from myWebServerController
 void LaserPinsArray::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
+    LaserPins[thisPin].changeIndividualBlinkingDelay(blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
     mySavedPrefs::savePreferences();
   }

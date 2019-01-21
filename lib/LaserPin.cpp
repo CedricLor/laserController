@@ -11,7 +11,7 @@ bool const LaserPin::_default_pin_on_off_state = HIGH;         // by default, th
 bool const LaserPin::_default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const LaserPin::_default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
 bool const LaserPin::_default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
-
+const unsigned long LaserPin::_max_interval_on = 600000UL;
 
 /* Default constructor: required by the global.cpp
    Upon initialization of the board, we create an array of LaserPins without which will be later initialized.
@@ -25,18 +25,13 @@ LaserPin::LaserPin()
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
   pir_state = _default_pin_pir_state_value;
+  last_time_on = 0;     // set at 0 at startup
+  last_time_off = millis();    // set at 0 at startup
+  last_interval_on = 0; // set at 0 at startup
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
-// Called from LaserPinsArray
-void LaserPin::initLaserPin(short pinNumber /* pin number on the ESP board */, short thisPin /* index number of this pin in the array of LaserPin */)
-{
-  number = pinNumber;
-  short pairedPinNumber = (thisPin % 2 == 0) ? (thisPin + 1) : (thisPin - 1);
-  paired = pairedPinNumber;
-}
-
 void LaserPin::physicalInitLaserPin()
 {
   pinMode(number, OUTPUT);     // initialization of the pin connected to each of the relay as output
@@ -83,30 +78,111 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 }
 
 // Pairs or unpairs two pins together
-void LaserPin::pairPin(LaserPin *LaserPins, const short thisPin, const bool targetPairingState/*, const short _pinParityWitness*/) {
-  const short thePairedPin = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+// Called from LaserPinsArray
+void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
   if (targetPairingState == false) {
-    _rePairPin(LaserPins, 8, 8);
+    paired = -1;
   } else {
-    _rePairPin(LaserPins, thisPin, thePairedPin);
+    pairWithNextPin(thisPin, _pinParityWitness);
   }
 }
 
-// Helper function for LaserPin::_pairPin
-// Private function: called exclusively by LaserPin::_pairPin
-void LaserPin::_rePairPin(LaserPin *LaserPins, const short thisPin, const short thePairedPin) {
-  paired = thePairedPin;
-  LaserPins[thePairedPin].paired = thisPin;
+// Pairs two adjacent pins together (adjacent in the LaserPinsArray)
+// Called from (i) LaserPinsArray class and (ii) pairUnpairPin
+void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinParityWitness)
+{
+  const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  paired = thePairedPinIndexNumber;
 }
 
+// Pairs two adjacent pins together (adjacent in the LaserPinsArray)
+// Test function; not in use for the moment
+void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness)
+{
+  const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? thisPin + 2 : thisPin - 2;
+  paired = thePairedPinIndexNumber;
+}
+
+/*
+  Flexible pairing of pin: this function permits pairing this pin:
+  (i) with the next (or the previous) one of index +1 (or -1) or
+  (ii) with the next (or the previous) one of a higher index
+  The pairing index is defined in the pairingIndex variable
+*/
+// void LaserPin::flexiblePairPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short pairingIndex)
+// {
+//   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+//   paired = thePairedPinIndexNumber;
+// }
+
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
-// Called exclusively from myWebServerController
+// Called from (i) LaserPinsArray and (ii) myWebServerController
 void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) {
-  changeTheBlinkingInterval(blinkingDelay);
-}
-
-// Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
-// Called from (i) LaserPinsArray and (ii) changeIndividualBlinkingDelay
-void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Blinking in the class
+void LaserPin::blinkLaserInBlinkingCycle() {
+  /*
+    Checks:
+    1. if the pin is in blinking
+    2. if so, if the blinking interval of this laser has elapsed
+    If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
+    TO ANALYSE: this may overwrite other changes that have been requested at other stages
+  */
+  if (blinking == true) {
+    const unsigned long currentTime = millis();
+    if (currentTime - previous_time > blinking_interval) {
+        on_off_target = !on_off;
+    }
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// IO Functions
+////////////////////////////////////////////////////////////////////////////////////////////
+// Execute Updates
+void LaserPin::executePinStateChange() {
+  /*
+      Called from within the laser safety loop for each pin
+      Checks whether the current on_off_target state is different than the current on_off state
+      If so:
+      1. turn on or off the laser as requested in the on_off_target_state
+      2. align the on_off state with the on_off_target state
+      3. reset the safety blinking timer of this pin
+      // TO ANALYSE: I have the feeling that the condition to be tested shall be different
+      // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
+      // a blinking cycle and cooling off
+  */
+  if (on_off != on_off_target) {
+    _markTimeChanges();
+    digitalWrite(number, on_off_target);
+    on_off = on_off_target;
+  }
+}
+
+// Helper function for execute updates
+void LaserPin::_markTimeChanges() {
+  const unsigned long currentTime = millis();
+  previous_time = currentTime;
+
+  // If instruction is to turn laserPin on
+  if (on_off_target == LOW) {
+    last_time_off = currentTime;
+    return;
+  }
+  // If instruction is to turn laserPin off
+  last_time_on = currentTime;
+  last_interval_on = last_time_on - last_time_off;
+}
+
+// Laser Protection Switch
+// Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
+void LaserPin::laserProtectionSwitch() {
+  const unsigned long currentTime = millis();
+  if ((digitalRead(number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
+    digitalWrite(number, HIGH);
+  }
+};
