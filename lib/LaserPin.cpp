@@ -81,7 +81,7 @@ void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state m
 // Called from LaserPinsArray
 void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
   if (targetPairingState == false) {
-    paired = -1;
+    paired_with = -1;
   } else {
     pairWithNextPin(thisPin, _pinParityWitness);
   }
@@ -92,7 +92,7 @@ void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState,
 void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinParityWitness)
 {
   const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
-  paired = thePairedPinIndexNumber;
+  paired_with = thePairedPinIndexNumber;
 }
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
@@ -100,7 +100,7 @@ void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin i
 void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness)
 {
   const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? thisPin + 2 : thisPin - 2;
-  paired = thePairedPinIndexNumber;
+  paired_with = thePairedPinIndexNumber;
 }
 
 /*
@@ -112,7 +112,7 @@ void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of thi
 // void LaserPin::flexiblePairPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short pairingIndex)
 // {
 //   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
-//   paired = thePairedPinIndexNumber;
+//   paired_with = thePairedPinIndexNumber;
 // }
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
