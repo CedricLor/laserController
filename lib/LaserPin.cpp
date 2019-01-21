@@ -116,17 +116,32 @@ void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of thi
 // }
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
-// Called exclusively from myWebServerController
+// Called from (i) LaserPinsArray and (ii) myWebServerController
 void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) {
-  changeTheBlinkingInterval(blinkingDelay);
-}
-
-// Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
-// Called from (i) LaserPinsArray and (ii) changeIndividualBlinkingDelay
-void LaserPin::changeTheBlinkingInterval(const unsigned long blinkingDelay) {
   blinking_interval = blinkingDelay;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// Blinking in the class
+void LaserPin::blinkLaserInBlinkingCycle() {
+  /*
+    Checks:
+    1. if the pin is in blinking
+    2. if so, if the blinking interval of this laser has elapsed
+    If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
+    TO ANALYSE: this may overwrite other changes that have been requested at other stages
+  */
+  if (blinking == true) {
+    const unsigned long currentTime = millis();
+    if (currentTime - previous_time > blinking_interval) {
+        on_off_target = !on_off;
+    }
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// IO Functions
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Execute Updates
 void LaserPin::executePinStateChange() {

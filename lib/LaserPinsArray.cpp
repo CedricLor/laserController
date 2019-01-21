@@ -86,7 +86,7 @@ void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingSt
 // Called exclusively from myWebServerController
 void LaserPinsArray::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeTheBlinkingInterval(blinkingDelay);
+    LaserPins[thisPin].changeIndividualBlinkingDelay(blinkingDelay);
     pinBlinkingInterval = blinkingDelay;
     mySavedPrefs::savePreferences();
   }
