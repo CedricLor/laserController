@@ -26,8 +26,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].pairWithNextPin(pinParityWitness);          // by default, each pin is paired with next (or previous)
-    LaserPins[thisPin].pairing_type = 1;                                    // by default, each pin is paired in alternance with the other (when the paired is on, this one is off)
+    LaserPins[thisPin].pairUnpairPin(pinParityWitness, 1 /* cooperative pairing */);               // by default, each pin is paired with next (or previous) and in cooperative pairing type
     LaserPins[thisPin].index_number = thisPin;
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].physicalInitLaserPin(relayPins[thisPin] /* physical pin number to which this LaserPin is attached */);
@@ -72,10 +71,10 @@ void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targ
 // PAIRING SWITCHES: Pairing and unpairing of pins
 // Called exclusively from pirStartupController
 // Loops around all the pins and pairs or unpairs them
-void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
+void LaserPinsArray::pairUnpairAllPins(LaserPin *LaserPins, const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairUnpairPin(targetPairingState, pinParityWitness);
+    LaserPins[thisPin].pairUnpairPin(pinParityWitness, pairingType);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;

@@ -21,8 +21,8 @@ class LaserPin
     unsigned long previous_time;    // last time this pin changed state (on or off) // NOTE: redundant with last_time_on and last_time_off below
     unsigned long blinking_interval;// how long should this pin blink on and off // NOTE: This variable will be replaced by a "sequence" data structure
     bool pir_state;                 // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
-    short paired_with;              // with which other pin is this pin paired (-1 means it is not paired)
-    short pairing_type;             // what kind of pairing type does this pin have: -1 is unpaired, 0 is synchronous, 1 is alternate
+    short paired_with;              // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
+    short pairing_type;             // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
     unsigned long last_time_on;     // last time this pin was turned on
     unsigned long last_time_off;    // last time this pin was turned off
     unsigned long last_interval_on; // last interval during which this pin was turned on
@@ -36,9 +36,7 @@ class LaserPin
 
     void inclExclOneRelayInPir(const bool state);
 
-    void pairUnpairPin(const bool targetPairingState, const short _pinParityWitness);
-    void pairWithNextPin(const short _pinParityWitness);
-    void pairWithNextPinPlusOne(const short _pinQuaternaryWitness);
+    void pairUnpairPin(const short _pinParityWitness, const short pairingType);
 
     void changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval);
 
@@ -54,6 +52,11 @@ class LaserPin
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     static const unsigned long _max_interval_on;
+
+    void _pairPin(const short _pinParityWitness, const short pairingType);
+    void _unpairPin();
+    void _pairWithNextPin(const short _pinParityWitness);
+    void _pairWithNextPinPlusOne(const short _pinQuaternaryWitness);
 
     void _markTimeChanges();
 };

@@ -92,18 +92,31 @@ void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state m
 
 // Pairs or unpairs two pins together
 // Called from LaserPinsArray
-void LaserPin::pairUnpairPin(const bool targetPairingState, const short _pinParityWitness) {
-  if (targetPairingState == false) {
-    paired_with = -1;
-    pairing_type = -1;
+void LaserPin::pairUnpairPin(const short _pinParityWitness, const short pairingType) {
+  if (pairingType == -1) {
+    _unpairPin();
   } else {
-    pairWithNextPin(_pinParityWitness);
+    _pairPin(_pinParityWitness, pairingType);
   }
 }
 
+// Pairs this pin to another pin and allows to pair in any type of pairing (twin or cooperative)
+// Called from pairUnpairPin
+void LaserPin::_pairPin(const short _pinParityWitness, const short pairingType) {
+  pairing_type = pairingType;
+  _pairWithNextPin(_pinParityWitness);
+}
+
+// Unpair a pin from other pins
+// Called from pairUnpairPin
+void LaserPin::_unpairPin() {
+  paired_with = -1;
+  pairing_type = -1;
+}
+
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
-// Called from (i) LaserPinsArray class and (ii) pairUnpairPin
-void LaserPin::pairWithNextPin(const short _pinParityWitness)
+// Called from pairUnpairPin
+void LaserPin::_pairWithNextPin(const short _pinParityWitness)
 {
   const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? index_number + 1 : index_number - 1;
   paired_with = thePairedPinIndexNumber;
@@ -111,7 +124,7 @@ void LaserPin::pairWithNextPin(const short _pinParityWitness)
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Test function; not in use for the moment
-void LaserPin::pairWithNextPinPlusOne(const short _pinQuaternaryWitness)
+void LaserPin::_pairWithNextPinPlusOne(const short _pinQuaternaryWitness)
 {
   const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? index_number + 2 : index_number - 2;
   paired_with = thePairedPinIndexNumber;

@@ -58,12 +58,12 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
 }
 
 bool pirStartupController::onEnablePirStartUpDelayBlinkLaser() {
-  LaserPinsArray::pairAllPins(LaserPins, false);
+  LaserPinsArray::pairUnpairAllPins(LaserPins, -1 /*unpair all the pins*/);
   return true;
 }
 
 void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
-  LaserPinsArray::pairAllPins(LaserPins, true);
+  LaserPinsArray::pairUnpairAllPins(LaserPins, 1 /*pair the pins in cooperative pairing*/);
   LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
   LaserPinsArray::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   pirController::tPirCntrl.enable();

@@ -28,7 +28,7 @@ class LaserPinsArray
     static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState);
 
     static short pinParityWitness;
-    static void pairAllPins(LaserPin *LaserPins, const bool targetPairingState);
+    static void pairUnpairAllPins(LaserPin *LaserPins, const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     static void changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval);
 
