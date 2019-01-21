@@ -92,27 +92,28 @@ void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state m
 
 // Pairs or unpairs two pins together
 // Called from LaserPinsArray
-void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
+void LaserPin::pairUnpairPin(const bool targetPairingState, const short _pinParityWitness) {
   if (targetPairingState == false) {
     paired_with = -1;
+    pairing_type = -1;
   } else {
-    pairWithNextPin(thisPin, _pinParityWitness);
+    pairWithNextPin(_pinParityWitness);
   }
 }
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Called from (i) LaserPinsArray class and (ii) pairUnpairPin
-void LaserPin::pairWithNextPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinParityWitness)
+void LaserPin::pairWithNextPin(const short _pinParityWitness)
 {
-  const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+  const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? index_number + 1 : index_number - 1;
   paired_with = thePairedPinIndexNumber;
 }
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Test function; not in use for the moment
-void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness)
+void LaserPin::pairWithNextPinPlusOne(const short _pinQuaternaryWitness)
 {
-  const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? thisPin + 2 : thisPin - 2;
+  const short thePairedPinIndexNumber = ((_pinQuaternaryWitness == 0 || _pinQuaternaryWitness == 1)) ? index_number + 2 : index_number - 2;
   paired_with = thePairedPinIndexNumber;
 }
 
@@ -122,9 +123,9 @@ void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of thi
   (ii) with the next (or the previous) one of a higher index
   The pairing index is defined in the pairingIndex variable
 */
-// void LaserPin::flexiblePairPin(const short thisPin /* index number of this pin in LaserPinsArray */, const short pairingIndex)
+// void LaserPin::flexiblePairPin(const short pairingIndex)
 // {
-//   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? thisPin + 1 : thisPin - 1;
+//   const short thePairedPinIndexNumber = (LaserPinsArray::pinParityWitness == 0) ? index_number + 1 : index_number - 1;
 //   paired_with = thePairedPinIndexNumber;
 // }
 

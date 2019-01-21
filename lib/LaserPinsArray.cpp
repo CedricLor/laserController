@@ -26,7 +26,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].pairWithNextPin(thisPin, pinParityWitness);          // by default, each pin is paired with next (or previous)
+    LaserPins[thisPin].pairWithNextPin(pinParityWitness);          // by default, each pin is paired with next (or previous)
     LaserPins[thisPin].pairing_type = 1;                                    // by default, each pin is paired in alternance with the other (when the paired is on, this one is off)
     LaserPins[thisPin].index_number = thisPin;
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
@@ -75,7 +75,7 @@ void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targ
 void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingState /*This variable is equal to TRUE or FALSE; TRUE is pair all the pins; FALSE is unpair all the pins.*/) {
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairUnpairPin(thisPin, targetPairingState, pinParityWitness);
+    LaserPins[thisPin].pairUnpairPin(targetPairingState, pinParityWitness);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;
