@@ -28,6 +28,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
     // Initialize Laser Pin
     LaserPins[thisPin].pairWithNextPin(thisPin, pinParityWitness);          // by default, each pin is paired with next (or previous)
     LaserPins[thisPin].pairing_type = 1;                                    // by default, each pin is paired in alternance with the other (when the paired is on, this one is off)
+    LaserPins[thisPin].index_number = thisPin;
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].physicalInitLaserPin();
   }
