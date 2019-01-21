@@ -53,7 +53,7 @@ void laserSafetyLoop::_blinkLaserIfBlinking(LaserPin &LaserPin) {
      If a laser is in blinking mode and is either (i) non-paired or (ii) master in a pair,
      if so, switch its on/off state
   */
-  if (LaserPin.blinking == true && (LaserPin.paired == 8 || LaserPinsArray::pinParityWitness == 0)) {
+  if (LaserPin.blinking == true && (LaserPin.paired == -1 || LaserPinsArray::pinParityWitness == 0)) {
     _blinkLaserIfTimeIsDue(LaserPin);
   }
   /*
@@ -87,7 +87,7 @@ void laserSafetyLoop::_ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins,
       Test if the laser is paired and if it is a master in a pair
       If so, calls evalIfMasterIsNotInBlinkModeAndIsDueToTurnOffToSetUpdateForSlave
   */
-  if (!(LaserPins[thisPin].paired == 8) && (LaserPinsArray::pinParityWitness == 0)) {
+  if (!(LaserPins[thisPin].paired == -1) && (LaserPinsArray::pinParityWitness == 0)) {
     _updatePairedSlaveWrapper(LaserPins, thisPin);
   }
 }

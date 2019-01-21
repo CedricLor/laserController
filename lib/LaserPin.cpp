@@ -81,7 +81,7 @@ void LaserPin::inclExclOneRelayInPir(const bool state) {     // state may be HIG
 // Called from LaserPinsArray
 void LaserPin::pairUnpairPin(const short thisPin, const bool targetPairingState, const short _pinParityWitness) {
   if (targetPairingState == false) {
-    paired = 8;
+    paired = -1;
   } else {
     pairWithNextPin(thisPin, _pinParityWitness);
   }
