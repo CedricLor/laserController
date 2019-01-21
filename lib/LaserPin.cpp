@@ -117,8 +117,8 @@ void LaserPin::pairWithNextPinPlusOne(const short thisPin /* index number of thi
 
 // Changes the blinking delay of a single pin and saves such new blinking delay in Preferences
 // Called from (i) LaserPinsArray and (ii) myWebServerController
-void LaserPin::changeIndividualBlinkingDelay(const unsigned long blinkingDelay) {
-  blinking_interval = blinkingDelay;
+void LaserPin::changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval) {
+  blinking_interval = targetBlinkingInterval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

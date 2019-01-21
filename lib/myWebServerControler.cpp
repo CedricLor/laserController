@@ -53,19 +53,19 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     return;
   }
 
-  if(request->hasParam("blinkingDelay")) {
-    AsyncWebParameter* _p1 = request->getParam("blinkingDelay");
+  if(request->hasParam("blinkingInterval")) {
+    AsyncWebParameter* _p1 = request->getParam("blinkingInterval");
     AsyncWebParameter* _p2 = request->getParam("laser");
-    // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingDelay %s\n", _p2->value().c_str());
+    // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingInterval %s\n", _p2->value().c_str());
     if (_p2->value() == "10") {
       // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
-      int targetBlinkingDelay = _p1->value().toInt();
-      LaserPinsArray::changeGlobalBlinkingDelay(LaserPins, targetBlinkingDelay);
+      int targetBlinkingInterval = _p1->value().toInt();
+      LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, targetBlinkingInterval);
     }
     else {
       int pinIndexNumber = _p2->value().toInt();
-      int targetBlinkingDelay = _p1->value().toInt();
-      LaserPins[pinIndexNumber].changeIndividualBlinkingDelay(targetBlinkingDelay);
+      int targetBlinkingInterval = _p1->value().toInt();
+      LaserPins[pinIndexNumber].changeIndividualBlinkingInterval(targetBlinkingInterval);
     }
     return;
   }

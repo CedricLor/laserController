@@ -66,7 +66,7 @@ String myWebServerViews::printLinksToBoxes() {
 String myWebServerViews::printAllLasersCntrl() {
   String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
-  laserCntrls += printBlinkingDelayWebCntrl(9);
+  laserCntrls += printBlinkingIntervalWebCntrl(9);
   laserCntrls += "</div>";
   laserCntrls += "<div>";
   laserCntrls += printMasterCntrl();
@@ -156,7 +156,7 @@ String myWebServerViews::printIndivLaserCntrls() {
     laserCntrl += printPairingCntrl(thisPin);
 
     // blinking delay control
-    laserCntrl += printBlinkingDelayWebCntrl(thisPin);
+    laserCntrl += printBlinkingIntervalWebCntrl(thisPin);
 
     laserCntrl += "</div>";
   }
@@ -203,15 +203,15 @@ String myWebServerViews::printPirStatusCntrl(const short thisPin) {
   return pirStatusCntrl;
 }
 
-String myWebServerViews::printBlinkingDelayWebCntrl(const short thisPin) {
-  String blinkingDelayWebCntrl;
-  blinkingDelayWebCntrl += "Blinking delay: ";
-  blinkingDelayWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
-  blinkingDelayWebCntrl += printDelaySelect(thisPin);
-  blinkingDelayWebCntrl += printHiddenLaserNumb(thisPin);
-  blinkingDelayWebCntrl += "<button type=\"submit\">Submit</button>";
-  blinkingDelayWebCntrl += "</form>";
-  return blinkingDelayWebCntrl;
+String myWebServerViews::printBlinkingIntervalWebCntrl(const short thisPin) {
+  String blinkingIntervalWebCntrl;
+  blinkingIntervalWebCntrl += "Blinking delay: ";
+  blinkingIntervalWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
+  blinkingIntervalWebCntrl += printDelaySelect(thisPin);
+  blinkingIntervalWebCntrl += printHiddenLaserNumb(thisPin);
+  blinkingIntervalWebCntrl += "<button type=\"submit\">Submit</button>";
+  blinkingIntervalWebCntrl += "</form>";
+  return blinkingIntervalWebCntrl;
 }
 
 String myWebServerViews::printPairingCntrl(const short thisPin) {
@@ -237,7 +237,7 @@ String myWebServerViews::printPairingCntrl(const short thisPin) {
 
 String myWebServerViews::printDelaySelect(const short thisPin) {
   String delaySelect;
-  delaySelect += "<select name=\"blinkingDelay\">";
+  delaySelect += "<select name=\"blinkingInterval\">";
   for (unsigned long delayValue = 5000UL; delayValue < 35000UL; delayValue = delayValue + 5000UL) {
     delaySelect += "<option value=\"";
     delaySelect += delayValue;

@@ -42,7 +42,7 @@ class myWebServerViews
     String printCurrentStatus(const short thisPin);
     String printOnOffControl(const short thisPin);
     String printPirStatusCntrl(const short thisPin);
-    String printBlinkingDelayWebCntrl(const short thisPin);
+    String printBlinkingIntervalWebCntrl(const short thisPin);
     String printPairingCntrl(const short thisPin);
     String printDelaySelect(const short thisPin);
     String printHiddenLaserNumb(const short thisPin);

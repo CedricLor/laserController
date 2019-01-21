@@ -23,14 +23,14 @@ class LaserPinsArray
     */
     static short highPinsParityDuringStartup;
 
-    static void switchAllRelays(LaserPin *LaserPins, const bool state);
+    static void switchAllRelays(LaserPin *LaserPins, const bool targetState);
 
-    static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state);
+    static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState);
 
     static short pinParityWitness;
     static void pairAllPins(LaserPin *LaserPins, const bool targetPairingState);
 
-    static void changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay);
+    static void changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval);
 
     static Task tAutoSwitchAllRelays;
 

@@ -39,7 +39,7 @@ class LaserPin
     void pairWithNextPin(const short thisPin, const short _pinParityWitness);
     void pairWithNextPinPlusOne(const short thisPin /* index number of this pin in LaserPinsArray */, const short _pinQuaternaryWitness);
 
-    void changeIndividualBlinkingDelay(const unsigned long blinkingDelay);
+    void changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval);
 
     void blinkLaserInBlinkingCycle();
 

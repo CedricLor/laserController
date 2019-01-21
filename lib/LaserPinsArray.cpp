@@ -50,9 +50,9 @@ void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetStat
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
 // Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserPinsArray::switchAllRelays(LaserPin *LaserPins, const bool state) {
+void LaserPinsArray::switchAllRelays(LaserPin *LaserPins, const bool targetState) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].manualSwitchOneRelay(state);
+    LaserPins[thisPin].manualSwitchOneRelay(targetState);
   }
 }
 
@@ -61,9 +61,9 @@ void LaserPinsArray::switchAllRelays(LaserPin *LaserPins, const bool state) {
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
 // Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool state) {
+void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pir_state = state;
+    LaserPins[thisPin].pir_state = targetPirState;
   }
 }
 
@@ -85,10 +85,10 @@ void LaserPinsArray::pairAllPins(LaserPin *LaserPins, const bool targetPairingSt
 // BLINKING DELAY Control
 // Changes the blinking delay of each pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController
-void LaserPinsArray::changeGlobalBlinkingDelay(LaserPin *LaserPins, const unsigned long blinkingDelay) {
+void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeIndividualBlinkingDelay(blinkingDelay);
-    pinBlinkingInterval = blinkingDelay;
+    LaserPins[thisPin].changeIndividualBlinkingInterval(targetBlinkingInterval);
+    pinBlinkingInterval = targetBlinkingInterval;
     mySavedPrefs::savePreferences();
   }
 }
