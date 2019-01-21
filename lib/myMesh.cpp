@@ -181,7 +181,7 @@ String myMesh::createMeshMessage(const char* myStatus) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
 
-  msg["senderNodeName"] = nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
+  msg["senderNodeName"] = _nodeNameBuilder(I_NODE_NAME, nodeNameBuf);
   msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
@@ -201,7 +201,7 @@ char* myMesh::apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
 }
 
 char myMesh::nodeNameBuf[4];
-char* myMesh::nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
+char* myMesh::_nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
   String _sNodeName = String(_I_NODE_NAME);
   _sNodeName.toCharArray(_nodeNameBuf, 4);
   return _nodeNameBuf;
