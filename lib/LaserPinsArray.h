@@ -32,13 +32,14 @@ class LaserPinsArray
 
     static void changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval);
 
-    static Task tAutoSwitchAllRelays;
+    static void autoSwitchAllRelays(const bool targetState);
 
   private:
 
     static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOaAutoSwitchAllRelays();
     static void _tcbOdAutoSwitchAllRelays();
+    static Task _tAutoSwitchAllRelays;
 };
 
 #endif

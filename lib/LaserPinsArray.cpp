@@ -97,8 +97,6 @@ void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const uns
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 short LaserPinsArray::_siAutoSwitchInterval = 60;
 
-Task LaserPinsArray::tAutoSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaAutoSwitchAllRelays, &_tcbOdAutoSwitchAllRelays );
-
 bool LaserPinsArray::_tcbOaAutoSwitchAllRelays() {
   switchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
@@ -109,3 +107,22 @@ void LaserPinsArray::_tcbOdAutoSwitchAllRelays() {
   switchAllRelays(LaserPins, HIGH);
   inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
+
+Task LaserPinsArray::_tAutoSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaAutoSwitchAllRelays, &_tcbOdAutoSwitchAllRelays );
+
+void LaserPinsArray::autoSwitchAllRelays(const bool targetState) {
+  if (targetState == LOW) {
+    _tAutoSwitchAllRelays.enable();
+    return;
+  }
+  _tAutoSwitchAllRelays.disable();
+}
+
+// void LaserPinsArray::autoSwitchOneRelay(const short thisPin, const bool targetState) {
+//   /*  TO DRAFT PROPERLY WHEN NECESSARY
+//       LaserPins[thisPin].switchOnOffVariables(targetState);
+//       LaserPins[thisPin].switchPointerBlinkCycleState(targetState);
+//       isPirCycleOn = false;
+//       Serial.println("auto Switch request executed");
+//    */
+// }

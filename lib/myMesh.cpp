@@ -166,10 +166,10 @@ void myMesh::autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const shor
   const char* myFutureState = B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
   if (strstr(senderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
-    autoSwitchAllRelays(B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
+    LaserPinsArray::autoSwitchAllRelays(B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
   } else if (strstr(senderStatus, "off")  > 0) {
     Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
-    autoSwitchAllRelays(B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
+    LaserPinsArray::autoSwitchAllRelays(B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }
   Serial.print("MESH: autoSwitchAllRelaysMeshWrapper(...): done\n");
 }
@@ -207,23 +207,6 @@ char* myMesh::nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
   return _nodeNameBuf;
 }
 
-
-void myMesh::autoSwitchAllRelays(const bool targetState) {
-  if (targetState == LOW) {
-    LaserPinsArray::tAutoSwitchAllRelays.enable();
-    return;
-  }
-  LaserPinsArray::tAutoSwitchAllRelays.disable();
-}
-
-void myMesh::autoSwitchOneRelay(const short thisPin, const bool targetState) {
-  /*  TO DRAFT PROPERLY WHEN NECESSARY
-      LaserPins[thisPin].switchOnOffVariables(targetState);
-      LaserPins[thisPin].switchPointerBlinkCycleState(targetState);
-      isPirCycleOn = false;
-      Serial.println("auto Switch request executed");
-   */
-}
 
 
 short myMesh::jsonToInt(JsonObject& root, String rootKey) {

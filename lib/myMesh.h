@@ -38,9 +38,6 @@ class myMesh
     static char* nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]);
     static char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]);
 
-    static void autoSwitchAllRelays(const bool targetState);
-    static void autoSwitchOneRelay(const short thisPin, const bool targetState);
-
     static short jsonToInt(JsonObject& root, String rootKey);
 
 };
