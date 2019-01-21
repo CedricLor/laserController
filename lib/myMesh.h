@@ -33,12 +33,13 @@ class myMesh
 
     static void meshController(uint32_t senderNodeId, String &msg);
     static void autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName);
-    static String createMeshMessage(const char* myStatus);
+
+    static String _createMeshMessage(const char* myStatus);
 
     static char* _nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]);
-    static char* apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]);
+    static char* _apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]);
 
-    static short jsonToInt(JsonObject& root, String rootKey);
+    static short _jsonToInt(JsonObject& root, String rootKey);
 
 };
 

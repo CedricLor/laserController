@@ -41,7 +41,7 @@ TO DO:
 - add a function so that the paired lasers be on together (synchronously)
 - review all the current module to "privatize" as many member functions as possible
 - refactor the various arrays containing the controllerBoxes mode into a single class
-- put jsonToInt() and parseIp and its sister function (don't remember the name) in a special class
+- put _jsonToInt() and parseIp and its sister function (don't remember the name) in a special class
 - autoSwitchAllRelays has been added to myMesh lib --> move it to LaserPin (and break LaserPin into various libs) (idem for autoSwitchOneRelay)
 - tAutoSwitchAllRelays and autoSwitchAllRelays are scattered around between myMesh (for autoSwitchAllRelays) and LaserPin (for tAutoSwitchAllRelays): consider moving everything into LaserPin class
 - myMesh library should be cleaned up of any direct relations to pins control (so that myMesh could be reused with ESP32 unconnected to any LaserPins)

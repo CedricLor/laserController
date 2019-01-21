@@ -48,7 +48,7 @@ void myMesh::meshSetup() {
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
   //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
-  laserControllerMesh.setHostname(apSsidBuilder(I_NODE_NAME, myApSsidBuf));
+  laserControllerMesh.setHostname(_apSsidBuilder(I_NODE_NAME, myApSsidBuf));
   if (MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
@@ -71,7 +71,7 @@ void myMesh::meshSetup() {
 void myMesh::broadcastStatusOverMesh(const char* state) {
   Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
   ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
-  String str = createMeshMessage(state);
+  String str = _createMeshMessage(state);
   Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
@@ -137,7 +137,7 @@ void myMesh::meshController(uint32_t senderNodeId, String &msg) {
   JsonObject& root = jsonBuffer.parseObject(msg.c_str());
   Serial.print("MESH CONTROLLER: meshController(...): jsonBuffer parsed into JsonObject& root\n");
 
-  const short iSenderNodeName = jsonToInt(root, "senderNodeName");
+  const short iSenderNodeName = _jsonToInt(root, "senderNodeName");
   Serial.printf("MESH CONTROLLER: meshController(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
   const char* cSenderStatus = root["senderStatus"];
@@ -175,8 +175,8 @@ void myMesh::autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const shor
 }
 
 
-String myMesh::createMeshMessage(const char* myStatus) {
-  Serial.printf("MESH: createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
+String myMesh::_createMeshMessage(const char* myStatus) {
+  Serial.printf("MESH: _createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
@@ -192,7 +192,7 @@ String myMesh::createMeshMessage(const char* myStatus) {
   return str;
 }
 
-char* myMesh::apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
+char* myMesh::_apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
   strcat(_apSsidBuf, PREFIX_AP_SSID);
   char _nodeName[4];
   itoa(I_NODE_NAME, _nodeName, 10);
@@ -209,7 +209,7 @@ char* myMesh::_nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
 
 
 
-short myMesh::jsonToInt(JsonObject& root, String rootKey) {
+short myMesh::_jsonToInt(JsonObject& root, String rootKey) {
   short iValue;
   const char* sValue = root[rootKey];
   iValue = atoi(sValue);
