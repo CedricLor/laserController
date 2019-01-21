@@ -61,14 +61,14 @@ void LaserPin::switchOnOffVariables(const bool targetOnOffState) {
   // SHOULD BE SET BEFORE CALLING THIS MEMBER FUNCTION
   // SHOULD BE MORE FLEXIBLE TO WORK WITH FUTURE SEQUENCES
   // BUT IT SHALL DO THE WORK TO REPLACE ALL THE UPDATE BLOCK IN LASER SAFETY LOOP WHICH WAS EVEN MORE HIDEOUS THAN THIS
-  if (index_number > paired_with) {                                   // if this pin is not a master
-    if (pairing_type == 1) {                                          // if this pin is in alternate mode with its master
-      on_off_target = !targetOnOffState;                              // invert the targetOnOffState
-      return;
-    }
-  }
-  on_off_target = targetOnOffState;                                     // default behavior
-  // ((index_number > paired_with) && (pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
+  // if (index_number > paired_with) {                                   // if this pin is not a master
+  //   if (pairing_type == 1) {                                          // if this pin is in alternate mode with its master
+  //     on_off_target = !targetOnOffState;                              // invert the targetOnOffState
+  //     return;
+  //   }
+  // }
+  // on_off_target = targetOnOffState;                                     // default behavior
+  ((index_number > paired_with) && (pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
 }
 
 /* This function switches this LaserPin on and off (and sets the pir_state property of this LaserPin to LOW)
