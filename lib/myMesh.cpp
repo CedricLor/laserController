@@ -17,7 +17,6 @@
 #define   MESH_PORT       5555
 
 const short myMesh::BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
-const bool myMesh::B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
@@ -33,6 +32,7 @@ const bool myMesh::B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {
 // !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update slaveReaction
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const bool myMesh::B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 
 
 const char myMesh::PREFIX_AP_SSID[5] = "box_";
@@ -104,7 +104,7 @@ void myMesh::broadcastStatusOverMesh(const char* state) {
 // Needed for painless library
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
-  meshController(from, msg);
+  _meshController(from, msg);
 }
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
@@ -128,7 +128,7 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
 }
 
 
-void myMesh::meshController(uint32_t senderNodeId, String &msg) {
+void myMesh::_meshController(uint32_t senderNodeId, String &msg) {
   // React depending on wether the remote is myMaster and if so, on its on or off status
 
   Serial.printf("MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
@@ -144,15 +144,15 @@ void myMesh::meshController(uint32_t senderNodeId, String &msg) {
   Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
 
   // Is the message addressed to me?
-  if (!(iSenderNodeName == iMasterNodeName)) {                 // do not react to broadcast message if message not sent by relevant sender
+  if (!(iSenderNodeName == iMasterNodeName)||!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
     return;
   }
 
   // If the message is addressed to me, act depending on the sender status
-  autoSwitchAllRelaysMeshWrapper(cSenderStatus, iSenderNodeName);
+  _autoSwitchAllRelaysMeshWrapper(cSenderStatus);
 }
 
-void myMesh::autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const short iSenderNodeName) {
+void myMesh::_autoSwitchAllRelaysMeshWrapper(const char* senderStatus) {
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
       const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -160,9 +160,9 @@ void myMesh::autoSwitchAllRelaysMeshWrapper(const char* senderStatus, const shor
         It is set via the iSlaveOnOffReaction variable. It is itself set either:
         - at startup and equal to the global constant I_DEFAULT_SLAVE_ON_OFF_REACTION (in the global variables definition);
         - via the changeSlaveReaction sub (in case the user has decided to change it via a web control).
-      - Second index number is the reaction to the on state of the master box if 0, to its off state if 1.
+      - Second index number is the reaction to the "on" state of the master box if 0, to its "off" state if 1.
   */
-  Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(senderStatus, iSenderNodeName) starting.\niSenderNodeName = %u\n. senderStatus = %s.\n", iSenderNodeName, senderStatus);
+  Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(senderStatus) starting.\n senderStatus = %s.\n", senderStatus);
   const char* myFutureState = B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
   if (strstr(senderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
