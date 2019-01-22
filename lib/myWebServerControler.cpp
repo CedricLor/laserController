@@ -30,8 +30,8 @@ void myWebServerControler::_webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWeb
 
 void myWebServerControler::_webChangeBlinkingInterval(LaserPin *LaserPins, AsyncWebParameter* _p1, AsyncWebParameter* _p2) {
   // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingInterval %s\n", _p2->value().c_str());
-  if (_p2->value() == "10") {
-    // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
+  if (_p2->value() == "0") {
+    Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
     int targetBlinkingInterval = _p1->value().toInt();
     LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, targetBlinkingInterval);
   }

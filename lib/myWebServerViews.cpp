@@ -6,9 +6,8 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction)
+myWebServerViews::myWebServerViews(short iSlaveOnOffReaction)
 {
-  _pinBlinkingInterval = pinBlinkingInterval;
   _iSlaveOnOffReaction = iSlaveOnOffReaction;
 }
 
@@ -55,7 +54,7 @@ String myWebServerViews::printLinksToBoxes() {
 String myWebServerViews::printAllLasersCntrl() {
   String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
-  laserCntrls += printBlinkingIntervalWebCntrl(9);
+  laserCntrls += printBlinkingIntervalWebCntrl(-1);
   laserCntrls += "</div>";
   laserCntrls += "<div>";
   laserCntrls += printMasterCntrl();
@@ -194,9 +193,9 @@ String myWebServerViews::printPirStatusCntrl(const short thisPin) {
 
 String myWebServerViews::printBlinkingIntervalWebCntrl(const short thisPin) {
   String blinkingIntervalWebCntrl;
-  blinkingIntervalWebCntrl += "Blinking delay: ";
+  blinkingIntervalWebCntrl += "Blinking interval: ";
   blinkingIntervalWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
-  blinkingIntervalWebCntrl += printDelaySelect(thisPin);
+  blinkingIntervalWebCntrl += printIntervalSelect(thisPin);
   blinkingIntervalWebCntrl += printHiddenLaserNumb(thisPin);
   blinkingIntervalWebCntrl += "<button type=\"submit\">Submit</button>";
   blinkingIntervalWebCntrl += "</form>";
@@ -224,26 +223,31 @@ String myWebServerViews::printPairingCntrl(const short thisPin) {
   return pairingWebCntrl;
 }
 
-String myWebServerViews::printDelaySelect(const short thisPin) {
-  String delaySelect;
-  delaySelect += "<select name=\"blinkingInterval\">";
-  for (unsigned long delayValue = 5000UL; delayValue < 35000UL; delayValue = delayValue + 5000UL) {
-    delaySelect += "<option value=\"";
-    delaySelect += delayValue;
-    delaySelect += "\"";
-    if (thisPin < 9) {
-      if (delayValue == LaserPins[thisPin].blinking_interval) {
-        delaySelect += "selected";
+String myWebServerViews::printIntervalSelect(const short thisPin) {
+  String intervalSelect;
+  intervalSelect += "<select name=\"blinkingInterval\">";
+  for (unsigned long intervalValue = 5000UL; intervalValue < 35000UL; intervalValue = intervalValue + 5000UL) {
+    intervalSelect += "<option value=\"";
+    intervalSelect += intervalValue;
+    intervalSelect += "\"";
+    if (!(thisPin == -1)) {
+      /*
+          if the blinkingInterval select we are printing is related to a pin
+          and not to the global blinkingInterval select,
+          the value of thisPin will be different than -1
+      */
+      if (intervalValue == LaserPins[thisPin].blinking_interval) {
+        intervalSelect += "selected";
       }
-    } else if (delayValue == _pinBlinkingInterval) {
-      delaySelect += "selected";
+    } else if (intervalValue == pinBlinkingInterval) {
+      intervalSelect += "selected";
     }
-    delaySelect += ">";
-    delaySelect += delayValue / 1000;
-    delaySelect += " s.</option>";
+    intervalSelect += ">";
+    intervalSelect += intervalValue / 1000;
+    intervalSelect += " s.</option>";
   }
-  delaySelect += "</select>";
-  return delaySelect;
+  intervalSelect += "</select>";
+  return intervalSelect;
 }
 
 

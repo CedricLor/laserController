@@ -13,11 +13,10 @@
 class myWebServerViews
 {
   public:
-    myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction);
+    myWebServerViews(short iSlaveOnOffReaction);
     String returnTheResponse();
-  private:
-    unsigned long _pinBlinkingInterval;
 
+  private:
     short _iSlaveOnOffReaction;
     const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
 
@@ -34,7 +33,7 @@ class myWebServerViews
     String printPirStatusCntrl(const short thisPin);
     String printBlinkingIntervalWebCntrl(const short thisPin);
     String printPairingCntrl(const short thisPin);
-    String printDelaySelect(const short thisPin);
+    String printIntervalSelect(const short thisPin);
     String printHiddenLaserNumb(const short thisPin);
 };
 
