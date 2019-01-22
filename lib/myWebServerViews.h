@@ -13,14 +13,13 @@
 class myWebServerViews
 {
   public:
-    myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction, const char** slaveReactionHtml);
+    myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction);
     String returnTheResponse();
   private:
     unsigned long _pinBlinkingInterval;
 
     short _iSlaveOnOffReaction;
     const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
-    const char** _slaveReactionHtml;
 
     String printLinksToBoxes();
     String printAllLasersCntrl();

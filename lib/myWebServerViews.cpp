@@ -6,12 +6,10 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction, const char** slaveReactionHtml)
+myWebServerViews::myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   _iSlaveOnOffReaction = iSlaveOnOffReaction;
-
-  _slaveReactionHtml = slaveReactionHtml;
 }
 
 String myWebServerViews::returnTheResponse() {
@@ -102,7 +100,7 @@ String myWebServerViews::printSlaveReactionSelect() {
     if (i == _iSlaveOnOffReaction) {
       selected += "selected";
      };
-    slaveReactionSelect += printOption(_slaveReactionHtml[i], _slaveReaction[i], selected);
+    slaveReactionSelect += printOption(slaveReactionHtml[i], _slaveReaction[i], selected);
   }
   slaveReactionSelect += "</select>";
   return slaveReactionSelect;
