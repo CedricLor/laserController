@@ -13,19 +13,31 @@ myMeshController::myMeshController(JsonObject& root)
     _slaveBoxSwitch(root);
     return;
   }
-  if (_action == 'm') {           // action 'm' for master node number
+  if (_action == 'm') {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
 
     return;
   }
-  if (_action == 'b') {           // action 'b' for blinking delay
+  if (_action == 'b') {           // action 'b' for this message relates to a blinking delay, that this box should update as the case may be
 
     return;
   }
-  if (_action == 't') {           // action 't' for twin pairing
+  if (_action == 't') {           // action 't' for this message orders a twin pairing, that this box should update as the case may be
 
     return;
   }
-  if (_action == 'c') {           // action 'c' for cooperative pairing
+  if (_action == 'c') {           // action 'c' for this message orders a cooperative pairing, that this box should update as the case may be
+
+    return;
+  }
+  if (_action == 'i') {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
+
+    return;
+  }
+  if (_action == 'u') {           // action 'u' for this message requests that the laserPin be turned User controlled mode
+
+    return;
+  }
+  if (_action == 'd') {           // action 'd' for this message requests that this box returns Data on it current states
 
     return;
   }

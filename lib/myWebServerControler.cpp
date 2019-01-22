@@ -10,7 +10,7 @@ myWebServerControler::myWebServerControler()
 {
 }
 
-void myWebServerControler::webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
+void myWebServerControler::_webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
     LaserPinsArray::manualSwitchAllRelays(LaserPins, targetState);
   } else {
@@ -19,7 +19,7 @@ void myWebServerControler::webSwitchRelays(LaserPin *LaserPins, AsyncWebParamete
   }
 }
 
-void myWebServerControler::webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
+void myWebServerControler::_webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
     LaserPinsArray::inclExclAllRelaysInPir(LaserPins, targetState);
   } else {
@@ -35,9 +35,9 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     AsyncWebParameter* _p1 = request->getParam("manualStatus");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
-      webSwitchRelays(LaserPins, _p2, LOW);
+      _webSwitchRelays(LaserPins, _p2, LOW);
     } else {
-      webSwitchRelays(LaserPins, _p2, HIGH);
+      _webSwitchRelays(LaserPins, _p2, HIGH);
     }
     return;
   }
@@ -46,9 +46,9 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     AsyncWebParameter* _p1 = request->getParam("statusIr");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
-      webInclExclRelaysInPir(LaserPins, _p2, HIGH);
+      _webInclExclRelaysInPir(LaserPins, _p2, HIGH);
     } else {
-      webInclExclRelaysInPir(LaserPins, _p2, LOW);
+      _webInclExclRelaysInPir(LaserPins, _p2, LOW);
     }
     return;
   }

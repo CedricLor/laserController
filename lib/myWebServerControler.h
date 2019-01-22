@@ -16,8 +16,8 @@ class myWebServerControler
     static void decodeRequest(LaserPin *LaserPins, AsyncWebServerRequest *request);
 
   private:
-    static void webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
-    static void webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
+    static void _webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
+    static void _webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
 };
 
 #endif
