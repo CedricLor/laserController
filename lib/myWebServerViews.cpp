@@ -6,14 +6,12 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction, short iMasterNodeName, const char** slaveReactionHtml)
+myWebServerViews::myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction, const char** slaveReactionHtml)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   _iSlaveOnOffReaction = iSlaveOnOffReaction;
 
   _slaveReactionHtml = slaveReactionHtml;
-
-  _iMasterNodeName = iMasterNodeName;
 }
 
 String myWebServerViews::returnTheResponse() {
@@ -23,7 +21,7 @@ String myWebServerViews::returnTheResponse() {
   myResponse += "<h1>";
   myResponse += String(I_NODE_NAME);
   myResponse += "  ";
-  myResponse += (_ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
+  myResponse += (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -37,15 +35,15 @@ String myWebServerViews::printLinksToBoxes() {
   String linksToBoxes = "<div class=\"box_links_wrapper\">";
   IPAddress testIp(0,0,0,0);
   for (short i = 0; i < 10; i++) {
-    if (!(_ControlerBoxes[i].stationIP == testIp)) {
+    if (!(ControlerBoxes[i].stationIP == testIp)) {
       linksToBoxes += "<div class=\"box_link_wrapper\">Station IP: ";
       linksToBoxes += "<a href=\"http://";
-      linksToBoxes += (_ControlerBoxes[i].stationIP).toString();
+      linksToBoxes += (ControlerBoxes[i].stationIP).toString();
       linksToBoxes +=  "/\">Box number: ";
       linksToBoxes += i + 1;
       linksToBoxes += "</a> APIP: ";
       linksToBoxes += "<a href=\"http://";
-      linksToBoxes += (_ControlerBoxes[i].APIP).toString();
+      linksToBoxes += (ControlerBoxes[i].APIP).toString();
       linksToBoxes +=  "/\">Box number: ";
       linksToBoxes += i + 1;
       linksToBoxes += "</a>";
@@ -86,7 +84,7 @@ String myWebServerViews::printMasterSelect() {
   String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
   for (short i = 1; i < 11; i++) {
     String selected = "";
-    if (i + I_MASTER_NODE_PREFIX == _iMasterNodeName) {
+    if (i + I_MASTER_NODE_PREFIX == iMasterNodeName) {
       selected += "selected";
     };
     if (!(i + I_MASTER_NODE_PREFIX == I_NODE_NAME)) {

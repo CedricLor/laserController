@@ -56,7 +56,7 @@ void myWebServerBase::startAsyncServer() {
     Serial.print(">>>>>>>>>>>>>>>>>>>>>>>>>> Just before instantiating myWebServerView");
 
     //Send a response
-    myWebServerViews myWebServerView(pinBlinkingInterval, iSlaveOnOffReaction, iMasterNodeName, slaveReactionHtml);
+    myWebServerViews myWebServerView(pinBlinkingInterval, iSlaveOnOffReaction, slaveReactionHtml);
     Serial.print(">>>>>>>>>>>>>>>>>>>>>>>>>> Just after instantiating myWebServerView");
     AsyncResponseStream *response = request->beginResponseStream("text/html");  // define a response stream
     response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
