@@ -33,13 +33,9 @@ myMeshController::myMeshController(JsonObject& root)
     _slaveBoxSwitch(root);
     return;
   }
-  if (_action == 't') {           // action 't' for this message orders a twin pairing, that this box should update as the case may be
-    _twinPinPairing(root);
-    return;
-  }
-  if (_action == 'c') {           // action 'c' for this message orders a cooperative pairing, that this box should update as the case may be
-    _cooperativePinPairing(root);
-    return;
+  if (_action == 'p') {           // action 't' for this message orders the pairing
+    _pinPairing(root);            // (either of type unpairing, twin pairing or cooperative)
+    return;                       // of the pins, that this box should update as the case may be
   }
   if (_action == 'd') {           // action 'd' for this message requests that this box returns Data on it current states
     _dataRequest();
@@ -64,19 +60,37 @@ myMeshController::myMeshController(JsonObject& root)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void myMeshController::_manualSwitch(JsonObject& root) {
-  // LaserPinsArray::manualSwitchAllRelays(LaserPins, targetState);
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
+  short iTargetState;
+  const char* sTargetState = root["ts"];
+  iTargetState = atoi(sTargetState);
+  LaserPinsArray::manualSwitchAllRelays(LaserPins, iTargetState /*0 for LOW = on; 1 for HIGH= off*/);
 }
 
 void myMeshController::_changeInclusionIR(JsonObject& root) {
-  // LaserPinsArray::inclExclAllRelaysInPir(LaserPins, targetState);
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
+  short iTargetState;
+  const char* sTargetState = root["ts"];
+  iTargetState = atoi(sTargetState);
+  LaserPinsArray::inclExclAllRelaysInPir(LaserPins, iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
 void myMeshController::_changeBlinkingInterval(JsonObject& root) {
-  // LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, targetBlinkingInterval);
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
+  unsigned long iTargetBlinkingInterval;
+  const char* sTargetBlinkingInterval = root["ti"];
+  iTargetBlinkingInterval = atoi(sTargetBlinkingInterval);
+  LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, iTargetBlinkingInterval);
 }
 
 void myMeshController::_changeMasterBox(JsonObject& root) {
-  // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(newMasterBoxNumber, newReaction);
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  short iNewMasterBoxNumber;
+  const char* sNewMasterBoxNumber = root["ms"];
+  iNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
+  const char* sNewReaction = root["react"];
+  // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
+  MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(iNewMasterBoxNumber, sNewReaction);
 }
 
 const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -92,37 +106,44 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // slaveReactionStruct slaveReactionStructsArray[4];
 
 void myMeshController::_slaveBoxSwitch(JsonObject& root) {
+  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
       const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
-      - First index number is one of the pair of HIGH/LOW reactions listed in the first dimension of the array.
+      - The first index number (iSlaveOnOffReaction) selects one of the pair of HIGH/LOW reactions listed in the upper dimension of the array.
         It is set via the iSlaveOnOffReaction variable. It is itself set either:
-        - at startup and equal to the global constant I_DEFAULT_SLAVE_ON_OFF_REACTION (in the global variables definition);
+        - at startup; equal to the global constant I_DEFAULT_SLAVE_ON_OFF_REACTION (in the global variables definition);
         - via the changeSlaveReaction sub (in case the user has decided to change it via a web control).
-      - Second index number is the reaction to the "on" state of the master box if 0, to its "off" state if 1.
+      - The second index number (0 or 1) indicates the current status of the masterBox and selects, within the HIGH/LOW pair, the reaction of the slaveBox.
   */
+  // extract the root[rootKey]
   const char* cSenderStatus = root["senderStatus"];
   Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
 
+  // The following line has for sole purpose to provide data to the Serial.printfs below
   const char* myFutureState = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
-  if (strstr(cSenderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
+
+  if (strstr(cSenderStatus, "on")  > 0) {
+    // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
     LaserPinsArray::slaveBoxSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
   } else if (strstr(cSenderStatus, "off")  > 0) {
+    // else if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
     LaserPinsArray::slaveBoxSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
 }
 
-void myMeshController::_twinPinPairing(JsonObject& root) {
-
-}
-
-void myMeshController::_cooperativePinPairing(JsonObject& root) {
-
+void myMeshController::_pinPairing(JsonObject& root) {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"p";"pt":"0"}
+  short iTargetPairingType;
+  const char* sTargetPairingType = root["ts"];
+  iTargetPairingType = atoi(sTargetPairingType);
+  LaserPinsArray::pairUnpairAllPins(LaserPins, iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 }
 
 void myMeshController::_dataRequest() {
-
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"d"}
+  // ----------------------
 }

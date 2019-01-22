@@ -24,8 +24,7 @@ class myMeshController
     void _changeBlinkingInterval(JsonObject& root);
     void _changeMasterBox(JsonObject& root);
     void _slaveBoxSwitch(JsonObject& root);
-    void _twinPinPairing(JsonObject& root);
-    void _cooperativePinPairing(JsonObject& root);
+    void _pinPairing(JsonObject& root);
     void _dataRequest();
 };
 
