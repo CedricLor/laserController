@@ -15,7 +15,7 @@ class ControlerBox
     IPAddress stationIP;
     IPAddress APIP;
 
-    static void boxTypeSelfUpdate(ControlerBox *ControlerBoxes, const short I_NODE_NAME, const short BOXES_I_PREFIX);
+    void updateProperties();
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root, const short I_NODE_NAME, const short BOXES_I_PREFIX);
   private:
     static IPAddress _parseIpString(JsonObject& root, String rootKey);

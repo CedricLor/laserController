@@ -12,17 +12,11 @@ ControlerBox::ControlerBox()
   // _pin = pin;
 }
 
-void ControlerBox::boxTypeSelfUpdate(ControlerBox *ControlerBoxes, const short I_NODE_NAME, const short BOXES_I_PREFIX) {
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP = laserControllerMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].nodeId = laserControllerMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
+void ControlerBox::ControlerBox::updateProperties() {
+  APIP = laserControllerMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
+  stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
+  nodeId = laserControllerMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
 }
-
-// void ControlerBox::boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root, const short I_NODE_NAME, const short BOXES_I_PREFIX) {
-//   ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].APIP = ControlerBox::parseIpString(root, "senderAPIP");
-//   ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].stationIP = ControlerBox::parseIpString(root, "senderStationIP");
-//   ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].nodeId = senderNodeId;
-// }
 
 IPAddress ControlerBox::_parseIpString(JsonObject& root, String rootKey) {
   const char* ipStr = root[rootKey];

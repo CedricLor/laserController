@@ -65,7 +65,7 @@ void myMesh::meshSetup() {
     laserControllerMesh.setContainsRoot(true);
   }
 
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);  // updates various properties in ControlerBox class such as the node name, the
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
@@ -79,7 +79,7 @@ void myMesh::meshSetup() {
 
 void myMesh::broadcastStatusOverMesh(const char* state) {
   Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
   String str = _createMeshMessage(state);
   Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
@@ -118,13 +118,13 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("New Connection, nodeId = %u\n", nodeId);
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
   broadcastStatusOverMesh("na");
 }
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
+  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
   broadcastStatusOverMesh("na");
 }
 
