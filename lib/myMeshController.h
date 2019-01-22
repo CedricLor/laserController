@@ -13,12 +13,13 @@ class myMeshController
   public:
     myMeshController(JsonObject& root);
 
-    void autoSwitchRelays(const char* senderStatus);
 
   private:
     static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];
 
     char _action;
+
+    void _slaveBoxSwitch(JsonObject& root);
 };
 
 #endif

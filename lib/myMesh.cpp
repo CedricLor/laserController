@@ -92,7 +92,7 @@ String myMesh::_createMeshMessage(const char* myStatus) {
 // Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
-  _meshController(from, msg);
+  _decodeRequest(from, msg);
 }
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
@@ -116,22 +116,23 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mesh Controller
+// Mesh Decode Request
 /* Mesh controller is a controller in the same meaning as in Model-View-Controller pattern in Ruby.
     It is called from the receivedCallback callback.
-    It reads the JSON string received via the Mesh communication protocol and gives instructions to the LaserPins via _autoSwitchAllRelaysMeshWrapper
+    It reads the JSON string received via the Mesh communication protocol.
+    It determines whether the messages is sent by my Master Node or by the Interface Node.
+    If so, it calls the meshController
 */
-void myMesh::_meshController(uint32_t senderNodeId, String &msg) {
-  // React depending on wether the remote is myMaster and if so, on its on or off status
+void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
-  Serial.printf("MESH CONTROLLER: meshController(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
+  Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
   StaticJsonBuffer<250> jsonBuffer;
-  Serial.print("MESH CONTROLLER: meshController(...): jsonBuffer created\n");
+  Serial.print("myMesh::_decodeRequest(...): jsonBuffer created\n");
   JsonObject& root = jsonBuffer.parseObject(msg.c_str());
-  Serial.print("MESH CONTROLLER: meshController(...): jsonBuffer parsed into JsonObject& root\n");
+  Serial.print("myMesh::_decodeRequest(...): jsonBuffer parsed into JsonObject& root\n");
 
   const short iSenderNodeName = _jsonToInt(root, "senderNodeName");
-  Serial.printf("MESH CONTROLLER: meshController(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
+  Serial.printf("myMesh::_decodeRequest(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
   // Is the message addressed to me?
   if (!(iSenderNodeName == iMasterNodeName)||!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender

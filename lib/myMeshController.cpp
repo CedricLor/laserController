@@ -10,9 +10,7 @@ myMeshController::myMeshController(JsonObject& root)
 {
   char _action = root["action"];
   if (_action == 's') {           // action 's' for status of master box has changed
-    const char* cSenderStatus = root["senderStatus"];
-    Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
-    autoSwitchRelays(cSenderStatus);
+    _slaveBoxSwitch(root);
     return;
   }
   if (_action == 'm') {           // action 'm' for master node number
@@ -62,7 +60,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // slaveReactionStruct slaveReactionStructsArray[4];
 
 
-void myMeshController::autoSwitchRelays(const char* senderStatus) {
+void myMeshController::_slaveBoxSwitch(JsonObject& root) {
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
       const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -72,12 +70,14 @@ void myMeshController::autoSwitchRelays(const char* senderStatus) {
         - via the changeSlaveReaction sub (in case the user has decided to change it via a web control).
       - Second index number is the reaction to the "on" state of the master box if 0, to its "off" state if 1.
   */
-  Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(senderStatus) starting.\n senderStatus = %s.\n", senderStatus);
+  const char* cSenderStatus = root["senderStatus"];
+  Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
+
   const char* myFutureState = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
-  if (strstr(senderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
+  if (strstr(cSenderStatus, "on")  > 0) {                              // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
     LaserPinsArray::autoSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
-  } else if (strstr(senderStatus, "off")  > 0) {
+  } else if (strstr(cSenderStatus, "off")  > 0) {
     Serial.printf("MESH: autoSwitchAllRelaysMeshWrapper(...): Turning myself to %s.\n", myFutureState);
     LaserPinsArray::autoSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }

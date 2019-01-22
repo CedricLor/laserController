@@ -31,7 +31,7 @@ class myMesh
     static void nodeTimeAdjustedCallback(int32_t offset);
     static void delayReceivedCallback(uint32_t from, int32_t delay);
 
-    static void _meshController(uint32_t senderNodeId, String &msg);
+    static void _decodeRequest(uint32_t senderNodeId, String &msg);
     static void _autoSwitchAllRelaysMeshWrapper(const char* senderStatus);
 
     static String _createMeshMessage(const char* myStatus);
