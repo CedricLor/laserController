@@ -15,7 +15,6 @@ class myMesh
     myMesh();
 
     static void meshSetup();
-    static void broadcastStatusOverMesh(const char* state);
 
   private:
     static const bool B_SLAVE_ON_OFF_REACTIONS[4][2];
@@ -30,8 +29,6 @@ class myMesh
     static void delayReceivedCallback(uint32_t from, int32_t delay);
 
     static void _decodeRequest(uint32_t senderNodeId, String &msg);
-
-    static String _createMeshMessage(const char* myStatus);
 
     static char* _nodeNameBuilder();
     static char* _apSsidBuilder(char _apSsidBuf[8]);

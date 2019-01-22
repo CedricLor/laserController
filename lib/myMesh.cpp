@@ -49,44 +49,6 @@ void myMesh::meshSetup() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mesh Message Sender
-// void broadcastStatusOverMesh(const char* state)
-/* broadcastStatusOverMesh is the main mesh message sender module.
-   After updating the properties of this box (APIP, StationIP, NodeName),
-   it calls _createMeshMessage to create a String.
-   Such String is then broadcasted over the mesh via the sendBroadcast function of painlessMesh
-*/
-void myMesh::broadcastStatusOverMesh(const char* state) {
-  Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
-  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  String str = _createMeshMessage(state);
-  Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
-  laserControllerMesh.sendBroadcast(str);   // MESH SENDER
-}
-
-// String _createMeshMessage(const char* myStatus);
-/* _createMeshMessage is a helper function for broadcastStatusOverMesh.
-   It creates a string out of a Json message to be sent over the network.
-   NOTE: This is weird. I had understood that painlessMesh was sending Json messages...
-*/
-String myMesh::_createMeshMessage(const char* myStatus) {
-  Serial.printf("MESH: _createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
-
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject& msg = jsonBuffer.createObject();
-
-  msg["senderNodeName"] = _nodeNameBuilder();
-  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
-  msg["senderStatus"] = myStatus;
-
-  String str;
-  msg.printTo(str);
-  Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
-  return str;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
@@ -96,13 +58,13 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("New Connection, nodeId = %u\n", nodeId);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  broadcastStatusOverMesh("na");
+  myMeshViews myMeshViews("na");
 }
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  broadcastStatusOverMesh("na");
+  myMeshViews myMeshViews("na");
 }
 
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {

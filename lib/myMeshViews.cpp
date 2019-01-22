@@ -17,14 +17,16 @@
    painlessMesh takes care of the broadcast.
    Messages from controller boxes are not adressed to any other box in particular;
    all the other boxes receive the message and react accordingly.
+   To modify the code all through the project, look for "myMeshViews myMeshViews(".
+   Currently in use in (i) myMesh class and (ii) pirController class
 */
 
 myMeshViews::myMeshViews(const char* state)
 {
-  Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
+  Serial.printf("myMeshViews::myMeshViews(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
   String str = _createMeshMessage(state);
-  Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
+  Serial.print("myMeshViews::myMeshViews(): about to call laserControllerMesh.sendBroadcast(str) with str = ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
 

@@ -131,8 +131,8 @@ void pirController::switchPirRelays(LaserPin *LaserPins, const bool state) {
 void pirController::broadcastPirStatus(const char* state) {     // state is "on" or "off". When pirController::valPir is HIGH (the IR has detected a move),
                                                  // the Pir block calls this function with the "on" parameter. Alternatively,
                                                  //  when the the pir cycle stops, it calls this function with the "off" parameter.
-  Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via call to broadcastStatusOverMesh(state) with state = %s\n", state);
-  myMesh::broadcastStatusOverMesh(state);
+  Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via an instantion of myMeshViews(state) with state = %s\n", state);
+  myMeshViews myMeshViews(state);
 
   Serial.print("PIR - broadcastPirStatus(): ending.\n");
 }
