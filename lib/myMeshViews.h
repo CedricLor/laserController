@@ -14,8 +14,6 @@ class myMeshViews
   public:
     myMeshViews(const char* state);
 
-    static const short BOXES_I_PREFIX;
-
   private:
     static char _nodeNameBuf[4];
 

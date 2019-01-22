@@ -6,7 +6,7 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, const short I_NODE_NAME, ControlerBox *ControlerBoxes, const char** slaveReactionHtml)
+myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, ControlerBox *ControlerBoxes, const char** slaveReactionHtml)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
   *_LaserPins = *LaserPins;
@@ -17,7 +17,6 @@ myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkin
 
   _iMasterNodeName = iMasterNodeName;
   _I_MASTER_NODE_PREFIX = I_MASTER_NODE_PREFIX;
-  _I_NODE_NAME = I_NODE_NAME;
 
   *_ControlerBoxes = *ControlerBoxes;
 }
@@ -27,9 +26,9 @@ String myWebServerViews::returnTheResponse() {
   myResponse += "<body>";
   myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   myResponse += "<h1>";
-  myResponse += String(_I_NODE_NAME);
+  myResponse += String(I_NODE_NAME);
   myResponse += "  ";
-  myResponse += (_ControlerBoxes[_I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
+  myResponse += (_ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -95,7 +94,7 @@ String myWebServerViews::printMasterSelect() {
     if (i + _I_MASTER_NODE_PREFIX == _iMasterNodeName) {
       selected += "selected";
     };
-    if (!(i + _I_MASTER_NODE_PREFIX == _I_NODE_NAME)) {
+    if (!(i + _I_MASTER_NODE_PREFIX == I_NODE_NAME)) {
       masterSelect += printOption(String(i), String(i), selected);
     }
   }
