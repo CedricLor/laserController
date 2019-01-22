@@ -17,10 +17,8 @@ class myMesh
     static void meshSetup();
 
   private:
-    static const bool B_SLAVE_ON_OFF_REACTIONS[4][2];
     static const char _PREFIX_AP_SSID[5];
     static char _myApSsidBuf[8];
-    static char _nodeNameBuf[4];
 
     static void receivedCallback( uint32_t from, String &msg);
     static void newConnectionCallback(uint32_t nodeId);
@@ -30,7 +28,6 @@ class myMesh
 
     static void _decodeRequest(uint32_t senderNodeId, String &msg);
 
-    static char* _nodeNameBuilder();
     static char* _apSsidBuilder(char _apSsidBuf[8]);
 
     static short _jsonToInt(JsonObject& root, String rootKey);

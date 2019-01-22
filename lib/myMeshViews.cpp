@@ -18,7 +18,7 @@
    Messages from controller boxes are not adressed to any other box in particular;
    all the other boxes receive the message and react accordingly.
    To modify the code all through the project, look for "myMeshViews myMeshViews(".
-   Currently in use in (i) myMesh class and (ii) pirController class
+   Currently in use in (i) myMesh class and (ii) pirController class.
 */
 
 myMeshViews::myMeshViews(const char* state)
@@ -42,6 +42,7 @@ String myMeshViews::_createMeshMessage(const char* myStatus) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
 
+  msg["action"] = "i";
   msg["senderNodeName"] = _nodeNameBuilder();
   msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();

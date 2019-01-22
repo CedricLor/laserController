@@ -113,14 +113,6 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   return _apSsidBuf;
 }
 
-char myMesh::_nodeNameBuf[4];
-
-char* myMesh::_nodeNameBuilder() {
-  String _sNodeName = String(I_NODE_NAME);
-  _sNodeName.toCharArray(_nodeNameBuf, 4);
-  return _nodeNameBuf;
-}
-
 short myMesh::_jsonToInt(JsonObject& root, String rootKey) {
   short iValue;
   const char* sValue = root[rootKey];
