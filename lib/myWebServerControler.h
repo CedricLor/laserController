@@ -18,6 +18,7 @@ class myWebServerControler
   private:
     static void _webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
     static void _webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState);
+    static void _webChangeBlinkingInterval(LaserPin *LaserPins, AsyncWebParameter* _p1, AsyncWebParameter* _p2);
 };
 
 #endif

@@ -153,7 +153,7 @@ String myWebServerViews::printIndivLaserCntrls() {
     // pairing control
     laserCntrl += printPairingCntrl(thisPin);
 
-    // blinking delay control
+    // blinking interval control
     laserCntrl += printBlinkingIntervalWebCntrl(thisPin);
 
     laserCntrl += "</div>";

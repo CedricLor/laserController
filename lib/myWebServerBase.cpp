@@ -53,6 +53,7 @@ void myWebServerBase::startAsyncServer() {
 
     // Decode request
     myWebServerControler::decodeRequest(LaserPins, request);
+    Serial.print(">>>>>>>>>>>>>>>>>>>>>>>>>> Just before instantiating myWebServerView");
 
     //Send a response
     myWebServerViews myWebServerView(LaserPins, pinBlinkingInterval, PIN_COUNT, iSlaveOnOffReaction, iMasterNodeName, I_MASTER_NODE_PREFIX, ControlerBoxes, slaveReactionHtml);

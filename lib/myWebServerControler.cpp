@@ -28,10 +28,25 @@ void myWebServerControler::_webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWeb
   }
 }
 
+void myWebServerControler::_webChangeBlinkingInterval(LaserPin *LaserPins, AsyncWebParameter* _p1, AsyncWebParameter* _p2) {
+  // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingInterval %s\n", _p2->value().c_str());
+  if (_p2->value() == "10") {
+    // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
+    int targetBlinkingInterval = _p1->value().toInt();
+    LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, targetBlinkingInterval);
+  }
+  else {
+    int pinIndexNumber = _p2->value().toInt();
+    int targetBlinkingInterval = _p1->value().toInt();
+    LaserPins[pinIndexNumber].changeIndividualBlinkingInterval(targetBlinkingInterval);
+  }
+}
+
 void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequest *request) {
   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
 
   if(request->hasParam("manualStatus")) {
+    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"manualStatus\")");
     AsyncWebParameter* _p1 = request->getParam("manualStatus");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
@@ -43,6 +58,7 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
   }
 
   if(request->hasParam("statusIr")) {
+    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
     AsyncWebParameter* _p1 = request->getParam("statusIr");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
@@ -54,23 +70,15 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
   }
 
   if(request->hasParam("blinkingInterval")) {
+    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
     AsyncWebParameter* _p1 = request->getParam("blinkingInterval");
     AsyncWebParameter* _p2 = request->getParam("laser");
-    // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingInterval %s\n", _p2->value().c_str());
-    if (_p2->value() == "10") {
-      // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
-      int targetBlinkingInterval = _p1->value().toInt();
-      LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, targetBlinkingInterval);
-    }
-    else {
-      int pinIndexNumber = _p2->value().toInt();
-      int targetBlinkingInterval = _p1->value().toInt();
-      LaserPins[pinIndexNumber].changeIndividualBlinkingInterval(targetBlinkingInterval);
-    }
+    _webChangeBlinkingInterval(LaserPins, _p1, _p2);
     return;
   }
 
   if(request->hasParam("masterBox")) {
+    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"masterBox\")");
     AsyncWebParameter* _p1 = request->getParam("masterBox");
     AsyncWebParameter* _p2 = request->getParam("reactionToMaster");
     MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(_p1->value().toInt(), _p2->value().c_str());
