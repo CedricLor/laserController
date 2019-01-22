@@ -44,8 +44,8 @@ const bool myMesh::B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {
 //
 // slaveReactionStruct slaveReactionStructsArray[4];
 
-const char myMesh::PREFIX_AP_SSID[5] = "box_";
-char myMesh::myApSsidBuf[8];
+const char myMesh::_PREFIX_AP_SSID[5] = "box_";
+char myMesh::_myApSsidBuf[8];
 
 myMesh::myMesh()
 {
@@ -57,7 +57,7 @@ void myMesh::meshSetup() {
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
   //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
-  laserControllerMesh.setHostname(_apSsidBuilder(I_NODE_NAME, myApSsidBuf));
+  laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
   if (MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
@@ -101,7 +101,7 @@ String myMesh::_createMeshMessage(const char* myStatus) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
 
-  msg["senderNodeName"] = _nodeNameBuilder(I_NODE_NAME);
+  msg["senderNodeName"] = _nodeNameBuilder();
   msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
@@ -192,8 +192,8 @@ void myMesh::_autoSwitchAllRelaysMeshWrapper(const char* senderStatus) {
 }
 
 
-char* myMesh::_apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
-  strcat(_apSsidBuf, PREFIX_AP_SSID);
+char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
+  strcat(_apSsidBuf, _PREFIX_AP_SSID);
   char _nodeName[4];
   itoa(I_NODE_NAME, _nodeName, 10);
   strcat(_apSsidBuf, _nodeName);
@@ -202,8 +202,8 @@ char* myMesh::_apSsidBuilder(const short _I_NODE_NAME, char _apSsidBuf[8]) {
 
 char myMesh::_nodeNameBuf[4];
 
-char* myMesh::_nodeNameBuilder(const short _I_NODE_NAME) {
-  String _sNodeName = String(_I_NODE_NAME);
+char* myMesh::_nodeNameBuilder() {
+  String _sNodeName = String(I_NODE_NAME);
   _sNodeName.toCharArray(_nodeNameBuf, 4);
   return _nodeNameBuf;
 }
