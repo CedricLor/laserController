@@ -191,7 +191,8 @@ void myMesh::_autoSwitchAllRelaysMeshWrapper(const char* senderStatus) {
   Serial.print("MESH: autoSwitchAllRelaysMeshWrapper(...): done\n");
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper functions
 char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   strcat(_apSsidBuf, _PREFIX_AP_SSID);
   char _nodeName[4];
