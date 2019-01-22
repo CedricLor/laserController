@@ -9,37 +9,40 @@ Created by Cedric Lor, January 22, 2019.
 myMeshController::myMeshController(JsonObject& root)
 {
   char _action = root["action"];
+  //////// Manual mode
+  if (_action == 'u') {           // action 'u' for this message requests that the laserPin be turned into or out of User controlled mode
+    _manualSwitch(root);
+    return;
+  }
+  //////// IR mode
+  if (_action == 'i') {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
+    _changeInclusionIR(root);
+    return;
+  }
+  //////// Blinking interval
+  if (_action == 'b') {           // action 'b' for this message relates to a blinking interval, that this box should update as the case may be
+    _changeBlinkingInterval(root);
+    return;
+  }
+  //////// masterBox and reaction to masterBox status change
+  if (_action == 'm') {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
+    _changeMasterBox(root);
+    return;
+  }
   if (_action == 's') {           // action 's' for status of master box has changed
     _slaveBoxSwitch(root);
     return;
   }
-  if (_action == 'm') {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-    // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
-    // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(newMasterBoxNumber, newReaction);
-    return;
-  }
-  if (_action == 'b') {           // action 'b' for this message relates to a blinking delay, that this box should update as the case may be
-
-    return;
-  }
   if (_action == 't') {           // action 't' for this message orders a twin pairing, that this box should update as the case may be
-
+    _twinPinPairing(root);
     return;
   }
   if (_action == 'c') {           // action 'c' for this message orders a cooperative pairing, that this box should update as the case may be
-
-    return;
-  }
-  if (_action == 'i') {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
-
-    return;
-  }
-  if (_action == 'u') {           // action 'u' for this message requests that the laserPin be turned User controlled mode
-
+    _cooperativePinPairing(root);
     return;
   }
   if (_action == 'd') {           // action 'd' for this message requests that this box returns Data on it current states
-
+    _dataRequest();
     return;
   }
 }
@@ -60,6 +63,22 @@ myMeshController::myMeshController(JsonObject& root)
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void myMeshController::_manualSwitch(JsonObject& root) {
+  // LaserPinsArray::manualSwitchAllRelays(LaserPins, targetState);
+}
+
+void myMeshController::_changeInclusionIR(JsonObject& root) {
+  // LaserPinsArray::inclExclAllRelaysInPir(LaserPins, targetState);
+}
+
+void myMeshController::_changeBlinkingInterval(JsonObject& root) {
+  // LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, targetBlinkingInterval);
+}
+
+void myMeshController::_changeMasterBox(JsonObject& root) {
+  // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(newMasterBoxNumber, newReaction);
+}
+
 const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 // const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
@@ -71,7 +90,6 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // };
 //
 // slaveReactionStruct slaveReactionStructsArray[4];
-
 
 void myMeshController::_slaveBoxSwitch(JsonObject& root) {
   /*
@@ -95,4 +113,16 @@ void myMeshController::_slaveBoxSwitch(JsonObject& root) {
     LaserPinsArray::slaveBoxSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
+}
+
+void myMeshController::_twinPinPairing(JsonObject& root) {
+
+}
+
+void myMeshController::_cooperativePinPairing(JsonObject& root) {
+
+}
+
+void myMeshController::_dataRequest() {
+
 }

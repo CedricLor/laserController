@@ -19,7 +19,14 @@ class myMeshController
 
     char _action;
 
+    void _manualSwitch(JsonObject& root);
+    void _changeInclusionIR(JsonObject& root);
+    void _changeBlinkingInterval(JsonObject& root);
+    void _changeMasterBox(JsonObject& root);
     void _slaveBoxSwitch(JsonObject& root);
+    void _twinPinPairing(JsonObject& root);
+    void _cooperativePinPairing(JsonObject& root);
+    void _dataRequest();
 };
 
 #endif

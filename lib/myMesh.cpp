@@ -100,7 +100,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   }
 
   // If the message is addressed to me, act depending on the sender status
-  myMeshController mmc(root);
+  myMeshController myMeshController(root);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
