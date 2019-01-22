@@ -17,8 +17,6 @@ class myMesh
     static void meshSetup();
     static void broadcastStatusOverMesh(const char* state);
 
-    static const short BOXES_I_PREFIX;
-
   private:
     static const bool B_SLAVE_ON_OFF_REACTIONS[4][2];
     static const char _PREFIX_AP_SSID[5];

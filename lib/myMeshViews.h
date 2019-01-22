@@ -14,16 +14,14 @@ class myMeshViews
   public:
     myMeshViews(const char* state);
 
-    static void broadcastStatusOverMesh(const char* state);
-
     static const short BOXES_I_PREFIX;
 
   private:
     static char _nodeNameBuf[4];
 
-    static String _createMeshMessage(const char* myStatus);
+    String _createMeshMessage(const char* myStatus);
 
-    static char* _nodeNameBuilder();
+    char* _nodeNameBuilder();
 };
 
 #endif

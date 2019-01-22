@@ -18,8 +18,6 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-const short myMesh::BOXES_I_PREFIX = 201; // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
-
 const char myMesh::_PREFIX_AP_SSID[5] = "box_";
 char myMesh::_myApSsidBuf[8];
 
@@ -41,7 +39,7 @@ void myMesh::meshSetup() {
     laserControllerMesh.setContainsRoot(true);
   }
 
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
+  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
@@ -60,7 +58,7 @@ void myMesh::meshSetup() {
 */
 void myMesh::broadcastStatusOverMesh(const char* state) {
   Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
+  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
   String str = _createMeshMessage(state);
   Serial.print("MESH: broadcastStatusOverMesh(): about to call mesh.sendBroadcast(str) with str = ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
@@ -78,8 +76,8 @@ String myMesh::_createMeshMessage(const char* myStatus) {
   JsonObject& msg = jsonBuffer.createObject();
 
   msg["senderNodeName"] = _nodeNameBuilder();
-  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].stationIP).toString();
+  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
+  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
 
   String str;
@@ -97,13 +95,13 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("New Connection, nodeId = %u\n", nodeId);
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
+  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
   broadcastStatusOverMesh("na");
 }
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-  ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
+  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
   broadcastStatusOverMesh("na");
 }
 
