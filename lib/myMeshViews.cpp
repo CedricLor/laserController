@@ -42,7 +42,7 @@ String myMeshViews::_createMeshMessage(const char* myStatus) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
 
-  msg["action"] = "i";
+  msg["action"] = "s";              // action "s" means that this box is about to send a message about its status
   msg["senderNodeName"] = _nodeNameBuilder();
   msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
