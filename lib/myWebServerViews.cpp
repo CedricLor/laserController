@@ -6,19 +6,14 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(LaserPin *LaserPins, unsigned long pinBlinkingInterval, const short PIN_COUNT, short iSlaveOnOffReaction, short iMasterNodeName, const short I_MASTER_NODE_PREFIX, ControlerBox *ControlerBoxes, const char** slaveReactionHtml)
+myWebServerViews::myWebServerViews(unsigned long pinBlinkingInterval, short iSlaveOnOffReaction, short iMasterNodeName, const char** slaveReactionHtml)
 {
   _pinBlinkingInterval = pinBlinkingInterval;
-  *_LaserPins = *LaserPins;
-  _PIN_COUNT = PIN_COUNT;
   _iSlaveOnOffReaction = iSlaveOnOffReaction;
 
   _slaveReactionHtml = slaveReactionHtml;
 
   _iMasterNodeName = iMasterNodeName;
-  _I_MASTER_NODE_PREFIX = I_MASTER_NODE_PREFIX;
-
-  *_ControlerBoxes = *ControlerBoxes;
 }
 
 String myWebServerViews::returnTheResponse() {
@@ -91,10 +86,10 @@ String myWebServerViews::printMasterSelect() {
   String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
   for (short i = 1; i < 11; i++) {
     String selected = "";
-    if (i + _I_MASTER_NODE_PREFIX == _iMasterNodeName) {
+    if (i + I_MASTER_NODE_PREFIX == _iMasterNodeName) {
       selected += "selected";
     };
-    if (!(i + _I_MASTER_NODE_PREFIX == I_NODE_NAME)) {
+    if (!(i + I_MASTER_NODE_PREFIX == I_NODE_NAME)) {
       masterSelect += printOption(String(i), String(i), selected);
     }
   }
@@ -137,7 +132,7 @@ String myWebServerViews::printOption(const String optionValue, const String opti
 
 String myWebServerViews::printIndivLaserCntrls() {
   String laserCntrl;
-  for (short thisPin = 0; thisPin < _PIN_COUNT; thisPin++) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     laserCntrl += "<div>Laser # ";
     laserCntrl += thisPin + 1;
 
@@ -163,12 +158,12 @@ String myWebServerViews::printIndivLaserCntrls() {
 
 String myWebServerViews::printCurrentStatus(const short thisPin) {
   String currentStatus;
-  if (_LaserPins[thisPin].blinking == true) {
+  if (LaserPins[thisPin].blinking == true) {
     currentStatus += " ON ";
   } else {
     currentStatus += " OFF ";
   }
-  if (_LaserPins[thisPin].pir_state == HIGH) {
+  if (LaserPins[thisPin].pir_state == HIGH) {
     currentStatus += " in IR mode ";
   } else {
     currentStatus += " in manual mode ";
@@ -188,7 +183,7 @@ String myWebServerViews::printOnOffControl(const short thisPin) {
 
 String myWebServerViews::printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
-  if (_LaserPins[thisPin].pir_state == LOW) {
+  if (LaserPins[thisPin].pir_state == LOW) {
     pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
     pirStatusCntrl += thisPin + 1;
     pirStatusCntrl += "\"><button>IR ON</button></a>&nbsp;";
@@ -214,7 +209,7 @@ String myWebServerViews::printBlinkingIntervalWebCntrl(const short thisPin) {
 
 String myWebServerViews::printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
-  if (_LaserPins[thisPin].paired_with == -1) {
+  if (LaserPins[thisPin].paired_with == -1) {
     pairingWebCntrl += " Unpaired ";
     pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
     pairingWebCntrl += thisPin + 1;
@@ -241,7 +236,7 @@ String myWebServerViews::printDelaySelect(const short thisPin) {
     delaySelect += delayValue;
     delaySelect += "\"";
     if (thisPin < 9) {
-      if (delayValue == _LaserPins[thisPin].blinking_interval) {
+      if (delayValue == LaserPins[thisPin].blinking_interval) {
         delaySelect += "selected";
       }
     } else if (delayValue == _pinBlinkingInterval) {
