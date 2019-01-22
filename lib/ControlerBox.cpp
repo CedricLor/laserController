@@ -24,14 +24,14 @@ void ControlerBox::boxTypeSelfUpdate(ControlerBox *ControlerBoxes, const short I
 //   ControlerBoxes[iSenderNodeName - BOXES_I_PREFIX].nodeId = senderNodeId;
 // }
 
-IPAddress ControlerBox::parseIpString(JsonObject& root, String rootKey) {
+IPAddress ControlerBox::_parseIpString(JsonObject& root, String rootKey) {
   const char* ipStr = root[rootKey];
   byte ip[4];
-  parseBytes(ipStr, '.', ip, 4, 10);
+  _parseBytes(ipStr, '.', ip, 4, 10);
   return ip;
 }
 
-void ControlerBox::parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
+void ControlerBox::_parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
   // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
   /*  Call it this way:
         const char* ipStr = "50.100.150.200";

@@ -18,8 +18,8 @@ class ControlerBox
     static void boxTypeSelfUpdate(ControlerBox *ControlerBoxes, const short I_NODE_NAME, const short BOXES_I_PREFIX);
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root, const short I_NODE_NAME, const short BOXES_I_PREFIX);
   private:
-    static IPAddress parseIpString(JsonObject& root, String rootKey);
-    static void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
+    static IPAddress _parseIpString(JsonObject& root, String rootKey);
+    static void _parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
 };
 
 #endif

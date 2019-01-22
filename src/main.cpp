@@ -44,18 +44,6 @@
 void serialInit();
 void enableTasks();
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// NETWORK variables //////////////////////////////////////////////////////////////////////////////////////////////
-//#define   STATION_SSID     "Livebox-CF01"                                                                                   // NETWORK BY NETWORK
-//#define   STATION_PASSWORD "BencNiels!"                                                                                     // NETWORK BY NETWORK
-
-
-//const int SECOND_BYTE_LOCAL_NETWORK = 1;                                                                                    // NETWORK BY NETWORK
-//const IPAddress MY_STA_IP(192, 168, SECOND_BYTE_LOCAL_NETWORK, I_NODE_NAME); // the desired IP Address for the station      // NETWORK BY NETWORK
-
-//const IPAddress MY_AP_IP(10, 0, 0, I_NODE_NAME);
-//const IPAddress MY_GATEWAY_IP(10, 0, 0, I_NODE_NAME);
-//const IPAddress MY_N_MASK(255, 0, 0, 0);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {

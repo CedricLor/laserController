@@ -65,7 +65,7 @@ void myMesh::meshSetup() {
     laserControllerMesh.setContainsRoot(true);
   }
 
-  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);
+  ControlerBox::boxTypeSelfUpdate(ControlerBoxes, I_NODE_NAME, BOXES_I_PREFIX);  // updates various properties in ControlerBox class such as the node name, the
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
