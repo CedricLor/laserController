@@ -72,11 +72,10 @@ void myMesh::meshSetup() {
   laserControllerMesh.onChangedConnections(&changedConnectionCallback);
   laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
   laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
-
-  //userScheduler.addTask( taskSendMessage );
-  //taskSendMessage.enable();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mesh Message Sender
 void myMesh::broadcastStatusOverMesh(const char* state) {
   Serial.printf("MESH: broadcastStatusOverMesh(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - BOXES_I_PREFIX].updateProperties();
@@ -86,31 +85,7 @@ void myMesh::broadcastStatusOverMesh(const char* state) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// SETUP: Mesh Network
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// void sendMessage() {
-  // broadcastStatusOverMesh("on");
-  /*
-  JsonObject& msg = createMeshJsonMessage("on");
-  String str = createMeshStrMessage(msg);
-  if (logServerId == 0) // If we don't know the logServer yet
-    mesh.sendBroadcast(str);
-  else
-    mesh.sendSingle(logServerId, str);
-
-  String msg = "Hello from node ";
-  msg += mesh.getNodeId();
-  mesh.sendBroadcast(msg);
-  Serial.printf("Sending message: %s\n", msg.c_str());
-  mesh.sendSingle(destServerId, msg);
-  */
-  // taskSendMessage.setInterval(TASK_SECOND * 1);
-// }
-
-// Needed for painless library
+// Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   _meshController(from, msg);
@@ -136,7 +111,12 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
   Serial.printf("Delay to node %u is %d us\n", from, delay);
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mesh Controller
+/* Mesh controller is a controller in the same meaning as in Model-View-Controller pattern in Ruby.
+    It is called from the receivedCallback callback.
+    It reads the JSON string received via the Mesh communication protocol and gives instructions to the LaserPins via _autoSwitchAllRelaysMeshWrapper
+*/
 void myMesh::_meshController(uint32_t senderNodeId, String &msg) {
   // React depending on wether the remote is myMaster and if so, on its on or off status
 
@@ -215,8 +195,6 @@ char* myMesh::_nodeNameBuilder(const short _I_NODE_NAME, char _nodeNameBuf[4]) {
   _sNodeName.toCharArray(_nodeNameBuf, 4);
   return _nodeNameBuf;
 }
-
-
 
 short myMesh::_jsonToInt(JsonObject& root, String rootKey) {
   short iValue;
