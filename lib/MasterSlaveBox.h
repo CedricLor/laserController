@@ -15,8 +15,8 @@ class MasterSlaveBox
     static void changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action);
 
   private:
-    static void changeTheMasterBoxId(const short masterBoxNumber);
-    static void changeSlaveReaction(const char* action);
+    static void _changeTheMasterBoxId(const short masterBoxNumber);
+    static void _changeSlaveReaction(const char* action);
 };
 
 #endif

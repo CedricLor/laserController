@@ -14,7 +14,8 @@ myMeshController::myMeshController(JsonObject& root)
     return;
   }
   if (_action == 'm') {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-
+    // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
+    // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(newMasterBoxNumber, newReaction);
     return;
   }
   if (_action == 'b') {           // action 'b' for this message relates to a blinking delay, that this box should update as the case may be

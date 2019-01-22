@@ -81,6 +81,7 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"masterBox\")");
     AsyncWebParameter* _p1 = request->getParam("masterBox");
     AsyncWebParameter* _p2 = request->getParam("reactionToMaster");
+    // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
     MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(_p1->value().toInt(), _p2->value().c_str());
     return;
   }
