@@ -9,6 +9,8 @@
 #include "Arduino.h"
 #include "ControlerBox.h"
 
+#include "myMeshController.cpp"
+
 class myMesh
 {
   public:

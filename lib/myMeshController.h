@@ -7,14 +7,13 @@
 #define myMeshController_h
 
 #include "Arduino.h"
-#include "ControlerBox.h"
 
 class myMeshController
 {
   public:
     myMeshController();
 
-    void AutoSwitchRelaysController(const char* senderStatus) {
+    static void autoSwitchRelays(const char* senderStatus);
 
   private:
     static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];

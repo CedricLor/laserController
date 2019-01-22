@@ -6,10 +6,10 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
-
 myMeshController::myMeshController()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
@@ -25,6 +25,7 @@ myMeshController::myMeshController()
 // !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update _slaveReaction
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 // const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
@@ -37,7 +38,8 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 //
 // slaveReactionStruct slaveReactionStructsArray[4];
 
-void myMeshController::AutoSwitchRelaysController(const char* senderStatus) {
+
+void myMeshController::autoSwitchRelays(const char* senderStatus) {
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
       const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
