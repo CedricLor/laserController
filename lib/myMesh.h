@@ -32,7 +32,6 @@ class myMesh
     static void delayReceivedCallback(uint32_t from, int32_t delay);
 
     static void _decodeRequest(uint32_t senderNodeId, String &msg);
-    static void _slaveBoxSwitchAllRelaysMeshWrapper(const char* senderStatus);
 
     static String _createMeshMessage(const char* myStatus);
 
