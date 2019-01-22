@@ -42,10 +42,10 @@ TO DO:
 - review all the current module to "privatize" as many member functions as possible
 - refactor the various arrays containing the controllerBoxes mode into a single class
 - put _jsonToInt() and parseIp and its sister function (don't remember the name) in a special class
-- autoSwitchAllRelays has been added to myMesh lib --> move it to LaserPin (and break LaserPin into various libs) (idem for autoSwitchOneRelay)
-- tAutoSwitchAllRelays and autoSwitchAllRelays are scattered around between myMesh (for autoSwitchAllRelays) and LaserPin (for tAutoSwitchAllRelays): consider moving everything into LaserPin class
+- slaveBoxSwitchAllRelays has been added to myMesh lib --> move it to LaserPin (and break LaserPin into various libs) (idem for autoSwitchOneRelay)
+- tslaveBoxSwitchAllRelays and slaveBoxSwitchAllRelays are scattered around between myMesh (for slaveBoxSwitchAllRelays) and LaserPin (for tslaveBoxSwitchAllRelays): consider moving everything into LaserPin class
 - myMesh library should be cleaned up of any direct relations to pins control (so that myMesh could be reused with ESP32 unconnected to any LaserPins)
-- all the autoSwitchAllRelays and tAutoSwitchAllRelays blocks look like they could serve as a base for controlling cycles of blinking of pins -- review and rethink the logic of this code
+- all the slaveBoxSwitchAllRelays and tslaveBoxSwitchAllRelays blocks look like they could serve as a base for controlling cycles of blinking of pins -- review and rethink the logic of this code
 - pinParityWitness and highPinsParityDuringStartup variables handle the same thing, I feel. Check it and clean this.
 - read the comments in pirController and pirStartupController --> this is where there is outstanding work:
   - the tasks defined in pirController and pirStartupController should be integrated with (i.e. enabled and disabled):

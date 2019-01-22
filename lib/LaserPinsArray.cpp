@@ -97,25 +97,25 @@ void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const uns
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 short LaserPinsArray::_siAutoSwitchInterval = 60;
 
-bool LaserPinsArray::_tcbOaAutoSwitchAllRelays() {
+bool LaserPinsArray::_tcbOaslaveBoxSwitchAllRelays() {
   manualSwitchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
-void LaserPinsArray::_tcbOdAutoSwitchAllRelays() {
+void LaserPinsArray::_tcbOdslaveBoxSwitchAllRelays() {
   manualSwitchAllRelays(LaserPins, HIGH);
   inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
-Task LaserPinsArray::_tAutoSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaAutoSwitchAllRelays, &_tcbOdAutoSwitchAllRelays );
+Task LaserPinsArray::_tslaveBoxSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaslaveBoxSwitchAllRelays, &_tcbOdslaveBoxSwitchAllRelays );
 
-void LaserPinsArray::autoSwitchAllRelays(const bool targetState) {
+void LaserPinsArray::slaveBoxSwitchAllRelays(const bool targetState) {
   if (targetState == LOW) {
-    _tAutoSwitchAllRelays.enable();
+    _tslaveBoxSwitchAllRelays.enable();
     return;
   }
-  _tAutoSwitchAllRelays.disable();
+  _tslaveBoxSwitchAllRelays.disable();
 }
 
 // void LaserPinsArray::autoSwitchOneRelay(const short thisPin, const bool targetState) {
