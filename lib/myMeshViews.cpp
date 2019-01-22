@@ -7,12 +7,16 @@
 #include "myMeshViews.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mesh Message Sender
-// void broadcastStatusOverMesh(const char* state)
-/* broadcastStatusOverMesh is the main mesh message sender module.
-   After updating the properties of this box (APIP, StationIP, NodeName),
-   it calls _createMeshMessage to create a String.
-   Such String is then broadcasted over the mesh via the sendBroadcast function of painlessMesh
+// myMeshViews: message sender for controller boxes
+// myMeshViews::myMeshViews(const char* state)
+/* To broadcast a message, you just have to instantiate the class. The sender is located in the constructor.
+   Upon instantiation, the constructor:
+   1. updates the properties of the representation of this box in the array of ControlerBoxes (APIP, StationIP, NodeName);
+   2. calls _createMeshMessage to create a structured String;
+   3. passes this String to the sendBroadcast method of painlessMesh.
+   painlessMesh takes care of the broadcast.
+   Messages from controller boxes are not adressed to any other box in particular;
+   all the other boxes receive the message and react accordingly.
 */
 
 myMeshViews::myMeshViews(const char* state)
@@ -24,9 +28,10 @@ myMeshViews::myMeshViews(const char* state)
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // String _createMeshMessage(const char* myStatus);
-/* _createMeshMessage is a helper function for broadcastStatusOverMesh.
-   It creates a string out of a Json message to be sent over the network.
+/* _createMeshMessage is the helper function that creates the String to be passed to the sendBroadcast method of painlessMesh.
+   It creates a String out of a Json message to be sent over the network.
    NOTE: This is weird. I had understood that painlessMesh was sending Json messages...
 */
 String myMeshViews::_createMeshMessage(const char* myStatus) {
@@ -48,7 +53,6 @@ String myMeshViews::_createMeshMessage(const char* myStatus) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
-
 char myMeshViews::_nodeNameBuf[4];
 
 char* myMeshViews::_nodeNameBuilder() {
