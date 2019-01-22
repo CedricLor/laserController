@@ -6,8 +6,9 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
-myMeshController::myMeshController()
+myMeshController::myMeshController(JsonObject& root)
 {
+  _action = root["action"];
 }
 
 

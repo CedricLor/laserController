@@ -10,6 +10,8 @@
 #include "Arduino.h"
 #include "myMesh.h"
 
+#include "myMeshController.cpp"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MESH constant /////////////////////////////////////////////////////////////////////////////////////////////////
 #define   MESH_PREFIX     "laser_boxes"
@@ -131,16 +133,17 @@ void myMesh::_meshController(uint32_t senderNodeId, String &msg) {
   const short iSenderNodeName = _jsonToInt(root, "senderNodeName");
   Serial.printf("MESH CONTROLLER: meshController(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
-  const char* cSenderStatus = root["senderStatus"];
-  Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
-
   // Is the message addressed to me?
   if (!(iSenderNodeName == iMasterNodeName)||!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
     return;
   }
 
+  const char* cSenderStatus = root["senderStatus"];
+  Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
+
   // If the message is addressed to me, act depending on the sender status
-  myMeshController::autoSwitchRelays(cSenderStatus);
+  myMeshController mmc(root);
+  mmc.autoSwitchRelays(cSenderStatus);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

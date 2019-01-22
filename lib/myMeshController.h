@@ -11,12 +11,14 @@
 class myMeshController
 {
   public:
-    myMeshController();
+    myMeshController(JsonObject& root);
 
-    static void autoSwitchRelays(const char* senderStatus);
+    void autoSwitchRelays(const char* senderStatus);
 
   private:
     static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];
+
+    char _action;
 };
 
 #endif
