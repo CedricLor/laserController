@@ -8,7 +8,29 @@ Created by Cedric Lor, January 22, 2019.
 
 myMeshController::myMeshController(JsonObject& root)
 {
-  _action = root["action"];
+  char _action = root["action"];
+  if (_action == 's') {           // action 's' for status of master box has changed
+    const char* cSenderStatus = root["senderStatus"];
+    Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
+    autoSwitchRelays(cSenderStatus);
+    return;
+  }
+  if (_action == 'm') {           // action 'm' for master node number
+
+    return;
+  }
+  if (_action == 'b') {           // action 'b' for blinking delay
+
+    return;
+  }
+  if (_action == 't') {           // action 't' for twin pairing
+
+    return;
+  }
+  if (_action == 'c') {           // action 'c' for cooperative pairing
+
+    return;
+  }
 }
 
 

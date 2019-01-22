@@ -138,12 +138,8 @@ void myMesh::_meshController(uint32_t senderNodeId, String &msg) {
     return;
   }
 
-  const char* cSenderStatus = root["senderStatus"];
-  Serial.printf("MESH CONTROLLER: meshController(...) %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
-
   // If the message is addressed to me, act depending on the sender status
   myMeshController mmc(root);
-  mmc.autoSwitchRelays(cSenderStatus);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

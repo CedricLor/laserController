@@ -18,7 +18,7 @@ class myMeshController
   private:
     static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];
 
-    char _action;
+    char _action[];
 };
 
 #endif

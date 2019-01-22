@@ -50,7 +50,7 @@ void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetStat
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
 // Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserPinsArray::switchAllRelays(LaserPin *LaserPins, const bool targetState) {
+void LaserPinsArray::manualSwitchAllRelays(LaserPin *LaserPins, const bool targetState) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].manualSwitchOneRelay(targetState);
   }
@@ -98,13 +98,13 @@ void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const uns
 short LaserPinsArray::_siAutoSwitchInterval = 60;
 
 bool LaserPinsArray::_tcbOaAutoSwitchAllRelays() {
-  switchAllRelays(LaserPins, LOW);
+  manualSwitchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
 void LaserPinsArray::_tcbOdAutoSwitchAllRelays() {
-  switchAllRelays(LaserPins, HIGH);
+  manualSwitchAllRelays(LaserPins, HIGH);
   inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 

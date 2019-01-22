@@ -23,7 +23,7 @@ class LaserPinsArray
     */
     static short highPinsParityDuringStartup;
 
-    static void switchAllRelays(LaserPin *LaserPins, const bool targetState);
+    static void manualSwitchAllRelays(LaserPin *LaserPins, const bool targetState);
 
     static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState);
 

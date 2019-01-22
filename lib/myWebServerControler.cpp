@@ -12,7 +12,7 @@ myWebServerControler::myWebServerControler()
 
 void myWebServerControler::webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
-    LaserPinsArray::switchAllRelays(LaserPins, targetState);
+    LaserPinsArray::manualSwitchAllRelays(LaserPins, targetState);
   } else {
     int val = _p2->value().toInt();
     LaserPins[val].manualSwitchOneRelay(targetState);
