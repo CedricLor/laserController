@@ -1,5 +1,5 @@
 /*
-  myMesh.h - Library web server controller related functions.
+  myMesh.h - Library to handle painlessMesh core related functions.
   Created by Cedric Lor, January 17, 2019.
 */
 

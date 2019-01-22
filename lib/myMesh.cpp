@@ -1,6 +1,6 @@
 /*
-  myMesh.cpp - Library to handle web server controller related functions.
-  Created by Cedric Lor, January 2, 2019.
+  myMesh.cpp - Library to handle painlessMesh core related functions.
+  Created by Cedric Lor, January 17, 2019.
 */
 
 /* Relies on the existence of:
