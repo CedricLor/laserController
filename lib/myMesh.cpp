@@ -29,11 +29,20 @@ const short myMesh::BOXES_I_PREFIX = 201; // this is the iNodeName of the node i
 // LOW, HIGH = reaction if master is on = LOW; reaction if master is off = HIGH;  // Opposed  (index 1): When the master box is on, turn me off AND when the master box is off, turn me on
 // HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off  (index 2): When the master box is on, turn me off AND when the master box is off, turn me off
 // LOW, LOW = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always on  (index 3): When the master box is on, turn me off AND when the master box is off, turn me off
-// !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update slaveReaction
+// !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update _slaveReaction
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const bool myMesh::B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
+// const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
+// const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
 
+// struct slaveReactionStruct {
+//   bool slaveReactionCore[2];
+//   char* slaveReactionJson;
+//   char* slaveReactionText;
+// };
+//
+// slaveReactionStruct slaveReactionStructsArray[4];
 
 const char myMesh::PREFIX_AP_SSID[5] = "box_";
 char myMesh::myApSsidBuf[8];
