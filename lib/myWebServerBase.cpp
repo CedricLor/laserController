@@ -52,7 +52,7 @@ void myWebServerBase::startAsyncServer() {
     listAllCollectedParams(request);
 
     // Decode request
-    myWebServerControler::decodeRequest(LaserPins, request);
+    myWebServerControler::decodeRequest(request);
     Serial.print(">>>>>>>>>>>>>>>>>>>>>>>>>> Just before instantiating myWebServerView");
 
     //Send a response

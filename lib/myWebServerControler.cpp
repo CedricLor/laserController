@@ -10,7 +10,7 @@ myWebServerControler::myWebServerControler()
 {
 }
 
-void myWebServerControler::_webSwitchRelays(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
+void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
     LaserPinsArray::manualSwitchAllRelays(LaserPins, targetState);
   } else {
@@ -19,7 +19,7 @@ void myWebServerControler::_webSwitchRelays(LaserPin *LaserPins, AsyncWebParamet
   }
 }
 
-void myWebServerControler::_webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWebParameter* _p2, bool targetState) {
+void myWebServerControler::_webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState) {
   if(_p2->value() == "a"){
     LaserPinsArray::inclExclAllRelaysInPir(LaserPins, targetState);
   } else {
@@ -28,7 +28,7 @@ void myWebServerControler::_webInclExclRelaysInPir(LaserPin *LaserPins, AsyncWeb
   }
 }
 
-void myWebServerControler::_webChangeBlinkingInterval(LaserPin *LaserPins, AsyncWebParameter* _p1, AsyncWebParameter* _p2) {
+void myWebServerControler::_webChangeBlinkingInterval(AsyncWebParameter* _p1, AsyncWebParameter* _p2) {
   // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingInterval %s\n", _p2->value().c_str());
   if (_p2->value() == "0") {
     Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
@@ -42,7 +42,7 @@ void myWebServerControler::_webChangeBlinkingInterval(LaserPin *LaserPins, Async
   }
 }
 
-void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequest *request) {
+void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
 
   if(request->hasParam("manualStatus")) {
@@ -50,9 +50,9 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     AsyncWebParameter* _p1 = request->getParam("manualStatus");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
-      _webSwitchRelays(LaserPins, _p2, LOW);
+      _webSwitchRelays(_p2, LOW);
     } else {
-      _webSwitchRelays(LaserPins, _p2, HIGH);
+      _webSwitchRelays(_p2, HIGH);
     }
     return;
   }
@@ -62,9 +62,9 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     AsyncWebParameter* _p1 = request->getParam("statusIr");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
-      _webInclExclRelaysInPir(LaserPins, _p2, HIGH);
+      _webInclExclRelaysInPir(_p2, HIGH);
     } else {
-      _webInclExclRelaysInPir(LaserPins, _p2, LOW);
+      _webInclExclRelaysInPir(_p2, LOW);
     }
     return;
   }
@@ -73,7 +73,7 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
     AsyncWebParameter* _p1 = request->getParam("blinkingInterval");
     AsyncWebParameter* _p2 = request->getParam("laser");
-    _webChangeBlinkingInterval(LaserPins, _p1, _p2);
+    _webChangeBlinkingInterval(_p1, _p2);
     return;
   }
 
@@ -90,7 +90,7 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"pinPairing\")");
     AsyncWebParameter* _p = request->getParam("pinPairing");
     // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
-    LaserPinsArray::pairUnpairAllPins(LaserPins, p->value().toInt());
+    LaserPinsArray::pairUnpairAllPins(LaserPins, _p->value().toInt());
     return;
   }
 }
