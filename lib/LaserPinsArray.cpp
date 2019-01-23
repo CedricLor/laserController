@@ -66,7 +66,7 @@ void LaserPinsArray::manualSwitchAllRelays(LaserPin *LaserPins, const bool targe
 // this function subjects or frees all the relays to or of the control of the PIR
 // Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
 void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState) {
-  if (targetPirState == HIGH) { pinGlobalModeWitness = 1 }                      // 1 for "IR waiting"
+  if (targetPirState == HIGH) { pinGlobalModeWitness = 1;}                      // 1 for "IR waiting"
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].pir_state = targetPirState;
   }
@@ -100,28 +100,30 @@ void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const uns
 
 //////////////////////////////////////////////////////////////////////////
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
-short LaserPinsArray::_siAutoSwitchInterval = 60;
+short LaserPinsArray::_siSlaveBoxCycleIterations = 60;
 
-bool LaserPinsArray::_tcbOeSlaveBoxSwitchAllRelays() {
+bool LaserPinsArray::_tcbOeSlaveBoxCycle() {
   pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
+  myMeshViews::statusMsg("on");
   manualSwitchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
-void LaserPinsArray::_tcbOdSlaveBoxSwitchAllRelays() {
+void LaserPinsArray::_tcbOdSlaveBoxCycle() {
+  myMeshViews::statusMsg("off");
   manualSwitchAllRelays(LaserPins, HIGH);
   inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
-Task LaserPinsArray::_tSlaveBoxSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOeSlaveBoxSwitchAllRelays, &_tcbOdSlaveBoxSwitchAllRelays );
+Task LaserPinsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
 
 void LaserPinsArray::slaveBoxSwitchAllRelays(const bool targetState) {
   if (targetState == LOW) {
-    _tSlaveBoxSwitchAllRelays.enable();
+    _tSlaveBoxCycle.enable();
     return;
   }
-  _tSlaveBoxSwitchAllRelays.disable();
+  _tSlaveBoxCycle.disable();
 }
 
 // void LaserPinsArray::autoSwitchOneRelay(const short thisPin, const bool targetState) {

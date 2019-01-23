@@ -19,13 +19,14 @@
 #include "../lib/MasterSlaveBox.h"
 #include "../lib/MasterSlaveBox.cpp"
 
+#include "../lib/myMeshViews.h"
+#include "../lib/myMeshViews.cpp"
+
 #include "../lib/LaserPinsArray.h"
 #include "../lib/LaserPinsArray.cpp"
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
 
-#include "../lib/myMeshViews.h"
-#include "../lib/myMeshViews.cpp"
 #include "../lib/myMesh.h"
 #include "../lib/myMesh.cpp"
 
