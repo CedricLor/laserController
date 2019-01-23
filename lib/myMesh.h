@@ -20,6 +20,9 @@ class myMesh
     static const char _PREFIX_AP_SSID[5];
     static char _myApSsidBuf[8];
 
+    static const char* STATION_SSID;
+    static const char* STATION_PASSWORD;
+
     static void receivedCallback( uint32_t from, String &msg);
     static void newConnectionCallback(uint32_t nodeId);
     static void changedConnectionCallback();

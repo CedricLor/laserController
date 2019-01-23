@@ -18,6 +18,9 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
+const char* myMesh::STATION_SSID = SSID;
+const char* myMesh::STATION_PASSWORD = SSID_PASSWORD;
+
 const char myMesh::_PREFIX_AP_SSID[5] = "box_";
 char myMesh::_myApSsidBuf[8];
 
@@ -30,7 +33,7 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
 
-  //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, STATION_PORT, station_ip);
+  laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
   if (MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
