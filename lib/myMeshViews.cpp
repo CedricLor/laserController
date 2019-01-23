@@ -48,10 +48,7 @@ String myMeshViews::_createMeshControllerStatusMessage(const char* myStatus) {
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
 
-  String str;
-  msg.printTo(str);
-  Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
-  return str;
+  return _createReturnString(msg);
 }
 
 String myMeshViews::_createReturnString(JsonObject& msg) {
