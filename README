@@ -51,10 +51,4 @@ TO DO:
   - the tasks defined in pirController and pirStartupController should be integrated with (i.e. enabled and disabled):
     - the auto mode defined in the LaserPin class
     - the manual mode defined in the LaserPin class
-  - the delays used in pirStartupController should be changed at pin level and not through this directPinsSwitch thing
-  - the LaserSafetyLoop should be redrafted to rely on Tasks and not on timers
-  - all this will help add new functionalities to the whole thing
-- LaserPin class:
-  - needs a good cleaning up;
-  - shall also be modularized;
-  
+- myMeshViews should be converted into a static class, the constructor should be incorporated into a helper function called at the beginning of each message compiler, the code would be better this way (shorter, currently, need to instantiate the class then make a call to the given message method)

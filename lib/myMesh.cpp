@@ -57,14 +57,10 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("New Connection, nodeId = %u\n", nodeId);
-  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  myMeshViews myMeshViews("na");
 }
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  myMeshViews myMeshViews("na");
 }
 
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {

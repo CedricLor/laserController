@@ -132,7 +132,8 @@ void pirController::broadcastPirStatus(const char* state) {     // state is "on"
                                                  // the Pir block calls this function with the "on" parameter. Alternatively,
                                                  //  when the the pir cycle stops, it calls this function with the "off" parameter.
   Serial.printf("PIR - broadcastPirStatus(): broadcasting status over Mesh via an instantion of myMeshViews(state) with state = %s\n", state);
-  myMeshViews myMeshViews(state);
+  myMeshViews myMeshViews();
+  myMeshViews.statusMsg(state);
 
   Serial.print("PIR - broadcastPirStatus(): ending.\n");
 }

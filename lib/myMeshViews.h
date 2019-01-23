@@ -13,17 +13,17 @@ class myMeshViews
 {
   public:
     myMeshViews(const char* state);
+    // Views
+    void manualSwitchMsg(const short targetOnOffState);
+    void inclusionIRMsg(const short targetIrState);
+    void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
+    void changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
+    void statusMsg(const char* myStatus);
+    void pinPairingMsg(const short sTargetPairingType);
+    void dataRequestMsg();
+    void dataRequestResponse();
 
   private:
-    // Views
-    void _manualSwitchMsg(const short targetOnOffState);
-    void _inclusionIRMsg(const short targetIrState);
-    void _blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
-    void _changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
-    void _statusMsg(const char* myStatus);
-    void _pinPairingMsg(const short sTargetPairingType);
-    void _dataRequestMsg();
-    void _dataRequestResponse();
 
     // Helpers
     void _broadcastMsg(JsonObject& msg);
