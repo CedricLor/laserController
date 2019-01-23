@@ -81,7 +81,7 @@ void myMeshViews::dataRequestMsg() {
 void myMeshViews::dataRequestResponse() {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"r";"response":{A DETERMINER}}
   JsonObject& msg = _createJsonobject('r');
-  // msg["senderStatus"] = myStatus;
+  // msg["response"] = {A DETERMINER};
   _broadcastMsg(msg);
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
