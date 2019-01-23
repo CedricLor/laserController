@@ -12,24 +12,24 @@
 class myMeshViews
 {
   public:
-    myMeshViews(const char* state);
+    myMeshViews();
     // Views
-    void manualSwitchMsg(const short targetOnOffState);
-    void inclusionIRMsg(const short targetIrState);
-    void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
-    void changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
-    void statusMsg(const char* myStatus);
-    void pinPairingMsg(const short sTargetPairingType);
-    void dataRequestMsg();
-    void dataRequestResponse();
+    static void manualSwitchMsg(const short targetOnOffState);
+    static void inclusionIRMsg(const short targetIrState);
+    static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
+    static void changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
+    static void statusMsg(const char* myStatus);
+    static void pinPairingMsg(const short sTargetPairingType);
+    static void dataRequestMsg();
+    static void dataRequestResponse();
 
   private:
 
     // Helpers
-    void _broadcastMsg(JsonObject& msg);
-    JsonObject& _createJsonobject(const char action);
+    static void _broadcastMsg(JsonObject& msg);
+    static JsonObject& _createJsonobject(const char action);
     static char _nodeNameBuf[4];
-    char* _nodeNameBuilder();
+    static char* _nodeNameBuilder();
 };
 
 #endif

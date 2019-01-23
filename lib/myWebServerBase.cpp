@@ -55,7 +55,8 @@ void myWebServerBase::startAsyncServer() {
     myWebServerControler::decodeRequest(request);
 
     //Send a response
-    myWebServerViews myWebServerView();
+    myWebServerViews myWebServerView;
+    Serial.print(">>>>>>>>>>>>>>>>>>>>>>>>>> Just after instantiating myWebServerView");
     AsyncResponseStream *response = request->beginResponseStream("text/html");  // define a response stream
     response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
     response->printf(myWebServerView.returnTheResponse().c_str());              // converts the arduino String in C string (array of chars)

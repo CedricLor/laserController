@@ -24,7 +24,6 @@
 
 myMeshViews::myMeshViews()
 {
-  Serial.printf("myMeshViews::myMeshViews(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
 }
 

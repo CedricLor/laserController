@@ -122,7 +122,7 @@ String myWebServerViews::printSlaveReactionSelect() {
   String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
   for (short i = 0; i < 4; i++) {
     String selected = "";
-    if (i == _iSlaveOnOffReaction) {
+    if (i == iSlaveOnOffReaction) {
       selected += "selected";
      };
     slaveReactionSelect += printOption(slaveReactionHtml[i], _slaveReaction[i], selected);
