@@ -6,9 +6,8 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-myWebServerViews::myWebServerViews(short iSlaveOnOffReaction)
+myWebServerViews::myWebServerViews()
 {
-  _iSlaveOnOffReaction = iSlaveOnOffReaction;
 }
 
 String myWebServerViews::returnTheResponse() {

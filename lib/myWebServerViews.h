@@ -11,11 +11,10 @@
 class myWebServerViews
 {
   public:
-    myWebServerViews(short iSlaveOnOffReaction);
+    myWebServerViews();
     String returnTheResponse();
 
   private:
-    short _iSlaveOnOffReaction;
     const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
     const char* _pairingType[3] = {"unpaired", "twin", "cooperative"};
 
