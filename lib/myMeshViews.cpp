@@ -25,10 +25,9 @@ myMeshViews::myMeshViews(const char* state)
 {
   Serial.printf("myMeshViews::myMeshViews(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-
-  String str = _createStatusMsg(state);
-  Serial.print("myMeshViews::myMeshViews(): about to call laserControllerMesh.sendBroadcast(str) with str = ");Serial.println(str);
-  laserControllerMesh.sendBroadcast(str);   // MESH SENDER
+  //String str = _createStatusMsg(state);
+  //Serial.print("myMeshViews::myMeshViews(): about to call laserControllerMesh.sendBroadcast(str) with str = ");Serial.println(str);
+  //laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,30 +36,27 @@ myMeshViews::myMeshViews(const char* state)
    It creates a String out of a Json message to be sent over the network.
    NOTE: This is weird. I had understood that painlessMesh was sending Json messages...
 */
-String myMeshViews::_createManualSwitchMsg(const char* myStatus) {
-  JsonObject& msg = _createJsonobject();
-
-}
+// String myMeshViews::_createManualSwitchMsg(const char* myStatus) {
+//   JsonObject& msg = _createJsonobject();
+//
+// }
 
 String myMeshViews::_createStatusMsg(const char* myStatus) {
-  JsonObject& msg = _createJsonobject();
-
-  msg["action"] = "s";              // action "s" means that this box is about to send a message about its status
+  JsonObject& msg = _createJsonobject('s');
   msg["senderStatus"] = myStatus;
-
   return _createReturnString(msg);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
-JsonObject& myMeshViews::_createJsonobject() {
+JsonObject& myMeshViews::_createJsonobject(const char action) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& msg = jsonBuffer.createObject();
 
   msg["senderNodeName"] = _nodeNameBuilder();
   msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
-
+  msg["action"] = action;
   return msg;
 }
 

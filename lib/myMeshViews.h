@@ -28,7 +28,7 @@ class myMeshViews
     // Helpers
     void _broadcastMsg();
     String _createReturnString(JsonObject& msg);
-    JsonObject& _createJsonobject();
+    JsonObject& _createJsonobject(const char action);
     static char _nodeNameBuf[4];
     char* _nodeNameBuilder();
 };
