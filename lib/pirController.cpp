@@ -35,7 +35,7 @@ void pirController::initPir() {
    1. add an onEnable and an onDisable callback to cleanup the LaserPins status
    2. Task tPirCntrl shall be disabled, if the box is in slave mode and when, in slave mode, it receive an order to enter into automatic mode
  */
-Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, NULL, NULL);
+Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, &tcbOnEnablePirCntrl, NULL);
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -48,6 +48,7 @@ short const pirController::INPUT_PIN = 23;               // choose the input pin
 bool pirController::valPir = LOW;                        // we start assuming no motion detected // variable to store the pin status
 
 
+// Tasks callback for Task tPirCntrl
 /* tcbPirCntrl():
     1. reads the status of the pin connected to the IR sensor;
     2. starts (or extends) a PIR cycle, if such pin (connected to the IR sensor) is HIGH,
@@ -55,6 +56,11 @@ bool pirController::valPir = LOW;                        // we start assuming no
 void pirController::tcbPirCntrl() {
   setPirValue();
   startOrRestartPirCycleIfPirValueIsHigh();
+}
+
+bool pirController::tcbOnEnablePirCntrl() {
+  LaserPinsArray::pinGlobalModeWitness = 1;  // 1 means "IR waiting"
+  return true;
 }
 
 // read input value from the pin connected to the IR.
@@ -97,6 +103,7 @@ Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userSc
 
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool pirController::tcbOnEnablePirCycle() {
+  if (LaserPinsArray::pinGlobalModeWitness = 1) {LaserPinsArray::pinGlobalModeWitness = 2};  // 1 means "IR cycle on"
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
   switchPirRelays(LaserPins, LOW);
   broadcastPirStatus("on");                                                                        // broadcast startup of a new pir Cycle
@@ -105,6 +112,7 @@ bool pirController::tcbOnEnablePirCycle() {
 }
 
 void pirController::tcbOnDisablePirCycle() {
+  if (LaserPinsArray::pinGlobalModeWitness = 2) {LaserPinsArray::pinGlobalModeWitness = 1};  // 1 means "IR cycle on"
   Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
   stopPirCycle();
 }

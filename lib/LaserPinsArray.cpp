@@ -11,6 +11,7 @@ LaserPinsArray::LaserPinsArray()
 {
 }
 
+short int LaserPinsArray::pinGlobalModeWitness;
 const char* LaserPinsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual with cycle on", "manual with cycle off"};
 
 short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
@@ -53,6 +54,7 @@ void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetStat
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
 // Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserPinsArray::manualSwitchAllRelays(LaserPin *LaserPins, const bool targetState) {
+  targetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].manualSwitchOneRelay(targetState);
   }
@@ -64,6 +66,7 @@ void LaserPinsArray::manualSwitchAllRelays(LaserPin *LaserPins, const bool targe
 // this function subjects or frees all the relays to or of the control of the PIR
 // Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
 void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState) {
+  if (targetPirState == HIGH) { pinGlobalModeWitness = 1 }                      // 1 for "IR waiting"
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].pir_state = targetPirState;
   }
@@ -99,25 +102,26 @@ void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const uns
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 short LaserPinsArray::_siAutoSwitchInterval = 60;
 
-bool LaserPinsArray::_tcbOaslaveBoxSwitchAllRelays() {
+bool LaserPinsArray::_tcbOeSlaveBoxSwitchAllRelays() {
+  pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
   manualSwitchAllRelays(LaserPins, LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
-void LaserPinsArray::_tcbOdslaveBoxSwitchAllRelays() {
+void LaserPinsArray::_tcbOdSlaveBoxSwitchAllRelays() {
   manualSwitchAllRelays(LaserPins, HIGH);
   inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
-Task LaserPinsArray::_tslaveBoxSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOaslaveBoxSwitchAllRelays, &_tcbOdslaveBoxSwitchAllRelays );
+Task LaserPinsArray::_tSlaveBoxSwitchAllRelays( 1000, _siAutoSwitchInterval, NULL, &userScheduler, false, &_tcbOeSlaveBoxSwitchAllRelays, &_tcbOdSlaveBoxSwitchAllRelays );
 
 void LaserPinsArray::slaveBoxSwitchAllRelays(const bool targetState) {
   if (targetState == LOW) {
-    _tslaveBoxSwitchAllRelays.enable();
+    _tSlaveBoxSwitchAllRelays.enable();
     return;
   }
-  _tslaveBoxSwitchAllRelays.disable();
+  _tSlaveBoxSwitchAllRelays.disable();
 }
 
 // void LaserPinsArray::autoSwitchOneRelay(const short thisPin, const bool targetState) {

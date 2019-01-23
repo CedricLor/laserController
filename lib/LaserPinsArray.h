@@ -37,9 +37,9 @@ class LaserPinsArray
   private:
 
     static short _siAutoSwitchInterval;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
-    static bool _tcbOaslaveBoxSwitchAllRelays();
-    static void _tcbOdslaveBoxSwitchAllRelays();
-    static Task _tslaveBoxSwitchAllRelays;
+    static bool _tcbOeSlaveBoxSwitchAllRelays();
+    static void _tcbOdSlaveBoxSwitchAllRelays();
+    static Task _tSlaveBoxSwitchAllRelays;
 };
 
 #endif

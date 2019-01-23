@@ -24,6 +24,7 @@ class pirController
     static bool valPir;
 
     static void tcbPirCntrl();
+    static bool tcbOnEnablePirCntrl();
 
     static void setPirValue();
     static void startOrRestartPirCycleIfPirValueIsHigh();
