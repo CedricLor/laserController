@@ -76,7 +76,7 @@ String myWebServerViews::printGlobalPinPairingWebCntrl() {
 }
 
 String myWebServerViews::printGlobalPinPairingSelect() {
-  String globalPinPairingSelect = "<select id=\"master-select\" name=\"masterBox\">";
+  String globalPinPairingSelect = "<select id=\"pin-pairing-select\" name=\"pinPairingSelect\">";
   for (short i = -1; i < 2; i++) {
     String selected = "";
     // if (/*condition to be defined*/) {
