@@ -28,10 +28,33 @@ myMeshViews::myMeshViews(const char* state)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void myMeshViews::_manualSwitchMsg(const bool targetOnOffState) {
+// Views (or messages)
+void myMeshViews::_manualSwitchMsg(const short targetOnOffState) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
   JsonObject& msg = _createJsonobject('u');
   msg["ts"] = targetOnOffState;
+  _broadcastMsg(msg);
+}
+
+void myMeshViews::_inclusionIRMsg(const short targetIrState) {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
+  JsonObject& msg = _createJsonobject('i');
+  msg["ts"] = targetIrState;
+  _broadcastMsg(msg);
+}
+
+void myMeshViews::_blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
+  JsonObject& msg = _createJsonobject('b');
+  msg["ti"] = targetBlinkingInterval;
+  _broadcastMsg(msg);
+}
+
+void myMeshViews::_changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction) {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  JsonObject& msg = _createJsonobject('m');
+  msg["ms"] = newMasterNodeId;
+  msg["react"] = newReaction;  
   _broadcastMsg(msg);
 }
 

@@ -16,10 +16,10 @@ class myMeshViews
 
   private:
     // Views
-    void _manualSwitchMsg(const bool targetOnOffState);
-    void _inclusionIRMsg(const char* myStatus);
-    void _blinkingIntervalMsg(const char* myStatus);
-    void _changeMasterBoxMsg(const char* myStatus);
+    void _manualSwitchMsg(const short targetOnOffState);
+    void _inclusionIRMsg(const short targetIrState);
+    void _blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
+    void _changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
     void _statusMsg(const char* myStatus);
     void _pinPairingMsg(const char* myStatus);
     void _dataRequestMsg(const char* myStatus);
