@@ -23,7 +23,6 @@ extern const short BOXES_COUNT;                                                 
 extern const bool MESH_ROOT;                                                      // BOX BY BOX
 
 extern const short I_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
-extern const short I_NODE_NUMBER_PREFIX;                                          // this is the iNodeName of the node in the mesh, that has the lowest iNodeName of the network // NETWORK BY NETWORK
 
 extern short iSlaveOnOffReaction;
 extern short iMasterNodeName;
