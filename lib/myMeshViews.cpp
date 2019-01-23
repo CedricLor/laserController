@@ -57,8 +57,8 @@ JsonObject& myMeshViews::_createJsonobject(const char action) {
 void myMeshViews::_broadcastMsg(JsonObject& msg) {
   String str;
   msg.printTo(str);
-  Serial.print("MESH: _createReturnString(...) done. Returning String: ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);
+  Serial.print("MESH: _broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
 }
 
 char myMeshViews::_nodeNameBuf[4];
