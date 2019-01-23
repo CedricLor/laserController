@@ -7,8 +7,6 @@
 #define myWebServerViews_h
 
 #include "Arduino.h"
-#include "LaserPin.h"
-#include "ControlerBox.h"
 
 class myWebServerViews
 {
