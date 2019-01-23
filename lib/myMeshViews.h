@@ -17,7 +17,8 @@ class myMeshViews
   private:
     static char _nodeNameBuf[4];
 
-    String _createMeshMessage(const char* myStatus);
+    String _createMeshControllerStatusMessage(const char* myStatus);
+    String _createReturnString(JsonObject& msg);
 
     char* _nodeNameBuilder();
 };

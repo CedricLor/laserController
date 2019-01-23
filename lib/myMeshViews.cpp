@@ -25,7 +25,7 @@ myMeshViews::myMeshViews(const char* state)
 {
   Serial.printf("myMeshViews::myMeshViews(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  String str = _createMeshMessage(state);
+  String str = _createMeshControllerStatusMessage(state);
   Serial.print("myMeshViews::myMeshViews(): about to call laserControllerMesh.sendBroadcast(str) with str = ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
@@ -36,7 +36,7 @@ myMeshViews::myMeshViews(const char* state)
    It creates a String out of a Json message to be sent over the network.
    NOTE: This is weird. I had understood that painlessMesh was sending Json messages...
 */
-String myMeshViews::_createMeshMessage(const char* myStatus) {
+String myMeshViews::_createMeshControllerStatusMessage(const char* myStatus) {
   Serial.printf("MESH: _createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
 
   DynamicJsonBuffer jsonBuffer;
@@ -48,6 +48,13 @@ String myMeshViews::_createMeshMessage(const char* myStatus) {
   msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
 
+  String str;
+  msg.printTo(str);
+  Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
+  return str;
+}
+
+String myMeshViews::_createReturnString(JsonObject& msg) {
   String str;
   msg.printTo(str);
   Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
