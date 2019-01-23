@@ -54,16 +54,36 @@ void myMeshViews::_changeMasterBoxMsg(const int newMasterNodeId, const char* new
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
   JsonObject& msg = _createJsonobject('m');
   msg["ms"] = newMasterNodeId;
-  msg["react"] = newReaction;  
+  msg["react"] = newReaction;
   _broadcastMsg(msg);
 }
 
 void myMeshViews::_statusMsg(const char* myStatus) {
+  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
   JsonObject& msg = _createJsonobject('s');
   msg["senderStatus"] = myStatus;
   _broadcastMsg(msg);
 }
 
+void myMeshViews::_pinPairingMsg(const short sTargetPairingType) {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"p";"pt":"0"}
+  JsonObject& msg = _createJsonobject('p');
+  msg["senderStatus"] = sTargetPairingType;
+  _broadcastMsg(msg);
+}
+
+void myMeshViews::_dataRequestMsg() {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"d"}
+  JsonObject& msg = _createJsonobject('d');
+  _broadcastMsg(msg);
+}
+
+void myMeshViews::_dataRequestResponse() {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"r";"response":{A DETERMINER}}
+  JsonObject& msg = _createJsonobject('r');
+  // msg["senderStatus"] = myStatus;
+  _broadcastMsg(msg);
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 JsonObject& myMeshViews::_createJsonobject(const char action) {

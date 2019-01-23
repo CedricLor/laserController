@@ -21,9 +21,9 @@ class myMeshViews
     void _blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
     void _changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
     void _statusMsg(const char* myStatus);
-    void _pinPairingMsg(const char* myStatus);
-    void _dataRequestMsg(const char* myStatus);
-    void _dataRequestResponse(const char* myStatus);
+    void _pinPairingMsg(const short sTargetPairingType);
+    void _dataRequestMsg();
+    void _dataRequestResponse();
 
     // Helpers
     void _broadcastMsg(JsonObject& msg);
