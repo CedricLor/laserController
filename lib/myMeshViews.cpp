@@ -25,26 +25,20 @@ myMeshViews::myMeshViews(const char* state)
 {
   Serial.printf("myMeshViews::myMeshViews(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  //String str = _createStatusMsg(state);
-  //Serial.print("myMeshViews::myMeshViews(): about to call laserControllerMesh.sendBroadcast(str) with str = ");Serial.println(str);
-  //laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// String _createStatusMessage(const char* myStatus);
-/* _createMeshMessage is the helper function that creates the String to be passed to the sendBroadcast method of painlessMesh.
-   It creates a String out of a Json message to be sent over the network.
-   NOTE: This is weird. I had understood that painlessMesh was sending Json messages...
-*/
-// String myMeshViews::_createManualSwitchMsg(const char* myStatus) {
-//   JsonObject& msg = _createJsonobject();
-//
-// }
+void myMeshViews::_manualSwitchMsg(const bool targetOnOffState) {
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
+  JsonObject& msg = _createJsonobject('u');
+  msg["ts"] = targetOnOffState;
+  _broadcastMsg(msg);
+}
 
-String myMeshViews::_createStatusMsg(const char* myStatus) {
+void myMeshViews::_statusMsg(const char* myStatus) {
   JsonObject& msg = _createJsonobject('s');
   msg["senderStatus"] = myStatus;
-  return _createReturnString(msg);
+  _broadcastMsg(msg);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,11 +54,11 @@ JsonObject& myMeshViews::_createJsonobject(const char action) {
   return msg;
 }
 
-String myMeshViews::_createReturnString(JsonObject& msg) {
+void myMeshViews::_broadcastMsg(JsonObject& msg) {
   String str;
   msg.printTo(str);
   Serial.print("MESH: _createReturnString(...) done. Returning String: ");Serial.println(str);
-  return str;
+  laserControllerMesh.sendBroadcast(str);
 }
 
 char myMeshViews::_nodeNameBuf[4];

@@ -16,18 +16,17 @@ class myMeshViews
 
   private:
     // Views
-    String _createManualSwitchMsg(const char* myStatus);
-    String _createInclusionIRMsg(const char* myStatus);
-    String _createBlinkingIntervalMsg(const char* myStatus);
-    String _createChangeMasterBoxMsg(const char* myStatus);
-    String _createStatusMsg(const char* myStatus);
-    String _createPinPairingMsg(const char* myStatus);
-    String _createDataRequestMsg(const char* myStatus);
-    String _createDataRequestResponse(const char* myStatus);
+    void _manualSwitchMsg(const bool targetOnOffState);
+    void _inclusionIRMsg(const char* myStatus);
+    void _blinkingIntervalMsg(const char* myStatus);
+    void _changeMasterBoxMsg(const char* myStatus);
+    void _statusMsg(const char* myStatus);
+    void _pinPairingMsg(const char* myStatus);
+    void _dataRequestMsg(const char* myStatus);
+    void _dataRequestResponse(const char* myStatus);
 
     // Helpers
-    void _broadcastMsg();
-    String _createReturnString(JsonObject& msg);
+    void _broadcastMsg(JsonObject& msg);
     JsonObject& _createJsonobject(const char action);
     static char _nodeNameBuf[4];
     char* _nodeNameBuilder();
