@@ -12,12 +12,21 @@ ControlerBox::ControlerBox()
   // _pin = pin;
 }
 
-void ControlerBox::ControlerBox::updateProperties() {
-  APIP = laserControllerMesh.getAPIP();      // store this boxes APIP in the array of boxes pertaining to the mesh
-  stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  nodeId = laserControllerMesh.getNodeId();  // store this boxes nodeId in the array of boxes pertaining to the mesh
+void ControlerBox::updateProperties() {
+  // nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
+  // APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
+  // stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
 }
 
+void ControlerBox::ControlerBox::updateThisBoxProperties() {
+  nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
+  APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
+  stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
+  iNodeName = I_NODE_NAME;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
 IPAddress ControlerBox::_parseIpString(JsonObject& root, String rootKey) {
   const char* ipStr = root[rootKey];
   byte ip[4];

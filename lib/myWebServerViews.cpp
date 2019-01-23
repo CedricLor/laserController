@@ -17,7 +17,7 @@ String myWebServerViews::returnTheResponse() {
   myResponse += "<h1>";
   myResponse += String(I_NODE_NAME);
   myResponse += "  ";
-  myResponse += (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
+  myResponse += (ControlerBoxes[0].APIP).toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -29,19 +29,20 @@ String myWebServerViews::returnTheResponse() {
 
 String myWebServerViews::printLinksToBoxes() {
   String linksToBoxes = "<div class=\"box_links_wrapper\">";
-  IPAddress testIp(0,0,0,0);
-  for (short i = 0; i < 10; i++) {
-    if (!(ControlerBoxes[i].stationIP == testIp)) {
-      linksToBoxes += "<div class=\"box_link_wrapper\">Station IP: ";
+  // IPAddress testIp(0,0,0,0);
+  for (short i = 0; i < BOXES_COUNT; i++) {
+    if (!(ControlerBoxes[i].iNodeName == I_NODE_NAME)) {
+      linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
+      linksToBoxes += String((ControlerBoxes[i].iNodeName));
       linksToBoxes += "<a href=\"http://";
       linksToBoxes += (ControlerBoxes[i].stationIP).toString();
-      linksToBoxes +=  "/\">Box number: ";
-      linksToBoxes += i + 1;
+      linksToBoxes +=  "/\">Station IP: ";
+      linksToBoxes += (ControlerBoxes[i].stationIP).toString();
       linksToBoxes += "</a> APIP: ";
       linksToBoxes += "<a href=\"http://";
       linksToBoxes += (ControlerBoxes[i].APIP).toString();
-      linksToBoxes +=  "/\">Box number: ";
-      linksToBoxes += i + 1;
+      linksToBoxes +=  "/\">Access Point IP: ";
+      linksToBoxes += (ControlerBoxes[i].APIP).toString();
       linksToBoxes += "</a>";
       linksToBoxes += "</div>";
     }

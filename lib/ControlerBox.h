@@ -14,9 +14,14 @@ class ControlerBox
     uint32_t nodeId;
     IPAddress stationIP;
     IPAddress APIP;
+    short int iNodeName;
 
     void updateProperties();
+    void updateThisBoxProperties();
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
+
+    static short int thisNodeIndexNumber;
+
   private:
     static IPAddress _parseIpString(JsonObject& root, String rootKey);
     static void _parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);

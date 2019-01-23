@@ -24,7 +24,7 @@
 
 myMeshViews::myMeshViews()
 {
-  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
+  ControlerBoxes[0].updateThisBoxProperties();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,8 +91,8 @@ JsonObject& myMeshViews::_createJsonobject(const char action) {
   JsonObject& msg = jsonBuffer.createObject();
 
   msg["senderNodeName"] = _nodeNameBuilder();
-  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
+  msg["senderAPIP"] = (ControlerBoxes[0].APIP).toString();
+  msg["senderStationIP"] = (ControlerBoxes[0].stationIP).toString();
   msg["action"] = action;
   return msg;
 }

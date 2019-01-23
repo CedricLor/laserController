@@ -39,7 +39,7 @@ void myMesh::meshSetup() {
     laserControllerMesh.setContainsRoot(true);
   }
 
-  ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
+  ControlerBoxes[0].updateThisBoxProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
