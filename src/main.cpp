@@ -60,7 +60,9 @@ void setup() {
   LaserPinsArray::initLaserPins(LaserPins);
   pirController::initPir();
   myMesh::meshSetup();
-  myWebServerBase::startAsyncServer();
+  if (IS_INTERFACE == true) {
+    myWebServerBase::startAsyncServer();    
+  }
   Myota::OTAConfig();
   enableTasks();
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");

@@ -16,8 +16,10 @@ String myWebServerViews::returnTheResponse() {
   myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   myResponse += "<h1>";
   myResponse += String(I_NODE_NAME);
-  myResponse += "  ";
+  myResponse += " - ";
   myResponse += (ControlerBoxes[0].APIP).toString();
+  myResponse += " - ";
+  myResponse += (laserControllerMesh.getStationIP()).toString();
   myResponse += "</h1>";
   myResponse += printAllLasersCntrl();
   myResponse += printIndivLaserCntrls();
@@ -31,14 +33,15 @@ String myWebServerViews::printLinksToBoxes() {
   String linksToBoxes = "<div class=\"box_links_wrapper\">";
   // IPAddress testIp(0,0,0,0);
   for (short i = 0; i < BOXES_COUNT; i++) {
-    if (!(ControlerBoxes[i].iNodeName == I_NODE_NAME)) {
+    if (ControlerBoxes[i].iNodeName) {
       linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
       linksToBoxes += String((ControlerBoxes[i].iNodeName));
+      linksToBoxes += " - Station IP: ";
       linksToBoxes += "<a href=\"http://";
       linksToBoxes += (ControlerBoxes[i].stationIP).toString();
-      linksToBoxes +=  "/\">Station IP: ";
+      linksToBoxes +=  "/\">";
       linksToBoxes += (ControlerBoxes[i].stationIP).toString();
-      linksToBoxes += "</a> APIP: ";
+      linksToBoxes += " - APIP: </a>";
       linksToBoxes += "<a href=\"http://";
       linksToBoxes += (ControlerBoxes[i].APIP).toString();
       linksToBoxes +=  "/\">Access Point IP: ";
