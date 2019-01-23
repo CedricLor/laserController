@@ -85,4 +85,12 @@ void myWebServerControler::decodeRequest(LaserPin *LaserPins, AsyncWebServerRequ
     MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(_p1->value().toInt(), _p2->value().c_str());
     return;
   }
+
+  if(request->hasParam("pinPairing")) {
+    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"pinPairing\")");
+    AsyncWebParameter* _p = request->getParam("pinPairing");
+    // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
+    LaserPinsArray::pairUnpairAllPins(LaserPins, p->value().toInt());
+    return;
+  }
 }
