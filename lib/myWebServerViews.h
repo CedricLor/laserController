@@ -11,7 +11,7 @@
 class myWebServerViews
 {
   public:
-    myWebServerViews(short iSlaveOnOffReaction);
+    myWebServerViews();
     String returnTheResponse();
 
   private:
