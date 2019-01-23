@@ -19,9 +19,12 @@ class myWebServerViews
   private:
     short _iSlaveOnOffReaction;
     const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
+    const char* _pairingType[3] = {"unpaired", "twin", "cooperative"};
 
     String printLinksToBoxes();
     String printAllLasersCntrl();
+    String printGlobalPinPairingWebCntrl();
+    String printGlobalPinPairingSelect();
     String printMasterCntrl();
     String printMasterSelect();
     String printSlaveReactionSelect();

@@ -55,12 +55,39 @@ String myWebServerViews::printAllLasersCntrl() {
   String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
   laserCntrls += printBlinkingIntervalWebCntrl(-1);
+  laserCntrls += printGlobalPinPairingWebCntrl();
   laserCntrls += "</div>";
   laserCntrls += "<div>";
   laserCntrls += printMasterCntrl();
   laserCntrls += "</div>";
   laserCntrls += "<hr>";
   return laserCntrls;
+}
+
+String myWebServerViews::printGlobalPinPairingWebCntrl() {
+  String globalPinPairingWebCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
+  globalPinPairingWebCntrl += printLabel("Pairing: ", "pairing-select");
+  globalPinPairingWebCntrl += printGlobalPinPairingSelect();
+
+  globalPinPairingWebCntrl += "<button type=\"submit\">Submit</button>";
+  globalPinPairingWebCntrl += "</form>";
+
+  return globalPinPairingWebCntrl;
+}
+
+String myWebServerViews::printGlobalPinPairingSelect() {
+  String globalPinPairingSelect = "<select id=\"master-select\" name=\"masterBox\">";
+  for (short i = -1; i < 2; i++) {
+    String selected = "";
+    // if (/*condition to be defined*/) {
+    //   selected += "selected";
+    // };
+    // if (/*condition to be defined*/) {
+      globalPinPairingSelect += printOption(String(i), _pairingType[i + 1], selected);
+    // }
+  }
+  globalPinPairingSelect += "</select>";
+  return globalPinPairingSelect;
 }
 
 String myWebServerViews::printMasterCntrl() {
