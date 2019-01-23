@@ -15,11 +15,21 @@ class myMeshViews
     myMeshViews(const char* state);
 
   private:
-    static char _nodeNameBuf[4];
+    // Views
+    String _createManualSwitchMsg(const char* myStatus);
+    String _createInclusionIRMsg(const char* myStatus);
+    String _createBlinkingIntervalMsg(const char* myStatus);
+    String _createChangeMasterBoxMsg(const char* myStatus);
+    String _createStatusMsg(const char* myStatus);
+    String _createPinPairingMsg(const char* myStatus);
+    String _createDataRequestMsg(const char* myStatus);
+    String _createDataRequestResponse(const char* myStatus);
 
-    String _createMeshControllerStatusMessage(const char* myStatus);
+    // Helpers
+    void _broadcastMsg();
     String _createReturnString(JsonObject& msg);
-
+    JsonObject& _createJsonobject();
+    static char _nodeNameBuf[4];
     char* _nodeNameBuilder();
 };
 

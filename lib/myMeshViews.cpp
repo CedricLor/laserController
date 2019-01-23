@@ -25,41 +25,52 @@ myMeshViews::myMeshViews(const char* state)
 {
   Serial.printf("myMeshViews::myMeshViews(const char* state): starting with state = %s\n", state);
   ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].updateProperties();
-  String str = _createMeshControllerStatusMessage(state);
+
+  String str = _createStatusMsg(state);
   Serial.print("myMeshViews::myMeshViews(): about to call laserControllerMesh.sendBroadcast(str) with str = ");Serial.println(str);
   laserControllerMesh.sendBroadcast(str);   // MESH SENDER
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// String _createMeshMessage(const char* myStatus);
+// String _createStatusMessage(const char* myStatus);
 /* _createMeshMessage is the helper function that creates the String to be passed to the sendBroadcast method of painlessMesh.
    It creates a String out of a Json message to be sent over the network.
    NOTE: This is weird. I had understood that painlessMesh was sending Json messages...
 */
-String myMeshViews::_createMeshControllerStatusMessage(const char* myStatus) {
-  Serial.printf("MESH: _createMeshMessage(const char* myStatus) starting with myStatus = %s\n", myStatus);
+String myMeshViews::_createManualSwitchMsg(const char* myStatus) {
+  JsonObject& msg = _createJsonobject();
 
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject& msg = jsonBuffer.createObject();
+}
+
+String myMeshViews::_createStatusMsg(const char* myStatus) {
+  JsonObject& msg = _createJsonobject();
 
   msg["action"] = "s";              // action "s" means that this box is about to send a message about its status
-  msg["senderNodeName"] = _nodeNameBuilder();
-  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
   msg["senderStatus"] = myStatus;
 
   return _createReturnString(msg);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper functions
+JsonObject& myMeshViews::_createJsonobject() {
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject& msg = jsonBuffer.createObject();
+
+  msg["senderNodeName"] = _nodeNameBuilder();
+  msg["senderAPIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].APIP).toString();
+  msg["senderStationIP"] = (ControlerBoxes[I_NODE_NAME - I_NODE_NUMBER_PREFIX].stationIP).toString();
+
+  return msg;
+}
+
 String myMeshViews::_createReturnString(JsonObject& msg) {
   String str;
   msg.printTo(str);
-  Serial.print("MESH: CreateMeshJsonMessage(...) done. Returning String: ");Serial.println(str);
+  Serial.print("MESH: _createReturnString(...) done. Returning String: ");Serial.println(str);
   return str;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Helper functions
 char myMeshViews::_nodeNameBuf[4];
 
 char* myMeshViews::_nodeNameBuilder() {
