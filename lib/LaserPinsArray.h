@@ -17,22 +17,22 @@ class LaserPinsArray
 
     static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
 
-    /* variable to store which of the odd or even pins controlling the lasers are high during the pirStartUp delay.
-                0 = even pins are [high] and odds are [low];
-                1 = odd pins are [low] and evens are [high];
-    */
-    static short highPinsParityDuringStartup;
+    static short int highPinsParityDuringStartup;
 
     static void manualSwitchAllRelays(LaserPin *LaserPins, const bool targetState);
 
     static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState);
 
-    static short pinParityWitness;
+    static short int pinParityWitness;
     static void pairUnpairAllPins(LaserPin *LaserPins, const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     static void changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval);
 
     static void slaveBoxSwitchAllRelays(const bool targetState);
+
+    static short int pinGlobalModeWitness;   // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off
+    static const char* PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6];
+    static char* pinGlobalMode;
 
   private:
 
