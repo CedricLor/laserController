@@ -57,11 +57,11 @@ void setup() {
   delay(2000);
   serialInit();
   mySavedPrefs::loadPreferences();
-  LaserPinsArray::initLaserPins(LaserPins);
+  LaserPinsArray::initLaserPins();
   pirController::initPir();
   myMesh::meshSetup();
   if (IS_INTERFACE == true) {
-    myWebServerBase::startAsyncServer();    
+    myWebServerBase::startAsyncServer();
   }
   Myota::OTAConfig();
   enableTasks();
@@ -72,7 +72,7 @@ void loop() {
   ArduinoOTA.handle();
   userScheduler.execute();   // it will run mesh scheduler as well
   laserControllerMesh.update();
-  laserSafetyLoop::loop(LaserPins);
+  laserSafetyLoop::loop();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

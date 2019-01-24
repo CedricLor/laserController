@@ -24,7 +24,7 @@ short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS ARRAY
 // Called from main.cpp exclusively
-void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
+void LaserPinsArray::initLaserPins() {
   Serial.print("SETUP: initLaserPins(): starting\n");
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
@@ -42,7 +42,7 @@ void LaserPinsArray::initLaserPins(LaserPin *LaserPins) {
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
 // Called from pirStartupController exclusively
-void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+void LaserPinsArray::directPinsSwitch(const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     LaserPins[thisPin].switchOnOffVariables(targetState);
   }
@@ -53,7 +53,7 @@ void LaserPinsArray::directPinsSwitch(LaserPin *LaserPins, const bool targetStat
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
 // Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserPinsArray::manualSwitchAllRelays(LaserPin *LaserPins, const bool targetState) {
+void LaserPinsArray::manualSwitchAllRelays(const bool targetState) {
   targetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].manualSwitchOneRelay(targetState);
@@ -65,7 +65,7 @@ void LaserPinsArray::manualSwitchAllRelays(LaserPin *LaserPins, const bool targe
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
 // Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState) {
+void LaserPinsArray::inclExclAllRelaysInPir(const bool targetPirState) {
   if (targetPirState == HIGH) { pinGlobalModeWitness = 1;}                      // 1 for "IR waiting"
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].pir_state = targetPirState;
@@ -76,7 +76,7 @@ void LaserPinsArray::inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targ
 // PAIRING SWITCHES: Pairing and unpairing of pins
 // Called exclusively from pirStartupController
 // Loops around all the pins and pairs or unpairs them
-void LaserPinsArray::pairUnpairAllPins(LaserPin *LaserPins, const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
+void LaserPinsArray::pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].pairUnpairPin(pinParityWitness, pairingType);
@@ -90,7 +90,7 @@ void LaserPinsArray::pairUnpairAllPins(LaserPin *LaserPins, const short pairingT
 // BLINKING DELAY Control
 // Changes the blinking delay of each pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController
-void LaserPinsArray::changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval) {
+void LaserPinsArray::changeGlobalBlinkingInterval(const unsigned long targetBlinkingInterval) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].changeIndividualBlinkingInterval(targetBlinkingInterval);
     pinBlinkingInterval = targetBlinkingInterval;
@@ -105,15 +105,15 @@ short LaserPinsArray::_siSlaveBoxCycleIterations = 60;
 bool LaserPinsArray::_tcbOeSlaveBoxCycle() {
   pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
   myMeshViews::statusMsg("on");
-  manualSwitchAllRelays(LaserPins, LOW);
+  manualSwitchAllRelays(LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
 void LaserPinsArray::_tcbOdSlaveBoxCycle() {
   myMeshViews::statusMsg("off");
-  manualSwitchAllRelays(LaserPins, HIGH);
-  inclExclAllRelaysInPir(LaserPins, HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+  manualSwitchAllRelays(HIGH);
+  inclExclAllRelaysInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
 Task LaserPinsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );

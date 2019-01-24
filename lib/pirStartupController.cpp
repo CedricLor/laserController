@@ -46,10 +46,10 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
-    LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
+    LaserPinsArray::directPinsSwitch(HIGH);
     LaserPinsArray::highPinsParityDuringStartup = (LaserPinsArray::highPinsParityDuringStartup == 0) ? 1 : 0;
   }
-  LaserPinsArray::directPinsSwitch(LaserPins, LOW);
+  LaserPinsArray::directPinsSwitch(LOW);
   tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
     tLaserOff.restartDelayed(1000);
@@ -59,14 +59,14 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
 
 bool pirStartupController::onEnablePirStartUpDelayBlinkLaser() {
   LaserPinsArray::pinGlobalModeWitness = 0;  // 0 means "in pirStartup cycle"
-  LaserPinsArray::pairUnpairAllPins(LaserPins, -1 /*unpair all the pins*/);
+  LaserPinsArray::pairUnpairAllPins(-1 /*unpair all the pins*/);
   return true;
 }
 
 void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
-  LaserPinsArray::pairUnpairAllPins(LaserPins, 1 /*pair the pins in cooperative pairing*/);
-  LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
-  LaserPinsArray::inclExclAllRelaysInPir(LaserPins, HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
+  LaserPinsArray::pairUnpairAllPins(1 /*pair the pins in cooperative pairing*/);
+  LaserPinsArray::directPinsSwitch(HIGH);
+  LaserPinsArray::inclExclAllRelaysInPir(HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: includes all the relays in PIR mode
   pirController::tPirCntrl.enable();
 }
 
@@ -77,9 +77,9 @@ Task pirStartupController::tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 Task pirStartupController::tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 
 void pirStartupController::cbtLaserOff() {
-  LaserPinsArray::directPinsSwitch(LaserPins, HIGH);
+  LaserPinsArray::directPinsSwitch(HIGH);
 }
 
 void pirStartupController::cbtLaserOn() {
-  LaserPinsArray::directPinsSwitch(LaserPins, LOW);
+  LaserPinsArray::directPinsSwitch(LOW);
 }

@@ -13,15 +13,15 @@ class laserSafetyLoop
   public:
     laserSafetyLoop();
 
-    static void loop(LaserPin *LaserPins);
+    static void loop();
 
   private:
     static void _blinkLaserIfBlinking(LaserPin &LaserPin);
     static void _blinkLaserIfTimeIsDue(LaserPin &LaserPin);
 
-    static void _ifMasterPairedThenUpdateOnOffOfSlave(LaserPin *LaserPins, const int thisPin);
-    static void _updatePairedSlaveWrapper(LaserPin *LaserPins, const int thisPin);
-    static void _updatePairedSlave(LaserPin *LaserPins, const int thisPin, const bool nextPinOnOffTarget);
+    static void _ifMasterPairedThenUpdateOnOffOfSlave(const int thisPin);
+    static void _updatePairedSlaveWrapper(const int thisPin);
+    static void _updatePairedSlave(const int thisPin, const bool nextPinOnOffTarget);
 };
 
 #endif

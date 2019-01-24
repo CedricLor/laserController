@@ -13,20 +13,20 @@ class LaserPinsArray
   public:
     LaserPinsArray();
 
-    static void initLaserPins(LaserPin *LaserPins);
+    static void initLaserPins();
 
-    static void directPinsSwitch(LaserPin *LaserPins, const bool targetState);
+    static void directPinsSwitch(const bool targetState);
 
     static short int highPinsParityDuringStartup;
 
-    static void manualSwitchAllRelays(LaserPin *LaserPins, const bool targetState);
+    static void manualSwitchAllRelays(const bool targetState);
 
-    static void inclExclAllRelaysInPir(LaserPin *LaserPins, const bool targetPirState);
+    static void inclExclAllRelaysInPir(const bool targetPirState);
 
     static short int pinParityWitness;
-    static void pairUnpairAllPins(LaserPin *LaserPins, const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
+    static void pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
-    static void changeGlobalBlinkingInterval(LaserPin *LaserPins, const unsigned long targetBlinkingInterval);
+    static void changeGlobalBlinkingInterval(const unsigned long targetBlinkingInterval);
 
     static void slaveBoxSwitchAllRelays(const bool targetState);
 

@@ -64,7 +64,7 @@ void myMeshController::_manualSwitch(JsonObject& root) {
   short iTargetState;
   const char* sTargetState = root["ts"];
   iTargetState = atoi(sTargetState);
-  LaserPinsArray::manualSwitchAllRelays(LaserPins, iTargetState /*0 for LOW = on; 1 for HIGH= off*/);
+  LaserPinsArray::manualSwitchAllRelays(iTargetState /*0 for LOW = on; 1 for HIGH= off*/);
 }
 
 void myMeshController::_changeInclusionIR(JsonObject& root) {
@@ -72,7 +72,7 @@ void myMeshController::_changeInclusionIR(JsonObject& root) {
   short iTargetState;
   const char* sTargetState = root["ts"];
   iTargetState = atoi(sTargetState);
-  LaserPinsArray::inclExclAllRelaysInPir(LaserPins, iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
+  LaserPinsArray::inclExclAllRelaysInPir(iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
 void myMeshController::_changeBlinkingInterval(JsonObject& root) {
@@ -80,7 +80,7 @@ void myMeshController::_changeBlinkingInterval(JsonObject& root) {
   unsigned long iTargetBlinkingInterval;
   const char* sTargetBlinkingInterval = root["ti"];
   iTargetBlinkingInterval = atoi(sTargetBlinkingInterval);
-  LaserPinsArray::changeGlobalBlinkingInterval(LaserPins, iTargetBlinkingInterval);
+  LaserPinsArray::changeGlobalBlinkingInterval(iTargetBlinkingInterval);
 }
 
 void myMeshController::_changeMasterBox(JsonObject& root) {
@@ -140,7 +140,7 @@ void myMeshController::_pinPairing(JsonObject& root) {
   short iTargetPairingType;
   const char* sTargetPairingType = root["ts"];
   iTargetPairingType = atoi(sTargetPairingType);
-  LaserPinsArray::pairUnpairAllPins(LaserPins, iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
+  LaserPinsArray::pairUnpairAllPins(iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 }
 
 void myMeshController::_dataRequest() {

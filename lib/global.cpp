@@ -20,7 +20,7 @@ const short I_DEFAULT_MASTER_NODE_NAME = 201;
 const short I_DEFAULT_INTERFACE_NODE_NAME = 001;
 const short I_NODE_NAME = 202;                          // BOX BY BOX
 const short IS_INTERFACE = true;                        // BOX BY BOX -- false or true
-const short IS_STATION_MANUAL = false;                          // BOX BY BOX
+const short IS_STATION_MANUAL = false;                  // BOX BY BOX
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 

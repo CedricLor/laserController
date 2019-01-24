@@ -38,7 +38,7 @@ class pirController
 
     static void stopPirCycle();
 
-    static void switchPirRelays(LaserPin *LaserPins, const bool state);
+    static void switchPirRelays(const bool state);
 
     static void broadcastPirStatus(const char* state);
 };
