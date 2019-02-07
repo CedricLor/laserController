@@ -42,8 +42,6 @@ class LaserGroupedUnit
 
     void blinkLaserInBlinkingCycle();
 
-    void laserProtectionSwitch();
-
   private:
     static bool const _default_laser_group_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
     static bool const _default_laser_group_on_off_target_state; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP

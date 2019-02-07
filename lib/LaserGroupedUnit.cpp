@@ -159,25 +159,3 @@ void LaserGroupedUnit::blinkLaserInBlinkingCycle() {
     }
   }
 }
-
-
-// Laser Protection Switch
-// Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
-void LaserGroupedUnit::laserProtectionSwitch() {
-  const unsigned long currentTime = millis();
-  // OLD DRAFTING --
-  // if ((digitalRead(physical_pin_number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
-  // digitalWrite(physical_pin_number, HIGH);
-  // PROPOSED REDRAFTING --
-  // if ((digitalRead(physical_pin_number) == LOW) && ((currentTime - last_time_off > _max_interval_on) || (currentTime - last_time_on <  last_interval_on))) {
-  // digitalWrite(physical_pin_number, HIGH);
-  if (digitalRead(physical_pin_number) == LOW) {
-    if (currentTime - last_time_off > _max_interval_on) {
-      digitalWrite(physical_pin_number, HIGH);
-      return;
-    }
-    if (currentTime - last_time_on < last_interval_on) {
-      digitalWrite(physical_pin_number, HIGH);
-    }
-  }
-}
