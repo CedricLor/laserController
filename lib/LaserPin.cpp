@@ -103,8 +103,8 @@ void LaserPin::pairUnpairPin(const short _pinParityWitness, const short pairingT
 
 // Pairs this pin to another pin and allows to pair in any type of pairing (twin or cooperative)
 // Called from pairUnpairPin
-void LaserPin::_pairPin(const short _pinParityWitness, const short pairingType) {
-  pairing_type = pairingType;
+void LaserPin::_pairPin(const short _pinParityWitness, const short _sPairingType) {
+  pairing_type = _sPairingType;
   if (pairing_type == 1) {
     _cooperativePairing(_pinParityWitness);
     return;
