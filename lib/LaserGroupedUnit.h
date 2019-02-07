@@ -28,7 +28,6 @@ class LaserGroupedUnit
     unsigned long last_interval_on; // last interval during which this pin was turned on
 
     void switchOnOffVariables(const bool targetState);
-    void switchPointerBlinkCycleState(const bool state);
 
     void manualSwitchOneRelay(const bool targetState);
 
@@ -47,6 +46,8 @@ class LaserGroupedUnit
     static bool const _default_laser_group_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     static const unsigned long _max_interval_on;
+
+    void _switchPointerBlinkCycleState(const bool state);
 
     void _pairPin(const short _pinParityWitness, const short pairingType);
     void _unpairPin();

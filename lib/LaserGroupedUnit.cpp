@@ -34,7 +34,7 @@ LaserGroupedUnit::LaserGroupedUnit()
 // SWITCHES
 /* Switches the blinking state of the pin
    Called from (i) myMesh and (ii) this class (LaserPin)*/
-void LaserGroupedUnit::switchPointerBlinkCycleState(const bool targetBlinkingState) {
+void LaserGroupedUnit::_switchPointerBlinkCycleState(const bool targetBlinkingState) {
   /* If the targetBlinkingState passed on to the function is LOW,
      this function sets the blinking property of this LaserPin as true,
      meaning it is in a blinking cycle.
@@ -48,7 +48,7 @@ void LaserGroupedUnit::switchPointerBlinkCycleState(const bool targetBlinkingSta
    Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
 void LaserGroupedUnit::switchOnOffVariables(const bool targetOnOffState) {
   // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
-  switchPointerBlinkCycleState(targetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
+  _switchPointerBlinkCycleState(targetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
   // THE FOLLOWING BLOCK NEEDS TO BE REDRAFTED: NOT SATISFACTORY
   // SHOULD BE SET BEFORE CALLING THIS MEMBER FUNCTION
   // SHOULD BE MORE FLEXIBLE TO WORK WITH FUTURE SEQUENCES
