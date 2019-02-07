@@ -7,10 +7,10 @@
 #include "LaserGroupedUnit.h"
 
 
-bool const LaserGroupedUnit::_default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-bool const LaserGroupedUnit::_default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-bool const LaserGroupedUnit::_default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-bool const LaserGroupedUnit::_default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
+bool const LaserGroupedUnit::_default_laser_group_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
+bool const LaserGroupedUnit::_default_laser_group_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
+bool const LaserGroupedUnit::_default_laser_group_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
+bool const LaserGroupedUnit::_default_laser_group_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 const unsigned long LaserGroupedUnit::_max_interval_on = 600000UL;
 
 /* Default constructor: required by the global.cpp
@@ -19,12 +19,12 @@ const unsigned long LaserGroupedUnit::_max_interval_on = 600000UL;
 */
 LaserGroupedUnit::LaserGroupedUnit()
 {
-  on_off = _default_pin_on_off_state;
-  on_off_target = _default_pin_on_off_target_state;
-  blinking = _default_pin_blinking_state;
+  on_off = _default_laser_group_on_off_state;
+  on_off_target = _default_laser_group_on_off_target_state;
+  blinking = _default_laser_group_blinking_state;
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
-  pir_state = _default_pin_pir_state_value;
+  pir_state = _default_laser_group_pir_state_value;
   last_time_on = 0;     // set at 0 at startup
   last_time_off = millis();    // set at 0 at startup
   last_interval_on = 0; // set at 0 at startup
