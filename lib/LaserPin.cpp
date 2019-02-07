@@ -63,13 +63,13 @@ void LaserPin::switchOnOffVariables(const bool targetOnOffState) {
   // SHOULD BE MORE FLEXIBLE TO WORK WITH FUTURE SEQUENCES
   // BUT IT SHALL DO THE WORK TO REPLACE ALL THE UPDATE BLOCK IN LASER SAFETY LOOP WHICH WAS EVEN MORE HIDEOUS THAN THIS
   // if (index_number > paired_with) {                                   // if this pin is not a master
-  //   if (pairing_type == 1) {                                          // if this pin is in alternate mode with its master
+  //   if (_pairing_type == 1) {                                          // if this pin is in alternate mode with its master
   //     on_off_target = !targetOnOffState;                              // invert the targetOnOffState
   //     return;
   //   }
   // }
   // on_off_target = targetOnOffState;                                     // default behavior
-  ((index_number > paired_with) && (pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
+  ((index_number > paired_with) && (_pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
 }
 
 /* This function switches this LaserPin on and off (and sets the pir_state property of this LaserPin to LOW)
@@ -94,7 +94,7 @@ void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state m
 // Pairs or unpairs two pins together
 // Called from LaserPinsArray
 void LaserPin::pairUnpairPin(const short _pinParityWitness, const short _sPairingType) {
-  if (pairingType == -1) {
+  if (_sPairingType == -1) {
     _unpairPin();
   } else {
     _pairPin(_pinParityWitness, _sPairingType);
@@ -104,12 +104,12 @@ void LaserPin::pairUnpairPin(const short _pinParityWitness, const short _sPairin
 // Pairs this pin to another pin and allows to pair in any type of pairing (twin or cooperative)
 // Called from pairUnpairPin
 void LaserPin::_pairPin(const short _pinParityWitness, const short _sPairingType) {
-  pairing_type = _sPairingType;
-  if (pairing_type == 1) {
+  _pairing_type = _sPairingType;
+  if (_pairing_type == 1) {
     _cooperativePairing(_pinParityWitness);
     return;
   }
-  if (pairing_type == 0) {
+  if (_pairing_type == 0) {
     _twinPairing(_pinParityWitness);
     return;
   }
@@ -119,7 +119,7 @@ void LaserPin::_pairPin(const short _pinParityWitness, const short _sPairingType
 // Called from pairUnpairPin
 void LaserPin::_unpairPin() {
   paired_with = -1;
-  pairing_type = -1;
+  _pairing_type = -1;
 }
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
