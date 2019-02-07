@@ -15,7 +15,7 @@ class LaserPinsArray
 
     static void initLaserPins();
 
-    static void directPinsSwitch(const bool targetState);
+    static void irPinsSwitch(const bool targetState);
 
     static short int highPinsParityDuringStartup;
 

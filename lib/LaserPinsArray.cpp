@@ -42,7 +42,7 @@ void LaserPinsArray::initLaserPins() {
 // SWITCHES
 // Switches relay pins on and off during PIRStartUp
 // Called from pirStartupController exclusively
-void LaserPinsArray::directPinsSwitch(const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+void LaserPinsArray::irPinsSwitch(const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
     LaserPins[thisPin].switchOnOffVariables(targetState);
   }
@@ -64,11 +64,11 @@ void LaserPinsArray::manualSwitchAllRelays(const bool targetState) {
 // PIR SWITCHES
 // Switches on and off all the lasers under Pir control
 // loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
-void LaserPinsArray::switchPirRelays(const bool state) {
+void LaserPinsArray::switchPirRelays(const bool targetState) {
   Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     if (LaserPins[thisPin].pir_state == HIGH) {
-      LaserPins[thisPin].switchOnOffVariables(state);
+      LaserPins[thisPin].switchOnOffVariables(targetState);
     }
   }
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
