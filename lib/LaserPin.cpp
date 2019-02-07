@@ -93,11 +93,11 @@ void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state m
 
 // Pairs or unpairs two pins together
 // Called from LaserPinsArray
-void LaserPin::pairUnpairPin(const short _pinParityWitness, const short pairingType) {
+void LaserPin::pairUnpairPin(const short _pinParityWitness, const short _sPairingType) {
   if (pairingType == -1) {
     _unpairPin();
   } else {
-    _pairPin(_pinParityWitness, pairingType);
+    _pairPin(_pinParityWitness, _sPairingType);
   }
 }
 
