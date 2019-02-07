@@ -31,15 +31,6 @@ LaserGroupedUnit::LaserGroupedUnit()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// INITIALIZE LASER PINS
-void LaserGroupedUnit::physicalInitLaserPin(const short physicalPinNumber)
-{
-  physical_pin_number = physicalPinNumber;
-  pinMode(physicalPinNumber, OUTPUT);     // initialization of the pin connected to each of the relay as output
-  digitalWrite(physicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 /* Switches the blinking state of the pin
    Called from (i) myMesh and (ii) this class (LaserPin)*/
