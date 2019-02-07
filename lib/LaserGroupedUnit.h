@@ -27,7 +27,7 @@ class LaserGroupedUnit
     unsigned long last_time_off;    // last time this pin was turned off
     unsigned long last_interval_on; // last interval during which this pin was turned on
 
-    void switchOnOffVariables(const bool targetState);
+    void switchOnOff(const bool targetState);
 
     void manualSwitchOneRelay(const bool targetState);
 

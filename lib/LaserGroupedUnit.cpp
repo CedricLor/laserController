@@ -46,7 +46,7 @@ void LaserGroupedUnit::_switchPointerBlinkCycleState(const bool targetBlinkingSt
 
 /* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
    Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
-void LaserGroupedUnit::switchOnOffVariables(const bool targetOnOffState) {
+void LaserGroupedUnit::switchOnOff(const bool targetOnOffState) {
   // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   _switchPointerBlinkCycleState(targetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
   // THE FOLLOWING BLOCK NEEDS TO BE REDRAFTED: NOT SATISFACTORY
@@ -69,7 +69,7 @@ void LaserGroupedUnit::switchOnOffVariables(const bool targetOnOffState) {
    Called from (i) myWebServerController and (ii) LaserPinsArray */
 void LaserGroupedUnit::manualSwitchOneRelay(const bool targetOnOffState) {
   // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
-  switchOnOffVariables(targetOnOffState);
+  switchOnOff(targetOnOffState);
   pir_state = LOW;
 }
 
@@ -79,7 +79,7 @@ void LaserGroupedUnit::manualSwitchOneRelay(const bool targetOnOffState) {
    Called from myWebServerController ONLY */
 void LaserGroupedUnit::inclExclOneRelayInPir(const bool targetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pir_state = targetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
-  switchOnOffVariables(HIGH);
+  switchOnOff(HIGH);
 }
 
 // Pairs or unpairs two pins together
