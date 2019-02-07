@@ -7,7 +7,7 @@
 #include "LaserGroupedUnitsArray.h"
 
 
-LaserGroupedUnitsArray::LaserPinsArray()
+LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
 }
 
