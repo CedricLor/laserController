@@ -9,12 +9,21 @@
 
 LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
+  short int _pinParityWitness = 0;
+  for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    // Put each pin into a LaserGroupedUnit
+    LaserPins[thisPin].pairUnpairPin(_pinParityWitness, 1 /* cooperative pairing */);               // by default, each pin is paired with next (or previous) and in cooperative pairing type
+    LaserPins[thisPin].index_number = thisPin;
+    _pinParityWitness = (_pinParityWitness == 0) ? 1 : 0;
+    LaserPins[thisPin].physicalInitLaserPin(relayPins[thisPin] /* physical pin number to which this LaserPin is attached */);
+  }
+  _pinParityWitness = 0;
 }
 
 short int LaserGroupedUnitsArray::pinGlobalModeWitness;
 const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual with cycle on", "manual with cycle off"};
 
-short LaserGroupedUnitsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
+short int LaserGroupedUnitsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
                              // it avoids using the modulo.
                              // by switching it to 0 and 1 at each iteration of the loop
                              // in principle, the switch takes the following footprint: LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
