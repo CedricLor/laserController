@@ -38,8 +38,6 @@ class pirController
 
     static void stopPirCycle();
 
-    static void switchPirRelays(const bool state);
-
     static void broadcastPirStatus(const char* state);
 };
 

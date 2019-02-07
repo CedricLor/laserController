@@ -105,7 +105,7 @@ Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userSc
 bool pirController::tcbOnEnablePirCycle() {
   if (LaserPinsArray::pinGlobalModeWitness == 1) {LaserPinsArray::pinGlobalModeWitness = 2;}  // 1 means "IR cycle on"
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
-  switchPirRelays(LOW);
+  LaserPinsArray::switchPirRelays(LOW);
   myMeshViews::statusMsg("on");
   Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
   return true;
@@ -120,17 +120,6 @@ void pirController::tcbOnDisablePirCycle() {
 // Stops the PIR Cycle
 void pirController::stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
-  switchPirRelays(HIGH);                                  // turn all the PIR controlled relays off
+  LaserPinsArray::switchPirRelays(HIGH);                                  // turn all the PIR controlled relays off
   myMeshViews::statusMsg("off");
-}
-
-// loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
-void pirController::switchPirRelays(const bool state) {
-  Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (LaserPins[thisPin].pir_state == HIGH) {
-      LaserPins[thisPin].switchOnOffVariables(state);
-    }
-  }
-  Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
 }

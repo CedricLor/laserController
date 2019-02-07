@@ -21,6 +21,8 @@ class LaserPinsArray
 
     static void manualSwitchAllRelays(const bool targetState);
 
+    static void switchPirRelays(const bool state);
+
     static void inclExclAllRelaysInPir(const bool targetPirState);
 
     static short int pinParityWitness;

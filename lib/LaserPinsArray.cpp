@@ -61,6 +61,21 @@ void LaserPinsArray::manualSwitchAllRelays(const bool targetState) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// PIR SWITCHES
+// Switches on and off all the lasers under Pir control
+// loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
+void LaserPinsArray::switchPirRelays(const bool state) {
+  Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    if (LaserPins[thisPin].pir_state == HIGH) {
+      LaserPins[thisPin].switchOnOffVariables(state);
+    }
+  }
+  Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // PIR SUBJECTION SWITCHES
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
