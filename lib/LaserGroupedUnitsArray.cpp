@@ -6,6 +6,9 @@
 #include "Arduino.h"
 #include "LaserGroupedUnitsArray.h"
 
+LaserGroupedUnit LaserGroupedUnitsArray::LaserGroupedUnits[PIN_COUNT];
+// PIN_COUNT? We define the array of LaserGroupUnits as large as the number of pins connected to the lasers.
+// Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.
 
 LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
@@ -21,7 +24,7 @@ LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 }
 
 short int LaserGroupedUnitsArray::pinGlobalModeWitness;
-const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual with cycle on", "manual with cycle off"};
+const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
 short int LaserGroupedUnitsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
                              // it avoids using the modulo.

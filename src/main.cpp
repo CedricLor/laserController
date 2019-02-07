@@ -28,10 +28,10 @@
 
 #include "../lib/LaserPinsArray.h"
 #include "../lib/LaserPinsArray.cpp"
-#include "../lib/LaserGroupedUnitsArray.h"
-#include "../lib/LaserGroupedUnitsArray.cpp"
 #include "../lib/LaserGroupedUnit.h"
 #include "../lib/LaserGroupedUnit.cpp"
+#include "../lib/LaserGroupedUnitsArray.h"
+#include "../lib/LaserGroupedUnitsArray.cpp"
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
 

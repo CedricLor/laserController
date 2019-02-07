@@ -13,6 +13,8 @@ class LaserGroupedUnitsArray
   public:
     LaserGroupedUnitsArray();
 
+    static LaserGroupedUnit LaserGroupedUnits[];
+
     static void initLaserPins();
 
     static void irPinsSwitch(const bool targetState);
