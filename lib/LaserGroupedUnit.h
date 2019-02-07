@@ -42,7 +42,6 @@ class LaserGroupedUnit
 
     void blinkLaserInBlinkingCycle();
 
-    void executePinStateChange();
     void laserProtectionSwitch();
 
   private:
@@ -58,7 +57,6 @@ class LaserGroupedUnit
     void _cooperativePairing(const short _pinParityWitness);
     void _twinPairing(const short _pinParityWitness);
 
-    void _markTimeChanges();
 };
 
 #endif

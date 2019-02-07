@@ -161,44 +161,6 @@ void LaserGroupedUnit::blinkLaserInBlinkingCycle() {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////
-// IO Functions
-////////////////////////////////////////////////////////////////////////////////////////////
-// Execute Updates
-void LaserGroupedUnit::executePinStateChange() {
-  /*
-      Called from within the laser safety loop for each pin
-      Checks whether the current on_off_target state is different than the current on_off state
-      If so:
-      1. turn on or off the laser as requested in the on_off_target_state
-      2. align the on_off state with the on_off_target state
-      3. reset the safety blinking timer of this pin
-      // TO ANALYSE: I have the feeling that the condition to be tested shall be different
-      // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
-      // a blinking cycle and cooling off
-  */
-  if (on_off != on_off_target) {
-    _markTimeChanges();
-    digitalWrite(physical_pin_number, on_off_target);
-    on_off = on_off_target;
-  }
-}
-
-// Helper function for execute updates
-void LaserGroupedUnit::_markTimeChanges() {
-  const unsigned long currentTime = millis();
-  previous_time = currentTime;
-
-  // If instruction is to turn laserPin on
-  if (on_off_target == LOW) {
-    last_time_off = currentTime;
-    return;
-  }
-  // If instruction is to turn laserPin off
-  last_time_on = currentTime;
-  last_interval_on = last_time_on - last_time_off;
-}
-
 // Laser Protection Switch
 // Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
 void LaserGroupedUnit::laserProtectionSwitch() {
