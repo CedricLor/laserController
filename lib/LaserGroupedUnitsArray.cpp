@@ -41,7 +41,7 @@ void LaserGroupedUnitsArray::pairing() {
 }
 
 short int LaserGroupedUnitsArray::globalModeWitness;
-const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
+const char* LaserGroupedUnitsArray::GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,8 @@ void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {        
 ////////////////////////////////////////////////////////////////////////////////
 // MANUAL SWITCH
 // Switches on and off all the lasers
-// Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
+// Manual in the sense that it also switches the pir_state of the LaserGroupedUnit to LOW
+// (i.e. the LaserGroupedUnit will no longer be reacting to IR signals)
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which was called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::manualSwitch(const bool _bTargetState) {
