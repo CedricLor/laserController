@@ -32,8 +32,8 @@ void myWebServerControler::_webChangeBlinkingInterval(AsyncWebParameter* _p1, As
   // Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): laser number for change in blinkingInterval %s\n", _p2->value().c_str());
   if (_p2->value() == "0") {
     Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
-    int targetBlinkingInterval = _p1->value().toInt();
-    LaserPinsArray::changeGlobalBlinkingInterval(targetBlinkingInterval);
+    unsigned long _ulTargetBlinkingInterval = _p1->value().toInt();
+    LaserGroupedUnitsArray::changeBlinkingIntervalAll(_ulTargetBlinkingInterval);
   }
   else {
     int _iLaserGroupedUnitIndexNumber = _p2->value().toInt();
