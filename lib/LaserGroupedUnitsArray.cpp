@@ -161,9 +161,9 @@ void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTa
 short LaserGroupedUnitsArray::_siSlaveBoxCycleIterations = 60;
 
 bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
-  globalModeWitness = 3;      // 3 for "slave cycle on"
   myMeshViews::statusMsg("on");
   manualSwitchAll(LOW);
+  globalModeWitness = 3;      // 3 for "slave cycle on"
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
@@ -176,7 +176,7 @@ void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
 
 Task LaserGroupedUnitsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
 
-void LaserGroupedUnitsArray::slaveBoxSwitchAllRelays(const bool _bTargetState) {
+void LaserGroupedUnitsArray::slaveBoxSwitchAll(const bool _bTargetState) {
   if (_bTargetState == LOW) {
     _tSlaveBoxCycle.enable();
     return;

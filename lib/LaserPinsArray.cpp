@@ -123,9 +123,9 @@ void LaserPinsArray::changeGlobalBlinkingInterval(const unsigned long targetBlin
 short LaserPinsArray::_siSlaveBoxCycleIterations = 60;
 
 bool LaserPinsArray::_tcbOeSlaveBoxCycle() {
-  pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
   myMeshViews::statusMsg("on");
   manualSwitchAllRelays(LOW);
+  pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }

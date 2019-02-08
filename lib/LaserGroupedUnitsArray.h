@@ -35,7 +35,7 @@ class LaserGroupedUnitsArray
 
     static void changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval);
 
-    static void slaveBoxSwitchAllRelays(const bool targetState);
+    static void slaveBoxSwitchAll(const bool targetState);
 
     static short int globalModeWitness;
     // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off
