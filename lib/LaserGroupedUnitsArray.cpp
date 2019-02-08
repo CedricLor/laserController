@@ -57,7 +57,7 @@ void LaserGroupedUnitsArray::irPinsSwitch(const bool _bTargetState) {           
 void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool _bTargetState) {
   _bTargetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserPins[thisLaserGroupedUnit].manualSwitchOneRelay(_bTargetState);
+    LaserGroupedUnits[thisLaserGroupedUnit].manualSwitchOneRelay(_bTargetState);
   }
 }
 
@@ -65,11 +65,11 @@ void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool _bTargetState) {
 // PIR CYCLE SWITCHES
 // Switches on and off all the lasers under Pir control
 // loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
-void LaserGroupedUnitsArray::switchPirRelays(const bool targetState) {
+void LaserGroupedUnitsArray::switchPirRelays(const bool _bTargetState) {
   Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (LaserPins[thisPin].pir_state == HIGH) {
-      LaserPins[thisPin].switchOnOffVariables(targetState);
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    if (LaserGroupedUnits[thisLaserGroupedUnit].pir_state == HIGH) {
+      LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(_bTargetState);
     }
   }
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
