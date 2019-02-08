@@ -13,8 +13,14 @@ LaserGroupedUnit LaserGroupedUnitsArray::LaserGroupedUnits[PIN_COUNT];
 LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
   short int _pinParityWitness = 0;
+  short int _counter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Put each pin into a LaserGroupedUnit
+    LaserGroupedUnits[_counter].laserPinId = LaserPins[thisPin].index_number;
+    // cooperative pairing
+    if (_pinParityWitness == 1) {
+      _counter = _counter + 1;
+    }
     LaserPins[thisPin].pairUnpairPin(_pinParityWitness, 1 /* cooperative pairing */);               // by default, each pin is paired with next (or previous) and in cooperative pairing type
     LaserPins[thisPin].index_number = thisPin;
     _pinParityWitness = (_pinParityWitness == 0) ? 1 : 0;
