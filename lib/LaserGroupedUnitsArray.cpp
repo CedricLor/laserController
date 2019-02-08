@@ -67,14 +67,15 @@ void LaserGroupedUnitsArray::unpairingAll() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Pairing type setter
+/* Pairing_type setter
+Calls each of the
 Corresponds to:
 - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
 - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
 */
 void LaserGroupedUnitsArray::setPairingTypeofAll(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].pairUnpairPin(pinParityWitness, _sPairingType);
+    LaserGroupedUnits[thisLaserGroupedUnit].pairing_type = _sPairingType;
   }
 }
 
