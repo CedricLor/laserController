@@ -106,10 +106,10 @@ void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 un
 // BLINKING DELAY Control
 // Changes the blinking delay of each pin and saves such new blinking delay in Preferences
 // Called exclusively from myWebServerController
-void LaserGroupedUnitsArray::changeGlobalBlinkingInterval(const unsigned long targetBlinkingInterval) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeIndividualBlinkingInterval(targetBlinkingInterval);
-    pinBlinkingInterval = targetBlinkingInterval;
+void LaserGroupedUnitsArray::changeGlobalBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserGroupedUnits[thisLaserGroupedUnit].changeIndividualBlinkingInterval(_ulTargetBlinkingInterval);
+    pinBlinkingInterval = _ulTargetBlinkingInterval;
     mySavedPrefs::savePreferences();
   }
 }
@@ -134,8 +134,8 @@ void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
 
 Task LaserGroupedUnitsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
 
-void LaserGroupedUnitsArray::slaveBoxSwitchAllRelays(const bool targetState) {
-  if (targetState == LOW) {
+void LaserGroupedUnitsArray::slaveBoxSwitchAllRelays(const bool _bTargetState) {
+  if (_bTargetState == LOW) {
     _tSlaveBoxCycle.enable();
     return;
   }
