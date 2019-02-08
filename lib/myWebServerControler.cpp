@@ -10,12 +10,12 @@ myWebServerControler::myWebServerControler()
 {
 }
 
-void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool targetState) {
+void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool _bTargetState) {
   if(_p2->value() == "a"){
-    LaserPinsArray::manualSwitchAllRelays(targetState);
+    LaserGroupedUnitsArray::manualSwitchAll(_bTargetState);
   } else {
-    int val = _p2->value().toInt();
-    LaserPins[val].manualSwitchOneRelay(targetState);
+    int _val = _p2->value().toInt();
+    LaserGroupedUnits[_val].manualSwitch(_bTargetState);
   }
 }
 
