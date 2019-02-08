@@ -32,7 +32,7 @@ class LaserGroupedUnitsArray
     static void inclExclAllRelaysInPir(const bool _bTargetState);
 
     static short int pinParityWitness;
-    static void pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
+    static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     static void changeGlobalBlinkingInterval(const unsigned long _bTargetPirState);
 
