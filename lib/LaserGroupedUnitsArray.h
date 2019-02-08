@@ -17,11 +17,12 @@ class LaserGroupedUnitsArray
 
     static short loadedLaserUnits;
 
+    static void pairing();
     static void cooperativePairing();
 
     static void initLaserPins();
 
-    static void irPinsSwitch(const bool _bTargetState);
+    static void irStartupSwitch(const bool _bTargetState);
 
     static short int highPinsParityDuringStartup;
 

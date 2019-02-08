@@ -13,8 +13,6 @@ class LaserGroupedUnit
   public:
     LaserGroupedUnit();
 
-    short laserPinIds[PIN_COUNT];
-
     short index_number;             // LaserPin type index number in the LaserPinsArray
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions

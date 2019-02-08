@@ -16,21 +16,40 @@ LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
 }
 
-// Cooperative pairing
-void LaserGroupedUnitsArray::cooperativePairing() {
+// Pairing
+void LaserGroupedUnitsArray::pairing() {
   short int _pinParityWitness = 0;
-  short int _counter = 0;
+  short int _groupUnitsCounter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Put each pin into a LaserGroupedUnit
-    LaserGroupedUnits[_counter].laserPinIds[_pinParityWitness] = LaserPins[thisPin].index_number;
+    LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
     // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
     if (_pinParityWitness == 1) {
-      _counter = _counter + 1;
+      _groupUnitsCounter = _groupUnitsCounter + 1;
     }
     // end of the cooperative pairing algorythm
   }
   // The following line is another part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
-  loadedLaserUnits = _counter - 1;
+  loadedLaserUnits = _groupUnitsCounter - 1;
+  _pinParityWitness = 0;
+}
+
+// Cooperative pairing
+void LaserGroupedUnitsArray::cooperativePairing() {
+  short int _pinParityWitness = 0;
+  short int _groupUnitsCounter = 0;
+  for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    // Put each pin into a LaserGroupedUnit
+    // LaserGroupedUnits[_counter].laserPinIds[_pinParityWitness] = LaserPins[thisPin].index_number;
+    LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
+    // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
+    if (_pinParityWitness == 1) {
+      _groupUnitsCounter = _groupUnitsCounter + 1;
+    }
+    // end of the cooperative pairing algorythm
+  }
+  // The following line is another part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
+  loadedLaserUnits = _groupUnitsCounter - 1;
   _pinParityWitness = 0;
 }
 
@@ -43,7 +62,8 @@ const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"p
 // IR STARTUP SWITCH
 // Switches relay pins on and off during PIRStartUp
 // Called from pirStartupController exclusively
-void LaserGroupedUnitsArray::irPinsSwitch(const bool _bTargetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+// Corresponds to LaserPinsArray::irPinsSwitch(const bool targetState)
+void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {        // loop around all the structs representing the pins controlling the relays
     LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(_bTargetState);
   }

@@ -36,8 +36,8 @@ LaserGroupedUnit::LaserGroupedUnit()
    Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
 void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (laserPinIds[thisPin]) {
-      LaserPins[laserPinIds[thisPin]].switchOnOffVariables(_bTargetOnOffState);
+    if (LaserPins[thisPin].laserGroupedUnitId == index_number) {
+      LaserPins[thisPin].switchOnOffVariables(_bTargetOnOffState);
     }
   }
 }
