@@ -18,7 +18,6 @@ class LaserGroupedUnitsArray
     static short loadedLaserUnits;
 
     static void pairing();
-    static void cooperativePairing();
 
     static void initLaserPins();
 

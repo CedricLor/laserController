@@ -34,25 +34,6 @@ void LaserGroupedUnitsArray::pairing() {
   _pinParityWitness = 0;
 }
 
-// Cooperative pairing
-void LaserGroupedUnitsArray::cooperativePairing() {
-  short int _pinParityWitness = 0;
-  short int _groupUnitsCounter = 0;
-  for (short int _thisPin = 0; _thisPin < PIN_COUNT; _thisPin++) {
-    // Put each pin into a LaserGroupedUnit
-    // LaserGroupedUnits[_counter].laserPinIds[_pinParityWitness] = LaserPins[thisPin].index_number;
-    LaserPins[_thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
-    // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
-    if (_pinParityWitness == 1) {
-      _groupUnitsCounter = _groupUnitsCounter + 1;
-    }
-    // end of the cooperative pairing algorythm
-  }
-  // The following line is another part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
-  loadedLaserUnits = _groupUnitsCounter - 1;
-  _pinParityWitness = 0;
-}
-
 short int LaserGroupedUnitsArray::pinGlobalModeWitness;
 const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
