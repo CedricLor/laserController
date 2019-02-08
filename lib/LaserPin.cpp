@@ -56,19 +56,7 @@ void LaserPin::switchPointerBlinkCycleState(const bool targetBlinkingState) {
 /* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
    Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
 void LaserPin::switchOnOffVariables(const bool targetOnOffState) {
-  // Serial.printf("MANUAL SWITCHES: switchOnOffVariables(const short thisPin, const bool targetState): switching on/off variables for LaserPins[%u] with targetState = %s \n", thisPin, (targetState == 0 ? "on (LOW)" : "off (HIGH)"));
   switchPointerBlinkCycleState(targetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
-  // THE FOLLOWING BLOCK NEEDS TO BE REDRAFTED: NOT SATISFACTORY
-  // SHOULD BE SET BEFORE CALLING THIS MEMBER FUNCTION
-  // SHOULD BE MORE FLEXIBLE TO WORK WITH FUTURE SEQUENCES
-  // BUT IT SHALL DO THE WORK TO REPLACE ALL THE UPDATE BLOCK IN LASER SAFETY LOOP WHICH WAS EVEN MORE HIDEOUS THAN THIS
-  // if (index_number > paired_with) {                                   // if this pin is not a master
-  //   if (_pairing_type == 1) {                                          // if this pin is in alternate mode with its master
-  //     on_off_target = !targetOnOffState;                              // invert the targetOnOffState
-  //     return;
-  //   }
-  // }
-  // on_off_target = targetOnOffState;                                     // default behavior
   ((index_number > paired_with) && (_pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
 }
 

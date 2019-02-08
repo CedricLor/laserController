@@ -22,9 +22,9 @@ LaserGroupedUnit::LaserGroupedUnit()
   on_off = _default_laser_group_on_off_state;
   on_off_target = _default_laser_group_on_off_target_state;
   blinking = _default_laser_group_blinking_state;
+  pir_state = _default_laser_group_pir_state_value;
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
-  pir_state = _default_laser_group_pir_state_value;
   last_time_on = 0;     // set at 0 at startup
   last_time_off = millis();    // set at 0 at startup
   last_interval_on = 0; // set at 0 at startup
@@ -32,23 +32,14 @@ LaserGroupedUnit::LaserGroupedUnit()
 
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
-/* Switches the blinking state of the pin
-   Called from (i) myMesh and (ii) this class (LaserPin)*/
-void LaserGroupedUnit::_switchPointerBlinkCycleState(const bool targetBlinkingState) {
-  /* If the targetBlinkingState passed on to the function is LOW,
-     this function sets the blinking property of this LaserPin as true,
-     meaning it is in a blinking cycle.
-     If the targetBlinkingState passed on to the function is LOW,
-     this function sets the blinking property of this LaserPin as false,
-     meaning it is no longer a blinking cycle. */
-  (targetBlinkingState == LOW) ? blinking = true : blinking = false;
-}
-
 /* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
    Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
-void LaserGroupedUnit::switchOnOff(const bool targetOnOffState) {
-  _switchPointerBlinkCycleState(targetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
-  ((index_number > paired_with) && (_pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
+void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
+  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    if (laserPinIds[thisPin]) {
+      LaserPins[laserPinIds[thisPin]].switchOnOffVariables(_bTargetOnOffState);
+    }
+  }
 }
 
 /* This function switches this LaserPin on and off (and sets the pir_state property of this LaserPin to LOW)

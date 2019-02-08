@@ -22,7 +22,7 @@ void LaserGroupedUnitsArray::cooperativePairing() {
   short int _counter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Put each pin into a LaserGroupedUnit
-    LaserGroupedUnits[_counter].laserPinId = LaserPins[thisPin].index_number;
+    LaserGroupedUnits[_counter].laserPinIds[_pinParityWitness] = LaserPins[thisPin].index_number;
     // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
     if (_pinParityWitness == 1) {
       _counter = _counter + 1;
