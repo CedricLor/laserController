@@ -25,11 +25,11 @@ class LaserGroupedUnitsArray
 
     static short int highPinsParityDuringStartup;
 
-    static void manualSwitch(const bool _bTargetState);
+    static void manualSwitchAll(const bool _bTargetState);
 
-    static void switchPirRelays(const bool state);
+    static void pirSwitchAll(const bool _bTargetState);
 
-    static void inclExclAllRelaysInPir(const bool _bTargetState);
+    static void inclExclAllInPir(const bool _bTargetState);
 
     static short int pinParityWitness;
     static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
