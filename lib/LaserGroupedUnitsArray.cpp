@@ -40,7 +40,7 @@ void LaserGroupedUnitsArray::pairing() {
   _pinParityWitness = 0;
 }
 
-short int LaserGroupedUnitsArray::pinGlobalModeWitness;
+short int LaserGroupedUnitsArray::globalModeWitness;
 const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
 
@@ -63,7 +63,7 @@ void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {        
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which was called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::manualSwitch(const bool _bTargetState) {
-  _bTargetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
+  _bTargetState == HIGH ? globalModeWitness = 4 : globalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].manualSwitch(_bTargetState);
   }
@@ -90,7 +90,7 @@ void LaserGroupedUnitsArray::switchPirRelays(const bool _bTargetState) {
 // this function subjects or frees all the relays to or of the control of the PIR
 // Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::inclExclAllRelaysInPir(const bool _bTargetPirState) {
-  if (_bTargetPirState == HIGH) { pinGlobalModeWitness = 1;}                      // 1 for "IR waiting"
+  if (_bTargetPirState == HIGH) { globalModeWitness = 1;}                      // 1 for "IR waiting"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].pir_state = _bTargetPirState;
   }
@@ -127,7 +127,7 @@ void LaserGroupedUnitsArray::changeGlobalBlinkingInterval(const unsigned long _u
 short LaserGroupedUnitsArray::_siSlaveBoxCycleIterations = 60;
 
 bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
-  pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
+  globalModeWitness = 3;      // 3 for "slave cycle on"
   myMeshViews::statusMsg("on");
   manualSwitch(LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
