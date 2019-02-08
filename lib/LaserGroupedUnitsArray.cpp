@@ -89,16 +89,13 @@ void LaserGroupedUnitsArray::inclExclAllRelaysInPir(const bool _bTargetPirState)
 }
 
 //////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-// TO DO -- TO DO -- TO DO -- TO DO
-//////////////////////////////////////////////////////////////////////////
 // PAIRING SWITCHES: Pairing and unpairing of pins
 // Called exclusively from pirStartupController
 // Loops around all the pins and pairs or unpairs them
-void LaserGroupedUnitsArray::pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
+void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
   pinParityWitness = 0;
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairUnpairPin(pinParityWitness, pairingType);
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserGroupedUnits[thisLaserGroupedUnit].pairUnpairPin(pinParityWitness, _sPairingType);
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
   }
   pinParityWitness = 0;
