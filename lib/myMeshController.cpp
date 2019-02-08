@@ -126,11 +126,11 @@ void myMeshController::_slaveBoxSwitch(JsonObject& root) {
   if (strstr(cSenderStatus, "on")  > 0) {
     // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    LaserPinsArray::slaveBoxSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
+    LaserGroupedUnitsArray::slaveBoxSwitchAll(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
   } else if (strstr(cSenderStatus, "off")  > 0) {
     // else if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    LaserPinsArray::slaveBoxSwitchAllRelays(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
+    LaserGroupedUnitsArray::slaveBoxSwitchAll(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
 }
