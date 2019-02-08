@@ -31,22 +31,29 @@ LaserGroupedUnit::LaserGroupedUnit()
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 // SwitchOnOff
-/* This function sets the on_off_target property of the LaserPins which are included in this LaserGroupUnit
-   (sidenote: the called function sets the blinking property of this LaserPin accordingly).
+/* This function sets the on_off property of the LaserGroupedUnit.
    Corresponds to LaserPin::switchOnOffVariables
    which is called from:
    (i) LaserPinsArray ((a) LaserPinsArray::irPinsSwitch and (b) LaserPinsArray::switchPirRelays);
    (ii) LaserPin itself (private calls) ((a) LaserPin::manualSwitchOneRelay and (b) LaserPin::inclExclOneRelayInPir);
    (iii) LaserGroupedUnit (LaserGroupedUnit::switchOnOff)
+   LaserPin::switchOnOffVariables sets the blinking property of its LaserPin. This was not retaken here as a LaserGroupUnit has not blinking property.
+   The blinking property of the LaserPins was invented mark them on and off during the cycles.
 */
-// --> should be redrafted; should not interact directly with the LaserPins (none of the other functions do it.
-// Should be limited to setting a variable that will be read by a reader/setter of laserPins
 void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (LaserPins[thisPin].laserGroupedUnitId == index_number) {
-      LaserPins[thisPin].switchOnOffVariables(_bTargetOnOffState);
-    }
-  }
+  /*******************************/
+  /* Once this function will have fully replaced LaserPin::switchOnOffVariables, replace it by setting the value of on_off directly */
+  /*******************************/
+  on_off = _bTargetOnOffState;
+  /**************************************************************************/
+  /* Former drafting: the LaserGroupedUnit was setting values in LaserPins. */
+  /* Kept for reference purpose to be used in a future LaserGroupedUnit reader that should iterate around all pins to read the parent value. */
+  /**************************************************************************/
+  // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+  //   if (LaserPins[thisPin].laserGroupedUnitId == index_number) {
+  //     LaserPins[thisPin].switchOnOffVariables(_bTargetOnOffState);
+  //   }
+  // }
 }
 
 /* manualSwitch
