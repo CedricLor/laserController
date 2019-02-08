@@ -59,36 +59,36 @@ myMeshController::myMeshController(JsonObject& root)
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void myMeshController::_manualSwitch(JsonObject& root) {
+void myMeshController::_manualSwitch(JsonObject& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
-  short iTargetState;
-  const char* sTargetState = root["ts"];
-  iTargetState = atoi(sTargetState);
-  LaserPinsArray::manualSwitchAllRelays(iTargetState /*0 for LOW = on; 1 for HIGH= off*/);
+  short _iTargetState;
+  const char* _sTargetState = _root["ts"];
+  _iTargetState = atoi(_sTargetState);
+  LaserGroupedUnitsArray::manualSwitchAll(_iTargetState /*0 for LOW = on; 1 for HIGH= off*/);
 }
 
-void myMeshController::_changeInclusionIR(JsonObject& root) {
+void myMeshController::_changeInclusionIR(JsonObject& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
   short iTargetState;
-  const char* sTargetState = root["ts"];
+  const char* sTargetState = _root["ts"];
   iTargetState = atoi(sTargetState);
   LaserGroupedUnitsArray::inclExclAllInPir(iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
-void myMeshController::_changeBlinkingInterval(JsonObject& root) {
+void myMeshController::_changeBlinkingInterval(JsonObject& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
   unsigned long iTargetBlinkingInterval;
-  const char* sTargetBlinkingInterval = root["ti"];
+  const char* sTargetBlinkingInterval = _root["ti"];
   iTargetBlinkingInterval = atoi(sTargetBlinkingInterval);
   LaserPinsArray::changeGlobalBlinkingInterval(iTargetBlinkingInterval);
 }
 
-void myMeshController::_changeMasterBox(JsonObject& root) {
+void myMeshController::_changeMasterBox(JsonObject& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
   short iNewMasterBoxNumber;
-  const char* sNewMasterBoxNumber = root["ms"];
+  const char* sNewMasterBoxNumber = _root["ms"];
   iNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
-  const char* sNewReaction = root["react"];
+  const char* sNewReaction = _root["react"];
   // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
   MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(iNewMasterBoxNumber, sNewReaction);
 }
