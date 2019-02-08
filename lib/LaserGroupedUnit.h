@@ -34,7 +34,7 @@ class LaserGroupedUnit
 
     void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
 
-    void changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval);
+    void changeBlinkingInterval(const unsigned long targetBlinkingInterval);
 
     void blinkLaserInBlinkingCycle();
 

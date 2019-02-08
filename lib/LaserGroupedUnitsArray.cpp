@@ -131,7 +131,7 @@ void LaserGroupedUnitsArray::pirSwitchAll(const bool _bTargetState) {
 // PIR SUBJECTION SWITCHES
 // This function subjects or frees all the LaserGroupUnits to or of the control of the PIR
 // Corresponds to LaserPinsArray::inclExclAllRelaysInPir
-// Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
+// which is called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
   if (_bTargetPirState == HIGH) { globalModeWitness = 1;}                      // 1 for "IR waiting"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
@@ -141,13 +141,17 @@ void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
 
 
 //////////////////////////////////////////////////////////////////////////
-// BLINKING DELAY Control
-// Changes the blinking delay of each pin and saves such new blinking delay in Preferences
-// Called exclusively from myWebServerController
-void LaserGroupedUnitsArray::changeGlobalBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
+// BLINKING INTERVAL Control
+// Changes the blinking delay of each LaserGroupedUnit and saves such new blinking delay in Preferences
+// Corresponds to LaserPinsArray::changeGlobalBlinkingInterval.
+// which is called from:
+// (i) myWebServerController;
+// (ii) myMeshController.
+void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval) {
+  pinBlinkingInterval = _ulTargetBlinkingInterval;
+  mySavedPrefs::savePreferences();
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].changeIndividualBlinkingInterval(_ulTargetBlinkingInterval);
-    pinBlinkingInterval = _ulTargetBlinkingInterval;
+    LaserGroupedUnits[thisLaserGroupedUnit].changeBlinkingInterval(_ulTargetBlinkingInterval);
     mySavedPrefs::savePreferences();
   }
 }

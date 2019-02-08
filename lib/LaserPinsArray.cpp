@@ -107,12 +107,14 @@ void LaserPinsArray::pairUnpairAllPins(const short pairingType /*-1 unpair, 0 tw
 //////////////////////////////////////////////////////////////////////////
 // BLINKING DELAY Control
 // Changes the blinking delay of each pin and saves such new blinking delay in Preferences
-// Called exclusively from myWebServerController
+// Called from:
+// (i) myWebServerController;
+// (ii) myMeshController.
 void LaserPinsArray::changeGlobalBlinkingInterval(const unsigned long targetBlinkingInterval) {
+  pinBlinkingInterval = targetBlinkingInterval;
+  mySavedPrefs::savePreferences();
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].changeIndividualBlinkingInterval(targetBlinkingInterval);
-    pinBlinkingInterval = targetBlinkingInterval;
-    mySavedPrefs::savePreferences();
   }
 }
 

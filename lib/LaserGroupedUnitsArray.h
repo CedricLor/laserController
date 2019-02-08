@@ -33,7 +33,7 @@ class LaserGroupedUnitsArray
 
     static short int pinParityWitness;
 
-    static void changeGlobalBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
+    static void changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval);
 
     static void slaveBoxSwitchAllRelays(const bool targetState);
 

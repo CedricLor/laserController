@@ -107,7 +107,7 @@ void LaserGroupedUnit::_twinPairing(const short _pinParityWitness)
 
 // Changes the blinking delay of a single pin
 // Called from (i) LaserPinsArray and (ii) myWebServerController
-void LaserGroupedUnit::changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval) {
+void LaserGroupedUnit::changeBlinkingInterval(const unsigned long targetBlinkingInterval) {
   blinking_interval = targetBlinkingInterval;
 }
 
