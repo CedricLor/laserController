@@ -34,7 +34,7 @@ class LaserGroupedUnitsArray
     static short int pinParityWitness;
     static void pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
-    static void changeGlobalBlinkingInterval(const unsigned long targetBlinkingInterval);
+    static void changeGlobalBlinkingInterval(const unsigned long _bTargetPirState);
 
     static void slaveBoxSwitchAllRelays(const bool targetState);
 

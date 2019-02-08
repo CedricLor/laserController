@@ -81,10 +81,10 @@ void LaserGroupedUnitsArray::switchPirRelays(const bool _bTargetState) {
 // When clicking on the "On" or "Off" button on the webpage in the PIR column,
 // this function subjects or frees all the relays to or of the control of the PIR
 // Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserGroupedUnitsArray::inclExclAllRelaysInPir(const bool targetPirState) {
-  if (targetPirState == HIGH) { pinGlobalModeWitness = 1;}                      // 1 for "IR waiting"
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pir_state = targetPirState;
+void LaserGroupedUnitsArray::inclExclAllRelaysInPir(const bool _bTargetPirState) {
+  if (_bTargetPirState == HIGH) { pinGlobalModeWitness = 1;}                      // 1 for "IR waiting"
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserGroupedUnits[thisLaserGroupedUnit].pir_state = _bTargetPirState;
   }
 }
 
