@@ -150,8 +150,8 @@ void LaserPin::blinkLaserInBlinkingCycle() {
     TO ANALYSE: this may overwrite other changes that have been requested at other stages
   */
   if (blinking == true) {
-    const unsigned long currentTime = millis();
-    if (currentTime - previous_time > blinking_interval) {
+    const unsigned long _ulCurrentTime = millis();
+    if (_ulCurrentTime - previous_time > blinking_interval) {
         on_off_target = !on_off;
     }
   }
@@ -159,7 +159,7 @@ void LaserPin::blinkLaserInBlinkingCycle() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// IO Functions
+// IO FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Execute Updates
 /* Called from:
