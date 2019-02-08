@@ -26,12 +26,12 @@
 #include "../lib/myMeshViews.h"
 #include "../lib/myMeshViews.cpp"
 
-#include "../lib/LaserPinsArray.h"
-#include "../lib/LaserPinsArray.cpp"
 #include "../lib/LaserGroupedUnit.h"
 #include "../lib/LaserGroupedUnit.cpp"
 #include "../lib/LaserGroupedUnitsArray.h"
 #include "../lib/LaserGroupedUnitsArray.cpp"
+#include "../lib/LaserPinsArray.h"
+#include "../lib/LaserPinsArray.cpp"
 #include "../lib/LaserPin.h"
 #include "../lib/LaserPin.cpp"
 

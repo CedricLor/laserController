@@ -34,8 +34,6 @@ class LaserPin
 
     void inclExclOneRelayInPir(const bool state);
 
-    void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
-
     void updateLaserPinValuesFromLaserGroupedUnitOwner();
 
     void blinkLaserInBlinkingCycle();
@@ -55,11 +53,6 @@ class LaserPin
     static const unsigned long _max_interval_on;
 
     void _switchPointerBlinkCycleState(const bool _bTargetBlinkingState);
-
-    void _pairPin(const short _sPinParityWitness, const short _sPairingType);
-    void _unpairPin();
-    void _cooperativePairing(const short _sPinParityWitness);
-    void _twinPairing();
 
     void _markTimeChanges();
 };

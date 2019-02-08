@@ -137,10 +137,10 @@ void myMeshController::_slaveBoxSwitch(JsonObject& root) {
 
 void myMeshController::_pinPairing(JsonObject& root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"p";"pt":"0"}
-  short iTargetPairingType;
-  const char* sTargetPairingType = root["ts"];
-  iTargetPairingType = atoi(sTargetPairingType);
-  LaserPinsArray::pairUnpairAllPins(iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
+  short _iTargetPairingType;
+  const char* _sTargetPairingType = root["ts"];
+  _iTargetPairingType = atoi(_sTargetPairingType);
+  LaserGroupedUnitsArray::pairUnpairAllPins(_iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 }
 
 void myMeshController::_dataRequest() {

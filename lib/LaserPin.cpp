@@ -88,52 +88,6 @@ void LaserPin::inclExclOneRelayInPir(const bool _bTargetPirState) {     // state
   switchOnOffVariables(HIGH);
 }
 
-/* Pairs or unpairs two pins together
-   Called from LaserPinsArray:
-   (a) LaserPinsArray::initLaserPins();
-   (b) LaserPinsArray::pairUnpairAllPins();
-*/
-void LaserPin::pairUnpairPin(const short _pinParityWitness, const short _sPairingType) {
-  if (_sPairingType == -1) {
-    _unpairPin();
-  } else {
-    _pairPin(_pinParityWitness, _sPairingType);
-  }
-}
-
-// Pairs this pin to another pin and allows to pair in any type of pairing (twin or cooperative)
-// Called from pairUnpairPin
-void LaserPin::_pairPin(const short _pinParityWitness, const short _sPairingType) {
-  _pairing_type = _sPairingType;
-  if (_pairing_type == 1) {
-    _cooperativePairing(_pinParityWitness);
-    return;
-  }
-  if (_pairing_type == 0) {
-    _twinPairing();
-    return;
-  }
-}
-
-// Unpair a pin from other pins
-// Called from pairUnpairPin
-void LaserPin::_unpairPin() {
-  paired_with = -1;
-  _pairing_type = -1;
-}
-
-// Pairs two adjacent pins together (adjacent in the LaserPinsArray)
-// Called from pairUnpairPin
-void LaserPin::_cooperativePairing(const short _sPinParityWitness) {
-  const short _thePairedPinIndexNumber = (_sPinParityWitness == 0) ? index_number + 1 : index_number - 1;
-  paired_with = _thePairedPinIndexNumber;
-}
-
-void LaserPin::_twinPairing() {
-  const short _thePairedPinIndexNumber = (index_number < (PIN_COUNT / 2)) ? index_number + (PIN_COUNT / 2) : index_number - (PIN_COUNT / 2);
-  paired_with = _thePairedPinIndexNumber;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 /* UPDATE VALUES OF THIS LASERPIN WITH VALUES FROM ITS LASER GROUPED UNIT OWNER
    Blinks the laser when the laser is in blinking cycle. Called from (i) laserSafetyLoop::loop()
@@ -164,7 +118,6 @@ void LaserPin::blinkLaserInBlinkingCycle() {
     }
   }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // IO FUNCTIONS

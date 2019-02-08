@@ -75,6 +75,28 @@ void LaserGroupedUnitsArray::setPairingTypeofAll(const short _sPairingType /*-1 
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/* Wrapper function to simplify calls to pairing and unpairing functions
+   Putting each LaserPin into its own LaserGroupedUnit
+   Corresponds to:
+   - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
+   - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
+   Corresponds to LaserPinsArray::pairUnpairAllPins
+   which was called from:
+  (i) pirStartupController
+  (ii) myMeshController
+  (iii) myWebServerController
+*/
+void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
+  if (_sPairingType == -1) {
+    unpairingAll();
+    setPairingTypeofAll(_sPairingType);
+    return;
+  }
+  pairingAll();
+  setPairingTypeofAll(_sPairingType);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 short int LaserGroupedUnitsArray::globalModeWitness;

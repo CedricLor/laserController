@@ -6,7 +6,6 @@
 #include "Arduino.h"
 #include "LaserPinsArray.h"
 
-
 LaserPinsArray::LaserPinsArray()
 {
 }
@@ -29,11 +28,11 @@ void LaserPinsArray::initLaserPins() {
   pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
-    LaserPins[thisPin].pairUnpairPin(pinParityWitness, 1 /* cooperative pairing */);               // by default, each pin is paired with next (or previous) and in cooperative pairing type
     LaserPins[thisPin].index_number = thisPin;
     pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].physicalInitLaserPin(relayPins[thisPin] /* physical pin number to which this LaserPin is attached */);
   }
+  LaserGroupedUnitsArray::pairUnpairAllPins(1); // cooperatively pair all the pins
   pinParityWitness = 0;
   Serial.print("SETUP: initLaserPins(): done\n");
 }
@@ -85,22 +84,6 @@ void LaserPinsArray::inclExclAllRelaysInPir(const bool targetPirState) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].pir_state = targetPirState;
   }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// PAIRING SWITCHES: Pairing and unpairing of pins
-// Called from:
-// (i) pirStartupController
-// (ii) myMeshController
-// (iii) myWebServerController
-// Loops around all the pins and pairs or unpairs them
-void LaserPinsArray::pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
-  pinParityWitness = 0;
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pairUnpairPin(pinParityWitness, pairingType);
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
-  }
-  pinParityWitness = 0;
 }
 
 
