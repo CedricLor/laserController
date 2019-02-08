@@ -36,8 +36,6 @@ class LaserPin
 
     void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
 
-    void changeIndividualBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
-
     void blinkLaserInBlinkingCycle();
 
     void executePinStateChange();

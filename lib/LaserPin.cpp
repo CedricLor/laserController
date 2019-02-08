@@ -137,15 +137,6 @@ void LaserPin::_twinPairing()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// Changes the blinking delay of a single pin
-/* Called from:
-(i) LaserPinsArray (LaserPinsArray::changeGlobalBlinkingInterval) and
-(ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval) */
-void LaserPin::changeIndividualBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
-  blinking_interval = _ulTargetBlinkingInterval;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////
 // Blinks the laser when the laser is in blinking cycle
 /* Called from:
    (i) laserSafetyLoop::loop()
@@ -173,10 +164,13 @@ void LaserPin::blinkLaserInBlinkingCycle() {
 // Execute Updates
 /* Called from:
    - laserSafetyLoop::loop()
+   for each pin.
 */
 void LaserPin::executePinStateChange() {
+  // Read the value of the blinking_interval of the LaserGroupedUnit to which this pin pertains
+  // and update its own blinking interval
+  blinking_interval = LaserGroupedUnits[laserGroupedUnitId].blinking_interval;
   /*
-    Called from within the laser safety loop for each pin
     Checks whether the current on_off_target state is different than the current on_off state
     If so:
     1. turn on or off the laser as requested in the on_off_target_state

@@ -110,11 +110,11 @@ void LaserPinsArray::pairUnpairAllPins(const short pairingType /*-1 unpair, 0 tw
 // Called from:
 // (i) myWebServerController;
 // (ii) myMeshController.
-void LaserPinsArray::changeGlobalBlinkingInterval(const unsigned long targetBlinkingInterval) {
-  pinBlinkingInterval = targetBlinkingInterval;
+void LaserPinsArray::changeGlobalBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
+  pinBlinkingInterval = _ulTargetBlinkingInterval;
   mySavedPrefs::savePreferences();
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].changeIndividualBlinkingInterval(targetBlinkingInterval);
+    LaserGroupedUnits[thisPin].changeBlinkingInterval(_ulTargetBlinkingInterval);
   }
 }
 

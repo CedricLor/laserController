@@ -75,8 +75,13 @@ void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state
 
 /* BLINKING INTERVAL CONTROL
    Changes the blinking interval of this LaserGroupedUnit.
-   Corresponds to LaserPin::changeIndividualBlinkingInterval,
-   which is called from (i) LaserPinsArray and (ii) myWebServerController
+   Corresponds to the former LaserPin::changeIndividualBlinkingInterval,
+   which was called from:
+   (i) LaserPinsArray (LaserPinsArray::changeGlobalBlinkingInterval); and
+   (ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval).
+   This function is called from:
+   - (i) myWebServerController;
+   - (ii) laserPinsArray;
 */
 void LaserGroupedUnit::changeBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
   blinking_interval = _ulTargetBlinkingInterval;
