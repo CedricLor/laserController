@@ -23,14 +23,20 @@ void LaserGroupedUnitsArray::pairing() {
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Put each pin into a LaserGroupedUnit
     LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
-    // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
+    // increment the counter of laserUnits effectively loaded
+    // note: the loadedLaserUnits variable will then be used below, by irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
+    loadedLaserUnits = _groupUnitsCounter - 1;
+    // if _pinParityWitness is equal to 1, it means that we already have 2 lasers in the LaserGroupUnit.
+    // We then need to store the next pins in a new LaserGroupUnit.
+    // For this purpose, we increment the _groupUnitsCounter if _pinParityWitness is equal 1 (i.e. the current pin is the second pin stored in the LaserGroupedUnit).
+    // At the next iteration of this foor loop, the index_number of another LaserGroupedUnit will be marked in the next instance of LaserPins
+    // Sidenote: For the moment, I hard code this 2 laser limit, but this will need to be changed in the future.
     if (_pinParityWitness == 1) {
       _groupUnitsCounter = _groupUnitsCounter + 1;
     }
-    // end of the cooperative pairing algorythm
+    // Switch _pinParityWitness between 1 and
+    _pinParityWitness = (_pinParityWitness == 0) ? 1 : 0;
   }
-  // The following line is another part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
-  loadedLaserUnits = _groupUnitsCounter - 1;
   _pinParityWitness = 0;
 }
 
@@ -42,8 +48,8 @@ const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"p
 // SWITCHES
 // IR STARTUP SWITCH
 // Switches relay pins on and off during PIRStartUp
-// Called from pirStartupController exclusively
 // Corresponds to LaserPinsArray::irPinsSwitch(const bool targetState)
+// which was called from pirStartupController exclusively
 void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {        // loop around all the structs representing the pins controlling the relays
     LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(_bTargetState);
@@ -54,8 +60,9 @@ void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {        
 // MANUAL SWITCH
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
-// Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool _bTargetState) {
+// Corresponds to LaserPinsArray::manualSwitchAllRelays
+// which was called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
+void LaserGroupedUnitsArray::manualSwitch(const bool _bTargetState) {
   _bTargetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].manualSwitch(_bTargetState);
@@ -122,14 +129,14 @@ short LaserGroupedUnitsArray::_siSlaveBoxCycleIterations = 60;
 bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
   pinGlobalModeWitness = 3;      // 3 for "slave cycle on"
   myMeshViews::statusMsg("on");
-  manualSwitchAllRelays(LOW);
+  manualSwitch(LOW);
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
 
 void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
   myMeshViews::statusMsg("off");
-  manualSwitchAllRelays(HIGH);
+  manualSwitch(HIGH);
   inclExclAllRelaysInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
