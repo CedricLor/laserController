@@ -124,22 +124,30 @@ void LaserPin::_unpairPin() {
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Called from pairUnpairPin
-void LaserPin::_cooperativePairing(const short _sPinParityWitness)
-{
+void LaserPin::_cooperativePairing(const short _sPinParityWitness) {
   const short _thePairedPinIndexNumber = (_sPinParityWitness == 0) ? index_number + 1 : index_number - 1;
   paired_with = _thePairedPinIndexNumber;
 }
 
-void LaserPin::_twinPairing()
-{
+void LaserPin::_twinPairing() {
   const short _thePairedPinIndexNumber = (index_number < (PIN_COUNT / 2)) ? index_number + (PIN_COUNT / 2) : index_number - (PIN_COUNT / 2);
   paired_with = _thePairedPinIndexNumber;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// Blinks the laser when the laser is in blinking cycle
-/* Called from:
-   (i) laserSafetyLoop::loop()
+/* UPDATE VALUES OF THIS LASERPIN WITH VALUES FROM ITS LASER GROUPED UNIT OWNER
+   Blinks the laser when the laser is in blinking cycle. Called from (i) laserSafetyLoop::loop()
+*/
+void LaserPin::updateLaserPinValuesFromLaserGroupedUnitOwner() {
+  // Read the value of the blinking_interval of the LaserGroupedUnit to which this pin pertains
+  // and update its own blinking interval
+  blinking_interval = LaserGroupedUnits[laserGroupedUnitId].blinking_interval;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/* BLINK LASER IN BLINKING CYCLE
+   Blinks the laser when the laser is in blinking cycle.
+   Called from (i) laserSafetyLoop::loop().
 */
 void LaserPin::blinkLaserInBlinkingCycle() {
   /*
@@ -167,9 +175,6 @@ void LaserPin::blinkLaserInBlinkingCycle() {
    for each pin.
 */
 void LaserPin::executePinStateChange() {
-  // Read the value of the blinking_interval of the LaserGroupedUnit to which this pin pertains
-  // and update its own blinking interval
-  blinking_interval = LaserGroupedUnits[laserGroupedUnitId].blinking_interval;
   /*
     Checks whether the current on_off_target state is different than the current on_off state
     If so:

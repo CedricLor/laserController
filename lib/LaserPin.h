@@ -36,6 +36,8 @@ class LaserPin
 
     void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
 
+    void updateLaserPinValuesFromLaserGroupedUnitOwner();
+
     void blinkLaserInBlinkingCycle();
 
     void executePinStateChange();
