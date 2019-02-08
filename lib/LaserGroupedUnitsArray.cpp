@@ -38,10 +38,10 @@ void LaserGroupedUnitsArray::pairing() {
 void LaserGroupedUnitsArray::cooperativePairing() {
   short int _pinParityWitness = 0;
   short int _groupUnitsCounter = 0;
-  for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+  for (short int _thisPin = 0; _thisPin < PIN_COUNT; _thisPin++) {
     // Put each pin into a LaserGroupedUnit
     // LaserGroupedUnits[_counter].laserPinIds[_pinParityWitness] = LaserPins[thisPin].index_number;
-    LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
+    LaserPins[_thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
     // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
     if (_pinParityWitness == 1) {
       _groupUnitsCounter = _groupUnitsCounter + 1;
