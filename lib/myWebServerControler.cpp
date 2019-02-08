@@ -36,9 +36,9 @@ void myWebServerControler::_webChangeBlinkingInterval(AsyncWebParameter* _p1, As
     LaserPinsArray::changeGlobalBlinkingInterval(targetBlinkingInterval);
   }
   else {
-    int pinIndexNumber = _p2->value().toInt();
-    int targetBlinkingInterval = _p1->value().toInt();
-    LaserPins[pinIndexNumber].changeIndividualBlinkingInterval(targetBlinkingInterval);
+    int _iLaserGroupedUnitIndexNumber = _p2->value().toInt();
+    int _iTargetBlinkingInterval = _p1->value().toInt();
+    LaserGroupedUnitsArray::LaserGroupedUnits[_iLaserGroupedUnitIndexNumber].changeBlinkingInterval(_iTargetBlinkingInterval);
   }
 }
 

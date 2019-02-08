@@ -194,6 +194,7 @@ void LaserPin::executePinStateChange() {
 }
 
 // Helper function for execute updates
+// Private function
 void LaserPin::_markTimeChanges() {
   const unsigned long currentTime = millis();
   previous_time = currentTime;
