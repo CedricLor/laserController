@@ -8,7 +8,6 @@
 
 
 bool const LaserGroupedUnit::_default_laser_group_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
-bool const LaserGroupedUnit::_default_laser_group_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const LaserGroupedUnit::_default_laser_group_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 const unsigned long LaserGroupedUnit::_max_interval_on = 600000UL;
 
@@ -19,7 +18,6 @@ const unsigned long LaserGroupedUnit::_max_interval_on = 600000UL;
 LaserGroupedUnit::LaserGroupedUnit()
 {
   on_off = _default_laser_group_on_off_state;
-  on_off_target = _default_laser_group_on_off_target_state;
   pir_state = _default_laser_group_pir_state_value;
   blinking_interval = pinBlinkingInterval;
 }
