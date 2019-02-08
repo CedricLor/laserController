@@ -27,13 +27,13 @@ class LaserGroupedUnit
     unsigned long last_time_off;    // last time this pin was turned off
     unsigned long last_interval_on; // last interval during which this pin was turned on
 
-    void switchOnOff(const bool targetState);
+    void switchOnOff(const bool _bTargetOnOffState);
 
-    void manualSwitch(const bool targetState);
+    void manualSwitch(const bool _bTargetOnOffState);
 
-    void inclExclOneRelayInPir(const bool state);
+    void inclExclOneRelayInPir(const bool _bTargetPirState);
 
-    void pairUnpairPin(const short _pinParityWitness, const short pairingType);
+    void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
 
     void changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval);
 

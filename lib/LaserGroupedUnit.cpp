@@ -46,8 +46,8 @@ void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
    It is a manual switch in the sense that, by setting the pir_state of the pins to LOW,
    the pin is no longer reacting to signals sent by the PIR (IR) sensor.
    Called from (i) myWebServerController and (ii) LaserPinsArray */
-void LaserGroupedUnit::manualSwitch(const bool targetOnOffState) {
-  switchOnOff(targetOnOffState);
+void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
+  switchOnOff(_bTargetOnOffState);
   pir_state = LOW;
 }
 
@@ -55,18 +55,18 @@ void LaserGroupedUnit::manualSwitch(const bool targetOnOffState) {
    When clicking on the "On" or "Off" button on the webpage in the PIR column,
    this function subjects one relay to or releases it from the control of the PIR
    Called from myWebServerController ONLY */
-void LaserGroupedUnit::inclExclOneRelayInPir(const bool targetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
-  pir_state = targetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
+void LaserGroupedUnit::inclExclOneRelayInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
+  pir_state = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOff(HIGH);
 }
 
 // Pairs or unpairs two pins together
 // Called from LaserPinsArray
-void LaserGroupedUnit::pairUnpairPin(const short _pinParityWitness, const short pairingType) {
-  if (pairingType == -1) {
+void LaserGroupedUnit::pairUnpairPin(const short _sPinParityWitness, const short _sPairingType) {
+  if (_sPairingType == -1) {
     _unpairPin();
   } else {
-    _pairPin(_pinParityWitness, pairingType);
+    _pairPin(_sPinParityWitness, _sPairingType);
   }
 }
 
