@@ -46,8 +46,7 @@ void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
    It is a manual switch in the sense that, by setting the pir_state of the pins to LOW,
    the pin is no longer reacting to signals sent by the PIR (IR) sensor.
    Called from (i) myWebServerController and (ii) LaserPinsArray */
-void LaserGroupedUnit::manualSwitchOneRelay(const bool targetOnOffState) {
-  // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
+void LaserGroupedUnit::manualSwitch(const bool targetOnOffState) {
   switchOnOff(targetOnOffState);
   pir_state = LOW;
 }

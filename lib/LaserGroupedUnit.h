@@ -29,7 +29,7 @@ class LaserGroupedUnit
 
     void switchOnOff(const bool targetState);
 
-    void manualSwitchOneRelay(const bool targetState);
+    void manualSwitch(const bool targetState);
 
     void inclExclOneRelayInPir(const bool state);
 

@@ -57,7 +57,7 @@ void LaserGroupedUnitsArray::irPinsSwitch(const bool _bTargetState) {           
 void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool _bTargetState) {
   _bTargetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].manualSwitchOneRelay(_bTargetState);
+    LaserGroupedUnits[thisLaserGroupedUnit].manualSwitch(_bTargetState);
   }
 }
 
