@@ -25,8 +25,6 @@ class LaserGroupedUnit
 
     void inclExclInPir(const bool _bTargetPirState);
 
-    void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
-
     void changeBlinkingInterval(const unsigned long targetBlinkingInterval);
 
   private:
