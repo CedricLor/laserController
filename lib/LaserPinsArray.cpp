@@ -25,15 +25,12 @@ short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a 
 // Called from main.cpp exclusively
 void LaserPinsArray::initLaserPins() {
   Serial.print("SETUP: initLaserPins(): starting\n");
-  pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Initialize Laser Pin
     LaserPins[thisPin].index_number = thisPin;
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].physicalInitLaserPin(relayPins[thisPin] /* physical pin number to which this LaserPin is attached */);
   }
   LaserGroupedUnitsArray::pairUnpairAllPins(1); // cooperatively pair all the pins
-  pinParityWitness = 0;
   Serial.print("SETUP: initLaserPins(): done\n");
 }
 
