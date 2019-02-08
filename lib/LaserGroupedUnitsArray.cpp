@@ -6,10 +6,6 @@
 #include "Arduino.h"
 #include "LaserGroupedUnitsArray.h"
 
-LaserGroupedUnit LaserGroupedUnitsArray::LaserGroupedUnits[PIN_COUNT];
-// PIN_COUNT? We define the array of LaserGroupUnits as large as the number of pins connected to the lasers.
-// Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.
-
 short LaserGroupedUnitsArray::loadedLaserUnits = 0;
 
 LaserGroupedUnitsArray::LaserGroupedUnitsArray()

@@ -13,8 +13,6 @@ class LaserGroupedUnitsArray
   public:
     LaserGroupedUnitsArray();
 
-    static LaserGroupedUnit LaserGroupedUnits[];
-
     static short loadedLaserUnits;
 
     static void pairingAll();

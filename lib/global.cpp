@@ -39,6 +39,9 @@ const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
 ControlerBox ControlerBoxes[BOXES_COUNT];
 LaserPin LaserPins[PIN_COUNT];
+LaserGroupedUnit LaserGroupedUnits[PIN_COUNT];
+// PIN_COUNT? We define the array of LaserGroupUnits as large as the number of pins connected to the lasers.
+// Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.
 
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;             // to control your personal task
