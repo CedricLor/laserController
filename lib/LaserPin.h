@@ -29,7 +29,7 @@ class LaserPin
     void physicalInitLaserPin(const short physicalPinNumber);
 
     void switchOnOffVariables(const bool targetState);
-    void switchPointerBlinkCycleState(const bool state);
+    void _switchPointerBlinkCycleState(const bool _bTargetBlinkingState);
 
     void manualSwitchOneRelay(const bool targetState);
 

@@ -17,6 +17,7 @@ const unsigned long LaserPin::_max_interval_on = 600000UL;
    Upon initialization of the board, we create an array of LaserPins without which will be later initialized.
    Upon creating this array, the pins do not receive any parameters, except the default parameters
 */
+// Instanciated in global.cpp
 LaserPin::LaserPin()
 {
   on_off = _default_pin_on_off_state;
@@ -32,6 +33,7 @@ LaserPin::LaserPin()
 
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
+// Called from LaserPinsArray::initLaserPins() only
 void LaserPin::physicalInitLaserPin(const short physicalPinNumber)
 {
   physical_pin_number = physicalPinNumber;
@@ -42,15 +44,15 @@ void LaserPin::physicalInitLaserPin(const short physicalPinNumber)
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 /* Switches the blinking state of the pin
-   Called from (i) myMesh and (ii) this class (LaserPin)*/
-void LaserPin::switchPointerBlinkCycleState(const bool targetBlinkingState) {
-  /* If the targetBlinkingState passed on to the function is LOW,
+   Called from this class (LaserPin::switchOnOffVariables) only*/
+void LaserPin::_switchPointerBlinkCycleState(const bool _bTargetBlinkingState) {
+  /* If the _bTargetBlinkingState passed on to the function is LOW,
      this function sets the blinking property of this LaserPin as true,
      meaning it is in a blinking cycle.
      If the targetBlinkingState passed on to the function is LOW,
      this function sets the blinking property of this LaserPin as false,
      meaning it is no longer a blinking cycle. */
-  (targetBlinkingState == LOW) ? blinking = true : blinking = false;
+  (_bTargetBlinkingState == LOW) ? blinking = true : blinking = false;
 }
 
 /* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
