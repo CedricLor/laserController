@@ -55,7 +55,7 @@ void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
    When clicking on the "On" or "Off" button on the webpage in the PIR column,
    this function subjects one relay to or releases it from the control of the PIR
    Called from myWebServerController ONLY */
-void LaserGroupedUnit::inclExclOneRelayInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
+void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pir_state = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOff(HIGH);
 }

@@ -31,7 +31,7 @@ class LaserGroupedUnit
 
     void manualSwitch(const bool _bTargetOnOffState);
 
-    void inclExclOneRelayInPir(const bool _bTargetPirState);
+    void inclExclInPir(const bool _bTargetPirState);
 
     void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
 
