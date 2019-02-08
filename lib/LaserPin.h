@@ -28,9 +28,9 @@ class LaserPin
 
     void physicalInitLaserPin(const short physicalPinNumber);
 
-    void switchOnOffVariables(const bool targetState);
+    void switchOnOffVariables(const bool _bTargetOnOffState);
 
-    void manualSwitchOneRelay(const bool targetState);
+    void manualSwitchOneRelay(const bool _bTargetOnOffState);
 
     void inclExclOneRelayInPir(const bool state);
 
