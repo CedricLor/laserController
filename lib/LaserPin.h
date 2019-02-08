@@ -29,7 +29,6 @@ class LaserPin
     void physicalInitLaserPin(const short physicalPinNumber);
 
     void switchOnOffVariables(const bool targetState);
-    void _switchPointerBlinkCycleState(const bool _bTargetBlinkingState);
 
     void manualSwitchOneRelay(const bool targetState);
 
@@ -53,6 +52,8 @@ class LaserPin
     short _pairing_type;            // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
 
     static const unsigned long _max_interval_on;
+
+    void _switchPointerBlinkCycleState(const bool _bTargetBlinkingState);
 
     void _pairPin(const short _pinParityWitness, const short pairingType);
     void _unpairPin();

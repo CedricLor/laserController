@@ -56,10 +56,13 @@ void LaserPin::_switchPointerBlinkCycleState(const bool _bTargetBlinkingState) {
 }
 
 /* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
-   Called from (i) pirController, (ii) myMesh, (iii) LaserPinsArray and (iii) this class (LaserPin) */
-void LaserPin::switchOnOffVariables(const bool targetOnOffState) {
-  switchPointerBlinkCycleState(targetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
-  ((index_number > paired_with) && (_pairing_type == 1)) ? (on_off_target = !targetOnOffState): (on_off_target = targetOnOffState);
+   Called from:
+   (i) LaserPinsArray ((a) LaserPinsArray::irPinsSwitch and (b) LaserPinsArray::switchPirRelays);
+   (ii) this class ((a) LaserPin::manualSwitchOneRelay and (b) LaserPin::inclExclOneRelayInPir);
+   (iii) LaserGroupedUnit (LaserGroupedUnit::switchOnOff) */
+void LaserPin::switchOnOffVariables(const bool _bTargetOnOffState) {
+  _switchPointerBlinkCycleState(_bTargetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
+  ((index_number > paired_with) && (_pairing_type == 1)) ? (on_off_target = !_bTargetOnOffState): (on_off_target = _bTargetOnOffState);
 }
 
 
