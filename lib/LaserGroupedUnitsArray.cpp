@@ -32,35 +32,20 @@ void LaserGroupedUnitsArray::cooperativePairing() {
 short int LaserGroupedUnitsArray::pinGlobalModeWitness;
 const char* LaserGroupedUnitsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
-////////////////////////////////////////////////////////////////////////////////
-// INITIALIZE LASER PINS ARRAY
-// Called from main.cpp exclusively
-void LaserGroupedUnitsArray::initLaserPins() {
-  Serial.print("SETUP: initLaserPins(): starting\n");
-  pinParityWitness = 0;
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    // Initialize Laser Pin
-    LaserPins[thisPin].pairUnpairPin(pinParityWitness, 1 /* cooperative pairing */);               // by default, each pin is paired with next (or previous) and in cooperative pairing type
-    LaserPins[thisPin].index_number = thisPin;
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
-    LaserPins[thisPin].physicalInitLaserPin(relayPins[thisPin] /* physical pin number to which this LaserPin is attached */);
-  }
-  pinParityWitness = 0;
-  Serial.print("SETUP: initLaserPins(): done\n");
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
+// IR STARTUP SWITCH
 // Switches relay pins on and off during PIRStartUp
 // Called from pirStartupController exclusively
-void LaserGroupedUnitsArray::irPinsSwitch(const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
-    LaserPins[thisPin].switchOnOffVariables(targetState);
+void LaserGroupedUnitsArray::irPinsSwitch(const bool _bTargetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {        // loop around all the structs representing the pins controlling the relays
+    LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(_bTargetState);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// MANUAL SWITCHES
+// MANUAL SWITCH
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
 // Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
@@ -72,7 +57,7 @@ void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool targetState) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PIR SWITCHES
+// PIR CYCLE SWITCHES
 // Switches on and off all the lasers under Pir control
 // loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
 void LaserGroupedUnitsArray::switchPirRelays(const bool targetState) {
