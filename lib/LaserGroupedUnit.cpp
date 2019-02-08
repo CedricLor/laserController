@@ -42,7 +42,7 @@ void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
   }
 }
 
-/* This function switches this LaserPin on and off (and sets the pir_state property of this LaserPin to LOW)
+/* This function switches this LaserPin on and off (and sets the pir_state property of this LaserGroupedUnit to LOW)
    It is a manual switch in the sense that, by setting the pir_state of the pins to LOW,
    the pin is no longer reacting to signals sent by the PIR (IR) sensor.
    Called from (i) myWebServerController and (ii) LaserPinsArray */
