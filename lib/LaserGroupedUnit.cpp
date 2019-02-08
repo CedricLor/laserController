@@ -28,8 +28,8 @@ LaserGroupedUnit::LaserGroupedUnit()
 /* This function sets the on_off property of the LaserGroupedUnit.
    Corresponds to LaserPin::switchOnOffVariables
    which is called from:
-   (i) LaserPinsArray ((a) LaserPinsArray::irPinsSwitch and (b) LaserPinsArray::switchPirRelays);
-   (ii) LaserPin itself (private calls) ((a) LaserPin::manualSwitchOneRelay and (b) LaserPin::inclExclOneRelayInPir);
+   (i) LaserPinsArray ((a) LaserPinsArray::switchPirRelays);
+   (ii) LaserPin itself (private calls) ((a) LaserPin::manualSwitchOneRelay;
    (iii) LaserGroupedUnit (LaserGroupedUnit::switchOnOff)
    LaserPin::switchOnOffVariables sets the blinking property of its LaserPin. This was not retaken here as a LaserGroupUnit has not blinking property.
    The blinking property of the LaserPins was invented mark them on and off during the cycles.
@@ -65,8 +65,8 @@ void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
 /* PIR SUBJECTION SWITCH
    When clicking on the "PIR On" or "PIR Off" button of the corresponding LaserGroupedUnit,
    this function will subject this LaserGroupUnit to or releases it from the control of the PIR.
-   Corresponds to LaserPin::inclExclOneRelayInPir,
-   which is called from myWebServerController (myWebServerControler::_webInclExclRelaysInPir) ONLY
+   Corresponds to the former LaserPin::inclExclOneRelayInPir,
+   which was called from myWebServerController (myWebServerControler::_webInclExclRelaysInPir) ONLY
 */
 void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   pir_state = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.

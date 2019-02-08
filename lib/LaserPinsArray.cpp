@@ -38,16 +38,6 @@ void LaserPinsArray::initLaserPins() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// SWITCHES
-// Switches relay pins on and off during PIRStartUp
-// Called from pirStartupController exclusively
-void LaserPinsArray::irPinsSwitch(const bool targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (short thisPin = highPinsParityDuringStartup; thisPin < PIN_COUNT; thisPin = thisPin + 2) {        // loop around all the structs representing the pins controlling the relays
-    LaserPins[thisPin].switchOnOffVariables(targetState);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // MANUAL SWITCHES
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
@@ -71,19 +61,6 @@ void LaserPinsArray::switchPirRelays(const bool targetState) {
     }
   }
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// PIR SUBJECTION SWITCHES
-// When clicking on the "On" or "Off" button on the webpage in the PIR column,
-// this function subjects or frees all the relays to or of the control of the PIR
-// Called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserPinsArray::inclExclAllRelaysInPir(const bool targetPirState) {
-  if (targetPirState == HIGH) { pinGlobalModeWitness = 1;}                      // 1 for "IR waiting"
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].pir_state = targetPirState;
-  }
 }
 
 
@@ -116,7 +93,7 @@ bool LaserPinsArray::_tcbOeSlaveBoxCycle() {
 void LaserPinsArray::_tcbOdSlaveBoxCycle() {
   myMeshViews::statusMsg("off");
   manualSwitchAllRelays(HIGH);
-  inclExclAllRelaysInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+  LaserGroupedUnitsArray::inclExclAllInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
 Task LaserPinsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );

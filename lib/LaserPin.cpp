@@ -57,8 +57,8 @@ void LaserPin::_switchPointerBlinkCycleState(const bool _bTargetBlinkingState) {
 
 /* This function sets the on_off_target property of this LaserPin (and sets the blinking property of this LaserPin accordingly)
    Called from:
-   (i) LaserPinsArray ((a) LaserPinsArray::irPinsSwitch and (b) LaserPinsArray::switchPirRelays);
-   (ii) this class ((a) LaserPin::manualSwitchOneRelay and (b) LaserPin::inclExclOneRelayInPir);
+   (i) LaserPinsArray ((a) LaserPinsArray::switchPirRelays);
+   (ii) this class ((a) LaserPin::manualSwitchOneRelay;
    (iii) LaserGroupedUnit (LaserGroupedUnit::switchOnOff) */
 void LaserPin::switchOnOffVariables(const bool _bTargetOnOffState) {
   _switchPointerBlinkCycleState(_bTargetOnOffState);                                                                        // turn the on_off_target state of the struct on or off; the actual pin will be turned on or off in the LASER SAFETY TIMER
@@ -77,15 +77,6 @@ void LaserPin::manualSwitchOneRelay(const bool _bTargetOnOffState) {
   // Serial.printf("MANUAL SWITCHES: manualSwitchOneRelay(const short thisPin, const bool targetState): switching LaserPins[%u] to targetState %s\n", thisPin, (targetState == 0 ? ": on" : ": off"));      // MIGHT CAUSE A BUG!!!
   switchOnOffVariables(_bTargetOnOffState);
   pir_state = LOW; // To be deleted because will be handled at the level of LaserGroupedUnit;
-}
-
-/* PIR SUBJECTION SWITCHES
-   When clicking on the "On" or "Off" button on the webpage in the PIR column,
-   this function subjects one relay to or releases it from the control of the PIR
-   Called from myWebServerController (myWebServerControler::_webInclExclRelaysInPir) ONLY */
-void LaserPin::inclExclOneRelayInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
-  pir_state = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
-  switchOnOffVariables(HIGH);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

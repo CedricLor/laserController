@@ -16,7 +16,7 @@ class myWebServerControler
 
   private:
     static void _webSwitchRelays(AsyncWebParameter* _p2, bool targetState);
-    static void _webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState);
+    static void _webInclExclInPir(AsyncWebParameter* _p2, bool targetState);
     static void _webChangeBlinkingInterval(AsyncWebParameter* _p1, AsyncWebParameter* _p2);
 };
 

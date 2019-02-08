@@ -19,12 +19,12 @@ void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool targetS
   }
 }
 
-void myWebServerControler::_webInclExclRelaysInPir(AsyncWebParameter* _p2, bool targetState) {
+void myWebServerControler::_webInclExclInPir(AsyncWebParameter* _p2, bool _bTargetState) {
   if(_p2->value() == "a"){
-    LaserPinsArray::inclExclAllRelaysInPir(targetState);
+    LaserGroupedUnitsArray::inclExclAllInPir(_bTargetState);
   } else {
-    int val = _p2->value().toInt();
-    LaserPins[val].inclExclOneRelayInPir(targetState);
+    int _val = _p2->value().toInt();
+    LaserGroupedUnits[_val].inclExclInPir(_bTargetState);
   }
 }
 
@@ -62,9 +62,9 @@ void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
     AsyncWebParameter* _p1 = request->getParam("statusIr");
     AsyncWebParameter* _p2 = request->getParam("laser");
     if(_p1->value() == "on"){
-      _webInclExclRelaysInPir(_p2, HIGH);
+      _webInclExclInPir(_p2, HIGH);
     } else {
-      _webInclExclRelaysInPir(_p2, LOW);
+      _webInclExclInPir(_p2, LOW);
     }
     return;
   }

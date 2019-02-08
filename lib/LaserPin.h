@@ -32,8 +32,6 @@ class LaserPin
 
     void manualSwitchOneRelay(const bool _bTargetOnOffState);
 
-    void inclExclOneRelayInPir(const bool state);
-
     void updateLaserPinValuesFromLaserGroupedUnitOwner();
 
     void blinkLaserInBlinkingCycle();

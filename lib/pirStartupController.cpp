@@ -46,10 +46,10 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
-    LaserPinsArray::irPinsSwitch(HIGH);
+    LaserGroupedUnitsArray::irStartupSwitch(HIGH);
     LaserPinsArray::highPinsParityDuringStartup = (LaserPinsArray::highPinsParityDuringStartup == 0) ? 1 : 0;
   }
-  LaserPinsArray::irPinsSwitch(LOW);
+  LaserGroupedUnitsArray::irStartupSwitch(LOW);
   tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
     tLaserOff.restartDelayed(1000);
@@ -65,8 +65,8 @@ bool pirStartupController::onEnablePirStartUpDelayBlinkLaser() {
 
 void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
   LaserGroupedUnitsArray::pairUnpairAllPins(1); // // pairs all the pins, in cooperative pairing
-  LaserPinsArray::irPinsSwitch(HIGH);
-  LaserPinsArray::inclExclAllRelaysInPir(HIGH);                // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE (TO DO). CURRENTLY: includes all the relays in PIR mode
+  LaserGroupedUnitsArray::irStartupSwitch(HIGH);
+  LaserGroupedUnitsArray::inclExclAllInPir(HIGH);              // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE (TO DO). CURRENTLY: includes all the relays in PIR mode
   pirController::tPirCntrl.enable();
 }
 
@@ -77,9 +77,9 @@ Task pirStartupController::tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
 Task pirStartupController::tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
 
 void pirStartupController::cbtLaserOff() {
-  LaserPinsArray::irPinsSwitch(HIGH);
+  LaserGroupedUnitsArray::irStartupSwitch(HIGH);
 }
 
 void pirStartupController::cbtLaserOn() {
-  LaserPinsArray::irPinsSwitch(LOW);
+  LaserGroupedUnitsArray::irStartupSwitch(LOW);
 }

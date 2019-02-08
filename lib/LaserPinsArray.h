@@ -15,15 +15,11 @@ class LaserPinsArray
 
     static void initLaserPins();
 
-    static void irPinsSwitch(const bool targetState);
-
     static short int highPinsParityDuringStartup;
 
     static void manualSwitchAllRelays(const bool targetState);
 
     static void switchPirRelays(const bool state);
-
-    static void inclExclAllRelaysInPir(const bool targetPirState);
 
     static short int pinParityWitness;
 

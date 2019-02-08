@@ -15,7 +15,7 @@ LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 ////////////////////////////////////////////////////////////////////////////////
 // PAIRING SWITCHES: Pairing and unpairing of pins
 ////////////////////////////////////////////////////////////////////////////////
-/* Pairing all LaserPins into LaserGroupedUnits of 2 lasers
+/* PAIRING ALL LaserPins into LaserGroupedUnits of 2 lasers
    Corresponds to:
    - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
    - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
@@ -44,7 +44,7 @@ void LaserGroupedUnitsArray::pairingAll() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Unpairing all LaserPins from LaserGroupedUnits
+/* UNPAIRING ALL LaserPins from their respective owner LaserGroupedUnit
    Putting each LaserPin into its own LaserGroupedUnit
    Corresponds to:
    - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
@@ -63,7 +63,8 @@ void LaserGroupedUnitsArray::unpairingAll() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Pairing_type setter and Wrapper function to simplify calls to pairing and unpairing functions
+/* PAIR UNPAIR ALL PINS
+  Pairing_type setter and Wrapper function to simplify calls to pairing and unpairing functions
    Choses to pair or unpair depending on the param passed to it.
    Corresponds to:
    - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
