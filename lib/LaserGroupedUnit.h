@@ -16,14 +16,9 @@ class LaserGroupedUnit
     short index_number;             // LaserPin type index number in the LaserPinsArray
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions
-    unsigned long previous_time;    // last time this pin changed state (on or off) // NOTE: redundant with last_time_on and last_time_off below
     unsigned long blinking_interval;// how long should this pin blink on and off // NOTE: This variable will be replaced by a "sequence" data structure
     bool pir_state;                 // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
     short pairing_type;             // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
-    short paired_with;              // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
-    unsigned long last_time_on;     // last time this pin was turned on
-    unsigned long last_time_off;    // last time this pin was turned off
-    unsigned long last_interval_on; // last interval during which this pin was turned on
 
     void switchOnOff(const bool _bTargetOnOffState);
 

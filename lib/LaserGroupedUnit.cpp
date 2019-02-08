@@ -21,16 +21,12 @@ LaserGroupedUnit::LaserGroupedUnit()
   on_off = _default_laser_group_on_off_state;
   on_off_target = _default_laser_group_on_off_target_state;
   pir_state = _default_laser_group_pir_state_value;
-  previous_time = millis();
   blinking_interval = pinBlinkingInterval;
-  last_time_on = 0;     // set at 0 at startup
-  last_time_off = millis();    // set at 0 at startup
-  last_interval_on = 0; // set at 0 at startup
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
-// SwitchOnOff
+// SWITCH ON OFF
 /* This function sets the on_off property of the LaserGroupedUnit.
    Corresponds to LaserPin::switchOnOffVariables
    which is called from:
@@ -56,7 +52,7 @@ void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
   // }
 }
 
-/* manualSwitch
+/* MANUAL SWITCH
    This function switches this LaserGroupUnit on and off (and sets the pir_state property of this LaserGroupedUnit to LOW)
    It is a manual switch in the sense that, by setting the pir_state of the pins to LOW,
    the pin is no longer reacting to signals sent by the PIR (IR) sensor.
@@ -68,7 +64,7 @@ void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
   pir_state = LOW;
 }
 
-/* PIR SUBJECTION SWITCHES
+/* PIR SUBJECTION SWITCH
    When clicking on the "PIR On" or "PIR Off" button of the corresponding LaserGroupedUnit,
    this function will subject this LaserGroupUnit to or releases it from the control of the PIR.
    Corresponds to LaserPin::inclExclOneRelayInPir,
@@ -79,11 +75,11 @@ void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state
   switchOnOff(HIGH);
 }
 
-/* PIR SUBJECTION SWITCHES
+/* BLINKING INTERVAL CONTROL
    Changes the blinking interval of this LaserGroupedUnit.
    Corresponds to LaserPin::changeIndividualBlinkingInterval,
    which is called from (i) LaserPinsArray and (ii) myWebServerController
 */
-void LaserGroupedUnit::changeBlinkingInterval(const unsigned long targetBlinkingInterval) {
-  blinking_interval = targetBlinkingInterval;
+void LaserGroupedUnit::changeBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
+  blinking_interval = _ulTargetBlinkingInterval;
 }
