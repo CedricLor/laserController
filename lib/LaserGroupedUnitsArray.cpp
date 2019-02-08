@@ -10,22 +10,27 @@ LaserGroupedUnit LaserGroupedUnitsArray::LaserGroupedUnits[PIN_COUNT];
 // PIN_COUNT? We define the array of LaserGroupUnits as large as the number of pins connected to the lasers.
 // Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.
 
+short LaserGroupedUnitsArray::loadedLaserUnits = 0;
+
 LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
 }
 
+// Cooperative pairing
 void LaserGroupedUnitsArray::cooperativePairing() {
   short int _pinParityWitness = 0;
   short int _counter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Put each pin into a LaserGroupedUnit
     LaserGroupedUnits[_counter].laserPinId = LaserPins[thisPin].index_number;
-    // The following if() is an implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
+    // The following if() is part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
     if (_pinParityWitness == 1) {
       _counter = _counter + 1;
     }
     // end of the cooperative pairing algorythm
   }
+  // The following line is another part of the implementation of cooperative pairing (by default, the pin are grouped in LaserGroupedUnit in cooperative pairing);
+  loadedLaserUnits = _counter - 1;
   _pinParityWitness = 0;
 }
 
@@ -49,10 +54,10 @@ void LaserGroupedUnitsArray::irPinsSwitch(const bool _bTargetState) {           
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
 // Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool targetState) {
-  targetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].manualSwitchOneRelay(targetState);
+void LaserGroupedUnitsArray::manualSwitchAllRelays(const bool _bTargetState) {
+  _bTargetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserPins[thisLaserGroupedUnit].manualSwitchOneRelay(_bTargetState);
   }
 }
 
