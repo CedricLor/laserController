@@ -13,7 +13,6 @@ class LaserPin
   public:
     LaserPin();
 
-    short physical_pin_number;      // pin physical number of the ESP32 which is controling the relay
     short index_number;             // LaserPin type index number in the LaserPinsArray
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions
@@ -34,9 +33,9 @@ class LaserPin
 
     void inclExclOneRelayInPir(const bool state);
 
-    void pairUnpairPin(const short _pinParityWitness, const short pairingType);
+    void pairUnpairPin(const short _sPinParityWitness, const short _sPairingType);
 
-    void changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval);
+    void changeIndividualBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
 
     void blinkLaserInBlinkingCycle();
 
@@ -49,16 +48,17 @@ class LaserPin
     static bool const _default_pin_blinking_state;       // by default, pin starts as in a blinking-cycle TO ANALYSE
     static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
+    short _physical_pin_number;      // pin physical number of the ESP32 which is controling the relay
     short _pairing_type;            // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
 
     static const unsigned long _max_interval_on;
 
     void _switchPointerBlinkCycleState(const bool _bTargetBlinkingState);
 
-    void _pairPin(const short _pinParityWitness, const short pairingType);
+    void _pairPin(const short _sPinParityWitness, const short _sPairingType);
     void _unpairPin();
-    void _cooperativePairing(const short _pinParityWitness);
-    void _twinPairing(const short _pinParityWitness);
+    void _cooperativePairing(const short _sPinParityWitness);
+    void _twinPairing();
 
     void _markTimeChanges();
 };

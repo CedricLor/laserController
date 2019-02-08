@@ -34,11 +34,11 @@ LaserPin::LaserPin()
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
 // Called from LaserPinsArray::initLaserPins() only
-void LaserPin::physicalInitLaserPin(const short physicalPinNumber)
+void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
 {
-  physical_pin_number = physicalPinNumber;
-  pinMode(physicalPinNumber, OUTPUT);     // initialization of the pin connected to each of the relay as output
-  digitalWrite(physicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
+  _physical_pin_number = _sPhysicalPinNumber;
+  pinMode(_sPhysicalPinNumber, OUTPUT);     // initialization of the pin connected to each of the relay as output
+  digitalWrite(_sPhysicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,14 +82,17 @@ void LaserPin::manualSwitchOneRelay(const bool _bTargetOnOffState) {
 /* PIR SUBJECTION SWITCHES
    When clicking on the "On" or "Off" button on the webpage in the PIR column,
    this function subjects one relay to or releases it from the control of the PIR
-   Called from myWebServerController ONLY */
-void LaserPin::inclExclOneRelayInPir(const bool targetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
-  pir_state = targetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
+   Called from myWebServerController (myWebServerControler::_webInclExclRelaysInPir) ONLY */
+void LaserPin::inclExclOneRelayInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
+  pir_state = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   switchOnOffVariables(HIGH);
 }
 
-// Pairs or unpairs two pins together
-// Called from LaserPinsArray
+/* Pairs or unpairs two pins together
+   Called from LaserPinsArray:
+   (a) LaserPinsArray::initLaserPins();
+   (b) LaserPinsArray::pairUnpairAllPins();
+*/
 void LaserPin::pairUnpairPin(const short _pinParityWitness, const short _sPairingType) {
   if (_sPairingType == -1) {
     _unpairPin();
@@ -107,7 +110,7 @@ void LaserPin::_pairPin(const short _pinParityWitness, const short _sPairingType
     return;
   }
   if (_pairing_type == 0) {
-    _twinPairing(_pinParityWitness);
+    _twinPairing();
     return;
   }
 }
@@ -121,30 +124,36 @@ void LaserPin::_unpairPin() {
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)
 // Called from pairUnpairPin
-void LaserPin::_cooperativePairing(const short _pinParityWitness)
+void LaserPin::_cooperativePairing(const short _sPinParityWitness)
 {
-  const short thePairedPinIndexNumber = (_pinParityWitness == 0) ? index_number + 1 : index_number - 1;
-  paired_with = thePairedPinIndexNumber;
+  const short _thePairedPinIndexNumber = (_sPinParityWitness == 0) ? index_number + 1 : index_number - 1;
+  paired_with = _thePairedPinIndexNumber;
 }
 
-void LaserPin::_twinPairing(const short _pinParityWitness)
+void LaserPin::_twinPairing()
 {
-  const short thePairedPinIndexNumber = (index_number < (PIN_COUNT / 2)) ? index_number + (PIN_COUNT / 2) : index_number - (PIN_COUNT / 2);
-  paired_with = thePairedPinIndexNumber;
-}
-
-// Changes the blinking delay of a single pin
-// Called from (i) LaserPinsArray and (ii) myWebServerController
-void LaserPin::changeIndividualBlinkingInterval(const unsigned long targetBlinkingInterval) {
-  blinking_interval = targetBlinkingInterval;
+  const short _thePairedPinIndexNumber = (index_number < (PIN_COUNT / 2)) ? index_number + (PIN_COUNT / 2) : index_number - (PIN_COUNT / 2);
+  paired_with = _thePairedPinIndexNumber;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// Blinking in the class
+// Changes the blinking delay of a single pin
+/* Called from:
+(i) LaserPinsArray (LaserPinsArray::changeGlobalBlinkingInterval) and
+(ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval) */
+void LaserPin::changeIndividualBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
+  blinking_interval = _ulTargetBlinkingInterval;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Blinks the laser when the laser is in blinking cycle
+/* Called from:
+   (i) laserSafetyLoop::loop()
+*/
 void LaserPin::blinkLaserInBlinkingCycle() {
   /*
     Checks:
-    1. if the pin is in blinking
+    1. if the pin is in blinking mode
     2. if so, if the blinking interval of this laser has elapsed
     If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
     TO ANALYSE: this may overwrite other changes that have been requested at other stages
@@ -162,21 +171,24 @@ void LaserPin::blinkLaserInBlinkingCycle() {
 // IO Functions
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Execute Updates
+/* Called from:
+   - laserSafetyLoop::loop()
+*/
 void LaserPin::executePinStateChange() {
   /*
-      Called from within the laser safety loop for each pin
-      Checks whether the current on_off_target state is different than the current on_off state
-      If so:
-      1. turn on or off the laser as requested in the on_off_target_state
-      2. align the on_off state with the on_off_target state
-      3. reset the safety blinking timer of this pin
-      // TO ANALYSE: I have the feeling that the condition to be tested shall be different
-      // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
-      // a blinking cycle and cooling off
+    Called from within the laser safety loop for each pin
+    Checks whether the current on_off_target state is different than the current on_off state
+    If so:
+    1. turn on or off the laser as requested in the on_off_target_state
+    2. align the on_off state with the on_off_target state
+    3. reset the safety blinking timer of this pin
+    // TO ANALYSE: I have the feeling that the condition to be tested shall be different
+    // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
+    // a blinking cycle and cooling off
   */
   if (on_off != on_off_target) {
     _markTimeChanges();
-    digitalWrite(physical_pin_number, on_off_target);
+    digitalWrite(_physical_pin_number, on_off_target);
     on_off = on_off_target;
   }
 }
@@ -198,21 +210,24 @@ void LaserPin::_markTimeChanges() {
 
 // Laser Protection Switch
 // Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
+/* Called from:
+   - laserSafetyLoop::loop()
+*/
 void LaserPin::laserProtectionSwitch() {
   const unsigned long currentTime = millis();
   // OLD DRAFTING --
-  // if ((digitalRead(physical_pin_number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
-  // digitalWrite(physical_pin_number, HIGH);
+  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
+  // digitalWrite(_physical_pin_number, HIGH);
   // PROPOSED REDRAFTING --
-  // if ((digitalRead(physical_pin_number) == LOW) && ((currentTime - last_time_off > _max_interval_on) || (currentTime - last_time_on <  last_interval_on))) {
-  // digitalWrite(physical_pin_number, HIGH);
-  if (digitalRead(physical_pin_number) == LOW) {
+  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - last_time_off > _max_interval_on) || (currentTime - last_time_on <  last_interval_on))) {
+  // digitalWrite(_physical_pin_number, HIGH);
+  if (digitalRead(_physical_pin_number) == LOW) {
     if (currentTime - last_time_off > _max_interval_on) {
-      digitalWrite(physical_pin_number, HIGH);
+      digitalWrite(_physical_pin_number, HIGH);
       return;
     }
     if (currentTime - last_time_on < last_interval_on) {
-      digitalWrite(physical_pin_number, HIGH);
+      digitalWrite(_physical_pin_number, HIGH);
     }
   }
 }

@@ -21,12 +21,10 @@ void laserSafetyLoop::loop() {
   // - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);
   // - update the paired laser or its pair if the lasers are paired;
   // and then, execute the updates.
-  LaserPinsArray::pinParityWitness = 0;
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     LaserPins[thisPin].blinkLaserInBlinkingCycle();
     // _blinkLaserIfBlinking(LaserPins[thisPin]);                          // check if laser is in blinking cycle and check whether the blinking interval has elapsed
     // _ifMasterPairedThenUpdateOnOffOfSlave(LaserPins, thisPin);          // update the on/off status of slave
-    LaserPinsArray::pinParityWitness = (LaserPinsArray::pinParityWitness == 0) ? 1 : 0;
     LaserPins[thisPin].executePinStateChange();
     LaserPins[thisPin].laserProtectionSwitch();
   }
