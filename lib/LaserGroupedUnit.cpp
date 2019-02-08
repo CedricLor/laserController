@@ -73,12 +73,12 @@ void LaserGroupedUnit::pairUnpairPin(const short _sPinParityWitness, const short
 // Pairs this pin to another pin and allows to pair in any type of pairing (twin or cooperative)
 // Called from pairUnpairPin
 void LaserGroupedUnit::_pairPin(const short _pinParityWitness, const short pairingType) {
-  _pairing_type = pairingType;
-  if (_pairing_type == 1) {
+  pairing_type = pairingType;
+  if (pairing_type == 1) {
     _cooperativePairing(_pinParityWitness);
     return;
   }
-  if (_pairing_type == 0) {
+  if (pairing_type == 0) {
     _twinPairing(_pinParityWitness);
     return;
   }
@@ -88,7 +88,7 @@ void LaserGroupedUnit::_pairPin(const short _pinParityWitness, const short pairi
 // Called from pairUnpairPin
 void LaserGroupedUnit::_unpairPin() {
   paired_with = -1;
-  _pairing_type = -1;
+  pairing_type = -1;
 }
 
 // Pairs two adjacent pins together (adjacent in the LaserPinsArray)

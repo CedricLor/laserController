@@ -89,7 +89,10 @@ void LaserPinsArray::inclExclAllRelaysInPir(const bool targetPirState) {
 
 //////////////////////////////////////////////////////////////////////////
 // PAIRING SWITCHES: Pairing and unpairing of pins
-// Called exclusively from pirStartupController
+// Called from:
+// (i) pirStartupController
+// (ii) myMeshController
+// (iii) myWebServerController
 // Loops around all the pins and pairs or unpairs them
 void LaserPinsArray::pairUnpairAllPins(const short pairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
   pinParityWitness = 0;

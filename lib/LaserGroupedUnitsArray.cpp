@@ -16,8 +16,15 @@ LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 {
 }
 
-// Pairing
-void LaserGroupedUnitsArray::pairing() {
+////////////////////////////////////////////////////////////////////////////////
+// PAIRING SWITCHES: Pairing and unpairing of pins
+////////////////////////////////////////////////////////////////////////////////
+/* Pairing all LaserPins into LaserGroupedUnits of 2 lasers
+   Corresponds to:
+   - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
+   - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
+*/
+void LaserGroupedUnitsArray::pairingAll() {
   short int _pinParityWitness = 0;
   short int _groupUnitsCounter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
@@ -25,7 +32,7 @@ void LaserGroupedUnitsArray::pairing() {
     LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
     // increment the counter of laserUnits effectively loaded
     // note: the loadedLaserUnits variable will then be used below, by irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
-    loadedLaserUnits = _groupUnitsCounter - 1;
+    loadedLaserUnits = _groupUnitsCounter;
     // if _pinParityWitness is equal to 1, it means that we already have 2 lasers in the LaserGroupUnit.
     // We then need to store the next pins in a new LaserGroupUnit.
     // For this purpose, we increment the _groupUnitsCounter if _pinParityWitness is equal 1 (i.e. the current pin is the second pin stored in the LaserGroupedUnit).
@@ -40,6 +47,39 @@ void LaserGroupedUnitsArray::pairing() {
   _pinParityWitness = 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/* Unpairing all LaserPins from LaserGroupedUnits
+   Putting each LaserPin into its own LaserGroupedUnit
+   Corresponds to:
+   - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
+   - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
+*/
+void LaserGroupedUnitsArray::unpairingAll() {
+  short int _groupUnitsCounter = 0;
+  for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
+    // Put each pin into a LaserGroupedUnit
+    LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
+    // increment the counter of laserUnits effectively loaded
+    // note: the loadedLaserUnits variable will then be used below, by irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
+    loadedLaserUnits = _groupUnitsCounter;
+    _groupUnitsCounter = _groupUnitsCounter + 1;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/* Pairing type setter
+Corresponds to:
+- LaserPinsArray::initLaserPins() (called from main.cpp in setup());
+- LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
+*/
+void LaserGroupedUnitsArray::setPairingTypeofAll(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserGroupedUnits[thisLaserGroupedUnit].pairUnpairPin(pinParityWitness, _sPairingType);
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 short int LaserGroupedUnitsArray::globalModeWitness;
 const char* LaserGroupedUnitsArray::GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
@@ -99,19 +139,6 @@ void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// PAIRING SWITCHES: Pairing and unpairing of pins
-// Called exclusively from pirStartupController
-// Loops around all the pins and pairs or unpairs them
-void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
-  pinParityWitness = 0;
-  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].pairUnpairPin(pinParityWitness, _sPairingType);
-    pinParityWitness = (pinParityWitness == 0) ? 1 : 0;
-  }
-  pinParityWitness = 0;
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // BLINKING DELAY Control
@@ -140,7 +167,7 @@ bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
 void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
   myMeshViews::statusMsg("off");
   manualSwitchAll(HIGH);
-  inclExclAllRelaysInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+  inclExclAllInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
 Task LaserGroupedUnitsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );

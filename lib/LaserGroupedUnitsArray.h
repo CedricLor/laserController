@@ -17,9 +17,9 @@ class LaserGroupedUnitsArray
 
     static short loadedLaserUnits;
 
-    static void pairing();
-
-    static void initLaserPins();
+    static void pairingAll();
+    static void unpairingAll();
+    static void setPairingTypeofAll(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     static void irStartupSwitch(const bool _bTargetState);
 
@@ -32,7 +32,6 @@ class LaserGroupedUnitsArray
     static void inclExclAllInPir(const bool _bTargetState);
 
     static short int pinParityWitness;
-    static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     static void changeGlobalBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
 
