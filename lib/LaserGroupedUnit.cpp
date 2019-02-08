@@ -39,6 +39,8 @@ LaserGroupedUnit::LaserGroupedUnit()
    (ii) LaserPin itself (private calls) ((a) LaserPin::manualSwitchOneRelay and (b) LaserPin::inclExclOneRelayInPir);
    (iii) LaserGroupedUnit (LaserGroupedUnit::switchOnOff)
 */
+// --> should be redrafted; should not interact directly with the LaserPins (none of the other functions do it.
+// Should be limited to setting a variable that will be read by a reader/setter of laserPins
 void LaserGroupedUnit::switchOnOff(const bool _bTargetOnOffState) {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     if (LaserPins[thisPin].laserGroupedUnitId == index_number) {
