@@ -63,40 +63,18 @@ void LaserGroupedUnitsArray::unpairingAll() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Pairing_type setter
-Calls each of the
-Corresponds to:
-- LaserPinsArray::initLaserPins() (called from main.cpp in setup());
-- LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
+/* Pairing_type setter and Wrapper function to simplify calls to pairing and unpairing functions
+   Choses to pair or unpair depending on the param passed to it.
+   Corresponds to:
+   - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
+   - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
 */
-void LaserGroupedUnitsArray::setPairingTypeofAll(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
+void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
+  (_sPairingType == -1) ? unpairingAll(): pairingAll();
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].pairing_type = _sPairingType;
   }
 }
-
-////////////////////////////////////////////////////////////////////////////////
-/* Wrapper function to simplify calls to pairing and unpairing functions
-   Putting each LaserPin into its own LaserGroupedUnit
-   Corresponds to:
-   - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
-   - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
-   Corresponds to LaserPinsArray::pairUnpairAllPins
-   which was called from:
-  (i) pirStartupController
-  (ii) myMeshController
-  (iii) myWebServerController
-*/
-void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
-  if (_sPairingType == -1) {
-    unpairingAll();
-    setPairingTypeofAll(_sPairingType);
-    return;
-  }
-  pairingAll();
-  setPairingTypeofAll(_sPairingType);
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 short int LaserGroupedUnitsArray::globalModeWitness;
