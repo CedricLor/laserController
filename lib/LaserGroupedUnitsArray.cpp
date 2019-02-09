@@ -156,6 +156,7 @@ void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTa
 
 //////////////////////////////////////////////////////////////////////////
 // AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
+long LaserGroupedUnitsArray::_ulSlaveBoxCycleInterval = 1000UL;
 short LaserGroupedUnitsArray::_siSlaveBoxCycleIterations = 60;
 
 bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
@@ -172,7 +173,7 @@ void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
   inclExclAllInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
-Task LaserGroupedUnitsArray::_tSlaveBoxCycle( 1000, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
+Task LaserGroupedUnitsArray::_tSlaveBoxCycle( _ulSlaveBoxCycleInterval, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
 
 void LaserGroupedUnitsArray::slaveBoxSwitchAll(const bool _bTargetState) {
   if (_bTargetState == LOW) {
@@ -193,6 +194,7 @@ void LaserGroupedUnitsArray::slaveBoxSwitchAll(const bool _bTargetState) {
 
 
 //////////////////////////////////////////////////////////////////////////
+// Task(unsigned long aInterval, long aIterations, TaskCallback aCallback, Scheduler* aScheduler, bool aEnable, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable)
 Task LaserGroupedUnitsArray::tLaserOff( 0, 1, &_cbtLaserOff, &userScheduler );
 
 Task LaserGroupedUnitsArray::tLaserOn( 0, 1, &_cbtLaserOn, &userScheduler );

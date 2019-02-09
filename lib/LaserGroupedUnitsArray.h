@@ -45,6 +45,7 @@ class LaserGroupedUnitsArray
     static void _pairingAll();
     static void _unpairingAll();
 
+    static long _ulSlaveBoxCycleInterval;
     static short _siSlaveBoxCycleIterations;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOeSlaveBoxCycle();
     static void _tcbOdSlaveBoxCycle();
