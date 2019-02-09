@@ -32,8 +32,6 @@ class LaserPin
 
     void physicalInitLaserPin(const short physicalPinNumber);
 
-    void switchOnOffVariables(const bool _bTargetOnOffState);
-
     void updateLaserPinValuesFromLaserGroupedUnitOwner();
 
     void blinkLaserInBlinkingCycle();
