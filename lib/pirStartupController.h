@@ -19,7 +19,6 @@ class pirStartupController
   private:
     static const short SI_PIR_START_UP_DELAY_ITERATIONS;
     static const long L_PIR_START_UP_DELAY;
-    static short _highPinsParityDuringStartup;
 
     static void _cbtPirStartUpDelayBlinkLaser();
     static bool _onEnablePirStartUpDelayBlinkLaser();

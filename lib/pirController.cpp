@@ -59,7 +59,7 @@ void pirController::tcbPirCntrl() {
 }
 
 bool pirController::tcbOnEnablePirCntrl() {
-  LaserGroupedUnitsArray::globalModeWitness = 1;  // 1 means "IR waiting"
+  LaserGroupedUnitsArray::globalModeWitness = 1;          // 1 means "IR waiting"
   return true;
 }
 
@@ -94,7 +94,7 @@ const short pirController::SI_PIR_ITERATIONS = 60;   // iteration of the PIR cyc
    It is enabled when the IR sensor has detected a movement.
 
    Upon being enabled and upon being disabled:
-   1. it switches the state of the property .pir_state of each of the LaserPin;
+   1. it switches the state of the property .pir_state of each of the LaserGroupedUnit;
    2. it sends a message via the mesh to the other box to inform them that it has started a pirCycle.
 
    Note: the blinking delay of each laser or each pair of laser is not defined in the pirController but at the level of the LaserPins.
@@ -103,17 +103,20 @@ Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userSc
 
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool pirController::tcbOnEnablePirCycle() {
+  // Checks that the globalModeWitness reflects the status of the laser controller and update it accordingly if necessary
   if (LaserGroupedUnitsArray::globalModeWitness == 1) {LaserGroupedUnitsArray::globalModeWitness = 2;}  // 1 means "IR cycle on"
-  Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
+  Serial.print("PIR: tcbOnEnablePirCycle(): Motion detected!!!\n");
+  // Place all the LAserGroupedUnits under the controle of the IR
   LaserGroupedUnitsArray::pirSwitchAll(LOW);
+  // Send message to the mesh
   myMeshViews::statusMsg("on");
-  Serial.print("PIR: tcbStartPirCycle(): broadcastPirStatus(\"on\")");
+  Serial.print("PIR: tcbOnEnablePirCycle(): broadcastPirStatus(\"on\")");
   return true;
 }
 
 void pirController::tcbOnDisablePirCycle() {
   if (LaserGroupedUnitsArray::globalModeWitness == 2) {LaserGroupedUnitsArray::globalModeWitness = 1;}  // 1 means "IR cycle on"
-  Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
+  Serial.print("PIR: pirController::tcbOnDisablePirCycle(): PIR time is due. Ending PIR Cycle -------\n");
   stopPirCycle();
 }
 
