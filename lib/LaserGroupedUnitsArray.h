@@ -43,8 +43,6 @@ class LaserGroupedUnitsArray
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[6];
     // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
 
-    static char* pinGlobalMode;
-
   private:
 
     static short _siSlaveBoxCycleIterations;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)

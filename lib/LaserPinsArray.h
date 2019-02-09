@@ -20,7 +20,6 @@ class LaserPinsArray
     static short int pinParityWitness;
 
     static const char* PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6];
-    static char* pinGlobalMode;
 };
 
 #endif
