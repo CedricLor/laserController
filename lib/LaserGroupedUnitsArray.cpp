@@ -102,7 +102,7 @@ void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {        
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which is called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::manualSwitchAll(const bool _bTargetState) {
-  _bTargetState == HIGH ? globalModeWitness = 4 : globalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
+  globalModeWitness = ((_bTargetState == HIGH) ? 4 : 5);      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].manualSwitch(_bTargetState);
   }

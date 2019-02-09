@@ -59,7 +59,7 @@ void pirController::tcbPirCntrl() {
 }
 
 bool pirController::tcbOnEnablePirCntrl() {
-  LaserPinsArray::pinGlobalModeWitness = 1;  // 1 means "IR waiting"
+  LaserGroupedUnitsArray::globalModeWitness = 1;  // 1 means "IR waiting"
   return true;
 }
 
@@ -103,7 +103,7 @@ Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userSc
 
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool pirController::tcbOnEnablePirCycle() {
-  if (LaserPinsArray::pinGlobalModeWitness == 1) {LaserPinsArray::pinGlobalModeWitness = 2;}  // 1 means "IR cycle on"
+  if (LaserGroupedUnitsArray::globalModeWitness == 1) {LaserGroupedUnitsArray::globalModeWitness = 2;}  // 1 means "IR cycle on"
   Serial.print("PIR: tcbStartPirCycle(): Motion detected!!!\n");
   LaserGroupedUnitsArray::pirSwitchAll(LOW);
   myMeshViews::statusMsg("on");
@@ -112,7 +112,7 @@ bool pirController::tcbOnEnablePirCycle() {
 }
 
 void pirController::tcbOnDisablePirCycle() {
-  if (LaserPinsArray::pinGlobalModeWitness == 2) {LaserPinsArray::pinGlobalModeWitness = 1;}  // 1 means "IR cycle on"
+  if (LaserGroupedUnitsArray::globalModeWitness == 2) {LaserGroupedUnitsArray::globalModeWitness = 1;}  // 1 means "IR cycle on"
   Serial.print("PIR: pirController::tcbStopPirCycle(): PIR time is due. Ending PIR Cycle -------\n");
   stopPirCycle();
 }
