@@ -21,17 +21,17 @@ class pirStartupController
     static const long L_PIR_START_UP_DELAY;
     static short _highPinsParityDuringStartup;
 
-    static void cbtPirStartUpDelayBlinkLaser();
-    static bool onEnablePirStartUpDelayBlinkLaser();
-    static void onDisablePirStartUpDelayBlinkLaser();
+    static void _cbtPirStartUpDelayBlinkLaser();
+    static bool _onEnablePirStartUpDelayBlinkLaser();
+    static void _onDisablePirStartUpDelayBlinkLaser();
 
-    static Task tPirStartUpDelayPrintDash;
-    static void cbtPirStartUpDelayPrintDash();
+    static Task _tPirStartUpDelayPrintDash;
+    static void _cbtPirStartUpDelayPrintDash();
 
-    static Task tLaserOff;
-    static Task tLaserOn;
-    static void cbtLaserOff();
-    static void cbtLaserOn();
+    static Task _tLaserOff;
+    static Task _tLaserOn;
+    static void _cbtLaserOff();
+    static void _cbtLaserOn();
 };
 
 #endif

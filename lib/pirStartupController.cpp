@@ -29,20 +29,20 @@ short int pirStartupController::_highPinsParityDuringStartup = 0;
    - upon blinking, the laser do a short blink on - blink off so that the user knows that the IR sensor is still warming up.
    The whole sequence would probably need to be redrafted to relay on the blinking interval defined at the LaserPin level (but for the moment, this has been done here).
 */
-Task pirStartupController::tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
+Task pirStartupController::tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &_cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &_onEnablePirStartUpDelayBlinkLaser, &_onDisablePirStartUpDelayBlinkLaser );
 
 /*
-   tPirStartUpDelayPrintDash prints a dash to the console
+   _tPirStartUpDelayPrintDash prints a dash to the console
    every second, for 9 seconds, during startup.
-   It is re-enabled (re-started) 6 times by cbtPirStartUpDelayBlinkLaser().
+   It is re-enabled (re-started) 6 times by _cbtPirStartUpDelayBlinkLaser().
 */
-Task pirStartupController::tPirStartUpDelayPrintDash( 1000UL, 9, &cbtPirStartUpDelayPrintDash, &userScheduler );
-void pirStartupController::cbtPirStartUpDelayPrintDash() {
+Task pirStartupController::_tPirStartUpDelayPrintDash( 1000UL, 9, &_cbtPirStartUpDelayPrintDash, &userScheduler );
+void pirStartupController::_cbtPirStartUpDelayPrintDash() {
   Serial.print("-");
 }
 
 
-void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
+void pirStartupController::_cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
@@ -50,20 +50,20 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
     _highPinsParityDuringStartup = (_highPinsParityDuringStartup == 0) ? 1 : 0;
   }
   LaserGroupedUnitsArray::irStartupSwitch(LOW);
-  tPirStartUpDelayPrintDash.restartDelayed();
+  _tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
-    tLaserOff.restartDelayed(1000);
-    tLaserOn.restartDelayed(2000);
+    _tLaserOff.restartDelayed(1000);
+    _tLaserOn.restartDelayed(2000);
   }
 }
 
-bool pirStartupController::onEnablePirStartUpDelayBlinkLaser() {
-  LaserGroupedUnitsArray::globalModeWitness = 0;  // 0 means "in pirStartup cycle"
-  LaserGroupedUnitsArray::pairUnpairAllPins(-1);  // unpairs all the pins
+bool pirStartupController::_onEnablePirStartUpDelayBlinkLaser() {
+  LaserGroupedUnitsArray::globalModeWitness = 0;                // 0 means "in pirStartup cycle"
+  LaserGroupedUnitsArray::pairUnpairAllPins(-1);                // unpairs all the pins
   return true;
 }
 
-void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
+void pirStartupController::_onDisablePirStartUpDelayBlinkLaser() {
   LaserGroupedUnitsArray::pairUnpairAllPins(1);                // pairs all the pins, in cooperative pairing
   LaserGroupedUnitsArray::irStartupSwitch(HIGH);               // makes sure that all lasers are turned off
   LaserGroupedUnitsArray::inclExclAllInPir(HIGH);              // includes all the relays in PIR mode
@@ -72,14 +72,14 @@ void pirStartupController::onDisablePirStartUpDelayBlinkLaser() {
 
 
 
-Task pirStartupController::tLaserOff( 0, 1, &cbtLaserOff, &userScheduler );
+Task pirStartupController::_tLaserOff( 0, 1, &_cbtLaserOff, &userScheduler );
 
-Task pirStartupController::tLaserOn( 0, 1, &cbtLaserOn, &userScheduler );
+Task pirStartupController::_tLaserOn( 0, 1, &_cbtLaserOn, &userScheduler );
 
-void pirStartupController::cbtLaserOff() {
+void pirStartupController::_cbtLaserOff() {
   LaserGroupedUnitsArray::irStartupSwitch(HIGH);
 }
 
-void pirStartupController::cbtLaserOn() {
+void pirStartupController::_cbtLaserOn() {
   LaserGroupedUnitsArray::irStartupSwitch(LOW);
 }
