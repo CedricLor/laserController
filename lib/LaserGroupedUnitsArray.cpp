@@ -20,7 +20,7 @@ LaserGroupedUnitsArray::LaserGroupedUnitsArray()
    - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
    - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
 */
-void LaserGroupedUnitsArray::pairingAll() {
+void LaserGroupedUnitsArray::_pairingAll() {
   short int _pinParityWitness = 0;
   short int _groupUnitsCounter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
@@ -50,7 +50,7 @@ void LaserGroupedUnitsArray::pairingAll() {
    - LaserPinsArray::initLaserPins() (called from main.cpp in setup());
    - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
 */
-void LaserGroupedUnitsArray::unpairingAll() {
+void LaserGroupedUnitsArray::_unpairingAll() {
   short int _groupUnitsCounter = 0;
   for (short int thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     // Put each pin into a LaserGroupedUnit
@@ -71,7 +71,7 @@ void LaserGroupedUnitsArray::unpairingAll() {
    - LaserPinsArray::pairUnpairAllPins (called from myMeshController, myWebServerController and pirStartupController).
 */
 void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/) {
-  (_sPairingType == -1) ? unpairingAll(): pairingAll();
+  (_sPairingType == -1) ? _unpairingAll(): _pairingAll();
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].pairing_type = _sPairingType;
   }

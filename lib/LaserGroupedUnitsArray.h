@@ -15,8 +15,6 @@ class LaserGroupedUnitsArray
 
     static short loadedLaserUnits;
 
-    static void pairingAll();
-    static void unpairingAll();
     static void setPairingTypeofAll(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
     static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
@@ -42,6 +40,8 @@ class LaserGroupedUnitsArray
     // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
 
   private:
+    static void _pairingAll();
+    static void _unpairingAll();
 
     static short _siSlaveBoxCycleIterations;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOeSlaveBoxCycle();
