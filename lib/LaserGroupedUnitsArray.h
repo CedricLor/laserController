@@ -15,32 +15,30 @@ class LaserGroupedUnitsArray
 
     static short loadedLaserUnits;
 
+    // initialization and recomposition of the LaserGroupedUnitsArray
     static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
-    static void irStartupSwitch(const bool _bTargetState);
-
-    static void manualSwitchAll(const bool _bTargetState);
-
-    static void pirSwitchAll(const bool _bTargetState);
-
-    static void inclExclAllInPir(const bool _bTargetState);
-
-    static short int pinParityWitness;
-
-    static void changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval);
-
-    static void slaveBoxSwitchAll(const bool targetState);
-
+    // state machine variables
     static short int currentState;
     static short int previousState;
     // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off
     // !!! TO DO -- this corresponds to the former pinGlobalModeWitness of LaserPinsArray
-
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[6];
     // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
 
+    // state machine actions
+    static void irStartupSwitch(const bool _bTargetState);
+    static void manualSwitchAll(const bool _bTargetState);
+    static void pirSwitchAll(const bool _bTargetState);
+    static void slaveBoxSwitchAll(const bool targetState);
+
+    // extracted from pirStartupController
     static Task tLaserOff;
     static Task tLaserOn;
+
+    // various switches
+    static void inclExclAllInPir(const bool _bTargetState);
+    static void changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval);
 
   private:
     static void _pairingAll();
