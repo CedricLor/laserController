@@ -55,7 +55,7 @@ void pirStartupController::_cbtPirStartUpDelayBlinkLaser() {
 }
 
 bool pirStartupController::_onEnablePirStartUpDelayBlinkLaser() {
-  LaserGroupedUnitsArray::globalModeWitness = 0;                // 0 means "in pirStartup cycle"
+  LaserGroupedUnitsArray::currentState = 0;                // 0 means "in pirStartup cycle"
   LaserGroupedUnitsArray::pairUnpairAllPins(-1 /* -1 for unpairing */);
   return true;
 }

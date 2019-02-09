@@ -31,7 +31,8 @@ class LaserGroupedUnitsArray
 
     static void slaveBoxSwitchAll(const bool targetState);
 
-    static short int globalModeWitness;
+    static short int currentState;
+    static short int previousState;
     // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off
     // !!! TO DO -- this corresponds to the former pinGlobalModeWitness of LaserPinsArray
 

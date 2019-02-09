@@ -78,13 +78,15 @@ void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 un
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-short int LaserGroupedUnitsArray::globalModeWitness;
+////////////////////////////////////////////////////////////////////////////////
+// STATE MACHINE
+short int LaserGroupedUnitsArray::currentState;
+short int LaserGroupedUnitsArray::previousState;
 const char* LaserGroupedUnitsArray::GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// SWITCHES
-// IR STARTUP SWITCH
+// STATE 0 (pirStartUp cycle) ACTIONS: IR STARTUP SWITCH
 // Switches relay pins on and off during PIRStartUp
 // Corresponds to LaserPinsArray::irPinsSwitch(const bool targetState)
 // which was called from pirStartupController exclusively
@@ -95,21 +97,21 @@ void LaserGroupedUnitsArray::irStartupSwitch(const bool _bTargetState) {        
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// MANUAL SWITCH
+// STATES 4 (manual, in on state) AND 5 (manual, in off state) ACTIONS: MANUAL SWITCH
 // Switches on and off all the lasers
 // Manual in the sense that it also switches the pir_state of the LaserGroupedUnit to LOW
 // (i.e. the LaserGroupedUnit will no longer be reacting to IR signals)
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which is called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::manualSwitchAll(const bool _bTargetState) {
-  globalModeWitness = ((_bTargetState == HIGH) ? 4 : 5);      // 4 for "manual with cycle off", 5 for "manual with cycle off"
+  currentState = ((_bTargetState == HIGH) ? 4 : 5);      // 4 for "manual with cycle off", 5 for "manual with cycle off"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].manualSwitch(_bTargetState);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// PIR CYCLE SWITCHES
+// STATES 1 (IR waiting) AND 2 (IR cycle on) ACTIONS: PIR CYCLE SWITCHES
 // Switches on and off all the LaserGroupUnits under Pir control
 // Corresponds to LaserPinsArray::switchPirRelays
 // which is called from pirController twice
@@ -124,45 +126,15 @@ void LaserGroupedUnitsArray::pirSwitchAll(const bool _bTargetState) {
   Serial.print("PIR: pirSwitchAll(const bool state): leaving -------\n");
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// PIR SUBJECTION SWITCHES
-// This function subjects or frees all the LaserGroupUnits to or of the control of the PIR
-// Corresponds to LaserPinsArray::inclExclAllRelaysInPir
-// which is called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
-  if (_bTargetPirState == HIGH) { globalModeWitness = 1;}                      // 1 for "IR waiting"
-  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].pir_state = _bTargetPirState;
-  }
-}
-
-
 //////////////////////////////////////////////////////////////////////////
-// BLINKING INTERVAL Control
-// Changes the blinking delay of each LaserGroupedUnit and saves such new blinking delay in Preferences
-// Corresponds to LaserPinsArray::changeGlobalBlinkingInterval.
-// which is called from:
-// (i) myWebServerController;
-// (ii) myMeshController.
-void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval) {
-  pinBlinkingInterval = _ulTargetBlinkingInterval;
-  mySavedPrefs::savePreferences();
-  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].changeBlinkingInterval(_ulTargetBlinkingInterval);
-    mySavedPrefs::savePreferences();
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
+// STATE 3 (slave cycle on) ACTION: AUTO-SWITCHES UPON REQUEST FROM OTHER BOX
 long LaserGroupedUnitsArray::_ulSlaveBoxCycleInterval = 1000UL;
 short LaserGroupedUnitsArray::_siSlaveBoxCycleIterations = 60;
 
 bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
   myMeshViews::statusMsg("on");
   manualSwitchAll(LOW);
-  globalModeWitness = 3;      // 3 for "slave cycle on"
+  currentState = 3;      // 3 for "slave cycle on"
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
 }
@@ -193,7 +165,9 @@ void LaserGroupedUnitsArray::slaveBoxSwitchAll(const bool _bTargetState) {
 // }
 
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Task(unsigned long aInterval, long aIterations, TaskCallback aCallback, Scheduler* aScheduler, bool aEnable, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable)
 Task LaserGroupedUnitsArray::tLaserOff( 0, 1, &_cbtLaserOff, &userScheduler );
 
@@ -205,4 +179,36 @@ void LaserGroupedUnitsArray::_cbtLaserOff() {
 
 void LaserGroupedUnitsArray::_cbtLaserOn() {
   irStartupSwitch(LOW);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// SOME SWITCHES
+////////////////////////////////////////////////////////////////////////////////
+// PIR SUBJECTION SWITCHES
+// This function subjects or frees all the LaserGroupUnits to or of the control of the PIR
+// Corresponds to LaserPinsArray::inclExclAllRelaysInPir
+// which is called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
+void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
+  if (_bTargetPirState == HIGH) { currentState = 1;}                      // 1 for "IR waiting"
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserGroupedUnits[thisLaserGroupedUnit].pir_state = _bTargetPirState;
+  }
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// BLINKING INTERVAL Control
+// Changes the blinking delay of each LaserGroupedUnit and saves such new blinking delay in Preferences
+// Corresponds to LaserPinsArray::changeGlobalBlinkingInterval.
+// which is called from:
+// (i) myWebServerController;
+// (ii) myMeshController.
+void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval) {
+  pinBlinkingInterval = _ulTargetBlinkingInterval;
+  mySavedPrefs::savePreferences();
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
+    LaserGroupedUnits[thisLaserGroupedUnit].changeBlinkingInterval(_ulTargetBlinkingInterval);
+    mySavedPrefs::savePreferences();
+  }
 }
