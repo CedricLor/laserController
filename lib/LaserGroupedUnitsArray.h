@@ -15,7 +15,6 @@ class LaserGroupedUnitsArray
 
     static short loadedLaserUnits;
 
-    static void setPairingTypeofAll(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
     static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     static void irStartupSwitch(const bool _bTargetState);
