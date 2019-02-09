@@ -14,7 +14,7 @@ pirStartupController::pirStartupController()
 const short pirStartupController::SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
 const long pirStartupController::L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
 
-short LaserPinsArray::highPinsParityDuringStartup = 0;
+short int pirStartupController::_highPinsParityDuringStartup = 0;
 
 /*
    tPirStartUpDelayBlinkLaser is the first task to be enabled upon setup of the ESP32
@@ -47,7 +47,7 @@ void pirStartupController::cbtPirStartUpDelayBlinkLaser() {
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
     LaserGroupedUnitsArray::irStartupSwitch(HIGH);
-    LaserPinsArray::highPinsParityDuringStartup = (LaserPinsArray::highPinsParityDuringStartup == 0) ? 1 : 0;
+    _highPinsParityDuringStartup = (_highPinsParityDuringStartup == 0) ? 1 : 0;
   }
   LaserGroupedUnitsArray::irStartupSwitch(LOW);
   tPirStartUpDelayPrintDash.restartDelayed();

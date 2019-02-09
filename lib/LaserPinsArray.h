@@ -15,8 +15,6 @@ class LaserPinsArray
 
     static void initLaserPins();
     static void endloop();
-
-    static short int highPinsParityDuringStartup;
 };
 
 #endif

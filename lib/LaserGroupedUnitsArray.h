@@ -22,8 +22,6 @@ class LaserGroupedUnitsArray
 
     static void irStartupSwitch(const bool _bTargetState);
 
-    static short int highPinsParityDuringStartup;
-
     static void manualSwitchAll(const bool _bTargetState);
 
     static void pirSwitchAll(const bool _bTargetState);
