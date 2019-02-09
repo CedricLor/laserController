@@ -17,10 +17,6 @@ class LaserPinsArray
 
     static short int highPinsParityDuringStartup;
 
-    static void manualSwitchAllRelays(const bool targetState);
-
-    static void switchPirRelays(const bool state);
-
     static short int pinParityWitness;
 
     static short int pinGlobalModeWitness;   // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off

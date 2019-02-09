@@ -115,13 +115,13 @@ void LaserGroupedUnitsArray::manualSwitchAll(const bool _bTargetState) {
 // which is called from pirController twice
 // loop over each of the loaded LaserGroupUnits to turn them on or off (if they are controlled by the PIR)
 void LaserGroupedUnitsArray::pirSwitchAll(const bool _bTargetState) {
-  Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
+  Serial.print("PIR: pirSwitchAll(const bool state): starting -------\n");
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     if (LaserGroupedUnits[thisLaserGroupedUnit].pir_state == HIGH) {
       LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(_bTargetState);
     }
   }
-  Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
+  Serial.print("PIR: pirSwitchAll(const bool state): leaving -------\n");
 }
 
 

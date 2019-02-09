@@ -33,29 +33,3 @@ void LaserPinsArray::initLaserPins() {
   LaserGroupedUnitsArray::pairUnpairAllPins(1); // cooperatively pair all the pins
   Serial.print("SETUP: initLaserPins(): done\n");
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// MANUAL SWITCHES
-// Switches on and off all the lasers
-// Manual in the sense that it also switches the pir_state of the pins to LOW (i.e. the pin is no longer reacting to IR signals)
-// Called from (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserPinsArray::manualSwitchAllRelays(const bool targetState) {
-  targetState == HIGH ? pinGlobalModeWitness = 4 : pinGlobalModeWitness = 5;      // 4 for "manual with cycle off", 5 for "manual with cycle off"
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserPins[thisPin].manualSwitchOneRelay(targetState);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// PIR SWITCHES
-// Switches on and off all the lasers under Pir control
-// loop over each of the structs representing pins to turn them on or off (if they are controlled by the PIR)
-void LaserPinsArray::switchPirRelays(const bool targetState) {
-  Serial.print("PIR: switchPirRelays(const bool state): starting -------\n");
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    if (LaserPins[thisPin].pir_state == HIGH) {
-      LaserPins[thisPin].switchOnOffVariables(targetState);
-    }
-  }
-  Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
-}
