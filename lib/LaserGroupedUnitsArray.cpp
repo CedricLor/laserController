@@ -190,3 +190,17 @@ void LaserGroupedUnitsArray::slaveBoxSwitchAll(const bool _bTargetState) {
 //       Serial.println("auto Switch request executed");
 //    */
 // }
+
+
+//////////////////////////////////////////////////////////////////////////
+Task LaserGroupedUnitsArray::tLaserOff( 0, 1, &_cbtLaserOff, &userScheduler );
+
+Task LaserGroupedUnitsArray::tLaserOn( 0, 1, &_cbtLaserOn, &userScheduler );
+
+void LaserGroupedUnitsArray::_cbtLaserOff() {
+  irStartupSwitch(HIGH);
+}
+
+void LaserGroupedUnitsArray::_cbtLaserOn() {
+  irStartupSwitch(LOW);
+}

@@ -52,8 +52,8 @@ void pirStartupController::_cbtPirStartUpDelayBlinkLaser() {
   LaserGroupedUnitsArray::irStartupSwitch(LOW);
   _tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
-    _tLaserOff.restartDelayed(1000);
-    _tLaserOn.restartDelayed(2000);
+    LaserGroupedUnitsArray::tLaserOff.restartDelayed(1000);
+    LaserGroupedUnitsArray::tLaserOn.restartDelayed(2000);
   }
 }
 
@@ -73,18 +73,4 @@ void pirStartupController::_onDisablePirStartUpDelayBlinkLaser() {
   LaserGroupedUnitsArray::inclExclAllInPir(HIGH);
   // enable the pirController
   pirController::tPirCntrl.enable();
-}
-
-
-
-Task pirStartupController::_tLaserOff( 0, 1, &_cbtLaserOff, &userScheduler );
-
-Task pirStartupController::_tLaserOn( 0, 1, &_cbtLaserOn, &userScheduler );
-
-void pirStartupController::_cbtLaserOff() {
-  LaserGroupedUnitsArray::irStartupSwitch(HIGH);
-}
-
-void pirStartupController::_cbtLaserOn() {
-  LaserGroupedUnitsArray::irStartupSwitch(LOW);
 }

@@ -27,11 +27,6 @@ class pirStartupController
 
     static Task _tPirStartUpDelayPrintDash;
     static void _cbtPirStartUpDelayPrintDash();
-
-    static Task _tLaserOff;
-    static Task _tLaserOn;
-    static void _cbtLaserOff();
-    static void _cbtLaserOn();
 };
 
 #endif

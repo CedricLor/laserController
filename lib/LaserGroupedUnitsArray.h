@@ -38,6 +38,9 @@ class LaserGroupedUnitsArray
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[6];
     // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
 
+    static Task tLaserOff;
+    static Task tLaserOn;
+
   private:
     static void _pairingAll();
     static void _unpairingAll();
@@ -46,6 +49,9 @@ class LaserGroupedUnitsArray
     static bool _tcbOeSlaveBoxCycle();
     static void _tcbOdSlaveBoxCycle();
     static Task _tSlaveBoxCycle;
+
+    static void _cbtLaserOff();
+    static void _cbtLaserOn();
 };
 
 #endif
