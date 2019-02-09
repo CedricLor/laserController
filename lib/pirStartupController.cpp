@@ -59,14 +59,19 @@ void pirStartupController::_cbtPirStartUpDelayBlinkLaser() {
 
 bool pirStartupController::_onEnablePirStartUpDelayBlinkLaser() {
   LaserGroupedUnitsArray::globalModeWitness = 0;                // 0 means "in pirStartup cycle"
-  LaserGroupedUnitsArray::pairUnpairAllPins(-1);                // unpairs all the pins
+  LaserGroupedUnitsArray::pairUnpairAllPins(-1 /* -1 for unpairing */);
   return true;
 }
 
 void pirStartupController::_onDisablePirStartUpDelayBlinkLaser() {
-  LaserGroupedUnitsArray::pairUnpairAllPins(1);                // pairs all the pins, in cooperative pairing
-  LaserGroupedUnitsArray::irStartupSwitch(HIGH);               // makes sure that all lasers are turned off
-  LaserGroupedUnitsArray::inclExclAllInPir(HIGH);              // includes all the relays in PIR mode
+  // pairs all the pins, in cooperative pairing
+  // first initialization of the LaserGroupedUnitsArray (i.e. first time loading of the LAserPins into the LaserGroupedUnits)
+  LaserGroupedUnitsArray::pairUnpairAllPins(1 /* 1 for cooperative pairing */);
+  // makes sure that all lasers are turned off
+  LaserGroupedUnitsArray::irStartupSwitch(HIGH);
+  // includes all the relays in PIR mode
+  LaserGroupedUnitsArray::inclExclAllInPir(HIGH);
+  // enable the pirController
   pirController::tPirCntrl.enable();
 }
 
