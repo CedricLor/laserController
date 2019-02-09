@@ -15,7 +15,7 @@ laserSafetyLoop::laserSafetyLoop()
 // LASER SAFETY TIMER -- EXECUTED AT THE END OF EACH LOOP
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void laserSafetyLoop::loop() {
+void laserSafetyLoop::endloop() {
   // Loop around each struct representing a pin connected to a laser before restarting a global loop and
   // make any update that may be required. For instance:
   // - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);

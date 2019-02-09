@@ -76,7 +76,7 @@ void loop() {
   ArduinoOTA.handle();
   userScheduler.execute();   // it will run mesh scheduler as well
   laserControllerMesh.update();
-  laserSafetyLoop::loop();
+  laserSafetyLoop::endloop();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
