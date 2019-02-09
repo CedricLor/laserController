@@ -10,13 +10,6 @@ LaserPinsArray::LaserPinsArray()
 {
 }
 
-short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
-                             // it avoids using the modulo.
-                             // by switching it to 0 and 1 at each iteration of the loop
-                             // in principle, the switch takes the following footprint: LaserPin::pinParityWitness = (LaserPin::pinParityWitness == 0) ? 1 : 0;
-                             // this footprint shall be inserted as the last instruction within the loop (so that it is set to the correct state for the following iteration).
-                             // once the loop is over, it should be reset to 0: LaserPin::pinParityWitness = 0;
-
 ////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS ARRAY
 // Called from main.cpp exclusively
@@ -53,5 +46,4 @@ void LaserPinsArray::endloop() {
     LaserPins[thisPin].executePinStateChange();
     LaserPins[thisPin].laserProtectionSwitch();
   }
-  LaserPinsArray::pinParityWitness = 0;
 }
