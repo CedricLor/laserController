@@ -69,18 +69,18 @@ void myMeshController::_manualSwitch(JsonObject& _root) {
 
 void myMeshController::_changeInclusionIR(JsonObject& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
-  short iTargetState;
-  const char* sTargetState = _root["ts"];
-  iTargetState = atoi(sTargetState);
-  LaserGroupedUnitsArray::inclExclAllInPir(iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
+  short _iTargetState;
+  const char* _sTargetState = _root["ts"];
+  _iTargetState = atoi(_sTargetState);
+  LaserGroupedUnitsArray::inclExclAllInPir(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
 void myMeshController::_changeBlinkingInterval(JsonObject& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
-  unsigned long iTargetBlinkingInterval;
-  const char* sTargetBlinkingInterval = _root["ti"];
-  iTargetBlinkingInterval = atoi(sTargetBlinkingInterval);
-  LaserPinsArray::changeGlobalBlinkingInterval(iTargetBlinkingInterval);
+  unsigned long _ulTargetBlinkingInterval;
+  const char* _sTargetBlinkingInterval = _root["ti"];
+  _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
+  LaserGroupedUnitsArray::changeBlinkingIntervalAll(_ulTargetBlinkingInterval);
 }
 
 void myMeshController::_changeMasterBox(JsonObject& _root) {

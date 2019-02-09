@@ -59,18 +59,3 @@ void LaserPinsArray::switchPirRelays(const bool targetState) {
   }
   Serial.print("PIR: switchPirRelays(const bool state): leaving -------\n");
 }
-
-
-//////////////////////////////////////////////////////////////////////////
-// BLINKING DELAY Control
-// Changes the blinking delay of each pin and saves such new blinking delay in Preferences
-// Called from:
-// (i) myWebServerController;
-// (ii) myMeshController.
-void LaserPinsArray::changeGlobalBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
-  pinBlinkingInterval = _ulTargetBlinkingInterval;
-  mySavedPrefs::savePreferences();
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    LaserGroupedUnits[thisPin].changeBlinkingInterval(_ulTargetBlinkingInterval);
-  }
-}

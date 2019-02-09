@@ -80,8 +80,8 @@ void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state
    (i) LaserPinsArray (LaserPinsArray::changeGlobalBlinkingInterval); and
    (ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval).
    This function is called from:
-   - (i) myWebServerController;
-   - (ii) laserPinsArray;
+   (i) laserPinsArray (LaserGroupedUnitsArray::changeBlinkingIntervalAll);
+   (ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval);
 */
 void LaserGroupedUnit::changeBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
   blinking_interval = _ulTargetBlinkingInterval;
