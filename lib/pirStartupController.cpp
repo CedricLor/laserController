@@ -29,7 +29,7 @@ short LaserPinsArray::highPinsParityDuringStartup = 0;
    - upon blinking, the laser do a short blink on - blink off so that the user knows that the IR sensor is still warming up.
    The whole sequence would probably need to be redrafted to relay on the blinking interval defined at the LaserPin level (but for the moment, this has been done here).
 */
-Task pirStartupController::tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &pirStartupController::cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &pirStartupController::onEnablePirStartUpDelayBlinkLaser, &pirStartupController::onDisablePirStartUpDelayBlinkLaser );
+Task pirStartupController::tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &onEnablePirStartUpDelayBlinkLaser, &onDisablePirStartUpDelayBlinkLaser );
 
 /*
    tPirStartUpDelayPrintDash prints a dash to the console
