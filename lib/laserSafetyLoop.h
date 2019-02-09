@@ -13,7 +13,6 @@ class laserSafetyLoop
   public:
     laserSafetyLoop();
 
-    static void endloop();
 
 };
 

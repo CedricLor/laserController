@@ -15,6 +15,8 @@ class LaserPinsArray
 
     static void initLaserPins();
 
+    static void endloop();
+
     static short int highPinsParityDuringStartup;
 
     static short int pinParityWitness;
