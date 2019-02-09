@@ -10,7 +10,6 @@ LaserPinsArray::LaserPinsArray()
 {
 }
 
-short int LaserPinsArray::pinGlobalModeWitness;
 const char* LaserPinsArray::PIN_GLOBAL_WITNESS_TEXT_DESCRIPTORS[6] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual, in on state", "manual, in off state"};
 
 short LaserPinsArray::pinParityWitness = 0;  // LaserPin::pinParityWitness is a variable that can be used when looping around the pins structs array.
