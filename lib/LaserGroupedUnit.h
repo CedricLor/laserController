@@ -20,11 +20,8 @@ class LaserGroupedUnit
     short pairing_type;             // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
 
     void switchOnOff(const bool _bTargetOnOffState);
-
     void manualSwitch(const bool _bTargetOnOffState);
-
     void inclExclInPir(const bool _bTargetPirState);
-
     void changeBlinkingInterval(const unsigned long targetBlinkingInterval);
 
   private:

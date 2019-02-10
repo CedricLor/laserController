@@ -132,7 +132,7 @@ void myMeshController::_slaveBoxSwitch(JsonObject& root) {
   } else if (strstr(cSenderStatus, "off")  > 0) {
     // else if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::_previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
+    LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
     LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1];
   }
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");

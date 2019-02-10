@@ -19,10 +19,9 @@ class LaserGroupedUnitsArray
     static void pairUnpairAllPins(const short _sPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 
     // state machine variables
-    // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off
-    // !!! TO DO -- this corresponds to the former pinGlobalModeWitness of LaserPinsArray
-    static short int _currentState;
-    static short int _previousState;
+    // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual
+    static short int currentState;  // read access from pirController
+    static short int previousState; // set access from myMeshController
     static short int targetState;
     static bool bTargetStateOfLaserGroupUnits;
     // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
@@ -33,7 +32,7 @@ class LaserGroupedUnitsArray
     static void setTargetState(const short int __sTargetState);
 
     // state machine reader
-    static long int _tActUponStateChangesInterval;
+    static long int _liActUponStateChangesInterval;
     static Task _tActUponStateChanges;
     static void _tcbActUponStateChanges();
 
