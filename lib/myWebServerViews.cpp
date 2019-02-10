@@ -188,7 +188,7 @@ String myWebServerViews::printCurrentStatus(const short thisPin) {
   } else {
     currentStatus += " OFF ";
   }
-  if (LaserPins[thisPin].pir_state == HIGH) {
+  if (LaserPins[thisPin].pirState() == HIGH) {
     currentStatus += " in IR mode ";
   } else {
     currentStatus += " in manual mode ";
@@ -208,7 +208,7 @@ String myWebServerViews::printOnOffControl(const short thisPin) {
 
 String myWebServerViews::printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
-  if (LaserPins[thisPin].pir_state == LOW) {
+  if (LaserPins[thisPin].pirState() == LOW) {
     pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
     pirStatusCntrl += thisPin + 1;
     pirStatusCntrl += "\"><button>IR ON</button></a>&nbsp;";

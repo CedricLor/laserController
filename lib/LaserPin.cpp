@@ -10,7 +10,6 @@
 bool const LaserPin::_default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const LaserPin::_default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
 bool const LaserPin::_default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-bool const LaserPin::_default_pin_pir_state_value = LOW;       // by default, the pin is not controlled by the PIR
 const unsigned long LaserPin::_max_interval_on = 600000UL;
 
 /* Default constructor: required by the global.cpp
@@ -23,7 +22,6 @@ LaserPin::LaserPin()
   on_off = _default_pin_on_off_state;
   on_off_target = _default_pin_on_off_target_state;
   previous_time = millis();
-  pir_state = _default_pin_pir_state_value;
   last_time_on = 0;             // set at 0 at startup
   last_time_off = millis();     // set at current time at startup
   last_interval_on = 0;         // set at 0 at startup
@@ -80,6 +78,10 @@ short LaserPin::pairedWith() {
     }
   }
   return -1;
+}
+
+bool LaserPin::pirState() {
+  return LaserGroupedUnits[laserGroupedUnitId].currentPirState;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

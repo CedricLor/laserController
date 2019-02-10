@@ -41,13 +41,12 @@ class LaserPin
     bool blinking();                    // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
     unsigned long blinkingInterval();   // how long should this pin blink on and off
     short pairedWith();                 // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
-    bool pir_state;                     // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
+    bool pirState();                    // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
 
   private:
     static bool const _default_pin_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
     static bool const _default_pin_on_off_target_state; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
     static bool const _default_pin_blinking_state;       // by default, pin starts as in a blinking-cycle TO ANALYSE
-    static bool const _default_pin_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     short _physical_pin_number;      // pin physical number of the ESP32 which is controlling the relay
 
