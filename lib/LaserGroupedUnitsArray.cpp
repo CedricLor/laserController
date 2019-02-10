@@ -205,7 +205,7 @@ bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
 void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
   myMeshViews::statusMsg("off");
   _manualSwitchAll(HIGH);
-  inclExclAllInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
+  _inclExclAllInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
 Task LaserGroupedUnitsArray::_tSlaveBoxCycle( _ulSlaveBoxCycleInterval, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
@@ -252,7 +252,7 @@ void LaserGroupedUnitsArray::_cbtLaserOn() {
 // This function subjects or frees all the LaserGroupUnits to or of the control of the PIR
 // Corresponds to LaserPinsArray::inclExclAllRelaysInPir
 // which is called from (i) myWebServerController, (ii) pirStartupController and (iii) this class (LaserPin)
-void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
+void LaserGroupedUnitsArray::_inclExclAllInPir(const bool _bTargetPirState) {
   if (_bTargetPirState == HIGH) { currentState = 1;}                      // 1 for "IR waiting"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].pir_state = _bTargetPirState;
@@ -267,7 +267,7 @@ void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
 // which is called from:
 // (i) myWebServerController;
 // (ii) myMeshController.
-void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval) {
+void LaserGroupedUnitsArray::_changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval) {
   pinBlinkingInterval = _ulTargetBlinkingInterval; // pinBlinkingInterval is a global variable defined in global.cpp
   mySavedPrefs::savePreferences();
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {

@@ -50,24 +50,22 @@ class LaserGroupedUnitsArray
     static Task tLaserOff;
     static Task tLaserOn;
 
-    // various switches
-    static void inclExclAllInPir(const bool _bTargetState);
-    static void changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval);
-
   private:
     static void _pairingAll();
     static void _unpairingAll();
+
+    // state machine reader
+    static long int _liActUponStateChangesInterval;
+    static Task _tActUponStateChanges;
+    static void _tcbActUponStateChanges();
 
     // state machine actions
     static void _irStartupSwitch(const bool _bTargetState);
     static void _manualSwitchAll(const bool _bTargetState);
     static void _pirSwitchAll(const bool _bTargetState);
     static void _slaveBoxSwitchAll(const bool targetState);
-
-    // state machine reader
-    static long int _liActUponStateChangesInterval;
-    static Task _tActUponStateChanges;
-    static void _tcbActUponStateChanges();
+    static void _inclExclAllInPir(const bool _bTargetState);
+    static void _changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval);
 
     // Slave cycle controller
     static long _ulSlaveBoxCycleInterval;
