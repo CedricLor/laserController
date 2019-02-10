@@ -36,11 +36,6 @@ class LaserGroupedUnitsArray
     static Task _tActUponStateChanges;
     static void _tcbActUponStateChanges();
 
-    // state machine actions
-    static void irStartupSwitch(const bool _bTargetState);
-    static void manualSwitchAll(const bool _bTargetState);
-    static void pirSwitchAll(const bool _bTargetState);
-    static void slaveBoxSwitchAll(const bool targetState);
 
     // extracted from pirStartupController
     static Task tLaserOff;
@@ -53,6 +48,12 @@ class LaserGroupedUnitsArray
   private:
     static void _pairingAll();
     static void _unpairingAll();
+
+    // state machine actions
+    static void _irStartupSwitch(const bool _bTargetState);
+    static void _manualSwitchAll(const bool _bTargetState);
+    static void _pirSwitchAll(const bool _bTargetState);
+    static void _slaveBoxSwitchAll(const bool targetState);
 
     static long _ulSlaveBoxCycleInterval;
     static short _siSlaveBoxCycleIterations;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)

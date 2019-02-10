@@ -13,6 +13,7 @@ LaserGroupedUnitsArray::LaserGroupedUnitsArray()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // PAIRING SWITCHES: Pairing and unpairing of pins
 ////////////////////////////////////////////////////////////////////////////////
 /* PAIRING ALL LaserPins into LaserGroupedUnits of 2 lasers
@@ -27,7 +28,7 @@ void LaserGroupedUnitsArray::_pairingAll() {
     // Put each pin into a LaserGroupedUnit
     LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
     // increment the counter of laserUnits effectively loaded
-    // note: the loadedLaserUnits variable will then be used below, by irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
+    // note: the loadedLaserUnits variable will then be used below, by _irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
     loadedLaserUnits = _groupUnitsCounter;
     /*
       if _pinParityWitness is equal to 1, it means that we already have 2 lasers in the LaserGroupUnit.
@@ -58,7 +59,7 @@ void LaserGroupedUnitsArray::_unpairingAll() {
     // Put each pin into a LaserGroupedUnit
     LaserPins[thisPin].laserGroupedUnitId = LaserGroupedUnits[_groupUnitsCounter].index_number;
     // increment the counter of laserUnits effectively loaded
-    // note: the loadedLaserUnits variable will then be used below, by irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
+    // note: the loadedLaserUnits variable will then be used below, by _irStartupSwitch for instance, to limit the iterations over the LaserGroupedUnits
     loadedLaserUnits = _groupUnitsCounter;
     _groupUnitsCounter = _groupUnitsCounter + 1;
   }
@@ -88,11 +89,11 @@ short int LaserGroupedUnitsArray::targetState = 0;
 bool LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = LOW;
 const char* LaserGroupedUnitsArray::GLOBAL_WITNESS_TEXT_DESCRIPTORS[5] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual"};
 void (*LaserGroupedUnitsArray::_stateChangeActions[5])(bool __targetState) = {
-  &irStartupSwitch,
-  &pirSwitchAll,
-  &pirSwitchAll,
-  &slaveBoxSwitchAll,
-  &manualSwitchAll
+  &_irStartupSwitch,
+  &_pirSwitchAll,
+  &_pirSwitchAll,
+  &_slaveBoxSwitchAll,
+  &_manualSwitchAll
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ void LaserGroupedUnitsArray::setTargetState(const short int __sTargetState) {
   currentState = __sTargetState;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // STATE MACHINE READER
 long int LaserGroupedUnitsArray::_liActUponStateChangesInterval = 2000;
@@ -119,7 +121,7 @@ void LaserGroupedUnitsArray::_tcbActUponStateChanges() {
 // Switches relay pins on and off during PIRStartUp
 // Corresponds to LaserPinsArray::irPinsSwitch(const bool targetState)
 // which was called from pirStartupController exclusively
-void LaserGroupedUnitsArray::irStartupSwitch(bool __targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
+void LaserGroupedUnitsArray::_irStartupSwitch(bool __targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {        // loop around all the structs representing the pins controlling the relays
     LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(bTargetStateOfLaserGroupUnits);
   }
@@ -132,7 +134,7 @@ void LaserGroupedUnitsArray::irStartupSwitch(bool __targetState) {              
 // (i.e. the LaserGroupedUnit will no longer be reacting to IR signals)
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which is called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
-void LaserGroupedUnitsArray::manualSwitchAll(bool __targetState) {
+void LaserGroupedUnitsArray::_manualSwitchAll(bool __targetState) {
   // 4 for "manual with cycle off", 5 for "manual with cycle off"
   currentState = ((bTargetStateOfLaserGroupUnits == HIGH) ? 4 : 5);
   // Since states 4 and 5 have been condensed into a single manualState mode, might need to be redrafted as follows:
@@ -150,14 +152,14 @@ void LaserGroupedUnitsArray::manualSwitchAll(bool __targetState) {
 // Corresponds to LaserPinsArray::switchPirRelays
 // which is called from pirController twice
 // loop over each of the loaded LaserGroupUnits to turn them on or off (if they are controlled by the PIR)
-void LaserGroupedUnitsArray::pirSwitchAll(bool __targetState) {
-  Serial.print("PIR: pirSwitchAll(const bool state): starting -------\n");
+void LaserGroupedUnitsArray::_pirSwitchAll(bool __targetState) {
+  Serial.print("PIR: _pirSwitchAll(const bool state): starting -------\n");
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     if (LaserGroupedUnits[thisLaserGroupedUnit].pir_state == HIGH) {
       LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(bTargetStateOfLaserGroupUnits);
     }
   }
-  Serial.print("PIR: pirSwitchAll(const bool state): leaving -------\n");
+  Serial.print("PIR: _pirSwitchAll(const bool state): leaving -------\n");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -167,7 +169,7 @@ short LaserGroupedUnitsArray::_siSlaveBoxCycleIterations = 60;
 
 bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
   myMeshViews::statusMsg("on");
-  manualSwitchAll(LOW);
+  _manualSwitchAll(LOW);
   currentState = 3;      // 3 for "slave cycle on"
   Serial.print("-------- Auto Switch cycle started............ --------\n");
   return true;
@@ -175,13 +177,13 @@ bool LaserGroupedUnitsArray::_tcbOeSlaveBoxCycle() {
 
 void LaserGroupedUnitsArray::_tcbOdSlaveBoxCycle() {
   myMeshViews::statusMsg("off");
-  manualSwitchAll(HIGH);
+  _manualSwitchAll(HIGH);
   inclExclAllInPir(HIGH);     // IN PRINCIPLE, RESTORE ITS PREVIOUS STATE. CURRENTLY: Will include all the relays in PIR mode
 }
 
 Task LaserGroupedUnitsArray::_tSlaveBoxCycle( _ulSlaveBoxCycleInterval, _siSlaveBoxCycleIterations, NULL, &userScheduler, false, &_tcbOeSlaveBoxCycle, &_tcbOdSlaveBoxCycle );
 
-void LaserGroupedUnitsArray::slaveBoxSwitchAll(bool __targetState) {
+void LaserGroupedUnitsArray::_slaveBoxSwitchAll(bool __targetState) {
   if (bTargetStateOfLaserGroupUnits == LOW) {
     _tSlaveBoxCycle.enable();
     return;
@@ -208,11 +210,11 @@ Task LaserGroupedUnitsArray::tLaserOff( 0, 1, &_cbtLaserOff, &userScheduler );
 Task LaserGroupedUnitsArray::tLaserOn( 0, 1, &_cbtLaserOn, &userScheduler );
 
 void LaserGroupedUnitsArray::_cbtLaserOff() {
-  irStartupSwitch(HIGH);
+  _irStartupSwitch(HIGH);
 }
 
 void LaserGroupedUnitsArray::_cbtLaserOn() {
-  irStartupSwitch(LOW);
+  _irStartupSwitch(LOW);
 }
 
 
