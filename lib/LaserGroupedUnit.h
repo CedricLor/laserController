@@ -24,13 +24,16 @@ class LaserGroupedUnit
     bool previousPirState;
     bool targetPirState;
 
-    unsigned long blinking_interval;// how long should this pin blink on and off // NOTE: This variable will be replaced by a "sequence" data structure
+    unsigned long currentBlinkingInterval;  // how long should the underlying pins blink on and off
+    unsigned long previousBlinkingInterval;
+    unsigned long targetBlinkingInterval;
 
     short pairing_type;             // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
 
     // State machine setters
     void setOnOffTargetState(const bool _bTargetOnOffState);
     void setTargetPirState(const short int __sTargetPirState);
+    void setTargetBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
 
     // Former switches
     void switchOnOff(const bool _bTargetOnOffState);

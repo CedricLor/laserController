@@ -62,7 +62,7 @@ void LaserPin::_switchPointerBlinkCycleState(const bool _bTargetBlinkingState) {
 void LaserPin::updateLaserPinValuesFromLaserGroupedUnitOwner() {
   // Read the value of the blinking_interval of the LaserGroupedUnit to which this pin pertains
   // and update its own blinking interval
-  blinking_interval = LaserGroupedUnits[laserGroupedUnitId].blinking_interval;
+  blinking_interval = LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

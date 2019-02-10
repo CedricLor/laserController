@@ -25,7 +25,9 @@ LaserGroupedUnit::LaserGroupedUnit()
   previousPirState = _default_laser_group_pir_state_value;
   targetPirState = _default_laser_group_pir_state_value;
 
-  blinking_interval = pinBlinkingInterval;
+  currentBlinkingInterval = pinBlinkingInterval;
+  previousBlinkingInterval = pinBlinkingInterval;
+  targetBlinkingInterval = pinBlinkingInterval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,10 @@ void LaserGroupedUnit::setTargetPirState(const short int __sTargetPirState){
   targetPirState = __sTargetPirState;
 }
 
+void LaserGroupedUnit::setTargetBlinkingInterval(const unsigned long _ulTargetBlinkingInterval){
+  previousBlinkingInterval = currentBlinkingInterval;
+  targetBlinkingInterval = _ulTargetBlinkingInterval;
+}
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 /* MANUAL SWITCH
@@ -95,5 +101,5 @@ void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state
    (ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval);
 */
 void LaserGroupedUnit::changeBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
-  blinking_interval = _ulTargetBlinkingInterval;
+  targetBlinkingInterval = _ulTargetBlinkingInterval;
 }
