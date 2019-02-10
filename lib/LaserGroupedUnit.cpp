@@ -28,6 +28,8 @@ LaserGroupedUnit::LaserGroupedUnit()
   currentBlinkingInterval = pinBlinkingInterval;
   previousBlinkingInterval = pinBlinkingInterval;
   targetBlinkingInterval = pinBlinkingInterval;
+
+  isIdenticalToArray = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,8 @@ class LaserPin
 
     // TO DO: remove once webviews updated
     bool blinking;                  // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
-    unsigned long blinking_interval;// how long should this pin blink on and off // NOTE: This variable will be replaced by a "sequence" data structure
+    unsigned long blinkingInterval();
+    // unsigned long blinking_interval;// how long should this pin blink on and off // NOTE: This variable will be replaced by a "sequence" data structure
     short paired_with;              // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
     bool pir_state;                 // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
 
@@ -52,6 +53,7 @@ class LaserPin
     short _physical_pin_number;      // pin physical number of the ESP32 which is controlling the relay
 
     static const unsigned long _max_interval_on;
+
 
     void _markTimeChanges();
 };

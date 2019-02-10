@@ -266,7 +266,7 @@ String myWebServerViews::printIntervalSelect(const short thisPin) {
           and not to the global blinkingInterval select,
           the value of thisPin will be different than -1
       */
-      if (intervalValue == LaserPins[thisPin].blinking_interval) {
+      if (intervalValue == LaserPins[thisPin].blinkingInterval()) {
         intervalSelect += "selected";
       }
     } else if (intervalValue == pinBlinkingInterval) {

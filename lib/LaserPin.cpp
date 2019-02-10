@@ -24,7 +24,6 @@ LaserPin::LaserPin()
   on_off_target = _default_pin_on_off_target_state;
   blinking = _default_pin_blinking_state;
   previous_time = millis();
-  blinking_interval = pinBlinkingInterval;
   pir_state = _default_pin_pir_state_value;
   last_time_on = 0;             // set at 0 at startup
   last_time_off = millis();     // set at current time at startup
@@ -42,15 +41,6 @@ void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////
-/* UPDATE VALUES OF THIS LASERPIN WITH VALUES FROM ITS LASER GROUPED UNIT OWNER
-   Blinks the laser when the laser is in blinking cycle. Called from (i) laserSafetyLoop::loop()
-*/
-void LaserPin::updateLaserPinValuesFromLaserGroupedUnitOwner() {
-  // Read the value of the blinking_interval of the LaserGroupedUnit to which this pin pertains
-  // and update its own blinking interval
-  blinking_interval = LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /* BLINK LASER IN BLINKING CYCLE
@@ -67,10 +57,17 @@ void LaserPin::blinkLaserInBlinkingCycle() {
   */
   if (blinking == true) {
     const unsigned long _ulCurrentTime = millis();
-    if (_ulCurrentTime - previous_time > blinking_interval) {
+    if (_ulCurrentTime - previous_time > blinkingInterval()) {
         on_off_target = !on_off;
     }
   }
+}
+
+unsigned long LaserPin::blinkingInterval() {
+  if (!(LaserGroupedUnits[laserGroupedUnitId].isIdenticalToArray)) {
+    return LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval;
+  }
+  return LaserGroupedUnitsArray::currentPinBlinkingInterval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

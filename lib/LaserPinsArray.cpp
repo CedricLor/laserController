@@ -41,7 +41,7 @@ void LaserPinsArray::endloop() {
     - executePinStateChange is called second as it executes pinChanges (IO function).
     - laserProtectionSwitch comes last, as it is just an additional check at the end that turns off lasers in case of bug.
     */
-    LaserPins[thisPin].updateLaserPinValuesFromLaserGroupedUnitOwner();
+    // LaserPins[thisPin].updateLaserPinValuesFromLaserGroupedUnitOwner();
     LaserPins[thisPin].blinkLaserInBlinkingCycle();
     LaserPins[thisPin].executePinStateChange();
     LaserPins[thisPin].laserProtectionSwitch();
