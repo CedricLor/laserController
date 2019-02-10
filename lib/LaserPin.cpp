@@ -22,7 +22,6 @@ LaserPin::LaserPin()
 {
   on_off = _default_pin_on_off_state;
   on_off_target = _default_pin_on_off_target_state;
-  blinking = _default_pin_blinking_state;
   previous_time = millis();
   pir_state = _default_pin_pir_state_value;
   last_time_on = 0;             // set at 0 at startup
@@ -55,12 +54,16 @@ void LaserPin::blinkLaserInBlinkingCycle() {
     If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
     TO ANALYSE: this may overwrite other changes that have been requested at other stages
   */
-  if (blinking == true) {
+  if (blinking()) {
     const unsigned long _ulCurrentTime = millis();
     if (_ulCurrentTime - previous_time > blinkingInterval()) {
         on_off_target = !on_off;
     }
   }
+}
+
+bool LaserPin::blinking() {
+  return LaserGroupedUnits[laserGroupedUnitId].currentOnOffState;
 }
 
 unsigned long LaserPin::blinkingInterval() {
