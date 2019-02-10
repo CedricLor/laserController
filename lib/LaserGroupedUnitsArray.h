@@ -23,9 +23,19 @@ class LaserGroupedUnitsArray
     static short int currentState;  // read access from pirController
     static short int previousState; // set access from myMeshController
     static short int targetState;
-    static bool bTargetStateOfLaserGroupUnits;
-    // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[5];
+
+    static bool bTargetStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
+
+    static bool currentPirState;
+    static bool previousPirState;
+    static bool targetPirState;
+
+    static unsigned long pinBlinkingInterval;
+    static unsigned long previousPinBlinkingInterval;
+    static unsigned long targetPinBlinkingInterval;
+
+    // state machine action iterator
     static void (*_stateChangeActions[5])(const bool _bTargetState);
 
     // state machine setter

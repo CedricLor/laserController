@@ -241,7 +241,7 @@ void LaserGroupedUnitsArray::inclExclAllInPir(const bool _bTargetPirState) {
 // (i) myWebServerController;
 // (ii) myMeshController.
 void LaserGroupedUnitsArray::changeBlinkingIntervalAll(const unsigned long _ulTargetBlinkingInterval) {
-  pinBlinkingInterval = _ulTargetBlinkingInterval;
+  pinBlinkingInterval = _ulTargetBlinkingInterval; // pinBlinkingInterval is a global variable defined in global.cpp
   mySavedPrefs::savePreferences();
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].changeBlinkingInterval(_ulTargetBlinkingInterval);
