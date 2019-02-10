@@ -81,7 +81,7 @@ void myMeshController::_changeBlinkingInterval(JsonObject& _root) {
   unsigned long _ulTargetBlinkingInterval;
   const char* _sTargetBlinkingInterval = _root["ti"];
   _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
-  LaserGroupedUnitsArray::changeBlinkingIntervalAll(_ulTargetBlinkingInterval);
+  LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
 }
 
 void myMeshController::_changeMasterBox(JsonObject& _root) {
