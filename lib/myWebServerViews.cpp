@@ -234,7 +234,7 @@ String myWebServerViews::printBlinkingIntervalWebCntrl(const short thisPin) {
 
 String myWebServerViews::printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
-  if (LaserPins[thisPin].paired_with == -1) {
+  if (LaserPins[thisPin].pairedWith() == -1) {
     pairingWebCntrl += " Unpaired ";
     pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
     pairingWebCntrl += thisPin + 1;

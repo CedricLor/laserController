@@ -73,6 +73,15 @@ unsigned long LaserPin::blinkingInterval() {
   return LaserGroupedUnitsArray::currentPinBlinkingInterval;
 }
 
+short LaserPin::pairedWith() {
+  for (short _iteratorsIndex = 0; _iteratorsIndex < PIN_COUNT; _iteratorsIndex++) {
+    if (LaserPins[_iteratorsIndex].index_number == index_number) {
+      return LaserPins[_iteratorsIndex].index_number;
+    }
+  }
+  return -1;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 // IO FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////////////////
