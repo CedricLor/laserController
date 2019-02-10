@@ -1,5 +1,6 @@
 .DS_Store
 lib/.DS_Store
+src/.DS_Store
 .pioenvs
 .piolibdeps
 .clang_complete
@@ -8,4 +9,3 @@ lib/.DS_Store
 ./lib/secret.cpp
 lib/secret.h
 lib/secret.cpp
-
