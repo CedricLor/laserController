@@ -86,10 +86,19 @@ void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 un
 short int LaserGroupedUnitsArray::currentState = 0;
 short int LaserGroupedUnitsArray::previousState = 0;
 short int LaserGroupedUnitsArray::targetState = 0;
-
-bool LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = LOW;
-
 const char* LaserGroupedUnitsArray::GLOBAL_WITNESS_TEXT_DESCRIPTORS[5] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual"};
+
+bool LaserGroupedUnitsArray::bCurrentStateOfLaserGroupUnits = HIGH;
+bool LaserGroupedUnitsArray::bPreviousStateOfLaserGroupUnits = HIGH;
+bool LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = HIGH;
+
+unsigned long LaserGroupedUnitsArray::currentPinBlinkingInterval = pinBlinkingInterval;
+unsigned long LaserGroupedUnitsArray::previousPinBlinkingInterval = pinBlinkingInterval;
+unsigned long LaserGroupedUnitsArray::targetPinBlinkingInterval = pinBlinkingInterval;
+
+bool LaserGroupedUnitsArray::currentPirState = 0;
+bool LaserGroupedUnitsArray::previousPirState = 0;
+bool LaserGroupedUnitsArray::targetPirState = 0;
 
 void (*LaserGroupedUnitsArray::_stateChangeActions[5])(bool __targetState) = {
   &_irStartupSwitch,
@@ -104,6 +113,11 @@ void (*LaserGroupedUnitsArray::_stateChangeActions[5])(bool __targetState) = {
 void LaserGroupedUnitsArray::setTargetState(const short int __sTargetState) {
   previousState = currentState;
   targetState = __sTargetState;
+}
+
+void LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(const bool __bCurrentStateOfLaserGroupUnits){
+  bPreviousStateOfLaserGroupUnits = bCurrentStateOfLaserGroupUnits;
+  bTargetStateOfLaserGroupUnits = __bCurrentStateOfLaserGroupUnits;
 }
 
 void LaserGroupedUnitsArray::setTargetPirState(const short int __sTargetPirState) {

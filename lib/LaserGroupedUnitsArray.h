@@ -26,8 +26,8 @@ class LaserGroupedUnitsArray
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[5];
 
     static bool bCurrentStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
-    static bool bTargetStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
     static bool bPreviousStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
+    static bool bTargetStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
 
     static bool currentPirState;
     static bool previousPirState;
@@ -42,15 +42,9 @@ class LaserGroupedUnitsArray
 
     // state machine setter
     static void setTargetState(const short int __sTargetState);
-    static void setTargetStateOfLaserGroupUnits(const short int __sTargetState);
+    static void setTargetStateOfLaserGroupUnits(const bool __bCurrentStateOfLaserGroupUnits);
     static void setTargetPirState(const short int __sTargetPirState);
     static void setTargetBlinkingInterval(const unsigned long __ulTargetBlinkingInterval);
-
-    // state machine reader
-    static long int _liActUponStateChangesInterval;
-    static Task _tActUponStateChanges;
-    static void _tcbActUponStateChanges();
-
 
     // extracted from pirStartupController
     static Task tLaserOff;
@@ -70,12 +64,19 @@ class LaserGroupedUnitsArray
     static void _pirSwitchAll(const bool _bTargetState);
     static void _slaveBoxSwitchAll(const bool targetState);
 
+    // state machine reader
+    static long int _liActUponStateChangesInterval;
+    static Task _tActUponStateChanges;
+    static void _tcbActUponStateChanges();
+
+    // Slave cycle controller
     static long _ulSlaveBoxCycleInterval;
     static short _siSlaveBoxCycleIterations;                      // defines the length of the cycle during which we place the pins in automatic mode (i.e. automatic mode is with Pir deactivated)
     static bool _tcbOeSlaveBoxCycle();
     static void _tcbOdSlaveBoxCycle();
     static Task _tSlaveBoxCycle;
 
+    // StartupPir controller
     static void _cbtLaserOff();
     static void _cbtLaserOn();
 };
