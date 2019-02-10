@@ -99,7 +99,8 @@ void LaserPin::executePinStateChange() {
   }
 }
 
-// Helper function for execute updates
+////////////////////////////////////////////////////////////////////////////////
+// Helper function for executePinStateChange
 // Private function
 void LaserPin::_markTimeChanges() {
   const unsigned long currentTime = millis();
@@ -115,6 +116,7 @@ void LaserPin::_markTimeChanges() {
   last_interval_on = last_time_on - last_time_off;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // Laser Protection Switch
 // Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
 /* Called from:
