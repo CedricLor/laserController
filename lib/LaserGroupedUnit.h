@@ -43,10 +43,10 @@ class LaserGroupedUnit
     static const unsigned long _max_interval_on;
 
     // Former switches
-    void switchOnOff(const bool _bTargetOnOffState);
-    void manualSwitch(const bool _bTargetOnOffState);
-    void inclExclInPir(const bool _bTargetPirState);
-    void changeBlinkingInterval(const unsigned long targetBlinkingInterval);
+    void _switchOnOff(const bool _bTargetOnOffState);
+    void _manualSwitch(const bool _bTargetOnOffState);
+    void _inclExclInPir(const bool _bTargetPirState);
+    void _changeBlinkingInterval(const unsigned long targetBlinkingInterval);
 
 };
 

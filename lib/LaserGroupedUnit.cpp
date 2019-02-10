@@ -74,7 +74,7 @@ void LaserGroupedUnit::setTargetBlinkingInterval(const unsigned long _ulTargetBl
    Corresponds to LaserPin::manualSwitchOneRelay,
    wihch is called from (i) myWebServerController and (ii) LaserPinsArray
 */
-void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
+void LaserGroupedUnit::_manualSwitch(const bool _bTargetOnOffState) {
   setOnOffTargetState(_bTargetOnOffState);
   targetPirState = LOW;
 }
@@ -85,7 +85,7 @@ void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
    Corresponds to the former LaserPin::inclExclOneRelayInPir,
    which was called from myWebServerController (myWebServerControler::_webInclExclRelaysInPir) ONLY
 */
-void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
+void LaserGroupedUnit::_inclExclInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
   targetPirState = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   setOnOffTargetState(HIGH);
 }
@@ -100,6 +100,6 @@ void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state
    (i) laserPinsArray (LaserGroupedUnitsArray::changeBlinkingIntervalAll);
    (ii) myWebServerController (myWebServerControler::_webChangeBlinkingInterval);
 */
-void LaserGroupedUnit::changeBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
+void LaserGroupedUnit::_changeBlinkingInterval(const unsigned long _ulTargetBlinkingInterval) {
   targetBlinkingInterval = _ulTargetBlinkingInterval;
 }
