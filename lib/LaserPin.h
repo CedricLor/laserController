@@ -38,10 +38,8 @@ class LaserPin
     void laserProtectionSwitch();
 
     // TO DO: remove once webviews updated
-    bool blinking();
-    // bool blinking;                  // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
-    unsigned long blinkingInterval();
-    // unsigned long blinking_interval;// how long should this pin blink on and off // NOTE: This variable will be replaced by a "sequence" data structure
+    bool blinking();                    // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
+    unsigned long blinkingInterval();   // how long should this pin blink on and off
     short paired_with;              // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
     bool pir_state;                 // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
 
