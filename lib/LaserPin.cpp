@@ -26,9 +26,9 @@ LaserPin::LaserPin()
   previous_time = millis();
   blinking_interval = pinBlinkingInterval;
   pir_state = _default_pin_pir_state_value;
-  last_time_on = 0;     // set at 0 at startup
-  last_time_off = millis();    // set at 0 at startup
-  last_interval_on = 0; // set at 0 at startup
+  last_time_on = 0;             // set at 0 at startup
+  last_time_off = millis();     // set at current time at startup
+  last_interval_on = 0;         // set at 0 at startup
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,19 +41,6 @@ void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
   digitalWrite(_sPhysicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// SWITCHES
-/* Switches the blinking state of the pin
-   Called from this class (LaserPin::switchOnOffVariables) only*/
-void LaserPin::_switchPointerBlinkCycleState(const bool _bTargetBlinkingState) {
-  /* If the _bTargetBlinkingState passed on to the function is LOW,
-     this function sets the blinking property of this LaserPin as true,
-     meaning it is in a blinking cycle.
-     If the targetBlinkingState passed on to the function is LOW,
-     this function sets the blinking property of this LaserPin as false,
-     meaning it is no longer a blinking cycle. */
-  (_bTargetBlinkingState == LOW) ? blinking = true : blinking = false;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /* UPDATE VALUES OF THIS LASERPIN WITH VALUES FROM ITS LASER GROUPED UNIT OWNER
@@ -131,7 +118,7 @@ void LaserPin::_markTimeChanges() {
 // Laser Protection Switch
 // Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
 /* Called from:
-   - laserSafetyLoop::loop()
+   - LaserPinsArray::loop()
 */
 void LaserPin::laserProtectionSwitch() {
   const unsigned long currentTime = millis();
