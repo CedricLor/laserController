@@ -12,7 +12,7 @@ myWebServerControler::myWebServerControler()
 
 void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool _bTargetState) {
   if(_p2->value() == "a"){
-    LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = _bTargetState;
+    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_bTargetState);
     LaserGroupedUnitsArray::setTargetState(4);
   } else {
     int _val = _p2->value().toInt();

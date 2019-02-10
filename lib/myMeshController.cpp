@@ -64,7 +64,7 @@ void myMeshController::_manualSwitch(JsonObject& _root) {
   short _iTargetState;
   const char* _sTargetState = _root["ts"];
   _iTargetState = atoi(_sTargetState);
-  LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = _iTargetState;
+  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_iTargetState);
   LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
 }
 
@@ -128,12 +128,12 @@ void myMeshController::_slaveBoxSwitch(JsonObject& root) {
     // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
     LaserGroupedUnitsArray::setTargetState(3);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with on status */
-    LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0];
+    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
   } else if (strstr(cSenderStatus, "off")  > 0) {
     // else if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
     LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
-    LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1];
+    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
 }

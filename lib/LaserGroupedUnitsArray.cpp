@@ -150,7 +150,7 @@ void LaserGroupedUnitsArray::_tcbActUponStateChanges() {
 // which was called from pirStartupController exclusively
 void LaserGroupedUnitsArray::_irStartupSwitch(bool __targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {        // loop around all the structs representing the pins controlling the relays
-    LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(bTargetStateOfLaserGroupUnits);
+    LaserGroupedUnits[thisLaserGroupedUnit].setOnOffTargetState(bTargetStateOfLaserGroupUnits);
   }
 }
 
@@ -183,7 +183,7 @@ void LaserGroupedUnitsArray::_pirSwitchAll(bool __targetState) {
   Serial.print("PIR: _pirSwitchAll(const bool state): starting -------\n");
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     if (LaserGroupedUnits[thisLaserGroupedUnit].pir_state == HIGH) {
-      LaserGroupedUnits[thisLaserGroupedUnit].switchOnOff(bTargetStateOfLaserGroupUnits);
+      LaserGroupedUnits[thisLaserGroupedUnit].setOnOffTargetState(bTargetStateOfLaserGroupUnits);
     }
   }
   Serial.print("PIR: _pirSwitchAll(const bool state): leaving -------\n");

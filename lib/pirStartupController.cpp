@@ -44,9 +44,9 @@ void pirStartupController::_cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
   if (!(tPirStartUpDelayBlinkLaser.isFirstIteration())) {
-    LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = HIGH;         // HIGH = off
+    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(HIGH);         // HIGH = off
   }
-  LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = LOW;
+  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(LOW);
   _tPirStartUpDelayPrintDash.restartDelayed();
   if (!(tPirStartUpDelayBlinkLaser.isLastIteration())) {
     LaserGroupedUnitsArray::tLaserOff.restartDelayed(1000);
@@ -65,7 +65,7 @@ void pirStartupController::_onDisablePirStartUpDelayBlinkLaser() {
   // first initialization of the LaserGroupedUnitsArray (i.e. first time loading of the LAserPins into the LaserGroupedUnits)
   LaserGroupedUnitsArray::pairUnpairAllPins(1 /* 1 for cooperative pairing */);
   // makes sure that all lasers are turned off
-  LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = HIGH;
+  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(HIGH);
   // includes all the relays in PIR mode
   LaserGroupedUnitsArray::setTargetPirState(HIGH);
   // enable the pirController

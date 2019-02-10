@@ -107,7 +107,7 @@ bool pirController::tcbOnEnablePirCycle() {
   if (LaserGroupedUnitsArray::currentState == 1) {LaserGroupedUnitsArray::setTargetState(2);}  // 1 means "IR cycle on"
   Serial.print("PIR: tcbOnEnablePirCycle(): Motion detected!!!\n");
   // Place all the LAserGroupedUnits under the controle of the IR
-  LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = LOW;
+  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(LOW);
   // Send message to the mesh
   myMeshViews::statusMsg("on");
   Serial.print("PIR: tcbOnEnablePirCycle(): broadcastPirStatus(\"on\")");
@@ -123,6 +123,6 @@ void pirController::tcbOnDisablePirCycle() {
 // Stops the PIR Cycle
 void pirController::stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
-  LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = HIGH;
+  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(HIGH);
   myMeshViews::statusMsg("off");
 }
