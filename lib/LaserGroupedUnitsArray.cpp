@@ -100,7 +100,17 @@ void (*LaserGroupedUnitsArray::_stateChangeActions[5])(bool __targetState) = {
 // STATE MACHINE SETTER
 void LaserGroupedUnitsArray::setTargetState(const short int __sTargetState) {
   previousState = currentState;
-  currentState = __sTargetState;
+  targetState = __sTargetState;
+}
+
+void LaserGroupedUnitsArray::setTargetPirState(const short int __sTargetPirState) {
+  previousPirState = currentPirState;
+  targetPirState = __sTargetPirState;
+}
+
+void LaserGroupedUnitsArray::setTargetBlinkingInterval(const unsigned long __ulTargetBlinkingInterval) {
+  previousPinBlinkingInterval = currentPinBlinkingInterval;
+  targetPinBlinkingInterval = __ulTargetBlinkingInterval;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

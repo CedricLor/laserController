@@ -31,7 +31,7 @@ class LaserGroupedUnitsArray
     static bool previousPirState;
     static bool targetPirState;
 
-    static unsigned long pinBlinkingInterval;
+    static unsigned long currentPinBlinkingInterval;
     static unsigned long previousPinBlinkingInterval;
     static unsigned long targetPinBlinkingInterval;
 
@@ -40,6 +40,8 @@ class LaserGroupedUnitsArray
 
     // state machine setter
     static void setTargetState(const short int __sTargetState);
+    static void setTargetPirState(const short int __sTargetPirState);
+    static void setTargetBlinkingInterval(const unsigned long __ulTargetBlinkingInterval);
 
     // state machine reader
     static long int _liActUponStateChangesInterval;
