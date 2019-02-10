@@ -157,7 +157,7 @@ void LaserGroupedUnitsArray::_irStartupSwitch(bool __targetState) {             
 ////////////////////////////////////////////////////////////////////////////////
 // STATES 4 (manual) ACTIONS: MANUAL SWITCH
 // Switches on and off all the lasers
-// Manual in the sense that it also switches the pir_state of the LaserGroupedUnit to LOW
+// Manual in the sense that it also switches the targetPirState of the LaserGroupedUnit to LOW
 // (i.e. the LaserGroupedUnit will no longer be reacting to IR signals)
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which is called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
@@ -182,7 +182,7 @@ void LaserGroupedUnitsArray::_manualSwitchAll(bool __targetState) {
 void LaserGroupedUnitsArray::_pirSwitchAll(bool __targetState) {
   Serial.print("PIR: _pirSwitchAll(const bool state): starting -------\n");
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    if (LaserGroupedUnits[thisLaserGroupedUnit].pir_state == HIGH) {
+    if (LaserGroupedUnits[thisLaserGroupedUnit].currentPirState == HIGH) {
       LaserGroupedUnits[thisLaserGroupedUnit].setOnOffTargetState(bTargetStateOfLaserGroupUnits);
     }
   }
@@ -255,7 +255,7 @@ void LaserGroupedUnitsArray::_cbtLaserOn() {
 void LaserGroupedUnitsArray::_inclExclAllInPir(const bool _bTargetPirState) {
   if (_bTargetPirState == HIGH) { currentState = 1;}                      // 1 for "IR waiting"
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].pir_state = _bTargetPirState;
+    LaserGroupedUnits[thisLaserGroupedUnit].setTargetPirState(_bTargetPirState);
   }
 }
 

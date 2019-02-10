@@ -20,7 +20,11 @@ LaserGroupedUnit::LaserGroupedUnit()
   currentOnOffState = _default_laser_group_on_off_state;
   previousOnOffState = _default_laser_group_on_off_state;
   targetOnOffState = _default_laser_group_on_off_state;
-  pir_state = _default_laser_group_pir_state_value;
+
+  currentPirState = _default_laser_group_pir_state_value;
+  previousPirState = _default_laser_group_pir_state_value;
+  targetPirState = _default_laser_group_pir_state_value;
+
   blinking_interval = pinBlinkingInterval;
 }
 
@@ -50,10 +54,15 @@ void LaserGroupedUnit::setOnOffTargetState(const bool _bTargetOnOffState) {
   // }
 }
 
+void LaserGroupedUnit::setTargetPirState(const short int __sTargetPirState){
+  previousPirState = currentPirState;
+  targetPirState = __sTargetPirState;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 /* MANUAL SWITCH
-   This function switches this LaserGroupUnit on and off (and sets the pir_state property of this LaserGroupedUnit to LOW)
+   This function switches this LaserGroupUnit on and off (and sets the targetPirState property of this LaserGroupedUnit to LOW)
    It is a manual switch in the sense that, by setting the pir_state of the pins to LOW,
    the pin is no longer reacting to signals sent by the PIR (IR) sensor.
    Corresponds to LaserPin::manualSwitchOneRelay,
@@ -61,7 +70,7 @@ void LaserGroupedUnit::setOnOffTargetState(const bool _bTargetOnOffState) {
 */
 void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
   setOnOffTargetState(_bTargetOnOffState);
-  pir_state = LOW;
+  targetPirState = LOW;
 }
 
 /* PIR SUBJECTION SWITCH
@@ -71,7 +80,7 @@ void LaserGroupedUnit::manualSwitch(const bool _bTargetOnOffState) {
    which was called from myWebServerController (myWebServerControler::_webInclExclRelaysInPir) ONLY
 */
 void LaserGroupedUnit::inclExclInPir(const bool _bTargetPirState) {     // state may be HIGH or LOW. HIGH means that the pin will be under the PIR control. LOW releases it from the PIR control.
-  pir_state = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
+  targetPirState = _bTargetPirState;                 // set the pin_state variable in HIGH or LOW mode. In HIGH, the pin will be under the control of the PIR and reciprocally.
   setOnOffTargetState(HIGH);
 }
 

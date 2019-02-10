@@ -25,7 +25,7 @@ void myWebServerControler::_webInclExclInPir(AsyncWebParameter* _p2, bool _bTarg
     LaserGroupedUnitsArray::setTargetPirState(_bTargetState);
   } else {
     int _val = _p2->value().toInt();
-    LaserGroupedUnits[_val].inclExclInPir(_bTargetState);
+    LaserGroupedUnits[_val].setTargetPirState(_bTargetState);
   }
 }
 
