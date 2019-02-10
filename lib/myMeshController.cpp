@@ -73,7 +73,7 @@ void myMeshController::_changeInclusionIR(JsonObject& _root) {
   short _iTargetState;
   const char* _sTargetState = _root["ts"];
   _iTargetState = atoi(_sTargetState);
-  LaserGroupedUnitsArray::inclExclAllInPir(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
+  LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
 void myMeshController::_changeBlinkingInterval(JsonObject& _root) {

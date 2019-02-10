@@ -22,7 +22,7 @@ void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool _bTarge
 
 void myWebServerControler::_webInclExclInPir(AsyncWebParameter* _p2, bool _bTargetState) {
   if(_p2->value() == "a"){
-    LaserGroupedUnitsArray::inclExclAllInPir(_bTargetState);
+    LaserGroupedUnitsArray::setTargetPirState(_bTargetState);
   } else {
     int _val = _p2->value().toInt();
     LaserGroupedUnits[_val].inclExclInPir(_bTargetState);

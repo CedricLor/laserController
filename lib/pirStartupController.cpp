@@ -67,7 +67,7 @@ void pirStartupController::_onDisablePirStartUpDelayBlinkLaser() {
   // makes sure that all lasers are turned off
   LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = HIGH;
   // includes all the relays in PIR mode
-  LaserGroupedUnitsArray::inclExclAllInPir(HIGH);
+  LaserGroupedUnitsArray::setTargetPirState(HIGH);
   // enable the pirController
   pirController::tPirCntrl.enable();
 }
