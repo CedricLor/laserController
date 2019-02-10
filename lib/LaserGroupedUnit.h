@@ -35,17 +35,19 @@ class LaserGroupedUnit
     void setTargetPirState(const short int __sTargetPirState);
     void setTargetBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
 
-    // Former switches
-    void switchOnOff(const bool _bTargetOnOffState);
-    void manualSwitch(const bool _bTargetOnOffState);
-    void inclExclInPir(const bool _bTargetPirState);
-    void changeBlinkingInterval(const unsigned long targetBlinkingInterval);
 
   private:
     static bool const _default_laser_group_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
     static bool const _default_laser_group_pir_state_value;       // by default, the pin is not controlled by the PIR
 
     static const unsigned long _max_interval_on;
+
+    // Former switches
+    void switchOnOff(const bool _bTargetOnOffState);
+    void manualSwitch(const bool _bTargetOnOffState);
+    void inclExclInPir(const bool _bTargetPirState);
+    void changeBlinkingInterval(const unsigned long targetBlinkingInterval);
+
 };
 
 #endif

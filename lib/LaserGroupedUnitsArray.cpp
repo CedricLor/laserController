@@ -169,7 +169,7 @@ void LaserGroupedUnitsArray::_manualSwitchAll(bool __targetState) {
   // or as follows:
   // currentState = 4;
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
-    LaserGroupedUnits[thisLaserGroupedUnit].manualSwitch(bTargetStateOfLaserGroupUnits);
+    LaserGroupedUnits[thisLaserGroupedUnit].setOnOffTargetState(bTargetStateOfLaserGroupUnits);
   }
 }
 

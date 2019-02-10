@@ -16,7 +16,7 @@ void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool _bTarge
     LaserGroupedUnitsArray::setTargetState(4);
   } else {
     int _val = _p2->value().toInt();
-    LaserGroupedUnits[_val].manualSwitch(_bTargetState);
+    LaserGroupedUnits[_val].setOnOffTargetState(_bTargetState);
   }
 }
 
