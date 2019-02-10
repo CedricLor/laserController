@@ -25,7 +25,9 @@ class LaserGroupedUnitsArray
     static short int targetState;
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[5];
 
+    static bool bCurrentStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
     static bool bTargetStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
+    static bool bPreviousStateOfLaserGroupUnits;  // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
 
     static bool currentPirState;
     static bool previousPirState;
@@ -40,6 +42,7 @@ class LaserGroupedUnitsArray
 
     // state machine setter
     static void setTargetState(const short int __sTargetState);
+    static void setTargetStateOfLaserGroupUnits(const short int __sTargetState);
     static void setTargetPirState(const short int __sTargetPirState);
     static void setTargetBlinkingInterval(const unsigned long __ulTargetBlinkingInterval);
 

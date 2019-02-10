@@ -86,8 +86,11 @@ void LaserGroupedUnitsArray::pairUnpairAllPins(const short _sPairingType /*-1 un
 short int LaserGroupedUnitsArray::currentState = 0;
 short int LaserGroupedUnitsArray::previousState = 0;
 short int LaserGroupedUnitsArray::targetState = 0;
+
 bool LaserGroupedUnitsArray::bTargetStateOfLaserGroupUnits = LOW;
+
 const char* LaserGroupedUnitsArray::GLOBAL_WITNESS_TEXT_DESCRIPTORS[5] = {"pirStartUp cycle", "IR waiting", "IR cycle on", "slave cycle on", "manual"};
+
 void (*LaserGroupedUnitsArray::_stateChangeActions[5])(bool __targetState) = {
   &_irStartupSwitch,
   &_pirSwitchAll,
