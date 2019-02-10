@@ -21,12 +21,16 @@ class LaserGroupedUnitsArray
     // state machine variables
     // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual with cycle on, 5 manual with cycle off
     // !!! TO DO -- this corresponds to the former pinGlobalModeWitness of LaserPinsArray
-    static short int currentState;
-    static short int previousState;
+    static short int _currentState;
+    static short int _previousState;
+    static short int targetState;
     static bool bTargetStateOfLaserGroupUnits;
     // Not in use for the moment, but will be used in the future in the website --> do not classify as private variable
-    static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[6];
-    static void (*_stateChangeActions[6])(const bool _bTargetState);
+    static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[5];
+    static void (*_stateChangeActions[5])(const bool _bTargetState);
+
+    // state machine setter
+    static void setTargetState(const short int __sTargetState);
 
     // state machine reader
     static long int _tActUponStateChangesInterval;
