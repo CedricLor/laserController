@@ -28,18 +28,6 @@ const long pirStartupController::_L_PIR_START_UP_DELAY = 10000UL;         // Thi
    The whole sequence would probably need to be redrafted to relay on the blinking interval defined at the LaserPin level (but for the moment, this has been done here).
 */
 Task pirStartupController::tPirStartUpDelayBlinkLaser( _L_PIR_START_UP_DELAY, _SI_PIR_START_UP_DELAY_ITERATIONS, &_cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &_onEnablePirStartUpDelayBlinkLaser, &_onDisablePirStartUpDelayBlinkLaser );
-
-/*
-   _tPirStartUpDelayPrintDash prints a dash to the console
-   every second, for 9 seconds, during startup.
-   It is re-enabled (re-started) 6 times by _cbtPirStartUpDelayBlinkLaser().
-*/
-Task pirStartupController::_tPirStartUpDelayPrintDash( 1000UL, 9, &_cbtPirStartUpDelayPrintDash, &userScheduler );
-void pirStartupController::_cbtPirStartUpDelayPrintDash() {
-  Serial.print("-");
-}
-
-
 void pirStartupController::_cbtPirStartUpDelayBlinkLaser() {
   Serial.print("+");
 
@@ -70,4 +58,14 @@ void pirStartupController::_onDisablePirStartUpDelayBlinkLaser() {
   LaserGroupedUnitsArray::setTargetPirState(HIGH);
   // enable the pirController
   pirController::tPirCntrl.enable();
+}
+
+/*
+   _tPirStartUpDelayPrintDash prints a dash to the console
+   every second, for 9 seconds, during startup.
+   It is re-enabled (re-started) 6 times by _cbtPirStartUpDelayBlinkLaser().
+*/
+Task pirStartupController::_tPirStartUpDelayPrintDash( 1000UL, 9, &_cbtPirStartUpDelayPrintDash, &userScheduler );
+void pirStartupController::_cbtPirStartUpDelayPrintDash() {
+  Serial.print("-");
 }
