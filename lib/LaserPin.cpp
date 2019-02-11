@@ -45,10 +45,7 @@ bool LaserPin::isLGUOn() {
 }
 
 unsigned long LaserPin::blinkingInterval() {
-  if (!(LaserGroupedUnits[laserGroupedUnitId].isIdenticalToArray)) {
-    return LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval;
-  }
-  return LaserGroupedUnitsArray::currentPinBlinkingInterval;
+  return LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval;
 }
 
 short LaserPin::pairedWith() {

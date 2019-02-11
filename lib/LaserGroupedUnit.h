@@ -30,8 +30,6 @@ class LaserGroupedUnit
 
     short pairing_type;             // what kind of pairing type does this pin have: -1 is unpaired, 0 is twin pairing (when one is on, the other is also on), 1 is cooperative (when one is on, the other is off and each takes the relay of the other)
 
-    bool isIdenticalToArray;
-
     // State machine setters
     void setOnOffTargetState(const bool _bTargetOnOffState);
     void setTargetPirState(const short int __sTargetPirState);
