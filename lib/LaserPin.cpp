@@ -40,7 +40,7 @@ void LaserPin::physicalInitLaserPin(const short __sPhysicalPinNumber)
 // STATE MACHINE GETTERS
 /////////////////////////////////////////
 // PUBLIC GETTERS
-bool LaserPin::isLGUOn() {
+bool LaserPin::_isLGUOn() {
   return !(LaserGroupedUnits[laserGroupedUnitId].currentOnOffState);
 }
 
@@ -91,11 +91,11 @@ void LaserPin::_markTimeChanges() {
    Called from (i) laserPinsArray::loop().
 */
 void LaserPin::setOnOffTarget() {
-  
+
   // First (I), check whether the LGU to which this LP pertains is "on".
   // If the LGU is "off", check whether this LP is also "off"
   // If the LP is not "off", turn it off and exit
-  if (!(isLGUOn())) {                                                 // (I) if the LGU to which this LP pertains is "off"
+  if (!(_isLGUOn())) {                                                 // (I) if the LGU to which this LP pertains is "off"
     if (_on_off == LOW) {                                             // (I) if this LP is "on" (nothing to do if this LP is already "off")
       _on_off_target = HIGH;                                          // (I) turn off the LP
       IamBlinking = false;                                            // (I) take the LP out of a blinking cycle
