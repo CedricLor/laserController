@@ -145,8 +145,6 @@ void LaserPin::setOnOffTarget() {
     IamBlinking = true;                                             // (IV) include this LP in the blinking cycle
     return;                                                         // (IV) exit
   }
-  IamBlinking = true;                                               // (IV) include this LP in the blinking cycle
-  return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,9 +170,6 @@ void LaserPin::executePinStateChange() {
     1. turn on or off the laser as requested in the _on_off_target_state
     2. align the _on_off state with the _on_off_target state
     3. reset the safety blinking timer of this pin
-    // TO ANALYSE: I have the feeling that the condition to be tested shall be different
-    // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
-    // a blinking cycle and cooling off
   */
   if (_on_off != _on_off_target) {
     _markTimeChanges();
