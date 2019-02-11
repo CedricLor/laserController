@@ -29,11 +29,11 @@ LaserPin::LaserPin()
 // INITIALIZE LASER PINS
 /////////////////////////////////////////
 // Called from LaserPinsArray::initLaserPins() only
-void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
+void LaserPin::physicalInitLaserPin(const short __sPhysicalPinNumber)
 {
-  _physical_pin_number = _sPhysicalPinNumber;
-  pinMode(_sPhysicalPinNumber, OUTPUT);     // initialization of the pin connected to each of the relay as output
-  digitalWrite(_sPhysicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
+  _physical_pin_number = __sPhysicalPinNumber;
+  pinMode(_physical_pin_number, OUTPUT);     // initialization of the pin connected to each of the relay as output
+  digitalWrite(_physical_pin_number, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
 /////////////////////////////////////////
 // PUBLIC GETTERS
 bool LaserPin::isLGUOn() {
-  return LaserGroupedUnits[laserGroupedUnitId].currentOnOffState;
+  return !(LaserGroupedUnits[laserGroupedUnitId].currentOnOffState);
 }
 
 unsigned long LaserPin::blinkingInterval() {
@@ -91,7 +91,7 @@ void LaserPin::_markTimeChanges() {
    Called from (i) laserPinsArray::loop().
 */
 void LaserPin::setOnOffTarget() {
-
+  
   // First (I), check whether the LGU to which this LP pertains is "on".
   // If the LGU is "off", check whether this LP is also "off"
   // If the LP is not "off", turn it off and exit
