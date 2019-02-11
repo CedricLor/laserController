@@ -102,12 +102,14 @@ void LaserPin::setOnOffTarget() {
     If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
     TO ANALYSE: this may overwrite other changes that have been requested at other stages
   */
-  if (isLGUOn()) {                                                     // is the LaserGroupedUnit to which this LaserPin pertains "on"?
-    const unsigned long _ulCurrentTime = millis();                      // if so, get current time
+  if (isLGUOn()) {                                                    // is the LaserGroupedUnit to which this LaserPin pertains "on"?
+    const unsigned long _ulCurrentTime = millis();                    // get current time
     if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
         _on_off_target = !_on_off;
     }
-  }
+  } else {                                                            // isLGUOn() is false
+    _on_off_target = HIGH;                                            // turn off the pin
+  }                                                                   // end if isLGUOn()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
