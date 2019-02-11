@@ -17,8 +17,8 @@ class pirStartupController
     static Task tPirStartUpDelayBlinkLaser;
 
   private:
-    static const short SI_PIR_START_UP_DELAY_ITERATIONS;
-    static const long L_PIR_START_UP_DELAY;
+    static const short _SI_PIR_START_UP_DELAY_ITERATIONS;
+    static const long _L_PIR_START_UP_DELAY;
 
     static void _cbtPirStartUpDelayBlinkLaser();
     static bool _onEnablePirStartUpDelayBlinkLaser();

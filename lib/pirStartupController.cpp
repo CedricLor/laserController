@@ -11,8 +11,8 @@ pirStartupController::pirStartupController()
 }
 
 // after being started, the Pir values shall not be read for the next 60 seconds, as the PIR is likely to send equivoqual values
-const short pirStartupController::SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
-const long pirStartupController::L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
+const short pirStartupController::_SI_PIR_START_UP_DELAY_ITERATIONS = 7;  // This const stores the number of times the tPirStartUpDelay Task shall repeat and inform the user that the total delay for the PIR to startup has not expired
+const long pirStartupController::_L_PIR_START_UP_DELAY = 10000UL;         // This const stores the duration of the cycles (10 seconds) of the tPirStartUpDelay Task
 
 /*
    tPirStartUpDelayBlinkLaser is the first task to be enabled upon setup of the ESP32
@@ -27,7 +27,7 @@ const long pirStartupController::L_PIR_START_UP_DELAY = 10000UL;         // This
    - upon blinking, the laser do a short blink on - blink off so that the user knows that the IR sensor is still warming up.
    The whole sequence would probably need to be redrafted to relay on the blinking interval defined at the LaserPin level (but for the moment, this has been done here).
 */
-Task pirStartupController::tPirStartUpDelayBlinkLaser( L_PIR_START_UP_DELAY, SI_PIR_START_UP_DELAY_ITERATIONS, &_cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &_onEnablePirStartUpDelayBlinkLaser, &_onDisablePirStartUpDelayBlinkLaser );
+Task pirStartupController::tPirStartUpDelayBlinkLaser( _L_PIR_START_UP_DELAY, _SI_PIR_START_UP_DELAY_ITERATIONS, &_cbtPirStartUpDelayBlinkLaser, &userScheduler, false, &_onEnablePirStartUpDelayBlinkLaser, &_onDisablePirStartUpDelayBlinkLaser );
 
 /*
    _tPirStartUpDelayPrintDash prints a dash to the console
