@@ -31,6 +31,9 @@ class LaserPin
     short pairedWith();                 // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
     bool pirState();                    // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
 
+    // LGU state machine setter
+    void updateLGUState();
+
     // Execute changes
     void executePinStateChange();
     void laserProtectionSwitch();
@@ -58,6 +61,7 @@ class LaserPin
     // State machine getter
     bool _isLGUOn();                  // is the LaserGroupedUnit to which this pin pertains "on"?
     bool _LGUHasChanged();            // has the LaserGroupedUnit to which this LP pertains changed?
+    bool _amIlastInLGU();             // is this LP the last of its LGU?
     unsigned long _previousTime();    // last time this pin changed state (on or off)
 };
 

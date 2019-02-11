@@ -46,11 +46,16 @@ bool LaserPin::_isLGUOn() {
 
 bool LaserPin::_LGUHasChanged() {
   return (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState
-  && LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval);
+  && LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval
+  && LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState);
+}
+
+bool LaserPin::_amIlastInLGU() {
+  return (index_number > pairedWith());
 }
 
 unsigned long LaserPin::blinkingInterval() {
-  return LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval;
+  return LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval;
 }
 
 short LaserPin::pairedWith() {
@@ -96,20 +101,14 @@ void LaserPin::_markTimeChanges() {
    Called from (i) laserPinsArray::loop().
 */
 void LaserPin::setOnOffTarget() {
-  // IF the LGU to which this pins pertains has not changed, do not do anything
-  if (!(_LGUHasChanged())) {
-
-  }
 
   // First (I), check whether the LGU to which this LP pertains is "on".
   // If the LGU is "off", check whether this LP is also "off"
   // If the LP is not "off", turn it off and exit
-  if (!(_isLGUOn())) {                                                 // (I) if the LGU to which this LP pertains is "off"
-    if (_on_off == LOW) {                                             // (I) if this LP is "on" (nothing to do if this LP is already "off")
-      _on_off_target = HIGH;                                          // (I) turn off the LP
-      IamBlinking = false;                                            // (I) take the LP out of a blinking cycle
-      return;                                                         // (I) exit
-    }
+  if ((!(_isLGUOn())) && (_on_off == LOW)) {                        // (I) if the LGU to which this LP pertains is "off" and this LP is "on"
+    _on_off_target = HIGH;                                          // (I) turn off the LP
+    IamBlinking = false;                                            // (I) take the LP out of a blinking cycle
+    return;                                                         // (I) exit
   }
 
   // Second (II): if the LGU to which this pins pertains is "on".
@@ -137,17 +136,25 @@ void LaserPin::setOnOffTarget() {
   // Fourth (IV): if the LGU is "on", this LP is not in a blinking cycle and is in cooperative pairing,
   // light the coolest of the lasers "on" (or the first one in the pair of lasers if they are both at the same level)
   if (_last_time_on < LaserPins[__pairedPinId]._last_time_on) {
-    _on_off_target = LOW;                                           // (V) turn this LP on
-    IamBlinking = true;                                             // (V) include this LP in the blinking cycle
-    return;                                                         // (V) exit
+    _on_off_target = LOW;                                           // (IV) turn this LP on
+    IamBlinking = true;                                             // (IV) include this LP in the blinking cycle
+    return;                                                         // (IV) exit
   }
   if ((_last_time_on == LaserPins[__pairedPinId]._last_time_on) && (index_number < __pairedPinId)) {
-    _on_off_target = LOW;                                           // (V) turn this LP on
-    IamBlinking = true;                                             // (V) include this LP in the blinking cycle
-    return;                                                         // (V) exit
+    _on_off_target = LOW;                                           // (IV) turn this LP on
+    IamBlinking = true;                                             // (IV) include this LP in the blinking cycle
+    return;                                                         // (IV) exit
   }
-  IamBlinking = true;                                               // (V) include this LP in the blinking cycle
+  IamBlinking = true;                                               // (IV) include this LP in the blinking cycle
   return;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// LGU STATE SETTER
+void LaserPin::updateLGUState() {
+    if (_amIlastInLGU()) {
+      LaserGroupedUnits[laserGroupedUnitId].updateCurrentStates();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,12 +191,6 @@ void LaserPin::executePinStateChange() {
 */
 void LaserPin::laserProtectionSwitch() {
   const unsigned long __currentTime = millis();
-  // OLD DRAFTING --
-  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - _last_time_on > _max_interval_on) || (currentTime - _last_time_off <  _last_interval_on))) {
-  // digitalWrite(_physical_pin_number, HIGH);
-  // PROPOSED REDRAFTING --
-  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - _last_time_off > _max_interval_on) || (currentTime - _last_time_on <  _last_interval_on))) {
-  // digitalWrite(_physical_pin_number, HIGH);
   if (digitalRead(_physical_pin_number) == LOW) {
     if (__currentTime - _last_time_off > _max_interval_on) {
       digitalWrite(_physical_pin_number, HIGH);

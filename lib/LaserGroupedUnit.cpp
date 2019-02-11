@@ -56,6 +56,12 @@ void LaserGroupedUnit::setTargetBlinkingInterval(const unsigned long _ulTargetBl
   previousBlinkingInterval = currentBlinkingInterval;
   targetBlinkingInterval = _ulTargetBlinkingInterval;
 }
+
+void LaserGroupedUnit::updateCurrentStates() {
+  currentOnOffState = targetOnOffState;
+  currentPirState = targetPirState;
+  currentBlinkingInterval = targetBlinkingInterval;
+}
 ////////////////////////////////////////////////////////////////////////////////
 // SWITCHES
 /* MANUAL SWITCH

@@ -34,7 +34,7 @@ class LaserGroupedUnit
     void setOnOffTargetState(const bool _bTargetOnOffState);
     void setTargetPirState(const short int __sTargetPirState);
     void setTargetBlinkingInterval(const unsigned long _ulTargetBlinkingInterval);
-
+    void updateCurrentStates();
 
   private:
     static bool const _default_laser_group_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
