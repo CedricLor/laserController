@@ -40,7 +40,7 @@ void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
 // STATE MACHINE GETTERS
 /////////////////////////////////////////
 // PUBLIC GETTERS
-bool LaserPin::blinking() {
+bool LaserPin::isLGUOn() {
   return LaserGroupedUnits[laserGroupedUnitId].currentOnOffState;
 }
 
@@ -102,8 +102,8 @@ void LaserPin::setOnOffTarget() {
     If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
     TO ANALYSE: this may overwrite other changes that have been requested at other stages
   */
-  if (blinking()) {
-    const unsigned long _ulCurrentTime = millis();
+  if (isLGUOn()) {                                                     // is the LaserGroupedUnit to which this LaserPin pertains "on"?
+    const unsigned long _ulCurrentTime = millis();                      // if so, get current time
     if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
         _on_off_target = !_on_off;
     }

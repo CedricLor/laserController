@@ -36,13 +36,13 @@ void LaserPinsArray::endloop() {
   for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
     /* The order of the following function matters:
     - updateLaserPinValuesFromLaserGroupedUnitOwner is called first as it updates the LaserPin states based on data read into its parent LaserGroupedUnit
-    - blinkLaserInBlinkingCycle is called second as it is not an IO function; it only updates the state of the LaserPin state machine;
+    - setOnOffTarget is called second as it is not an IO function; it only updates the state of the LaserPin state machine;
     however, it relies on values updated by updateLaserPinValuesFromLaserGroupedUnitOwner.
     - executePinStateChange is called second as it executes pinChanges (IO function).
     - laserProtectionSwitch comes last, as it is just an additional check at the end that turns off lasers in case of bug.
     */
     // LaserPins[thisPin].updateLaserPinValuesFromLaserGroupedUnitOwner();
-    LaserPins[thisPin].blinkLaserInBlinkingCycle();
+    LaserPins[thisPin].setOnOffTarget();
     LaserPins[thisPin].executePinStateChange();
     LaserPins[thisPin].laserProtectionSwitch();
   }
