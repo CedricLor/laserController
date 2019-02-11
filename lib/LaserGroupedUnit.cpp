@@ -45,15 +45,6 @@ LaserGroupedUnit::LaserGroupedUnit()
 void LaserGroupedUnit::setOnOffTargetState(const bool _bTargetOnOffState) {
   previousOnOffState = currentOnOffState;
   targetOnOffState = _bTargetOnOffState;
-  /**************************************************************************/
-  /* Former drafting: the LaserGroupedUnit was setting values in LaserPins. */
-  /* Kept for reference purpose to be used in a future LaserGroupedUnit reader that should iterate around all pins to read the parent value. */
-  /**************************************************************************/
-  // for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-  //   if (LaserPins[thisPin].laserGroupedUnitId == index_number) {
-  //     LaserPins[thisPin].switchOnOffVariables(_bTargetOnOffState);
-  //   }
-  // }
 }
 
 void LaserGroupedUnit::setTargetPirState(const short int __sTargetPirState){
