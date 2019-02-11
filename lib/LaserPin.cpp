@@ -9,7 +9,6 @@
 
 bool const LaserPin::_default_pin_on_off_state = HIGH;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
 bool const LaserPin::_default_pin_on_off_target_state = HIGH; // by default, the pin starts as not having received any request to change its state from a function TO ANALYSE: THIS IS WHAT MAKES THIS CLICK-CLICK AT START UP
-bool const LaserPin::_default_pin_blinking_state = false;       // by default, pin starts as in a blinking-cycle TO ANALYSE
 const unsigned long LaserPin::_max_interval_on = 600000UL;
 
 /* Default constructor: required by the global.cpp
@@ -19,11 +18,11 @@ const unsigned long LaserPin::_max_interval_on = 600000UL;
 // Instanciated in global.cpp
 LaserPin::LaserPin()
 {
-  on_off = _default_pin_on_off_state;
+  _on_off = _default_pin_on_off_state;
   on_off_target = _default_pin_on_off_target_state;
-  last_time_on = 0;             // set at 0 at startup
-  last_time_off = millis();     // set at current time at startup
-  last_interval_on = 0;         // set at 0 at startup
+  _last_time_on = 0;             // set at 0 at startup
+  _last_time_off = millis();     // set at current time at startup
+  _last_interval_on = 0;         // set at 0 at startup
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,13 +53,13 @@ void LaserPin::blinkLaserInBlinkingCycle() {
   if (blinking()) {
     const unsigned long _ulCurrentTime = millis();
     if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
-        on_off_target = !on_off;
+        on_off_target = !_on_off;
     }
   }
 }
 
 unsigned long LaserPin::_previousTime() {
-  return (last_time_on > last_time_off) ? last_time_on : last_time_off;
+  return (_last_time_on > _last_time_off) ? _last_time_on : _last_time_off;
 }
 
 bool LaserPin::blinking() {
@@ -97,19 +96,19 @@ bool LaserPin::pirState() {
 */
 void LaserPin::executePinStateChange() {
   /*
-    Checks whether the current on_off_target state is different than the current on_off state
+    Checks whether the current on_off_target state is different than the current _on_off state
     If so:
     1. turn on or off the laser as requested in the on_off_target_state
-    2. align the on_off state with the on_off_target state
+    2. align the _on_off state with the on_off_target state
     3. reset the safety blinking timer of this pin
     // TO ANALYSE: I have the feeling that the condition to be tested shall be different
     // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
     // a blinking cycle and cooling off
   */
-  if (on_off != on_off_target) {
+  if (_on_off != on_off_target) {
     _markTimeChanges();
     digitalWrite(_physical_pin_number, on_off_target);
-    on_off = on_off_target;
+    _on_off = on_off_target;
   }
 }
 
@@ -117,16 +116,16 @@ void LaserPin::executePinStateChange() {
 // Helper function for executePinStateChange
 // Private function
 void LaserPin::_markTimeChanges() {
-  const unsigned long currentTime = millis();
+  const unsigned long __currentTime = millis();
 
   // If instruction is to turn laserPin on
   if (on_off_target == LOW) {
-    last_time_off = currentTime;
+    _last_time_off = __currentTime;
     return;
   }
   // If instruction is to turn laserPin off
-  last_time_on = currentTime;
-  last_interval_on = last_time_on - last_time_off;
+  _last_time_on = __currentTime;
+  _last_interval_on = _last_time_on - _last_time_off;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,19 +135,19 @@ void LaserPin::_markTimeChanges() {
    - LaserPinsArray::loop()
 */
 void LaserPin::laserProtectionSwitch() {
-  const unsigned long currentTime = millis();
+  const unsigned long __currentTime = millis();
   // OLD DRAFTING --
-  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - last_time_on > _max_interval_on) || (currentTime - last_time_off <  last_interval_on))) {
+  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - _last_time_on > _max_interval_on) || (currentTime - _last_time_off <  _last_interval_on))) {
   // digitalWrite(_physical_pin_number, HIGH);
   // PROPOSED REDRAFTING --
-  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - last_time_off > _max_interval_on) || (currentTime - last_time_on <  last_interval_on))) {
+  // if ((digitalRead(_physical_pin_number) == LOW) && ((currentTime - _last_time_off > _max_interval_on) || (currentTime - _last_time_on <  _last_interval_on))) {
   // digitalWrite(_physical_pin_number, HIGH);
   if (digitalRead(_physical_pin_number) == LOW) {
-    if (currentTime - last_time_off > _max_interval_on) {
+    if (__currentTime - _last_time_off > _max_interval_on) {
       digitalWrite(_physical_pin_number, HIGH);
       return;
     }
-    if (currentTime - last_time_on < last_interval_on) {
+    if (__currentTime - _last_time_on < _last_interval_on) {
       digitalWrite(_physical_pin_number, HIGH);
     }
   }
