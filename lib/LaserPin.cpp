@@ -90,26 +90,55 @@ void LaserPin::_markTimeChanges() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-/* BLINK LASER IN BLINKING CYCLE
-   Blinks the laser when the laser is in blinking cycle.
-   Called from (i) laserSafetyLoop::loop().
+/* SET ON / OFF STATE
+   Called from (i) laserPinsArray::loop().
 */
 void LaserPin::setOnOffTarget() {
-  /*
-    Checks:
-    1. if the pin is in blinking mode
-    2. if so, if the blinking interval of this laser has elapsed
-    If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
-    TO ANALYSE: this may overwrite other changes that have been requested at other stages
-  */
-  if (isLGUOn()) {                                                    // is the LaserGroupedUnit to which this LaserPin pertains "on"?
-    const unsigned long _ulCurrentTime = millis();                    // get current time
-    if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
-        _on_off_target = !_on_off;
+
+  // First (I), check whether the LGU to which this LP pertains is "on".
+  // If the LGU is "off", check whether this LP is also "off"
+  // If the LP is not "off", turn it off and exit
+  if (!(isLGUOn())) {                                                 // (I) if the LGU to which this LP pertains is "off"
+    if (_on_off == LOW) {                                             // (I) if this LP is "on" (nothing to do if this LP is already "off")
+      _on_off_target = HIGH;                                          // (I) turn off the LP
+      IamBlinking = false;                                            // (I) take the LP out of a blinking cycle
+      return;                                                         // (I) exit
     }
-  } else {                                                            // isLGUOn() is false
-    _on_off_target = HIGH;                                            // turn off the pin
-  }                                                                   // end if isLGUOn()
+  }
+
+  // Second (II): if the LGU to which this pins pertains is "on".
+  // check whether this LP is in a blinking cycle.
+  //
+  if (IamBlinking) {                                                // (IIA) is this LaserPin blinking (= is it already aware that the LGU is "on"?)?
+    const unsigned long _ulCurrentTime = millis();                  // (IIA) get current time
+    if (_ulCurrentTime - _previousTime() > blinkingInterval()) {      // (IIB) if the timer for this LP has elapsed
+      _on_off_target = !_on_off;                                      // (IIB) Switch on/off state of LP
+      return;                                                         // (IIB) exit
+    }
+    return;                                                         // (IIB) if the timer has not elapsed, do nothing and exit
+  }
+
+  // Third (III): if the LGU is "on" and this LP is not in a blinking cycle.
+  // check whether this LP is paired or in twin pairing.
+  // if unpaired or in twin pairing, turn this LP "on".
+  short __pairedPinId = pairedWith();
+  if ((__pairedPinId == -1) || (LaserGroupedUnits[laserGroupedUnitId].pairing_type == 0)) {
+    _on_off_target = LOW;                                           // (III) turn this LP "on"
+    IamBlinking = true;                                             // (III) include this LP in the blinking cycle
+    return;                                                         // (III) exit
+  }                                                                 // (III) continue if this LP is paired in cooperative pairing
+
+  // Fourth (IV): if the LGU is "on", this LP is not in a blinking cycle and is in cooperative pairing,
+  // light the coolest of the lasers "on" (or the first one in the pair of lasers if they are both at the same level)
+  if (_last_time_on < LaserPins[__pairedPinId]._last_time_on) {
+    _on_off_target = LOW;                                           // (V) turn this LP on
+    return;                                                         // (V) exit
+  }
+  if ((_last_time_on == LaserPins[__pairedPinId]._last_time_on) && (index_number < __pairedPinId)) {
+    _on_off_target = LOW;                                           // (V) turn this LP on
+    return;                                                         // (V) exit
+  }
+  return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

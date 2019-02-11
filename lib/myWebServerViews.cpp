@@ -183,7 +183,7 @@ String myWebServerViews::printIndivLaserCntrls() {
 
 String myWebServerViews::printCurrentStatus(const short thisPin) {
   String currentStatus;
-  if (LaserPins[thisPin].isBlinking) {
+  if (LaserPins[thisPin].IamBlinking) {
     currentStatus += " ON ";
   } else {
     currentStatus += " OFF ";

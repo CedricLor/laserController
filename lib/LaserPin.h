@@ -21,7 +21,7 @@ class LaserPin
     void physicalInitLaserPin(const short physicalPinNumber);
 
     // State machine variables
-    bool isBlinking;                // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
+    bool IamBlinking;                // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
 
     // State machine setters
     void setOnOffTarget();
