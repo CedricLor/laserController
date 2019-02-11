@@ -25,8 +25,9 @@ LaserPin::LaserPin()
   _last_interval_on = 0;         // set at 0 at startup
 }
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE LASER PINS
+/////////////////////////////////////////
 // Called from LaserPinsArray::initLaserPins() only
 void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
 {
@@ -35,33 +36,10 @@ void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
   digitalWrite(_sPhysicalPinNumber, HIGH);  // setting default value of the pins at HIGH (relay closed)
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
-/* BLINK LASER IN BLINKING CYCLE
-   Blinks the laser when the laser is in blinking cycle.
-   Called from (i) laserSafetyLoop::loop().
-*/
-void LaserPin::blinkLaserInBlinkingCycle() {
-  /*
-    Checks:
-    1. if the pin is in blinking mode
-    2. if so, if the blinking interval of this laser has elapsed
-    If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
-    TO ANALYSE: this may overwrite other changes that have been requested at other stages
-  */
-  if (blinking()) {
-    const unsigned long _ulCurrentTime = millis();
-    if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
-        on_off_target = !_on_off;
-    }
-  }
-}
-
-unsigned long LaserPin::_previousTime() {
-  return (_last_time_on > _last_time_off) ? _last_time_on : _last_time_off;
-}
-
+// HELPERS
+/////////////////////////////////////////
+// PUBLIC HELPERS
 bool LaserPin::blinking() {
   return LaserGroupedUnits[laserGroupedUnitId].currentOnOffState;
 }
@@ -86,9 +64,52 @@ bool LaserPin::pirState() {
   return LaserGroupedUnits[laserGroupedUnitId].currentPirState;
 }
 
+/////////////////////////////////////////
+// PRIVATE HELPERS
+unsigned long LaserPin::_previousTime() {
+  return (_last_time_on > _last_time_off) ? _last_time_on : _last_time_off;
+}
+
+/////////////////////////////////////////
+// Helper function for executePinStateChange
+// Private function
+void LaserPin::_markTimeChanges() {
+  const unsigned long __currentTime = millis();
+
+  // If instruction is to turn laserPin on
+  if (on_off_target == LOW) {
+    _last_time_off = __currentTime;
+    return;
+  }
+  // If instruction is to turn laserPin off
+  _last_time_on = __currentTime;
+  _last_interval_on = _last_time_on - _last_time_off;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/* BLINK LASER IN BLINKING CYCLE
+   Blinks the laser when the laser is in blinking cycle.
+   Called from (i) laserSafetyLoop::loop().
+*/
+void LaserPin::blinkLaserInBlinkingCycle() {
+  /*
+    Checks:
+    1. if the pin is in blinking mode
+    2. if so, if the blinking interval of this laser has elapsed
+    If both conditions are fullfilled, switches the pin on/off target variable to the contrary of the current pin on/off
+    TO ANALYSE: this may overwrite other changes that have been requested at other stages
+  */
+  if (blinking()) {
+    const unsigned long _ulCurrentTime = millis();
+    if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
+        on_off_target = !_on_off;
+    }
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 // IO FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////
 // Execute Updates
 /* Called from:
    - laserSafetyLoop::loop()
@@ -112,23 +133,7 @@ void LaserPin::executePinStateChange() {
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Helper function for executePinStateChange
-// Private function
-void LaserPin::_markTimeChanges() {
-  const unsigned long __currentTime = millis();
-
-  // If instruction is to turn laserPin on
-  if (on_off_target == LOW) {
-    _last_time_off = __currentTime;
-    return;
-  }
-  // If instruction is to turn laserPin off
-  _last_time_on = __currentTime;
-  _last_interval_on = _last_time_on - _last_time_off;
-}
-
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////
 // Laser Protection Switch
 // Function to protect the lasers from staying on over 60 seconds or being turned on again before a 60 seconds delay after having been turned off
 /* Called from:
