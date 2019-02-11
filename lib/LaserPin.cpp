@@ -41,7 +41,12 @@ void LaserPin::physicalInitLaserPin(const short __sPhysicalPinNumber)
 /////////////////////////////////////////
 // PUBLIC GETTERS
 bool LaserPin::_isLGUOn() {
-  return !(LaserGroupedUnits[laserGroupedUnitId].currentOnOffState);
+  return !(LaserGroupedUnits[laserGroupedUnitId].targetOnOffState);
+}
+
+bool LaserPin::_LGUHasChanged() {
+  return (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState
+  && LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval);
 }
 
 unsigned long LaserPin::blinkingInterval() {
@@ -91,6 +96,10 @@ void LaserPin::_markTimeChanges() {
    Called from (i) laserPinsArray::loop().
 */
 void LaserPin::setOnOffTarget() {
+  // IF the LGU to which this pins pertains has not changed, do not do anything
+  if (!(_LGUHasChanged())) {
+
+  }
 
   // First (I), check whether the LGU to which this LP pertains is "on".
   // If the LGU is "off", check whether this LP is also "off"

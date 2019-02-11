@@ -56,7 +56,8 @@ class LaserPin
     void _markTimeChanges();
 
     // State machine getter
-    bool _isLGUOn();                     // is the LaserGroupedUnit to which this pin pertains "on"?
+    bool _isLGUOn();                  // is the LaserGroupedUnit to which this pin pertains "on"?
+    bool _LGUHasChanged();            // has the LaserGroupedUnit to which this LP pertains changed?
     unsigned long _previousTime();    // last time this pin changed state (on or off)
 };
 
