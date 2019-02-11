@@ -17,9 +17,6 @@ class LaserPin
     short laserGroupedUnitId;       // Index number of the laserGroupedUnitId to which this pin pertains
     short index_number;             // LaserPin type index number in the LaserPinsArray
 
-    // On or off state (i.e. electrical circuit is closed or open)
-    bool on_off_target;             // variable to store the on / off change requests by the various functions
-
     // Initialization of the laserPin
     void physicalInitLaserPin(const short physicalPinNumber);
 
@@ -44,6 +41,7 @@ class LaserPin
 
     // On or off state (i.e. electrical circuit is closed or open)
     bool _on_off;                   // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
+    bool _on_off_target;             // variable to store the on / off change requests by the various functions
 
     // timer variable
     static const unsigned long _max_interval_on;

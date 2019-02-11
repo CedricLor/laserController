@@ -19,7 +19,7 @@ const unsigned long LaserPin::_max_interval_on = 600000UL;
 LaserPin::LaserPin()
 {
   _on_off = _default_pin_on_off_state;
-  on_off_target = _default_pin_on_off_target_state;
+  _on_off_target = _default_pin_on_off_target_state;
   _last_time_on = 0;             // set at 0 at startup
   _last_time_off = millis();     // set at current time at startup
   _last_interval_on = 0;         // set at 0 at startup
@@ -77,7 +77,7 @@ void LaserPin::_markTimeChanges() {
   const unsigned long __currentTime = millis();
 
   // If instruction is to turn laserPin on
-  if (on_off_target == LOW) {
+  if (_on_off_target == LOW) {
     _last_time_off = __currentTime;
     return;
   }
@@ -102,7 +102,7 @@ void LaserPin::blinkLaserInBlinkingCycle() {
   if (blinking()) {
     const unsigned long _ulCurrentTime = millis();
     if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
-        on_off_target = !_on_off;
+        _on_off_target = !_on_off;
     }
   }
 }
@@ -117,19 +117,19 @@ void LaserPin::blinkLaserInBlinkingCycle() {
 */
 void LaserPin::executePinStateChange() {
   /*
-    Checks whether the current on_off_target state is different than the current _on_off state
+    Checks whether the current _on_off_target state is different than the current _on_off state
     If so:
-    1. turn on or off the laser as requested in the on_off_target_state
-    2. align the _on_off state with the on_off_target state
+    1. turn on or off the laser as requested in the _on_off_target_state
+    2. align the _on_off state with the _on_off_target state
     3. reset the safety blinking timer of this pin
     // TO ANALYSE: I have the feeling that the condition to be tested shall be different
     // in the case a) a laser is in a blinking cycle and in the case b) a laser is not in
     // a blinking cycle and cooling off
   */
-  if (_on_off != on_off_target) {
+  if (_on_off != _on_off_target) {
     _markTimeChanges();
-    digitalWrite(_physical_pin_number, on_off_target);
-    _on_off = on_off_target;
+    digitalWrite(_physical_pin_number, _on_off_target);
+    _on_off = _on_off_target;
   }
 }
 
