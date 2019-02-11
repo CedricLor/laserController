@@ -129,12 +129,15 @@ void LaserPin::setOnOffTarget() {
   // light the coolest of the lasers "on" (or the first one in the pair of lasers if they are both at the same level)
   if (_last_time_on < LaserPins[__pairedPinId]._last_time_on) {
     _on_off_target = LOW;                                           // (V) turn this LP on
+    IamBlinking = true;                                             // (V) include this LP in the blinking cycle
     return;                                                         // (V) exit
   }
   if ((_last_time_on == LaserPins[__pairedPinId]._last_time_on) && (index_number < __pairedPinId)) {
     _on_off_target = LOW;                                           // (V) turn this LP on
+    IamBlinking = true;                                             // (V) include this LP in the blinking cycle
     return;                                                         // (V) exit
   }
+  IamBlinking = true;                                               // (V) include this LP in the blinking cycle
   return;
 }
 
