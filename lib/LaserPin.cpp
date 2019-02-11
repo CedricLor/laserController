@@ -21,7 +21,6 @@ LaserPin::LaserPin()
 {
   on_off = _default_pin_on_off_state;
   on_off_target = _default_pin_on_off_target_state;
-  previous_time = millis();
   last_time_on = 0;             // set at 0 at startup
   last_time_off = millis();     // set at current time at startup
   last_interval_on = 0;         // set at 0 at startup
@@ -54,10 +53,14 @@ void LaserPin::blinkLaserInBlinkingCycle() {
   */
   if (blinking()) {
     const unsigned long _ulCurrentTime = millis();
-    if (_ulCurrentTime - previous_time > blinkingInterval()) {
+    if (_ulCurrentTime - _previousTime() > blinkingInterval()) {
         on_off_target = !on_off;
     }
   }
+}
+
+unsigned long LaserPin::_previousTime() {
+  return (last_time_on > last_time_off) ? last_time_on : last_time_off;
 }
 
 bool LaserPin::blinking() {
@@ -115,7 +118,6 @@ void LaserPin::executePinStateChange() {
 // Private function
 void LaserPin::_markTimeChanges() {
   const unsigned long currentTime = millis();
-  previous_time = currentTime;
 
   // If instruction is to turn laserPin on
   if (on_off_target == LOW) {

@@ -21,7 +21,6 @@ class LaserPin
     bool on_off;                    // variable to store the state (HIGH or LOW) of the pin (LOW = the relay is closed, HIGH = the relay is open)
     bool on_off_target;             // variable to store the on / off change requests by the various functions
 
-    unsigned long previous_time;    // last time this pin changed state (on or off) // NOTE: redundant with last_time_on and last_time_off below
     unsigned long last_time_on;     // last time this pin was turned on
     unsigned long last_time_off;    // last time this pin was turned off
     unsigned long last_interval_on; // last interval during which this pin was turned on
@@ -30,18 +29,17 @@ class LaserPin
     void physicalInitLaserPin(const short physicalPinNumber);
 
     // State machine setters
-    void updateLaserPinValuesFromLaserGroupedUnitOwner();
     void blinkLaserInBlinkingCycle();
 
-    // Execute changes
-    void executePinStateChange();
-    void laserProtectionSwitch();
-
-    // TO DO: remove once webviews updated
+    // State machine getters (variables calculated from LaserGroupedUnit or LaserGroupedUnitsArray values)
     bool blinking();                    // is the pin in a blinking cycle (true = the pin is in a blinking cycle, false = the pin is not in a blinking cycle)
     unsigned long blinkingInterval();   // how long should this pin blink on and off
     short pairedWith();                 // with which other pin is this pin paired (-1 means it is not paired); the number correspond to the index_number of the paired pin
     bool pirState();                    // shall this pin respond to a change coming from the IR sensor; HIGH or LOW: HIGH -> reacting to changes in the PIR
+
+    // Execute changes
+    void executePinStateChange();
+    void laserProtectionSwitch();
 
   private:
     static bool const _default_pin_on_off_state;         // by default, the pin starts as HIGH (the relays is off and laser also) TO ANALYSE: THIS IS WHAT MAKES THE CLICK-CLICK AT STARTUP
@@ -52,8 +50,8 @@ class LaserPin
 
     static const unsigned long _max_interval_on;
 
-
     void _markTimeChanges();
+    unsigned long _previousTime();    // last time this pin changed state (on or off)
 };
 
 #endif
