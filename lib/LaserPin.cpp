@@ -37,9 +37,9 @@ void LaserPin::physicalInitLaserPin(const short _sPhysicalPinNumber)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// HELPERS
+// STATE MACHINE GETTERS
 /////////////////////////////////////////
-// PUBLIC HELPERS
+// PUBLIC GETTERS
 bool LaserPin::blinking() {
   return LaserGroupedUnits[laserGroupedUnitId].currentOnOffState;
 }
@@ -65,12 +65,15 @@ bool LaserPin::pirState() {
 }
 
 /////////////////////////////////////////
-// PRIVATE HELPERS
+// PRIVATE GETTERS
 unsigned long LaserPin::_previousTime() {
   return (_last_time_on > _last_time_off) ? _last_time_on : _last_time_off;
 }
 
-/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+// STATE MACHINE SETTERS
+////////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SETTERS
 // Helper function for executePinStateChange
 // Private function
 void LaserPin::_markTimeChanges() {
@@ -91,7 +94,7 @@ void LaserPin::_markTimeChanges() {
    Blinks the laser when the laser is in blinking cycle.
    Called from (i) laserSafetyLoop::loop().
 */
-void LaserPin::blinkLaserInBlinkingCycle() {
+void LaserPin::setOnOffTarget() {
   /*
     Checks:
     1. if the pin is in blinking mode
