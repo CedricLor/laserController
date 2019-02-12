@@ -134,7 +134,8 @@ void LaserGroupedUnitsArray::setTargetBlinkingInterval(const unsigned long __ulT
 ////////////////////////////////////////////////////////////////////////////////
 // STATE MACHINE READER
 long int LaserGroupedUnitsArray::_liActUponStateChangesInterval = 2000;
-Task LaserGroupedUnitsArray::_tActUponStateChanges(_liActUponStateChangesInterval, TASK_FOREVER, &_tcbActUponStateChanges, &userScheduler, true);
+short int LaserGroupedUnitsArray::_siActUponStateChangesIterations = 1;
+Task LaserGroupedUnitsArray::_tActUponStateChanges(_liActUponStateChangesInterval, _siActUponStateChangesIterations, &_tcbActUponStateChanges, &userScheduler, true);
 
 void LaserGroupedUnitsArray::_tcbActUponStateChanges() {
   if (!(_LGUAHasChanged())) {

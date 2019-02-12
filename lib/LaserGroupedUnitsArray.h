@@ -56,6 +56,7 @@ class LaserGroupedUnitsArray
 
     // state machine reader
     static long int _liActUponStateChangesInterval;
+    static short int _siActUponStateChangesIterations;
     static Task _tActUponStateChanges;
     static void _tcbActUponStateChanges();
     static bool _LGUAHasChanged();
