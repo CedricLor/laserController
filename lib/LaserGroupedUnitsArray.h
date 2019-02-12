@@ -58,6 +58,7 @@ class LaserGroupedUnitsArray
     static long int _liActUponStateChangesInterval;
     static Task _tActUponStateChanges;
     static void _tcbActUponStateChanges();
+    static bool _LGUAHasChanged();
 
     // state machine actions // TO BE DELETED ONCE LOGIC INCORPORATED IN LaserPinsArray::loop
     static void _irStartupSwitch(const bool _bTargetState);

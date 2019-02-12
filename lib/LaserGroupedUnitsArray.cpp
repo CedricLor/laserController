@@ -137,12 +137,24 @@ long int LaserGroupedUnitsArray::_liActUponStateChangesInterval = 2000;
 Task LaserGroupedUnitsArray::_tActUponStateChanges(_liActUponStateChangesInterval, TASK_FOREVER, &_tcbActUponStateChanges, &userScheduler, true);
 
 void LaserGroupedUnitsArray::_tcbActUponStateChanges() {
-  if (!(currentState == targetState)) {
-    currentState = targetState;
-    // _stateChangeActions[currentState](bTargetStateOfLaserGroupUnits/* bTargetStateOfLaserGroupUnits added only for compilation test purpose; no params shall be passed; the param shall be read in bTargetStateOfLaserGroupUnits*/);
+  if (!(_LGUAHasChanged())) {
+    return;
   }
+  //_stateChangeActions[currentState](bTargetStateOfLaserGroupUnits/* bTargetStateOfLaserGroupUnits added only for compilation test purpose; no params shall be passed; the param shall be read in bTargetStateOfLaserGroupUnits*/);
+  currentState = targetState;
+  bCurrentStateOfLaserGroupUnits = bTargetStateOfLaserGroupUnits;
+  currentPirState = targetPirState;
+  currentPinBlinkingInterval = targetPinBlinkingInterval;
 }
 
+bool LaserGroupedUnitsArray::_LGUAHasChanged() {
+  return (!(
+    (currentState == targetState)
+    || (bCurrentStateOfLaserGroupUnits == bTargetStateOfLaserGroupUnits)
+    || (currentPirState == targetPirState)
+    || (currentPinBlinkingInterval == targetPinBlinkingInterval)
+  ));
+}
 ////////////////////////////////////////////////////////////////////////////////
 // STATE 0 (pirStartUp cycle) ACTIONS: IR STARTUP SWITCH
 // Switches relay pins on and off during PIRStartUp

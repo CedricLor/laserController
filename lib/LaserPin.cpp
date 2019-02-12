@@ -45,9 +45,11 @@ bool LaserPin::_isLGUOn() {
 }
 
 bool LaserPin::_LGUHasChanged() {
-  return (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState
-  && LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval
-  && LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState);
+  return (!(
+    (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState)
+    || (LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval)
+    || (LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState)
+  ));
 }
 
 bool LaserPin::_amIlastInLGU() {
