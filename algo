@@ -1,0 +1,48 @@
+Metaprogramming Sequence
+
+// Step I: I. Task LGUA._tReadStateChanges:
+Timer: Every second;
+Iterations: indefinitely;
+Callback:
+-> Option I.1: reads if the LGUA mode state has changed;
+- if the state of the LGUA mode has changed:
+--> Option 1: Create a Task
+Read the mode change and select values from a defined set of values to transmit to a task creator.
+Create a Task with parameters corresponding to the mode state (the values that have been selected before depending on the mode change).
+Enable a single Task
+--> Option 2: Pick among a series of predefined Tasks corresponding to each event (depending on the event? would require a series of Task per events to be defined; possible but only flexible if they do not do much);
+- else, return.
+
+- if signals comes from another box AND I am in slavebox mode, do not read signals coming from my IR for the time of the Task
+- if currentMode = irStartupMode, block any IR signals for the time of the Task
+- if manualMode, do not read the signals coming from my IR or from other boxes.
+- duration of a PIR cycle which has dectect some movements: defined in pirController for the moment
+
+-> Option I.2: reads all the various state properties of LGUA to detect a change;
+- if the state of any of the properties of the LGUA has changed:
+-> act depending on the state change: need to define one Task per property (but blinkingInterval changes are to be applied whatever, immediately and until revocation; change of the mode shall be implemented sometimes for a definite duration )
+- else, return.
+
+// Step II. I.1.Option 1: Enable a single Task -- THIS IS A TIMER FOR EACH GIVEN MODE
+
+
+Task enabled on LGUA mode stateChange: LGUA._tmodeStateChange
+Timer: 2 minutes (IR and SlaveBox), 4 minute (StartUp), indefinite (manual)
+Iterations: 1
+Callback:
+StartUp:
+--> Option 1: Task taskStartUpPir
+Timer: 30 seconds
+Iterations: 4 (8 if 8 pins)
+Callback:
+  1. Pair the pins in Twin Mode
+  2. Use the iterations' counter to:
+  - select each of the LGU one after the other at each iterations;
+  - turn this LGU on;
+  - turn off the others.
+--> Option 2: (IR and Slavebox)
+
+// Step II. I.1.Option 2: Pick among a series of predefined Tasks -- THIS IS AN IF INSIDE THE CALLBACK OF LGUA._tReadStateChanges
+[TO BE DRAFTED: Definitions of the Tasks and definitions of the Tasks, at the level of LGUA._tReadStateChanges]
+If modeHasChanged, read mode
+Task [variableName]

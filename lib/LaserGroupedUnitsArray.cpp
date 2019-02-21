@@ -133,19 +133,29 @@ void LaserGroupedUnitsArray::setTargetBlinkingInterval(const unsigned long __ulT
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // STATE MACHINE READER
+void LaserGroupedUnitsArray::updateLaserGroupUnits() {
+  if (_LGUAHasChanged()) {
+    _tActUponStateChanges.enable();
+  }
+}
+
 long int LaserGroupedUnitsArray::_liActUponStateChangesInterval = 2000;
 short int LaserGroupedUnitsArray::_siActUponStateChangesIterations = 1;
-Task LaserGroupedUnitsArray::_tActUponStateChanges(_liActUponStateChangesInterval, _siActUponStateChangesIterations, &_tcbActUponStateChanges, &userScheduler, true);
+Task LaserGroupedUnitsArray::_tActUponStateChanges(_liActUponStateChangesInterval, _siActUponStateChangesIterations, &_tcbActUponStateChanges, &userScheduler, false, NULL, &_tcbOdActUponStateChanges);
 
 void LaserGroupedUnitsArray::_tcbActUponStateChanges() {
-  if (!(_LGUAHasChanged())) {
-    return;
-  }
+  ///////////////////////////////////////////////////////////////////////
+  ///////////////////////TO DO TO DO TO DO TO DO/////////////////////////
+  ///////////////////////////////////////////////////////////////////////
   //_stateChangeActions[currentState](bTargetStateOfLaserGroupUnits/* bTargetStateOfLaserGroupUnits added only for compilation test purpose; no params shall be passed; the param shall be read in bTargetStateOfLaserGroupUnits*/);
   currentState = targetState;
   bCurrentStateOfLaserGroupUnits = bTargetStateOfLaserGroupUnits;
   currentPirState = targetPirState;
   currentPinBlinkingInterval = targetPinBlinkingInterval;
+}
+
+void LaserGroupedUnitsArray::_tcbOdActUponStateChanges() {
+  LaserPinsArray::updateLaserPins();
 }
 
 bool LaserGroupedUnitsArray::_LGUAHasChanged() {

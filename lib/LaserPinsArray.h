@@ -15,6 +15,7 @@ class LaserPinsArray
 
     static void initLaserPins();
     static void endloop();
+    static void updateLaserPins();
 };
 
 #endif
