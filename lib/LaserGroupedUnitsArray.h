@@ -7,6 +7,7 @@
 #define LaserGroupedUnitsArray_h
 
 #include "Arduino.h"
+#include "LaserPinsArray.h"
 
 class LaserGroupedUnitsArray
 {
@@ -46,6 +47,9 @@ class LaserGroupedUnitsArray
     static void setTargetPirState(const short int __sTargetPirState);
     static void setTargetBlinkingInterval(const unsigned long __ulTargetBlinkingInterval);
 
+    // state machine reader
+    static void updateLaserGroupUnits();
+
     // extracted from pirStartupController
     static Task tLaserOff;
     static Task tLaserOn;
@@ -59,6 +63,7 @@ class LaserGroupedUnitsArray
     static short int _siActUponStateChangesIterations;
     static Task _tActUponStateChanges;
     static void _tcbActUponStateChanges();
+    static void _tcbOdActUponStateChanges();
     static bool _LGUAHasChanged();
 
     // state machine actions // TO BE DELETED ONCE LOGIC INCORPORATED IN LaserPinsArray::loop
