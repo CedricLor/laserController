@@ -26,8 +26,8 @@ class myMeshViews
   private:
 
     // Helpers
-    static void _broadcastMsg(JsonObject& msg);
-    static JsonObject& _createJsonobject(const char action);
+    static void _broadcastMsg(JsonObject msg);
+    static JsonObject _createJsonobject(const char action);
     static char _nodeNameBuf[4];
     static char* _nodeNameBuilder();
 };

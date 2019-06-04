@@ -18,8 +18,8 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-const char* myMesh::STATION_SSID = SSID;
-const char* myMesh::STATION_PASSWORD = SSID_PASSWORD;
+const char* myMesh::STATION_SSID = "mySSID";
+const char* myMesh::STATION_PASSWORD = "myPASSWORD";
 
 const char myMesh::_PREFIX_AP_SSID[5] = "box_";
 char myMesh::_myApSsidBuf[8];
@@ -91,12 +91,17 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
 void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
   Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
-  StaticJsonBuffer<250> jsonBuffer;
-  Serial.print("myMesh::_decodeRequest(...): jsonBuffer created\n");
-  JsonObject& root = jsonBuffer.parseObject(msg.c_str());
-  Serial.print("myMesh::_decodeRequest(...): jsonBuffer parsed into JsonObject& root\n");
+  // StaticJsonBuffer<250> jsonBuffer; // syntax for ArduinoJson 5
+  StaticJsonDocument<256> doc;
+  // Serial.print("myMesh::_decodeRequest(...): jsonBuffer created\n");
+  Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
+  // JsonObject& root = jsonBuffer.parseObject(msg.c_str()); // syntax for ArduinoJson 5
+  deserializeJson(doc, msg.c_str());
+  // Serial.print("myMesh::_decodeRequest(...): jsonBuffer parsed into JsonObject& root\n");
+  Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
 
-  const short iSenderNodeName = _jsonToInt(root, "senderNodeName");
+  // const short iSenderNodeName = _jsonToInt(root, "senderNodeName");
+  const short iSenderNodeName = _jsonToInt(doc, "senderNodeName");
   Serial.printf("myMesh::_decodeRequest(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
   // Is the message addressed to me?
@@ -105,7 +110,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   }
 
   // If the message is addressed to me, act depending on the sender status
-  myMeshController myMeshController(root);
+  myMeshController myMeshController(doc);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +123,8 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   return _apSsidBuf;
 }
 
-short myMesh::_jsonToInt(JsonObject& root, String rootKey) {
+// short myMesh::_jsonToInt(JsonObject& root, String rootKey) {
+short myMesh::_jsonToInt(JsonDocument root, String rootKey) {
   short iValue;
   const char* sValue = root[rootKey];
   iValue = atoi(sValue);

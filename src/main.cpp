@@ -2,7 +2,6 @@
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
 #include <FS.h>
 #include <ESPAsyncWebServer.h>
-#include <ArduinoJson.h>
 #include <painlessMesh.h>
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
@@ -10,8 +9,8 @@
 #include "../lib/global.h"
 #include "../lib/global.cpp"
 
-#include "../lib/secret.h"
-#include "../lib/secret.cpp"
+//#include "../lib/secret.h"
+//#include "../lib/secret.cpp"
 
 #include "../lib/Myota.h"
 #include "../lib/Myota.cpp"

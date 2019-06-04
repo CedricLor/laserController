@@ -33,7 +33,7 @@ class myMesh
 
     static char* _apSsidBuilder(char _apSsidBuf[8]);
 
-    static short _jsonToInt(JsonObject& root, String rootKey);
+    static short _jsonToInt(JsonDocument root, String rootKey);
 
 };
 

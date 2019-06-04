@@ -6,7 +6,7 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
-myMeshController::myMeshController(JsonObject& root)
+myMeshController::myMeshController(JsonDocument root)
 {
   char _action = root["action"];
   //////// Manual mode
@@ -59,7 +59,7 @@ myMeshController::myMeshController(JsonObject& root)
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void myMeshController::_manualSwitch(JsonObject& _root) {
+void myMeshController::_manualSwitch(JsonDocument _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
   short _iTargetState;
   const char* _sTargetState = _root["ts"];
@@ -68,7 +68,7 @@ void myMeshController::_manualSwitch(JsonObject& _root) {
   LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
 }
 
-void myMeshController::_changeInclusionIR(JsonObject& _root) {
+void myMeshController::_changeInclusionIR(JsonDocument _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
   short _iTargetState;
   const char* _sTargetState = _root["ts"];
@@ -76,7 +76,7 @@ void myMeshController::_changeInclusionIR(JsonObject& _root) {
   LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
-void myMeshController::_changeBlinkingInterval(JsonObject& _root) {
+void myMeshController::_changeBlinkingInterval(JsonDocument _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
   unsigned long _ulTargetBlinkingInterval;
   const char* _sTargetBlinkingInterval = _root["ti"];
@@ -84,7 +84,7 @@ void myMeshController::_changeBlinkingInterval(JsonObject& _root) {
   LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
 }
 
-void myMeshController::_changeMasterBox(JsonObject& _root) {
+void myMeshController::_changeMasterBox(JsonDocument _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
   short iNewMasterBoxNumber;
   const char* sNewMasterBoxNumber = _root["ms"];
@@ -106,7 +106,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 //
 // slaveReactionStruct slaveReactionStructsArray[4];
 
-void myMeshController::_slaveBoxSwitch(JsonObject& root) {
+void myMeshController::_slaveBoxSwitch(JsonDocument root) {
   // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
@@ -138,7 +138,7 @@ void myMeshController::_slaveBoxSwitch(JsonObject& root) {
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
 }
 
-void myMeshController::_pinPairing(JsonObject& root) {
+void myMeshController::_pinPairing(JsonDocument root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"p";"pt":"0"}
   short _iTargetPairingType;
   const char* _sTargetPairingType = root["ts"];
