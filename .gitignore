@@ -5,7 +5,6 @@ src/.DS_Store
 .piolibdeps
 .clang_complete
 .gcc-flags.json
-./lib/secret.h
-./lib/secret.cpp
 lib/secret.h
 lib/secret.cpp
+.pio
