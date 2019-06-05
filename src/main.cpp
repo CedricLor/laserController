@@ -16,6 +16,8 @@
 #include "../lib/Myota.cpp"
 #include "../lib/ControlerBox.h"
 #include "../lib/ControlerBox.cpp"
+#include "../lib/sequence.h"
+#include "../lib/sequence.cpp"
 #include "../lib/mySavedPrefs.h"
 #include "../lib/mySavedPrefs.cpp"
 
