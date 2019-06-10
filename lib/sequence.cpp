@@ -38,7 +38,6 @@ void sequence::initSequences() {
   const short int aRelays[2] = {7,8};
   sequences[0].initSequence("relays", 30000, 2, aRelays);
   // Serial.println("void sequence::initSequences(). sequences[0]._ulTempo: ");
-  // Serial.println("void sequence::initSequences(). sequences[0]._ulTempo: ");
   // Serial.println(sequences[0]._ulTempo);
   // Serial.println("void sequence::initSequences(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);

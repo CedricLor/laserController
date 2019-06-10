@@ -72,6 +72,7 @@ void setup() {
   Myota::OTAConfig();
   note::initNotes();
   sequence::initSequences();
+  boxState::initBoxStates();
   enableTasks();
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {

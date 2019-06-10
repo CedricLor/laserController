@@ -13,12 +13,12 @@ class boxState
 {
   public:
     boxState(); // default constructor
-    boxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence); // constructor and initialiser
-    void initboxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence);
+    boxState(const char cName[], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger); // constructor and initialiser
+    void initBoxState(const char cName[], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger);
 
     static const short int BOX_STATES_COUNT;
     static boxState boxStates[];
-    static void initboxStates(); // initializer of the array of boxState
+    static void initBoxStates(); // initializer of the array of boxState
 
     static void setActiveboxState(const short int activeboxState);
 
@@ -34,7 +34,8 @@ class boxState
     static void _tcbPlayboxState();
 
   private:
-    char _cName[7];  // array of character to hold the name of each sequences
+    static const short int _NAME_CHAR_COUNT;
+    char _cName[15];  // array of character to hold the name of each sequences
     unsigned long _ulDuration; // duration for which the status shall active before automatically returning to default
     short int _iAssociatedSequence;  // sequence associated to a given state
 

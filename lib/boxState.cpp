@@ -9,46 +9,41 @@
 short int boxState::_activeboxState = 0;
 const short int boxState::BOX_STATES_COUNT = 7;
 boxState boxState::boxStates[BOX_STATES_COUNT];
+const short int boxState::_NAME_CHAR_COUNT = 15;
 
 // constructor
 boxState::boxState() {
 
 }
 
-boxState::boxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence){
+boxState::boxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
   strcpy(_cName, cName);
   _ulDuration = ulDuration;
   _iAssociatedSequence = iAssociatedSequence;
 }
 
-void boxState::initboxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence){
+void boxState::initBoxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
   strcpy(_cName, cName);
   _ulDuration = ulDuration;
   _iAssociatedSequence = iAssociatedSequence;
 };
 
-// void boxState::initSequences() {
-//   Serial.println("void boxState::initSequences(). Starting.");
-//   const short int aRelays[2] = {7,8};
-//   sequences[0].initSequence("relays", 30000, 2, aRelays);
-//   // Serial.println("void boxState::initSequences(). sequences[0]._iTempo: ");
-//   // Serial.println("void boxState::initSequences(). sequences[0]._iTempo: ");
-//   // Serial.println(sequences[0]._iTempo);
-//   // Serial.println("void boxState::initSequences(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
-//   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
-//   const short int aTwins[2] = {5,6};
-//   sequences[1].initSequence("twins", 30000, 2, aTwins);
-//   const short int aAll[2] = {15,0};
-//   sequences[2].initSequence("all", 30000, 2, aAll);
-//   const short int aSwipeR[4] = {1,2,3,4};
-//   sequences[3].initSequence("swipeR", 500, 4, aSwipeR);
-//   const short int aSwipeL[4] = {4,3,2,1};
-//   sequences[4].initSequence("swipeL", 500, 4, aSwipeL);
-//   const short int aAllOff[1] = {0};
-//   sequences[5].initSequence("all of", 0, 1, aAllOff);
-//   Serial.println("void boxState::initSequences(). Ending.");
-// }
-//
+void boxState::initBoxStates() {
+  Serial.println("void boxState::initboxStates(). Starting.");
+  boxStates[0].initBoxState("default - manual", 0, 5, 0, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  // Serial.println("void boxState::initboxStates(). boxStates[0]._cName: ");
+  // Serial.println(boxStates[0]._cName);
+  // Serial.println("void boxState::initboxStates(). boxStates[0]._ulDuration");
+  // Serial.println(boxStates[0]._ulDuration);
+  boxStates[1].initBoxState("align lasers", 0, 1, 0, 0); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  boxStates[2].initBoxState("pir Startup", 60000, 1, 0, 1); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
+  boxStates[3].initBoxState("pir High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
+  boxStates[4].initBoxState("mesh High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
+  boxStates[5].initBoxState("waiting", 0, 5, 1, 1); // sequence "all of" for indefinite time until trigger from both IR or mesh
+
+  Serial.println("void boxState::initboxStates(). Ending.");
+}
+
 // Task boxState::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbTestPlay);
 //
 // void boxState::tcbTestPlay() {
