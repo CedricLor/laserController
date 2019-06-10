@@ -15,18 +15,18 @@ sequence::sequence() {
 
 }
 
-sequence::sequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+sequence::sequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   strcpy(_cName, cName);
-  _iTempo = iTempo;
+  _ulTempo = ulTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
 }
 
-void sequence::initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+void sequence::initSequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   strcpy(_cName, cName);
-  _iTempo = iTempo;
+  _ulTempo = ulTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
@@ -37,9 +37,9 @@ void sequence::initSequences() {
   Serial.println("void sequence::initSequences(). Starting.");
   const short int aRelays[2] = {7,8};
   sequences[0].initSequence("relays", 30000, 2, aRelays);
-  // Serial.println("void sequence::initSequences(). sequences[0]._iTempo: ");
-  // Serial.println("void sequence::initSequences(). sequences[0]._iTempo: ");
-  // Serial.println(sequences[0]._iTempo);
+  // Serial.println("void sequence::initSequences(). sequences[0]._ulTempo: ");
+  // Serial.println("void sequence::initSequences(). sequences[0]._ulTempo: ");
+  // Serial.println(sequences[0]._ulTempo);
   // Serial.println("void sequence::initSequences(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
   const short int aTwins[2] = {5,6};
@@ -60,8 +60,8 @@ Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbT
 void sequence::tcbTestPlay() {
   Serial.println("void sequence::tcbTestPlay(). Starting.");
   short int __activeSequence = 0;
-  // Serial.println("void sequence::tcbTestPlay(). sequences[0]._iTempo: ");
-  // Serial.println(sequences[0]._iTempo);
+  // Serial.println("void sequence::tcbTestPlay(). sequences[0]._ulTempo: ");
+  // Serial.println(sequences[0]._ulTempo);
   // Serial.println("void sequence::tcbTestPlay(). sequences[0]._cName: ");
   // Serial.println(sequences[0]._cName);
   // Serial.println("void sequence::tcbTestPlay(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
@@ -73,7 +73,7 @@ void sequence::tcbTestPlay() {
 
 void sequence::odtcbTestPlay() {
   Serial.println("void sequence::odtcbTestPlay(). Starting.");
-  unsigned long duration = sequences[_activeSequence]._iTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
+  unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
   tEndSequence.enableDelayed(duration);
   Serial.println("void sequence::odtcbTestPlay(). Starting.");
 };
@@ -89,9 +89,9 @@ void sequence::playSequence(const short int sequenceNumber){
   Serial.println("void sequence::playSequence(). Starting");
   // Serial.print("void sequence::playSequence(). Sequence Number: ");
   // Serial.println(sequenceNumber);
-  _tPlaySequence.setInterval(sequences[sequenceNumber]._iTempo);
+  _tPlaySequence.setInterval(sequences[sequenceNumber]._ulTempo);
   // Serial.print("void sequence::playSequence(). Tempo: ");
-  // Serial.println(sequences[sequenceNumber]._iTempo);
+  // Serial.println(sequences[sequenceNumber]._ulTempo);
   _tPlaySequence.setIterations(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
   // Serial.print("void sequence::playSequence(). Beats: ");
   // Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);

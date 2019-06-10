@@ -15,9 +15,9 @@ boxState::boxState() {
 
 }
 
-boxState::boxState(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+boxState::boxState(const char cName[7], const short int ulDuration, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   strcpy(_cName, cName);
-  _iTempo = iTempo;
+  _ulDuration = ulDuration;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];

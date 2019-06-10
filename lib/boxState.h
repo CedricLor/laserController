@@ -35,7 +35,7 @@ class boxState
 
   private:
     char _cName[7];  // array of character to hold the name of each sequences
-    short int _iTempo; // tempo at which the task executing the sequence will
+    unsigned long _ulDuration; // tempo at which the task executing the sequence will
                        // update the state of each laser pin, in milliseconds
     short int _iNumberOfBeatsInSequence; // number of tempos required to execute
                                           // one full sequence

@@ -12,8 +12,8 @@ class sequence
 {
   public:
     sequence(); // default constructor
-    sequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]); // constructor and initialiser
-    void initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
+    sequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]); // constructor and initialiser
+    void initSequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
 
     static const short int SEQUENCE_COUNT;
     static sequence sequences[];
@@ -34,7 +34,7 @@ class sequence
 
   private:
     char _cName[7];  // array of character to hold the name of each sequences
-    short int _iTempo; // tempo at which the task executing the sequence will
+    unsigned long  _ulTempo; // tempo at which the task executing the sequence will
                        // update the state of each laser pin, in milliseconds
     short int _iNumberOfBeatsInSequence; // number of tempos required to execute
                                           // one full sequence
