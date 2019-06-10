@@ -1,36 +1,37 @@
 /*
-  sequence.h - sequences are precoded sequences of notes
-  Created by Cedric Lor, June 4, 2019.
+  boxState.h - precoded boxes states that will trigger various configuration of the box for various durations
+  Created by Cedric Lor, June 10, 2019.
 */
-#ifndef sequence_h
-#define sequence_h
+
+#ifndef boxState_h
+#define boxState_h
 
 #include "Arduino.h"
 #include "global.h"
 
-class sequence
+class boxState
 {
   public:
-    sequence(); // default constructor
-    sequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]); // constructor and initialiser
-    void initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
+    boxState(); // default constructor
+    boxState(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]); // constructor and initialiser
+    void initboxState(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
 
-    static const short int SEQUENCE_COUNT;
-    static sequence sequences[];
-    static void initSequences(); // initializer of the array of sequences
+    static const short int BOX_STATES_COUNT;
+    static boxState boxStates[];
+    static void initboxStates(); // initializer of the array of boxState
 
-    static void setActiveSequence(const short int activeSequence);
+    static void setActiveboxState(const short int activeboxState);
 
     static Task testPlay;
     static void tcbTestPlay();
     static void odtcbTestPlay();
 
-    static Task tEndSequence;
-    static void _tcbTEndSequence();
+    static Task tEndboxState;
+    static void _tcbTEndboxState();
 
-    static void playSequence(const short int sequenceNumber);
-    static Task _tPlaySequence;
-    static void _tcbPlaySequence();
+    static void playboxState(const short int boxStateNumber);
+    static Task _tPlayboxState;
+    static void _tcbPlayboxState();
 
   private:
     char _cName[7];  // array of character to hold the name of each sequences
@@ -41,10 +42,10 @@ class sequence
     short int _iLaserPinStatusAtEachBeat[4];  // bi-dimensional array containing
                                                 // the state of each laser at each tempo
 
-    static short int _activeSequence;
+    static short int _activeboxState;
 
-    static unsigned long _ulSequenceGroupDurationSetter();
-    static unsigned long _ulSequenceGroupDuration;
+    static unsigned long _ulboxStateDurationSetter();
+    static unsigned long _ulboxStateDuration;
 };
 
 #endif

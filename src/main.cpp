@@ -45,6 +45,8 @@
 #include "../lib/note.cpp"
 #include "../lib/sequence.h"
 #include "../lib/sequence.cpp"
+#include "../lib/boxState.h"
+#include "../lib/boxState.cpp"
 
 #include "../lib/myWebServerBase.h"
 #include "../lib/myWebServerBase.cpp"
