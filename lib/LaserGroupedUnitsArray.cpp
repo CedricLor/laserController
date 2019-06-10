@@ -172,7 +172,7 @@ bool LaserGroupedUnitsArray::_LGUAHasChanged() {
 // Corresponds to LaserPinsArray::irPinsSwitch(const bool targetState)
 // which was called from pirStartupController exclusively
 void LaserGroupedUnitsArray::_irStartupSwitch(bool __targetState) {                     // targetState is HIGH or LOW (HIGH to switch off, LOW to switch on)
-  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {        // loop around all the structs representing the pins controlling the relays
+  for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {  
     LaserGroupedUnits[thisLaserGroupedUnit].setOnOffTargetState(bTargetStateOfLaserGroupUnits);
   }
 }
@@ -185,12 +185,8 @@ void LaserGroupedUnitsArray::_irStartupSwitch(bool __targetState) {             
 // Corresponds to LaserPinsArray::manualSwitchAllRelays
 // which is called (i) myMesh, (ii) myWebServerController and (iii) this class (LaserPin)
 void LaserGroupedUnitsArray::_manualSwitchAll(bool __targetState) {
-  // 4 for "manual with cycle off", 5 for "manual with cycle off"
-  currentState = ((bTargetStateOfLaserGroupUnits == HIGH) ? 4 : 5);
-  // Since states 4 and 5 have been condensed into a single manualState mode, might need to be redrafted as follows:
-  // currentState = targetState;
-  // or as follows:
-  // currentState = 4;
+  // 4 for "manual"
+  currentState = 4;
   for (short thisLaserGroupedUnit = 0; thisLaserGroupedUnit < loadedLaserUnits; thisLaserGroupedUnit = thisLaserGroupedUnit + 1) {
     LaserGroupedUnits[thisLaserGroupedUnit].setOnOffTargetState(bTargetStateOfLaserGroupUnits);
   }

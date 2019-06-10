@@ -16,8 +16,6 @@
 #include "../lib/Myota.cpp"
 #include "../lib/ControlerBox.h"
 #include "../lib/ControlerBox.cpp"
-#include "../lib/sequence.h"
-#include "../lib/sequence.cpp"
 #include "../lib/mySavedPrefs.h"
 #include "../lib/mySavedPrefs.cpp"
 
@@ -43,6 +41,8 @@
 #include "../lib/pirStartupController.cpp"
 #include "../lib/pirController.h"
 #include "../lib/pirController.cpp"
+#include "../lib/sequence.h"
+#include "../lib/sequence.cpp"
 
 #include "../lib/myWebServerBase.h"
 #include "../lib/myWebServerBase.cpp"
@@ -66,15 +66,20 @@ void setup() {
     myWebServerBase::startAsyncServer();
   }
   Myota::OTAConfig();
+  sequence::initSequences();
   enableTasks();
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
+  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
+    digitalWrite(relayPins[__thisPin], LOW);
+    Serial.print("\n------ PIN number: ");Serial.print(relayPins[__thisPin]);Serial.print("\n");
+  }
 }
 
 void loop() {
   ArduinoOTA.handle();
   userScheduler.execute();   // it will run mesh scheduler as well
   laserControllerMesh.update();
-  LaserPinsArray::endloop();
+  //LaserPinsArray::endloop();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,5 +92,6 @@ void serialInit() {
 }
 
 void enableTasks() {
-  pirStartupController::tPirStartUpDelayBlinkLaser.enable();
+  //pirStartupController::tPirStartUpDelayBlinkLaser.enable();
+  sequence::testPlay.enable();
 }

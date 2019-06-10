@@ -13,8 +13,10 @@
 #include "global.h"
 
 unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;
-const short PIN_COUNT = 8;
-short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };
+const short PIN_COUNT = 4;
+short relayPins[] = { 5, 17, 16, 4 };
+// const short PIN_COUNT = 8;
+// short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };
 
 const short I_DEFAULT_MASTER_NODE_NAME = 201;
 const short I_DEFAULT_INTERFACE_NODE_NAME = 001;

@@ -21,8 +21,8 @@ class LaserGroupedUnitsArray
 
     // state machine variables
     // 0 pirStartUp cycle, 1 IR waiting, 2 IR cycle on, 3 slave cycle on, 4 manual
-    static short int currentState;  // read access from pirController
-    static short int previousState; // set access from myMeshController
+    static short int currentState;
+    static short int previousState;
     static short int targetState;
     static const char* GLOBAL_WITNESS_TEXT_DESCRIPTORS[5];
 

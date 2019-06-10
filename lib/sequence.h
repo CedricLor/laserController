@@ -6,14 +6,31 @@
 #define sequence_h
 
 #include "Arduino.h"
+#include "global.h"
 
 class sequence
 {
   public:
     sequence(); // default constructor
-    sequence(const char cName[7], const short int iTempo, const short int iLaserPinStatusAtEachBeat[][4]); // initialiser of each sequence
+    sequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[][4]); // constructor and initialiser
+    void initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[][4]);
+
+    static const short int SEQUENCE_COUNT;
+    static sequence sequences[];
     static void initSequences(); // initializer of the array of sequences
 
+    static void setActiveSequence(const short int activeSequence);
+
+    static Task testPlay;
+    static void tcbTestPlay();
+    static void odtcbTestPlay();
+
+    static Task tEndSequence;
+    static void _tcbTEndSequence();
+
+    static void playSequence(const short int sequenceNumber);
+    static Task _tPlaySequence;
+    static void _tcbPlaySequence();
 
   private:
     char _cName[7];  // array of character to hold the name of each sequences
@@ -21,11 +38,13 @@ class sequence
                        // update the state of each laser pin, in milliseconds
     short int _iNumberOfBeatsInSequence; // number of tempos required to execute
                                           // one full sequence
-    short int _iLaserPinStatusAtEachBeat[4][PIN_COUNT];  // bi-dimensional array containing
+    short int _iLaserPinStatusAtEachBeat[4][4];  // bi-dimensional array containing
                                                 // the state of each laser at each tempo
-    static const short int _SEQUENCES_COUNT;
 
-    void _setCName(const char* _cname);
+    static short int _activeSequence;
+
+    static unsigned long _ulSequenceGroupDurationSetter();
+    static unsigned long _ulSequenceGroupDuration;
 };
 
 #endif
