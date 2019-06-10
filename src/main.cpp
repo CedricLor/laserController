@@ -68,6 +68,7 @@ void setup() {
     myWebServerBase::startAsyncServer();
   }
   Myota::OTAConfig();
+  note::initNotes();
   sequence::initSequences();
   enableTasks();
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
