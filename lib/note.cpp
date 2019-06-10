@@ -8,26 +8,24 @@
 
 
 short int note::_activeNote = 0;
-const short int note::NOTE_COUNT = 7;
+const short int note::NOTE_COUNT = 15;
 note note::notes[NOTE_COUNT];
 
 // constructor
-note::sequence() {
+note::note() {
 
 }
 
-note::note(const char cName[15], const short int iTempo, const short int iLaserPinsStatus[4]){
+note::note(const char cName[15], const short int iLaserPinsStatus[4]){
   strcpy(_cName, cName);
-  _iTempo = iTempo;
-  for (short __thisPin = 0; __thisPin < PINCOUNT; __thisPin++) {
+  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
 }
 
-void note::initNote(const char cName[15], const short int iTempo, const short int iLaserPinsStatus[4]){
+void note::initNote(const char cName[15], const short int iLaserPinsStatus[4]){
   strcpy(_cName, cName);
-  _iTempo = iTempo;
-  for (short __thisPin = 0; __thisPin < PINCOUNT; __thisPin++) {
+  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
 };
@@ -36,47 +34,45 @@ void note::initNotes() {
   Serial.println("void note::initNotes(). Starting.");
 
   const short int aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
-  notes[0].initNote("all off", 30000, aAllOff);
-  // Serial.println("void note::initNotes(). notes[0]._iTempo: ");
-  // Serial.println(sequences[0]._iTempo);
+  notes[0].initNote("all off", aAllOff);
   // Serial.println("void note::initNotes(). notes[0]._iLaserPinStatus[0]");
   // Serial.println(notes[0]._iLaserPinStatus[0]);
 
   const short int aFirstOn[4] = {LOW, HIGH, HIGH, HIGH};
-  notes[1].initNote("first on", 30000, aFirstOn);
+  notes[1].initNote("first on", aFirstOn);
   const short int aSecondOn[4] = {HIGH, LOW, HIGH, HIGH};
-  notes[2].initNote("second on", 30000, aSecondOn);
+  notes[2].initNote("second on", aSecondOn);
   const short int aThirdOn[4] = {HIGH, HIGH, LOW, HIGH};
-  notes[3].initNote("third on", 30000, aThirdOn);
+  notes[3].initNote("third on", aThirdOn);
   const short int aFourthOn[4] = {HIGH, HIGH, HIGH, LOW};
-  notes[4].initNote("fourth on", 30000, aFourthOn);
+  notes[4].initNote("fourth on", aFourthOn);
 
   const short int aFirstPairOn[4] = {LOW, LOW, HIGH, HIGH};
-  notes[5].initNote("first pair on", 30000, aFirstPairOn);
+  notes[5].initNote("first pair on", aFirstPairOn);
   const short int aSecondPairOn[4] = {HIGH, HIGH, LOW, LOW};
-  notes[6].initNote("second pair on", 30000, aSecondPairOn);
+  notes[6].initNote("second pair on", aSecondPairOn);
 
   const short int aOnOffOnOff[4] = {LOW, HIGH, LOW, HIGH};
-  notes[7].initNote("on off on off", 30000, aOnOffOnOff);
+  notes[7].initNote("on off on off", aOnOffOnOff);
   const short int aOffOnOffOn[4] = {HIGH, LOW, HIGH, LOW};
-  notes[8].initNote("off on off on", 30000, aOffOnOffOn);
+  notes[8].initNote("off on off on", aOffOnOffOn);
 
   const short int aExtOnIntOff[4] = {LOW, HIGH, HIGH, LOW};
-  notes[9].initNote("external on, internal off", 30000, aExtOnIntOff);
+  notes[9].initNote("external on, internal off", aExtOnIntOff);
   const short int aExtOffIntOn[4] = {HIGH, LOW, LOW, HIGH};
-  notes[10].initNote("external off, internal on", 30000, aExtOffIntOn);
+  notes[10].initNote("external off, internal on", aExtOffIntOn);
 
   const short int aLastOff[4] = {LOW, LOW, LOW, HIGH};
-  notes[11].initNote("last off", 30000, aLastOff);
+  notes[11].initNote("last off", aLastOff);
   const short int aThirdOff[4] = {LOW, LOW, HIGH, LOW};
-  notes[12].initNote("third off", 30000, aThirdOff);
+  notes[12].initNote("third off", aThirdOff);
   const short int aSecondOff[4] = {LOW, HIGH, LOW, LOW};
-  notes[13].initNote("second off", 30000, aThirdOn);
+  notes[13].initNote("second off", aSecondOff);
   const short int aFirstOff[4] = {HIGH, LOW, LOW, LOW};
-  notes[14].initNote("first off", 30000, aFourthOn);
+  notes[14].initNote("first off", aFirstOff);
 
   const short int aAllOn[4] = {LOW, LOW, LOW, LOW};
-  notes[1].initNote("all on", 30000, aAllOn);
+  notes[1].initNote("all on", aAllOn);
 
   Serial.println("void note::initNotes(). Ending.");
 }
@@ -84,8 +80,6 @@ void note::initNotes() {
 void note::testPlay() {
   Serial.println("void note::tcbTestPlay(). Starting.");
   short int __activeNote = 0;
-  // Serial.println("void note::tcbTestPlay(). notes[0]._iTempo: ");
-  // Serial.println(notes[0]._iTempo);
   // Serial.println("void note::tcbTestPlay(). notes[0]._cName: ");
   // Serial.println(notes[0]._cName);
   // Serial.println("void note::tcbTestPlay(). notes[0]._iLaserPinStatus[0]");
@@ -110,8 +104,6 @@ void note::playNote(){
     // Serial.println(_physical_pin_number);
     // Serial.println("void note::_tcbPlayNote(). _activeNote: ");
     // Serial.println(_activeNote);
-    // Serial.println("void note::_tcbPlayNote(). notes[_activeNote]._iTempo: ");
-    // Serial.println(notes[_activeNote]._iTempo);
     // Serial.println("void note::_tcbPlayNote(). notes[_activeNote]._iLaserPinStatus[0]: ");
     // Serial.println(notes[_activeNote]._iLaserPinStatus[0]);
     const short int _target_state = notes[_activeNote]._iLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
@@ -124,5 +116,5 @@ void note::playNote(){
 
 
 void note::setActiveNote(const short activeNote) {
-  _activenote = activeNote;
+  _activeNote = activeNote;
 };

@@ -41,6 +41,8 @@
 #include "../lib/pirStartupController.cpp"
 #include "../lib/pirController.h"
 #include "../lib/pirController.cpp"
+#include "../lib/note.h"
+#include "../lib/note.cpp"
 #include "../lib/sequence.h"
 #include "../lib/sequence.cpp"
 
