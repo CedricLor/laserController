@@ -13,8 +13,8 @@ class boxState
 {
   public:
     boxState(); // default constructor
-    boxState(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]); // constructor and initialiser
-    void initboxState(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
+    boxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence); // constructor and initialiser
+    void initboxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence);
 
     static const short int BOX_STATES_COUNT;
     static boxState boxStates[];
@@ -35,12 +35,8 @@ class boxState
 
   private:
     char _cName[7];  // array of character to hold the name of each sequences
-    unsigned long _ulDuration; // tempo at which the task executing the sequence will
-                       // update the state of each laser pin, in milliseconds
-    short int _iNumberOfBeatsInSequence; // number of tempos required to execute
-                                          // one full sequence
-    short int _iLaserPinStatusAtEachBeat[4];  // bi-dimensional array containing
-                                                // the state of each laser at each tempo
+    unsigned long _ulDuration; // duration for which the status shall active before automatically returning to default
+    short int _iAssociatedSequence;  // sequence associated to a given state
 
     static short int _activeboxState;
 
