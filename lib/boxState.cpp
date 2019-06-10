@@ -20,12 +20,16 @@ boxState::boxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDur
   strcpy(_cName, cName);
   _ulDuration = ulDuration;
   _iAssociatedSequence = iAssociatedSequence;
+  _iIRTrigger = iIRTrigger;
+  _iMeshTrigger = iMeshTrigger;
 }
 
 void boxState::initBoxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
   strcpy(_cName, cName);
   _ulDuration = ulDuration;
   _iAssociatedSequence = iAssociatedSequence;
+  _iIRTrigger = iIRTrigger;
+  _iMeshTrigger = iMeshTrigger;
 };
 
 void boxState::initBoxStates() {

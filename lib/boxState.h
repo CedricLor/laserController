@@ -38,6 +38,8 @@ class boxState
     char _cName[15];  // array of character to hold the name of each sequences
     unsigned long _ulDuration; // duration for which the status shall active before automatically returning to default
     short int _iAssociatedSequence;  // sequence associated to a given state
+    short int _iIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
+    short int _iMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
     static short int _activeboxState;
 
