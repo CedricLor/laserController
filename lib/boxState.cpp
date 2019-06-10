@@ -21,15 +21,12 @@ boxState::boxState(const char cName[7], const unsigned long ulDuration, const sh
   _iAssociatedSequence = iAssociatedSequence;
 }
 
-// void boxState::initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
-//   strcpy(_cName, cName);
-//   _iTempo = iTempo;
-//   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
-//   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
-//     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
-//   }
-// };
-//
+void boxState::initboxState(const char cName[7], const unsigned long ulDuration, const short int iAssociatedSequence){
+  strcpy(_cName, cName);
+  _ulDuration = ulDuration;
+  _iAssociatedSequence = iAssociatedSequence;
+};
+
 // void boxState::initSequences() {
 //   Serial.println("void boxState::initSequences(). Starting.");
 //   const short int aRelays[2] = {7,8};
