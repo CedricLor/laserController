@@ -7,8 +7,7 @@
 #include "note.h"
 
 
-short int note::_activeNote = 0;
-const short int note::NOTE_COUNT = 15;
+const short int note::NOTE_COUNT = 16;
 note note::notes[NOTE_COUNT];
 
 // constructor
@@ -72,7 +71,7 @@ void note::initNotes() {
   notes[14].initNote("first off", aFirstOff);
 
   const short int aAllOn[4] = {LOW, LOW, LOW, LOW};
-  notes[1].initNote("all on", aAllOn);
+  notes[15].initNote("all on", aAllOn);
 
   Serial.println("void note::initNotes(). Ending.");
 }
@@ -84,8 +83,7 @@ void note::testPlay() {
   // Serial.println(notes[0]._cName);
   // Serial.println("void note::tcbTestPlay(). notes[0]._iLaserPinStatus[0]");
   // Serial.println(notes[0]._iLaserPinStatus[0]);
-  setActiveNote(__activeNote);
-  playNote();
+  notes[__activeNote].playNote();
   Serial.println("void note::tcbTestPlay(). Ending.");
 };
 
@@ -106,15 +104,10 @@ void note::playNote(){
     // Serial.println(_activeNote);
     // Serial.println("void note::_tcbPlayNote(). notes[_activeNote]._iLaserPinStatus[0]: ");
     // Serial.println(notes[_activeNote]._iLaserPinStatus[0]);
-    const short int _target_state = notes[_activeNote]._iLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
+    const short int _target_state = _iLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
     // Serial.println("void note::_tcbPlayNote(). _target_state: ");
     // Serial.println(_target_state);
     digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
   Serial.println("void note::playNote(). Ending");
-};
-
-
-void note::setActiveNote(const short activeNote) {
-  _activeNote = activeNote;
 };

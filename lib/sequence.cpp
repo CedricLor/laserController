@@ -6,7 +6,6 @@
 #include "Arduino.h"
 #include "sequence.h"
 
-
 short int sequence::_activeSequence = 0;
 const short int sequence::SEQUENCE_COUNT = 7;
 sequence sequence::sequences[SEQUENCE_COUNT];
@@ -16,46 +15,42 @@ sequence::sequence() {
 
 }
 
-sequence::sequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4][4]){
+sequence::sequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   strcpy(_cName, cName);
   _iTempo = iTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
-    for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-      _iLaserPinStatusAtEachBeat[__thisBeat][__thisPin] = iLaserPinStatusAtEachBeat[__thisBeat][__thisPin];
-    }
+    _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
 }
 
-void sequence::initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4][4]){
+void sequence::initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   strcpy(_cName, cName);
   _iTempo = iTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
-    for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-      _iLaserPinStatusAtEachBeat[__thisBeat][__thisPin] = iLaserPinStatusAtEachBeat[__thisBeat][__thisPin];
-    }
+    _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
 };
 
 void sequence::initSequences() {
   Serial.println("void sequence::initSequences(). Starting.");
-  const short int aRelays[2][4] = {{LOW, HIGH, LOW, HIGH},{HIGH, LOW, HIGH, LOW}};
+  const short int aRelays[2] = {7,8};
   sequences[0].initSequence("relays", 30000, 2, aRelays);
   // Serial.println("void sequence::initSequences(). sequences[0]._iTempo: ");
   // Serial.println("void sequence::initSequences(). sequences[0]._iTempo: ");
   // Serial.println(sequences[0]._iTempo);
   // Serial.println("void sequence::initSequences(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
-  const short int aTwins[2][4] = {{LOW, LOW, HIGH, HIGH},{HIGH, HIGH, LOW, LOW}};
+  const short int aTwins[2] = {5,6};
   sequences[1].initSequence("twins", 30000, 2, aTwins);
-  const short int aAll[2][4] = {{LOW, LOW, LOW, LOW},{HIGH, HIGH, HIGH, HIGH}};
+  const short int aAll[2] = {15,0};
   sequences[2].initSequence("all", 30000, 2, aAll);
-  const short int aSwipeR[4][4] = {{LOW, HIGH, HIGH, HIGH},{HIGH, LOW, HIGH, HIGH},{HIGH, HIGH, LOW, HIGH},{HIGH, HIGH, HIGH, LOW}};
+  const short int aSwipeR[4] = {1,2,3,4};
   sequences[3].initSequence("swipeR", 500, 4, aSwipeR);
-  const short int aSwipeL[4][4] = {{HIGH, HIGH, HIGH, LOW},{HIGH, HIGH, LOW, HIGH},{HIGH, LOW, HIGH, HIGH},{LOW, HIGH, HIGH, HIGH}};
+  const short int aSwipeL[4] = {4,3,2,1};
   sequences[4].initSequence("swipeL", 500, 4, aSwipeL);
-  const short int aAllOff[1][4] = {{HIGH, HIGH, HIGH, HIGH}};
+  const short int aAllOff[1] = {0};
   sequences[5].initSequence("all of", 0, 1, aAllOff);
   Serial.println("void sequence::initSequences(). Ending.");
 }
@@ -109,28 +104,13 @@ Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false);
 
 void sequence::_tcbPlaySequence(){
   Serial.println("void sequence::_tcbPlaySequence(). Starting.");
-  short _iter = _tPlaySequence.getRunCounter();
+  short _iter = _tPlaySequence.getRunCounter() - 1;
   // Serial.println("void sequence::_tcbPlaySequence(). _iter: ");
   // Serial.println(_iter);
-  // Direct access to the pins.
-  // For each pin
-  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    Serial.println("void sequence::_tcbPlaySequence(). __thisPin: ");
-    Serial.println(__thisPin);
-    short _physical_pin_number = relayPins[__thisPin]; // look for the physical number of the pin in the array of pin
-    Serial.println("void sequence::_tcbPlaySequence(). _physical_pin_number: ");
-    Serial.println(_physical_pin_number);
-    Serial.println("void sequence::_tcbPlaySequence(). _activeSequence: ");
-    Serial.println(_activeSequence);
-    Serial.println("void sequence::_tcbPlaySequence(). sequences[_activeSequence]._iTempo: ");
-    Serial.println(sequences[_activeSequence]._iTempo);
-    Serial.println("void sequence::_tcbPlaySequence(). sequences[_activeSequence]._iLaserPinStatusAtEachBeat[0][0]: ");
-    Serial.println(sequences[_activeSequence]._iLaserPinStatusAtEachBeat[0][0]);
-    const short int _target_state = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter - 1][__thisPin]; // look for the desired status in the array of the sequence
-    Serial.println("void sequence::_tcbPlaySequence(). _target_state: ");
-    Serial.println(_target_state);
-    digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
-  }
+  // Look for the note number to read at this tempo
+  short int _activeNote = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
+  // Play note
+  note::notes[_activeNote].playNote();
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
 

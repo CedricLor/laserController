@@ -19,17 +19,13 @@ class note
     static note notes[];
     static void initNotes(); // initializer of the array of notes
 
-    static void setActiveNote(const short int activeNote);
-
     static void testPlay();
 
-    static void playNote();
+    void playNote();
 
   private:
     char _cName[15];  // array of character to hold the name of each sequences
     short int _iLaserPinStatus[4];  // array containing the state of each laser at each tempo
-
-    static short int _activeNote;
 };
 
 #endif
