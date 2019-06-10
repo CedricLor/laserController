@@ -1,5 +1,5 @@
 /*
-  sequence.h - sequences corresponding to pre-determined blinking patterns of lasers
+  sequence.h - sequences are precoded sequences of notes
   Created by Cedric Lor, June 4, 2019.
 */
 #ifndef sequence_h

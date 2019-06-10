@@ -1,5 +1,5 @@
 /*
-  sequence.cpp - sequences corresponding to pre-determined blinking patterns of lasers
+  sequence.cpp - sequences are precoded sequences of notes
   Created by Cedric Lor, June 4, 2019.
 */
 
@@ -27,7 +27,7 @@ sequence::sequence(const char cName[7], const short int iTempo, const short int 
   }
 }
 
-void sequence::initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[][4]){
+void sequence::initSequence(const char cName[7], const short int iTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4][4]){
   strcpy(_cName, cName);
   _iTempo = iTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
