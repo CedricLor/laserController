@@ -21,14 +21,15 @@ class sequence
 
     static void setActiveSequence(const short int activeSequence);
 
-    static Task testPlay;
-    static void tcbTestPlay();
-    static void odtcbTestPlay();
+    static Task tPlaySequenceInLoop;
+    static void tcbPlaySequenceInLoop();
+    static bool oetcbPlaySequenceInLoop();
+    static void odtcbPlaySequenceInLoop();
 
     static Task tEndSequence;
     static void _tcbTEndSequence();
 
-    static void playSequence(const short int sequenceNumber);
+    static void playSequence();
     static Task _tPlaySequence;
     static void _tcbPlaySequence();
 

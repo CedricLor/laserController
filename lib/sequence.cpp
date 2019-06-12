@@ -35,7 +35,13 @@ void sequence::initSequence(const char cName[7], const unsigned long ulTempo, co
 
 void sequence::initSequences() {
   Serial.println("void sequence::initSequences(). Starting.");
+  // define an array containing references to the notes to be played in the sequence
   const short int aRelays[2] = {7,8};
+  // load values into sequences[0]:
+  // a. the sequence's name
+  // b. the duration of each beats (i.e. the tempo)
+  // c. the number of beats in the sequence
+  // d. the array of references to the notes to be played in the sequence
   sequences[0].initSequence("relays", 30000, 2, aRelays);
   // Serial.println("void sequence::initSequences(). sequences[0]._ulTempo: ");
   // Serial.println(sequences[0]._ulTempo);
@@ -54,43 +60,51 @@ void sequence::initSequences() {
   Serial.println("void sequence::initSequences(). Ending.");
 }
 
-Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbTestPlay);
+// testPlay was created to test the sequence player
+Task sequence::tPlaySequenceInLoop(0, -1, &tcbPlaySequenceInLoop, &userScheduler, false, &oetcbPlaySequenceInLoop, &odtcbPlaySequenceInLoop);
 
-void sequence::tcbTestPlay() {
-  Serial.println("void sequence::tcbTestPlay(). Starting.");
-  short int __activeSequence = 0;
+void sequence::tcbPlaySequenceInLoop() {
+  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
+  playSequence();
+  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
+}
+
+bool sequence::oetcbPlaySequenceInLoop() {
+  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
   // Serial.println("void sequence::tcbTestPlay(). sequences[0]._ulTempo: ");
   // Serial.println(sequences[0]._ulTempo);
   // Serial.println("void sequence::tcbTestPlay(). sequences[0]._cName: ");
   // Serial.println(sequences[0]._cName);
   // Serial.println("void sequence::tcbTestPlay(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
-  playSequence(__activeSequence);
-  Serial.println("void sequence::tcbTestPlay(). Ending.");
-};
-
-void sequence::odtcbTestPlay() {
-  Serial.println("void sequence::odtcbTestPlay(). Starting.");
-  unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
-  tEndSequence.enableDelayed(duration);
-  Serial.println("void sequence::odtcbTestPlay(). Starting.");
-};
-
-Task sequence::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
-
-void sequence::_tcbTEndSequence() {
-  playSequence(5);
+  playSequence();
+  unsigned long _duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
+  tPlaySequenceInLoop.setInterval(_duration);
+  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
+  return true;
 }
 
-void sequence::playSequence(const short int sequenceNumber){
-  setActiveSequence(sequenceNumber);
+void sequence::odtcbPlaySequenceInLoop() {
+  Serial.println("void sequence::odtcbPlaySequenceInLoop(). Starting.");
+  setActiveSequence(5);
+  playSequence();
+  Serial.println("void sequence::odtcbPlaySequenceInLoop(). Ending.");
+};
+
+// Main sequence player
+// 1. sets the interval of the _tPlaySequence task from the tempo of the relevant sequence
+// this tempo corresponds to the duration for which each note will be played
+// 2. sets the number of iterations of the _tPlaySequence task from the number of
+// beats (i.e. notes) in the sequence
+// 3. enables the _tPlaySequence task
+void sequence::playSequence(){
   Serial.println("void sequence::playSequence(). Starting");
-  // Serial.print("void sequence::playSequence(). Sequence Number: ");
-  // Serial.println(sequenceNumber);
-  _tPlaySequence.setInterval(sequences[sequenceNumber]._ulTempo);
+  // Serial.print("void sequence::playSequence(). _activeSequence: ");
+  // Serial.println(_activeSequence);
+  _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
   // Serial.print("void sequence::playSequence(). Tempo: ");
   // Serial.println(sequences[sequenceNumber]._ulTempo);
-  _tPlaySequence.setIterations(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
+  _tPlaySequence.setIterations(sequences[_activeSequence]._iNumberOfBeatsInSequence);
   // Serial.print("void sequence::playSequence(). Beats: ");
   // Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
   _tPlaySequence.enable();

@@ -88,24 +88,24 @@ void boxState::playBoxState(const short int boxStateNumber){
   Serial.println("void boxState::playBoxState(). Ending");
 };
 
-Task boxState::_tPlayBoxState(0, 1, &_tcbPlayBoxState, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
+Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
-void boxState::_tcbPlayBoxState(){
-  Serial.println("void boxState::_tcbPlayBoxState(). Starting.");
+bool boxState::_oetcbPlayBoxState(){
+  Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
   // Serial.println("void boxState::_tcbPlaySequence(). _iter: ");
   // Serial.println(_iter);
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[_activeBoxState]._iAssociatedSequence;
-  // Play sequence
-  sequence::playSequence(_activeSequence);
-  Serial.println("void boxState::_tcbPlayBoxState(). Ending.");
-};
-
-bool boxState::_oetcbPlayBoxState(){
+  // set the active sequence
+  sequence::setActiveSequence(_activeSequence);
+  // Play sequence in loop until end
+  sequence::tPlaySequenceInLoop.enable();
+  Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
 
 void boxState::_odtcbPlayBoxState(){
+  sequence::tPlaySequenceInLoop.disable();
 }
 
 void boxState::setActiveBoxState(const short activeBoxState) {

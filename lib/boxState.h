@@ -31,7 +31,6 @@ class boxState
 
     static void playBoxState(const short int boxStateNumber);
     static Task _tPlayBoxState;
-    static void _tcbPlayBoxState();
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
 
