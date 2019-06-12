@@ -20,7 +20,7 @@ class boxState
     static boxState boxStates[];
     static void initBoxStates(); // initializer of the array of boxState
 
-    static void setActiveboxState(const short int activeboxState);
+    static void setActiveBoxState(const short int activeBoxState);
 
     static Task testPlay;
     static void tcbTestPlay();
@@ -29,9 +29,11 @@ class boxState
     static Task tEndboxState;
     static void _tcbTEndboxState();
 
-    static void playboxState(const short int boxStateNumber);
-    static Task _tPlayboxState;
-    static void _tcbPlayboxState();
+    static void playBoxState(const short int boxStateNumber);
+    static Task _tPlayBoxState;
+    static void _tcbPlayBoxState();
+    static bool _oetcbPlayBoxState();
+    static void _odtcbPlayBoxState();
 
   private:
     static const short int _NAME_CHAR_COUNT;
@@ -41,7 +43,7 @@ class boxState
     short int _iIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
     short int _iMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
-    static short int _activeboxState;
+    static short int _activeBoxState;
 
     static unsigned long _ulboxStateDurationSetter();
     static unsigned long _ulboxStateDuration;

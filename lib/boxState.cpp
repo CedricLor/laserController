@@ -6,7 +6,7 @@
 #include "Arduino.h"
 #include "boxState.h"
 
-short int boxState::_activeboxState = 0;
+short int boxState::_activeBoxState = 0;
 const short int boxState::BOX_STATES_COUNT = 7;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 15;
@@ -59,7 +59,6 @@ void boxState::initBoxStates() {
 //   // Serial.println(sequences[0]._cName);
 //   // Serial.println("void boxState::tcbTestPlay(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
 //   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
-//   setActiveSequence(__activeSequence);
 //   playSequence(__activeSequence);
 //   Serial.println("void boxState::tcbTestPlay(). Ending.");
 // };
@@ -74,39 +73,41 @@ void boxState::initBoxStates() {
 // Task boxState::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
 //
 // void boxState::_tcbTEndSequence() {
-//   setActiveSequence(5);
 //   playSequence(5);
 // }
 //
-// void boxState::playSequence(const short int sequenceNumber){
-//   Serial.println("void boxState::playSequence(). Starting");
-//   // Serial.print("void boxState::playSequence(). Sequence Number: ");
-//   // Serial.println(sequenceNumber);
-//   _tPlaySequence.setInterval(sequences[sequenceNumber]._iTempo);
-//   // Serial.print("void boxState::playSequence(). Tempo: ");
-//   // Serial.println(sequences[sequenceNumber]._iTempo);
-//   _tPlaySequence.setIterations(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
-//   // Serial.print("void boxState::playSequence(). Beats: ");
-//   // Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
-//   _tPlaySequence.enable();
-//   Serial.println("void boxState::playSequence(). Task _tPlaySequence enabled");
-//   Serial.println("void boxState::playSequence(). Ending");
-// };
-//
-// Task boxState::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false);
-//
-// void boxState::_tcbPlaySequence(){
-//   Serial.println("void boxState::_tcbPlaySequence(). Starting.");
-//   short _iter = _tPlaySequence.getRunCounter() - 1;
-//   // Serial.println("void boxState::_tcbPlaySequence(). _iter: ");
-//   // Serial.println(_iter);
-//   // Look for the note number to read at this tempo
-//   short int _activeNote = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
-//   // Play note
-//   note::notes[_activeNote].playNote();
-//   Serial.println("void boxState::_tcbPlaySequence(). Ending.");
-// };
-//
-// void boxState::setActiveSequence(const short activeSequence) {
-//   _activeSequence = activeSequence;
-// };
+void boxState::playBoxState(const short int boxStateNumber){
+  Serial.println("void boxState::playBoxState(). Starting");
+  Serial.print("void boxState::playBoxState(). Box State Number: ");
+  Serial.println(boxStateNumber);
+  _tPlayBoxState.setInterval(boxStates[boxStateNumber]._ulDuration);
+  // Serial.print("void boxState::playBoxState(). _ulDuration: ");
+  // Serial.println(boxStates[boxStateNumber]._ulDuration);
+  _tPlayBoxState.enable();
+  Serial.println("void boxState::playBoxState(). Task _tPlayBoxState enabled");
+  Serial.println("void boxState::playBoxState(). Ending");
+};
+
+Task boxState::_tPlayBoxState(0, 1, &_tcbPlayBoxState, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
+
+void boxState::_tcbPlayBoxState(){
+  Serial.println("void boxState::_tcbPlayBoxState(). Starting.");
+  // Serial.println("void boxState::_tcbPlaySequence(). _iter: ");
+  // Serial.println(_iter);
+  // Look for the sequence number to read when in this state
+  short int _activeSequence = boxStates[_activeBoxState]._iAssociatedSequence;
+  // Play sequence
+  sequence::playSequence(_activeSequence);
+  Serial.println("void boxState::_tcbPlayBoxState(). Ending.");
+};
+
+bool boxState::_oetcbPlayBoxState(){
+  return true;
+}
+
+void boxState::_odtcbPlayBoxState(){
+}
+
+void boxState::setActiveBoxState(const short activeBoxState) {
+  _activeBoxState = activeBoxState;
+};
