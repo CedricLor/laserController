@@ -43,9 +43,6 @@ class sequence
                                                 // the state of each laser at each tempo
 
     static short int _activeSequence;
-
-    static unsigned long _ulSequenceGroupDurationSetter();
-    static unsigned long _ulSequenceGroupDuration;
 };
 
 #endif
