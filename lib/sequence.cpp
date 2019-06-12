@@ -65,7 +65,6 @@ void sequence::tcbTestPlay() {
   // Serial.println(sequences[0]._cName);
   // Serial.println("void sequence::tcbTestPlay(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
-  setActiveSequence(__activeSequence);
   playSequence(__activeSequence);
   Serial.println("void sequence::tcbTestPlay(). Ending.");
 };
@@ -80,11 +79,11 @@ void sequence::odtcbTestPlay() {
 Task sequence::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
 
 void sequence::_tcbTEndSequence() {
-  setActiveSequence(5);
   playSequence(5);
 }
 
 void sequence::playSequence(const short int sequenceNumber){
+  setActiveSequence(sequenceNumber);
   Serial.println("void sequence::playSequence(). Starting");
   // Serial.print("void sequence::playSequence(). Sequence Number: ");
   // Serial.println(sequenceNumber);

@@ -1,5 +1,6 @@
 /*
   note.cpp - notes are statuses of all the lasers connected to the box at one beat
+  Notes do not have have a time length. Their time length is defined inside sequences.
   Created by Cedric Lor, June 10, 2019.
 */
 
