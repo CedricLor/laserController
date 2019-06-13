@@ -20,16 +20,13 @@ class boxState
     static boxState boxStates[];
     static void initBoxStates(); // initializer of the array of boxState
 
-    static void setActiveBoxState(const short int activeBoxState);
+    static void setTargetActiveBoxState(const short int activeBoxState);
 
-    static Task testPlay;
-    static void tcbTestPlay();
-    static void odtcbTestPlay();
+    static Task tPlayBoxStates;
+    static void tcbPlayBoxStates();
+    static bool oetcbPlayBoxStates();
 
-    static Task tEndboxState;
-    static void _tcbTEndboxState();
-
-    static void playBoxState(const short int boxStateNumber);
+    static void playBoxState();
     static Task _tPlayBoxState;
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
@@ -43,6 +40,7 @@ class boxState
     short int _iMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
     static short int _activeBoxState;
+    static short int _targetActiveBoxState;
 
     static unsigned long _ulboxStateDurationSetter();
     static unsigned long _ulboxStateDuration;

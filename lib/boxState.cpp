@@ -7,6 +7,7 @@
 #include "boxState.h"
 
 short int boxState::_activeBoxState = 0;
+short int boxState::_targetActiveBoxState = 0;
 const short int boxState::BOX_STATES_COUNT = 7;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 15;
@@ -43,57 +44,77 @@ void boxState::initBoxStates() {
   boxStates[2].initBoxState("pir Startup", 60000, 1, 0, 1); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
   boxStates[3].initBoxState("pir High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
   boxStates[4].initBoxState("mesh High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
-  boxStates[5].initBoxState("waiting", 0, 5, 1, 1); // sequence "all of" for indefinite time until trigger from both IR or mesh
+  boxStates[5].initBoxState("waiting", 0, 5, 1, 1); // sequence "all of" for indefinite time until trigger from either IR or mesh
 
   Serial.println("void boxState::initboxStates(). Ending.");
 }
 
-// Task boxState::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbTestPlay);
-//
-// void boxState::tcbTestPlay() {
-//   Serial.println("void boxState::tcbTestPlay(). Starting.");
-//   short int __activeSequence = 0;
-//   // Serial.println("void boxState::tcbTestPlay(). sequences[0]._iTempo: ");
-//   // Serial.println(sequences[0]._iTempo);
-//   // Serial.println("void boxState::tcbTestPlay(). sequences[0]._cName: ");
-//   // Serial.println(sequences[0]._cName);
-//   // Serial.println("void boxState::tcbTestPlay(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
-//   // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
-//   playSequence(__activeSequence);
-//   Serial.println("void boxState::tcbTestPlay(). Ending.");
-// };
-//
-// void boxState::odtcbTestPlay() {
-//   Serial.println("void boxState::odtcbTestPlay(). Starting.");
-//   unsigned long duration = sequences[_activeSequence]._iTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
-//   tEndSequence.enableDelayed(duration);
-//   Serial.println("void boxState::odtcbTestPlay(). Starting.");
-// };
-//
-// Task boxState::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
-//
-// void boxState::_tcbTEndSequence() {
-//   playSequence(5);
-// }
-//
-void boxState::playBoxState(const short int boxStateNumber){
+// tPlayBoxStates starts the execution of the various boxStates.
+// It is enabled at the end of the setup.
+// It then iterates indefinitely at each pass of the main loop.
+Task boxState::tPlayBoxStates(0, -1, &tcbPlayBoxStates, &userScheduler, false, &oetcbPlayBoxStates);
+
+/*
+  At each pass of tPlayBoxStates, tcbPlayBoxStates() will check whether _targetActiveBoxState has changed
+  If it has changed, it:
+  - set the _activeBoxState to the value of _targetActiveBoxState;
+  - calls playBoxState, to restart the sequence player.
+  Otherwise, nothing happens.
+*/
+void boxState::tcbPlayBoxStates() {
+  Serial.println("void boxState::tcbPlayBoxStates(). Starting.");
+  if (!(_targetActiveBoxState == _activeBoxState)) {
+    _activeBoxState = _targetActiveBoxState;
+    playBoxState();
+  }
+  Serial.println("void boxState::tcbPlayBoxStates(). Ending.");
+};
+
+// Upon tPlayBoxStates being enabled (at startup), the _targetActiveBoxState is being
+// changed to 2 (pir Startup).
+bool boxState::oetcbPlayBoxStates() {
+  Serial.println("void boxState::oetcbPlayBoxStates(). Starting.");
+  setTargetActiveBoxState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
+  Serial.println("void boxState::oetcbPlayBoxStates(). Ending.");
+  return true;
+}
+
+/*
+  playBoxState() controls Task _tPlayBoxState.
+  1. It sets the aInterval of _tPlayBoxState, based on the _ulDuration of the currently active boxState.
+  2. It then enables _tPlayBoxState, without delay.
+*/
+void boxState::playBoxState(){
   Serial.println("void boxState::playBoxState(). Starting");
   Serial.print("void boxState::playBoxState(). Box State Number: ");
-  Serial.println(boxStateNumber);
-  _tPlayBoxState.setInterval(boxStates[boxStateNumber]._ulDuration);
+  Serial.println(_activeBoxState);
+  _tPlayBoxState.setInterval(boxStates[_activeBoxState]._ulDuration);
   // Serial.print("void boxState::playBoxState(). _ulDuration: ");
-  // Serial.println(boxStates[boxStateNumber]._ulDuration);
+  // Serial.println(boxStates[_activeBoxState]._ulDuration);
   _tPlayBoxState.enable();
   Serial.println("void boxState::playBoxState(). Task _tPlayBoxState enabled");
   Serial.println("void boxState::playBoxState(). Ending");
 };
 
+/*
+  _tPlayBoxState plays a boxState once (it iterates only once).
+  Its main iteration is delayed until aInterval has expired. aInterval is set
+  in the playBoxState function. It is equal to the duration of the boxState.
+  Upon being enabled, its onEnable callback:
+  1. looks for the associated sequence using the _activeBoxState static variable to select the relevant boxState in boxStates[];
+  2. sets the active sequence by a call to sequence::setActiveSequence();
+  3. enables the task sequence::tPlaySequenceInLoop.
+  Task sequence::tPlaySequenceInLoop is set to run indefinitely, for so long as it is not disabled.
+  - Task sequence::tPlaySequenceInLoop is equivalent to Task tLED(TASK_IMMEDIATE, TASK_FOREVER, NULL, &ts, false, NULL, &LEDOff)
+  in the third example provided with the taskScheduler library.
+  - Task _tPlayBoxState is equivalent to Task tBlink(5000, TASK_ONCE, NULL, &ts, false, &BlinkOnEnable, &BlinkOnDisable)
+  in the third example provided with the taskScheduler library.
+  After expiration of aInterval, its onDisable callback disables sequence::tPlaySequenceInLoop.
+*/
 Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
 bool boxState::_oetcbPlayBoxState(){
   Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
-  // Serial.println("void boxState::_tcbPlaySequence(). _iter: ");
-  // Serial.println(_iter);
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[_activeBoxState]._iAssociatedSequence;
   // set the active sequence
@@ -108,6 +129,6 @@ void boxState::_odtcbPlayBoxState(){
   sequence::tPlaySequenceInLoop.disable();
 }
 
-void boxState::setActiveBoxState(const short activeBoxState) {
-  _activeBoxState = activeBoxState;
+void boxState::setTargetActiveBoxState(const short targetActiveBoxState) {
+  _targetActiveBoxState = targetActiveBoxState;
 };
