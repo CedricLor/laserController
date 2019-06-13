@@ -93,7 +93,7 @@ void sequence::tcbPlaySequenceInLoop() {
 // to state % ("all off"), then playSequence 5.
 void sequence::odtcbPlaySequenceInLoop() {
   Serial.println("void sequence::odtcbPlaySequenceInLoop(). Starting.");
-  setActiveSequence(5);
+  setActiveSequence(5); // all lasers off
   playSequence();
   Serial.println("void sequence::odtcbPlaySequenceInLoop(). Ending.");
 };
