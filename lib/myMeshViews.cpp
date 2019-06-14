@@ -58,7 +58,7 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeId, const char* newR
   _broadcastMsg(msg);
 }
 
-void myMeshViews::statusMsg(const char* myStatus) {
+void myMeshViews::statusMsg(const short myStatus) {
   // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
   JsonObject msg = _createJsonobject('s');
   msg["senderStatus"] = myStatus;
