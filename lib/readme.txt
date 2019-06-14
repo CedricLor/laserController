@@ -42,4 +42,3 @@ More information about PlatformIO Library Dependency Finder
 
 TO DO:
 - refactor myMeshViews::statusMsg("on"); currently being called from boxState.cpp, upon enabling and disabling _tPlayBoxState
-- pirController always changes the targetActiveBoxState; this is not the desired behavior.
