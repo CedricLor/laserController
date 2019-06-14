@@ -16,21 +16,25 @@ sequence::sequence() {
 }
 
 sequence::sequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+  Serial.println("void sequence::sequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
+  Serial.println("void sequence::sequence(). Ending.");
 }
 
 void sequence::initSequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+  Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
+  Serial.println("void sequence::initSequence(). Ending.");
 };
 
 void sequence::initSequences() {
@@ -134,5 +138,7 @@ void sequence::_tcbPlaySequence(){
 };
 
 void sequence::setActiveSequence(const short activeSequence) {
+  Serial.println("void sequence::setActiveSequence(). Starting.");
   _activeSequence = activeSequence;
+  Serial.println("void sequence::setActiveSequence(). Ending.");
 };
