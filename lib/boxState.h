@@ -40,9 +40,6 @@ class boxState
 
     static short int _activeBoxState;
     static short int _targetActiveBoxState;
-
-    static unsigned long _ulboxStateDurationSetter();
-    static unsigned long _ulboxStateDuration;
 };
 
 #endif
