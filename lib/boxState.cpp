@@ -163,7 +163,7 @@ bool boxState::_oetcbPlayBoxState(){
   // Play sequence in loop until end
   // Serial.println("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
-  myMeshViews::statusMsg("on"); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
+  myMeshViews::statusMsg(_activeBoxState); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
   // Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
@@ -180,7 +180,6 @@ void boxState::_odtcbPlayBoxState(){
   if (!(_activeBoxState == _defaultBoxState)) {
     setTargetActiveBoxState(_defaultBoxState);
   }
-  myMeshViews::statusMsg("off"); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
   // Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }
 
