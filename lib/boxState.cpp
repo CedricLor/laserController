@@ -18,7 +18,6 @@ const short int boxState::_NAME_CHAR_COUNT = 15;
 
 
 
-
 // Constructors
 boxState::boxState() {
 }
@@ -75,14 +74,15 @@ void boxState::initBoxStates() {
 Task boxState::tPlayBoxStates(1000L, -1, &tcbPlayBoxStates, &userScheduler, false, &oetcbPlayBoxStates);
 
 /*
-  At each pass of tPlayBoxStates, tcbPlayBoxStates() will check whether _activeBoxStateHasBeenReset has changed
-  If it has changed, it:
-  - resets _activeBoxStateHasBeenReset to 0;
-  - sets the interval _tPlayBoxState to the value _activeBoxState to the value of _activeBoxState/_targetActiveBoxState;
-  - checks whether the value of _targetActiveBoxState is equal to the value of _activeBoxState;
-  - if _targetActiveBoxState is different than _activeBoxState, it:
-    - enables _tPlayBoxState with delayed, to restart the sequence player;
-    - resets _activeBoxState to _targetActiveBoxState.
+  At each pass of tPlayBoxStates, tcbPlayBoxStates() will check whether the
+  following values have changed:
+  - ControlerBox::valPir (when the current boxState is set to react to signals from the PIR);
+  - ControlerBox::valMesh (when the current boxState is set to react to signals from the mesh);
+  - _activeBoxStateHasBeenReset;
+  - _targetActiveBoxState;
+  Depending on the changes, it will:
+  - either start a new boxState or extend the duration of the current boxState; or
+  - reset the values to their origin value.
   Otherwise, nothing happens.
 */
 void boxState::tcbPlayBoxStates() {
@@ -92,11 +92,13 @@ void boxState::tcbPlayBoxStates() {
   if (boxStates[_activeBoxState]._iIRTrigger == 1 && ControlerBox::valPir == HIGH) {
     setTargetActiveBoxState(3);
   }
-  if (boxStates[_activeBoxState]._iMeshTrigger == 1 && ControlerBox::valMesh == HIGH) {
-    setTargetActiveBoxState(4);
+  if (boxStates[_activeBoxState]._iMeshTrigger == 1 && !(ControlerBox::valMesh == -1)) {
+    if (ControlerBox::valMesh == 3) { // the value 3 here is just inserted as an example
+      setTargetActiveBoxState(4);
+    }
   }
   ControlerBox::valPir = LOW;
-  ControlerBox::valMesh = LOW;
+  ControlerBox::valMesh = -1;
   if (_activeBoxStateHasBeenReset == 1) {
     _activeBoxStateHasBeenReset = 0;
     // Serial.print("void boxState::tcbPlayBoxStates() boxStates[_targetActiveBoxState]._ulDuration: ");

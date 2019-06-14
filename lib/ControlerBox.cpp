@@ -7,7 +7,7 @@
 #include "ControlerBox.h"
 
 bool ControlerBox::valPir = LOW;
-bool ControlerBox::valMesh = LOW;
+short int ControlerBox::valMesh = -1;
 
 ControlerBox::ControlerBox()
 {
