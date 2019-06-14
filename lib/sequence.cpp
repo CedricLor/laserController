@@ -10,7 +10,11 @@ short int sequence::_activeSequence = 0;
 const short int sequence::SEQUENCE_COUNT = 7;
 sequence sequence::sequences[SEQUENCE_COUNT];
 
-// constructor
+
+
+
+
+// Constructors
 sequence::sequence() {
 
 }
@@ -26,6 +30,11 @@ sequence::sequence(const char cName[7], const unsigned long ulTempo, const short
   Serial.println("void sequence::sequence(). Ending.");
 }
 
+
+
+
+
+// Initialisers
 void sequence::initSequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
@@ -64,7 +73,43 @@ void sequence::initSequences() {
   Serial.println("void sequence::initSequences(). Ending.");
 }
 
-// Upon entering a stateBox (startup, IR signal received, etc.),
+
+
+
+
+// Players
+// TestPlayer
+Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbTestPlay);
+
+void sequence::tcbTestPlay() {
+  Serial.println("void sequence::tcbTestPlay(). Starting.");
+  setActiveSequence(0);
+  playSequence();
+  Serial.println("void sequence::tcbTestPlay(). Ending.");
+}
+
+void sequence::odtcbTestPlay() {
+  Serial.println("void sequence::odtcbTestPlay(). Starting.");
+  unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
+  tEndSequence.enableDelayed(duration);
+  Serial.println("void sequence::odtcbTestPlay(). Ending.");
+}
+
+Task sequence::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
+
+void sequence::_tcbTEndSequence() {
+  Serial.println("void sequence::_tcbTEndSequence(). Starting.");
+  setActiveSequence(5); // all lasers off
+  playSequence();
+  Serial.println("void sequence::_tcbTEndSequence(). Ending.");
+}
+
+
+// Loop Player
+// tPlaySequenceInLoop plays a sequence in loop, for an unlimited number of iterations,
+// until it is disabled.
+// tPlaySequenceInLoop is enabled and disabled by the stateBox class.
+// Upon entering a new stateBox (startup, IR signal received, etc.),
 // the sequence associated with this state is set as the _activeSequence
 // by the stateBox tasks and the tPlaySequenceInLoop is enabled
 Task sequence::tPlaySequenceInLoop(0, -1, &tcbPlaySequenceInLoop, &userScheduler, false, &oetcbPlaySequenceInLoop, &odtcbPlaySequenceInLoop);
@@ -76,10 +121,13 @@ bool sequence::oetcbPlaySequenceInLoop() {
   Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
   // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). _activeSequence: ");
   // Serial.println(_activeSequence);
+  // Start immediately playing the sequence on enable
   playSequence();
+  // Calculate the interval at which each iteration occur, by multiplying the tempo of the sequence by the number of beats in the sequence
   unsigned long _duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
   // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). _duration: ");
   // Serial.println(_duration);
+  // Set the interval at which each iteration occur
   tPlaySequenceInLoop.setInterval(_duration);
   // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval()");
   // Serial.println(tPlaySequenceInLoop.getInterval());
@@ -94,7 +142,7 @@ void sequence::tcbPlaySequenceInLoop() {
 }
 
 // on disable tPlaySequenceInLoop, turn off all the laser by setting the activeSequence
-// to state % ("all off"), then playSequence 5.
+// to state 5 ("all off"), then playSequence 5.
 void sequence::odtcbPlaySequenceInLoop() {
   Serial.println("void sequence::odtcbPlaySequenceInLoop(). Starting.");
   setActiveSequence(5); // all lasers off
@@ -102,7 +150,12 @@ void sequence::odtcbPlaySequenceInLoop() {
   Serial.println("void sequence::odtcbPlaySequenceInLoop(). Ending.");
 };
 
-// Main sequence player
+
+
+
+// Single sequence player
+// Plays a given sequence one single time.
+// It is called by the tPlaySequenceInLoop
 // 1. sets the interval of the _tPlaySequence task from the tempo of the relevant sequence
 // this tempo corresponds to the duration for which each note will be played
 // 2. sets the number of iterations of the _tPlaySequence task from the number of
