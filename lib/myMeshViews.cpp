@@ -58,9 +58,11 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeId, const char* newR
   _broadcastMsg(msg);
 }
 
-void myMeshViews::statusMsg(const short myStatus) {
+void myMeshViews::statusMsg(const short int myStatus) {
   // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
   JsonObject msg = _createJsonobject('s');
+  // char _cMyStatus[2];
+  // itoa(myStatus, _cMyStatus, 10);
   msg["senderStatus"] = myStatus;
   _broadcastMsg(msg);
 }
@@ -109,9 +111,10 @@ JsonObject myMeshViews::_createJsonobject(const char action) {
 }
 
 void myMeshViews::_broadcastMsg(JsonObject msg) {
-  String str;
-  // msg.printTo(str); // syntax of ArduinoJson 5
-  serializeJson(msg, str);
+  int size_buff = 128;
+  char output[size_buff];
+  serializeJson(msg, output, size_buff);
+  String str = output;
   laserControllerMesh.sendBroadcast(str);
   Serial.print("MESH: _broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
 }
