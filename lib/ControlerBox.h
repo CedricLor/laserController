@@ -21,6 +21,7 @@ class ControlerBox
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
 
     static bool valPir;
+    static bool valMesh;
 
   private:
     static IPAddress _parseIpString(JsonObject& root, String rootKey);
