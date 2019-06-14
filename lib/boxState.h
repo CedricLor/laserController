@@ -40,6 +40,7 @@ class boxState
 
     static short int _activeBoxState;
     static short int _targetActiveBoxState;
+    static short int _activeBoxStateHasBeenReset;
 };
 
 #endif

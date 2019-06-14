@@ -8,6 +8,7 @@
 
 short int boxState::_activeBoxState = 0;
 short int boxState::_targetActiveBoxState = 0;
+short int boxState::_activeBoxStateHasBeenReset = 0;
 const short int boxState::BOX_STATES_COUNT = 7;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 15;
@@ -73,17 +74,29 @@ void boxState::initBoxStates() {
 Task boxState::tPlayBoxStates(0, -1, &tcbPlayBoxStates, &userScheduler, false, &oetcbPlayBoxStates);
 
 /*
-  At each pass of tPlayBoxStates, tcbPlayBoxStates() will check whether _targetActiveBoxState has changed
+  At each pass of tPlayBoxStates, tcbPlayBoxStates() will check whether _activeBoxStateHasBeenReset has changed
   If it has changed, it:
-  - set the _activeBoxState to the value of _targetActiveBoxState;
-  - calls playBoxState, to restart the sequence player.
+  - resets _activeBoxStateHasBeenReset to 0;
+  - sets the interval _tPlayBoxState to the value _activeBoxState to the value of _activeBoxState/_targetActiveBoxState;
+  - checks whether the value of _targetActiveBoxState is equal to the value of _activeBoxState;
+  - if _targetActiveBoxState is different than _activeBoxState, it:
+    - enables _tPlayBoxState with delayed, to restart the sequence player;
+    - resets _activeBoxState to _targetActiveBoxState.
   Otherwise, nothing happens.
 */
 void boxState::tcbPlayBoxStates() {
   Serial.println("void boxState::tcbPlayBoxStates(). Starting.");
-  if (!(_targetActiveBoxState == _activeBoxState)) {
-    _activeBoxState = _targetActiveBoxState;
-    _tPlayBoxState.enableDelayed();
+  if (_activeBoxStateHasBeenReset == 1) {
+    _activeBoxStateHasBeenReset = 0;
+    // Serial.print("void boxState::tcbPlayBoxStates() boxStates[_activeBoxState]._ulDuration: ");
+    // Serial.println(boxStates[_targetActiveBoxState]._ulDuration);
+    // Serial.print("void boxState::tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
+    // Serial.println(_tPlayBoxState.getInterval());
+    _tPlayBoxState.setInterval(boxStates[_targetActiveBoxState]._ulDuration);
+    if (!(_targetActiveBoxState == _activeBoxState)) {
+      _tPlayBoxState.enableDelayed();
+      _activeBoxState = _targetActiveBoxState;
+    }
   }
   Serial.println("void boxState::tcbPlayBoxStates(). Ending.");
 };
@@ -124,11 +137,6 @@ bool boxState::_oetcbPlayBoxState(){
   // Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
   // Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
   // Serial.println(_activeBoxState);
-  // Serial.print("void boxState::_oetcbPlayBoxState() boxStates[_activeBoxState]._ulDuration: ");
-  // Serial.println(boxStates[_activeBoxState]._ulDuration);
-  _tPlayBoxState.setInterval(boxStates[_activeBoxState]._ulDuration);
-  Serial.print("void boxState::_oetcbPlayBoxState() _tPlayBoxState.getInterval(): ");
-  Serial.println(_tPlayBoxState.getInterval());
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[_activeBoxState]._iAssociatedSequence;
   Serial.print("void boxState::_oetcbPlayBoxState() _activeSequence: ");
@@ -157,5 +165,6 @@ void boxState::_odtcbPlayBoxState(){
 
 // setTargetActiveBoxState receive boxState change requests from other classes
 void boxState::setTargetActiveBoxState(const short targetActiveBoxState) {
+  _activeBoxStateHasBeenReset = 1;
   _targetActiveBoxState = targetActiveBoxState;
 };
