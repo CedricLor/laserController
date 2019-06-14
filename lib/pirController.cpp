@@ -35,7 +35,7 @@ void pirController::initPir() {
    1. add an onEnable and an onDisable callback to cleanup the LaserPins status
    2. Task tPirCntrl shall be disabled, if the box is in slave mode and when, in slave mode, it receive an order to enter into automatic mode
  */
-Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, &tcbOnEnablePirCntrl, NULL);
+Task pirController::tPirCntrl ( TASK_SECOND * 4, TASK_FOREVER, &tcbPirCntrl, &userScheduler, false, &oetcbPirCntrl, NULL);
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -58,7 +58,7 @@ void pirController::tcbPirCntrl() {
   startOrRestartPirCycleIfPirValueIsHigh();
 }
 
-bool pirController::tcbOnEnablePirCntrl() {
+bool pirController::oetcbPirCntrl() {
   // LaserGroupedUnitsArray::setTargetState(1);          // 1 means "IR waiting"
   return true;
 }
