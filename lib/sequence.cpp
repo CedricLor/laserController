@@ -83,7 +83,7 @@ Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbT
 
 void sequence::tcbTestPlay() {
   Serial.println("void sequence::tcbTestPlay(). Starting.");
-  setActiveSequence(0);
+  setActiveSequence(4);
   playSequence();
   Serial.println("void sequence::tcbTestPlay(). Ending.");
 }

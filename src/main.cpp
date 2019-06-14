@@ -99,4 +99,5 @@ void serialInit() {
 
 void enableTasks() {
   //pirStartupController::tPirStartUpDelayBlinkLaser.enable();
+  sequence::testPlay.enable();
 }
