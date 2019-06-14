@@ -75,10 +75,10 @@ void setup() {
   boxState::initBoxStates();
   enableTasks();
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
-  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    digitalWrite(relayPins[__thisPin], LOW);
-    Serial.print("\n------ PIN number: ");Serial.print(relayPins[__thisPin]);Serial.print("\n");
-  }
+  // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
+  //   digitalWrite(relayPins[__thisPin], LOW);
+  //   Serial.print("\n------ PIN number: ");Serial.print(relayPins[__thisPin]);Serial.print("\n");
+  // }
 }
 
 void loop() {
@@ -98,6 +98,5 @@ void serialInit() {
 }
 
 void enableTasks() {
-  //pirStartupController::tPirStartUpDelayBlinkLaser.enable();
-  // sequence::testPlay.enable();
+  boxState::tPlayBoxStates.enable();
 }
