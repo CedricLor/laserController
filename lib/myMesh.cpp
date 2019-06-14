@@ -90,21 +90,30 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
 void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
   Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<1024> doc;
   Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
   deserializeJson(doc, msg.c_str());
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
-  const short iSenderNodeName = _jsonToInt(doc, "senderNodeName");
+  const short iSenderNodeName = doc["senderNodeName"];
   Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
+  Serial.println(iMasterNodeName);
+  Serial.println(iSenderNodeName);
+  Serial.println(!(iSenderNodeName == iMasterNodeName));
+  Serial.println(iInterfaceNodeName);
+  Serial.println(!(iSenderNodeName == iInterfaceNodeName));
+  Serial.println("(!(iSenderNodeName == iMasterNodeName)&&!(iSenderNodeName == iInterfaceNodeName))");
+  Serial.println((!(iSenderNodeName == iMasterNodeName)&&!(iSenderNodeName == iInterfaceNodeName)));
   // Is the message addressed to me?
-  if (!(iSenderNodeName == iMasterNodeName)||!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
+  if (!(iSenderNodeName == iMasterNodeName)&&!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
     return;
   }
 
   // If the message is addressed to me, act depending on the sender status
   // myMeshController myMeshController(doc);
-  ControlerBox::valMesh = _jsonToInt(doc, "senderStatus");
+  short int _i;
+  _i = doc["senderStatus"];
+  ControlerBox::valMesh = _i;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +127,7 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
 }
 
 short myMesh::_jsonToInt(JsonDocument root, String rootKey) {
-  short iValue;
+  short iValue = 0;
   const char* sValue = root[rootKey];
   iValue = atoi(sValue);
   return iValue;
