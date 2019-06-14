@@ -10,7 +10,7 @@
 #include "Arduino.h"
 #include "myMesh.h"
 
-#include "myMeshController.cpp"
+// #include "myMeshController.cpp"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MESH constant /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,9 +50,9 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
-  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
+  // laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,18 +67,17 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   ControlerBoxes[0].updateThisBoxProperties();
 }
 
-void myMesh::changedConnectionCallback() {
-  Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-
-}
-
-void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
-  Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
-}
-
-void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
-  Serial.printf("Delay to node %u is %d us\n", from, delay);
-}
+// void myMesh::changedConnectionCallback() {
+//   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
+// }
+//
+// void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
+//   Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
+// }
+//
+// void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
+//   Serial.printf("Delay to node %u is %d us\n", from, delay);
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Decode Request
@@ -91,16 +90,10 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
 void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
   Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
-  // StaticJsonBuffer<250> jsonBuffer; // syntax for ArduinoJson 5
   StaticJsonDocument<256> doc;
-  // Serial.print("myMesh::_decodeRequest(...): jsonBuffer created\n");
   Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
-  // JsonObject& root = jsonBuffer.parseObject(msg.c_str()); // syntax for ArduinoJson 5
   deserializeJson(doc, msg.c_str());
-  // Serial.print("myMesh::_decodeRequest(...): jsonBuffer parsed into JsonObject& root\n");
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
-
-  // const short iSenderNodeName = _jsonToInt(root, "senderNodeName");
   const short iSenderNodeName = _jsonToInt(doc, "senderNodeName");
   Serial.printf("myMesh::_decodeRequest(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
@@ -109,8 +102,9 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
     return;
   }
 
+
   // If the message is addressed to me, act depending on the sender status
-  myMeshController myMeshController(doc);
+  // myMeshController myMeshController(doc);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +117,6 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   return _apSsidBuf;
 }
 
-// short myMesh::_jsonToInt(JsonObject& root, String rootKey) {
 short myMesh::_jsonToInt(JsonDocument root, String rootKey) {
   short iValue;
   const char* sValue = root[rootKey];
