@@ -31,90 +31,83 @@ myMeshViews::myMeshViews()
 // Views (or messages)
 void myMeshViews::manualSwitchMsg(const short targetOnOffState) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
-  JsonObject msg = _createJsonobject('u');
+  JsonObject msg = _createJsonobject();
   msg["ts"] = targetOnOffState;
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 'u');
 }
 
 void myMeshViews::inclusionIRMsg(const short targetIrState) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
-  JsonObject msg = _createJsonobject('i');
+  JsonObject msg = _createJsonobject();
   msg["ts"] = targetIrState;
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 'i');
 }
 
 void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
-  JsonObject msg = _createJsonobject('b');
+  JsonObject msg = _createJsonobject();
   msg["ti"] = targetBlinkingInterval;
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 'b');
 }
 
 void myMeshViews::changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
-  JsonObject msg = _createJsonobject('m');
+  JsonObject msg = _createJsonobject();
   msg["ms"] = newMasterNodeId;
   msg["react"] = newReaction;
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 'm');
 }
 
 void myMeshViews::statusMsg(const short int myStatus) {
   // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
-  JsonObject msg = _createJsonobject('s');
-  // char _cMyStatus[2];
-  // itoa(myStatus, _cMyStatus, 10);
+  const int capacity = JSON_OBJECT_SIZE(10);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
   msg["senderStatus"] = myStatus;
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 's');
 }
 
 void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"p";"pt":"0"}
-  JsonObject msg = _createJsonobject('p');
-  msg["senderStatus"] = sTargetPairingType;
-  _broadcastMsg(msg);
+  JsonObject msg = _createJsonobject();
+  msg["pinPairingType"] = sTargetPairingType;
+  _broadcastMsg(msg, 'p');
 }
 
 void myMeshViews::dataRequestMsg() {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"d"}
-  JsonObject msg = _createJsonobject('d');
-  _broadcastMsg(msg);
+  JsonObject msg = _createJsonobject();
+  _broadcastMsg(msg, 'd');
 }
 
 void myMeshViews::dataRequestResponse() {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"r";"response":{A DETERMINER}}
-  JsonObject msg = _createJsonobject('r');
+  JsonObject msg = _createJsonobject();
   // msg["response"] = {A DETERMINER};
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 'r');
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 // serialization of message to be sent
-JsonObject myMeshViews::_createJsonobject(const char action) {
-  // commented out because syntax no longer valid with ArduinoJson v.6
-  // DynamicJsonBuffer jsonBuffer;
-  // JsonObject& msg = jsonBuffer.createObject();
-  DynamicJsonDocument doc(1024);   // replaces the preceding lines in ArduinoJson v.6
+JsonObject myMeshViews::_createJsonobject() {
+  const int capacity = JSON_OBJECT_SIZE(10);
+  StaticJsonDocument<capacity> doc;
 
-  // commented out because syntax no longer valid with ArduinoJson v.6
-  // msg["senderNodeName"] = _nodeNameBuilder();
-  // msg["senderAPIP"] = (ControlerBoxes[0].APIP).toString();
-  // msg["senderStationIP"] = (ControlerBoxes[0].stationIP).toString();
-  // msg["action"] = action;
-  // return msg;
-
-  doc["senderNodeName"] = _nodeNameBuilder();
-  doc["senderAPIP"] = (ControlerBoxes[0].APIP).toString();
-  doc["senderStationIP"] = (ControlerBoxes[0].stationIP).toString();
-  doc["action"] = action;
   JsonObject msg = doc.to<JsonObject>();
   return msg;
 }
 
-void myMeshViews::_broadcastMsg(JsonObject msg) {
-  int size_buff = 128;
-  char output[size_buff];
-  serializeJson(msg, output, size_buff);
-  String str = output;
+void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
+  String str;
+  str = action;
+  msg["senderNodeName"] = _nodeNameBuilder();
+  msg["senderAPIP"] = (ControlerBoxes[0].APIP).toString();
+  msg["senderStationIP"] = (ControlerBoxes[0].stationIP).toString();
+  msg["action"] = str;
+  int size_buff = 254;
+  char output[254];
+  serializeJson(msg, output, 254);
+  str = output;
   laserControllerMesh.sendBroadcast(str);
   Serial.print("MESH: _broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
 }
