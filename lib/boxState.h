@@ -20,16 +20,15 @@ class boxState
     static boxState boxStates[];
     static void initBoxStates(); // initializer of the array of boxState
 
-    static void setTargetActiveBoxState(const short int activeBoxState);
-
     static Task tPlayBoxStates;
     static void tcbPlayBoxStates();
     static bool oetcbPlayBoxStates();
 
-    static void playBoxState();
     static Task _tPlayBoxState;
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
+
+    static void setTargetActiveBoxState(const short int activeBoxState);
 
   private:
     static const short int _NAME_CHAR_COUNT;

@@ -83,7 +83,7 @@ void boxState::tcbPlayBoxStates() {
   Serial.println("void boxState::tcbPlayBoxStates(). Starting.");
   if (!(_targetActiveBoxState == _activeBoxState)) {
     _activeBoxState = _targetActiveBoxState;
-    playBoxState();
+    _tPlayBoxState.enableDelayed();
   }
   Serial.println("void boxState::tcbPlayBoxStates(). Ending.");
 };
@@ -101,32 +101,16 @@ bool boxState::oetcbPlayBoxStates() {
 
 
 
-// boxState single player
-/*
-  playBoxState() controls Task _tPlayBoxState.
-  1. It sets the aInterval of _tPlayBoxState, based on the _ulDuration of the currently active boxState.
-  2. It then enables _tPlayBoxState, without delay.
-*/
-void boxState::playBoxState(){
-  Serial.println("void boxState::playBoxState(). Starting");
-  Serial.print("void boxState::playBoxState(). Box State Number: ");
-  Serial.println(_activeBoxState);
-  _tPlayBoxState.setInterval(boxStates[_activeBoxState]._ulDuration);
-  // Serial.print("void boxState::playBoxState(). _ulDuration: ");
-  // Serial.println(boxStates[_activeBoxState]._ulDuration);
-  _tPlayBoxState.enable();
-  Serial.println("void boxState::playBoxState(). Task _tPlayBoxState enabled");
-  Serial.println("void boxState::playBoxState(). Ending");
-};
-
 /*
   _tPlayBoxState plays a boxState once (it iterates only once).
-  Its main iteration is delayed until aInterval has expired. aInterval is set
-  in the playBoxState function. It is equal to the duration of the boxState.
+  It is enabled by tPlayBoxStates.
+  Its main iteration is delayed until aInterval has expired. aInterval is set in its onEnable callback.
+  It is equal to the duration of the boxState selected by _activeBoxState.
   Upon being enabled, its onEnable callback:
-  1. looks for the associated sequence using the _activeBoxState static variable to select the relevant boxState in boxStates[];
-  2. sets the active sequence by a call to sequence::setActiveSequence();
-  3. enables the task sequence::tPlaySequenceInLoop.
+  1. sets the aInterval of _tPlayBoxState, based on the _ulDuration of the currently active boxState;
+  2. looks for the associated sequence using the _activeBoxState static variable to select the relevant boxState in boxStates[];
+  3. sets the active sequence by a call to sequence::setActiveSequence();
+  4. enables the task sequence::tPlaySequenceInLoop.
   Task sequence::tPlaySequenceInLoop is set to run indefinitely, for so long as it is not disabled.
   - Task sequence::tPlaySequenceInLoop is equivalent to Task tLED(TASK_IMMEDIATE, TASK_FOREVER, NULL, &ts, false, NULL, &LEDOff)
   in the third example provided with the taskScheduler library.
@@ -137,19 +121,32 @@ void boxState::playBoxState(){
 Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
 bool boxState::_oetcbPlayBoxState(){
-  Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
+  // Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
+  // Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
+  // Serial.println(_activeBoxState);
+  // Serial.print("void boxState::_oetcbPlayBoxState() boxStates[_activeBoxState]._ulDuration: ");
+  // Serial.println(boxStates[_activeBoxState]._ulDuration);
+  _tPlayBoxState.setInterval(boxStates[_activeBoxState]._ulDuration);
+  Serial.print("void boxState::_oetcbPlayBoxState() _tPlayBoxState.getInterval(): ");
+  Serial.println(_tPlayBoxState.getInterval());
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[_activeBoxState]._iAssociatedSequence;
+  Serial.print("void boxState::_oetcbPlayBoxState() _activeSequence: ");
+  Serial.println(_activeSequence);
   // set the active sequence
+  Serial.println("void boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
   // Play sequence in loop until end
+  Serial.print("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop.enable()");
   sequence::tPlaySequenceInLoop.enable();
   Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
 
 void boxState::_odtcbPlayBoxState(){
+  Serial.println("void boxState::_odtcbPlayBoxState(). Starting.");
   sequence::tPlaySequenceInLoop.disable();
+  Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }
 
 
