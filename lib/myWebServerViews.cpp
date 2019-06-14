@@ -183,16 +183,16 @@ String myWebServerViews::printIndivLaserCntrls() {
 
 String myWebServerViews::printCurrentStatus(const short thisPin) {
   String currentStatus;
-  if (LaserPins[thisPin].IamBlinking) {
-    currentStatus += " ON ";
-  } else {
-    currentStatus += " OFF ";
-  }
-  if (LaserPins[thisPin].pirState() == HIGH) {
-    currentStatus += " in IR mode ";
-  } else {
-    currentStatus += " in manual mode ";
-  }
+  // if (LaserPins[thisPin].IamBlinking) {
+  //   currentStatus += " ON ";
+  // } else {
+  //   currentStatus += " OFF ";
+  // }
+  // if (LaserPins[thisPin].pirState() == HIGH) {
+  //   currentStatus += " in IR mode ";
+  // } else {
+  //   currentStatus += " in manual mode ";
+  // }
   return currentStatus;
 }
 
@@ -208,16 +208,16 @@ String myWebServerViews::printOnOffControl(const short thisPin) {
 
 String myWebServerViews::printPirStatusCntrl(const short thisPin) {
   String pirStatusCntrl;
-  if (LaserPins[thisPin].pirState() == LOW) {
-    pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
-    pirStatusCntrl += thisPin + 1;
-    pirStatusCntrl += "\"><button>IR ON</button></a>&nbsp;";
-  }
-  else {
-    pirStatusCntrl += "<a href=\"?statusIr=of&laser=";
-    pirStatusCntrl += thisPin + 1;
-    pirStatusCntrl += "\"><button>IR OFF</button></a>";
-  }
+  // if (LaserPins[thisPin].pirState() == LOW) {
+  //   pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
+  //   pirStatusCntrl += thisPin + 1;
+  //   pirStatusCntrl += "\"><button>IR ON</button></a>&nbsp;";
+  // }
+  // else {
+  //   pirStatusCntrl += "<a href=\"?statusIr=of&laser=";
+  //   pirStatusCntrl += thisPin + 1;
+  //   pirStatusCntrl += "\"><button>IR OFF</button></a>";
+  // }
   return pirStatusCntrl;
 }
 
@@ -234,22 +234,22 @@ String myWebServerViews::printBlinkingIntervalWebCntrl(const short thisPin) {
 
 String myWebServerViews::printPairingCntrl(const short thisPin) {
   String pairingWebCntrl;
-  if (LaserPins[thisPin].pairedWith() == -1) {
-    pairingWebCntrl += " Unpaired ";
-    pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
-    pairingWebCntrl += thisPin + 1;
-    pairingWebCntrl += "\"><button>PAIR</button></a>&nbsp;";
-  } else if (thisPin % 2 == 0) {
-    pairingWebCntrl += " Master ";
-    pairingWebCntrl += "<a href=\"pairingState=un&laser=";
-    pairingWebCntrl += thisPin + 1;
-    pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
-  } else {
-    pairingWebCntrl += " Slave ";
-    pairingWebCntrl += "<a href=\"pairingState=un&laser=";
-    pairingWebCntrl += thisPin + 1;
-    pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
-  }
+  // if (LaserPins[thisPin].pairedWith() == -1) {
+  //   pairingWebCntrl += " Unpaired ";
+  //   pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
+  //   pairingWebCntrl += thisPin + 1;
+  //   pairingWebCntrl += "\"><button>PAIR</button></a>&nbsp;";
+  // } else if (thisPin % 2 == 0) {
+  //   pairingWebCntrl += " Master ";
+  //   pairingWebCntrl += "<a href=\"pairingState=un&laser=";
+  //   pairingWebCntrl += thisPin + 1;
+  //   pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
+  // } else {
+  //   pairingWebCntrl += " Slave ";
+  //   pairingWebCntrl += "<a href=\"pairingState=un&laser=";
+  //   pairingWebCntrl += thisPin + 1;
+  //   pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
+  // }
   return pairingWebCntrl;
 }
 
@@ -266,9 +266,9 @@ String myWebServerViews::printIntervalSelect(const short thisPin) {
           and not to the global blinkingInterval select,
           the value of thisPin will be different than -1
       */
-      if (intervalValue == LaserPins[thisPin].blinkingInterval()) {
-        intervalSelect += "selected";
-      }
+      // if (intervalValue == LaserPins[thisPin].blinkingInterval()) {
+      //   intervalSelect += "selected";
+      // }
     } else if (intervalValue == pinBlinkingInterval) {
       intervalSelect += "selected";
     }

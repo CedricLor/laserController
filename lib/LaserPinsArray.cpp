@@ -20,7 +20,7 @@ void LaserPinsArray::initLaserPins() {
     LaserPins[__thisPin].index_number = __thisPin;
     LaserPins[__thisPin].physicalInitLaserPin(relayPins[__thisPin] /* physical pin number to which this LaserPin is attached */);
   }
-  LaserGroupedUnitsArray::pairUnpairAllPins(1); // cooperatively pair all the pins
+  // LaserGroupedUnitsArray::pairUnpairAllPins(1); // cooperatively pair all the pins
   Serial.print("SETUP: initLaserPins(): done\n");
 }
 
@@ -28,13 +28,13 @@ void LaserPinsArray::initLaserPins() {
 // END LOOP
 // Called once, in the loop() function of main.cpp
 void LaserPinsArray::endloop() {
-  LaserGroupedUnitsArray::updateLaserGroupUnits();
+  // LaserGroupedUnitsArray::updateLaserGroupUnits();
   /* Loop around each LaserPin representing a pin connected to a relay that
      controls a laser before restarting a global loop and makes any update that may be required. For instance:
      - safety time elapsed of lasers in blinking cycle (blinking every 10 to 30 s., to avoid burning the lasers);
      - update the paired laser or its pair if the lasers are paired;
      and then, execute the updates. */
-  updateLaserPins();
+  // updateLaserPins();
 }
 
 void LaserPinsArray::updateLaserPins() {

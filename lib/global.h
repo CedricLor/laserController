@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include "ControlerBox.h"
 #include "LaserPin.h"
-#include "LaserGroupedUnit.h"
+// #include "LaserGroupedUnit.h"
 
 
 extern unsigned long const DEFAULT_PIN_BLINKING_INTERVAL;
@@ -41,7 +41,7 @@ extern const char* slaveReactionHtml[4];
 extern ControlerBox ControlerBoxes[];
 // declare and size an array to contain the LaserPins class instances as a global variable
 extern LaserPin LaserPins[];
-extern LaserGroupedUnit LaserGroupedUnits[];
+// extern LaserGroupedUnit LaserGroupedUnits[];
 
 extern painlessMesh laserControllerMesh;
 extern Scheduler    userScheduler;             // to control your personal task

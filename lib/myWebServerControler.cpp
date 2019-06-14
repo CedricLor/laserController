@@ -12,20 +12,20 @@ myWebServerControler::myWebServerControler()
 
 void myWebServerControler::_webSwitchRelays(AsyncWebParameter* _p2, bool _bTargetState) {
   if(_p2->value() == "a"){
-    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_bTargetState);
-    LaserGroupedUnitsArray::setTargetState(4);
+    // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_bTargetState);
+    // LaserGroupedUnitsArray::setTargetState(4);
   } else {
     int _val = _p2->value().toInt();
-    LaserGroupedUnits[_val].setOnOffTargetState(_bTargetState);
+    // LaserGroupedUnits[_val].setOnOffTargetState(_bTargetState);
   }
 }
 
 void myWebServerControler::_webInclExclInPir(AsyncWebParameter* _p2, bool _bTargetState) {
   if(_p2->value() == "a"){
-    LaserGroupedUnitsArray::setTargetPirState(_bTargetState);
+    // LaserGroupedUnitsArray::setTargetPirState(_bTargetState);
   } else {
     int _val = _p2->value().toInt();
-    LaserGroupedUnits[_val].setTargetPirState(_bTargetState);
+    // LaserGroupedUnits[_val].setTargetPirState(_bTargetState);
   }
 }
 
@@ -34,12 +34,12 @@ void myWebServerControler::_webChangeBlinkingInterval(AsyncWebParameter* _p1, As
   if (_p2->value() == "0") {
     Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): %s\n", _p2->value().c_str());
     unsigned long _ulTargetBlinkingInterval = _p1->value().toInt();
-    LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
+    // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
   }
   else {
     int _iLaserGroupedUnitIndexNumber = _p2->value().toInt();
     int _iTargetBlinkingInterval = _p1->value().toInt();
-    LaserGroupedUnits[_iLaserGroupedUnitIndexNumber].setTargetBlinkingInterval(_iTargetBlinkingInterval);
+    // LaserGroupedUnits[_iLaserGroupedUnitIndexNumber].setTargetBlinkingInterval(_iTargetBlinkingInterval);
   }
 }
 
@@ -90,7 +90,7 @@ void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
   if(request->hasParam("pinPairing")) {
     Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"pinPairing\")");
     AsyncWebParameter* _p = request->getParam("pinPairing");
-    LaserGroupedUnitsArray::pairUnpairAllPins(_p->value().toInt());
+    // LaserGroupedUnitsArray::pairUnpairAllPins(_p->value().toInt());
     return;
   }
 }

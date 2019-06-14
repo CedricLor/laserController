@@ -59,7 +59,7 @@ void pirController::tcbPirCntrl() {
 }
 
 bool pirController::tcbOnEnablePirCntrl() {
-  LaserGroupedUnitsArray::setTargetState(1);          // 1 means "IR waiting"
+  // LaserGroupedUnitsArray::setTargetState(1);          // 1 means "IR waiting"
   return true;
 }
 
@@ -104,10 +104,10 @@ Task pirController::tPirCycle ( I_PIR_INTERVAL, SI_PIR_ITERATIONS, NULL, &userSc
 // CALLBACKS FOR TASK Task tPirCycle (the Task that controls the switching on and off of the laser when the PIR has detected some movement)
 bool pirController::tcbOnEnablePirCycle() {
   // Checks that the currentState of the LaserGroupedUnitsArray reflects the status of the laser controller and update it accordingly if necessary
-  if (LaserGroupedUnitsArray::currentState == 1) {LaserGroupedUnitsArray::setTargetState(2);}  // 1 means "IR cycle on"
+  // if (LaserGroupedUnitsArray::currentState == 1) {LaserGroupedUnitsArray::setTargetState(2);}  // 1 means "IR cycle on"
   Serial.print("PIR: tcbOnEnablePirCycle(): Motion detected!!!\n");
   // Place all the LAserGroupedUnits under the controle of the IR
-  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(LOW);
+  // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(LOW);
   // Send message to the mesh
   myMeshViews::statusMsg("on");
   Serial.print("PIR: tcbOnEnablePirCycle(): broadcastPirStatus(\"on\")");
@@ -115,7 +115,7 @@ bool pirController::tcbOnEnablePirCycle() {
 }
 
 void pirController::tcbOnDisablePirCycle() {
-  if (LaserGroupedUnitsArray::currentState == 2) {LaserGroupedUnitsArray::setTargetState(1);}  // 1 means "IR cycle on"
+  // if (LaserGroupedUnitsArray::currentState == 2) {LaserGroupedUnitsArray::setTargetState(1);}  // 1 means "IR cycle on"
   Serial.print("PIR: pirController::tcbOnDisablePirCycle(): PIR time is due. Ending PIR Cycle -------\n");
   stopPirCycle();
 }
@@ -123,6 +123,6 @@ void pirController::tcbOnDisablePirCycle() {
 // Stops the PIR Cycle
 void pirController::stopPirCycle() {
   Serial.print("PIR: stopPirCycle(): stopping PIR cycle.\n");
-  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(HIGH);
+  // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(HIGH);
   myMeshViews::statusMsg("off");
 }

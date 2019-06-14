@@ -64,8 +64,8 @@ void myMeshController::_manualSwitch(JsonDocument _root) {
   short _iTargetState;
   const char* _sTargetState = _root["ts"];
   _iTargetState = atoi(_sTargetState);
-  LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_iTargetState);
-  LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
+  // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_iTargetState);
+  // LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
 }
 
 void myMeshController::_changeInclusionIR(JsonDocument _root) {
@@ -73,7 +73,7 @@ void myMeshController::_changeInclusionIR(JsonDocument _root) {
   short _iTargetState;
   const char* _sTargetState = _root["ts"];
   _iTargetState = atoi(_sTargetState);
-  LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
+  // LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
 void myMeshController::_changeBlinkingInterval(JsonDocument _root) {
@@ -81,7 +81,7 @@ void myMeshController::_changeBlinkingInterval(JsonDocument _root) {
   unsigned long _ulTargetBlinkingInterval;
   const char* _sTargetBlinkingInterval = _root["ti"];
   _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
-  LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
+  // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
 }
 
 void myMeshController::_changeMasterBox(JsonDocument _root) {
@@ -127,13 +127,13 @@ void myMeshController::_slaveBoxSwitch(JsonDocument root) {
   if (strstr(cSenderStatus, "on")  > 0) {
     // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    LaserGroupedUnitsArray::setTargetState(3);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with on status */
-    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
+    // LaserGroupedUnitsArray::setTargetState(3);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with on status */
+    // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
   } else if (strstr(cSenderStatus, "off")  > 0) {
     // else if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
-    LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
+    // LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
+    // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   }
   Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
 }
@@ -143,7 +143,7 @@ void myMeshController::_pinPairing(JsonDocument root) {
   short _iTargetPairingType;
   const char* _sTargetPairingType = root["ts"];
   _iTargetPairingType = atoi(_sTargetPairingType);
-  LaserGroupedUnitsArray::pairUnpairAllPins(_iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
+  // LaserGroupedUnitsArray::pairUnpairAllPins(_iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 }
 
 void myMeshController::_dataRequest() {

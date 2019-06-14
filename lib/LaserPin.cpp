@@ -41,15 +41,15 @@ void LaserPin::physicalInitLaserPin(const short __sPhysicalPinNumber)
 /////////////////////////////////////////
 // PUBLIC GETTERS
 bool LaserPin::_isLGUOn() {
-  return !(LaserGroupedUnits[laserGroupedUnitId].targetOnOffState);
+  // return !(LaserGroupedUnits[laserGroupedUnitId].targetOnOffState);
 }
 
 bool LaserPin::_LGUHasChanged() {
-  return (!(
-    (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState)
-    || (LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval)
-    || (LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState)
-  ));
+  // return (!(
+  //   (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState)
+  //   || (LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval)
+  //   || (LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState)
+  // ));
 }
 
 bool LaserPin::_amIlastInLGU() {
@@ -57,7 +57,7 @@ bool LaserPin::_amIlastInLGU() {
 }
 
 unsigned long LaserPin::blinkingInterval() {
-  return LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval;
+  // return LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval;
 }
 
 short LaserPin::pairedWith() {
@@ -70,7 +70,7 @@ short LaserPin::pairedWith() {
 }
 
 bool LaserPin::pirState() {
-  return LaserGroupedUnits[laserGroupedUnitId].currentPirState;
+  // return LaserGroupedUnits[laserGroupedUnitId].currentPirState;
 }
 
 /////////////////////////////////////////
@@ -129,11 +129,11 @@ void LaserPin::setOnOffTarget() {
   // check whether this LP is paired or in twin pairing.
   // if unpaired or in twin pairing, turn this LP "on".
   short __pairedPinId = pairedWith();
-  if ((__pairedPinId == -1) || (LaserGroupedUnits[laserGroupedUnitId].pairing_type == 0)) {
-    _on_off_target = LOW;                                           // (III) turn this LP "on"
-    IamBlinking = true;                                             // (III) include this LP in the blinking cycle
-    return;                                                         // (III) exit
-  }                                                                 // (III) continue if this LP is paired in cooperative pairing
+  // if ((__pairedPinId == -1) || (LaserGroupedUnits[laserGroupedUnitId].pairing_type == 0)) {
+  //   _on_off_target = LOW;                                           // (III) turn this LP "on"
+  //   IamBlinking = true;                                             // (III) include this LP in the blinking cycle
+  //   return;                                                         // (III) exit
+  // }                                                                 // (III) continue if this LP is paired in cooperative pairing
 
   // Fourth (IV): if the LGU is "on", this LP is not in a blinking cycle and is in cooperative pairing,
   // light the coolest of the lasers "on" (or the first one in the pair of lasers if they are both at the same level)
@@ -153,7 +153,7 @@ void LaserPin::setOnOffTarget() {
 // LGU STATE SETTER
 void LaserPin::updateLGUState() {
     if (_amIlastInLGU()) {
-      LaserGroupedUnits[laserGroupedUnitId].updateCurrentStates();
+      // LaserGroupedUnits[laserGroupedUnitId].updateCurrentStates();
     }
 }
 
