@@ -20,14 +20,14 @@ sequence::sequence() {
 }
 
 sequence::sequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
-  Serial.println("void sequence::sequence(). Starting.");
+  // Serial.println("void sequence::sequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
-  Serial.println("void sequence::sequence(). Ending.");
+  // Serial.println("void sequence::sequence(). Ending.");
 }
 
 
@@ -36,14 +36,14 @@ sequence::sequence(const char cName[7], const unsigned long ulTempo, const short
 
 // Initialisers
 void sequence::initSequence(const char cName[7], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
-  Serial.println("void sequence::initSequence(). Starting.");
+  // Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
   _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
   for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
     _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
-  Serial.println("void sequence::initSequence(). Ending.");
+  // Serial.println("void sequence::initSequence(). Ending.");
 };
 
 void sequence::initSequences() {
@@ -118,7 +118,7 @@ Task sequence::tPlaySequenceInLoop(0, -1, &tcbPlaySequenceInLoop, &userScheduler
 // first time and the _duration of the sequence is calculated in order to
 // set the interval between each iterations of the tPlaySequenceInLoop task
 bool sequence::oetcbPlaySequenceInLoop() {
-  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
+  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
   // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). _activeSequence: ");
   // Serial.println(_activeSequence);
   // Start immediately playing the sequence on enable
@@ -131,23 +131,23 @@ bool sequence::oetcbPlaySequenceInLoop() {
   tPlaySequenceInLoop.setInterval(_duration);
   // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval()");
   // Serial.println(tPlaySequenceInLoop.getInterval());
-  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
+  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
   return true;
 }
 
 void sequence::tcbPlaySequenceInLoop() {
-  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
+  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
   playSequence();
-  Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
+  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
 }
 
 // on disable tPlaySequenceInLoop, turn off all the laser by setting the activeSequence
 // to state 5 ("all off"), then playSequence 5.
 void sequence::odtcbPlaySequenceInLoop() {
-  Serial.println("void sequence::odtcbPlaySequenceInLoop(). Starting.");
+  // Serial.println("void sequence::odtcbPlaySequenceInLoop(). Starting.");
   setActiveSequence(5); // all lasers off
   playSequence();
-  Serial.println("void sequence::odtcbPlaySequenceInLoop(). Ending.");
+  // Serial.println("void sequence::odtcbPlaySequenceInLoop(). Ending.");
 };
 
 
@@ -162,7 +162,7 @@ void sequence::odtcbPlaySequenceInLoop() {
 // beats (i.e. notes) in the sequence
 // 3. enables the _tPlaySequence task
 void sequence::playSequence(){
-  Serial.println("void sequence::playSequence(). Starting");
+  // Serial.println("void sequence::playSequence(). Starting");
   // Serial.print("void sequence::playSequence(). _activeSequence: ");
   // Serial.println(_activeSequence);
   _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
@@ -172,14 +172,14 @@ void sequence::playSequence(){
   // Serial.print("void sequence::playSequence(). Beats: ");
   // Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
   _tPlaySequence.enable();
-  Serial.println("void sequence::playSequence(). Task _tPlaySequence enabled");
-  Serial.println("void sequence::playSequence(). Ending");
+  // Serial.println("void sequence::playSequence(). Task _tPlaySequence enabled");
+  // Serial.println("void sequence::playSequence(). Ending");
 };
 
 Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false);
 
 void sequence::_tcbPlaySequence(){
-  Serial.println("void sequence::_tcbPlaySequence(). Starting.");
+  // Serial.println("void sequence::_tcbPlaySequence(). Starting.");
   short _iter = _tPlaySequence.getRunCounter() - 1;
   // Serial.println("void sequence::_tcbPlaySequence(). _iter: ");
   // Serial.println(_iter);
@@ -187,11 +187,11 @@ void sequence::_tcbPlaySequence(){
   short int _activeNote = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
   // Play note
   note::notes[_activeNote].playNote();
-  Serial.println("void sequence::_tcbPlaySequence(). Ending.");
+  // Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
 
 void sequence::setActiveSequence(const short activeSequence) {
-  Serial.println("void sequence::setActiveSequence(). Starting.");
+  // Serial.println("void sequence::setActiveSequence(). Starting.");
   _activeSequence = activeSequence;
-  Serial.println("void sequence::setActiveSequence(). Ending.");
+  // Serial.println("void sequence::setActiveSequence(). Ending.");
 };

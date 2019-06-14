@@ -17,21 +17,21 @@ note::note() {
 }
 
 note::note(const char cName[15], const short int iLaserPinsStatus[4]){
-  Serial.println("void note::note(). Starting.");
+  // Serial.println("void note::note(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
-  Serial.println("void note::note(). Ending.");
+  // Serial.println("void note::note(). Ending.");
 }
 
 void note::initNote(const char cName[15], const short int iLaserPinsStatus[4]){
-  Serial.println("void note::initNote(). Starting.");
+  // Serial.println("void note::initNote(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
-  Serial.println("void note::initNote(). Ending.");
+  // Serial.println("void note::initNote(). Ending.");
 };
 
 void note::initNotes() {
@@ -82,19 +82,19 @@ void note::initNotes() {
 }
 
 void note::testPlay() {
-  Serial.println("void note::tcbTestPlay(). Starting.");
+  // Serial.println("void note::tcbTestPlay(). Starting.");
   short int __activeNote = 0;
   // Serial.println("void note::tcbTestPlay(). notes[0]._cName: ");
   // Serial.println(notes[0]._cName);
   // Serial.println("void note::tcbTestPlay(). notes[0]._iLaserPinStatus[0]");
   // Serial.println(notes[0]._iLaserPinStatus[0]);
   notes[__activeNote].playNote();
-  Serial.println("void note::tcbTestPlay(). Ending.");
+  // Serial.println("void note::tcbTestPlay(). Ending.");
 };
 
 
 void note::playNote(){
-  Serial.println("void note::playNote(). Starting");
+  // Serial.println("void note::playNote(). Starting");
   // Serial.print("void note::playNote(). Sequence Number: ");
   // Serial.println(noteNumber);
   // Direct access to the pins.
@@ -114,5 +114,5 @@ void note::playNote(){
     // Serial.println(_target_state);
     digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
-  Serial.println("void note::playNote(). Ending");
+  // Serial.println("void note::playNote(). Ending");
 };
