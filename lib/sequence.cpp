@@ -83,15 +83,15 @@ Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbT
 
 void sequence::tcbTestPlay() {
   Serial.println("void sequence::tcbTestPlay(). Starting.");
-  setActiveSequence(4);
-  playSequence();
+  setActiveSequence(3);
+  tPlaySequenceInLoop.enable();
   Serial.println("void sequence::tcbTestPlay(). Ending.");
 }
 
 void sequence::odtcbTestPlay() {
   Serial.println("void sequence::odtcbTestPlay(). Starting.");
-  unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
-  tEndSequence.enableDelayed(duration);
+  // unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
+  tEndSequence.enableDelayed(120000);
   Serial.println("void sequence::odtcbTestPlay(). Ending.");
 }
 
