@@ -92,7 +92,11 @@ void boxState::tcbPlayBoxStates() {
   if (boxStates[_activeBoxState]._iIRTrigger == 1 && ControlerBox::valPir == HIGH) {
     setTargetActiveBoxState(3);
   }
+  if (boxStates[_activeBoxState]._iMeshTrigger == 1 && ControlerBox::valMesh == HIGH) {
+    setTargetActiveBoxState(4);
+  }
   ControlerBox::valPir = LOW;
+  ControlerBox::valMesh = LOW;
   if (_activeBoxStateHasBeenReset == 1) {
     _activeBoxStateHasBeenReset = 0;
     // Serial.print("void boxState::tcbPlayBoxStates() boxStates[_targetActiveBoxState]._ulDuration: ");
@@ -107,7 +111,7 @@ void boxState::tcbPlayBoxStates() {
     _tPlayBoxState.restartDelayed();
     // Serial.println("void boxState::tcbPlayBoxStates() _tPlayBoxState enabled");
     // Serial.print("void boxState::tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
-    Serial.println(_tPlayBoxState.getInterval());
+    // Serial.println(_tPlayBoxState.getInterval());
     // Serial.println("*********************************************************");
   }
   // Serial.println("void boxState::tcbPlayBoxStates(). Ending.");
