@@ -95,16 +95,16 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   deserializeJson(doc, msg.c_str());
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
   const short iSenderNodeName = _jsonToInt(doc, "senderNodeName");
-  Serial.printf("myMesh::_decodeRequest(...) %u alloted from root[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
+  Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
   // Is the message addressed to me?
   if (!(iSenderNodeName == iMasterNodeName)||!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
     return;
   }
 
-
   // If the message is addressed to me, act depending on the sender status
   // myMeshController myMeshController(doc);
+  ControlerBox::valMesh = _jsonToInt(doc, "senderStatus");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
