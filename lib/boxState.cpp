@@ -152,9 +152,9 @@ bool boxState::oetcbPlayBoxStates() {
 Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
 bool boxState::_oetcbPlayBoxState(){
-  // Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
-  // Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
-  // Serial.println(_activeBoxState);
+  Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
+  Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
+  Serial.println(_activeBoxState);
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[_activeBoxState]._iAssociatedSequence;
   // Serial.print("void boxState::_oetcbPlayBoxState() _activeSequence: ");
