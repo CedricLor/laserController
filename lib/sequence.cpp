@@ -79,30 +79,30 @@ void sequence::initSequences() {
 
 // Players
 // TestPlayer
-Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbTestPlay);
-
-void sequence::tcbTestPlay() {
-  Serial.println("void sequence::tcbTestPlay(). Starting.");
-  setActiveSequence(3);
-  tPlaySequenceInLoop.enable();
-  Serial.println("void sequence::tcbTestPlay(). Ending.");
-}
-
-void sequence::odtcbTestPlay() {
-  Serial.println("void sequence::odtcbTestPlay(). Starting.");
-  // unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
-  tEndSequence.enableDelayed(120000);
-  Serial.println("void sequence::odtcbTestPlay(). Ending.");
-}
-
-Task sequence::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
-
-void sequence::_tcbTEndSequence() {
-  Serial.println("void sequence::_tcbTEndSequence(). Starting.");
-  setActiveSequence(5); // all lasers off
-  playSequence();
-  Serial.println("void sequence::_tcbTEndSequence(). Ending.");
-}
+// Task sequence::testPlay(0, 1, &tcbTestPlay, &userScheduler, false, NULL, &odtcbTestPlay);
+//
+// void sequence::tcbTestPlay() {
+//   Serial.println("void sequence::tcbTestPlay(). Starting.");
+//   setActiveSequence(3);
+//   tPlaySequenceInLoop.enable();
+//   Serial.println("void sequence::tcbTestPlay(). Ending.");
+// }
+//
+// void sequence::odtcbTestPlay() {
+//   Serial.println("void sequence::odtcbTestPlay(). Starting.");
+//   // unsigned long duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
+//   tEndSequence.enableDelayed(120000);
+//   Serial.println("void sequence::odtcbTestPlay(). Ending.");
+// }
+//
+// Task sequence::tEndSequence(0, 1, &_tcbTEndSequence, &userScheduler, false);
+//
+// void sequence::_tcbTEndSequence() {
+//   Serial.println("void sequence::_tcbTEndSequence(). Starting.");
+//   setActiveSequence(5); // all lasers off
+//   playSequence();
+//   Serial.println("void sequence::_tcbTEndSequence(). Ending.");
+// }
 
 
 // Loop Player
