@@ -9,6 +9,7 @@
 short int boxState::_activeBoxState = 0;
 short int boxState::_targetActiveBoxState = 0;
 short int boxState::_activeBoxStateHasBeenReset = 0;
+short int boxState::_defaultBoxState = 5;
 const short int boxState::BOX_STATES_COUNT = 7;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 15;
@@ -49,16 +50,16 @@ void boxState::initBoxState(const char cName[_NAME_CHAR_COUNT], const unsigned l
 
 void boxState::initBoxStates() {
   Serial.println("void boxState::initBoxStates(). Starting.");
-  boxStates[0].initBoxState("default - manual", 0, 5, 0, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  boxStates[0].initBoxState("manual", 1000000, 5, 0, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
   // Serial.println("void boxState::initBoxStates(). boxStates[0]._cName: ");
   // Serial.println(boxStates[0]._cName);
   // Serial.println("void boxState::initBoxStates(). boxStates[0]._ulDuration");
   // Serial.println(boxStates[0]._ulDuration);
-  boxStates[1].initBoxState("align lasers", 0, 1, 0, 0); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  boxStates[1].initBoxState("align lasers", 1000000, 1, 0, 0); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
   boxStates[2].initBoxState("pir Startup", 60000, 1, 0, 1); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
   boxStates[3].initBoxState("pir High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
   boxStates[4].initBoxState("mesh High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
-  boxStates[5].initBoxState("waiting", 0, 5, 1, 1); // sequence "all of" for indefinite time until trigger from either IR or mesh
+  boxStates[5].initBoxState("waiting", 1000000, 5, 1, 1); // sequence "all of" for indefinite time until trigger from either IR or mesh
 
   Serial.println("void boxState::initBoxStates(). Ending.");
 }
@@ -86,25 +87,30 @@ Task boxState::tPlayBoxStates(1000L, -1, &tcbPlayBoxStates, &userScheduler, fals
 */
 void boxState::tcbPlayBoxStates() {
   Serial.println("void boxState::tcbPlayBoxStates(). Starting.");
-  if (boxStates[_activeBoxState]._iIRTrigger == 1) {
-    if (ControlerBox::valPir == HIGH) {
-      ControlerBox::valPir = LOW;
-      setTargetActiveBoxState(3);
-    }
+  Serial.print("void boxState::tcbPlayBoxStates(). Iteration:");
+  Serial.println(tPlayBoxStates.getRunCounter());
+  if (boxStates[_activeBoxState]._iIRTrigger == 1 && ControlerBox::valPir == HIGH) {
+    setTargetActiveBoxState(3);
   }
+  ControlerBox::valPir = LOW;
   if (_activeBoxStateHasBeenReset == 1) {
     _activeBoxStateHasBeenReset = 0;
-    // Serial.print("void boxState::tcbPlayBoxStates() boxStates[_activeBoxState]._ulDuration: ");
-    // Serial.println(boxStates[_targetActiveBoxState]._ulDuration);
-    // Serial.print("void boxState::tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
-    // Serial.println(_tPlayBoxState.getInterval());
+    Serial.print("void boxState::tcbPlayBoxStates() boxStates[_targetActiveBoxState]._ulDuration: ");
+    Serial.println(boxStates[_targetActiveBoxState]._ulDuration);
     _tPlayBoxState.setInterval(boxStates[_targetActiveBoxState]._ulDuration);
+    Serial.print("void boxState::tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
+    Serial.println(_tPlayBoxState.getInterval());
     if (!(_targetActiveBoxState == _activeBoxState)) {
-      _tPlayBoxState.enableDelayed();
       _activeBoxState = _targetActiveBoxState;
     }
+    Serial.println("void boxState::tcbPlayBoxStates() _tPlayBoxState about to be enabled");
+    _tPlayBoxState.restartDelayed();
+    Serial.println("void boxState::tcbPlayBoxStates() _tPlayBoxState enabled");
+    Serial.print("void boxState::tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
+    Serial.println(_tPlayBoxState.getInterval());
+    Serial.println("*********************************************************");
   }
-  Serial.println("void boxState::tcbPlayBoxStates(). Ending.");
+  // Serial.println("void boxState::tcbPlayBoxStates(). Ending.");
 };
 
 // Upon tPlayBoxStates being enabled (at startup), the _targetActiveBoxState is being
@@ -151,7 +157,7 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.println("void boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
   // Play sequence in loop until end
-  Serial.print("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop.enable()");
+  Serial.println("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
   myMeshViews::statusMsg("on"); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
   Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
@@ -159,9 +165,18 @@ bool boxState::_oetcbPlayBoxState(){
 }
 
 void boxState::_odtcbPlayBoxState(){
-  Serial.println("void boxState::_odtcbPlayBoxState(). Starting.");
+  Serial.println("void boxState::_odtcbPlayBoxState(). Starting.------");
+  Serial.print("void boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
+  Serial.println(_tPlayBoxState.getInterval());
   sequence::tPlaySequenceInLoop.disable();
-  myMeshViews::statusMsg("of"); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
+  Serial.println("void boxState::_odtcbPlayBoxState(): _activeBoxState");
+  Serial.println(_activeBoxState);
+  Serial.println("void boxState::_odtcbPlayBoxState(): _targetActiveBoxState");
+  Serial.println(_targetActiveBoxState);
+  if (!(_activeBoxState == _defaultBoxState)) {
+    setTargetActiveBoxState(_defaultBoxState);
+  }
+  myMeshViews::statusMsg("off"); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
   Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }
 
@@ -171,6 +186,12 @@ void boxState::_odtcbPlayBoxState(){
 
 // setTargetActiveBoxState receive boxState change requests from other classes
 void boxState::setTargetActiveBoxState(const short targetActiveBoxState) {
+  Serial.println("void boxState::setTargetActiveBoxState(). Starting.");
+  Serial.print("void boxState::setTargetActiveBoxState(). targetActiveBoxState: ");
+  Serial.println(targetActiveBoxState);
   _activeBoxStateHasBeenReset = 1;
   _targetActiveBoxState = targetActiveBoxState;
+  Serial.print("void boxState::setTargetActiveBoxState(). _targetActiveBoxState: ");
+  Serial.println(_targetActiveBoxState);
+  Serial.println("void boxState::setTargetActiveBoxState(). Ending.");
 };
