@@ -12,9 +12,13 @@ const short int boxState::BOX_STATES_COUNT = 7;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 15;
 
-// constructor
-boxState::boxState() {
 
+
+
+
+
+// Constructors
+boxState::boxState() {
 }
 
 boxState::boxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
@@ -27,6 +31,11 @@ boxState::boxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDur
   Serial.println("void boxState::boxState(). Ending.");
 }
 
+
+
+
+
+// Initialisers
 void boxState::initBoxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
   Serial.println("void boxState::initBoxState(). Starting.");
   strcpy(_cName, cName);
@@ -53,6 +62,11 @@ void boxState::initBoxStates() {
   Serial.println("void boxState::initBoxStates(). Ending.");
 }
 
+
+
+
+
+// boxState player wrapper
 // tPlayBoxStates starts the execution of the various boxStates.
 // It is enabled at the end of the setup.
 // It then iterates indefinitely at each pass of the main loop.
@@ -83,6 +97,11 @@ bool boxState::oetcbPlayBoxStates() {
   return true;
 }
 
+
+
+
+
+// boxState single player
 /*
   playBoxState() controls Task _tPlayBoxState.
   1. It sets the aInterval of _tPlayBoxState, based on the _ulDuration of the currently active boxState.
@@ -133,6 +152,11 @@ void boxState::_odtcbPlayBoxState(){
   sequence::tPlaySequenceInLoop.disable();
 }
 
+
+
+
+
+// setTargetActiveBoxState receive boxState change requests from other classes
 void boxState::setTargetActiveBoxState(const short targetActiveBoxState) {
   _targetActiveBoxState = targetActiveBoxState;
 };
