@@ -18,27 +18,31 @@ boxState::boxState() {
 }
 
 boxState::boxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
+  Serial.println("void boxState::boxState(). Starting.");
   strcpy(_cName, cName);
   _ulDuration = ulDuration;
   _iAssociatedSequence = iAssociatedSequence;
   _iIRTrigger = iIRTrigger;
   _iMeshTrigger = iMeshTrigger;
+  Serial.println("void boxState::boxState(). Ending.");
 }
 
 void boxState::initBoxState(const char cName[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
+  Serial.println("void boxState::initBoxState(). Starting.");
   strcpy(_cName, cName);
   _ulDuration = ulDuration;
   _iAssociatedSequence = iAssociatedSequence;
   _iIRTrigger = iIRTrigger;
   _iMeshTrigger = iMeshTrigger;
+  Serial.println("void boxState::initBoxState(). Ending.");
 };
 
 void boxState::initBoxStates() {
-  Serial.println("void boxState::initboxStates(). Starting.");
+  Serial.println("void boxState::initBoxStates(). Starting.");
   boxStates[0].initBoxState("default - manual", 0, 5, 0, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
-  // Serial.println("void boxState::initboxStates(). boxStates[0]._cName: ");
+  // Serial.println("void boxState::initBoxStates(). boxStates[0]._cName: ");
   // Serial.println(boxStates[0]._cName);
-  // Serial.println("void boxState::initboxStates(). boxStates[0]._ulDuration");
+  // Serial.println("void boxState::initBoxStates(). boxStates[0]._ulDuration");
   // Serial.println(boxStates[0]._ulDuration);
   boxStates[1].initBoxState("align lasers", 0, 1, 0, 0); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
   boxStates[2].initBoxState("pir Startup", 60000, 1, 0, 1); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
@@ -46,7 +50,7 @@ void boxState::initBoxStates() {
   boxStates[4].initBoxState("mesh High", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
   boxStates[5].initBoxState("waiting", 0, 5, 1, 1); // sequence "all of" for indefinite time until trigger from either IR or mesh
 
-  Serial.println("void boxState::initboxStates(). Ending.");
+  Serial.println("void boxState::initBoxStates(). Ending.");
 }
 
 // tPlayBoxStates starts the execution of the various boxStates.

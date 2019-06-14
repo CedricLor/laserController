@@ -17,17 +17,21 @@ note::note() {
 }
 
 note::note(const char cName[15], const short int iLaserPinsStatus[4]){
+  Serial.println("void note::note(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
+  Serial.println("void note::note(). Ending.");
 }
 
 void note::initNote(const char cName[15], const short int iLaserPinsStatus[4]){
+  Serial.println("void note::initNote(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
+  Serial.println("void note::initNote(). Ending.");
 };
 
 void note::initNotes() {
