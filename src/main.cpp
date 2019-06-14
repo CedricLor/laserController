@@ -43,6 +43,7 @@
 #include "../lib/sequence.cpp"
 #include "../lib/boxState.h"
 #include "../lib/boxState.cpp"
+
 #include "../lib/pirController.h"
 #include "../lib/pirController.cpp"
 
@@ -83,7 +84,7 @@ void loop() {
   ArduinoOTA.handle();
   userScheduler.execute();   // it will run mesh scheduler as well
   laserControllerMesh.update();
-  //LaserPinsArray::endloop();
+  pirController::pirCntrl();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -16,22 +16,12 @@ class pirController
 
     static void initPir();
 
-    static Task tPirCntrl;
+    static void pirCntrl();
 
   private:
     // PIR controller
-    static short const INPUT_PIN;
-    static bool valPir;
+    static short const _INPUT_PIN;
 
-    static void tcbPirCntrl();
-    static bool oetcbPirCntrl();
-
-    static void setPirValue();
-    static void startOrRestartPirCycleIfPirValueIsHigh();
-
-    // PIR cycle
-
-    static void broadcastPirStatus(const char* state);
 };
 
 #endif

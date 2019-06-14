@@ -6,6 +6,8 @@
 #include "Arduino.h"
 #include "ControlerBox.h"
 
+bool ControlerBox::valPir = LOW;
+
 ControlerBox::ControlerBox()
 {
   // pinMode(pin, OUTPUT);

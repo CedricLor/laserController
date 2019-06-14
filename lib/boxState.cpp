@@ -70,8 +70,8 @@ void boxState::initBoxStates() {
 // boxState player wrapper
 // tPlayBoxStates starts the execution of the various boxStates.
 // It is enabled at the end of the setup.
-// It then iterates indefinitely at each pass of the main loop.
-Task boxState::tPlayBoxStates(0, -1, &tcbPlayBoxStates, &userScheduler, false, &oetcbPlayBoxStates);
+// It then iterates indefinitely every seconds.
+Task boxState::tPlayBoxStates(1000L, -1, &tcbPlayBoxStates, &userScheduler, false, &oetcbPlayBoxStates);
 
 /*
   At each pass of tPlayBoxStates, tcbPlayBoxStates() will check whether _activeBoxStateHasBeenReset has changed
@@ -86,6 +86,12 @@ Task boxState::tPlayBoxStates(0, -1, &tcbPlayBoxStates, &userScheduler, false, &
 */
 void boxState::tcbPlayBoxStates() {
   Serial.println("void boxState::tcbPlayBoxStates(). Starting.");
+  if (boxStates[_activeBoxState]._iIRTrigger == 1) {
+    if (ControlerBox::valPir == HIGH) {
+      ControlerBox::valPir = LOW;
+      setTargetActiveBoxState(3);
+    }
+  }
   if (_activeBoxStateHasBeenReset == 1) {
     _activeBoxStateHasBeenReset = 0;
     // Serial.print("void boxState::tcbPlayBoxStates() boxStates[_activeBoxState]._ulDuration: ");
