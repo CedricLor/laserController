@@ -25,9 +25,9 @@ class myMesh
 
     static void receivedCallback( uint32_t from, String &msg);
     static void newConnectionCallback(uint32_t nodeId);
-    // static void changedConnectionCallback();
-    // static void nodeTimeAdjustedCallback(int32_t offset);
-    // static void delayReceivedCallback(uint32_t from, int32_t delay);
+    static void changedConnectionCallback();
+    static void nodeTimeAdjustedCallback(int32_t offset);
+    static void delayReceivedCallback(uint32_t from, int32_t delay);
 
     static void _decodeRequest(uint32_t senderNodeId, String &msg);
 

@@ -50,9 +50,9 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
-  // laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
+  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,17 +67,17 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   ControlerBoxes[0].updateThisBoxProperties();
 }
 
-// void myMesh::changedConnectionCallback() {
-//   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-// }
-//
-// void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
-//   Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
-// }
-//
-// void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
-//   Serial.printf("Delay to node %u is %d us\n", from, delay);
-// }
+void myMesh::changedConnectionCallback() {
+  Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
+}
+
+void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
+  Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
+}
+
+void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
+  Serial.printf("Delay to node %u is %d us\n", from, delay);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Decode Request
