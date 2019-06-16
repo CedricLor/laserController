@@ -90,7 +90,8 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
 void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
   Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
-  StaticJsonDocument<1024> doc;
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
   Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
   deserializeJson(doc, msg.c_str());
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");

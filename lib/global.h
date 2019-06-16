@@ -44,4 +44,5 @@ extern LaserPin LaserPins[];
 extern painlessMesh laserControllerMesh;
 extern Scheduler    userScheduler;             // to control your personal task
 
+extern const short int MESH_REQUEST_CAPACITY;
 #endif
