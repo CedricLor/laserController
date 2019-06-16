@@ -6,7 +6,6 @@
 #define note_h
 
 #include "Arduino.h"
-#include "global.h"
 
 class note
 {

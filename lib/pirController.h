@@ -7,7 +7,6 @@
 #define pirController_h
 
 #include "Arduino.h"
-#include "myMesh.h"
 
 class pirController
 {

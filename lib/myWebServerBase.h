@@ -1,6 +1,18 @@
 /*
   myWebServerBase.h - Library web server controller related functions.
   Created by Cedric Lor, January 19, 2019.
+
+  |--main.cpp
+  |  |
+  |  |--myWebServerBase.cpp
+  |  |  |--myWebServerBase.h
+  |  |  |  |--AsyncTCP.h
+  |  |  |--myWebServerViews.cpp
+  |  |  |  |--myWebServerViews.h
+  |  |  |--myWebServerControler.cpp
+  |  |  |  |--myWebServerControler.h
+  |  |  |  |--MasterSlaveBox.cpp
+  |  |  |  |  |--MasterSlaveBox.h
 */
 
 #ifndef myWebServerBase_h
@@ -18,12 +30,11 @@ class myWebServerBase
 
   private:
     // int _pin;
-    static AsyncWebServer asyncServer;
-    static char linebuf[];
-    static short charcount;
+    static AsyncWebServer _asyncServer;
+    static char _linebuf[];
 
-    static void listAllCollectedHeaders(AsyncWebServerRequest *request);
-    static void listAllCollectedParams(AsyncWebServerRequest *request);
+    static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
+    static void _listAllCollectedParams(AsyncWebServerRequest *request);
 
     static void onRequest(AsyncWebServerRequest *request);
     static void onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);

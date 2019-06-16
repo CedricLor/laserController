@@ -5,8 +5,19 @@ PlatformIO will compile them to static libraries and link them to executable fil
 The source code of each library should be placed in separate directories, like
 "lib/private_lib/[here are source files]".
 
-For example, see the structure of the following two libraries `Foo` and `Bar`:
+|--main.cpp
+|  |
+|  |--global.h
+|  |--global.cpp
+|  |
+|  |--myWebServerBase.h
+|  |  |--AsyncTCP.h
+|  |--myWebServerBase.cpp
+|  |  |--myWebServerBase.h
+|  |  |--myWebServerViews.cpp
+|  |  |--myWebServerControler.cpp
 
+For example, see the structure of the following two libraries `Foo` and `Bar`:
 |--lib
 |  |
 |  |--Bar

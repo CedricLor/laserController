@@ -1,6 +1,18 @@
 /*
   myWebServerViews.cpp - Library to serve the views of the laser controller web server.
   Created by Cedric Lor, January 2, 2019.
+
+  |--main.cpp
+  |  |
+  |  |--myWebServerBase.cpp
+  |  |  |--myWebServerBase.h
+  |  |  |  |--AsyncTCP.h
+  |  |  |--myWebServerViews.cpp
+  |  |  |  |--myWebServerViews.h
+  |  |  |--myWebServerControler.cpp
+  |  |  |  |--myWebServerControler.h
+  |  |  |  |--MasterSlaveBox.cpp
+  |  |  |  |  |--MasterSlaveBox.h
 */
 
 #include "Arduino.h"

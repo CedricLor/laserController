@@ -1,6 +1,18 @@
 /*
   myWebServerBase.cpp - Library to handle web server controller related functions.
   Created by Cedric Lor, January 19, 2019.
+
+  |--main.cpp
+  |  |
+  |  |--myWebServerBase.cpp
+  |  |  |--myWebServerBase.h
+  |  |  |  |--AsyncTCP.h
+  |  |  |--myWebServerViews.cpp
+  |  |  |  |--myWebServerViews.h
+  |  |  |--myWebServerControler.cpp
+  |  |  |  |--myWebServerControler.h
+  |  |  |  |--MasterSlaveBox.cpp
+  |  |  |  |  |--MasterSlaveBox.h
 */
 
 #include "Arduino.h"
@@ -14,59 +26,56 @@ myWebServerBase::myWebServerBase(/*int pin*/)
   // _pin = pin;
 }
 
-AsyncWebServer myWebServerBase::asyncServer(80);
-char myWebServerBase::linebuf[80];
-short myWebServerBase::charcount=0;
+AsyncWebServer myWebServerBase::_asyncServer(80);
+char myWebServerBase::_linebuf[80];
 
-void myWebServerBase::listAllCollectedHeaders(AsyncWebServerRequest *request) {
-  int headers = request->headers();
-  for(int i=0;i<headers;i++){
-    AsyncWebHeader* h = request->getHeader(i);
-    Serial.printf("HEADER[%s]: %s\n", h->name().c_str(), h->value().c_str());
+void myWebServerBase::_listAllCollectedHeaders(AsyncWebServerRequest *request) {
+  int __headers = request->headers();
+  for(int __i=0;__i<__headers;__i++){
+    AsyncWebHeader* __h = request->getHeader(__i);
+    Serial.printf("HEADER[%s]: %s\n", __h->name().c_str(), __h->value().c_str());
   }
 }
 
-void myWebServerBase::listAllCollectedParams(AsyncWebServerRequest *request) {
-  int params = request->params();
-  for(int i=0;i<params;i++){
-    AsyncWebParameter* param = request->getParam(i);
-    if(param->isFile()){ //p->isPost() is also true
-      Serial.printf("FILE[%s]: %s, size: %u\n", param->name().c_str(), param->value().c_str(), param->size());
-    } else if(param->isPost()){
-      Serial.printf("POST[%s]: %s\n", param->name().c_str(), param->value().c_str());
+void myWebServerBase::_listAllCollectedParams(AsyncWebServerRequest *request) {
+  int __params = request->params();
+  for(int __i=0;__i<__params;__i++){
+    AsyncWebParameter* __param = request->getParam(__i);
+    if(__param->isPost()){
+      Serial.printf("POST[%s]: %s\n", __param->name().c_str(), __param->value().c_str());
     } else {
-      Serial.printf("GET[%s]: %s\n", param->name().c_str(), param->value().c_str());
+      Serial.printf("GET[%s]: %s\n", __param->name().c_str(), __param->value().c_str());
       // storeGetParamsInLineBuf(params, i, param);
     }
   }
 }
 
 void myWebServerBase::startAsyncServer() {
-  asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    Serial.print("In handler of \"/\" request -------\n");
+  _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
 
     // List all collected headers
-    listAllCollectedHeaders(request);
+    _listAllCollectedHeaders(request);
 
     // List all parameters
-    listAllCollectedParams(request);
+    _listAllCollectedParams(request);
 
     // Decode request
     myWebServerControler::decodeRequest(request);
 
     //Send a response
-    myWebServerViews myWebServerView;
-    Serial.print(">>>>>>>>>>>>>>>>>>>>>>>>>> Just after instantiating myWebServerView");
-    AsyncResponseStream *response = request->beginResponseStream("text/html");  // define a response stream
-    response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
-    response->printf(myWebServerView.returnTheResponse().c_str());              // converts the arduino String in C string (array of chars)
-    request->send(response);                                                    // send the response
+    myWebServerViews __myWebServerView;
+    Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
+    AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
+    __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
+    __response->printf(__myWebServerView.returnTheResponse().c_str());            // converts the arduino String in C string (array of chars)
+    request->send(__response);                                                    // send the response
   });
 
-  asyncServer.onNotFound(&onRequest);  // error: no matching function for call to 'AsyncWebServer::onNotFound(void (&)())'
-  asyncServer.onRequestBody(&onBody);  // error: no matching function for call to 'AsyncWebServer::onRequestBody(void (&)())'
+  _asyncServer.onNotFound(&onRequest);  // error: no matching function for call to 'AsyncWebServer::onNotFound(void (&)())'
+  _asyncServer.onRequestBody(&onBody);  // error: no matching function for call to 'AsyncWebServer::onRequestBody(void (&)())'
 
-  asyncServer.begin();
+  _asyncServer.begin();
 }
 
 void myWebServerBase::onRequest(AsyncWebServerRequest *request){

@@ -1,5 +1,11 @@
 /*
-  MasterSlaveBox.cpp - Library to handle relationship of this box with other controller box related functions.
+  MasterSlaveBox.cpp -
+  Library to handle relationship of this box with other controller box related functions.
+  This library is not a class to be instantiated.
+  This library does not contain any static variable.
+  It is just a container for a couple of functions to change:
+  - this boxes' master controller; and
+  - this boxes' reactions to signals of the master controller.
   Created by Cedric Lor, January 3, 2019.
 */
 
@@ -10,29 +16,40 @@ MasterSlaveBox::MasterSlaveBox()
 {
 }
 
-// REDRAFT AND ADD COMMENTS TO THE CODE OF THE WHOLE BLOCK
+
+/* changeGlobalMasterBoxAndSlaveReaction changes the master node number (name) and
+  the reaction to master node signals received via the mesh.
+  changeGlobalMasterBoxAndSlaveReaction is called from:
+  - the webControler; and
+  - the meshController.
+*/
+
 void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action) {
   _changeTheMasterBoxId(masterBoxNumber);
   _changeSlaveReaction(action);
   mySavedPrefs::savePreferences();
 }
 
+
+
 void MasterSlaveBox::_changeTheMasterBoxId(const short masterBoxNumber) {
-  // Serial.printf("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Starting with masterBoxNumber = %u\n", masterBoxNumber);
-  iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber;
-  // Serial.print("WEB CONTROLLER: changeTheMasterBoxId(const short masterBoxNumber): Done\n");
+  // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const short masterBoxNumber): Starting with masterBoxNumber = %u\n", masterBoxNumber);
+  iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber; // iMasterNodeName has been defined in the global singleton
+  // Serial.print("MasterSlaveBox::_changeTheMasterBoxId(const short masterBoxNumber): Done\n");
 }
 
+
+
 void MasterSlaveBox::_changeSlaveReaction(const char* action) {
-  // Serial.printf("WEB CONTROLLER: changeSlaveReaction(char *action): starting with action (char argument) =%s\n", action);
+  // Serial.printf("MasterSlaveBox::_changeSlaveReaction(const char* action): starting with action (char argument) =%s\n", action);
   for (short i=0; i < 4; i++) {
-    // Serial.print("WEB CONTROLLER: changeSlaveReaction(): looping over the slaveReactionHtml[] array\n");
+    // Serial.print("MasterSlaveBox::_changeSlaveReaction(const char* action): looping over the slaveReactionHtml[] array\n");
     if (strcmp(slaveReactionHtml[i], action) > 0) {
-      // Serial.print("WEB CONTROLLER: changeSlaveReaction(): saving iSlaveOnOffReaction\n");
+      // Serial.print("MasterSlaveBox::_changeSlaveReaction(const char* action): saving iSlaveOnOffReaction\n");
       short t = i;
-      iSlaveOnOffReaction = t;
+      iSlaveOnOffReaction = t;  // iSlaveOnOffReaction has been defined in the global singleton
       break; // break for
     }
   }
-  // Serial.print("WEB CONTROLLER: changeSlaveReaction(): done\n");
+  // Serial.print("MasterSlaveBox::_changeSlaveReaction(const char* action): done\n");
 }
