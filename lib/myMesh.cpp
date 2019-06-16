@@ -30,21 +30,23 @@ myMesh::myMesh()
 }
 
 void myMesh::meshSetup() {
+  if ( MY_DEBUG == true ) {
   //laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
+  }
 
-  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
+  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, MESH_CHANNEL );
 
   if ((IS_INTERFACE == true) && (IS_STATION_MANUAL == true)) {
-    laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
+    laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, MESH_CHANNEL);
   }
 
   laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
   if (MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
-    // This and all other mesh should ideally now the mesh contains a root
-    laserControllerMesh.setContainsRoot(true);
   }
+  // This and all other mesh should ideally know that the mesh contains a root
+  laserControllerMesh.setContainsRoot(true);
 
   ControlerBoxes[0].updateThisBoxProperties();
 

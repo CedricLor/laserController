@@ -15,13 +15,16 @@ extern unsigned long const DEFAULT_PIN_BLINKING_INTERVAL;
 extern const short PIN_COUNT;                                                     // BOX BY BOX
 extern short relayPins[];  // an array of pin numbers to which relays are attached// BOX BY BOX
 
-extern const short I_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
-extern const short I_DEFAULT_INTERFACE_NODE_NAME;
+extern const bool MY_DEBUG;
+
 extern const short I_NODE_NAME;                                                   // BOX BY BOX
+extern const short I_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
+extern const bool MESH_ROOT;                                                      // BOX BY BOX
+
+extern const short I_DEFAULT_INTERFACE_NODE_NAME;
 extern const short IS_INTERFACE;                                                  // BOX BY BOX
 extern const short IS_STATION_MANUAL;                                             // BOX BY BOX
 
-extern const bool MESH_ROOT;                                                      // BOX BY BOX
 extern const short I_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
@@ -45,4 +48,5 @@ extern painlessMesh laserControllerMesh;
 extern Scheduler    userScheduler;             // to control your personal task
 
 extern const short int MESH_REQUEST_CAPACITY;
+extern const uint8_t MESH_CHANNEL;
 #endif

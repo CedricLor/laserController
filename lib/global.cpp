@@ -18,6 +18,8 @@ short relayPins[] = { 5, 17, 16, 4 };
 // const short PIN_COUNT = 8;
 // short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };
 
+const bool MY_DEBUG = false;
+
 // const short I_NODE_NAME = 201;                          // BOX BY BOX
 // const short I_DEFAULT_MASTER_NODE_NAME = 210;
 // const bool MESH_ROOT = true;                            // BOX BY BOX
@@ -52,3 +54,4 @@ painlessMesh laserControllerMesh;
 Scheduler    userScheduler;             // to control your personal task
 
 const short int MESH_REQUEST_CAPACITY = 7;
+const uint8_t MESH_CHANNEL = 6;
