@@ -9,8 +9,7 @@
 #include "../lib/global.h"
 #include "../lib/global.cpp"
 
-//#include "../lib/secret.h"
-//#include "../lib/secret.cpp"
+#include "../lib/secret.h"
 
 #include "../lib/Myota.h"
 #include "../lib/Myota.cpp"

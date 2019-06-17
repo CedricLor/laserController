@@ -6,5 +6,4 @@ src/.DS_Store
 .clang_complete
 .gcc-flags.json
 lib/secret.h
-lib/secret.cpp
 .pio
