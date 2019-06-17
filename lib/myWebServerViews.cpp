@@ -26,8 +26,8 @@
 #include "Arduino.h"
 #include "myWebServerViews.h"
 
-const char* _slave_Reaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
-const char* _pairing_Type[3] = {"unpaired", "twin", "cooperative"};
+const char* myWebServerViews::_slave_Reaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
+const char* myWebServerViews::_pairing_Type[3] = {"unpaired", "twin", "cooperative"};
 
 myWebServerViews::myWebServerViews()
 {

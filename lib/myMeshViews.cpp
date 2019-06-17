@@ -105,8 +105,8 @@ void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
   msg["senderStationIP"] = (ControlerBoxes[0].stationIP).toString();
   msg["action"] = str;
   int size_buff = 254;
-  char output[254];
-  serializeJson(msg, output, 254);
+  char output[size_buff];
+  serializeJson(msg, output, size_buff);
   str = output;
   laserControllerMesh.sendBroadcast(str);
   Serial.print("MESH: _broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);

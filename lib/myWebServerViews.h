@@ -35,8 +35,8 @@ class myWebServerViews
     String returnTheResponse();
 
   private:
-    const char* _slave_Reaction[4];
-    const char* _pairing_Type[3];
+    static const char* _slave_Reaction[];
+    static const char* _pairing_Type[];
 
     String _printLinksToBoxes();
     String _printAllLasersCntrl();
