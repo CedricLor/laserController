@@ -7,12 +7,20 @@
   |  |--myWebServerBase.cpp
   |  |  |--myWebServerBase.h
   |  |  |  |--AsyncTCP.h
-  |  |  |--myWebServerViews.cpp
-  |  |  |  |--myWebServerViews.h
-  |  |  |--myWebServerControler.cpp
+  |  |  |
+  |  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerControler.h
-  |  |  |  |--MasterSlaveBox.cpp
+  |  |  |  |--MasterSlaveBox.cpp (called to set some values re. master/slave box reactions in global)
   |  |  |  |  |--MasterSlaveBox.h
+  |  |  |  |--//LaserGroupedUnitsArray.cpp (used to be called to start and stop cycle)
+  |  |  |  |--//LaserGroupedUnits.cpp (used to be called to pair and unpair)
+  |  |  |
+  |  |  |--myWebServerViews.cpp ("private" class: called only from myWebServerBase.cpp)
+  |  |  |  |--myWebServerViews.h
+  |  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
+  |  |  |  |  |--ControlerBox.h
+  |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
+  |  |  |  |  |--global.h
 */
 
 #ifndef myWebServerViews_h
@@ -27,26 +35,26 @@ class myWebServerViews
     String returnTheResponse();
 
   private:
-    const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
-    const char* _pairingType[3] = {"unpaired", "twin", "cooperative"};
+    const char* _slave_Reaction[4];
+    const char* _pairing_Type[3];
 
-    String printLinksToBoxes();
-    String printAllLasersCntrl();
-    String printGlobalPinPairingWebCntrl();
-    String printGlobalPinPairingSelect();
-    String printMasterCntrl();
-    String printMasterSelect();
-    String printSlaveReactionSelect();
-    String printLabel(const String labelText, const String labelFor);
-    String printOption(const String optionValue, const String optionText, const String selected);
-    String printIndivLaserCntrls();
-    String printCurrentStatus(const short thisPin);
-    String printOnOffControl(const short thisPin);
-    String printPirStatusCntrl(const short thisPin);
-    String printBlinkingIntervalWebCntrl(const short thisPin);
-    String printPairingCntrl(const short thisPin);
-    String printIntervalSelect(const short thisPin);
-    String printHiddenLaserNumb(const short thisPin);
+    String _printLinksToBoxes();
+    String _printAllLasersCntrl();
+    String _printGlobalPinPairingWebCntrl();
+    String _printGlobalPinPairingSelect();
+    String _printMasterCntrl();
+    String _printMasterSelect();
+    String _printSlaveReactionSelect();
+    String _printLabel(const String labelText, const String labelFor);
+    String _printOption(const String optionValue, const String optionText, const String selected);
+    String _printIndivLaserCntrls();
+    String _printCurrentStatus(const short thisPin);
+    String _printOnOffControl(const short thisPin);
+    String _printPirStatusCntrl(const short thisPin);
+    String _printBlinkingIntervalWebCntrl(const short thisPin);
+    String _printPairingCntrl(const short thisPin);
+    String _printIntervalSelect(const short thisPin);
+    String _printHiddenLaserNumb(const short thisPin);
 };
 
 #endif

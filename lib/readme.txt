@@ -1,21 +1,31 @@
+Dependency structure
+
+|--main.cpp
+|  |
+|  |--myWebServerBase.cpp
+|  |  |--myWebServerBase.h
+|  |  |  |--AsyncTCP.h
+|  |  |
+|  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
+|  |  |  |--myWebServerControler.h
+|  |  |  |--MasterSlaveBox.cpp
+|  |  |  |  |--MasterSlaveBox.h
+|  |  |
+|  |  |--myWebServerViews.cpp ("private" class: called only from myWebServerBase.cpp)
+|  |  |  |--myWebServerViews.h
+|  |  |  |--myWebServerViews.h
+|  |  |  |--ControlerBox.cpp
+|  |  |  |  |--ControlerBox.h
+|  |  |  |--global.cpp
+|  |  |  |  |--global.h
+
+
 
 This directory is intended for project specific (private) libraries.
 PlatformIO will compile them to static libraries and link them to executable files.
 
 The source code of each library should be placed in separate directories, like
 "lib/private_lib/[here are source files]".
-
-|--main.cpp
-|  |
-|  |--global.h
-|  |--global.cpp
-|  |
-|  |--myWebServerBase.h
-|  |  |--AsyncTCP.h
-|  |--myWebServerBase.cpp
-|  |  |--myWebServerBase.h
-|  |  |--myWebServerViews.cpp
-|  |  |--myWebServerControler.cpp
 
 For example, see the structure of the following two libraries `Foo` and `Bar`:
 |--lib

@@ -7,194 +7,206 @@
   |  |--myWebServerBase.cpp
   |  |  |--myWebServerBase.h
   |  |  |  |--AsyncTCP.h
-  |  |  |--myWebServerViews.cpp
-  |  |  |  |--myWebServerViews.h
-  |  |  |--myWebServerControler.cpp
+  |  |  |
+  |  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerControler.h
-  |  |  |  |--MasterSlaveBox.cpp
+  |  |  |  |--MasterSlaveBox.cpp (called to set some values re. master/slave box reactions in global)
   |  |  |  |  |--MasterSlaveBox.h
+  |  |  |  |--//LaserGroupedUnitsArray.cpp (used to be called to start and stop cycle)
+  |  |  |  |--//LaserGroupedUnits.cpp (used to be called to pair and unpair)
+  |  |  |
+  |  |  |--myWebServerViews.cpp ("private" class: called only from myWebServerBase.cpp)
+  |  |  |  |--myWebServerViews.h
+  |  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
+  |  |  |  |  |--ControlerBox.h
+  |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
+  |  |  |  |  |--global.h
 */
 
 #include "Arduino.h"
 #include "myWebServerViews.h"
+
+const char* _slave_Reaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
+const char* _pairing_Type[3] = {"unpaired", "twin", "cooperative"};
 
 myWebServerViews::myWebServerViews()
 {
 }
 
 String myWebServerViews::returnTheResponse() {
-  String myResponse = "<!DOCTYPE HTML><html>";
-  myResponse += "<body>";
-  myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
-  myResponse += "<h1>";
-  myResponse += String(I_NODE_NAME);
-  myResponse += " - ";
-  myResponse += (ControlerBoxes[0].APIP).toString();
-  myResponse += " - ";
-  myResponse += (laserControllerMesh.getStationIP()).toString();
-  myResponse += "</h1>";
-  myResponse += printAllLasersCntrl();
-  myResponse += printIndivLaserCntrls();
-  myResponse += printLinksToBoxes();
-  myResponse += "</body></html>";
-  Serial.println(myResponse);
-  return myResponse;
+  String __myResponse = "<!DOCTYPE HTML><html>";
+  __myResponse += "<body>";
+  __myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
+  __myResponse += "<h1>";
+  __myResponse += String(I_NODE_NAME); // I_NODE_NAME defined and declared in global
+  __myResponse += " - ";
+  __myResponse += (ControlerBoxes[0].APIP).toString();  // dependancy
+  __myResponse += " - ";
+  __myResponse += (laserControllerMesh.getStationIP()).toString(); // laserControllerMesh defined and declared in global
+  __myResponse += "</h1>";
+  __myResponse += _printAllLasersCntrl();
+  __myResponse += _printIndivLaserCntrls();
+  __myResponse += _printLinksToBoxes();
+  __myResponse += "</body></html>";
+  if (MY_DEBUG == true) {Serial.println(__myResponse);}; // MY_DEBUG defined and declared in global
+  return __myResponse;
 }
 
-String myWebServerViews::printLinksToBoxes() {
-  String linksToBoxes = "<div class=\"box_links_wrapper\">";
+String myWebServerViews::_printLinksToBoxes() {
+  String __linksToBoxes = "<div class=\"box_links_wrapper\">";
   // IPAddress testIp(0,0,0,0);
   for (short i = 0; i < BOXES_COUNT; i++) {
-    if (ControlerBoxes[i].iNodeName) {
-      linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
-      linksToBoxes += String((ControlerBoxes[i].iNodeName));
-      linksToBoxes += " - Station IP: ";
-      linksToBoxes += "<a href=\"http://";
-      linksToBoxes += (ControlerBoxes[i].stationIP).toString();
-      linksToBoxes +=  "/\">";
-      linksToBoxes += (ControlerBoxes[i].stationIP).toString();
-      linksToBoxes += " - APIP: </a>";
-      linksToBoxes += "<a href=\"http://";
-      linksToBoxes += (ControlerBoxes[i].APIP).toString();
-      linksToBoxes +=  "/\">Access Point IP: ";
-      linksToBoxes += (ControlerBoxes[i].APIP).toString();
-      linksToBoxes += "</a>";
-      linksToBoxes += "</div>";
+    if (ControlerBoxes[i].iNodeName) {                          // dependancy
+      __linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
+      __linksToBoxes += String((ControlerBoxes[i].iNodeName));   // dependancy
+      __linksToBoxes += " - Station IP: ";
+      __linksToBoxes += "<a href=\"http://";
+      __linksToBoxes += (ControlerBoxes[i].stationIP).toString();   // dependancy
+      __linksToBoxes +=  "/\">";
+      __linksToBoxes += (ControlerBoxes[i].stationIP).toString();  // dependancy
+      __linksToBoxes += " - APIP: </a>";
+      __linksToBoxes += "<a href=\"http://";
+      __linksToBoxes += (ControlerBoxes[i].APIP).toString();   // dependancy
+      __linksToBoxes +=  "/\">Access Point IP: ";
+      __linksToBoxes += (ControlerBoxes[i].APIP).toString();   // dependancy
+      __linksToBoxes += "</a>";
+      __linksToBoxes += "</div>";
     }
   }
-  linksToBoxes += "</div>";
-  return linksToBoxes;
+  __linksToBoxes += "</div>";
+  return __linksToBoxes;
 }
 
-String myWebServerViews::printAllLasersCntrl() {
-  String laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
-  laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
-  laserCntrls += printBlinkingIntervalWebCntrl(-1);
-  laserCntrls += printGlobalPinPairingWebCntrl();
-  laserCntrls += "</div>";
-  laserCntrls += "<div>";
-  laserCntrls += printMasterCntrl();
-  laserCntrls += "</div>";
-  laserCntrls += "<hr>";
-  return laserCntrls;
+String myWebServerViews::_printAllLasersCntrl() {
+  String __laserCntrls = "<div>All Lasers <a href=\"?manualStatus=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=a\"><button>OFF</button></a>";
+  __laserCntrls += " IR <a href=\"?statusIr=on&laser=a\"><button>ON</button></a>&nbsp;<a href=\"?statusIr=of&laser=a\"><button>OFF</button></a>";
+  __laserCntrls += _printBlinkingIntervalWebCntrl(-1);
+  __laserCntrls += _printGlobalPinPairingWebCntrl();
+  __laserCntrls += "</div>";
+  __laserCntrls += "<div>";
+  __laserCntrls += _printMasterCntrl();
+  __laserCntrls += "</div>";
+  __laserCntrls += "<hr>";
+  return __laserCntrls;
 }
 
-String myWebServerViews::printGlobalPinPairingWebCntrl() {
-  String globalPinPairingWebCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
-  globalPinPairingWebCntrl += printLabel("Pairing: ", "pairing-select");
-  globalPinPairingWebCntrl += printGlobalPinPairingSelect();
+String myWebServerViews::_printGlobalPinPairingWebCntrl() {
+  String __globalPinPairingWebCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
+  __globalPinPairingWebCntrl += _printLabel("Pairing: ", "pairing-select");
+  __globalPinPairingWebCntrl += _printGlobalPinPairingSelect();
 
-  globalPinPairingWebCntrl += "<button type=\"submit\">Submit</button>";
-  globalPinPairingWebCntrl += "</form>";
+  __globalPinPairingWebCntrl += "<button type=\"submit\">Submit</button>";
+  __globalPinPairingWebCntrl += "</form>";
 
-  return globalPinPairingWebCntrl;
+  return __globalPinPairingWebCntrl;
 }
 
-String myWebServerViews::printGlobalPinPairingSelect() {
-  String globalPinPairingSelect = "<select id=\"pin-pairing-select\" name=\"pinPairing\">";
-  for (short i = -1; i < 2; i++) {
-    String selected = "";
+String myWebServerViews::_printGlobalPinPairingSelect() {
+  String __globalPinPairingSelect = "<select id=\"pin-pairing-select\" name=\"pinPairing\">";
+  for (short __i = -1; __i < 2; __i++) {
+    String __selected = "";
     // if (/*condition to be defined*/) {
     //   selected += "selected";
     // };
     // if (/*condition to be defined*/) {
-      globalPinPairingSelect += printOption(String(i), _pairingType[i + 1], selected);
+      __globalPinPairingSelect += _printOption(String(__i), _pairing_Type[__i + 1], __selected);
     // }
   }
-  globalPinPairingSelect += "</select>";
-  return globalPinPairingSelect;
+  __globalPinPairingSelect += "</select>";
+  return __globalPinPairingSelect;
 }
 
-String myWebServerViews::printMasterCntrl() {
-  String masterCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
-  masterCntrl += printLabel("Master box: ", "master-select");
-  masterCntrl += printMasterSelect();
+String myWebServerViews::_printMasterCntrl() {
+  String __masterCntrl = "<form style=\"display: inline;\" method=\"get\" action=\"\">";
+  __masterCntrl += _printLabel("Master box: ", "master-select");
+  __masterCntrl += _printMasterSelect();
 
-  masterCntrl += printLabel(" Reaction: ", "reaction-select");
-  masterCntrl += printSlaveReactionSelect();
+  __masterCntrl += _printLabel(" Reaction: ", "reaction-select");
+  __masterCntrl += _printSlaveReactionSelect();
 
-  masterCntrl += "<button type=\"submit\">Submit</button>";
-  masterCntrl += "</form>";
+  __masterCntrl += "<button type=\"submit\">Submit</button>";
+  __masterCntrl += "</form>";
 
-  return masterCntrl;
+  return __masterCntrl;
 }
 
-String myWebServerViews::printMasterSelect() {
-  String masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
-  for (short i = 1; i < 11; i++) {
-    String selected = "";
-    if (i + I_MASTER_NODE_PREFIX == iMasterNodeName) {
-      selected += "selected";
+String myWebServerViews::_printMasterSelect() {
+  String __masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
+  for (short __i = 1; __i < 11; __i++) {
+    String __selected = "";
+    if (__i + I_MASTER_NODE_PREFIX == iMasterNodeName) { // I_MASTER_NODE_PREFIX and iMasterNodeName defined and declared in global
+      __selected += "selected";
     };
-    if (!(i + I_MASTER_NODE_PREFIX == I_NODE_NAME)) {
-      masterSelect += printOption(String(i), String(i), selected);
+    if (!(__i + I_MASTER_NODE_PREFIX == I_NODE_NAME)) { // I_MASTER_NODE_PREFIX and I_NODE_NAME defined and declared in global
+      __masterSelect += _printOption(String(__i), String(__i), __selected);
     }
   }
-  masterSelect += "</select>";
-  return masterSelect;
+  __masterSelect += "</select>";
+  return __masterSelect;
 }
 
-String myWebServerViews::printSlaveReactionSelect() {
-  String slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
-  for (short i = 0; i < 4; i++) {
-    String selected = "";
-    if (i == iSlaveOnOffReaction) {
-      selected += "selected";
+String myWebServerViews::_printSlaveReactionSelect() {
+  String __slaveReactionSelect = "<select id=\"reaction-select\" name=\"reactionToMaster\">";
+  for (short __i = 0; __i < 4; __i++) {
+    String __selected = "";
+    if (__i == iSlaveOnOffReaction) { // iSlaveOnOffReaction defined and declared in global
+      __selected += "selected";
      };
-    slaveReactionSelect += printOption(slaveReactionHtml[i], _slaveReaction[i], selected);
+    __slaveReactionSelect += _printOption(slaveReactionHtml[__i], _slave_Reaction[__i], __selected);
+    // slaveReactionHtml is defined and declared in global
   }
-  slaveReactionSelect += "</select>";
-  return slaveReactionSelect;
+  __slaveReactionSelect += "</select>";
+  return __slaveReactionSelect;
 }
 
-String myWebServerViews::printLabel(const String labelText, const String labelFor) {
-  String labelCntrl = "<label for=\"";
-  labelCntrl += labelFor;
-  labelCntrl += "\">";
-  labelCntrl += labelText;
-  labelCntrl += "</label>";
-  return labelCntrl;
+String myWebServerViews::_printLabel(const String labelText, const String labelFor) {
+  String __labelCntrl = "<label for=\"";
+  __labelCntrl += labelFor;
+  __labelCntrl += "\">";
+  __labelCntrl += labelText;
+  __labelCntrl += "</label>";
+  return __labelCntrl;
 }
 
-String myWebServerViews::printOption(const String optionValue, const String optionText, const String selected) {
-  String optionCntrl = "<option value=\"";
-  optionCntrl += optionValue;
-  optionCntrl += "\" ";
-  optionCntrl += selected;
-  optionCntrl += ">";
-  optionCntrl += optionText;
-  optionCntrl += "</option>";
-  return optionCntrl;
+String myWebServerViews::_printOption(const String optionValue, const String optionText, const String selected) {
+  String __optionCntrl = "<option value=\"";
+  __optionCntrl += optionValue;
+  __optionCntrl += "\" ";
+  __optionCntrl += selected;
+  __optionCntrl += ">";
+  __optionCntrl += optionText;
+  __optionCntrl += "</option>";
+  return __optionCntrl;
 }
 
-String myWebServerViews::printIndivLaserCntrls() {
-  String laserCntrl;
-  for (short thisPin = 0; thisPin < PIN_COUNT; thisPin++) {
-    laserCntrl += "<div>Laser # ";
-    laserCntrl += thisPin + 1;
+String myWebServerViews::_printIndivLaserCntrls() {
+  String __laserCntrl;
+  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) { // PIN_COUNT declared and defined in global
+    __laserCntrl += "<div>Laser # ";
+    __laserCntrl += __thisPin + 1;
 
     // on/off control
-    laserCntrl += printCurrentStatus(thisPin);
+    __laserCntrl += _printCurrentStatus(__thisPin);
 
     // on/off control
-    laserCntrl += printOnOffControl(thisPin);
+    __laserCntrl += _printOnOffControl(__thisPin);
 
     // PIR status control
-    laserCntrl += printPirStatusCntrl(thisPin);
+    __laserCntrl += _printPirStatusCntrl(__thisPin);
 
     // pairing control
-    laserCntrl += printPairingCntrl(thisPin);
+    __laserCntrl += _printPairingCntrl(__thisPin);
 
     // blinking interval control
-    laserCntrl += printBlinkingIntervalWebCntrl(thisPin);
+    __laserCntrl += _printBlinkingIntervalWebCntrl(__thisPin);
 
-    laserCntrl += "</div>";
+    __laserCntrl += "</div>";
   }
-  return laserCntrl;
+  return __laserCntrl;
 }
 
-String myWebServerViews::printCurrentStatus(const short thisPin) {
-  String currentStatus;
+String myWebServerViews::_printCurrentStatus(const short thisPin) {
+  String _currentStatus;
   // if (LaserPins[thisPin].IamBlinking) {
   //   currentStatus += " ON ";
   // } else {
@@ -205,21 +217,21 @@ String myWebServerViews::printCurrentStatus(const short thisPin) {
   // } else {
   //   currentStatus += " in manual mode ";
   // }
-  return currentStatus;
+  return _currentStatus;
 }
 
-String myWebServerViews::printOnOffControl(const short thisPin) {
-  String onOffCntrl;
-  onOffCntrl += "<a href=\"?manualStatus=on&laser=";
-  onOffCntrl += thisPin + 1;
-  onOffCntrl += "\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=";
-  onOffCntrl += thisPin + 1;
-  onOffCntrl += "\"><button>OFF</button></a>";
-  return onOffCntrl;
+String myWebServerViews::_printOnOffControl(const short thisPin) {
+  String __onOffCntrl;
+  __onOffCntrl += "<a href=\"?manualStatus=on&laser=";
+  __onOffCntrl += thisPin + 1;
+  __onOffCntrl += "\"><button>ON</button></a>&nbsp;<a href=\"?manualStatus=of&laser=";
+  __onOffCntrl += thisPin + 1;
+  __onOffCntrl += "\"><button>OFF</button></a>";
+  return __onOffCntrl;
 }
 
-String myWebServerViews::printPirStatusCntrl(const short thisPin) {
-  String pirStatusCntrl;
+String myWebServerViews::_printPirStatusCntrl(const short thisPin) {
+  String __pirStatusCntrl;
   // if (LaserPins[thisPin].pirState() == LOW) {
   //   pirStatusCntrl += "<a href=\"?statusIr=on&laser=";
   //   pirStatusCntrl += thisPin + 1;
@@ -230,48 +242,48 @@ String myWebServerViews::printPirStatusCntrl(const short thisPin) {
   //   pirStatusCntrl += thisPin + 1;
   //   pirStatusCntrl += "\"><button>IR OFF</button></a>";
   // }
-  return pirStatusCntrl;
+  return __pirStatusCntrl;
 }
 
-String myWebServerViews::printBlinkingIntervalWebCntrl(const short thisPin) {
-  String blinkingIntervalWebCntrl;
-  blinkingIntervalWebCntrl += "Blinking interval: ";
-  blinkingIntervalWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
-  blinkingIntervalWebCntrl += printIntervalSelect(thisPin);
-  blinkingIntervalWebCntrl += printHiddenLaserNumb(thisPin);
-  blinkingIntervalWebCntrl += "<button type=\"submit\">Submit</button>";
-  blinkingIntervalWebCntrl += "</form>";
-  return blinkingIntervalWebCntrl;
+String myWebServerViews::_printBlinkingIntervalWebCntrl(const short thisPin) {
+  String __blinkingIntervalWebCntrl;
+  __blinkingIntervalWebCntrl += "Blinking interval: ";
+  __blinkingIntervalWebCntrl += "<form style=\"display: inline;\" method=\"get\" action=\"\">";
+  __blinkingIntervalWebCntrl += _printIntervalSelect(thisPin);
+  __blinkingIntervalWebCntrl += _printHiddenLaserNumb(thisPin);
+  __blinkingIntervalWebCntrl += "<button type=\"submit\">Submit</button>";
+  __blinkingIntervalWebCntrl += "</form>";
+  return __blinkingIntervalWebCntrl;
 }
 
-String myWebServerViews::printPairingCntrl(const short thisPin) {
-  String pairingWebCntrl;
+String myWebServerViews::_printPairingCntrl(const short thisPin) {
+  String __pairingWebCntrl;
   // if (LaserPins[thisPin].pairedWith() == -1) {
-  //   pairingWebCntrl += " Unpaired ";
-  //   pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
-  //   pairingWebCntrl += thisPin + 1;
-  //   pairingWebCntrl += "\"><button>PAIR</button></a>&nbsp;";
+  //   __pairingWebCntrl += " Unpaired ";
+  //   __pairingWebCntrl += "<a href=\"pairingState=pa&laser=";
+  //   __pairingWebCntrl += thisPin + 1;
+  //   __pairingWebCntrl += "\"><button>PAIR</button></a>&nbsp;";
   // } else if (thisPin % 2 == 0) {
-  //   pairingWebCntrl += " Master ";
-  //   pairingWebCntrl += "<a href=\"pairingState=un&laser=";
-  //   pairingWebCntrl += thisPin + 1;
-  //   pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
+  //   __pairingWebCntrl += " Master ";
+  //   __pairingWebCntrl += "<a href=\"pairingState=un&laser=";
+  //   __pairingWebCntrl += thisPin + 1;
+  //   __pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
   // } else {
-  //   pairingWebCntrl += " Slave ";
-  //   pairingWebCntrl += "<a href=\"pairingState=un&laser=";
-  //   pairingWebCntrl += thisPin + 1;
-  //   pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
+  //   __pairingWebCntrl += " Slave ";
+  //   __pairingWebCntrl += "<a href=\"pairingState=un&laser=";
+  //   __pairingWebCntrl += thisPin + 1;
+  //   __pairingWebCntrl += "\"><button>UNPAIR</button></a>&nbsp;";
   // }
-  return pairingWebCntrl;
+  return __pairingWebCntrl;
 }
 
-String myWebServerViews::printIntervalSelect(const short thisPin) {
-  String intervalSelect;
-  intervalSelect += "<select name=\"blinkingInterval\">";
-  for (unsigned long intervalValue = 5000UL; intervalValue < 35000UL; intervalValue = intervalValue + 5000UL) {
-    intervalSelect += "<option value=\"";
-    intervalSelect += intervalValue;
-    intervalSelect += "\"";
+String myWebServerViews::_printIntervalSelect(const short thisPin) {
+  String __intervalSelect;
+  __intervalSelect += "<select name=\"blinkingInterval\">";
+  for (unsigned long __intervalValue = 5000UL; __intervalValue < 35000UL; __intervalValue = __intervalValue + 5000UL) {
+    __intervalSelect += "<option value=\"";
+    __intervalSelect += __intervalValue;
+    __intervalSelect += "\"";
     if (!(thisPin == -1)) {
       /*
           if the blinkingInterval select we are printing is related to a pin
@@ -279,25 +291,25 @@ String myWebServerViews::printIntervalSelect(const short thisPin) {
           the value of thisPin will be different than -1
       */
       // if (intervalValue == LaserPins[thisPin].blinkingInterval()) {
-      //   intervalSelect += "selected";
+      //   __intervalSelect += "selected";
       // }
-    } else if (intervalValue == pinBlinkingInterval) {
-      intervalSelect += "selected";
+    } else if (__intervalValue == pinBlinkingInterval) { // declared and defined in global
+      __intervalSelect += "selected";
     }
-    intervalSelect += ">";
-    intervalSelect += intervalValue / 1000;
-    intervalSelect += " s.</option>";
+    __intervalSelect += ">";
+    __intervalSelect += __intervalValue / 1000;
+    __intervalSelect += " s.</option>";
   }
-  intervalSelect += "</select>";
-  return intervalSelect;
+  __intervalSelect += "</select>";
+  return __intervalSelect;
 }
 
 
-String myWebServerViews::printHiddenLaserNumb(const short thisPin)
+String myWebServerViews::_printHiddenLaserNumb(const short thisPin)
 {
-  String hiddenLaserCntrl;
-  hiddenLaserCntrl += "<input type=\"hidden\" name=\"laser\" value=\"";
-  hiddenLaserCntrl += thisPin + 1;
-  hiddenLaserCntrl += "\">";
-  return hiddenLaserCntrl;
+  String __hiddenLaserCntrl;
+  __hiddenLaserCntrl += "<input type=\"hidden\" name=\"laser\" value=\"";
+  __hiddenLaserCntrl += thisPin + 1;
+  __hiddenLaserCntrl += "\">";
+  return __hiddenLaserCntrl;
 }

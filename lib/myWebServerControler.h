@@ -7,12 +7,20 @@
   |  |--myWebServerBase.cpp
   |  |  |--myWebServerBase.h
   |  |  |  |--AsyncTCP.h
-  |  |  |--myWebServerViews.cpp
-  |  |  |  |--myWebServerViews.h
-  |  |  |--myWebServerControler.cpp
+  |  |  |
+  |  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerControler.h
-  |  |  |  |--MasterSlaveBox.cpp
+  |  |  |  |--MasterSlaveBox.cpp (called to set some values re. master/slave box reactions in global)
   |  |  |  |  |--MasterSlaveBox.h
+  |  |  |  |--//LaserGroupedUnitsArray.cpp (used to be called to start and stop cycle)
+  |  |  |  |--//LaserGroupedUnits.cpp (used to be called to pair and unpair)
+  |  |  |
+  |  |  |--myWebServerViews.cpp ("private" class: called only from myWebServerBase.cpp)
+  |  |  |  |--myWebServerViews.h
+  |  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
+  |  |  |  |  |--ControlerBox.h
+  |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
+  |  |  |  |  |--global.h
 */
 
 #ifndef myWebServerControler_h
