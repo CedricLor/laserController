@@ -6,13 +6,12 @@
 #include "Arduino.h"
 #include "ControlerBox.h"
 
+// PUBLIC
 bool ControlerBox::valPir = LOW;
 short int ControlerBox::valMesh = -1;
 
 ControlerBox::ControlerBox()
 {
-  // pinMode(pin, OUTPUT);
-  // _pin = pin;
 }
 
 void ControlerBox::updateProperties() {
@@ -26,8 +25,16 @@ void ControlerBox::updateThisBoxProperties() {
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   iNodeName = I_NODE_NAME;
+  if (MY_DEBUG == true) {ControlerBoxes[0].printProperties();};
 }
 
+void ControlerBox::printProperties() {
+  Serial.println("myMesh::receivedCallback(): ControlerBoxes[0] updated.");
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].nodeId:");Serial.println(nodeId);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].APIP:");Serial.println(APIP);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].stationIP:");Serial.println(stationIP);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].iNodeName:");Serial.println(iNodeName);
+}
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 IPAddress ControlerBox::_parseIpString(JsonObject& root, String rootKey) {

@@ -22,6 +22,7 @@ class myMesh
 
     static const char* STATION_SSID;
     static const char* STATION_PASSWORD;
+    static const uint8_t* STATION_IP;
 
     static void receivedCallback( uint32_t from, String &msg);
     static void newConnectionCallback(uint32_t nodeId);

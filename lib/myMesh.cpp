@@ -18,8 +18,9 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-const char* myMesh::STATION_SSID = "mySSID";
-const char* myMesh::STATION_PASSWORD = "myPASSWORD";
+const char* myMesh::STATION_SSID = ssid;
+const char* myMesh::STATION_PASSWORD = pass;
+const uint8_t* myMesh::STATION_IP = station_ip;
 
 const char myMesh::_PREFIX_AP_SSID[5] = "box_";
 char myMesh::_myApSsidBuf[8];
@@ -31,13 +32,15 @@ myMesh::myMesh()
 
 void myMesh::meshSetup() {
   if ( MY_DEBUG == true ) {
-  //laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
+    // laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
+    laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE);
   }
 
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, MESH_CHANNEL );
 
   if ((IS_INTERFACE == true) && (IS_STATION_MANUAL == true)) {
-    laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, MESH_CHANNEL);
+    laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);
+    //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   }
 
   laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
@@ -61,6 +64,7 @@ void myMesh::meshSetup() {
 // Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
+  ControlerBoxes[0].updateThisBoxProperties();
   _decodeRequest(from, msg);
 }
 
@@ -71,6 +75,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
+  ControlerBoxes[0].updateThisBoxProperties();
 }
 
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {

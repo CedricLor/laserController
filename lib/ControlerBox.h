@@ -18,6 +18,8 @@ class ControlerBox
 
     void updateProperties();
     void updateThisBoxProperties();
+    void printProperties();
+
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
 
     static bool valPir;

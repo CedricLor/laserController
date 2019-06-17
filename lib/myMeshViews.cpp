@@ -98,6 +98,7 @@ JsonObject myMeshViews::_createJsonobject() {
 }
 
 void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
+  ControlerBoxes[0].updateThisBoxProperties();
   String str;
   str = action;
   msg["senderNodeName"] = _nodeNameBuilder();
@@ -109,7 +110,7 @@ void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
   serializeJson(msg, output, size_buff);
   str = output;
   laserControllerMesh.sendBroadcast(str);
-  Serial.print("MESH: _broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
+  Serial.print("myMeshViews:_broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
 }
 
 char myMeshViews::_nodeNameBuf[4];
