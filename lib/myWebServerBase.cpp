@@ -79,17 +79,27 @@ void myWebServerBase::startAsyncServer() {
 
     // Send a response (i.e. display a web page)
     myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
+
     Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
-    AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
-    __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
-    __response->printf(__myWebServerView.returnTheResponse().c_str());            // converts the arduino String in C string (array of chars)
-    request->send(__response);                                                    // send the response
+
+    request->send(SPIFFS, "/index.htm", String(), false, _processor);
+
   }); // end _asyncServer.on
 
   _asyncServer.onNotFound(&_onRequest);
   _asyncServer.onRequestBody(&_onBody);
 
   _asyncServer.begin();
+}
+
+// Template processor
+// Looks for placeholders in template
+// If it meets a placeholder, replace it with a given value
+String myWebServerBase::_processor(const String& var)
+{
+  if(var == "HELLO_FROM_TEMPLATE")
+    return F("Hello world!");
+  return String();
 }
 
 void myWebServerBase::_onRequest(AsyncWebServerRequest *request){
@@ -99,4 +109,13 @@ void myWebServerBase::_onRequest(AsyncWebServerRequest *request){
 
 void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
   //Handle body
+  if(!index){
+    Serial.printf("myWebServerBase::_onBody. BodyStart: %u B\n", total);
+  }
+  for(size_t i=0; i<len; i++){
+    Serial.write(data[i]);
+  }
+  if(index + len == total){
+    Serial.printf("BodyEnd: %u B\n", total);
+  }
 }
