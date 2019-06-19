@@ -83,8 +83,8 @@ void myWebServerBase::startAsyncServer() {
     request->send(__response);                                                    // send the response
   });
 
-  _asyncServer.onNotFound(&_onRequest);  // error: no matching function for call to 'AsyncWebServer::onNotFound(void (&)())'
-  _asyncServer.onRequestBody(&_onBody);  // error: no matching function for call to 'AsyncWebServer::onRequestBody(void (&)())'
+  _asyncServer.onNotFound(&_onRequest);
+  _asyncServer.onRequestBody(&_onBody);
 
   _asyncServer.begin();
 }
