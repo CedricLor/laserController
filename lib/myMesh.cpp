@@ -121,7 +121,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   // myMeshController myMeshController(doc);
   short int _i;
   _i = doc["senderStatus"];
-  ControlerBox::valMesh = _i;
+  ControlerBoxes[0].valMesh = _i;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -7,11 +7,11 @@
 #include "ControlerBox.h"
 
 // PUBLIC
-bool ControlerBox::valPir = LOW;
-short int ControlerBox::valMesh = -1;
 
 ControlerBox::ControlerBox()
 {
+  bool valPir = LOW;
+  valMesh = -1;
 }
 
 void ControlerBox::updateProperties() {
@@ -23,6 +23,8 @@ void ControlerBox::updateThisBoxProperties() {
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   iNodeName = I_NODE_NAME;
+  // valPir is updated by pirController (which sets it HIGH) and boxState (which sets it LOW)
+  // valMesh is updated by myMesh (--> update to be moved to myMeshController) and boxState
   if (MY_DEBUG == true) {ControlerBoxes[0].printProperties();};
 }
 

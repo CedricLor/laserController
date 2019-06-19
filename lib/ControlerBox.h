@@ -15,15 +15,14 @@ class ControlerBox
     IPAddress stationIP;
     IPAddress APIP;
     short int iNodeName;
+    bool valPir;
+    short int valMesh;
 
     void updateProperties();
     void updateThisBoxProperties();
     void printProperties();
 
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
-
-    static bool valPir;
-    static short int valMesh;
 
   private:
     static IPAddress _parseIpString(JsonObject& root, String rootKey);

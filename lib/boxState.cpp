@@ -85,8 +85,8 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, fal
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed:
-  - ControlerBox::valPir (when the current boxState is set to react to signals from the PIR);
-  - ControlerBox::valMesh (when the current boxState is set to react to signals from the mesh);
+  - ControlerBoxes[0].valPir (when the current boxState is set to react to signals from the PIR);
+  - ControlerBoxes[0].valMesh (when the current boxState is set to react to signals from the mesh);
   - _activeBoxStateHasBeenReset;
   - _targetActiveBoxState;
   Depending on the changes, it will:
@@ -98,16 +98,16 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.println("void boxState::_tcbPlayBoxStates(). Starting.");
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
-  if (_boxStates[_activeBoxState]._iIRTrigger == 1 && ControlerBox::valPir == HIGH) {
+  if (_boxStates[_activeBoxState]._iIRTrigger == 1 && ControlerBoxes[0].valPir == HIGH) {
     _setTargetActiveBoxState(3);
   }
-  if (_boxStates[_activeBoxState]._iMeshTrigger == 1 && !(ControlerBox::valMesh == -1)) {
-    if (ControlerBox::valMesh == 3) { // the value 3 here is just inserted as an example
+  if (_boxStates[_activeBoxState]._iMeshTrigger == 1 && !(ControlerBoxes[0].valMesh == -1)) {
+    if (ControlerBoxes[0].valMesh == 3) { // the value 3 here is just inserted as an example
       _setTargetActiveBoxState(4);
     }
   }
-  ControlerBox::valPir = LOW;
-  ControlerBox::valMesh = -1;
+  ControlerBoxes[0].valPir = LOW;
+  ControlerBoxes[0].valMesh = -1;
   if (_activeBoxStateHasBeenReset == 1) {
     _activeBoxStateHasBeenReset = 0;
     // Serial.print("void boxState::_tcbPlayBoxStates() _boxStates[_targetActiveBoxState]._ulDuration: ");

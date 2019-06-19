@@ -74,7 +74,7 @@ void myWebServerBase::startAsyncServer() {
     _listAllCollectedParams(request);
 
     // Decode request and change behavior of this controller box
-    ControlerBox[0].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
+    ControlerBoxes[0].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
     myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
 
     // Send a response (i.e. display a web page)
