@@ -95,10 +95,15 @@ void myWebServerBase::startAsyncServer() {
 // Template processor
 // Looks for placeholders in template
 // If it meets a placeholder, replace it with a given value
-String myWebServerBase::_processor(const String& var)
-{
-  if(var == "HELLO_FROM_TEMPLATE")
-    return F("Hello world!");
+String myWebServerBase::_processor(const String& var) {
+  char cNodeName[4];         //the ASCII of the integer will be stored in this char array
+  itoa(ControlerBoxes[0].iNodeName,cNodeName,10); //(integer, yourBuffer, base)
+  if(var == "I_NODE_NAME")
+    return F(cNodeName);
+  if(var == "STATION_IP")
+    return F(ControlerBoxes[0].stationIP.toString().c_str());
+  if(var == "AP_IP")
+    return F(ControlerBoxes[0].APIP.toString().c_str());
   return String();
 }
 
