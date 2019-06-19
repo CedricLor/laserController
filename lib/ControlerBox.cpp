@@ -15,9 +15,6 @@ ControlerBox::ControlerBox()
 }
 
 void ControlerBox::updateProperties() {
-  // nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
-  // APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
-  // stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
 }
 
 void ControlerBox::updateThisBoxProperties() {
