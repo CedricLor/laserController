@@ -10,7 +10,7 @@
 
 ControlerBox::ControlerBox()
 {
-  bool valPir = LOW;
+  valPir = LOW;
   valMesh = -1;
 }
 
