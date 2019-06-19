@@ -1,6 +1,4 @@
-// #include <ESPmDNS.h>            //lib to the network communication
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
-#include <FS.h>
 #include <ESPAsyncWebServer.h>
 #include <painlessMesh.h>
 #include <IPAddress.h>

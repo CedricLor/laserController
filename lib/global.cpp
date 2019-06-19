@@ -20,20 +20,24 @@ short relayPins[] = { 5, 17, 16, 4 };
 
 const bool MY_DEBUG = true;
 
-// Pour Boite 201
+// CONTROLLER BOX 201
 // const short I_NODE_NAME = 201;                          // BOX BY BOX
 // const short I_DEFAULT_MASTER_NODE_NAME = 210;
 // const bool MESH_ROOT = false;                            // BOX BY BOX
-// Pour Boite 202
+
+// CONTROLLER BOX 201
 // const short I_NODE_NAME = 202;                          // BOX BY BOX
 // const short I_DEFAULT_MASTER_NODE_NAME = 201;
 // const bool MESH_ROOT = false;                            // BOX BY BOX
 // Pour Boite 002
+
+// CONTROLLER BOX 002 - INTERFACE, ROOT NODE AND WEB SERVER
 const short I_NODE_NAME = 002;                          // BOX BY BOX
-const short I_DEFAULT_MASTER_NODE_NAME = 210;
+const short I_DEFAULT_MASTER_NODE_NAME = 003;
 const bool MESH_ROOT = false;                            // BOX BY BOX
 const short IS_INTERFACE = true;                        // BOX BY BOX -- false or true
 const short IS_STATION_MANUAL = true;                  // BOX BY BOX
+
 const uint8_t MESH_CHANNEL = 6;
 
 const short I_DEFAULT_INTERFACE_NODE_NAME = 001;
