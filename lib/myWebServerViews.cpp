@@ -44,9 +44,9 @@ String myWebServerViews::returnTheResponse() {
   __myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   __myResponse += "<h1>";
   __myResponse += String(I_NODE_NAME); // I_NODE_NAME defined and declared in global
-  __myResponse += " - Station IP:";
+  __myResponse += " - Station IP: ";
   __myResponse += (ControlerBoxes[0].stationIP).toString(); // dependancy
-  __myResponse += " - AP IP";
+  __myResponse += " - AP IP: ";
   __myResponse += (ControlerBoxes[0].APIP).toString();  // dependancy
   __myResponse += "</h1>";
   __myResponse += _printAllLasersCntrl();
@@ -69,7 +69,7 @@ String myWebServerViews::_printLinksToBoxes() {
       __linksToBoxes += (ControlerBoxes[i].stationIP).toString();   // dependancy
       __linksToBoxes +=  "/\">";
       __linksToBoxes += (ControlerBoxes[i].stationIP).toString();  // dependancy
-      __linksToBoxes += " - Access Point IP: </a>";
+      __linksToBoxes += "</a> - Access Point IP: ";
       __linksToBoxes += "<a href=\"http://";
       __linksToBoxes += (ControlerBoxes[i].APIP).toString();   // dependancy
       __linksToBoxes +=  "/\">";
