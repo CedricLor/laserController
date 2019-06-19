@@ -7,6 +7,8 @@
   |  |--myWebServerBase.cpp
   |  |  |--myWebServerBase.h
   |  |  |  |--AsyncTCP.h
+  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
+  |  |  |  |--ControlerBox.h
   |  |  |
   |  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerControler.h
@@ -69,10 +71,11 @@ void myWebServerBase::startAsyncServer() {
     _listAllCollectedParams(request);
 
     // Decode request and change behavior of this controller box
-    myWebServerControler::decodeRequest(request);   // Call to "child" class
+    myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
 
-    //Send a response
-    myWebServerViews __myWebServerView;  // Call to "child" class
+    //Send a response (i.e. display a web page)
+    ControlerBox[0].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
+    myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
     Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
     AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
     __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header

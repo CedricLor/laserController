@@ -15,6 +15,7 @@ ControlerBox::ControlerBox()
 }
 
 void ControlerBox::updateProperties() {
+  // to be drafted
 }
 
 void ControlerBox::updateThisBoxProperties() {
