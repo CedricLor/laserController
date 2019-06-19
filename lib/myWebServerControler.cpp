@@ -12,8 +12,9 @@
   |  |  |  |--myWebServerControler.h
   |  |  |  |--MasterSlaveBox.cpp (called to set some values re. master/slave box reactions in global)
   |  |  |  |  |--MasterSlaveBox.h
-  |  |  |  |--//LaserGroupedUnitsArray.cpp (used to be called to start and stop cycle)
-  |  |  |  |--//LaserGroupedUnits.cpp (used to be called to pair and unpair)
+  |  |  |  |--//LaserGroupedUnitsArray.cpp
+  |  |  |  |--//LaserGroupedUnits.cpp
+  |  |  |  |--//MasterSlaveBox.cpp
   |  |  |
   |  |  |--myWebServerViews.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerViews.h
@@ -21,6 +22,26 @@
   |  |  |  |  |--ControlerBox.h
   |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
   |  |  |  |  |--global.h
+  |  |  |  |--//LaserPin.cpp
+
+myWebServerControler provides a main decodeRequest function to myWebServerBase.
+decodeRequest is being transmitted the requests received by the webServer as a parameter.
+It screens the request through a chain of "if" conditions.
+
+Upon meeting these conditions, it transmits orders to other parts of the box :
+- historically:
+  - LaserPins: setting on/off status; setting IR status, blinking interval, for each pin;
+  - LaserPinsArray; idem but for all pins
+  - MasterSlaveBox: setting the name of the master box;
+- then:
+  - LaserGroupedUnits: setting on/off status; setting IR status, blinking interval, for each LaserGroupedUnit;
+  - LaserGroupedUnitArray: idem but for all LaserGroupedUnits;
+  - MasterSlaveBox: setting the name of the master box;
+- in the future:
+  - notes;
+  - sequences;
+  - boxState.
+  - MasterSlaveBox: setting the name of the master box.
 */
 
 #include "Arduino.h"

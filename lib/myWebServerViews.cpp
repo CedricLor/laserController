@@ -12,8 +12,9 @@
   |  |  |  |--myWebServerControler.h
   |  |  |  |--MasterSlaveBox.cpp (called to set some values re. master/slave box reactions in global)
   |  |  |  |  |--MasterSlaveBox.h
-  |  |  |  |--//LaserGroupedUnitsArray.cpp (used to be called to start and stop cycle)
-  |  |  |  |--//LaserGroupedUnits.cpp (used to be called to pair and unpair)
+  |  |  |  |--//LaserGroupedUnitsArray.cpp
+  |  |  |  |--//LaserGroupedUnits.cpp
+  |  |  |  |--//MasterSlaveBox.cpp
   |  |  |
   |  |  |--myWebServerViews.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerViews.h
@@ -21,6 +22,10 @@
   |  |  |  |  |--ControlerBox.h
   |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
   |  |  |  |  |--global.h
+  |  |  |  |--//LaserPin.cpp
+
+myWebServerViews contains the webPage being displayed by the webServer.
+
 */
 
 #include "Arduino.h"
@@ -39,10 +44,10 @@ String myWebServerViews::returnTheResponse() {
   __myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   __myResponse += "<h1>";
   __myResponse += String(I_NODE_NAME); // I_NODE_NAME defined and declared in global
-  __myResponse += " - ";
+  __myResponse += " - Station IP:";
+  __myResponse += (ControlerBoxes[0].stationIP).toString(); // dependancy
+  __myResponse += " - AP IP";
   __myResponse += (ControlerBoxes[0].APIP).toString();  // dependancy
-  __myResponse += " - ";
-  __myResponse += (laserControllerMesh.getStationIP()).toString(); // laserControllerMesh defined and declared in global
   __myResponse += "</h1>";
   __myResponse += _printAllLasersCntrl();
   __myResponse += _printIndivLaserCntrls();
@@ -64,10 +69,10 @@ String myWebServerViews::_printLinksToBoxes() {
       __linksToBoxes += (ControlerBoxes[i].stationIP).toString();   // dependancy
       __linksToBoxes +=  "/\">";
       __linksToBoxes += (ControlerBoxes[i].stationIP).toString();  // dependancy
-      __linksToBoxes += " - APIP: </a>";
+      __linksToBoxes += " - Access Point IP: </a>";
       __linksToBoxes += "<a href=\"http://";
       __linksToBoxes += (ControlerBoxes[i].APIP).toString();   // dependancy
-      __linksToBoxes +=  "/\">Access Point IP: ";
+      __linksToBoxes +=  "/\">";
       __linksToBoxes += (ControlerBoxes[i].APIP).toString();   // dependancy
       __linksToBoxes += "</a>";
       __linksToBoxes += "</div>";
