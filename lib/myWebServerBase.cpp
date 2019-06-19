@@ -61,6 +61,9 @@ void myWebServerBase::_listAllCollectedParams(AsyncWebServerRequest *request) {
 }
 
 void myWebServerBase::startAsyncServer() {
+  // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
+  // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
+
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
 
@@ -71,17 +74,17 @@ void myWebServerBase::startAsyncServer() {
     _listAllCollectedParams(request);
 
     // Decode request and change behavior of this controller box
+    ControlerBox[0].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
     myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
 
-    //Send a response (i.e. display a web page)
-    ControlerBox[0].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
+    // Send a response (i.e. display a web page)
     myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
     Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
     AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
     __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
     __response->printf(__myWebServerView.returnTheResponse().c_str());            // converts the arduino String in C string (array of chars)
     request->send(__response);                                                    // send the response
-  });
+  }); // end _asyncServer.on
 
   _asyncServer.onNotFound(&_onRequest);
   _asyncServer.onRequestBody(&_onBody);
