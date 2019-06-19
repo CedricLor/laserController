@@ -3,6 +3,8 @@
 #include <painlessMesh.h>
 #include <IPAddress.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
+#include <SPIFFS.h>
+#define FORMAT_SPIFFS_IF_FAILED true
 
 #include "../lib/global.h"
 #include "../lib/global.cpp"
@@ -66,10 +68,18 @@ void setup() {
     myWebServerBase::startAsyncServer();
   }
   Myota::OTAConfig();
+
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+
   note::initNotes();
   sequence::initSequences();
   boxState::initBoxStates();
+
   enableTasks();
+
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
   //    digitalWrite(relayPins[__thisPin], LOW);
