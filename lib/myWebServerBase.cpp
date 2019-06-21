@@ -82,6 +82,24 @@ void myWebServerBase::startAsyncServer() {
 
     Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
 
+    // AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
+    // __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
+    // __response->printf(__myWebServerView.returnTheResponse().c_str());            // converts the arduino String in C string (array of chars)
+    // request->send(__response);
+
+    // AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(FS &fs, const String& path, const String& contentType, bool download, AwsTemplateProcessor callback){
+    //   if(fs.exists(path) || (!download && fs.exists(path+".gz")))
+    //     return new AsyncFileResponse(fs, path, contentType, download, callback);
+    //   return NULL;
+    // }
+    // AsyncWebServerResponse *_response = request->beginResponse(SPIFFS, "/index.htm", "text/html", false, _processor);
+    // request->send(_response);
+
+    // void AsyncWebServerRequest::send(FS &fs, const String& path, const String& contentType, bool download, AwsTemplateProcessor callback){
+    //   if(fs.exists(path) || (!download && fs.exists(path+".gz"))){
+    //     send(beginResponse(fs, path, contentType, download, callback));
+    //   } else send(404);
+    // }
     request->send(SPIFFS, "/index.htm", String(), false, _processor);
 
   }); // end _asyncServer.on
@@ -96,15 +114,30 @@ void myWebServerBase::startAsyncServer() {
 // Looks for placeholders in template
 // If it meets a placeholder, replace it with a given value
 String myWebServerBase::_processor(const String& var) {
-  char cNodeName[4];         //the ASCII of the integer will be stored in this char array
-  itoa(ControlerBoxes[0].iNodeName,cNodeName,10); //(integer, yourBuffer, base)
-  if(var == "I_NODE_NAME")
+  if(var == "I_NODE_NAME") {
+    char cNodeName[4];         // the ASCII of the integer will be stored in this char array
+    itoa(ControlerBoxes[0].iNodeName,cNodeName,10); //(integer, yourBuffer, base)
     return F(cNodeName);
-  if(var == "STATION_IP")
+  }
+  if(var == "STATION_IP") {
     return F(ControlerBoxes[0].stationIP.toString().c_str());
-  if(var == "AP_IP")
+  }
+  if(var == "AP_IP") {
     return F(ControlerBoxes[0].APIP.toString().c_str());
+  }
+  if(var == "BOX_SETTER") {
+    char cBoxArray[200];
+    return F(cBoxArray);
+  }
+  if(var == "NETWORK_SETTER") {
+    return F(ControlerBoxes[0].APIP.toString().c_str());
+  }
   return String();
+}
+
+String myWebServerBase::_SBoxArray() {
+  String __SBoxArray;
+  return __SBoxArray;
 }
 
 void myWebServerBase::_onRequest(AsyncWebServerRequest *request){

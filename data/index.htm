@@ -2,15 +2,38 @@
 <html>
   <body>
     <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name='viewport' content='width=device-width, initial-scale=1'>
     </head>
-
-
     <h1>
       %I_NODE_NAME% - Station IP: %STATION_IP% - AP IP: %AP_IP%
     </h1>
-    <div class="boxes_info_wrapper">
+    <div class='boxes_state_setter'>Box State Setter
+      %BOX_SETTER%
+      <div>Laser Box 1 - Station IP: ... - AP IP: ...
+        <a href='?status=man&lb=1'><button>MANUAL</button></a>&nbsp;
+        <a href='?status=ali&lb=1' class='active-state'><button>ALIGN</button></a>&nbsp;
+        <a href='?status=irs&lb=1'><button>PIR STARTUP</button></a>&nbsp;
+        <a href='?status=irh&lb=1'><button>PIR HIGH</button></a>&nbsp;
+        <a href='?status=meh&lb=1'><button>MESH HIGH</button></a>&nbsp;
+        <a href='?status=wai&lb=1'><button>WAITING</button></a>&nbsp;
+      </div>
+      <div>Laser Box 2 - Station IP: ... - AP IP: ...
+        <a href='?status=man&lb=2'><button>MANUAL</button></a>&nbsp;
+        <a href='?status=ali&lb=2' class='active-state'><button>ALIGN</button></a>&nbsp;
+        <a href='?status=irs&lb=2'><button>PIR STARTUP</button></a>&nbsp;
+        <a href='?status=irh&lb=2'><button>PIR HIGH</button></a>&nbsp;
+        <a href='?status=meh&lb=2'><button>MESH HIGH</button></a>&nbsp;
+        <a href='?status=wai&lb=2'><button>WAITING</button></a>&nbsp;
+      </div>
     </div>
-
+    <div class='network_state_setter'>Network State Setter
+      %NETWORK_SETTER%
+      <a href='?status=manual&net=1' class='active-state'><button>MANUAL</button></a>&nbsp;
+      <a href='?status=allof&net=1'><button>ALL OFF</button></a>&nbsp;
+      <a href='?status=alvire&net=1'><button>ALWAYS VISIBLE IN RELAYS</button></a>&nbsp;
+      <a href='?status=ootwin&net=1'><button>ON/OFF IN TWINS</button></a>&nbsp;
+      <a href='?status=swirig&net=1'><button>SWIPE RIGHT</button></a>&nbsp;
+      <a href='?status=swilef&net=1'><button>SWIPE LEFT</button></a>&nbsp;
+    </div>
   </body>
 </html>

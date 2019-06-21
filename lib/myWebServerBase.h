@@ -48,6 +48,7 @@ class myWebServerBase
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
 
     static String _processor(const String& var);
+    static String _SBoxArray();
 
     static void _onRequest(AsyncWebServerRequest *request);
     static void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
