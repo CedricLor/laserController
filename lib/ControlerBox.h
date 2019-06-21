@@ -17,10 +17,13 @@ class ControlerBox
     short int iNodeName;
     bool valPir;
     short int valMesh;
+    short int activeBoxState;
 
     void updateProperties();
     void updateThisBoxProperties();
     void printProperties();
+
+    static void updateOtherBoxProperties();
 
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
 

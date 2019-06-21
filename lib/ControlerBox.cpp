@@ -12,6 +12,7 @@ ControlerBox::ControlerBox()
 {
   valPir = LOW;
   valMesh = -1;
+  activeBoxState = -1;
 }
 
 void ControlerBox::updateProperties() {
@@ -34,6 +35,10 @@ void ControlerBox::printProperties() {
   Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].APIP:");Serial.println(APIP);
   Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].stationIP:");Serial.println(stationIP);
   Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].iNodeName:");Serial.println(iNodeName);
+}
+
+void ControlerBox::updateOtherBoxProperties() {
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
