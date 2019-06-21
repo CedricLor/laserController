@@ -74,6 +74,7 @@ void setup() {
     return;
   }
 
+  ControlerBoxes[0].activeBoxState = 0;
   note::initNotes();
   sequence::initSequences();
   boxState::initBoxStates();
