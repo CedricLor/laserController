@@ -40,44 +40,44 @@ void LaserPin::physicalInitLaserPin(const short __sPhysicalPinNumber)
 // STATE MACHINE GETTERS
 /////////////////////////////////////////
 // PUBLIC GETTERS
-bool LaserPin::_isLGUOn() {
-  // return !(LaserGroupedUnits[laserGroupedUnitId].targetOnOffState);
-}
+// bool LaserPin::_isLGUOn() {
+//   // return !(LaserGroupedUnits[laserGroupedUnitId].targetOnOffState);
+// }
 
-bool LaserPin::_LGUHasChanged() {
-  // return (!(
-  //   (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState)
-  //   || (LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval)
-  //   || (LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState)
-  // ));
-}
+// bool LaserPin::_LGUHasChanged() {
+//   // return (!(
+//   //   (LaserGroupedUnits[laserGroupedUnitId].targetOnOffState == LaserGroupedUnits[laserGroupedUnitId].currentOnOffState)
+//   //   || (LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval == LaserGroupedUnits[laserGroupedUnitId].currentBlinkingInterval)
+//   //   || (LaserGroupedUnits[laserGroupedUnitId].targetPirState == LaserGroupedUnits[laserGroupedUnitId].currentPirState)
+//   // ));
+// }
 
-bool LaserPin::_amIlastInLGU() {
-  return (index_number > pairedWith());
-}
+// bool LaserPin::_amIlastInLGU() {
+//   return (index_number > pairedWith());
+// }
 
-unsigned long LaserPin::blinkingInterval() {
-  // return LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval;
-}
+// unsigned long LaserPin::blinkingInterval() {
+//   // return LaserGroupedUnits[laserGroupedUnitId].targetBlinkingInterval;
+// }
 
-short LaserPin::pairedWith() {
-  for (short _iteratorsIndex = 0; _iteratorsIndex < PIN_COUNT; _iteratorsIndex++) {
-    if (LaserPins[_iteratorsIndex].index_number == index_number) {
-      return LaserPins[_iteratorsIndex].index_number;
-    }
-  }
-  return -1;
-}
+// short LaserPin::pairedWith() {
+//   for (short _iteratorsIndex = 0; _iteratorsIndex < PIN_COUNT; _iteratorsIndex++) {
+//     if (LaserPins[_iteratorsIndex].index_number == index_number) {
+//       return LaserPins[_iteratorsIndex].index_number;
+//     }
+//   }
+//   return -1;
+// }
 
-bool LaserPin::pirState() {
-  // return LaserGroupedUnits[laserGroupedUnitId].currentPirState;
-}
+// bool LaserPin::pirState() {
+//   // return LaserGroupedUnits[laserGroupedUnitId].currentPirState;
+// }
 
 /////////////////////////////////////////
 // PRIVATE GETTERS
-unsigned long LaserPin::_previousTime() {
-  return (_last_time_on > _last_time_off) ? _last_time_on : _last_time_off;
-}
+// unsigned long LaserPin::_previousTime() {
+//   return (_last_time_on > _last_time_off) ? _last_time_on : _last_time_off;
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // STATE MACHINE SETTERS
