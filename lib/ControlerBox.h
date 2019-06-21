@@ -19,7 +19,7 @@ class ControlerBox
     short int valMesh;
     short int activeBoxState;
 
-    void updateProperties();
+    // void updateProperties();
     void updateThisBoxProperties();
     void printProperties();
 

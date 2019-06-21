@@ -15,9 +15,9 @@ ControlerBox::ControlerBox()
   activeBoxState = -1;
 }
 
-void ControlerBox::updateProperties() {
-  // to be drafted
-}
+// void ControlerBox::updateProperties() {
+//   // to be drafted
+// }
 
 void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
@@ -38,7 +38,7 @@ void ControlerBox::printProperties() {
 }
 
 void ControlerBox::updateOtherBoxProperties() {
-
+  // to be drafted
 }
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
