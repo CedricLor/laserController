@@ -24,7 +24,6 @@
 #include "Arduino.h"
 #include "boxState.h"
 
-short int boxState::_activeBoxState = 0;
 short int boxState::_targetActiveBoxState = 0;
 short int boxState::_activeBoxStateHasBeenReset = 0;
 short int boxState::_defaultBoxState = 5;
@@ -98,10 +97,10 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.println("void boxState::_tcbPlayBoxStates(). Starting.");
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
-  if (_boxStates[_activeBoxState]._iIRTrigger == 1 && ControlerBoxes[0].valPir == HIGH) {
+  if (_boxStates[ControlerBoxes[0].activeBoxState]._iIRTrigger == 1 && ControlerBoxes[0].valPir == HIGH) {
     _setTargetActiveBoxState(3);
   }
-  if (_boxStates[_activeBoxState]._iMeshTrigger == 1 && !(ControlerBoxes[0].valMesh == -1)) {
+  if (_boxStates[ControlerBoxes[0].activeBoxState]._iMeshTrigger == 1 && !(ControlerBoxes[0].valMesh == -1)) {
     if (ControlerBoxes[0].valMesh == 3) { // the value 3 here is just inserted as an example
       _setTargetActiveBoxState(4);
     }
@@ -115,8 +114,8 @@ void boxState::_tcbPlayBoxStates() {
     _tPlayBoxState.setInterval(_boxStates[_targetActiveBoxState]._ulDuration);
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
     // Serial.println(_tPlayBoxState.getInterval());
-    if (!(_targetActiveBoxState == _activeBoxState)) {
-      _activeBoxState = _targetActiveBoxState;
+    if (!(_targetActiveBoxState == ControlerBoxes[0].activeBoxState)) {
+      ControlerBoxes[0].activeBoxState = _targetActiveBoxState;
     }
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
     _tPlayBoxState.restartDelayed();
@@ -145,10 +144,10 @@ bool boxState::_oetcbPlayBoxStates() {
   _tPlayBoxState plays a boxState once (it iterates only once).
   It is enabled by tPlayBoxStates.
   Its main iteration is delayed until aInterval has expired. aInterval is set in its onEnable callback.
-  It is equal to the duration of the boxState selected by _activeBoxState.
+  It is equal to the duration of the boxState selected by ControlerBoxes[0].activeBoxState.
   Upon being enabled, its onEnable callback:
   1. sets the aInterval of _tPlayBoxState, based on the _ulDuration of the currently active boxState;
-  2. looks for the associated sequence using the _activeBoxState static variable to select the relevant boxState in _boxStates[];
+  2. looks for the associated sequence using the ControlerBoxes[0].activeBoxState variable to select the relevant boxState in _boxStates[];
   3. sets the active sequence by a call to sequence::setActiveSequence();
   4. enables the task sequence::tPlaySequenceInLoop.
   Task sequence::tPlaySequenceInLoop is set to run indefinitely, for so long as it is not disabled.
@@ -163,9 +162,9 @@ Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxS
 bool boxState::_oetcbPlayBoxState(){
   Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
   Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
-  Serial.println(_activeBoxState);
+  Serial.println(ControlerBoxes[0].activeBoxState);
   // Look for the sequence number to read when in this state
-  short int _activeSequence = _boxStates[_activeBoxState]._iAssociatedSequence;
+  short int _activeSequence = _boxStates[ControlerBoxes[0].activeBoxState]._iAssociatedSequence;
   // Serial.print("void boxState::_oetcbPlayBoxState() _activeSequence: ");
   // Serial.println(_activeSequence);
   // set the active sequence
@@ -174,7 +173,7 @@ bool boxState::_oetcbPlayBoxState(){
   // Play sequence in loop until end
   // Serial.println("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
-  myMeshViews::statusMsg(_activeBoxState); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
+  myMeshViews::statusMsg(ControlerBoxes[0].activeBoxState); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
   // Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
@@ -184,11 +183,11 @@ void boxState::_odtcbPlayBoxState(){
   // Serial.print("void boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
   // Serial.println(_tPlayBoxState.getInterval());
   sequence::tPlaySequenceInLoop.disable();
-  // Serial.println("void boxState::_odtcbPlayBoxState(): _activeBoxState");
-  // Serial.println(_activeBoxState);
+  // Serial.println("void boxState::_odtcbPlayBoxState(): ControlerBoxes[0].activeBoxState");
+  // Serial.println(ControlerBoxes[0].activeBoxState);
   // Serial.println("void boxState::_odtcbPlayBoxState(): _targetActiveBoxState");
   // Serial.println(_targetActiveBoxState);
-  if (!(_activeBoxState == _defaultBoxState)) {
+  if (!(ControlerBoxes[0].activeBoxState == _defaultBoxState)) {
     _setTargetActiveBoxState(_defaultBoxState);
   }
   // Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");

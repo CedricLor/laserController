@@ -41,7 +41,6 @@ class boxState
 
     static const short int _BOX_STATES_COUNT;
     static const short int _NAME_CHAR_COUNT;
-    static short int _activeBoxState;
     static short int _targetActiveBoxState;
     static short int _activeBoxStateHasBeenReset;
     static short int _defaultBoxState;
