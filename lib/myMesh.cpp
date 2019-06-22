@@ -79,7 +79,7 @@ void myMesh::changedConnectionCallback() {
 }
 
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
-  Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(),offset);
+  Serial.printf("Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(), offset);
 }
 
 void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
@@ -95,42 +95,57 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
     If so, it calls the meshController
 */
 void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
-
   Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+
+  // create a StaticJsonDocument entitled doc
   StaticJsonDocument<capacity> doc;
   Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
+
+  // deserialize the message msg received from the mesh into the StaticJsonDocument doc
   deserializeJson(doc, msg.c_str());
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
-  const short iSenderNodeName = doc["senderNodeName"];
-  Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to iSenderNodeName \n", iSenderNodeName);
 
-  Serial.println(iMasterNodeName);
-  Serial.println(iSenderNodeName);
-  Serial.println(!(iSenderNodeName == iMasterNodeName));
-  Serial.println(iInterfaceNodeName);
-  Serial.println(!(iSenderNodeName == iInterfaceNodeName));
-  Serial.println("(!(iSenderNodeName == iMasterNodeName)&&!(iSenderNodeName == iInterfaceNodeName))");
-  Serial.println((!(iSenderNodeName == iMasterNodeName)&&!(iSenderNodeName == iInterfaceNodeName)));
-  // Is the message addressed to me?
-  if (!(iSenderNodeName == iMasterNodeName)&&!(iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
+  const short __iSenderNodeName = doc["senderNodeName"];
+  Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to __iSenderNodeName \n", __iSenderNodeName);
+
+  // update the ControlerBoxes[] array with the values received from the other box
+  // if the sender box is not the interface
+  if (!(__iSenderNodeName == iInterfaceNodeName)) {
+    ControlerBox::updateOtherBoxProperties(senderNodeId, doc);
+  }
+
+  // Serial.println(iMasterNodeName);
+  // Serial.println(__iSenderNodeName);
+  // Serial.println(!(__iSenderNodeName == iMasterNodeName));
+  // Serial.println(iInterfaceNodeName);
+  // Serial.println(!(__iSenderNodeName == iInterfaceNodeName));
+  // Serial.println("(!(__iSenderNodeName == iMasterNodeName)&&!(__iSenderNodeName == iInterfaceNodeName))");
+  // Serial.println((!(__iSenderNodeName == iMasterNodeName)&&!(__iSenderNodeName == iInterfaceNodeName)));
+
+  // If the message is not addressed to me, discard it
+  if (!(__iSenderNodeName == iMasterNodeName)&&!(__iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
     return;
   }
 
   // If the message is addressed to me, act depending on the sender status
   // myMeshController myMeshController(doc);
-  short int _i;
-  _i = doc["senderStatus"];
-  ControlerBoxes[0].valMesh = _i;
+  const short int _i = doc["senderStatus"];
+  ControlerBoxes[0].valMesh = doc["senderStatus"];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
+  // strcat(destination, source); source is appended destination, replacing the null character of destination by the first character of source
   strcat(_apSsidBuf, _PREFIX_AP_SSID);
-  char _nodeName[4];
-  itoa(I_NODE_NAME, _nodeName, 10);
-  strcat(_apSsidBuf, _nodeName);
+  // after the preceeding line, _apSsidBuf shall be equal to "box_"
+  char _cNodeName[4];
+  itoa(I_NODE_NAME, _cNodeName, 10);
+  // itoa convert I_NODE_NAME (201, 202, etc.) from into to char array, the resulting char array being stored into
+  strcat(_apSsidBuf, _cNodeName);
+  // strcat appends 201, 202, etc. to box_
+  // _apSsidBuf shall equal to something like box_201, box_202, etc.
   return _apSsidBuf;
 }
 
