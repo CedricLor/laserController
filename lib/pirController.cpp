@@ -20,6 +20,6 @@ void pirController::initPir() {
 
 void pirController::pirCntrl() {
   if (digitalRead(_INPUT_PIN) == HIGH) {
-    ControlerBoxes[0].valPir = HIGH;
+    ControlerBox::valPir = HIGH;
   }
 }

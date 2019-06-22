@@ -131,7 +131,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   // If the message is addressed to me, act depending on the sender status
   // myMeshController myMeshController(doc);
   const short int _i = doc["senderStatus"];
-  ControlerBoxes[0].valMesh = doc["senderStatus"];
+  ControlerBox::valMesh = doc["senderStatus"];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

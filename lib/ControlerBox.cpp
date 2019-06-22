@@ -7,13 +7,13 @@
 #include "ControlerBox.h"
 
 // STATIC VARIABLES
+bool ControlerBox::valPir = LOW;
+short int ControlerBox::valMesh = -1;
 
 // PUBLIC
 ControlerBox::ControlerBox()
 {
   nodeId = 0;
-  valPir = LOW;
-  valMesh = -1;
   boxActiveState = -1;
 }
 
