@@ -41,14 +41,14 @@ class boxState
 
     static const short int _BOX_STATES_COUNT;
     static const short int _NAME_CHAR_COUNT;
-    static short int _targetActiveBoxState;
-    static short int _activeBoxStateHasBeenReset;
-    static short int _defaultBoxState;
+    static short int _boxTargetState;
+    static bool _boxActiveStateHasBeenReset;
+    static short int _boxDefaultState;
 
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();
 
-    static void _setTargetActiveBoxState(const short int activeBoxState);
+    static void _setBoxTargetState(const short int boxActiveState);
 
     static Task _tPlayBoxState;
     static bool _oetcbPlayBoxState();
