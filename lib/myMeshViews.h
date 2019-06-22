@@ -17,7 +17,7 @@ class myMeshViews
     static void manualSwitchMsg(const short targetOnOffState);
     static void inclusionIRMsg(const short targetIrState);
     static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
-    static void changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction);
+    static void changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction);
     static void statusMsg(const short int myStatus);
     static void pinPairingMsg(const short sTargetPairingType);
     static void dataRequestMsg();

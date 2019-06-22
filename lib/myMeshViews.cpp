@@ -50,10 +50,10 @@ void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval
   _broadcastMsg(msg, 'b');
 }
 
-void myMeshViews::changeMasterBoxMsg(const int newMasterNodeId, const char* newReaction) {
+void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
   JsonObject msg = _createJsonobject();
-  msg["ms"] = newMasterNodeId;
+  msg["ms"] = newMasterNodeName;
   msg["react"] = newReaction;
   _broadcastMsg(msg, 'm');
 }
