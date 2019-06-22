@@ -17,19 +17,19 @@ class ControlerBox
     short int iNodeName;
     bool valPir;
     short int valMesh;
-    short int activeBoxState;
+    short int boxActiveState;
 
     // void updateProperties();
     void updateThisBoxProperties();
     void printProperties();
 
-    static void updateOtherBoxProperties();
+    static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
 
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
 
   private:
-    static IPAddress _parseIpString(JsonObject& root, String rootKey);
-    static void _parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
+    static IPAddress _parseIpStringToIPAddress(JsonDocument& root, String rootKey);
+    static void _parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
 };
 
 #endif
