@@ -150,7 +150,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   // If the message is addressed to me, act depending on the sender status
   // myMeshController myMeshController(doc);
   // short int _i;
-  // _i = doc["senderStatus"];
+  // _i = doc["senderBoxActiveState"];
   // ControlerBox::valMesh = _i;
 }
 

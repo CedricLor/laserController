@@ -77,12 +77,12 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* ne
   _broadcastMsg(msg, 'm');
 }
 
-void myMeshViews::statusMsg(const short int myStatus) {
-  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderStatus":"on"}
+void myMeshViews::statusMsg(const short int myBoxState) {
+  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderBoxActiveState":"on"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
-  msg["senderStatus"] = myStatus;
+  msg["senderBoxActiveState"] = myBoxState;
   _broadcastMsg(msg, 's');
 }
 

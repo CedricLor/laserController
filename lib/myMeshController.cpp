@@ -126,7 +126,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // slaveReactionStruct slaveReactionStructsArray[4];
 
 void myMeshController::_slaveBoxSwitch(JsonDocument root) {
-  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderStatus":"on"}
+  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderBoxActiveState":"on"}
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
       const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -137,19 +137,19 @@ void myMeshController::_slaveBoxSwitch(JsonDocument root) {
       - The second index number (0 or 1) indicates the current status of the masterBox and selects, within the HIGH/LOW pair, the reaction of the slaveBox.
   */
   // extract the root[rootKey]
-  const char* cSenderStatus = root["senderStatus"];
-  Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from root[\"senderStatus\"] to senderStatus \n", cSenderStatus);
+  const char* __cSenderBoxActiveState = root["senderBoxActiveState"];
+  Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from root[\"senderBoxActiveState\"] to senderBoxActiveState \n", __cSenderBoxActiveState);
 
   // The following line has for sole purpose to provide data to the Serial.printfs below
   const char* myFutureState = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
 
-  if (strstr(cSenderStatus, "on")  > 0) {
-    // if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
+  if (strstr(__cSenderBoxActiveState, "on")  > 0) {
+    // if senderBoxActiveState contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
     // LaserGroupedUnitsArray::setTargetState(3);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with on status */
     // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
-  } else if (strstr(cSenderStatus, "off")  > 0) {
-    // else if senderStatus contains "on", it means that the master box (the mesh sender) is turned on.
+  } else if (strstr(__cSenderBoxActiveState, "off")  > 0) {
+    // else if senderBoxActiveState contains "on", it means that the master box (the mesh sender) is turned on.
     Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
     // LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
     // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);

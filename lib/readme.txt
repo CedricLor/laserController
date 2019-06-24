@@ -101,18 +101,16 @@ DONE:
 - rename boxState::_targetActiveBoxState to boxState::_boxTargetState
 - rename boxState::_activeBoxStateHasBeenReset to boxState::_boxActiveStateHasBeenReset
 - rename boxState::_defaultBoxState to boxState::_boxDefaultState
-
-TO DO:
-
 - ControlerBox::updateOtherBoxProperties
   - to be tested with a microcontroller
-
-- draft ControlerBox::updateOtherBoxProperties (preliminary step to looping on the ControlerBoxes array in the webserver)
-  - need to add the sender boxState so that each box knows in which state are the other boxes
-  - need to send via myMeshViews and add to ControlerBox the time at which the sender boxState was changed
-  - need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
-
 - ControlerBoxes[MY_INDEX_IN_CB_ARRAY].valMesh and ControlerBoxes[MY_INDEX_IN_CB_ARRAY].valPir to be changed to static variables
+
+
+TO DO:
+- ControlerBox::updateOtherBoxProperties and ControlerBox::updateThisBoxProperties
+  - add the sender boxState so that each box knows in which state are the other boxes
+  - send via myMeshViews and add to ControlerBox the time at which the sender boxState was changed
+  - send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
 
 - ControlerBox class: I_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array
 
