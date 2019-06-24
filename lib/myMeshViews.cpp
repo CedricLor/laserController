@@ -30,28 +30,28 @@ myMeshViews::myMeshViews()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Views (or messages)
 void myMeshViews::manualSwitchMsg(const short targetOnOffState) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"u";"ts":"0"}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
   JsonObject msg = _createJsonobject();
   msg["ts"] = targetOnOffState;
   _broadcastMsg(msg, 'u');
 }
 
 void myMeshViews::inclusionIRMsg(const short targetIrState) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"i";"ts":"0"}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
   JsonObject msg = _createJsonobject();
   msg["ts"] = targetIrState;
   _broadcastMsg(msg, 'i');
 }
 
 void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"b";"ti":"5000"}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
   JsonObject msg = _createJsonobject();
   msg["ti"] = targetBlinkingInterval;
   _broadcastMsg(msg, 'b');
 }
 
 void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
   JsonObject msg = _createJsonobject();
   msg["ms"] = newMasterNodeName;
   msg["react"] = newReaction;
@@ -59,7 +59,7 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* ne
 }
 
 void myMeshViews::statusMsg(const short int myStatus) {
-  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStationIP":"...";"action":"s";"senderStatus":"on"}
+  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderStatus":"on"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
@@ -68,20 +68,20 @@ void myMeshViews::statusMsg(const short int myStatus) {
 }
 
 void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"p";"pt":"0"}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
   JsonObject msg = _createJsonobject();
   msg["pinPairingType"] = sTargetPairingType;
   _broadcastMsg(msg, 'p');
 }
 
 void myMeshViews::dataRequestMsg() {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"d"}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"d"}
   JsonObject msg = _createJsonobject();
   _broadcastMsg(msg, 'd');
 }
 
 void myMeshViews::dataRequestResponse() {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStationIP":"...";"action":"r";"response":{A DETERMINER}}
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"r";"response":{A DETERMINER}}
   JsonObject msg = _createJsonobject();
   // msg["response"] = {A DETERMINER};
   _broadcastMsg(msg, 'r');
@@ -103,7 +103,7 @@ void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
   str = action;
   msg["senderNodeName"] = _nodeNameBuilder();
   msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
+  msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
   msg["action"] = str;
   int size_buff = 254;
   char output[size_buff];
