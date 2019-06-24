@@ -25,7 +25,7 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
-myMeshController::myMeshController(JsonDocument root)
+myMeshController::myMeshController(JsonDocument& root)
 {
   char _action = root["action"];
   //////// Manual mode
