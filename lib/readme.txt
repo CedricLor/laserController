@@ -34,11 +34,17 @@ Dependency structure
 |  |  |  |  |--global.cpp (called to retrieve some values)
 |  |  |  |  |  |--global.h
 |  |
+|--main.cpp
+|  |
 |  |--myMesh.cpp
 |  |  |--myMesh.h
 |  |  |
 |  |  |--myMeshControler.cpp (private - called only from my Mesh)
 |  |  |  |--myMeshControler.h
+|  |  |  |--MasterSlaveBox.cpp
+|  |  |  |  |--MasterSlaveBox.h
+|  |  |  |--//LaserGroupedUnitsArray.cpp
+|  |  |  |  |--//LaserGroupedUnitsArray.h
 |  |  |
 |  |  |--myMeshViews.cpp
 |  |  |  |--myMeshViews.h

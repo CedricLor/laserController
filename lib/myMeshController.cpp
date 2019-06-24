@@ -9,6 +9,10 @@ Created by Cedric Lor, January 22, 2019.
 |  |  |
 |  |  |--myMeshControler.cpp (private - called only from my Mesh)
 |  |  |  |--myMeshControler.h
+|  |  |  |--MasterSlaveBox.cpp
+|  |  |  |  |--MasterSlaveBox.h
+|  |  |  |--//LaserGroupedUnitsArray.cpp
+|  |  |  |  |--//LaserGroupedUnitsArray.h
 |  |  |
 |  |  |--myMeshViews.cpp
 |  |  |  |--myMeshViews.h
