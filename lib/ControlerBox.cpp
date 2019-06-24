@@ -24,20 +24,20 @@ void ControlerBox::updateThisBoxProperties() {
   iNodeName = I_NODE_NAME;
   // valPir is updated by pirController (which sets it HIGH) and boxState (which sets it LOW)
   // valMesh is updated by myMesh (--> update to be moved to myMeshController) and boxState
-  if (MY_DEBUG == true) {ControlerBoxes[0].printProperties();};
+  if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties();};
 }
 
 void ControlerBox::printProperties() {
   Serial.println("myMesh::receivedCallback(): ControlerBoxes[0] updated.");
-  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].nodeId:");Serial.println(nodeId);
-  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].APIP:");Serial.println(APIP);
-  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].stationIP:");Serial.println(stationIP);
-  Serial.print("myMesh::receivedCallback(): ControlerBoxes[0].iNodeName:");Serial.println(iNodeName);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[MY_INDEX_IN_CB_ARRAY].nodeId:");Serial.println(nodeId);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP:");Serial.println(APIP);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP:");Serial.println(stationIP);
+  Serial.print("myMesh::receivedCallback(): ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName:");Serial.println(iNodeName);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
   short int __iNodeName = doc["senderNodeName"]; // ex. 201
-  short int __boxIndex = __iNodeName - I_MASTER_NODE_PREFIX; // 201 - 200 = 1
+  short int __boxIndex = __iNodeName - I_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
   ControlerBoxes[__boxIndex].nodeId = senderNodeId;
   ControlerBoxes[__boxIndex].APIP = _parseIpStringToIPAddress(doc, "senderAPIP");
   ControlerBoxes[__boxIndex].stationIP = _parseIpStringToIPAddress(doc, "senderStationIP");
