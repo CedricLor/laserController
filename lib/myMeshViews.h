@@ -44,7 +44,7 @@ class myMeshViews
   private:
 
     // Helpers
-    static void _broadcastMsg(JsonObject msg);
+    static void _broadcastMsg(JsonObject& msg);
     static JsonObject _createJsonobject();
 };
 

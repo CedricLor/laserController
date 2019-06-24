@@ -121,7 +121,7 @@ JsonObject myMeshViews::_createJsonobject() {
   return msg;
 }
 
-void myMeshViews::_broadcastMsg(JsonObject msg) {
+void myMeshViews::_broadcastMsg(JsonObject& msg) {
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
   char _cNodeName[4];
   itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName, _cNodeName, 10);
