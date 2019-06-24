@@ -45,9 +45,9 @@ String myWebServerViews::returnTheResponse() {
   __myResponse += "<h1>";
   __myResponse += String(I_NODE_NAME); // I_NODE_NAME defined and declared in global
   __myResponse += " - Station IP: ";
-  __myResponse += (ControlerBoxes[0].stationIP).toString(); // dependancy
+  __myResponse += (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString(); // dependancy
   __myResponse += " - AP IP: ";
-  __myResponse += (ControlerBoxes[0].APIP).toString();  // dependancy
+  __myResponse += (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();  // dependancy
   __myResponse += "</h1>";
   __myResponse += _printAllLasersCntrl();
   __myResponse += _printIndivLaserCntrls();
