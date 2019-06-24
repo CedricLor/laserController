@@ -21,31 +21,30 @@ short relayPins[] = { 5, 17, 16, 4 };
 const bool MY_DEBUG = true;
 
 // CONTROLLER BOX 201
-// const short I_NODE_NAME = 201;                          // BOX BY BOX
-// const short I_DEFAULT_MASTER_NODE_NAME = 210;
-// const bool MESH_ROOT = false;                            // BOX BY BOX
-// const short IS_INTERFACE = false;                        // BOX BY BOX -- false or true
-// const short IS_STATION_MANUAL = false;                  // BOX BY BOX
+const short I_NODE_NAME = 201;                          // BOX BY BOX
+const short I_DEFAULT_MASTER_NODE_NAME = 210;
+const bool MESH_ROOT = false;                            // BOX BY BOX
+const short IS_INTERFACE = false;                        // BOX BY BOX -- false or true
+const short IS_STATION_MANUAL = false;                  // BOX BY BOX
 
 // CONTROLLER BOX 202
 // const short I_NODE_NAME = 202;                          // BOX BY BOX
 // const short I_DEFAULT_MASTER_NODE_NAME = 201;
 // const bool MESH_ROOT = false;                            // BOX BY BOX
-// Pour Boite 002
 // const short IS_INTERFACE = false;                        // BOX BY BOX -- false or true
 // const short IS_STATION_MANUAL = false;                  // BOX BY BOX
 
 // CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
-const short I_NODE_NAME = 200;                          // BOX BY BOX
-const short I_DEFAULT_MASTER_NODE_NAME = 003;
-const bool MESH_ROOT = false;                            // BOX BY BOX
-const short IS_INTERFACE = true;                        // BOX BY BOX -- false or true
-const short IS_STATION_MANUAL = true;                  // BOX BY BOX
+// const short I_NODE_NAME = 200;                          // BOX BY BOX
+// const short I_DEFAULT_MASTER_NODE_NAME = 003;
+// const bool MESH_ROOT = false;                            // BOX BY BOX
+// const short IS_INTERFACE = true;                        // BOX BY BOX -- false or true
+// const short IS_STATION_MANUAL = true;                  // BOX BY BOX
 
 const uint8_t MESH_CHANNEL = 6;
 
 const short I_DEFAULT_INTERFACE_NODE_NAME = 200;
-const short MESH_REQUEST_CAPACITY = 7;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
+const short MESH_REQUEST_CAPACITY = 10;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
