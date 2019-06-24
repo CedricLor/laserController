@@ -1,6 +1,14 @@
 /*
   ControlerBox.cpp - Library to replace box_type struct - handles the ControlerBox attributes
   Created by Cedric Lor, January 2, 2019.
+
+  |--main.cpp
+  |  |
+  |  |--ControlerBox.cpp
+  |  |  |--ControlerBox.h
+  |  |  |--global.cpp (laserControllerMesh)
+  |  |  |  |--global.h
+
 */
 
 #include "Arduino.h"
@@ -62,7 +70,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
-IPAddress ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, String rootKey) {
+IPAddress ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/) {
   Serial.println("ControlerBox::_parseIpStringToIPAddress: Starting");
   // Serial.print("ControlerBox::_parseIpStringToIPAddress: rootKey = ");Serial.println(rootKey);
   const char* ipStr = root[rootKey];

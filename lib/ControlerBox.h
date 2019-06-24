@@ -30,7 +30,7 @@ class ControlerBox
     // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
 
   private:
-    static IPAddress _parseIpStringToIPAddress(JsonDocument& root, String rootKey);
+    static IPAddress _parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/);
     static void _parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
 };
 
