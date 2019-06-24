@@ -7,7 +7,6 @@
 #define myMeshViews_h
 
 #include "Arduino.h"
-#include "ControlerBox.h"
 
 class myMeshViews
 {
@@ -28,8 +27,6 @@ class myMeshViews
     // Helpers
     static void _broadcastMsg(JsonObject msg, const char action);
     static JsonObject _createJsonobject();
-    static char _nodeNameBuf[4];
-    static char* _nodeNameBuilder();
 };
 
 #endif

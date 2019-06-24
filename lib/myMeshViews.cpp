@@ -101,7 +101,9 @@ void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
   String str;
   str = action;
-  msg["senderNodeName"] = _nodeNameBuilder();
+  char _cNodeName[4];
+  itoa(I_NODE_NAME, _cNodeName, 10);
+  msg["senderNodeName"] = _cNodeName;
   msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
   msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
   msg["action"] = str;
@@ -111,12 +113,4 @@ void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
   str = output;
   laserControllerMesh.sendBroadcast(str);
   Serial.print("myMeshViews:_broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
-}
-
-char myMeshViews::_nodeNameBuf[4];
-
-char* myMeshViews::_nodeNameBuilder() {
-  String _sNodeName = String(I_NODE_NAME);
-  _sNodeName.toCharArray(_nodeNameBuf, 4);
-  return _nodeNameBuf;
 }
