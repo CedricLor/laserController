@@ -19,7 +19,7 @@ class ControlerBox
 
     // void updateProperties();
     void updateThisBoxProperties();
-    void printProperties();
+    void printProperties(const short int boxIndex);
 
     static short int valMesh;
     static bool valPir;
