@@ -21,16 +21,21 @@ extern const short I_NODE_NAME;                                                 
 extern const short I_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 extern const bool MESH_ROOT;                                                      // BOX BY BOX
 
-extern const short I_DEFAULT_INTERFACE_NODE_NAME;
 extern const short IS_INTERFACE;                                                  // BOX BY BOX
 extern const short IS_STATION_MANUAL;                                             // BOX BY BOX
 
-extern const short I_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
+extern const uint8_t MESH_CHANNEL;
+
+extern const short I_DEFAULT_INTERFACE_NODE_NAME;
+extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern const short BOXES_COUNT;                                                   // NETWORK BY NETWORK
 
+extern const short I_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
+extern const short I_CONTROLLER_BOX_PREFIX;
+extern const short MY_INDEX_IN_CB_ARRAY;
 
 extern short iSlaveOnOffReaction;
 extern short iMasterNodeName;
@@ -47,6 +52,4 @@ extern LaserPin LaserPins[];
 extern painlessMesh laserControllerMesh;
 extern Scheduler    userScheduler;             // to control your personal task
 
-extern const short int MESH_REQUEST_CAPACITY;
-extern const uint8_t MESH_CHANNEL;
 #endif
