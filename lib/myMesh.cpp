@@ -103,11 +103,17 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
 
   // deserialize the message msg received from the mesh into the StaticJsonDocument doc
-  deserializeJson(doc, msg.c_str());
+  DeserializationError err = deserializeJson(doc, msg.c_str());
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
+  Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
 
   const short __iSenderNodeName = doc["senderNodeName"];
   Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to __iSenderNodeName \n", __iSenderNodeName);
+
+  // auto __APIP = doc["APIP"].as<const char*>();
+  // Serial.print("myMesh::_decodeRequest(...): __APIP = ");Serial.println(__APIP);
+  // auto __StationIP = doc["senderStIP"].as<const char*>();
+  // Serial.print("myMesh::_decodeRequest(...): __StationIP = ");Serial.println(__StationIP);
 
   // update the ControlerBoxes[] array with the values received from the other box
   // if the sender box is not the interface
@@ -130,8 +136,9 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
   // If the message is addressed to me, act depending on the sender status
   // myMeshController myMeshController(doc);
-  const short int _i = doc["senderStatus"];
-  ControlerBox::valMesh = doc["senderStatus"];
+  // short int _i;
+  // _i = doc["senderStatus"];
+  // ControlerBox::valMesh = _i;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
