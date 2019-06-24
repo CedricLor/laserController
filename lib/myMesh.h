@@ -7,18 +7,22 @@
 |  |--myMesh.cpp
 |  |  |--myMesh.h
 |  |  |
-|  |  |--myMeshControler.cpp
+|  |  |--myMeshControler.cpp (private - called only from my Mesh)
 |  |  |  |--myMeshControler.h
 |  |  |
 |  |  |--myMeshViews.cpp
 |  |  |  |--myMeshViews.h
+|  |  |  |--boxState.cpp
+|  |  |  |  |--boxState.h
+|  |  |  |--//LaserGroupedUnitsArray.cpp
+|  |  |  |  |--//LaserGroupedUnitsArray.h
 */
 
 #ifndef myMesh_h
 #define myMesh_h
 
 #include "Arduino.h"
-#include "ControlerBox.h"
+#include "myMeshController.cpp"
 
 class myMesh
 {

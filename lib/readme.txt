@@ -18,7 +18,34 @@ Dependency structure
 |  |  |  |  |--ControlerBox.h
 |  |  |  |--global.cpp
 |  |  |  |  |--global.h
-
+|  |
+|  |--boxState.cpp
+|  |  |--boxState.h
+|  |  |--ControlerBox.cpp (called to read and set some values, in particular on this box)
+|  |  |  |--ControlerBox.h
+|  |  |
+|  |  |--sequence.cpp
+|  |  |  |--sequence.h
+|  |  |  |--global.cpp (called to start some tasks and play some functions)
+|  |  |  |  |--global.h
+|  |  |  |
+|  |  |  |--note.cpp (called to play some member functions)
+|  |  |  |  |--note.h
+|  |  |  |  |--global.cpp (called to retrieve some values)
+|  |  |  |  |  |--global.h
+|  |
+|  |--myMesh.cpp
+|  |  |--myMesh.h
+|  |  |
+|  |  |--myMeshControler.cpp (private - called only from my Mesh)
+|  |  |  |--myMeshControler.h
+|  |  |
+|  |  |--myMeshViews.cpp
+|  |  |  |--myMeshViews.h
+|  |  |  |--boxState.cpp
+|  |  |  |  |--boxState.h
+|  |  |  |--//LaserGroupedUnitsArray.cpp
+|  |  |  |  |--//LaserGroupedUnitsArray.h
 
 
 This directory is intended for project specific (private) libraries.
@@ -60,6 +87,8 @@ include paths and build them.
 
 More information about PlatformIO Library Dependency Finder
 - https://docs.platformio.org/page/librarymanager/ldf.html
+
+// TODO
 
 DONE:
 - rename ControlerBox::activeBoxState to ControlerBox::boxActiveState

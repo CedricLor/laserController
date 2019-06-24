@@ -1,6 +1,21 @@
 /*
   myMeshController.h - Library to handle mesh controller related functions.
   Created by Cedric Lor, January 22, 2019.
+
+  |--main.cpp
+  |  |
+  |  |--myMesh.cpp
+  |  |  |--myMesh.h
+  |  |  |
+  |  |  |--myMeshControler.cpp (private - called only from my Mesh)
+  |  |  |  |--myMeshControler.h
+  |  |  |
+  |  |  |--myMeshViews.cpp
+  |  |  |  |--myMeshViews.h
+  |  |  |  |--boxState.cpp
+  |  |  |  |  |--boxState.h
+  |  |  |  |--//LaserGroupedUnitsArray.cpp
+  |  |  |  |  |--//LaserGroupedUnitsArray.h
 */
 
 #ifndef myMeshController_h
