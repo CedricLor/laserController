@@ -16,8 +16,8 @@
   |  |  |
   |  |  |--myMeshViews.cpp
   |  |  |  |--myMeshViews.h
-  |  |  |  |--boxState.cpp
-  |  |  |  |  |--boxState.h
+  |  |  |  |--ControlerBox.cpp
+  |  |  |  |  |--ControlerBox.h
   |  |  |  |--//LaserGroupedUnitsArray.cpp
   |  |  |  |  |--//LaserGroupedUnitsArray.h
 */

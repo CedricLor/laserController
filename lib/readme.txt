@@ -34,8 +34,6 @@ Dependency structure
 |  |  |  |  |--global.cpp (called to retrieve some values)
 |  |  |  |  |  |--global.h
 |  |
-|--main.cpp
-|  |
 |  |--myMesh.cpp
 |  |  |--myMesh.h
 |  |  |
@@ -48,8 +46,8 @@ Dependency structure
 |  |  |
 |  |  |--myMeshViews.cpp
 |  |  |  |--myMeshViews.h
-|  |  |  |--boxState.cpp
-|  |  |  |  |--boxState.h
+|  |  |  |--ControlerBox.cpp
+|  |  |  |  |--ControlerBox.h
 |  |  |  |--//LaserGroupedUnitsArray.cpp
 |  |  |  |  |--//LaserGroupedUnitsArray.h
 
