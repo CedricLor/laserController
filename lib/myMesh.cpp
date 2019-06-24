@@ -51,7 +51,7 @@ void myMesh::meshSetup() {
   // This and all other mesh should ideally know that the mesh contains a root
   laserControllerMesh.setContainsRoot(true);
 
-  ControlerBoxes[0].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
@@ -64,18 +64,18 @@ void myMesh::meshSetup() {
 // Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("MESH CALLBACK: receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
-  ControlerBoxes[0].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
   _decodeRequest(from, msg);
 }
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("New Connection, nodeId = %u\n", nodeId);
-  ControlerBoxes[0].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
 }
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
-  ControlerBoxes[0].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
 }
 
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
