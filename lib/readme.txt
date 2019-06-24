@@ -105,11 +105,13 @@ DONE:
   - to be tested with a microcontroller
 - ControlerBoxes[MY_INDEX_IN_CB_ARRAY].valMesh and ControlerBoxes[MY_INDEX_IN_CB_ARRAY].valPir to be changed to static variables
 
+- ControlerBox::updateOtherBoxProperties and ControlerBox::updateThisBoxProperties
+  - added the sender boxState to the JSON message sent via the mesh, so that each box knows in which state are the other boxes
+  - send via myMeshViews::statusMsg() the time at which the sender boxState was changed
 
 TO DO:
 - ControlerBox::updateOtherBoxProperties and ControlerBox::updateThisBoxProperties
-  - add the sender boxState so that each box knows in which state are the other boxes
-  - send via myMeshViews and add to ControlerBox the time at which the sender boxState was changed
+  - add to ControlerBox the time at which the sender boxState was changed
   - send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
 
 - ControlerBox class: I_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array

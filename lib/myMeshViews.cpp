@@ -48,63 +48,66 @@ myMeshViews::myMeshViews()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Views (or messages)
-void myMeshViews::manualSwitchMsg(const short targetOnOffState) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
-  JsonObject msg = _createJsonobject();
-  msg["ts"] = targetOnOffState;
-  _broadcastMsg(msg, 'u');
-}
-
-void myMeshViews::inclusionIRMsg(const short targetIrState) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
-  JsonObject msg = _createJsonobject();
-  msg["ts"] = targetIrState;
-  _broadcastMsg(msg, 'i');
-}
-
-void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
-  JsonObject msg = _createJsonobject();
-  msg["ti"] = targetBlinkingInterval;
-  _broadcastMsg(msg, 'b');
-}
-
-void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
-  JsonObject msg = _createJsonobject();
-  msg["ms"] = newMasterNodeName;
-  msg["react"] = newReaction;
-  _broadcastMsg(msg, 'm');
-}
+// void myMeshViews::manualSwitchMsg(const short targetOnOffState) {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
+//   JsonObject msg = _createJsonobject();
+//   msg["ts"] = targetOnOffState;
+//   _broadcastMsg(msg, 'u');
+// }
+//
+// void myMeshViews::inclusionIRMsg(const short targetIrState) {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
+//   JsonObject msg = _createJsonobject();
+//   msg["ts"] = targetIrState;
+//   _broadcastMsg(msg, 'i');
+// }
+//
+// void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
+//   JsonObject msg = _createJsonobject();
+//   msg["ti"] = targetBlinkingInterval;
+//   _broadcastMsg(msg, 'b');
+// }
+//
+// void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction) {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
+//   JsonObject msg = _createJsonobject();
+//   msg["ms"] = newMasterNodeName;
+//   msg["react"] = newReaction;
+//   _broadcastMsg(msg, 'm');
+// }
 
 void myMeshViews::statusMsg(const short int myBoxState) {
+  const uint32_t iBoxStateTime = laserControllerMesh.getNodeTime();
   // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderBoxActiveState":"on"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
   msg["senderBoxActiveState"] = myBoxState;
-  _broadcastMsg(msg, 's');
+  msg["action"] = "s";
+  msg["mTime"] = iBoxStateTime; // mesh time
+  _broadcastMsg(msg);
 }
 
-void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
-  JsonObject msg = _createJsonobject();
-  msg["pinPairingType"] = sTargetPairingType;
-  _broadcastMsg(msg, 'p');
-}
-
-void myMeshViews::dataRequestMsg() {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"d"}
-  JsonObject msg = _createJsonobject();
-  _broadcastMsg(msg, 'd');
-}
-
-void myMeshViews::dataRequestResponse() {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"r";"response":{A DETERMINER}}
-  JsonObject msg = _createJsonobject();
-  // msg["response"] = {A DETERMINER};
-  _broadcastMsg(msg, 'r');
-}
+// void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
+//   JsonObject msg = _createJsonobject();
+//   msg["pinPairingType"] = sTargetPairingType;
+//   _broadcastMsg(msg, 'p');
+// }
+//
+// void myMeshViews::dataRequestMsg() {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"d"}
+//   JsonObject msg = _createJsonobject();
+//   _broadcastMsg(msg, 'd');
+// }
+//
+// void myMeshViews::dataRequestResponse() {
+//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"r";"response":{A DETERMINER}}
+//   JsonObject msg = _createJsonobject();
+//   // msg["response"] = {A DETERMINER};
+//   _broadcastMsg(msg, 'r');
+// }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
 // serialization of message to be sent
@@ -116,19 +119,17 @@ JsonObject myMeshViews::_createJsonobject() {
   return msg;
 }
 
-void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
+void myMeshViews::_broadcastMsg(JsonObject msg) {
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
-  String str;
-  str = action;
   char _cNodeName[4];
-  itoa(I_NODE_NAME, _cNodeName, 10);
+  itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName, _cNodeName, 10);
   msg["senderNodeName"] = _cNodeName;
   msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
   msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
-  msg["action"] = str;
   int size_buff = 254;
   char output[size_buff];
   serializeJson(msg, output, size_buff);
+  String str;
   str = output;
   laserControllerMesh.sendBroadcast(str);
   Serial.print("myMeshViews:_broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);

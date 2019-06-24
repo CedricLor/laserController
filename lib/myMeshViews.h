@@ -32,19 +32,19 @@ class myMeshViews
   public:
     myMeshViews();
     // Views
-    static void manualSwitchMsg(const short targetOnOffState);
-    static void inclusionIRMsg(const short targetIrState);
-    static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
-    static void changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction);
+    // static void manualSwitchMsg(const short targetOnOffState);
+    // static void inclusionIRMsg(const short targetIrState);
+    // static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
+    // static void changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction);
     static void statusMsg(const short int myStatus);
-    static void pinPairingMsg(const short sTargetPairingType);
-    static void dataRequestMsg();
-    static void dataRequestResponse();
+    // static void pinPairingMsg(const short sTargetPairingType);
+    // static void dataRequestMsg();
+    // static void dataRequestResponse();
 
   private:
 
     // Helpers
-    static void _broadcastMsg(JsonObject msg, const char action);
+    static void _broadcastMsg(JsonObject msg);
     static JsonObject _createJsonobject();
 };
 
