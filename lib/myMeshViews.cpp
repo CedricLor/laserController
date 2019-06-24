@@ -24,7 +24,7 @@
 
 myMeshViews::myMeshViews()
 {
-  ControlerBoxes[0].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,12 +98,12 @@ JsonObject myMeshViews::_createJsonobject() {
 }
 
 void myMeshViews::_broadcastMsg(JsonObject msg, const char action) {
-  ControlerBoxes[0].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
   String str;
   str = action;
   msg["senderNodeName"] = _nodeNameBuilder();
-  msg["senderAPIP"] = (ControlerBoxes[0].APIP).toString();
-  msg["senderStationIP"] = (ControlerBoxes[0].stationIP).toString();
+  msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
+  msg["senderStationIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
   msg["action"] = str;
   int size_buff = 254;
   char output[size_buff];
