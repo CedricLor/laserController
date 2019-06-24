@@ -34,6 +34,7 @@ void ControlerBox::printProperties(const short int boxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", boxIndex);Serial.println(stationIP);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].iNodeName: %i\n", boxIndex, iNodeName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", boxIndex, uiBoxActiveStateStartTime);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
@@ -52,7 +53,8 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].iNodeName = %i", __boxIndex, ControlerBoxes[__boxIndex].iNodeName);
   ControlerBoxes[__boxIndex].boxActiveState = doc["senderBoxActiveState"];
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
-  // need to send via myMeshViews and add to ControlerBox the time at which the sender boxState was changed
+  ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = doc["senderBoxActiveStateStartTime"];
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", boxIndex, boxActiveState);
   // need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
   if (MY_DEBUG == true) {ControlerBoxes[__boxIndex].printProperties(__boxIndex);};
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");

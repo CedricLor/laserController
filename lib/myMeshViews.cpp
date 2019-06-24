@@ -78,14 +78,16 @@ myMeshViews::myMeshViews()
 // }
 
 void myMeshViews::statusMsg(const short int myBoxState) {
-  const uint32_t iBoxStateTime = laserControllerMesh.getNodeTime();
-  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderBoxActiveState":"on"}
+  // update this boxes BoxActiveStateStartTime
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
+  // prepare the JSON string to be sent via the mesh
+  // expected JSON string: {"senderBoxActiveState":3;"action":"s";"mTime":6059117;"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"..."}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
   msg["senderBoxActiveState"] = myBoxState;
   msg["action"] = "s";
-  msg["mTime"] = iBoxStateTime; // mesh time
+  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // mesh time
   _broadcastMsg(msg);
 }
 

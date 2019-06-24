@@ -16,6 +16,7 @@ class ControlerBox
     IPAddress APIP;
     short int iNodeName;
     short int boxActiveState;
+    uint32_t uiBoxActiveStateStartTime;
 
     // void updateProperties();
     void updateThisBoxProperties();
