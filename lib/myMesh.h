@@ -1,6 +1,17 @@
 /*
   myMesh.h - Library to handle painlessMesh core related functions.
   Created by Cedric Lor, January 17, 2019.
+
+|--main.cpp
+|  |
+|  |--myMesh.cpp
+|  |  |--myMesh.h
+|  |  |
+|  |  |--myMeshControler.cpp
+|  |  |  |--myMeshControler.h
+|  |  |
+|  |  |--myMeshViews.cpp
+|  |  |  |--myMeshViews.h
 */
 
 #ifndef myMesh_h
