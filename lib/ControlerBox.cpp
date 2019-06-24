@@ -29,12 +29,12 @@ void ControlerBox::updateThisBoxProperties() {
 
 void ControlerBox::printProperties(const short int boxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i] updated.\n", boxIndex);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: [%u]\n", boxIndex, nodeId);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: %u\n", boxIndex, nodeId);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", boxIndex);Serial.println(APIP);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", boxIndex);Serial.println(stationIP);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].iNodeName: %i\n", boxIndex, iNodeName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", boxIndex, uiBoxActiveStateStartTime);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %u\n", boxIndex, uiBoxActiveStateStartTime);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
