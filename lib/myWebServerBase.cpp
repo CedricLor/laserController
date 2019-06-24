@@ -74,7 +74,7 @@ void myWebServerBase::startAsyncServer() {
     _listAllCollectedParams(request);
 
     // Decode request and change behavior of this controller box
-    ControlerBoxes[0].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
     myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
 
     // Send a response (i.e. display a web page)
@@ -116,21 +116,21 @@ void myWebServerBase::startAsyncServer() {
 String myWebServerBase::_processor(const String& var) {
   if(var == "I_NODE_NAME") {
     char cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    itoa(ControlerBoxes[0].iNodeName,cNodeName,10); //(integer, yourBuffer, base)
+    itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName,cNodeName,10); //(integer, yourBuffer, base)
     return F(cNodeName);
   }
   if(var == "STATION_IP") {
-    return F(ControlerBoxes[0].stationIP.toString().c_str());
+    return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP.toString().c_str());
   }
   if(var == "AP_IP") {
-    return F(ControlerBoxes[0].APIP.toString().c_str());
+    return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
   if(var == "BOX_SETTER") {
     char cBoxArray[200];
     return F(cBoxArray);
   }
   if(var == "NETWORK_SETTER") {
-    return F(ControlerBoxes[0].APIP.toString().c_str());
+    return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
   return String();
 }
