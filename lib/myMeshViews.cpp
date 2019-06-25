@@ -91,6 +91,21 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   _broadcastMsg(msg);
 }
 
+void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *boxName) {
+  // prepare the JSON string to be sent via the mesh
+  // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"senderNodeName":"200";"senderAPIP":"...";"senderStIP":"..."}
+  if (DEBUG) {
+    Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = %c, boxName = %c \n");
+  }
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
+  msg["receiverTargetState"] = boxTargetState;
+  msg["receiverBoxName"] = boxName;
+  msg["action"] = "c";
+  _broadcastMsg(msg);
+}
+
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
 //   JsonObject msg = _createJsonobject();

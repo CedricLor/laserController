@@ -37,6 +37,7 @@ class myMeshViews
     // static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
     // static void changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction);
     void statusMsg(const short int myStatus);
+    void changeBoxTargetState(const char *boxTargetState, const char *boxName);
     // static void pinPairingMsg(const short sTargetPairingType);
     // static void dataRequestMsg();
     // static void dataRequestResponse();
