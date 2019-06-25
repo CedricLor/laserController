@@ -27,8 +27,8 @@
 short int boxState::_boxTargetState = 0;
 bool boxState::_boxActiveStateHasBeenReset = 0;
 short int boxState::_boxDefaultState = 5;
-const short int boxState::_BOX_STATES_COUNT = 7;
-boxState boxState::_boxStates[_BOX_STATES_COUNT];
+const short int boxState::BOX_STATES_COUNT = 7;
+boxState boxState::_boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 15;
 
 

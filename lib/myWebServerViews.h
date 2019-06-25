@@ -43,26 +43,26 @@ class myWebServerViews
     void loadBoxArray();
 
   private:
-    static const char* _slave_Reaction[];
-    static const char* _pairing_Type[];
-
-    String _printLinksToBoxes();
-    String _printAllLasersCntrl();
-    String _printGlobalPinPairingWebCntrl();
-    String _printGlobalPinPairingSelect();
-    String _printMasterCntrl();
-    String _printMasterSelect();
-    String _printSlaveReactionSelect();
-    String _printLabel(const String labelText, const String labelFor);
-    String _printOption(const String optionValue, const String optionText, const String selected);
-    String _printIndivLaserCntrls();
-    String _printCurrentStatus(const short thisPin);
-    String _printOnOffControl(const short thisPin);
-    String _printPirStatusCntrl(const short thisPin);
-    String _printBlinkingIntervalWebCntrl(const short thisPin);
-    String _printPairingCntrl(const short thisPin);
-    String _printIntervalSelect(const short thisPin);
-    String _printHiddenLaserNumb(const short thisPin);
+    // static const char* _slave_Reaction[];
+    // static const char* _pairing_Type[];
+    //
+    // String _printLinksToBoxes();
+    // String _printAllLasersCntrl();
+    // String _printGlobalPinPairingWebCntrl();
+    // String _printGlobalPinPairingSelect();
+    // String _printMasterCntrl();
+    // String _printMasterSelect();
+    // String _printSlaveReactionSelect();
+    // String _printLabel(const String labelText, const String labelFor);
+    // String _printOption(const String optionValue, const String optionText, const String selected);
+    // String _printIndivLaserCntrls();
+    // String _printCurrentStatus(const short thisPin);
+    // String _printOnOffControl(const short thisPin);
+    // String _printPirStatusCntrl(const short thisPin);
+    // String _printBlinkingIntervalWebCntrl(const short thisPin);
+    // String _printPairingCntrl(const short thisPin);
+    // String _printIntervalSelect(const short thisPin);
+    // String _printHiddenLaserNumb(const short thisPin);
 };
 
 #endif

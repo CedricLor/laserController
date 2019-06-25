@@ -35,11 +35,11 @@ class boxState
     static void initBoxStates(); // initializer of the array of boxState
 
     static Task tPlayBoxStates;
+    static const short int BOX_STATES_COUNT;
 
   private:
     static boxState _boxStates[];
 
-    static const short int _BOX_STATES_COUNT;
     static const short int _NAME_CHAR_COUNT;
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
