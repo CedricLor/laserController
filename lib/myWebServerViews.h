@@ -38,7 +38,7 @@ class myWebServerViews
   public:
     myWebServerViews();
     String returnTheResponse();
-    char cBoxArray[3000];
+    char cBoxArray[4000];
 
     void loadBoxArray();
 
