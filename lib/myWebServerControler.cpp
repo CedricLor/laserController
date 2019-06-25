@@ -87,51 +87,51 @@ myWebServerControler::myWebServerControler()
 void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
 
-  if(request->hasParam("manualStatus")) {
-    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"manualStatus\")");
-    AsyncWebParameter* _p1 = request->getParam("manualStatus");
-    AsyncWebParameter* _p2 = request->getParam("laser");
-    if(_p1->value() == "on"){
-      // _webSwitchRelays(_p2, LOW);
-    } else {
-      // _webSwitchRelays(_p2, HIGH);
-    }
-    return;
-  }
-
-  if(request->hasParam("statusIr")) {
-    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
-    AsyncWebParameter* _p1 = request->getParam("statusIr");
-    AsyncWebParameter* _p2 = request->getParam("laser");
-    if(_p1->value() == "on"){
-      // _webInclExclInPir(_p2, HIGH);
-    } else {
-      // _webInclExclInPir(_p2, LOW);
-    }
-    return;
-  }
-
-  if(request->hasParam("blinkingInterval")) {
-    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
-    AsyncWebParameter* _p1 = request->getParam("blinkingInterval");
-    AsyncWebParameter* _p2 = request->getParam("laser");
-    // _webChangeBlinkingInterval(_p1, _p2);
-    return;
-  }
-
-  if(request->hasParam("masterBox")) {
-    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"masterBox\")");
-    AsyncWebParameter* _p1 = request->getParam("masterBox");
-    AsyncWebParameter* _p2 = request->getParam("reactionToMaster");
-    // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
-    // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(_p1->value().toInt(), _p2->value().c_str());
-    return;
-  }
-
-  if(request->hasParam("pinPairing")) {
-    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"pinPairing\")");
-    // AsyncWebParameter* _p = request->getParam("pinPairing");
-    // LaserGroupedUnitsArray::pairUnpairAllPins(_p->value().toInt());
-    return;
-  }
+  // if(request->hasParam("manualStatus")) {
+  //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"manualStatus\")");
+  //   AsyncWebParameter* _p1 = request->getParam("manualStatus");
+  //   AsyncWebParameter* _p2 = request->getParam("laser");
+  //   if(_p1->value() == "on"){
+  //     // _webSwitchRelays(_p2, LOW);
+  //   } else {
+  //     // _webSwitchRelays(_p2, HIGH);
+  //   }
+  //   return;
+  // }
+  //
+  // if(request->hasParam("statusIr")) {
+  //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
+  //   AsyncWebParameter* _p1 = request->getParam("statusIr");
+  //   AsyncWebParameter* _p2 = request->getParam("laser");
+  //   if(_p1->value() == "on"){
+  //     // _webInclExclInPir(_p2, HIGH);
+  //   } else {
+  //     // _webInclExclInPir(_p2, LOW);
+  //   }
+  //   return;
+  // }
+  //
+  // if(request->hasParam("blinkingInterval")) {
+  //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"statusIr\")");
+  //   AsyncWebParameter* _p1 = request->getParam("blinkingInterval");
+  //   AsyncWebParameter* _p2 = request->getParam("laser");
+  //   // _webChangeBlinkingInterval(_p1, _p2);
+  //   return;
+  // }
+  //
+  // if(request->hasParam("masterBox")) {
+  //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"masterBox\")");
+  //   AsyncWebParameter* _p1 = request->getParam("masterBox");
+  //   AsyncWebParameter* _p2 = request->getParam("reactionToMaster");
+  //   // void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action)
+  //   // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(_p1->value().toInt(), _p2->value().c_str());
+  //   return;
+  // }
+  //
+  // if(request->hasParam("pinPairing")) {
+  //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"pinPairing\")");
+  //   // AsyncWebParameter* _p = request->getParam("pinPairing");
+  //   // LaserGroupedUnitsArray::pairUnpairAllPins(_p->value().toInt());
+  //   return;
+  // }
 }
