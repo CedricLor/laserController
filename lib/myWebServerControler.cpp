@@ -87,6 +87,42 @@ myWebServerControler::myWebServerControler()
 void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
 
+  // if request is change status
+  // expected request: http://192.168.43.84/?status=[sthing]&lb=[sboxname]
+  if(request->hasParam("man")) {
+    if (DEBUG) {
+      Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"status\")");
+    }
+    AsyncWebParameter* _p1 = request->getParam("status");
+    AsyncWebParameter* _p2 = request->getParam("lb");
+    // if request: http://192.168.43.84/?status=man&lb=[sboxname]
+    if(_p1->value() == "man"){
+      // send mesh request to relevant to turn to manual boxState
+      return;
+    }
+    if(_p1->value() == "ali") {
+      // send mesh request to relevant to turn to align boxState
+      return;
+    }
+    if(_p1->value() == "irs") {
+      // send mesh request to relevant to turn to align boxState
+      return;
+    }
+    if(_p1->value() == "irh") {
+      // send mesh request to relevant to turn to align boxState
+      return;
+    }
+    if(_p1->value() == "meh") {
+      // send mesh request to relevant to turn to align boxState
+      return;
+    }
+    if(_p1->value() == "wai") {
+      // send mesh request to relevant to turn to align boxState
+      return;
+    }
+    return;
+  }
+
   // if(request->hasParam("manualStatus")) {
   //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"manualStatus\")");
   //   AsyncWebParameter* _p1 = request->getParam("manualStatus");
