@@ -42,60 +42,38 @@ myWebServerViews::myWebServerViews()
 }
 
 void myWebServerViews::loadBoxArray() {
-  Serial.print("myWebServerViews::loadBoxArray(): STARTING\n");
+  // Serial.print("myWebServerViews::loadBoxArray(): STARTING\n");
   for (short int __i = 1; __i < BOXES_COUNT; __i++) {
-    Serial.printf("myWebServerViews::loadBoxArray(): LOOP STARTING: iter %i\n", __i);
+    // Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP STARTING: iter %i\n", __i);
     strcat(cBoxArray, "<div>Laser Box ");
     char __cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: before itoa %i\n", __i);
+    //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before itoa %i\n", __i);
     itoa(ControlerBoxes[__i].iNodeName, __cNodeName, 10); //(integer, yourBuffer, base)
     strcat(cBoxArray, __cNodeName);
     strcat(cBoxArray, " - Station IP: ");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: before stationIp %i\n", __i);
+    //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before stationIp %i\n", __i);
     strcat(cBoxArray, ControlerBoxes[__i].stationIP.toString().c_str());
     strcat(cBoxArray, " - AP IP: ");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: before APIP %i\n", __i);
+    //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before APIP %i\n", __i);
     strcat(cBoxArray, ControlerBoxes[__i].APIP.toString().c_str());
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after APIP %i\n", __i);
+    //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: after APIP %i\n", __i);
 
-    // for (short int __j = 0; __j < boxState::BOX_STATES_COUNT; __j++) {
-    //
-    // }
+    for (short int __j = 0; __j < boxState::BOX_STATES_COUNT; __j++) {
+      // Serial.printf("myWebServerViews::loadBoxArray(): BOX STATE LOOP: starting, iter %i\n", __j);
+      strcat(cBoxArray, "<a href='?status=");
+      strcat(cBoxArray, boxState::boxStates[__j].cHtmlTag);
+      strcat(cBoxArray, "&lb=");
+      strcat(cBoxArray, __cNodeName);
+      strcat(cBoxArray, "'><button>");
+      strcat(cBoxArray, boxState::boxStates[__j].cName);
+      strcat(cBoxArray, "</button></a>&nbsp;");
+      // Serial.printf("myWebServerViews::loadBoxArray(): BOX STATE LOOP: ending, iter %i\n", __j);
+    }
 
-    strcat(cBoxArray, "<a href='?status=man&lb=");
-    strcat(cBoxArray, __cNodeName);
-    strcat(cBoxArray, "'><button>MANUAL</button></a>&nbsp;");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after MANUAL %i\n", __i);
-
-    strcat(cBoxArray, "<a href='?status=ali&lb=");
-    strcat(cBoxArray, __cNodeName);
-    strcat(cBoxArray, "'><button>ALIGN</button></a>&nbsp;");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after ALIGN %i\n", __i);
-
-    strcat(cBoxArray, "<a href='?status=irs&lb=");
-    strcat(cBoxArray, __cNodeName);
-    strcat(cBoxArray, "'><button>PIR STARTUP</button></a>&nbsp;");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after PIR STARTUP %i\n", __i);
-
-    strcat(cBoxArray, "<a href='?status=irh&lb=");
-    strcat(cBoxArray, __cNodeName);
-    strcat(cBoxArray, "'><button>PIR HIGH</button></a>&nbsp;");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after PIR HIGH %i\n", __i);
-
-    strcat(cBoxArray, "<a href='?status=meh&lb=");
-    strcat(cBoxArray, __cNodeName);
-    strcat(cBoxArray, "'><button>MESH HIGH</button></a>&nbsp;");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after MESH HIGH %i\n", __i);
-
-    strcat(cBoxArray, "<a href='?status=wai&lb=");
-    strcat(cBoxArray, __cNodeName);
-    strcat(cBoxArray, "'><button>WAITING</button></a>&nbsp;");
-    //   Serial.printf("myWebServerViews::loadBoxArray(): LOOP: after WAITING %i\n", __i);
-
-    strcat(cBoxArray, "</div>");
-    Serial.printf("myWebServerViews::loadBoxArray(): LOOP ENDING: iter %i\n", __i);
+    strcat(cBoxArray, "</div>"); // Laser Box div
+    // Serial.printf("myWebServerViews::loadBoxArray(): LOOP ENDING: iter %i\n", __i);
   }
-  Serial.print("myWebServerViews::loadBoxArray(): ENDING\n");
+  // Serial.print("myWebServerViews::loadBoxArray(): ENDING\n");
 }
 
 // String myWebServerViews::returnTheResponse() {
