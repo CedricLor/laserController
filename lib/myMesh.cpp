@@ -169,9 +169,9 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   return _apSsidBuf;
 }
 
-short myMesh::_jsonToInt(JsonDocument root, String rootKey) {
-  short iValue = 0;
-  const char* sValue = root[rootKey];
-  iValue = atoi(sValue);
-  return iValue;
-}
+// short myMesh::_jsonToInt(JsonDocument root, String rootKey) {
+//   short iValue = 0;
+//   const char* sValue = root[rootKey];
+//   iValue = atoi(sValue);
+//   return iValue;
+// }
