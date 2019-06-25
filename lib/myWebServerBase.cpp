@@ -71,7 +71,9 @@ void myWebServerBase::startAsyncServer() {
     _listAllCollectedParams(request);
 
     // Decode request and change behavior of this controller box
-    myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
+    myWebServerControler __myWebServerControler;
+    __myWebServerControler.decodeRequest(request);
+    // myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
 
     // Send a response (i.e. display a web page)
     // myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews

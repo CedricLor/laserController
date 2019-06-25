@@ -35,7 +35,7 @@ class myWebServerControler
 {
   public:
     myWebServerControler();
-    static void decodeRequest(AsyncWebServerRequest *request);
+    void decodeRequest(AsyncWebServerRequest *request);
 
   private:
     // static void _webSwitchRelays(AsyncWebParameter* _p2, bool targetState);
