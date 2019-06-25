@@ -131,7 +131,9 @@ String myWebServerBase::_processor(const String& var) {
     // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
     myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
     // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): Just after instantiating __myWebServerView\n");
+    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): __myWebServerView.cBoxArray before __myWebServerView.loadBoxArray() =");Serial.println(__myWebServerView.cBoxArray);
     __myWebServerView.loadBoxArray();
+    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): __myWebServerView.cBoxArray after __myWebServerView.loadBoxArray() =");Serial.println(__myWebServerView.cBoxArray);
     // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"):  Just after __myWebServerView.loadBoxArray()\n");
     return F(__myWebServerView.cBoxArray);
   }
