@@ -38,6 +38,9 @@ class myWebServerViews
   public:
     myWebServerViews();
     String returnTheResponse();
+    char cBoxArray[1000];
+
+    void loadBoxArray();
 
   private:
     static const char* _slave_Reaction[];

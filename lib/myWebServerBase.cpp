@@ -30,8 +30,6 @@
 
 #include "Arduino.h"
 #include "myWebServerBase.h"
-#include "myWebServerViews.cpp"
-#include "myWebServerControler.cpp"
 
 myWebServerBase::myWebServerBase()
 {
@@ -78,9 +76,9 @@ void myWebServerBase::startAsyncServer() {
     myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
 
     // Send a response (i.e. display a web page)
-    myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
-
-    Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
+    // myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
+    //
+    // Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
 
     // AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
     // __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
@@ -114,10 +112,13 @@ void myWebServerBase::startAsyncServer() {
 // Looks for placeholders in template
 // If it meets a placeholder, replace it with a given value
 String myWebServerBase::_processor(const String& var) {
+  myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
+  Serial.print("myWebServerBase::_processor(): Just after instantiating __myWebServerView\n");
+
   if(var == "I_NODE_NAME") {
-    char cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName,cNodeName,10); //(integer, yourBuffer, base)
-    return F(cNodeName);
+    char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
+    itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName,_cNodeName,10); //(integer, yourBuffer, base)
+    return F(_cNodeName);
   }
   if(var == "STATION_IP") {
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP.toString().c_str());
@@ -126,18 +127,13 @@ String myWebServerBase::_processor(const String& var) {
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
   if(var == "BOX_SETTER") {
-    char cBoxArray[200];
-    return F(cBoxArray);
+    __myWebServerView.loadBoxArray();
+    return F(__myWebServerView.cBoxArray);
   }
   if(var == "NETWORK_SETTER") {
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
   return String();
-}
-
-String myWebServerBase::_SBoxArray() {
-  String __SBoxArray;
-  return __SBoxArray;
 }
 
 void myWebServerBase::_onRequest(AsyncWebServerRequest *request){

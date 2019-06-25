@@ -38,6 +38,45 @@ myWebServerViews::myWebServerViews()
 {
 }
 
+void myWebServerViews::loadBoxArray() {
+  for (short int __i = 1; __i < BOXES_COUNT; __i++) {
+    strcat(cBoxArray, "<div>Laser Box ");
+    char __cNodeName[4];         // the ASCII of the integer will be stored in this char array
+    itoa(ControlerBoxes[__i].iNodeName, __cNodeName, 10); //(integer, yourBuffer, base)
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, " - Station IP: ");
+    strcat(cBoxArray, ControlerBoxes[__i].stationIP.toString().c_str());
+    strcat(cBoxArray, " - AP IP: ");
+    strcat(cBoxArray, ControlerBoxes[__i].APIP.toString().c_str());
+
+    strcat(cBoxArray, "<a href='?status=man&lb=");
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, "'><button>MANUAL</button></a>&nbsp;");
+
+    strcat(cBoxArray, "<a href='?status=ali&lb=");
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, "'><button>ALIGN</button></a>&nbsp;");
+
+    strcat(cBoxArray, "<a href='?status=irs&lb=");
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, "'><button>PIR STARTUP</button></a>&nbsp;");
+
+    strcat(cBoxArray, "<a href='?status=irh&lb=");
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, "'><button>PIR HIGH</button></a>&nbsp;");
+
+    strcat(cBoxArray, "<a href='?status=meh&lb=");
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, "'><button>MESH HIGH</button></a>&nbsp;");
+
+    strcat(cBoxArray, "<a href='?status=wai&lb=");
+    strcat(cBoxArray, __cNodeName);
+    strcat(cBoxArray, "'><button>WAITING</button></a>&nbsp;");
+
+    strcat(cBoxArray, "</div>");
+  }
+}
+
 String myWebServerViews::returnTheResponse() {
   String __myResponse = "<!DOCTYPE HTML><html>";
   __myResponse += "<body>";
