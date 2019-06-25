@@ -60,8 +60,10 @@ void myWebServerViews::loadBoxArray() {
 
     for (short int __j = 0; __j < boxState::BOX_STATES_COUNT; __j++) {
       // Serial.printf("myWebServerViews::loadBoxArray(): BOX STATE LOOP: starting, iter %i\n", __j);
-      strcat(cBoxArray, "<a href='?status=");
-      strcat(cBoxArray, boxState::boxStates[__j].cHtmlTag);
+      strcat(cBoxArray, "<a href='?boxTargetState=");
+      char __boxStateIndex[2];
+      itoa(__j, __boxStateIndex, 10);
+      strcat(cBoxArray, __boxStateIndex);
       strcat(cBoxArray, "&lb=");
       strcat(cBoxArray, __cNodeName);
       strcat(cBoxArray, "'><button>");
