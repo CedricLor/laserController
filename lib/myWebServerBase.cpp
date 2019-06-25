@@ -77,6 +77,13 @@ void myWebServerBase::startAsyncServer() {
 
     // Send a response (i.e. display a web page)
 
+   //  * Response Stream (You can print/write/printf to it, up to the contentLen bytes)
+   //  * */
+   // AsyncResponseStream::AsyncResponseStream(const String& contentType, size_t bufferSize){
+   // AsyncResponseStream * AsyncWebServerRequest::beginResponseStream(const String& contentType, size_t bufferSize){
+   //   return new AsyncResponseStream(contentType, bufferSize);
+   // }
+
     // AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
     // __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
     // __response->printf(__myWebServerView.returnTheResponse().c_str());            // converts the arduino String in C string (array of chars)
