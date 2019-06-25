@@ -64,21 +64,18 @@ void myWebServerBase::startAsyncServer() {
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
 
-    // List all collected headers
-    _listAllCollectedHeaders(request);
-
-    // List all parameters
-    _listAllCollectedParams(request);
+    if (DEBUG) {
+      // List all collected headers
+      _listAllCollectedHeaders(request);
+      // List all parameters
+      _listAllCollectedParams(request);
+    }
 
     // Decode request and change behavior of this controller box
     myWebServerControler __myWebServerControler;
-    __myWebServerControler.decodeRequest(request);
-    // myWebServerControler::decodeRequest(request);   // Call to "child" class myWebServerControler
+    __myWebServerControler.decodeRequest(request);   // Call to "child" class myWebServerControler
 
     // Send a response (i.e. display a web page)
-    // myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
-    //
-    // Serial.print("myWebServerBase::startAsyncServer(): Just after instantiating __myWebServerView\n");
 
     // AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
     // __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
