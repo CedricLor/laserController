@@ -112,27 +112,34 @@ void myWebServerBase::startAsyncServer() {
 // Looks for placeholders in template
 // If it meets a placeholder, replace it with a given value
 String myWebServerBase::_processor(const String& var) {
-  myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
-  Serial.print("myWebServerBase::_processor(): Just after instantiating __myWebServerView\n");
 
   if(var == "I_NODE_NAME") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"I_NODE_NAME\")\n");
     char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
     itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);
   }
   if(var == "STATION_IP") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"STATION_IP\")\n");
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP.toString().c_str());
   }
   if(var == "AP_IP") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"AP_IP\")\n");
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
   if(var == "BOX_SETTER") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
+    myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
+    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): Just after instantiating __myWebServerView\n");
     __myWebServerView.loadBoxArray();
+    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"):  Just after __myWebServerView.loadBoxArray()\n");
     return F(__myWebServerView.cBoxArray);
   }
   if(var == "NETWORK_SETTER") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"NETWORK_SETTER\")\n");
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
+  Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");
   return String();
 }
 
