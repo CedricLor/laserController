@@ -36,7 +36,6 @@ myWebServerBase::myWebServerBase()
 }
 
 AsyncWebServer myWebServerBase::_asyncServer(80);
-char myWebServerBase::_linebuf[80];
 
 void myWebServerBase::_listAllCollectedHeaders(AsyncWebServerRequest *request) {
   int __headers = request->headers();

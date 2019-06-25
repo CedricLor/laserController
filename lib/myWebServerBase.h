@@ -42,9 +42,7 @@ class myWebServerBase
     static void startAsyncServer();
 
   private:
-    // int _pin;
     static AsyncWebServer _asyncServer;
-    static char _linebuf[];
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
