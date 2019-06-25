@@ -37,10 +37,15 @@ class boxState
     static Task tPlayBoxStates;
     static const short int BOX_STATES_COUNT;
 
+    static boxState boxStates[];
+
+    char cName[15];  // array of character to hold the name of each sequences
+    char cHtmlTag[4];  // array of character to hold the name of each sequences
+
   private:
-    static boxState _boxStates[];
 
     static const short int _NAME_CHAR_COUNT;
+    static const short int _HTML_TAG_CHAR_COUNT;
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
     static short int _boxDefaultState;
@@ -54,13 +59,12 @@ class boxState
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
 
-    char _cName[15];  // array of character to hold the name of each sequences
     unsigned long _ulDuration; // duration for which the status shall active before automatically returning to default
     short int _iAssociatedSequence;  // sequence associated to a given state
     short int _iIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
     short int _iMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
-    void _initBoxState(const char cName[], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger);
+    void _initBoxState(const char cpName[], const char cpHtmlTag[], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger);
 };
 
 #endif
