@@ -175,7 +175,8 @@ bool boxState::_oetcbPlayBoxState(){
   // Play sequence in loop until end
   // Serial.println("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
-  myMeshViews::statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
+  myMeshViews __myMeshViews;
+  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
   // Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
