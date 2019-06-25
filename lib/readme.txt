@@ -92,7 +92,7 @@ include paths and build them.
 More information about PlatformIO Library Dependency Finder
 - https://docs.platformio.org/page/librarymanager/ldf.html
 
-// TODO
+// DONE AND TODO
 
 DONE:
 - rename ControlerBox::activeBoxState to ControlerBox::boxActiveState
@@ -108,22 +108,39 @@ DONE:
   - send via myMeshViews::statusMsg() the time at which the sender boxState was changed
   - add to ControlerBox the time at which the sender boxState was changed
 
-TO DO:
-- ControlerBox::updateOtherBoxProperties and ControlerBox::updateThisBoxProperties
-  - send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
-
-- ControlerBox class: I_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array
-
-- myMesh::_decodeRequest: last three lines to be seriously updated
-
+- move _SBoxArray to myWebServerViews
 - draft myWebServerBase::_SBoxArray() which will return a String, to be incorporated into the webpage of the interface, setting out the states of each box and state setters for each box
 
-- optimizations:
-- ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, String rootKey): try to get rid of the String in the parameters;
-- short/int to bool or byte
-  - each time I use a short int as a bool, change it to a bool
-  - each time I use a short for a very short number, change it to a byte
 
-- move _processor and _SBoxArray to myWebServerViews
-- find a better way to init ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0 than in setup()
-- refactor myMeshViews::statusMsg("on"); currently being called from boxState.cpp, upon enabling and disabling _tPlayBoxState
+
+TO DO:
+1. High priority
+  A. Decode request coming from users
+    - myMesh::_decodeRequest: last three lines to be seriously updated
+    - review webServerControler to start decoding requests properly
+
+  B. optimizations
+  - ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, String rootKey): try to get rid of the String in the parameters;
+  - short/int to bool or byte
+    - each time I use a short int as a bool, change it to a bool
+    - each time I use a short for a very short number, change it to a byte
+
+  C. Implement websockets
+  D. Implement network sequences
+  E. Implement some kind of non-volatile storage of sequences, boxStotes or network sequences
+
+  F. Iterate and start sending more data and develop more setters
+  - ControlerBox::updateOtherBoxProperties and ControlerBox::updateThisBoxProperties
+    - send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
+
+2. Medium priority
+- Somewhere (where???):
+  - before sending messages, check that the mesh exists; if it does not exist, start a Task ready to send the data when the mesh exists
+  - upon connecting to the mesh, the connecting box shall send its current state (including the time at which it started)
+  - upon connecting to the mesh, the other boxes shall send to the new box their current states
+
+3. Low priority: small optimizations
+  - ControlerBox class: I_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array
+  - move _processor and _SBoxArray to myWebServerViews
+  - find a better way to init ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0 than in setup()
+  - refactor myMeshViews::statusMsg("on"); currently being called from boxState.cpp, upon enabling and disabling _tPlayBoxState
