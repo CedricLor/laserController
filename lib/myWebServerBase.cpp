@@ -102,7 +102,6 @@ void myWebServerBase::startAsyncServer() {
     //     send(beginResponse(fs, path, contentType, download, callback));
     //   } else send(404);
     // }
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();  // dependency; update this box properties before myWebServerViews reads this box properties
     request->send(SPIFFS, "/index.htm", String(), false, _processor);
 
   }); // end _asyncServer.on
