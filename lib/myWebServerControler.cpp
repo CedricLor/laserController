@@ -90,12 +90,12 @@ void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
   // if request is change status
   // expected request: http://192.168.43.84/?status=[some boxTargetState index number]&lb=[sboxname]
   if(request->hasParam("boxTargetState")) {
-    if (DEBUG) {
+    if (MY_DEBUG) {
       Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"boxTargetState\")");
     }
     AsyncWebParameter* _p1 = request->getParam("boxTargetState");
     AsyncWebParameter* _p2 = request->getParam("lb");
-    if (DEBUG) {
+    if (MY_DEBUG) {
       Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"boxTargetState\" = %c", _p1);
       Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"lb\" = %c", _p2);
     }

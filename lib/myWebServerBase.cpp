@@ -64,7 +64,7 @@ void myWebServerBase::startAsyncServer() {
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
 
-    if (DEBUG) {
+    if (MY_DEBUG) {
       // List all collected headers
       _listAllCollectedHeaders(request);
       // List all parameters
