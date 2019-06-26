@@ -118,7 +118,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   // deserialize the message msg received from the mesh into the StaticJsonDocument doc
   DeserializationError err = deserializeJson(doc, msg.c_str());
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
-  Serial.printf("myMesh::_decodeRequest(...): DeserializationError = %c\n", err.c_str());
+  Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
 
   // const short __iSenderNodeName = doc["senderNodeName"];
   // Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to __iSenderNodeName \n", __iSenderNodeName);
