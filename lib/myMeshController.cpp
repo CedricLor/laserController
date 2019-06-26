@@ -29,7 +29,7 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
 {
   const char* _action = root["action"];
   if (MY_DEBUG) {
-    Serial.print("myMeshController::myMeshController: _action = ");Serial.println(_action);
+    Serial.printf("myMeshController::myMeshController: _action = %c", *_action);
   }
   //////// Manual mode
   const char* _u = "u";
