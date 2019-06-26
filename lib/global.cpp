@@ -44,7 +44,7 @@ const short IS_STATION_MANUAL = true;                  // BOX BY BOX
 const uint8_t MESH_CHANNEL = 6;
 
 const short I_DEFAULT_INTERFACE_NODE_NAME = 200;
-const short MESH_REQUEST_CAPACITY = 17;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
+const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
