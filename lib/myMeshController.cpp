@@ -27,48 +27,62 @@ Created by Cedric Lor, January 22, 2019.
 
 myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
 {
-  char _action = root["action"];
-  const short __iSenderNodeName = root["senderNodeName"];
+  const char* _action = root["action"];
+  if (MY_DEBUG) {
+    Serial.print("myMeshController::myMeshController: _action = ");Serial.println(_action);
+  }
   //////// Manual mode
-  if (_action == 'u') {           // action 'u' for this message requests that the laserPin be turned into or out of User controlled mode
+  const char* _u = "u";
+  if (strcmp(_action, _u) == 0) {           // action 'u' for this message requests that the laserPin be turned into or out of User controlled mode
     _manualSwitch(root);
     return;
   }
   //////// IR mode
-  if (_action == 'i') {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
+  const char* _i = "i";
+  if (strcmp(_action, _i) == 0) {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
     _changeInclusionIR(root);
     return;
   }
   //////// Blinking interval
-  if (_action == 'b') {           // action 'b' for this message relates to a blinking interval, that this box should update as the case may be
+  const char* _b = "b";
+  if (strcmp(_action, _b) == 0) {           // action 'b' for this message relates to a blinking interval, that this box should update as the case may be
     _changeBlinkingInterval(root);
     return;
   }
   //////// masterBox and reaction to masterBox status change
-  if (_action == 'm') {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
+  const char* _m = "m";
+  if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
     _changeMasterBox(root);
     return;
   }
-  if (_action == 's') {           // action 's' for boxState of another box has changed
+  const char* _s = "s";
+  if (strcmp(_action, _s) == 0) {           // action 's' for boxState of another box has changed
     // update the ControlerBoxes[] array with the values received from the other box
     // if the sender box is not the interface
+    short __iSenderNodeName = root["senderNodeName"];
+    if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: __iSenderNodeName = %i\n", __iSenderNodeName);}
     if (!(__iSenderNodeName == iInterfaceNodeName)) {
       ControlerBox::updateOtherBoxProperties(senderNodeId, root);
     }
     return;
   }
-  if (_action == 'c') {           // action 'c' for this message orders to change the boxTargetState
+  const char* _c = "c";
+  if (strcmp(_action, _c) == 0) {           // action 'c' for this message orders to change the boxTargetState
+    short __iSenderNodeName = root["senderNodeName"];
+    if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: __iSenderNodeName = %c\n", __iSenderNodeName);}
     if ((__iSenderNodeName == iInterfaceNodeName)) {
-      const short __receiverTargetState = root["receiverTargetState"];
+      short __receiverTargetState = root["receiverTargetState"];
       Serial.printf("myMeshController::myMeshController: will change my target state to %i", __receiverTargetState);
     }
     return;                       // of the pins, that this box should update as the case may be
   }
-  if (_action == 'p') {           // action 't' for this message orders the pairing
+  const char* _p = "p";
+  if (strcmp(_action, _p) == 0) {           // action 't' for this message orders the pairing
     _pinPairing(root);            // (either of type unpairing, twin pairing or cooperative)
     return;                       // of the pins, that this box should update as the case may be
   }
-  if (_action == 'd') {           // action 'd' for this message requests that this box returns Data on it current states
+  const char* _d = "d";
+  if (strcmp(_action, _d) == 0) {           // action 'd' for this message requests that this box returns Data on it current states
     _dataRequest();
     return;
   }
@@ -90,39 +104,39 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void myMeshController::_manualSwitch(JsonDocument _root) {
+void myMeshController::_manualSwitch(JsonDocument& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
-  short _iTargetState;
-  const char* _sTargetState = _root["ts"];
-  _iTargetState = atoi(_sTargetState);
+  // short _iTargetState;
+  // const char* _sTargetState = _root["ts"];
+  // _iTargetState = atoi(_sTargetState);
   // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_iTargetState);
   // LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
 }
 
-void myMeshController::_changeInclusionIR(JsonDocument _root) {
+void myMeshController::_changeInclusionIR(JsonDocument& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
-  short _iTargetState;
-  const char* _sTargetState = _root["ts"];
-  _iTargetState = atoi(_sTargetState);
+  // short _iTargetState;
+  // const char* _sTargetState = _root["ts"];
+  // _iTargetState = atoi(_sTargetState);
   // LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 }
 
-void myMeshController::_changeBlinkingInterval(JsonDocument _root) {
+void myMeshController::_changeBlinkingInterval(JsonDocument& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
-  unsigned long _ulTargetBlinkingInterval;
-  const char* _sTargetBlinkingInterval = _root["ti"];
-  _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
+  // unsigned long _ulTargetBlinkingInterval;
+  // const char* _sTargetBlinkingInterval = _root["ti"];
+  // _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
   // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
 }
 
-void myMeshController::_changeMasterBox(JsonDocument _root) {
+void myMeshController::_changeMasterBox(JsonDocument& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
-  short iNewMasterBoxNumber;
-  const char* sNewMasterBoxNumber = _root["ms"];
-  iNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
-  const char* sNewReaction = _root["react"];
-  // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
-  MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(iNewMasterBoxNumber, sNewReaction);
+  // short iNewMasterBoxNumber;
+  // const char* sNewMasterBoxNumber = _root["ms"];
+  // iNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
+  // const char* sNewReaction = _root["react"];
+  // // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
+  // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(iNewMasterBoxNumber, sNewReaction);
 }
 
 const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -137,7 +151,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 //
 // slaveReactionStruct slaveReactionStructsArray[4];
 
-void myMeshController::_slaveBoxSwitch(JsonDocument root) {
+void myMeshController::_slaveBoxSwitch(JsonDocument& root) {
   // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderBoxActiveState":"on"}
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
@@ -149,31 +163,31 @@ void myMeshController::_slaveBoxSwitch(JsonDocument root) {
       - The second index number (0 or 1) indicates the current status of the masterBox and selects, within the HIGH/LOW pair, the reaction of the slaveBox.
   */
   // extract the root[rootKey]
-  const char* __cSenderBoxActiveState = root["senderBoxActiveState"];
-  Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from root[\"senderBoxActiveState\"] to senderBoxActiveState \n", __cSenderBoxActiveState);
+  // const char* __cSenderBoxActiveState = root["senderBoxActiveState"];
+  // Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from root[\"senderBoxActiveState\"] to senderBoxActiveState \n", __cSenderBoxActiveState);
 
   // The following line has for sole purpose to provide data to the Serial.printfs below
-  const char* myFutureState = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
-
-  if (strstr(__cSenderBoxActiveState, "on")  > 0) {
-    // if senderBoxActiveState contains "on", it means that the master box (the mesh sender) is turned on.
-    Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    // LaserGroupedUnitsArray::setTargetState(3);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with on status */
-    // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
-  } else if (strstr(__cSenderBoxActiveState, "off")  > 0) {
-    // else if senderBoxActiveState contains "on", it means that the master box (the mesh sender) is turned on.
-    Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
-    // LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
-    // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
-  }
-  Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
+  // const char* myFutureState = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
+  //
+  // if (strstr(__cSenderBoxActiveState, "on")  > 0) {
+  //   // if senderBoxActiveState contains "on", it means that the master box (the mesh sender) is turned on.
+  //   Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
+  //   // LaserGroupedUnitsArray::setTargetState(3);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with on status */
+  //   // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0]);
+  // } else if (strstr(__cSenderBoxActiveState, "off")  > 0) {
+  //   // else if senderBoxActiveState contains "on", it means that the master box (the mesh sender) is turned on.
+  //   Serial.printf("myMeshController::_slaveBoxSwitch(): Turning myself to %s.\n", myFutureState);
+  //   // LaserGroupedUnitsArray::setTargetState(LaserGroupedUnitsArray::previousState);  /*3 means turn the LaserGroupedUnitsArray state machine to the state: in slave box mode, with off status */
+  //   // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
+  // }
+  // Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
 }
 
-void myMeshController::_pinPairing(JsonDocument root) {
+void myMeshController::_pinPairing(JsonDocument& root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
-  short _iTargetPairingType;
-  const char* _sTargetPairingType = root["ts"];
-  _iTargetPairingType = atoi(_sTargetPairingType);
+  // short _iTargetPairingType;
+  // const char* _sTargetPairingType = root["ts"];
+  // _iTargetPairingType = atoi(_sTargetPairingType);
   // LaserGroupedUnitsArray::pairUnpairAllPins(_iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
 }
 
