@@ -25,9 +25,10 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
-myMeshController::myMeshController(JsonDocument& root)
+myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
 {
   char _action = root["action"];
+  const short __iSenderNodeName = root["senderNodeName"];
   //////// Manual mode
   if (_action == 'u') {           // action 'u' for this message requests that the laserPin be turned into or out of User controlled mode
     _manualSwitch(root);
@@ -48,9 +49,20 @@ myMeshController::myMeshController(JsonDocument& root)
     _changeMasterBox(root);
     return;
   }
-  if (_action == 's') {           // action 's' for status of master box has changed
-    _slaveBoxSwitch(root);
+  if (_action == 's') {           // action 's' for boxState of another box has changed
+    // update the ControlerBoxes[] array with the values received from the other box
+    // if the sender box is not the interface
+    if (!(__iSenderNodeName == iInterfaceNodeName)) {
+      ControlerBox::updateOtherBoxProperties(senderNodeId, root);
+    }
     return;
+  }
+  if (_action == 'c') {           // action 'c' for this message orders to change the boxTargetState
+    if ((__iSenderNodeName == iInterfaceNodeName)) {
+      const short __receiverTargetState = root["receiverTargetState"];
+      Serial.printf("myMeshController::myMeshController: will change my target state to %i", __receiverTargetState);
+    }
+    return;                       // of the pins, that this box should update as the case may be
   }
   if (_action == 'p') {           // action 't' for this message orders the pairing
     _pinPairing(root);            // (either of type unpairing, twin pairing or cooperative)
