@@ -29,7 +29,7 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
 {
   const char* _action = root["action"];
   if (MY_DEBUG) {
-    Serial.printf("myMeshController::myMeshController: _action = %c", *_action);
+    Serial.print("myMeshController::myMeshController: _action = ");Serial.println(_action);
   }
   //////// Manual mode
   const char* _u = "u";
@@ -60,7 +60,7 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
     // update the ControlerBoxes[] array with the values received from the other box
     // if the sender box is not the interface
     short __iSenderNodeName = root["senderNodeName"];
-    if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: __iSenderNodeName = %i\n", __iSenderNodeName);}
+    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __iSenderNodeName = ");Serial.println(__iSenderNodeName);}
     if (!(__iSenderNodeName == iInterfaceNodeName)) {
       ControlerBox::updateOtherBoxProperties(senderNodeId, root);
     }
@@ -69,10 +69,10 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
   const char* _c = "c";
   if (strcmp(_action, _c) == 0) {           // action 'c' for this message orders to change the boxTargetState
     short __iSenderNodeName = root["senderNodeName"];
-    if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: __iSenderNodeName = %c\n", __iSenderNodeName);}
+    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __iSenderNodeName = ");Serial.println(__iSenderNodeName);}
     if ((__iSenderNodeName == iInterfaceNodeName)) {
       short __receiverTargetState = root["receiverTargetState"];
-      Serial.printf("myMeshController::myMeshController: will change my target state to %i", __receiverTargetState);
+      if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: will change my target state to ");Serial.println(__receiverTargetState);}
     }
     return;                       // of the pins, that this box should update as the case may be
   }
