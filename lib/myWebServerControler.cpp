@@ -96,8 +96,8 @@ void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
     AsyncWebParameter* _p1 = request->getParam("boxTargetState");
     AsyncWebParameter* _p2 = request->getParam("lb");
     if (MY_DEBUG) {
-      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"boxTargetState\" = %c", _p1);
-      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"lb\" = %c", _p2);
+      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"boxTargetState\" = %c", *(_p1->value().c_str()));
+      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"lb\" = %c", *(_p2->value().c_str()));
     }
     myMeshViews __myMeshViews;
     __myMeshViews.changeBoxTargetState(_p1->value().c_str(), _p2->value().c_str());
