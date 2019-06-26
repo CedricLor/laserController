@@ -95,7 +95,7 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"senderNodeName":"200";"senderAPIP":"...";"senderStIP":"..."}
   if (MY_DEBUG) {
-    Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = %c, boxName = %c \n");
+    Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = ");Serial.print(boxTargetState);Serial.print("boxName = ");Serial.print(boxName);Serial.print("\n");
   }
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
