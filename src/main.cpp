@@ -11,8 +11,8 @@
 
 #include "../lib/secret.h"
 
-#include "../lib/Myota.h"
-#include "../lib/Myota.cpp"
+// #include "../lib/Myota.h"
+// #include "../lib/Myota.cpp"
 #include "../lib/ControlerBox.h"
 #include "../lib/ControlerBox.cpp"
 #include "../lib/mySavedPrefs.h"
@@ -67,7 +67,7 @@ void setup() {
   if (IS_INTERFACE == true) {
     myWebServerBase::startAsyncServer();
   }
-  Myota::OTAConfig();
+  // Myota::OTAConfig();
 
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
