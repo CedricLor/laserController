@@ -60,11 +60,11 @@ class boxState
     static void _odtcbPlayBoxState();
 
     unsigned long _ulDuration; // duration for which the status shall active before automatically returning to default
-    short int _iAssociatedSequence;  // sequence associated to a given state
-    short int _iIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
-    short int _iMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
+    byte _bAssociatedSequence;  // sequence associated to a given state
+    byte _bIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
+    byte _bMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
-    void _initBoxState(const char cpName[], const char cpHtmlTag[], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger);
+    void _initBoxState(const char cpName[], const char cpHtmlTag[], const unsigned long ulDuration, const byte bAssociatedSequence, const byte bIRTrigger, const byte bMeshTrigger);
 };
 
 #endif

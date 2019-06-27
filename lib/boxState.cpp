@@ -46,14 +46,14 @@ boxState::boxState() {
 
 
 // Initialisers
-void boxState::_initBoxState(const char cpName[_NAME_CHAR_COUNT], const char cpHtmlTag[_NAME_CHAR_COUNT], const unsigned long ulDuration, const short int iAssociatedSequence, const short int iIRTrigger, const short int iMeshTrigger){
+void boxState::_initBoxState(const char cpName[_NAME_CHAR_COUNT], const char cpHtmlTag[_NAME_CHAR_COUNT], const unsigned long ulDuration, const byte bAssociatedSequence, const byte bIRTrigger, const byte bMeshTrigger){
   // Serial.println("void boxState::_initBoxState(). Starting.");
   strcpy(cName, cpName);
   strcpy(cHtmlTag, cpHtmlTag);
   _ulDuration = ulDuration;
-  _iAssociatedSequence = iAssociatedSequence;
-  _iIRTrigger = iIRTrigger;
-  _iMeshTrigger = iMeshTrigger;
+  _bAssociatedSequence = bAssociatedSequence;
+  _bIRTrigger = bIRTrigger;
+  _bMeshTrigger = bMeshTrigger;
   // Serial.println("void boxState::_initBoxState(). Ending.");
 };
 
@@ -102,13 +102,13 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
   // 1. If in a state where IR trigger is available, check the state of value of the IR
-  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
     // ControlerBox::ulValFromPirTimeSet = laserControllerMesh.getNodeTime();
     _setBoxTargetState(3);
   }
   // 2. If in a state where the Mesh trigger is available, check the state of value of the Mesh
   // FOLLOWING LINES TO BE REDRAFTED
-  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iMeshTrigger == 1 && !(ControlerBox::valFromMesh == -1)) {
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1 && !(ControlerBox::valFromMesh == -1)) {
     if (ControlerBox::valFromMesh == 3) { // the value 3 here is just inserted as an example
       // ControlerBox::ulValFromMeshTimeSet = laserControllerMesh.getNodeTime();
       _setBoxTargetState(4);
@@ -178,7 +178,7 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
   Serial.println(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   // Look for the sequence number to read when in this state
-  short int _activeSequence = boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iAssociatedSequence;
+  short int _activeSequence = boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bAssociatedSequence;
   // Serial.print("void boxState::_oetcbPlayBoxState() _activeSequence: ");
   // Serial.println(_activeSequence);
   // set the active sequence
