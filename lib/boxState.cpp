@@ -101,16 +101,24 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.println("void boxState::_tcbPlayBoxStates(). Starting.");
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
-  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iIRTrigger == 1 && ControlerBox::valPir == HIGH) {
+  // 1. If in a state where IR trigger is available, check the state of value of the IR
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
     _setBoxTargetState(3);
   }
-  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iMeshTrigger == 1 && !(ControlerBox::valMesh == -1)) {
-    if (ControlerBox::valMesh == 3) { // the value 3 here is just inserted as an example
+  // 2. If in a state where the Mesh trigger is available, check the state of value of the Mesh
+  // FOLLOWING LINES TO BE REDRAFTED
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._iMeshTrigger == 1 && !(ControlerBox::valFromMesh == -1)) {
+    if (ControlerBox::valFromMesh == 3) { // the value 3 here is just inserted as an example
       _setBoxTargetState(4);
     }
   }
-  ControlerBox::valPir = LOW;
-  ControlerBox::valMesh = -1;
+  // 3. Always check the state of value of Web trigger
+  if (!(ControlerBox::valFromWeb == -1)) {
+    _setBoxTargetState(ControlerBox::valFromWeb);
+  }
+  ControlerBox::valFromPir = LOW;
+  ControlerBox::valFromMesh = -1;
+  ControlerBox::valFromWeb = -1;
   if (_boxActiveStateHasBeenReset == 1) {
     _boxActiveStateHasBeenReset = 0;
     // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState]._ulDuration: ");
