@@ -81,13 +81,15 @@ void boxState::initBoxStates() {
 // tPlayBoxStates starts the execution of the various boxStates.
 // It is enabled at the end of the setup.
 // It then iterates indefinitely every seconds.
+// onEnable, it puts the box into IR Startup boxState (which is set to last for 1 minute)
+// then
 Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, false, &_oetcbPlayBoxStates);
 
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed:
-  - ControlerBox::valPir (when the current boxState is set to react to signals from the PIR);
-  - ControlerBox::valMesh (when the current boxState is set to react to signals from the mesh);
+  - ControlerBox::valFromPir (when the current boxState is set to react to signals from the PIR);
+  - ControlerBox::valFromMesh (when the current boxState is set to react to signals from the mesh);
   - _boxActiveStateHasBeenReset;
   - _boxTargetState;
   Depending on the changes, it will:
@@ -176,7 +178,7 @@ bool boxState::_oetcbPlayBoxState(){
   // Serial.println("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
   myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState); // TO UPDATE TO SEND THE BOX STATUS TO THE MESH
+  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   // Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
