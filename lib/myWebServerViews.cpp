@@ -48,7 +48,7 @@ void myWebServerViews::loadBoxArray() {
     strcat(cBoxArray, "<div>Laser Box ");
     char __cNodeName[4];         // the ASCII of the integer will be stored in this char array
     //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before itoa %i\n", __i);
-    itoa(ControlerBoxes[__i].iNodeName, __cNodeName, 10); //(integer, yourBuffer, base)
+    itoa(ControlerBoxes[__i].bNodeName, __cNodeName, 10); //(integer, yourBuffer, base)
     strcat(cBoxArray, __cNodeName);
     strcat(cBoxArray, " - Station IP: ");
     //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before stationIp %i\n", __i);
@@ -78,6 +78,7 @@ void myWebServerViews::loadBoxArray() {
   // Serial.print("myWebServerViews::loadBoxArray(): ENDING\n");
 }
 
+
 // String myWebServerViews::returnTheResponse() {
 //   String __myResponse = "<!DOCTYPE HTML><html>";
 //   __myResponse += "<body>";
@@ -101,9 +102,9 @@ void myWebServerViews::loadBoxArray() {
 //   String __linksToBoxes = "<div class=\"box_links_wrapper\">";
 //   // IPAddress testIp(0,0,0,0);
 //   for (short i = 0; i < BOXES_COUNT; i++) {
-//     if (ControlerBoxes[i].iNodeName) {                          // dependancy
+//     if (ControlerBoxes[i].bNodeName) {                          // dependancy
 //       __linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
-//       __linksToBoxes += String((ControlerBoxes[i].iNodeName));   // dependancy
+//       __linksToBoxes += String((ControlerBoxes[i].bNodeName));   // dependancy
 //       __linksToBoxes += " - Station IP: ";
 //       __linksToBoxes += "<a href=\"http://";
 //       __linksToBoxes += (ControlerBoxes[i].stationIP).toString();   // dependancy

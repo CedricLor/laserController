@@ -14,7 +14,7 @@ class ControlerBox
     uint32_t nodeId;
     IPAddress stationIP;
     IPAddress APIP;
-    short int iNodeName;
+    byte bNodeName;
     short int boxActiveState;
     uint32_t uiBoxActiveStateStartTime;
 

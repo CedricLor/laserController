@@ -139,7 +139,7 @@ JsonObject myMeshViews::_createJsonobject() {
 void myMeshViews::_broadcastMsg(JsonObject& msg) {
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
   char _cNodeName[4];
-  itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName, _cNodeName, 10);
+  itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName, _cNodeName, 10);
   msg["senderNodeName"] = _cNodeName;
   msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
   msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();

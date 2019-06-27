@@ -32,7 +32,7 @@ void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  iNodeName = B_NODE_NAME;
+  bNodeName = B_NODE_NAME;
   // valFromPir is updated by pirController (which sets it HIGH) and boxState (which sets it LOW)
   // valFromMesh is updated by myMesh (--> update to be moved to myMeshController) and boxState
   if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
@@ -43,25 +43,25 @@ void ControlerBox::printProperties(const short int boxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: %u\n", boxIndex, nodeId);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", boxIndex);Serial.println(APIP);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", boxIndex);Serial.println(stationIP);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].iNodeName: %i\n", boxIndex, iNodeName);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bNodeName: %i\n", boxIndex, bNodeName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %u\n", boxIndex, uiBoxActiveStateStartTime);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
   Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
-  short int __iNodeName = doc["senderNodeName"]; // ex. 201
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): __iNodeName = %i\n", __iNodeName);
-  short int __boxIndex = __iNodeName - I_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): __iNodeName = %i\n", __boxIndex);
+  byte __bNodeName = doc["senderNodeName"]; // ex. 201
+  Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
+  short int __boxIndex = __bNodeName - I_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): __boxIndex = %i\n", __boxIndex);
   ControlerBoxes[__boxIndex].nodeId = senderNodeId;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__boxIndex].nodeId = %i", senderNodeId);
   ControlerBoxes[__boxIndex].APIP = _parseIpStringToIPAddress(doc, "senderAPIP");
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __boxIndex);Serial.println(ControlerBoxes[__boxIndex].APIP);
   ControlerBoxes[__boxIndex].stationIP = _parseIpStringToIPAddress(doc, "senderStIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __boxIndex);Serial.println(ControlerBoxes[__boxIndex].stationIP);
-  ControlerBoxes[__boxIndex].iNodeName = __iNodeName;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].iNodeName = %i", __boxIndex, ControlerBoxes[__boxIndex].iNodeName);
+  ControlerBoxes[__boxIndex].bNodeName = __bNodeName;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i", __boxIndex, ControlerBoxes[__boxIndex].bNodeName);
   ControlerBoxes[__boxIndex].boxActiveState = doc["senderBoxActiveState"];
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
   ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = doc["senderBoxActiveStateStartTime"];
