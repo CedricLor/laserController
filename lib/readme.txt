@@ -140,7 +140,7 @@ TO DO:
   - upon connecting to the mesh, the other boxes shall send to the new box their current states
 
 3. Low priority: small optimizations
-  - ControlerBox class: I_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array
+  - ControlerBox class: B_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array
   - move _processor and _SBoxArray to myWebServerViews
   - find a better way to init ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0 than in setup()
   - refactor myMeshViews::statusMsg("on"); currently being called from boxState.cpp, upon enabling and disabling _tPlayBoxState

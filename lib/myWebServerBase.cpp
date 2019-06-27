@@ -117,8 +117,8 @@ void myWebServerBase::startAsyncServer() {
 // If it meets a placeholder, replace it with a given value
 String myWebServerBase::_processor(const String& var) {
 
-  if(var == "I_NODE_NAME") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"I_NODE_NAME\")\n");
+  if(var == "B_NODE_NAME") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"B_NODE_NAME\")\n");
     char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
     itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].iNodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);

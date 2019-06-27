@@ -83,7 +83,7 @@ void myWebServerViews::loadBoxArray() {
 //   __myResponse += "<body>";
 //   __myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
 //   __myResponse += "<h1>";
-//   __myResponse += String(I_NODE_NAME); // I_NODE_NAME defined and declared in global
+//   __myResponse += String(B_NODE_NAME); // B_NODE_NAME defined and declared in global
 //   __myResponse += " - Station IP: ";
 //   __myResponse += (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString(); // dependancy
 //   __myResponse += " - AP IP: ";
@@ -182,7 +182,7 @@ void myWebServerViews::loadBoxArray() {
 //     if (__i + I_MASTER_NODE_PREFIX == iMasterNodeName) { // I_MASTER_NODE_PREFIX and iMasterNodeName defined and declared in global
 //       __selected += "selected";
 //     };
-//     if (!(__i + I_MASTER_NODE_PREFIX == I_NODE_NAME)) { // I_MASTER_NODE_PREFIX and I_NODE_NAME defined and declared in global
+//     if (!(__i + I_MASTER_NODE_PREFIX == B_NODE_NAME)) { // I_MASTER_NODE_PREFIX and B_NODE_NAME defined and declared in global
 //       __masterSelect += _printOption(String(__i), String(__i), __selected);
 //     }
 //   }
