@@ -120,32 +120,8 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
   Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
 
-  // const short __iSenderNodeName = doc["senderNodeName"];
-  // Serial.printf("myMesh::_decodeRequest(...) %u alloted from doc[\"senderNodeName\"] to __iSenderNodeName \n", __iSenderNodeName);
-
-  // auto __APIP = doc["APIP"].as<const char*>();
-  // Serial.print("myMesh::_decodeRequest(...): __APIP = ");Serial.println(__APIP);
-  // auto __StationIP = doc["senderStIP"].as<const char*>();
-  // Serial.print("myMesh::_decodeRequest(...): __StationIP = ");Serial.println(__StationIP);
-
-  // Serial.println(iMasterNodeName);
-  // Serial.println(__iSenderNodeName);
-  // Serial.println(!(__iSenderNodeName == iMasterNodeName));
-  // Serial.println(iInterfaceNodeName);
-  // Serial.println(!(__iSenderNodeName == iInterfaceNodeName));
-  // Serial.println("(!(__iSenderNodeName == iMasterNodeName)&&!(__iSenderNodeName == iInterfaceNodeName))");
-  // Serial.println((!(__iSenderNodeName == iMasterNodeName)&&!(__iSenderNodeName == iInterfaceNodeName)));
-
-  // If the message is not addressed to me, discard it
-  // if (!(__iSenderNodeName == iMasterNodeName)&&!(__iSenderNodeName == iInterfaceNodeName)) {   // do not react to broadcast message if message not sent by relevant sender
-  //   return;
-  // }
-
-  // If the message is addressed to me, act depending on the sender status
+  // pass the deserialized doc and the senderNodeId to the controller
   myMeshController myMeshController(doc, senderNodeId);
-  // short int _i;
-  // _i = doc["senderBoxActiveState"];
-  // ControlerBox::valMesh = _i;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
