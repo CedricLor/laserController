@@ -38,36 +38,36 @@ void ControlerBox::updateThisBoxProperties() {
   if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
 }
 
-void ControlerBox::printProperties(const short int boxIndex) {
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i] updated.\n", boxIndex);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: %u\n", boxIndex, nodeId);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", boxIndex);Serial.println(APIP);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", boxIndex);Serial.println(stationIP);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bNodeName: %i\n", boxIndex, bNodeName);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %u\n", boxIndex, uiBoxActiveStateStartTime);
+void ControlerBox::printProperties(const byte bBoxIndex) {
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i] updated.\n", bBoxIndex);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: %u\n", bBoxIndex, nodeId);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", bBoxIndex);Serial.println(APIP);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", bBoxIndex);Serial.println(stationIP);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bNodeName: %i\n", bBoxIndex, bNodeName);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, boxActiveState);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %u\n", bBoxIndex, uiBoxActiveStateStartTime);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
   Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
   byte __bNodeName = doc["senderNodeName"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
-  short int __boxIndex = __bNodeName - I_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): __boxIndex = %i\n", __boxIndex);
-  ControlerBoxes[__boxIndex].nodeId = senderNodeId;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__boxIndex].nodeId = %i", senderNodeId);
-  ControlerBoxes[__boxIndex].APIP = _parseIpStringToIPAddress(doc, "senderAPIP");
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __boxIndex);Serial.println(ControlerBoxes[__boxIndex].APIP);
-  ControlerBoxes[__boxIndex].stationIP = _parseIpStringToIPAddress(doc, "senderStIP");
-  // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __boxIndex);Serial.println(ControlerBoxes[__boxIndex].stationIP);
-  ControlerBoxes[__boxIndex].bNodeName = __bNodeName;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i", __boxIndex, ControlerBoxes[__boxIndex].bNodeName);
-  ControlerBoxes[__boxIndex].boxActiveState = doc["senderBoxActiveState"];
+  byte __bBoxIndex = __bNodeName - B_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
+  ControlerBoxes[__bBoxIndex].nodeId = senderNodeId;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i", senderNodeId);
+  ControlerBoxes[__bBoxIndex].APIP = _parseIpStringToIPAddress(doc, "senderAPIP");
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].APIP);
+  ControlerBoxes[__bBoxIndex].stationIP = _parseIpStringToIPAddress(doc, "senderStIP");
+  // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].stationIP);
+  ControlerBoxes[__bBoxIndex].bNodeName = __bNodeName;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i", __bBoxIndex, ControlerBoxes[__bBoxIndex].bNodeName);
+  ControlerBoxes[__bBoxIndex].boxActiveState = doc["senderBoxActiveState"];
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
-  ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = doc["senderBoxActiveStateStartTime"];
+  ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime = doc["senderBoxActiveStateStartTime"];
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", boxIndex, boxActiveState);
   // need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
-  if (MY_DEBUG == true) {ControlerBoxes[__boxIndex].printProperties(__boxIndex);};
+  if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }
 

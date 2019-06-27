@@ -60,9 +60,10 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
   if (strcmp(_action, _s) == 0) {           // action 's' for boxState of another box has changed
     // update the ControlerBoxes[] array with the values received from the other box
     // if the sender box is not the interface
-    short __iSenderNodeName = root["senderNodeName"];
-    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __iSenderNodeName = ");Serial.println(__iSenderNodeName);}
-    if (!(__iSenderNodeName == iInterfaceNodeName)) {
+    byte __bSenderNodeName = root["senderNodeName"];
+    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+    // if the message does not come from the interface, update the other boxes properties
+    if (!(__bSenderNodeName == bInterfaceNodeName)) { // bInterfaceNodeName is declared and defined in the global singleton
       ControlerBox::updateOtherBoxProperties(senderNodeId, root);
     }
     return;
@@ -70,9 +71,9 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
 
   const char* _c = "c";
   if (strcmp(_action, _c) == 0) {           // action 'c' for this message orders to change the boxTargetState
-    short __iSenderNodeName = root["senderNodeName"];
-    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __iSenderNodeName = ");Serial.println(__iSenderNodeName);}
-    if ((__iSenderNodeName == iInterfaceNodeName)) {
+    byte __bSenderNodeName = root["senderNodeName"];
+    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+    if ((__bSenderNodeName == bInterfaceNodeName)) {
       ControlerBox::valFromWeb = root["receiverTargetState"];
       if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: will change my target state to ");Serial.println(ControlerBox::valFromWeb);}
     }
@@ -134,12 +135,12 @@ void myMeshController::_changeBlinkingInterval(JsonDocument& _root) {
 
 void myMeshController::_changeMasterBox(JsonDocument& _root) {
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
-  // short iNewMasterBoxNumber;
+  // byte bNewMasterBoxNumber;
   // const char* sNewMasterBoxNumber = _root["ms"];
-  // iNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
+  // bNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
   // const char* sNewReaction = _root["react"];
   // // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
-  // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(iNewMasterBoxNumber, sNewReaction);
+  // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(bNewMasterBoxNumber, sNewReaction);
 }
 
 const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};

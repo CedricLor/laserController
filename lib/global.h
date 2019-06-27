@@ -18,7 +18,7 @@ extern short relayPins[];  // an array of pin numbers to which relays are attach
 extern const bool MY_DEBUG;
 
 extern const byte B_NODE_NAME;                                                   // BOX BY BOX
-extern const short I_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
+extern const byte B_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 extern const bool MESH_ROOT;                                                      // BOX BY BOX
 
 extern const bool IS_INTERFACE;                                                  // BOX BY BOX
@@ -26,20 +26,20 @@ extern const bool IS_STATION_MANUAL;                                            
 
 extern const uint8_t MESH_CHANNEL;
 
-extern const short I_DEFAULT_INTERFACE_NODE_NAME;
+extern const byte B_DEFAULT_INTERFACE_NODE_NAME;
 extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern const short BOXES_COUNT;                                                   // NETWORK BY NETWORK
 
-extern const short I_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
-extern const short I_CONTROLLER_BOX_PREFIX;
-extern const short MY_INDEX_IN_CB_ARRAY;
+extern const byte B_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
+extern const byte B_CONTROLLER_BOX_PREFIX;
+extern const byte MY_INDEX_IN_CB_ARRAY;
 
 extern short iSlaveOnOffReaction;
-extern short iMasterNodeName;
-extern short iInterfaceNodeName;
+extern byte bMasterNodeName;
+extern byte bInterfaceNodeName;
 
 extern unsigned long pinBlinkingInterval;
 

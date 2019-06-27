@@ -17,7 +17,7 @@ void mySavedPrefs::savePreferences() {
 
   preferences.putUInt("savedSettings", preferences.getUInt("savedSettings", 0) + 1);
   preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
-  preferences.putShort("iMasterNName", iMasterNodeName);
+  preferences.putShort("bMasterNName", bMasterNodeName);
   preferences.putULong("pinBlinkInt", pinBlinkingInterval);
 
   preferences.end();
@@ -33,8 +33,8 @@ void mySavedPrefs::loadPreferences() {
     Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
     iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", I_DEFAULT_SLAVE_ON_OFF_REACTION);
     Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
-    iMasterNodeName = preferences.getShort("iMasterNName", iMasterNodeName);
-    Serial.printf("SETUP: loadPreferences(). iMasterNodeName set to: %u\n", iMasterNodeName);
+    bMasterNodeName = preferences.getShort("bMasterNName", bMasterNodeName);
+    Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %u\n", bMasterNodeName);
     pinBlinkingInterval = preferences.getULong("pinBlinkInt", pinBlinkingInterval);
     Serial.print("SETUP: loadPreferences(). pinBlinkingInterval set to: ");Serial.println(pinBlinkingInterval);
   }

@@ -24,18 +24,18 @@ MasterSlaveBox::MasterSlaveBox()
   - the meshController.
 */
 
-void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const short masterBoxNumber, const char* action) {
-  _changeTheMasterBoxId(masterBoxNumber);
+void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const byte bMasterBoxNumber, const char* action) {
+  _changeTheMasterBoxId(bMasterBoxNumber);
   _changeSlaveReaction(action);
   mySavedPrefs::savePreferences();
 }
 
 
 
-void MasterSlaveBox::_changeTheMasterBoxId(const short masterBoxNumber) {
-  // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const short masterBoxNumber): Starting with masterBoxNumber = %u\n", masterBoxNumber);
-  iMasterNodeName = I_MASTER_NODE_PREFIX + masterBoxNumber; // iMasterNodeName has been defined in the global singleton
-  // Serial.print("MasterSlaveBox::_changeTheMasterBoxId(const short masterBoxNumber): Done\n");
+void MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber) {
+  // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Starting with bMasterBoxNumber = %u\n", bMasterBoxNumber);
+  bMasterNodeName = B_MASTER_NODE_PREFIX + bMasterBoxNumber; // bMasterNodeName has been declared and defined in the global singleton
+  // Serial.print("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Done\n");
 }
 
 

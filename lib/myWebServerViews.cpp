@@ -180,7 +180,7 @@ void myWebServerViews::loadBoxArray() {
 //   String __masterSelect = "<select id=\"master-select\" name=\"masterBox\">";
 //   for (short __i = 1; __i < 11; __i++) {
 //     String __selected = "";
-//     if (__i + I_MASTER_NODE_PREFIX == iMasterNodeName) { // I_MASTER_NODE_PREFIX and iMasterNodeName defined and declared in global
+//     if (__i + I_MASTER_NODE_PREFIX == bMasterNodeName) { // I_MASTER_NODE_PREFIX and bMasterNodeName defined and declared in global
 //       __selected += "selected";
 //     };
 //     if (!(__i + I_MASTER_NODE_PREFIX == B_NODE_NAME)) { // I_MASTER_NODE_PREFIX and B_NODE_NAME defined and declared in global

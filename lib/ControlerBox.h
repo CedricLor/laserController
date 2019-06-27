@@ -20,7 +20,7 @@ class ControlerBox
 
     // void updateProperties();
     void updateThisBoxProperties();
-    void printProperties(const short int boxIndex);
+    void printProperties(const byte bBoxIndex);
 
     static bool valFromPir;
     // static unsigned long ulValFromPirTimeSet;
