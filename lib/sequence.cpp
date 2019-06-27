@@ -19,6 +19,10 @@
   |  |  |  |  |--global.cpp (called to retrieve some values)
   |  |  |  |  |  |--global.h
 
+Traductions en anglais:
+- mesure = bar
+- partition = score
+- morceau = tune or composition
 */
 
 #include "Arduino.h"

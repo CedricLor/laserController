@@ -14,11 +14,11 @@
 #include "Arduino.h"
 #include "ControlerBox.h"
 
-// STATIC VARIABLES
+// STATIC VARIABLES - SIGNAL CATCHERS
 bool ControlerBox::valFromPir = LOW;
-// unsigned long ControlerBox::ulValFromPirTimeSet = 0;
+uint32_t ControlerBox::uiSettingTimeOfValFromPir = 0;
 short int ControlerBox::valFromMesh = -1;
-// unsigned long ControlerBox::ulValFromMeshTimeSet = 0;
+uint32_t ControlerBox::uiSettingTimeOfValFromMesh = 0;
 short int ControlerBox::valFromWeb = -1;
 
 // PUBLIC

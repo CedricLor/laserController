@@ -22,15 +22,14 @@ class ControlerBox
     void updateThisBoxProperties();
     void printProperties(const byte bBoxIndex);
 
+    // Signal catchers -- static variables
     static bool valFromPir;
-    // static unsigned long ulValFromPirTimeSet;
+    static uint32_t uiSettingTimeOfValFromPir;
     static short int valFromMesh;
-    // static unsigned long ulValFromMeshTimeSet;
+    static uint32_t uiSettingTimeOfValFromMesh;
     static short int valFromWeb;
 
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
-
-    // static void boxTypeUpdate(ControlerBox *ControlerBoxes, uint32_t iSenderNodeName, uint32_t senderNodeId, JsonObject& root);
 
   private:
     static IPAddress _parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/);
