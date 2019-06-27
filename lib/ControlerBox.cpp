@@ -16,9 +16,9 @@
 
 // STATIC VARIABLES
 bool ControlerBox::valFromPir = LOW;
-unsigned long ControlerBox::ulValFromPirTimeSet = 0;
+// unsigned long ControlerBox::ulValFromPirTimeSet = 0;
 short int ControlerBox::valFromMesh = -1;
-unsigned long ControlerBox::ulValFromMeshTimeSet = 0;
+// unsigned long ControlerBox::ulValFromMeshTimeSet = 0;
 short int ControlerBox::valFromWeb = -1;
 
 // PUBLIC
