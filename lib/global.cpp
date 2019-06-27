@@ -24,8 +24,8 @@ const bool MY_DEBUG = true;
 const short B_NODE_NAME = 201;                          // BOX BY BOX
 const short I_DEFAULT_MASTER_NODE_NAME = 210;
 const bool MESH_ROOT = false;                            // BOX BY BOX
-const short IS_INTERFACE = false;                        // BOX BY BOX -- false or true
-const short IS_STATION_MANUAL = false;                  // BOX BY BOX
+const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
+const bool IS_STATION_MANUAL = false;                  // BOX BY BOX
 
 // CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
 // const short B_NODE_NAME = 200;                          // BOX BY BOX

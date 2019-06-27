@@ -21,8 +21,8 @@ extern const short B_NODE_NAME;                                                 
 extern const short I_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 extern const bool MESH_ROOT;                                                      // BOX BY BOX
 
-extern const short IS_INTERFACE;                                                  // BOX BY BOX
-extern const short IS_STATION_MANUAL;                                             // BOX BY BOX
+extern const bool IS_INTERFACE;                                                  // BOX BY BOX
+extern const bool IS_STATION_MANUAL;                                             // BOX BY BOX
 
 extern const uint8_t MESH_CHANNEL;
 
