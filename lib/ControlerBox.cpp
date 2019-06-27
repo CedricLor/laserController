@@ -15,8 +15,9 @@
 #include "ControlerBox.h"
 
 // STATIC VARIABLES
-bool ControlerBox::valPir = LOW;
-short int ControlerBox::valMesh = -1;
+bool ControlerBox::valFromPir = LOW;
+short int ControlerBox::valFromMesh = -1;
+short int ControlerBox::valFromWeb = -1;
 
 // PUBLIC
 ControlerBox::ControlerBox()
@@ -30,8 +31,8 @@ void ControlerBox::updateThisBoxProperties() {
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   iNodeName = I_NODE_NAME;
-  // valPir is updated by pirController (which sets it HIGH) and boxState (which sets it LOW)
-  // valMesh is updated by myMesh (--> update to be moved to myMeshController) and boxState
+  // valFromPir is updated by pirController (which sets it HIGH) and boxState (which sets it LOW)
+  // valFromMesh is updated by myMesh (--> update to be moved to myMeshController) and boxState
   if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
 }
 

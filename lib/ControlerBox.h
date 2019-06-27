@@ -22,8 +22,9 @@ class ControlerBox
     void updateThisBoxProperties();
     void printProperties(const short int boxIndex);
 
-    static short int valMesh;
-    static bool valPir;
+    static short int valFromMesh;
+    static bool valFromPir;
+    static short int valFromWeb;
 
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
 
