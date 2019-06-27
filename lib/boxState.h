@@ -53,7 +53,7 @@ class boxState
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();
 
-    static void _setBoxTargetState(const short int boxActiveState);
+    static void _setBoxTargetState(const short int targetBoxState);
 
     static Task _tPlayBoxState;
     static bool _oetcbPlayBoxState();

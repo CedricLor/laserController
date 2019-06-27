@@ -205,12 +205,12 @@ void boxState::_odtcbPlayBoxState(){
 
 
 // _setBoxTargetState receive boxState change requests from other classes
-void boxState::_setBoxTargetState(const short targetActiveBoxState) {
+void boxState::_setBoxTargetState(const short targetBoxState) {
   // Serial.println("void boxState::_setBoxTargetState(). Starting.");
-  // Serial.print("void boxState::_setBoxTargetState(). targetActiveBoxState: ");
-  // Serial.println(targetActiveBoxState);
+  // Serial.print("void boxState::_setBoxTargetState(). targetBoxState: ");
+  // Serial.println(targetBoxState);
   _boxActiveStateHasBeenReset = 1;
-  _boxTargetState = targetActiveBoxState;
+  _boxTargetState = targetBoxState;
   // Serial.print("void boxState::_setBoxTargetState(). _boxTargetState: ");
   // Serial.println(_boxTargetState);
   // Serial.println("void boxState::_setBoxTargetState(). Ending.");
