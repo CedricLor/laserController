@@ -36,8 +36,8 @@
 #include "../lib/myMesh.h"
 #include "../lib/myMesh.cpp"
 
-#include "../lib/note.h"
-#include "../lib/note.cpp"
+#include "../lib/tone.h"
+#include "../lib/tone.cpp"
 #include "../lib/sequence.h"
 #include "../lib/sequence.cpp"
 #include "../lib/boxState.h"
