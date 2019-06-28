@@ -24,8 +24,8 @@
 
 */
 
-#ifndef note_h
-#define note_h
+#ifndef tone_h
+#define tone_h
 
 #include "Arduino.h"
 
@@ -35,7 +35,7 @@ class note
     note(); // default constructor
 
     static note notes[];
-    static void initNotes(); // initializer of the array of notes
+    static void initTones(); // initializer of the array of notes
 
     void playNote();
 

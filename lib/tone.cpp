@@ -48,12 +48,12 @@ void tone::_initNote(const char cName[_char_count_in_name], const short int iLas
   // Serial.println("void tone::initNote(). Ending.");
 };
 
-void tone::initNotes() {
-  Serial.println("void tone::initNotes(). Starting.");
+void tone::initTones() {
+  Serial.println("void tone::initTones(). Starting.");
 
   const short int aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
   notes[0]._initNote("all off", aAllOff);
-  // Serial.println("void tone::initNotes(). notes[0]._iLaserPinStatus[0]");
+  // Serial.println("void tone::initTones(). notes[0]._iLaserPinStatus[0]");
   // Serial.println(notes[0]._iLaserPinStatus[0]);
 
   const short int aFirstOn[4] = {LOW, HIGH, HIGH, HIGH};
@@ -92,7 +92,7 @@ void tone::initNotes() {
   const short int aAllOn[4] = {LOW, LOW, LOW, LOW};
   notes[15]._initNote("all on", aAllOn);
 
-  Serial.println("void tone::initNotes(). Ending.");
+  Serial.println("void tone::initTones(). Ending.");
 }
 
 

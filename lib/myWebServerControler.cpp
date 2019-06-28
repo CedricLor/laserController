@@ -38,7 +38,7 @@ Upon meeting these conditions, it transmits orders to other parts of the box :
   - LaserGroupedUnitArray: idem but for all LaserGroupedUnits;
   - MasterSlaveBox: setting the name of the master box;
 - in the future:
-  - notes;
+  - tones;
   - sequences;
   - boxState.
   - MasterSlaveBox: setting the name of the master box.
