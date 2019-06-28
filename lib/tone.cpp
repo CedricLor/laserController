@@ -1,5 +1,5 @@
 /*
-  note.cpp - notes are statuses of ALL the lasers connected to the box at one beat
+  tone.cpp - notes are statuses of ALL the lasers connected to the box at one beat
   Notes do not have have a time length. Their time length is defined inside sequences.
   Created by Cedric Lor, June 10, 2019.
 
@@ -15,8 +15,8 @@
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
   |  |  |  |  |--global.h
   |  |  |  |
-  |  |  |  |--note.cpp (called to play some member functions)
-  |  |  |  |  |--note.h
+  |  |  |  |--tone.cpp (called to play some member functions)
+  |  |  |  |  |--tone.h
   |  |  |  |  |--global.cpp (called to retrieve some values)
   |  |  |  |  |  |--global.h
   |  |  |  |
@@ -26,7 +26,7 @@
 */
 
 #include "Arduino.h"
-#include "note.h"
+#include "tone.h"
 
 
 const short int note::_note_count = 16;

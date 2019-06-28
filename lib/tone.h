@@ -1,5 +1,5 @@
 /*
-  note.h - notes are statuses of all the lasers connected to the box at one beat
+  tone.h - notes are statuses of all the lasers connected to the box at one beat
   Created by Cedric Lor, June 10, 2019.
 
   |--main.cpp
@@ -14,8 +14,8 @@
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
   |  |  |  |  |--global.h
   |  |  |  |
-  |  |  |  |--note.cpp (called to play some member functions)
-  |  |  |  |  |--note.h
+  |  |  |  |--tone.cpp (called to play some member functions)
+  |  |  |  |  |--tone.h
   |  |  |  |  |--global.cpp (called to retrieve some values)
   |  |  |  |  |  |--global.h
   |  |  |  |

@@ -14,8 +14,8 @@
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
   |  |  |  |  |--global.h
   |  |  |  |
-  |  |  |  |--note.cpp (called to play some member functions)
-  |  |  |  |  |--note.h
+  |  |  |  |--tone.cpp (called to play some member functions)
+  |  |  |  |  |--tone.h
   |  |  |  |  |--global.cpp (called to retrieve some values)
   |  |  |  |  |  |--global.h
   |  |  |  |
