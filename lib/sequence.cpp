@@ -63,13 +63,13 @@ void sequence::_initSequence(const char cName[_sequence_count], const unsigned l
 
 void sequence::initSequences() {
   Serial.println("void sequence::_initSequences(). Starting.");
-  // define an array containing references to the notes to be played in the sequence
+  // define an array containing references to the tones to be played in the sequence
   const short int aRelays[2] = {7,8};
   // load values into sequences[0]:
   // a. the sequence's name
   // b. the duration of each beats (i.e. the tempo)
   // c. the number of beats in the sequence
-  // d. the array of references to the notes to be played in the sequence
+  // d. the array of references to the tones to be played in the sequence
   sequences[0]._initSequence("relays", 30000, 2, aRelays);
   // Serial.println("void sequence::_initSequences(). sequences[0]._ulTempo: ");
   // Serial.println(sequences[0]._ulTempo);
@@ -145,9 +145,9 @@ void sequence::_odtcbPlaySequenceInLoop() {
 // Plays a given sequence one single time.
 // It is called by the tPlaySequenceInLoop
 // 1. sets the interval of the _tPlaySequence task from the tempo of the relevant sequence
-// this tempo corresponds to the duration for which each note will be played
+// this tempo corresponds to the duration for which each tone will be played
 // 2. sets the number of iterations of the _tPlaySequence task from the number of
-// beats (i.e. notes) in the sequence
+// beats (i.e. tones) in the sequence
 // 3. enables the _tPlaySequence task
 void sequence::_playSequence(){
   // Serial.println("void sequence::playSequence(). Starting");
@@ -171,10 +171,10 @@ void sequence::_tcbPlaySequence(){
   short _iter = _tPlaySequence.getRunCounter() - 1;
   // Serial.println("void sequence::_tcbPlaySequence(). _iter: ");
   // Serial.println(_iter);
-  // Look for the note number to read at this tempo
-  short int _activeNote = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
-  // Play note
-  tone::notes[_activeNote].playNote();
+  // Look for the tone number to read at this tempo
+  short int _activeTone = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
+  // Play tone
+  tone::tones[_activeTone].playTone();
   // Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
 
