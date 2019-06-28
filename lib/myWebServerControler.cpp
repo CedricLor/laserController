@@ -93,18 +93,17 @@ void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
     if (MY_DEBUG) {
       Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"boxTargetState\")");
     }
-    AsyncWebParameter* _p1 = request->getParam("boxTargetState");
-    AsyncWebParameter* _p2 = request->getParam("lb");
+    AsyncWebParameter* _boxTargetState = request->getParam("boxTargetState");
+    AsyncWebParameter* _relatedLaserBoxNodeName = request->getParam("lb");
     if (MY_DEBUG) {
-      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"boxTargetState\" = %c", *(_p1->value().c_str()));
-      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"lb\" = %c", *(_p2->value().c_str()));
+      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"boxTargetState\" = %c", *(_boxTargetState->value().c_str()));
+      Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"lb\" = %c", *(_relatedLaserBoxNodeName->value().c_str()));
     }
     myMeshViews __myMeshViews;
-    __myMeshViews.changeBoxTargetState(_p1->value().c_str(), _p2->value().c_str());
-    // send mesh request to relevant to turn to manual boxState
+    __myMeshViews.changeBoxTargetState(_boxTargetState->value().c_str(), _relatedLaserBoxNodeName->value().c_str());
+    // send mesh request to change boxState
     return;
   }
-
 
   // if(request->hasParam("manualStatus")) {
   //   Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"manualStatus\")");
