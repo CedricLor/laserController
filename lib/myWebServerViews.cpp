@@ -39,9 +39,10 @@ myWebServerViews contains the webPage being displayed by the webServer.
 myWebServerViews::myWebServerViews()
 {
   strcpy(cBoxArray, "");
+  _loadBoxArray();
 }
 
-void myWebServerViews::loadBoxArray() {
+void myWebServerViews::_loadBoxArray() {
   // Serial.print("myWebServerViews::loadBoxArray(): STARTING\n");
   for (short int __i = 1; __i < BOXES_COUNT; __i++) {
     // Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP STARTING: iter %i\n", __i);

@@ -37,7 +37,7 @@
 class myWebServerBase
 {
   public:
-    myWebServerBase(/*int pin*/);
+    myWebServerBase();
 
     static void startAsyncServer();
 
