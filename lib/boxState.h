@@ -47,8 +47,8 @@ class boxState
 
     static boxState boxStates[];
 
-    char cName[15];  // array of character to hold the name of each sequences
-    char cHtmlTag[4];  // array of character to hold the name of each sequences
+    char cName[25];  // array of character to hold the name of each boxState
+    char cHtmlTag[4];  // array of character to hold the html tag of each boxState
 
   private:
 
