@@ -97,42 +97,81 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, fal
   - reset the values to their origin value.
   Otherwise, nothing happens.
 */
+
 void boxState::_tcbPlayBoxStates() {
   // Serial.println("void boxState::_tcbPlayBoxStates(). Starting.");
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
-  // A. Read the signal catchers and change the targetState accordingly
-  // 1. If the current boxState has both IR and mesh triggers, check both values
+  // A. Analyse the signal catchers and set the box target state accordingly
+  _setBoxTargetStateFromSignalCatchers();
+
+  // B. Once read, reset all the signal catchers
+  _resetSignalCatchers();
+
+  // C. If the active state (actually, the targetState) has been reset, start playing
+  // the corresponding state
+  _restart_tPlayBoxState();
+  // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
+};
+
+// Upon tPlayBoxStates being enabled (at startup), the _boxTargetState is being
+// changed to 2 (pir Startup).
+bool boxState::_oetcbPlayBoxStates() {
+  // Serial.println("void boxState::_oetcbPlayBoxStates(). Starting.");
+  _setBoxTargetState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
+  // Serial.println("void boxState::_oetcbPlayBoxStates(). Ending.");
+  return true;
+}
+
+
+//////////////////////////////////////////////
+// _tcbPlayBoxStates() sub functions
+void boxState::_setBoxTargetStateFromSignalCatchers() {
+  // Read the signal catchers and change the targetState accordingly
+
+  // 1. Check the web signal catcher. If it has changed, set the new targetState
+  // and return
+  if (!(ControlerBox::valFromWeb == -1)) {
+    _setBoxTargetState(ControlerBox::valFromWeb);
+    return;
+  }
+
+  // 2. If the current boxState has both IR and mesh triggers, check both values
   if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1 && boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1) {
     // if both IR and mesh have sent a signal, compare the time at which each of
     // them came and give priority to the latest
     if (ControlerBox::valFromPir == HIGH && !(ControlerBox::valFromMesh == -1)) {
-      
+      // compare the times at which each signal catcher has been set
+      if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBox::uiSettingTimeOfValFromMesh) {
+        _setBoxTargetState(3);
+      } else {
+        _setBoxTargetState(4);
+      }
     }
+    return;
   }
-  // 2. If the current boxState has IR trigger and the valueFromIR is HIGH,
+
+  // 3. If the current boxState has IR trigger and the valueFromIR is HIGH,
   // change state and put it in IR high
-  else if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1) {
-    if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
-      _setBoxTargetState(3);
-    }
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
+    _setBoxTargetState(3);
+    return;
   }
-  // 3. If the current boxState has IR trigger and the valueFromMesh is other
+
+  // 4. If the current boxState has Mesh trigger and the valueFromMesh is other
   // than -1, change to the Mesh_High state (4)
   // TO BE REDRAFTED to accept various signal from various Master boxes and eventually, play various sequences
-  else if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1 && !(ControlerBox::valFromMesh == -1)) {
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1 && !(ControlerBox::valFromMesh == -1)) {
     // TO DO: IMPORTANT!!!
     // uiSettingTimeOfValFromMesh shall not be set in this sub. It shall be done in MasterSlaveBox
     // ControlerBox::uiSettingTimeOfValFromMesh = laserControllerMesh.getNodeTime();
     _setBoxTargetState(4);
+    return;
   }
-  // 3. Always check the state of value of Web trigger
-  if (!(ControlerBox::valFromWeb == -1)) {
-    _setBoxTargetState(ControlerBox::valFromWeb);
-  }
+}
 
-  // B. Once read, reset all the signal catchers
+void boxState::_resetSignalCatchers() {
   // once the new boxState has been set, in accordance with the signal catchers,
   // reset all the signals catchers to their initial values
   ControlerBox::valFromPir = LOW;
@@ -140,9 +179,9 @@ void boxState::_tcbPlayBoxStates() {
   ControlerBox::valFromMesh = -1;
   ControlerBox::uiSettingTimeOfValFromMesh = 0;
   ControlerBox::valFromWeb = -1;
+}
 
-  // C. If the active state (actually, the targetState) has been reset, start playing
-  // the corresponding state
+void boxState::_restart_tPlayBoxState() {
   if (_boxActiveStateHasBeenReset == 1) {
     _boxActiveStateHasBeenReset = 0;
     // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState]._ulDuration: ");
@@ -160,17 +199,8 @@ void boxState::_tcbPlayBoxStates() {
     // Serial.println(_tPlayBoxState.getInterval());
     // Serial.println("*********************************************************");
   }
-  // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
-};
-
-// Upon tPlayBoxStates being enabled (at startup), the _boxTargetState is being
-// changed to 2 (pir Startup).
-bool boxState::_oetcbPlayBoxStates() {
-  // Serial.println("void boxState::_oetcbPlayBoxStates(). Starting.");
-  _setBoxTargetState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
-  // Serial.println("void boxState::_oetcbPlayBoxStates(). Ending.");
-  return true;
 }
+
 
 
 

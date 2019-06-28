@@ -53,13 +53,18 @@ class boxState
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();
 
-    static void _setBoxTargetState(const short int targetBoxState);
-
     static Task _tPlayBoxState;
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
 
-    unsigned long _ulDuration; // duration for which the status shall active before automatically returning to default
+    // _tcbPlayBoxStates() sub functions
+    static void _setBoxTargetStateFromSignalCatchers();
+    static void _resetSignalCatchers();
+    static void _restart_tPlayBoxState();
+
+    static void _setBoxTargetState(const short int targetBoxState);
+
+    unsigned long _ulDuration; // duration for which the status shall stay active before automatically returning to default
     byte _bAssociatedSequence;  // sequence associated to a given state
     byte _bIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
     byte _bMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
