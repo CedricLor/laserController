@@ -19,6 +19,9 @@
   |  |  |  |  |--note.h
   |  |  |  |  |--global.cpp (called to retrieve some values)
   |  |  |  |  |  |--global.h
+  |  |  |  |
+  |  |  |--myMeshViews.cpp
+  |  |  |  |--myMeshViews.h
 
 */
 
