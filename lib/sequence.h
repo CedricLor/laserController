@@ -46,6 +46,7 @@ class sequence
   private:
     static const short int _sequence_count;
     static short int _activeSequence;
+    static const short int _char_count_in_name;
 
     void _initSequence(const char cName[], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
 

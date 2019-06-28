@@ -35,6 +35,7 @@ Traductions en anglais:
 short int sequence::_activeSequence = 0;
 const short int sequence::_sequence_count = 7;
 sequence sequence::sequences[_sequence_count];
+const short int sequence::_char_count_in_name = 7;
 
 
 
@@ -50,7 +51,7 @@ sequence::sequence() {
 
 
 // Initialisers
-void sequence::_initSequence(const char cName[_sequence_count], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+void sequence::_initSequence(const char cName[_char_count_in_name], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   // Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
