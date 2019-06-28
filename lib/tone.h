@@ -1,5 +1,5 @@
 /*
-  tone.h - notes are statuses of all the lasers connected to the box at one beat
+  tone.h - tones are statuses of all the lasers connected to the box at one base beat
   Created by Cedric Lor, June 10, 2019.
 
   |--main.cpp
@@ -29,21 +29,21 @@
 
 #include "Arduino.h"
 
-class note
+class tone
 {
   public:
-    note(); // default constructor
+    tone(); // default constructor
 
-    static note notes[];
-    static void initTones(); // initializer of the array of notes
+    static tone tones[];
+    static void initTones(); // initializer of the array of tones
 
-    void playNote();
+    void playTone();
 
   private:
-    static const short int _note_count;
+    static const short int _tone_count;
     static const short int _char_count_in_name;
 
-    void _initNote(const char cName[], const short int iLaserPinsStatus[PIN_COUNT]);
+    void _initTone(const char cName[], const short int iLaserPinsStatus[PIN_COUNT]);
 
     char _cName[15];  // array of character to hold the name of each sequences
     short int _iLaserPinStatus[4];  // array containing the state of each laser at each tempo
