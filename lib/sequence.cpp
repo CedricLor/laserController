@@ -174,7 +174,7 @@ void sequence::_tcbPlaySequence(){
   // Look for the note number to read at this tempo
   short int _activeNote = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
   // Play note
-  note::notes[_activeNote].playNote();
+  tone::notes[_activeNote].playNote();
   // Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
 

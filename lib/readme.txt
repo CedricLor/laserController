@@ -29,10 +29,13 @@ Dependency structure
 |  |  |  |--global.cpp (called to start some tasks and play some functions)
 |  |  |  |  |--global.h
 |  |  |  |
-|  |  |  |--note.cpp (called to play some member functions)
-|  |  |  |  |--note.h
+|  |  |  |--tone.cpp (called to play some member functions)
+|  |  |  |  |--tone.h
 |  |  |  |  |--global.cpp (called to retrieve some values)
 |  |  |  |  |  |--global.h
+|  |  |  |
+|  |  |--myMeshViews.cpp
+|  |  |  |--myMeshViews.h
 |  |
 |  |--myMesh.cpp
 |  |  |--myMesh.h
@@ -109,14 +112,29 @@ DONE:
   - add to ControlerBox the time at which the sender boxState was changed
 
 - move _SBoxArray to myWebServerViews
-- draft myWebServerBase::_SBoxArray() which will return a String, to be incorporated into the webpage of the interface, setting out the states of each box and state setters for each box
+- draft myWebServerBase::_SBoxArray() which will return a String, to be incorporated into the webpage of the interface, displaying out the states of each box and state setters for each box
 
+- myMesh::_decodeRequest: last three lines to be seriously updated
+- review webServerControler to start decoding requests properly
+- add additional states as drafted on the paper
 
 
 TO DO:
+- manual state communication sequence
+  - what shall the manual state enable me to do?
+  - webServerViews: draft the manual state page
+  - webServerControler: draft the manual state receiver
+  - meshViews: draft the manual state sender
+  - meshController: draft the manual state receiver
+
+- refactor the notes and sequences to get closer to a music score player
+
+- save and read data in NVS or SPIFFS
+
+- check how to get rid of LaserPin and LaserPinsArray classes
+
 1. High priority
   A. Decode request coming from users
-    - myMesh::_decodeRequest: last three lines to be seriously updated
     - review webServerControler to start decoding requests properly
 
   B. optimizations

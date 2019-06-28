@@ -75,7 +75,7 @@ void setup() {
   }
 
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
-  note::initNotes();
+  tone::initNotes();
   sequence::initSequences();
   boxState::initBoxStates();
 

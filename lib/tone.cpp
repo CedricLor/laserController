@@ -29,31 +29,31 @@
 #include "tone.h"
 
 
-const short int note::_note_count = 16;
-note note::notes[_note_count];
-const short int note::_char_count_in_name = 15;
+const short int tone::_note_count = 16;
+note tone::notes[_note_count];
+const short int tone::_char_count_in_name = 15;
 
 // constructor
-note::note() {
+tone::note() {
 
 }
 
 
-void note::_initNote(const char cName[_char_count_in_name], const short int iLaserPinsStatus[PIN_COUNT]){
-  // Serial.println("void note::initNote(). Starting.");
+void tone::_initNote(const char cName[_char_count_in_name], const short int iLaserPinsStatus[PIN_COUNT]){
+  // Serial.println("void tone::initNote(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
   }
-  // Serial.println("void note::initNote(). Ending.");
+  // Serial.println("void tone::initNote(). Ending.");
 };
 
-void note::initNotes() {
-  Serial.println("void note::initNotes(). Starting.");
+void tone::initNotes() {
+  Serial.println("void tone::initNotes(). Starting.");
 
   const short int aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
   notes[0]._initNote("all off", aAllOff);
-  // Serial.println("void note::initNotes(). notes[0]._iLaserPinStatus[0]");
+  // Serial.println("void tone::initNotes(). notes[0]._iLaserPinStatus[0]");
   // Serial.println(notes[0]._iLaserPinStatus[0]);
 
   const short int aFirstOn[4] = {LOW, HIGH, HIGH, HIGH};
@@ -92,31 +92,31 @@ void note::initNotes() {
   const short int aAllOn[4] = {LOW, LOW, LOW, LOW};
   notes[15]._initNote("all on", aAllOn);
 
-  Serial.println("void note::initNotes(). Ending.");
+  Serial.println("void tone::initNotes(). Ending.");
 }
 
 
 
-void note::playNote(){
-  // Serial.println("void note::playNote(). Starting");
-  // Serial.print("void note::playNote(). Sequence Number: ");
+void tone::playNote(){
+  // Serial.println("void tone::playNote(). Starting");
+  // Serial.print("void tone::playNote(). Sequence Number: ");
   // Serial.println(noteNumber);
   // Direct access to the pins.
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    // Serial.println("void note::_tcbPlayNote(). __thisPin in for loop: ");
+    // Serial.println("void tone::_tcbPlayNote(). __thisPin in for loop: ");
     // Serial.println(__thisPin);
     short _physical_pin_number = relayPins[__thisPin]; // look for the physical number of the pin in the array of pin
-    // Serial.println("void note::_tcbPlayNote(). _physical_pin_number: ");
+    // Serial.println("void tone::_tcbPlayNote(). _physical_pin_number: ");
     // Serial.println(_physical_pin_number);
-    // Serial.println("void note::_tcbPlayNote(). _activeNote: ");
+    // Serial.println("void tone::_tcbPlayNote(). _activeNote: ");
     // Serial.println(_activeNote);
-    // Serial.println("void note::_tcbPlayNote(). notes[_activeNote]._iLaserPinStatus[0]: ");
+    // Serial.println("void tone::_tcbPlayNote(). notes[_activeNote]._iLaserPinStatus[0]: ");
     // Serial.println(notes[_activeNote]._iLaserPinStatus[0]);
     const short int _target_state = _iLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
-    // Serial.println("void note::_tcbPlayNote(). _target_state: ");
+    // Serial.println("void tone::_tcbPlayNote(). _target_state: ");
     // Serial.println(_target_state);
     digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
-  // Serial.println("void note::playNote(). Ending");
+  // Serial.println("void tone::playNote(). Ending");
 };
