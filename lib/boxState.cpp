@@ -251,7 +251,7 @@ bool boxState::_oetcbPlayBoxState(){
   // set the active sequence
   // Serial.println("bool boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
-  
+
   // Play sequence in loop until end
   // Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
@@ -266,7 +266,7 @@ void boxState::_odtcbPlayBoxState(){
   // (i) disable the associated sequence player; and
   // (ii) if the state which was being played was not the default state, set it to its default state
 
-  Serial.println("void boxState::_odtcbPlayBoxState(). Starting.------");
+  Serial.println("void boxState::_odtcbPlayBoxState(). Starting.");
   // Serial.print("void boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
   // Serial.println(_tPlayBoxState.getInterval());
   sequence::tPlaySequenceInLoop.disable();
@@ -286,12 +286,11 @@ void boxState::_odtcbPlayBoxState(){
 
 // _setBoxTargetState receive boxState change requests from other classes
 void boxState::_setBoxTargetState(const short targetBoxState) {
-  // Serial.println("void boxState::_setBoxTargetState(). Starting.");
-  // Serial.print("void boxState::_setBoxTargetState(). targetBoxState: ");
-  // Serial.println(targetBoxState);
+  Serial.println("void boxState::_setBoxTargetState(). Starting.");
+  Serial.print("void boxState::_setBoxTargetState(). targetBoxState: ");Serial.println(targetBoxState);
   _boxActiveStateHasBeenReset = 1;
   _boxTargetState = targetBoxState;
   // Serial.print("void boxState::_setBoxTargetState(). _boxTargetState: ");
   // Serial.println(_boxTargetState);
-  // Serial.println("void boxState::_setBoxTargetState(). Ending.");
+  Serial.println("void boxState::_setBoxTargetState(). Ending.");
 };

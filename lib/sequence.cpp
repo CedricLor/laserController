@@ -99,44 +99,53 @@ void sequence::initSequences() {
 // until it is disabled.
 // tPlaySequenceInLoop is enabled and disabled by the stateBox class.
 // Upon entering a new stateBox (startup, IR signal received, etc.),
-// the sequence associated with this state is set as the _activeSequence
-// by the stateBox tasks and the tPlaySequenceInLoop is enabled
-Task sequence::tPlaySequenceInLoop(0, -1, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
+// the stateBox tasks sets sequence::_activeSequence to the sequence index number
+// associated with this stateBox. Then the tPlaySequenceInLoop is enabled, until being disabled by the boxState class
+Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
 
 // Upon enabling the tPlaySequenceInLoop task, the _activeSequence is played a
 // first time and the _duration of the sequence is calculated in order to
 // set the interval between each iterations of the tPlaySequenceInLoop task
 bool sequence::_oetcbPlaySequenceInLoop() {
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). _activeSequence: ");
-  // Serial.println(_activeSequence);
+  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). Starting.");
+  // Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). _activeSequence: ");Serial.println(_activeSequence);
+
   // Start immediately playing the sequence on enable
   _playSequence();
+
   // Calculate the interval at which each iteration occur, by multiplying the tempo of the sequence by the number of beats in the sequence
   unsigned long _duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). _duration: ");
-  // Serial.println(_duration);
-  // Set the interval at which each iteration occur
+  // Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);
+
+  // Set the interval at which each iteration occur.
+  // Before doing, check if _duration == 0.
+  // If _duration == 0, this actually means infinite,
+  // which means that we are trying to play the sequence "all lasers off"
+  // Instead of starting an infinite loop, turning all lasers off,
+  // let's just disable tPlaySequenceInLoop
+  if (_duration == 0) {
+    Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). Ending on _duration == 0");
+    return false;
+  }
   tPlaySequenceInLoop.setInterval(_duration);
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval()");
-  // Serial.println(tPlaySequenceInLoop.getInterval());
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
+  // Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
+  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). Ending.");
   return true;
 }
 
 void sequence::_tcbPlaySequenceInLoop() {
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Starting.");
+  Serial.println("----- void sequence::_tcbPlaySequenceInLoop(). Starting.");
   _playSequence();
-  // Serial.println("bool sequence::oetcbPlaySequenceInLoop(). Ending.");
+  Serial.println("----- void sequence::_tcbPlaySequenceInLoop(). Ending.");
 }
 
 // on disable tPlaySequenceInLoop, turn off all the laser by setting the activeSequence
 // to state 5 ("all off"), then playSequence 5.
 void sequence::_odtcbPlaySequenceInLoop() {
-  // Serial.println("void sequence::odtcbPlaySequenceInLoop(). Starting.");
+  Serial.println("----- void sequence::_odtcbPlaySequenceInLoop(). Starting.");
   setActiveSequence(5); // all lasers off
   _playSequence();
-  // Serial.println("void sequence::odtcbPlaySequenceInLoop(). Ending.");
+  Serial.println("----- void sequence::_odtcbPlaySequenceInLoop(). Ending.");
 };
 
 
@@ -151,32 +160,28 @@ void sequence::_odtcbPlaySequenceInLoop() {
 // beats (i.e. tones) in the sequence
 // 3. enables the _tPlaySequence task
 void sequence::_playSequence(){
-  // Serial.println("void sequence::playSequence(). Starting");
-  // Serial.print("void sequence::playSequence(). _activeSequence: ");
-  // Serial.println(_activeSequence);
+  Serial.println("----- void sequence::_playSequence(). Starting");
+  // Serial.print("----- void sequence::_playSequence(). _activeSequence: ");Serial.println(_activeSequence);
   _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
-  // Serial.print("void sequence::playSequence(). Tempo: ");
-  // Serial.println(sequences[sequenceNumber]._ulTempo);
+  // Serial.print("----- void sequence::_playSequence(). Tempo: ");Serial.println(sequences[sequenceNumber]._ulTempo);
   _tPlaySequence.setIterations(sequences[_activeSequence]._iNumberOfBeatsInSequence);
-  // Serial.print("void sequence::playSequence(). Beats: ");
-  // Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
+  // Serial.print("----- void sequence::_playSequence(). Beats: ");Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
   _tPlaySequence.enable();
-  // Serial.println("void sequence::playSequence(). Task _tPlaySequence enabled");
-  // Serial.println("void sequence::playSequence(). Ending");
+  // Serial.println("----- void sequence::_playSequence(). Task _tPlaySequence enabled");
+  Serial.println("----- void sequence::_playSequence(). Ending");
 };
 
 Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false);
 
 void sequence::_tcbPlaySequence(){
-  // Serial.println("void sequence::_tcbPlaySequence(). Starting.");
+  // Serial.println("----- void sequence::_tcbPlaySequence(). Starting.");
   short _iter = _tPlaySequence.getRunCounter() - 1;
-  // Serial.println("void sequence::_tcbPlaySequence(). _iter: ");
-  // Serial.println(_iter);
+  // Serial.print("----- void sequence::_tcbPlaySequence(). _iter: ");Serial.println(_iter);
   // Look for the tone number to read at this tempo
   short int _activeTone = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
   // Play tone
   tone::tones[_activeTone].playTone();
-  // Serial.println("void sequence::_tcbPlaySequence(). Ending.");
+  // Serial.println("----- void sequence::_tcbPlaySequence(). Ending.");
 };
 
 void sequence::setActiveSequence(const short activeSequence) {
