@@ -28,9 +28,11 @@
 #include "note.h"
 
 
-const short int note::_note_count = 16;
+const short int note::_note_count = 8;
 note note::notes[_note_count];
 const short int note::_char_count_in_name = 15;
+short int note::_activeTone = 0;
+short int note::_activeNote = 0;
 
 // constructor
 note::note() {
@@ -38,84 +40,52 @@ note::note() {
 }
 
 
-void note::_initNote(const char cName[_char_count_in_name], const short int iLaserPinsStatus[PIN_COUNT]){
+void note::_initNote(const char cName[_char_count_in_name], const byte durationInBaseBeats){
   // Serial.println("void note::initNote(). Starting.");
   strcpy(_cName, cName);
-  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    _iLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
-  }
+  _durationInBaseBeats = durationInBaseBeats;
   // Serial.println("void note::initNote(). Ending.");
 };
+
 
 void note::initNotes() {
   Serial.println("void note::initNotes(). Starting.");
 
-  const short int aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
-  notes[0]._initNote("all off", aAllOff);
-  // Serial.println("void note::initNotes(). notes[0]._iLaserPinStatus[0]");
-  // Serial.println(notes[0]._iLaserPinStatus[0]);
-
-  const short int aFirstOn[4] = {LOW, HIGH, HIGH, HIGH};
-  notes[1]._initNote("first on", aFirstOn);
-  const short int aSecondOn[4] = {HIGH, LOW, HIGH, HIGH};
-  notes[2]._initNote("second on", aSecondOn);
-  const short int aThirdOn[4] = {HIGH, HIGH, LOW, HIGH};
-  notes[3]._initNote("third on", aThirdOn);
-  const short int aFourthOn[4] = {HIGH, HIGH, HIGH, LOW};
-  notes[4]._initNote("fourth on", aFourthOn);
-
-  const short int aFirstPairOn[4] = {LOW, LOW, HIGH, HIGH};
-  notes[5]._initNote("first pair on", aFirstPairOn);
-  const short int aSecondPairOn[4] = {HIGH, HIGH, LOW, LOW};
-  notes[6]._initNote("second pair on", aSecondPairOn);
-
-  const short int aOnOffOnOff[4] = {LOW, HIGH, LOW, HIGH};
-  notes[7]._initNote("on off on off", aOnOffOnOff);
-  const short int aOffOnOffOn[4] = {HIGH, LOW, HIGH, LOW};
-  notes[8]._initNote("off on off on", aOffOnOffOn);
-
-  const short int aExtOnIntOff[4] = {LOW, HIGH, HIGH, LOW};
-  notes[9]._initNote("external on, internal off", aExtOnIntOff);
-  const short int aExtOffIntOn[4] = {HIGH, LOW, LOW, HIGH};
-  notes[10]._initNote("external off, internal on", aExtOffIntOn);
-
-  const short int aLastOff[4] = {LOW, LOW, LOW, HIGH};
-  notes[11]._initNote("last off", aLastOff);
-  const short int aThirdOff[4] = {LOW, LOW, HIGH, LOW};
-  notes[12]._initNote("third off", aThirdOff);
-  const short int aSecondOff[4] = {LOW, HIGH, LOW, LOW};
-  notes[13]._initNote("second off", aSecondOff);
-  const short int aFirstOff[4] = {HIGH, LOW, LOW, LOW};
-  notes[14]._initNote("first off", aFirstOff);
-
-  const short int aAllOn[4] = {LOW, LOW, LOW, LOW};
-  notes[15]._initNote("all on", aAllOn);
+  notes[0]._initNote("1- 16th", 1);
+  notes[1]._initNote("2- eighth", 2);
+  notes[2]._initNote("3- eighth + 16th", 3);
+  notes[3]._initNote("4- quarter", 4);
+  notes[4]._initNote("6- quarter + eighth", 6);
+  notes[5]._initNote("8- half", 8);
+  notes[6]._initNote("12- half + quarter", 12);
+  notes[7]._initNote("16- full", 16);
 
   Serial.println("void note::initNotes(). Ending.");
 }
 
-
-
-void note::playNote(){
+// playNote: non-static member function; play a given tone for a given time
+// to be called this way:
+// notes[3].playNote(4) to play a noire, tone number 4 (fourth laser on)
+void note::playNote(const short toneIndex, const short noteIndex, short sBaseBeatInMs){
   // Serial.println("void note::playNote(). Starting");
-  // Serial.print("void note::playNote(). Sequence Number: ");
-  // Serial.println(noteNumber);
-  // Direct access to the pins.
-  // For each pin
-  for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    // Serial.println("void note::playNote(). __thisPin in for loop: ");
-    // Serial.println(__thisPin);
-    short _physical_pin_number = relayPins[__thisPin]; // look for the physical number of the pin in the array of pin
-    // Serial.println("void note::playNote(). _physical_pin_number: ");
-    // Serial.println(_physical_pin_number);
-    // Serial.println("void note::playNote(). _activenote: ");
-    // Serial.println(_activeNote);
-    // Serial.println("void note::playNote(). notes[_activeNote]._iLaserPinStatus[0]: ");
-    // Serial.println(notes[_activeNote]._iLaserPinStatus[0]);
-    const short int _target_state = _iLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
-    // Serial.println("void note::playNote(). _target_state: ");
-    // Serial.println(_target_state);
-    digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
-  }
+  _activeNote = noteIndex;
+  _activeTone = toneIndex;
+  short int _iDurationInBaseBeats = (int)_durationInBaseBeats;
+  unsigned long _ulDurationInMs = _iDurationInBaseBeats * sBaseBeatInMs;
+  _tPlayNote.setInterval(_ulDurationInMs);
+  _tPlayNote.enable();
   // Serial.println("void note::playNote(). Ending");
 };
+
+Task note::_tPlayNote(0, 1, NULL, &userScheduler, false, &_oetcbPlayNote, &_odtcbPlayNote);
+
+// On enable Task _tNote, turn the lasers to a given tone
+bool note::_oetcbPlayNote() {
+  tone::tones[_activeTone].playTone();
+  return true;
+}
+
+// On disable Task _tNote, turn off the lasers
+void note::_odtcbPlayNote() {
+  tone::tones[0].playTone();
+}

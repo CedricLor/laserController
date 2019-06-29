@@ -144,7 +144,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
 
 // Single sequence player
 // Plays a given sequence one single time.
-// It is called by the tPlaySequenceInLoop
+// It is called by the Task tPlaySequenceInLoop
 // 1. sets the interval of the _tPlaySequence task from the tempo of the relevant sequence
 // this tempo corresponds to the duration for which each tone will be played
 // 2. sets the number of iterations of the _tPlaySequence task from the number of
