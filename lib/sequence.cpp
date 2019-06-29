@@ -178,6 +178,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
 
 
 
+
 // Single sequence player
 // Plays a given sequence one single time.
 // It is called by the Task tPlaySequenceInLoop
@@ -204,10 +205,19 @@ void sequence::_tcbPlaySequence(){
   // Serial.println("----- void sequence::_tcbPlaySequence(). Starting.");
   short _iter = _tPlaySequence.getRunCounter() - 1;
   // Serial.print("----- void sequence::_tcbPlaySequence(). _iter: ");Serial.println(_iter);
+
   // Look for the tone number to read at this tempo
-  short int _activeTone = sequences[_activeSequence]._iAssociatedBarsSequence[_iter];
+  short int _activeBar = sequences[_activeSequence]._iAssociatedBarsSequence[_iter];
+
+  // Look for the tone number to read at this tempo
+  // short int _activeTone = sequences[_activeSequence]._iAssociatedBarsSequence[_iter];
+
+  // Play bars
+  bar::bars[_activeBar].playBar(_activeBar);
+
   // Play tone
-  tone::tones[_activeTone].playTone();
+  // tone::tones[_activeTone].playTone();
+
   // Serial.println("----- void sequence::_tcbPlaySequence(). Ending.");
 };
 
