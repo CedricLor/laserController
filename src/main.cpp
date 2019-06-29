@@ -80,6 +80,7 @@ void setup() {
 
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
   tone::initTones();
+  bar::initBars();
   sequence::initSequences();
   boxState::initBoxStates();
 
