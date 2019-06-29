@@ -51,9 +51,9 @@ class sequence
     void _initSequence(const char cName[], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
 
     char _cName[7];  // array of character to hold the name of each sequences
-    unsigned long  _ulTempo; // tempo at which the task executing the sequence will update the state of each laser pin, in milliseconds
-    short int _iNumberOfBeatsInSequence; // number of tempos required to execute one full sequence
-    short int _iLaserPinStatusAtEachBeat[4];  // array containing the state of each laser at each tempo
+    unsigned long _ulTempo; // tempo at which the task executing the sequence will change bar, in milliseconds
+    short int _iNumberOfBarsInSequence; // number of tempos required to execute one full sequence
+    short int _iAssociatedBarsSequence[4];  // array containing the state of each laser at each tempo
 
 
     static void _tcbPlaySequenceInLoop();

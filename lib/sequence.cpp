@@ -1,5 +1,5 @@
 /*
-  sequence.cpp - sequences are precoded sequences of notes
+  sequence.cpp - sequences are precoded sequences of bars
   Created by Cedric Lor, June 4, 2019.
 
   |--main.cpp
@@ -14,7 +14,14 @@
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
   |  |  |  |  |--global.h
   |  |  |  |
-  |  |  |  |--tone.cpp (called to play some member functions)
+  |  |  |  |--bar.cpp (an array of bars (micro-sequences of notes, each with a tempo in ms)
+  |  |  |  |  |--bar.h
+  |  |  |  |  |--note.cpp (a static class playing a note for a maximum 30 seconds)
+  |  |  |  |  |  |--note.h
+  |  |  |  |  |  |--tone.cpp (an array of tones, containing all the possible lasers on/off configurations)
+  |  |  |  |  |  |  |--tone.h
+  |  |  |  |
+  |  |  |  |--tone.cpp
   |  |  |  |  |--tone.h
   |  |  |  |  |--global.cpp (called to retrieve some values)
   |  |  |  |  |  |--global.h
@@ -51,13 +58,13 @@ sequence::sequence() {
 
 
 // Initialisers
-void sequence::_initSequence(const char cName[_char_count_in_name], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+void sequence::_initSequence(const char cName[_char_count_in_name], const unsigned long ulTempo, const short int iNumberOfBarsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
   // Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
-  _iNumberOfBeatsInSequence = iNumberOfBeatsInSequence;
-  for (short __thisBeat = 0; __thisBeat < iNumberOfBeatsInSequence; __thisBeat++) {
-    _iLaserPinStatusAtEachBeat[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
+  _iNumberOfBarsInSequence = iNumberOfBarsInSequence;
+  for (short __thisBeat = 0; __thisBeat < iNumberOfBarsInSequence; __thisBeat++) {
+    _iAssociatedBarsSequence[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
   }
   // Serial.println("void sequence::initSequence(). Ending.");
 };
@@ -74,8 +81,8 @@ void sequence::initSequences() {
   sequences[0]._initSequence("relays", 30000, 2, aRelays);
   // Serial.println("void sequence::_initSequences(). sequences[0]._ulTempo: ");
   // Serial.println(sequences[0]._ulTempo);
-  // Serial.println("void sequence::_initSequences(). sequences[0]._iLaserPinStatusAtEachBeat[0][1]");
-  // Serial.println(sequences[0]._iLaserPinStatusAtEachBeat[0][1]);
+  // Serial.println("void sequence::_initSequences(). sequences[0]._iAssociatedBarsSequence[0][1]");
+  // Serial.println(sequences[0]._iAssociatedBarsSequence[0][1]);
   const short int aTwins[2] = {5,6};
   sequences[1]._initSequence("twins", 30000, 2, aTwins);
   const short int aAll[2] = {15,0};
@@ -114,7 +121,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   _playSequence();
 
   // Calculate the interval at which each iteration occur, by multiplying the tempo of the sequence by the number of beats in the sequence
-  unsigned long _duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBeatsInSequence;
+  unsigned long _duration = sequences[_activeSequence]._ulTempo * sequences[_activeSequence]._iNumberOfBarsInSequence;
   // Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);
 
   // Set the interval at which each iteration occur.
@@ -164,8 +171,8 @@ void sequence::_playSequence(){
   // Serial.print("----- void sequence::_playSequence(). _activeSequence: ");Serial.println(_activeSequence);
   _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
   // Serial.print("----- void sequence::_playSequence(). Tempo: ");Serial.println(sequences[sequenceNumber]._ulTempo);
-  _tPlaySequence.setIterations(sequences[_activeSequence]._iNumberOfBeatsInSequence);
-  // Serial.print("----- void sequence::_playSequence(). Beats: ");Serial.println(sequences[sequenceNumber]._iNumberOfBeatsInSequence);
+  _tPlaySequence.setIterations(sequences[_activeSequence]._iNumberOfBarsInSequence);
+  // Serial.print("----- void sequence::_playSequence(). Beats: ");Serial.println(sequences[sequenceNumber]._iNumberOfBarsInSequence);
   _tPlaySequence.enable();
   // Serial.println("----- void sequence::_playSequence(). Task _tPlaySequence enabled");
   Serial.println("----- void sequence::_playSequence(). Ending");
@@ -178,7 +185,7 @@ void sequence::_tcbPlaySequence(){
   short _iter = _tPlaySequence.getRunCounter() - 1;
   // Serial.print("----- void sequence::_tcbPlaySequence(). _iter: ");Serial.println(_iter);
   // Look for the tone number to read at this tempo
-  short int _activeTone = sequences[_activeSequence]._iLaserPinStatusAtEachBeat[_iter];
+  short int _activeTone = sequences[_activeSequence]._iAssociatedBarsSequence[_iter];
   // Play tone
   tone::tones[_activeTone].playTone();
   // Serial.println("----- void sequence::_tcbPlaySequence(). Ending.");
