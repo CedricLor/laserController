@@ -48,7 +48,7 @@ class sequence
     static short int _activeSequence;
     static const short int _char_count_in_name;
 
-    void _initSequence(const char cName[], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iLaserPinStatusAtEachBeat[]);
+    void _initSequence(const char cName[], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
 
     char _cName[7];  // array of character to hold the name of each sequences
     unsigned long _ulTempo; // tempo at which the task executing the sequence will change bar, in milliseconds

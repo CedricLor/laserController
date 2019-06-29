@@ -49,6 +49,7 @@ const short int sequence::_char_count_in_name = 7;
 
 
 // Constructors
+
 sequence::sequence() {
 }
 
@@ -58,41 +59,60 @@ sequence::sequence() {
 
 
 // Initialisers
-void sequence::_initSequence(const char cName[_char_count_in_name], const unsigned long ulTempo, const short int iNumberOfBarsInSequence, const short int iLaserPinStatusAtEachBeat[4]){
+
+void sequence::_initSequence(const char cName[_char_count_in_name], const unsigned long ulTempo, const short int iNumberOfBarsInSequence, const short int iAssociatedBarsSequence[4]){
   // Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
   _ulTempo = ulTempo;
   _iNumberOfBarsInSequence = iNumberOfBarsInSequence;
-  for (short __thisBeat = 0; __thisBeat < iNumberOfBarsInSequence; __thisBeat++) {
-    _iAssociatedBarsSequence[__thisBeat] = iLaserPinStatusAtEachBeat[__thisBeat];
+  for (short __thisBar = 0; __thisBar < iNumberOfBarsInSequence; __thisBar++) {
+    _iAssociatedBarsSequence[__thisBar] = iAssociatedBarsSequence[__thisBar];
   }
   // Serial.println("void sequence::initSequence(). Ending.");
 };
 
+
+
+
+
 void sequence::initSequences() {
   Serial.println("void sequence::_initSequences(). Starting.");
-  // define an array containing references to the tones to be played in the sequence
-  const short int aRelays[2] = {7,8};
+
+  // indicate the number of bars for this sequence
+  short _barNumberForThisSequence = 1;
+  // define an array containing references to the bars to be played in the sequence
+  const short int aRelays[_barNumberForThisSequence] = {0};
   // load values into sequences[0]:
   // a. the sequence's name
   // b. the duration of each beats (i.e. the tempo)
-  // c. the number of beats in the sequence
-  // d. the array of references to the tones to be played in the sequence
-  sequences[0]._initSequence("relays", 30000, 2, aRelays);
+  // c. the number of bars in the sequence
+  // d. the array of references to the bars to be played in the sequence
+  sequences[0]._initSequence("relays", 30000, _barNumberForThisSequence, aRelays);
   // Serial.println("void sequence::_initSequences(). sequences[0]._ulTempo: ");
   // Serial.println(sequences[0]._ulTempo);
   // Serial.println("void sequence::_initSequences(). sequences[0]._iAssociatedBarsSequence[0][1]");
   // Serial.println(sequences[0]._iAssociatedBarsSequence[0][1]);
-  const short int aTwins[2] = {5,6};
-  sequences[1]._initSequence("twins", 30000, 2, aTwins);
-  const short int aAll[2] = {15,0};
-  sequences[2]._initSequence("all", 30000, 2, aAll);
-  const short int aSwipeR[4] = {1,2,3,4};
-  sequences[3]._initSequence("swipeR", 500, 4, aSwipeR);
-  const short int aSwipeL[4] = {4,3,2,1};
-  sequences[4]._initSequence("swipeL", 500, 4, aSwipeL);
-  const short int aAllOff[1] = {0};
-  sequences[5]._initSequence("all of", 0, 1, aAllOff);
+
+  _barNumberForThisSequence = 1;
+  const short int aTwins[_barNumberForThisSequence] = {1};
+  sequences[1]._initSequence("twins", 30000, _barNumberForThisSequence, aTwins);
+
+  _barNumberForThisSequence = 1;
+  const short int aAll[_barNumberForThisSequence] = {2};
+  sequences[2]._initSequence("all", 30000, _barNumberForThisSequence, aAll);
+
+  _barNumberForThisSequence = 1;
+  const short int aSwipeR[_barNumberForThisSequence] = {3};
+  sequences[3]._initSequence("swipeR", 500, _barNumberForThisSequence, aSwipeR);
+
+  _barNumberForThisSequence = 1;
+  const short int aSwipeL[_barNumberForThisSequence] = {4};
+  sequences[4]._initSequence("swipeL", 500, _barNumberForThisSequence, aSwipeL);
+
+  _barNumberForThisSequence = 1;
+  const short int aAllOff[_barNumberForThisSequence] = {5};
+  sequences[5]._initSequence("all of", 0, _barNumberForThisSequence, aAllOff);
+
   Serial.println("void sequence::_initSequences(). Ending.");
 }
 
@@ -105,9 +125,9 @@ void sequence::initSequences() {
 // tPlaySequenceInLoop plays a sequence in loop, for an unlimited number of iterations,
 // until it is disabled.
 // tPlaySequenceInLoop is enabled and disabled by the stateBox class.
-// Upon entering a new stateBox (startup, IR signal received, etc.),
-// the stateBox tasks sets sequence::_activeSequence to the sequence index number
-// associated with this stateBox. Then the tPlaySequenceInLoop is enabled, until being disabled by the boxState class
+// Upon entering a new boxState (startup, IR signal received, etc.),
+// the boxState::_tPlayBoxState task sets sequence::_activeSequence to the sequence index number
+// associated with this boxState. Then the tPlaySequenceInLoop is enabled, until being disabled by the boxState::_tPlayBoxState task
 Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
 
 // Upon enabling the tPlaySequenceInLoop task, the _activeSequence is played a
