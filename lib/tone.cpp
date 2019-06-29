@@ -49,11 +49,11 @@ void tone::_initTone(const char cName[_char_count_in_name], const bool bLaserPin
 };
 
 void tone::initTones() {
-  Serial.println("void tone::initTones(). Starting.");
+  Serial.println("----------- void tone::initTones(). Starting.");
 
   const bool aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
   tones[0]._initTone("all off", aAllOff);
-  Serial.print("void tone::initTones(). tones[0]._bLaserPinStatus[0] = ");Serial.println(tones[0]._bLaserPinStatus[0]);
+  Serial.print("----------- void tone::initTones(). tones[0]._bLaserPinStatus[0] = ");Serial.println(tones[0]._bLaserPinStatus[0]);
 
   const bool aFirstOn[4] = {LOW, HIGH, HIGH, HIGH};
   tones[1]._initTone("first on", aFirstOn);
@@ -91,22 +91,26 @@ void tone::initTones() {
   const bool aAllOn[4] = {LOW, LOW, LOW, LOW};
   tones[15]._initTone("all on", aAllOn);
 
-  Serial.println("void tone::initTones(). Ending.");
+  Serial.println("----------- void tone::initTones(). Ending.");
 }
 
 
+/* playTone()
 
+  tone::tones[_activeTone].playTone();
+
+  playTone() is called as a member of an instance of tones[index].
+*/
 void tone::playTone(){
-  Serial.println("void tone::playTone(). Starting");
-  // Serial.print("void tone::playTone(). Sequence Number: ");Serial.println(toneNumber);
+  Serial.print("----------- void tone::playTone(). Starting. Tone to be played ");Serial.println(_cName);
   // Direct access to the pins.
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    // Serial.print("void tone::playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
+    // Serial.print("----------- void tone::playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
     short _physical_pin_number = relayPins[__thisPin]; // look for the physical number of the pin in the array of pin
     const bool _target_state = _bLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
-    // Serial.print("void tone::playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
+    // Serial.print(----------- "void tone::playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
     digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
-  Serial.println("void tone::playTone(). Ending");
+  Serial.println("----------- void tone::playTone(). Ending. Tone being played ");Serial.println(_cName);
 };
