@@ -51,14 +51,15 @@ void note::_initNote(const char cName[_char_count_in_name], const byte durationI
 void note::initNotes() {
   Serial.println("void note::initNotes(). Starting.");
 
-  notes[0]._initNote("1- 16th", 1);
-  notes[1]._initNote("2- eighth", 2);
-  notes[2]._initNote("3- eighth + 16th", 3);
-  notes[3]._initNote("4- quarter", 4);
-  notes[4]._initNote("6- quarter + eighth", 6);
-  notes[5]._initNote("8- half", 8);
-  notes[6]._initNote("12- half + quarter", 12);
-  notes[7]._initNote("16- full", 16);
+  // notes[index]._initNote("cname", numbeOfBaseBeats);
+  notes[0]._initNote("1- full", 16);
+  notes[1]._initNote("1/2- half + quarter", 12);
+  notes[2]._initNote("1/8- half", 8);
+  notes[3]._initNote("1/6- quarter + eighth", 6);
+  notes[4]._initNote("1/4- quarter", 4);
+  notes[5]._initNote("1/6- eighth + 16th", 3);
+  notes[6]._initNote("1/8- eighth", 2);
+  notes[7]._initNote("1/16- 16th", 1);
 
   Serial.println("void note::initNotes(). Ending.");
 }
