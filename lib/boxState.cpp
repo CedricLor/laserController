@@ -242,22 +242,22 @@ void boxState::_restart_tPlayBoxState() {
 Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
 bool boxState::_oetcbPlayBoxState(){
-  Serial.println("void boxState::_oetcbPlayBoxState(). Starting.");
-  Serial.print("void boxState::_oetcbPlayBoxState(). Box State Number: ");
-  Serial.println(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+  Serial.println("bool boxState::_oetcbPlayBoxState(). Starting.");
+  Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bAssociatedSequence;
-  // Serial.print("void boxState::_oetcbPlayBoxState() _activeSequence: ");
+  // Serial.print("bool boxState::_oetcbPlayBoxState() _activeSequence: ");
   // Serial.println(_activeSequence);
   // set the active sequence
-  // Serial.println("void boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
+  // Serial.println("bool boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
+  
   // Play sequence in loop until end
-  // Serial.println("void boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
+  // Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
-  // Serial.println("void boxState::_oetcbPlayBoxState(). Ending.");
+  Serial.println("bool boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
 
@@ -266,7 +266,7 @@ void boxState::_odtcbPlayBoxState(){
   // (i) disable the associated sequence player; and
   // (ii) if the state which was being played was not the default state, set it to its default state
 
-  // Serial.println("void boxState::_odtcbPlayBoxState(). Starting.------");
+  Serial.println("void boxState::_odtcbPlayBoxState(). Starting.------");
   // Serial.print("void boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
   // Serial.println(_tPlayBoxState.getInterval());
   sequence::tPlaySequenceInLoop.disable();
@@ -277,7 +277,7 @@ void boxState::_odtcbPlayBoxState(){
   if (!(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState == _boxDefaultState)) {
     _setBoxTargetState(_boxDefaultState);
   }
-  // Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
+  Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }
 
 
