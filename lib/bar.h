@@ -43,8 +43,6 @@ class bar
 
     static Task tPlayBars;
 
-    // non-static
-
   private:
     static const short int _bar_count;
     static short int _activeBar;
@@ -59,6 +57,7 @@ class bar
     static bool _oetcbPlayBar();
     static void _odtcbPlayBar();
 
+    // non-static
     void _initBar(const char cName[], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const short int iNumberOfNotesInBar, const short int iNoteTone[][2]);
 
     char _cName[7];  // array of character to hold the name of each bars
@@ -67,7 +66,7 @@ class bar
     short int _iNumberOfNotesInBar; // number of basic time unit for the smallest note to be played in one bar
     short int _note[16][2];  // array containing the state of each laser at each tempo
 
-    void _playBar();
+    void _playBar(const short activeBar);
 };
 
 #endif

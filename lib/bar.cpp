@@ -127,7 +127,7 @@ bool bar::_oetcbPlayBars() {
   // Serial.print("----- bool bar::_oetcbPlayBars(). _activeBar: ");Serial.println(_activeBar);
 
   // Start immediately playing the bar on enable
-  bars[_activeBar]._playBar();
+  bars[_activeBar]._playBar(_activeBar);
 
   // Calculate the interval at which each iteration occur, by multiplying the tempo of the bar by the number of beats in the bar
   unsigned long _duration = bars[_activeBar]._ulBaseBeatInMs * bars[_activeBar]._iNumberOfNotesInBar;
@@ -142,7 +142,7 @@ bool bar::_oetcbPlayBars() {
 
 void bar::_tcbPlayBars() {
   Serial.println("----- void bar::_tcbPlayBars(). Starting.");
-  bars[_activeBar]._playBar();
+  bars[_activeBar]._playBar(_activeBar);
   Serial.println("----- void bar::_tcbPlayBars(). Ending.");
 }
 
@@ -150,8 +150,7 @@ void bar::_tcbPlayBars() {
 // to state 5 ("all off"), then playBar 5.
 void bar::_odtcbPlayBars() {
   Serial.println("----- void bar::_odtcbPlayBars(). Starting.");
-  setActiveBar(5); // all lasers off
-  bars[_activeBar]._playBar();
+  bars[_activeBar]._playBar(5); // all lasers off
   Serial.println("----- void bar::_odtcbPlayBars(). Ending.");
 };
 
@@ -161,10 +160,14 @@ void bar::_odtcbPlayBars() {
 // Single bar player
 // Plays a given bar one single time.
 // It is called by the Task tPlayBars
-void bar::_playBar(){
+void bar::_playBar(const short activeBar){
   Serial.println("----- void bar::_playBar(). Starting");
   // Serial.print("----- void bar::_playBar(). _activeBar: ");Serial.println(_activeBar);
 
+  // set the active bar for the callbacks of _tPlayBar Task
+  setActiveBar(activeBar);
+
+  // Enable the _tPlayBar Task
   _tPlayBar.enable();
   // Serial.println("----- void bar::_playBar(). Task _tPlayBar enabled");
 
