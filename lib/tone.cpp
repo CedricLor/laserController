@@ -39,11 +39,11 @@ tone::tone() {
 }
 
 
-void tone::_initTone(const char cName[_char_count_in_name], const bool iLaserPinsStatus[PIN_COUNT]){
+void tone::_initTone(const char cName[_char_count_in_name], const bool bLaserPinsStatus[PIN_COUNT]){
   // Serial.println("void tone::initTone(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    _bLaserPinStatus[__thisPin] = iLaserPinsStatus[__thisPin];
+    _bLaserPinStatus[__thisPin] = bLaserPinsStatus[__thisPin];
   }
   // Serial.println("void tone::initTone(). Ending.");
 };
@@ -106,7 +106,7 @@ void tone::playTone(){
     Serial.print("void tone::playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
     short _physical_pin_number = relayPins[__thisPin]; // look for the physical number of the pin in the array of pin
     const bool _target_state = _bLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
-    Serial.print("void tone::playTone(). _activeTone: ");Serial.print(_activeTone);Serial.print("; tones[_activeTone]._bLaserPinStatus[0]: ");Serial.print(tones[_activeTone]._bLaserPinStatus[0]);Serial.print("; _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
+    Serial.print("void tone::playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
     digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
   Serial.println("void tone::playTone(). Ending");
