@@ -34,25 +34,14 @@ class note
   public:
     note(); // default constructor
 
-    static note notes[];
-    static void initNotes(); // initializer of the array of tones
+    static short int activeTone;
 
-    void playNote(const short toneIndex, const short noteIndex, short sBaseBeatInMs);
+    static Task tPlayNote;
 
   private:
-    static short int _activeTone;
-    static short int _activeNote;
-    static const short int _note_count;
-    static const short int _char_count_in_name;
 
-    static Task _tPlayNote;
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
-
-    void _initNote(const char cName[], const byte durationInBaseBeats);
-
-    char _cName[15];  // array of character to hold the name of each sequences
-    byte _durationInBaseBeats;
 };
 
 #endif

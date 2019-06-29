@@ -40,6 +40,8 @@
 #include "../lib/tone.cpp"
 #include "../lib/note.h"
 #include "../lib/note.cpp"
+#include "../lib/bar.h"
+#include "../lib/bar.cpp"
 #include "../lib/sequence.h"
 #include "../lib/sequence.cpp"
 #include "../lib/boxState.h"

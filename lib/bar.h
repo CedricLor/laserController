@@ -35,6 +35,7 @@ class bar
   public:
     bar(); // default constructor
 
+    // static
     static bar bars[];
     static void initBars(); // initializer of the array of bas
 
@@ -42,27 +43,31 @@ class bar
 
     static Task tPlayBars;
 
+    // non-static
+
   private:
     static const short int _bar_count;
     static short int _activeBar;
     static const short int _char_count_in_name;
 
-    void _initBar(const char cName[], const unsigned long ulTempo, const short int iNumberOfBeatsInBar, const short int iLaserPinStatusAtEachBeat[]);
+    static void _tcbPlayBars();
+    static bool _oetcbPlayBars();
+    static void _odtcbPlayBars();
+
+    static Task _tPlayBar;
+    static void _tcbPlayBar();
+    static bool _oetcbPlayBar();
+    static void _odtcbPlayBar();
+
+    void _initBar(const char cName[], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const short int iNumberOfNotesInBar, const short int iNoteTone[][2]);
 
     char _cName[7];  // array of character to hold the name of each bars
-    unsigned long  _ulTempo; // tempo at which the task executing the bar will update the state of each laser pin, in milliseconds
-    short int _iNumberOfBeatsInBar; // number of tempos required to execute one full bar
-    short int _iLaserPinStatusAtEachBeat[4];  // array containing the state of each laser at each tempo
-
-
-    static void tPlayBars();
-    static bool tPlayBars();
-    static void tPlayBars();
+    unsigned long  _ulBaseBeatInMs; // basic time unit for the smallest note to be played
+    short int _iBaseNoteForBeat;
+    short int _iNumberOfNotesInBar; // number of basic time unit for the smallest note to be played in one bar
+    short int _note[16][2];  // array containing the state of each laser at each tempo
 
     void _playBar();
-    static Task _tPlayBar;
-    static void _oetcbPlaybar();
-    static void _odtcbPlaybar();
 };
 
 #endif
