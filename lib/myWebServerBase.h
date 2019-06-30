@@ -42,12 +42,15 @@ class myWebServerBase
     static void startAsyncServer();
     static void sendDataWs(JsonDocument& doc);
 
+    static Task tSendWsData;
+
   private:
     static AsyncWebServer _asyncServer;
     static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
     static AsyncEventSource _events; // event source (Server-Sent events)
 
     static uint32_t _ws_client_id;
+    static void _tcbSendWsData();
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
