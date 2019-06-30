@@ -163,3 +163,8 @@ TO DO:
   - find a better way to init ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0 than in setup()
   - refactor myMeshViews::statusMsg("on"); currently being called from boxState.cpp, upon enabling and disabling _tPlayBoxState
   - rewrite the Serial.print and Serial.println to Serial.printf; don't forget https://stackoverflow.com/questions/8986625/warning-format-c-expects-type-int-but-argument-2-has-type-char
+
+
+Notes on Task Scheduler
+When calling setInterval() within the onEnable callback of the Task, the main callback is called within the ancient delay.
+The following iteration on the main callback will take place after the new delay

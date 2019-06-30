@@ -122,7 +122,7 @@ void sequence::initSequences() {
 
   _barCountForThisSequence = 1;
   const short int aAllOff[_barCountForThisSequence] = {5};
-  sequences[5]._initSequence("all of", 0, _barCountForThisSequence, aAllOff);
+  sequences[5]._initSequence("all of", 30000, _barCountForThisSequence, aAllOff);
 
   Serial.println("void sequence::_initSequences(). Ending.");
 }
@@ -147,64 +147,96 @@ Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &us
 // first time and the _duration of the sequence is calculated in order to
 // set the interval between each iterations of the tPlaySequenceInLoop task
 bool sequence::_oetcbPlaySequenceInLoop() {
-  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). Starting.");
-  Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). _activeSequence: ");Serial.println(_activeSequence);
+  Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). Starting. *****");
+  Serial.print("-- bool sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
+  Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
+  Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  Serial.println("-- void sequence::_oetcbPlaySequenceInLoop(). ******");
+  Serial.print("-- bool sequence::_oetcbPlaySequenceInLoop(). _activeSequence: ");Serial.println(_activeSequence);
 
+  // Why do not start playing immediately? Why are these lines commented out?
+  // Because we are setting the interval for tPlaySequenceInLoop in its own onEnable callback.
+  // As such, the next iteration of tPlaySequenceInLoop will take place immediatelly after the onEnable callback ends.
+  // And the main callback will be calling sequences[_activeSequence]._playSequence(_activeSequence).
+  //
   // Start immediately playing the sequence on enable
-  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(_activeSequence).");
-  sequences[_activeSequence]._playSequence(_activeSequence);
-  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). returning from sequences[_activeSequence]._playSequence(_activeSequence).");
+  // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(_activeSequence).");
+  // sequences[_activeSequence]._playSequence(_activeSequence);
+  // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). returning from sequences[_activeSequence]._playSequence(_activeSequence).");
 
-  // Calculate the interval at which each iteration occur, by multiplying the tempo of the sequence by the number of bars in the sequence
-  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). about to set the interval for tPlaySequenceinLoop.");
-  unsigned long _duration = sequences[_activeSequence]._ulTempo
-   * sequences[_activeSequence]._barCountInSequence;
-  Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);
+  // Calculate the interval at which each iteration occur
+  Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to set the interval for tPlaySequenceinLoop.");
+  unsigned long _duration = _ulSequenceDuration(_activeSequence);
+  // sequences[_activeSequence]._ulTempo
+  //  * sequences[_activeSequence]._barCountInSequence;
+  Serial.print("-- bool sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);
 
-  // Set the interval at which each iteration occur.
-  // Before doing, check if _duration == 0.
-  // If _duration == 0, this actually means infinite,
-  // which means that we are trying to play the sequence "all lasers off"
-  // Instead of starting an infinite loop, turning all lasers off,
-  // let's just disable tPlaySequenceInLoop
-  if (_duration == 0) {
-    Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). _duration == 0");
-    Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). about to return from onEnable callback with a FALSE.");
-    return false;
-  }
+  // // Set the interval at which each iteration occur.
+  // // Before doing, check if _duration == 0.
+  // // If _duration == 0, this actually means infinite,
+  // // which means that we are trying to play the sequence "all lasers off"
+  // // Instead of starting an infinite loop, turning all lasers off,
+  // // let's just disable tPlaySequenceInLoop
+  // if (_duration == 0) {
+  //   Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). _duration == 0");
+  //   Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to return from onEnable callback with a FALSE.");
+  //   return false;
+  // }
 
 
-  Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) with _duration = ");Serial.println(_duration);
+  Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");
   tPlaySequenceInLoop.setInterval(_duration);
-  Serial.print("----- bool sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
-  Serial.print("------ void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
+  // tPlaySequenceInLoop.delay();
+  Serial.print("-- bool sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
+  Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
+  Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  Serial.println("-- void sequence::_oetcbPlaySequenceInLoop(). ******");
 
-  Serial.println("----- bool sequence::_oetcbPlaySequenceInLoop(). Ending.");
+  Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). Ending.");
   return true;
 }
 
 void sequence::_tcbPlaySequenceInLoop() {
-  Serial.println("----- void sequence::_tcbPlaySequenceInLoop(). Starting.");
-  Serial.print("------ void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
-  Serial.print("------ void sequence::_playSequence(). _tPlaySequence.getInterval() = ");Serial.println(_tPlaySequence.getInterval());
-  Serial.print("------ void sequence::_playSequence(). about to call sequences[_activeSequence]._playSequence(_activeSequence) with _activeSequence = ");Serial.println(_activeSequence);
+  Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). Starting. ******");
+  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
+  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
+  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). ******");
+  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(_activeSequence) with _activeSequence = ");Serial.println(_activeSequence);
   sequences[_activeSequence]._playSequence(_activeSequence);
-  Serial.println("----- void sequence::_tcbPlaySequenceInLoop(). Ending.");
+  Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). Ending.");
 }
 
 // on disable tPlaySequenceInLoop, turn off all the laser by playing
 // sequence 5 ("all off").
 void sequence::_odtcbPlaySequenceInLoop() {
-  Serial.println("----- void sequence::_odtcbPlaySequenceInLoop(). Starting.");
-  Serial.print("----- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence == ");Serial.println(_activeSequence);
+  Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). Starting. ******");
+  Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). ******");
+  Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence == ");Serial.println(_activeSequence);
   if (!(_activeSequence == 5)) {
-    Serial.println("----- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence is != 5");
-    Serial.println("----- void sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(5)");
+    Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence is != 5");
+    Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(5)");
     sequences[_activeSequence]._playSequence(5); // All laser off
   }
-  Serial.println("----- void sequence::_odtcbPlaySequenceInLoop(). Ending.");
+  Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). Ending.");
 };
 
+
+
+// Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
+long int sequence::_ulSequenceDuration(const short int __activeSequence) {
+  Serial.println("----- long int sequence::_ulSequenceDuration(). Starting.");
+  unsigned long __ulDurationInMs = 0;
+  for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
+    __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__thisBar);
+  }
+  Serial.println("----- long int sequence::_ulSequenceDuration(). Ending.");
+  return __ulDurationInMs;
+}
 
 
 
@@ -229,8 +261,8 @@ void sequence::_playSequence(short int activeSequence){
   Serial.print("------ void sequence::_playSequence(). _tPlaySequence.isEnabled() = ");Serial.println(_tPlaySequence.isEnabled());
   Serial.print("------ void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
   Serial.print("------ void sequence::_playSequence(). _tPlaySequence.getInterval() = ");Serial.println(_tPlaySequence.getInterval());
-  _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
-  Serial.print("----- void sequence::_playSequence(). Tempo of the sequence: ");Serial.println(sequences[_activeSequence]._ulTempo);
+  // _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
+  // Serial.print("----- void sequence::_playSequence(). Tempo of the sequence: ");Serial.println(sequences[_activeSequence]._ulTempo);
   _tPlaySequence.setIterations(sequences[_activeSequence]._barCountInSequence);
   Serial.print("----- void sequence::_playSequence(). Bars: ");Serial.println(sequences[_activeSequence]._barCountInSequence);
   _tPlaySequence.enable();
@@ -262,15 +294,14 @@ void sequence::_tcbPlaySequence(){
   // The next iteration shall occur when..? Easy, the bar wins!!!
   // If the bar has a shorter or longer beatbase, the bar value shall win over
   // the sequence tempo.
-  // Reset the interval value of this task if the sequence tempo in this sequence
-  // is different than that of the bar that is going to be played, to give it time
+  // Reset the interval value of this task to give the bar that is going to be played time
   // to play at its own slower time or avoid blank spots if it plays at a faster rate.
-  if (!(bar::bars[_activeBar].ulBaseBeatInMs == sequences[_activeSequence]._ulTempo)) {
-    Serial.println("----- void sequence::_tcbPlaySequence(). (bar::bars[_activeBar].ulBaseBeatInMs != sequences[_activeSequence]._ulTempo)");
-    unsigned long __ulBarDuration = _ulBarDuration(_activeBar);
-    Serial.print("----- void sequence::_tcbPlaySequence(). __ulBarDuration = ");Serial.println(__ulBarDuration);
-    _tPlaySequence.setInterval(__ulBarDuration);
-  }
+  Serial.println("----- void sequence::_tcbPlaySequence(). (bar::bars[_activeBar].ulBaseBeatInMs != sequences[_activeSequence]._ulTempo)");
+  unsigned long __ulBarDuration = _ulBarDuration(_activeBar);
+  Serial.print("----- void sequence::_tcbPlaySequence(). __ulBarDuration = ");Serial.println(__ulBarDuration);
+  _tPlaySequence.setInterval(__ulBarDuration);
+  // if (!(bar::bars[_activeBar].ulBaseBeatInMs == sequences[_activeSequence]._ulTempo)) {
+  // }
 
   Serial.println("----- void sequence::_tcbPlaySequence(). Ending.");
 };

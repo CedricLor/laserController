@@ -191,7 +191,11 @@ Task bar::_tPlayBar(0, 1, &_tcbPlayBar, &userScheduler, false, &_oetcbPlayBar, &
 bool bar::_oetcbPlayBar(){
   // onEnable, set the number of iterations for the task to the number of notes to play
   Serial.println("------ void bar::_oetcbPlayBar(). Starting.");
+  Serial.println("------ void bar::_oetcbPlayBar(). Before setting the iterations for this bar:");
+  Serial.print("------ void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
+  Serial.print("------ void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
   _tPlayBar.setIterations(bars[_activeBar].iNotesCountInBar);
+  Serial.println("------ void bar::_oetcbPlayBar(). After setting the iterations for this bar:");
   Serial.print("------ void bar::_oetcbPlayBar(). bars[_activeBar].iNotesCountInBar = ");Serial.println(bars[_activeBar].iNotesCountInBar);
   Serial.print("------ void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
   Serial.print("------ void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
@@ -213,7 +217,7 @@ void bar::_tcbPlayBar(){
   note::activeTone = bars[_activeBar]._note[_iter][1];
   Serial.print("------ void bar::_tcbPlayBar(). note::activeTone = ");Serial.println(note::activeTone);
 
-  // // Disable the Task (we are about to play a new note; if tPlayNote was currently playing a note, it shall stop immediately)
+  // Disable the Task (we are about to play a new note; if tPlayNote was currently playing a note, it shall stop immediately)
   note::tPlayNote.disable();
 
   // Enable the Task
