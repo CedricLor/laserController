@@ -263,21 +263,20 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 
 void myWebServerBase::_sendDataWs(AsyncWebSocketClient * client)
 {
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.createObject();
-    root["a"] = "abc";
-    root["b"] = "abcd";
-    root["c"] = "abcde";
-    root["d"] = "abcdef";
-    root["e"] = "abcdefg";
-    size_t len = root.measureLength();
+    StaticJsonDocument<256> doc;
+    doc["a"] = "abc";
+    doc["b"] = "abcd";
+    doc["c"] = "abcde";
+    doc["d"] = "abcdef";
+    doc["e"] = "abcdefg";
+    size_t len = measureJson(doc);
     AsyncWebSocketMessageBuffer * buffer = _ws.makeBuffer(len); //  creates a buffer (len + 1) for you.
     if (buffer) {
-        root.printTo((char *)buffer->get(), len + 1);
+        serializeJson(doc, (char *)buffer->get(), len + 1);
         if (client) {
             client->text(buffer);
         } else {
-            ws.textAll(buffer);
+            _ws.textAll(buffer);
         }
     }
 }
