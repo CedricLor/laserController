@@ -219,6 +219,11 @@ void sequence::_odtcbPlaySequenceInLoop() {
   Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence == ");Serial.println(_activeSequence);
   if (!(_activeSequence == 5)) {
     Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence is != 5");
+    Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence is going to be set to 5");
+    Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call setActiveSequence(5)");
+    Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). (before calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
+    setActiveSequence(5);
+    Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). (just after calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
     Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(5)");
     sequences[_activeSequence]._playSequence(5); // All laser off
   }
@@ -244,6 +249,8 @@ long int sequence::_ulSequenceDuration(const short int __activeSequence) {
 
 
 
+
+
 // Single sequence player
 // Plays a given sequence one single time.
 // It is called by the Task tPlaySequenceInLoop
@@ -252,12 +259,8 @@ long int sequence::_ulSequenceDuration(const short int __activeSequence) {
 // 2. sets the number of iterations of the _tPlaySequence task from the number of
 // bars in the sequence
 // 3. enables the _tPlaySequence task
-void sequence::_playSequence(short int activeSequence){
+void sequence::_playSequence(){
   Serial.println("----- void sequence::_playSequence(). Starting");
-  Serial.print("----- void sequence::_playSequence(). about to call setActiveSequence(activeSequence) with activeSequence = ");Serial.println(activeSequence);
-  Serial.print("----- void sequence::_playSequence(). _activeSequence: ");Serial.println(_activeSequence);
-  setActiveSequence(activeSequence);
-  Serial.print("----- void sequence::_playSequence(). just after calling setActiveSequence _activeSequence: ");Serial.println(_activeSequence);
 
   Serial.println("------ void sequence::_playSequence(). Just before enabling _tPlaySequence");
   Serial.print("------ void sequence::_playSequence(). _tPlaySequence.isEnabled() = ");Serial.println(_tPlaySequence.isEnabled());
