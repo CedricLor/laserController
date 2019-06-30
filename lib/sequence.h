@@ -65,6 +65,7 @@ class sequence
     void _playSequence();
     static Task _tPlaySequence;
     static void _tcbPlaySequence();
+    static void _odtcbPlaySequence();
 };
 
 #endif
