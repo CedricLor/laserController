@@ -303,7 +303,7 @@ void bar::_odtcbPlayBar(){
 
 
 unsigned long bar::getIntervalForEachNote(const short int _iter){
-  Serial.println("------ unsigned long bar::getIntervalForEachNote(). Starting.");
+  Serial.println("-------- unsigned long bar::getIntervalForEachNote(). Starting.");
   // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _activeBar = ");Serial.println(_activeBar);
   // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
   // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _iter = ");Serial.println(_iter);
@@ -313,8 +313,8 @@ unsigned long bar::getIntervalForEachNote(const short int _iter){
   unsigned long __ulDurationInMs = bars[_activeBar]._iBaseNoteForBeat /
     bars[_activeBar]._note[_iter][0] *
     bars[_activeBar].ulBaseBeatInMs;
-  // Serial.print("------ unsigned long bar::getIntervalForEachNote(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
-  Serial.println("------ unsigned long bar::getIntervalForEachNote(). Ending.");
+  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  Serial.println("-------- unsigned long bar::getIntervalForEachNote(). Ending.");
   return __ulDurationInMs;
 }
 
@@ -323,9 +323,9 @@ unsigned long bar::getIntervalForEachNote(const short int _iter){
 
 
 void bar::setActiveBar(const short activeBar) {
-  Serial.println("------ void bar::setActiveBar(). Starting.");
-  Serial.print("------ void bar::setActiveBar(). (before setting) _activeBar = ");Serial.println(_activeBar);
+  Serial.println("-------- void bar::setActiveBar(). Starting.");
+  Serial.print("-------- void bar::setActiveBar(). (before setting) _activeBar = ");Serial.println(_activeBar);
   _activeBar = activeBar;
-  Serial.print("------ void bar::setActiveBar(). (after setting) _activeBar = ");Serial.println(_activeBar);
-  Serial.println("------ void bar::setActiveBar(). Ending.");
+  Serial.print("-------- void bar::setActiveBar(). (after setting) _activeBar = ");Serial.println(_activeBar);
+  Serial.println("-------- void bar::setActiveBar(). Ending.");
 };
