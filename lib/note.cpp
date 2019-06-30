@@ -46,15 +46,18 @@ Task note::tPlayNote(30000, 1, NULL, &userScheduler, false, &_oetcbPlayNote, &_o
 
 // On enable Task _tNote, turn the lasers to a given tone
 bool note::_oetcbPlayNote() {
-  Serial.println("-------- bool note::_oetcbPlayNote(). Starting");
+  Serial.println("---------- bool note::_oetcbPlayNote(). Starting");
+  Serial.print("---------- bool note::_oetcbPlayNote(). Going to play tone number ");Serial.println(activeTone);
   tone::tones[activeTone].playTone();
-  Serial.println("-------- bool note::_oetcbPlayNote(). Ending");
+  Serial.println("---------- bool note::_oetcbPlayNote(). Ending");
   return true;
 }
 
 // On disable Task _tNote, turn off all the lasers
 void note::_odtcbPlayNote() {
   Serial.println("-------- void note::_odtcbPlayNote(). Starting");
-  tone::tones[0].playTone(); // tones[0] means turn off all the lasers
+  Serial.print("---------- bool note::_oetcbPlayNote(). Turning off all the lasers");
+  activeTone = 0; // tones[0] means turn off all the lasers
+  tone::tones[activeTone].playTone();
   Serial.println("-------- void note::_odtcbPlayNote(). Ending");
 }
