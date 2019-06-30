@@ -158,12 +158,12 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // Why do not start playing immediately? Why are these lines commented out?
   // Because we are setting the interval for tPlaySequenceInLoop in its own onEnable callback.
   // As such, the next iteration of tPlaySequenceInLoop will take place immediatelly after the onEnable callback ends.
-  // And the main callback will be calling sequences[_activeSequence]._playSequence(_activeSequence).
+  // And the main callback will be calling sequences[_activeSequence]._playSequence().
   //
   // Start immediately playing the sequence on enable
-  // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(_activeSequence).");
-  // sequences[_activeSequence]._playSequence(_activeSequence);
-  // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). returning from sequences[_activeSequence]._playSequence(_activeSequence).");
+  // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence().");
+  // sequences[_activeSequence]._playSequence();
+  // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). returning from sequences[_activeSequence]._playSequence().");
 
   // Calculate the interval at which each iteration occur
   Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");
@@ -205,8 +205,8 @@ void sequence::_tcbPlaySequenceInLoop() {
   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
   Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). ******");
-  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(_activeSequence) with _activeSequence = ");Serial.println(_activeSequence);
-  sequences[_activeSequence]._playSequence(_activeSequence);
+  Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence() with _activeSequence = ");Serial.println(_activeSequence);
+  sequences[_activeSequence]._playSequence();
   Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). Ending.");
 }
 
@@ -224,8 +224,8 @@ void sequence::_odtcbPlaySequenceInLoop() {
     Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). (before calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
     setActiveSequence(5);
     Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). (just after calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
-    Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence(5)");
-    sequences[_activeSequence]._playSequence(5); // All laser off
+    Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence()");
+    sequences[_activeSequence]._playSequence(); // All laser off
   }
   Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). Ending.");
 };

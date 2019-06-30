@@ -62,7 +62,7 @@ class sequence
     static bool _oetcbPlaySequenceInLoop();
     static void _odtcbPlaySequenceInLoop();
 
-    void _playSequence(short int activeSequence);
+    void _playSequence();
     static Task _tPlaySequence;
     static void _tcbPlaySequence();
 };
