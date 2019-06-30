@@ -43,14 +43,19 @@ class myWebServerBase
 
   private:
     static AsyncWebServer _asyncServer;
+    static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
+    static AsyncEventSource _events; // event source (Server-Sent events)
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
 
     static String _processor(const String& var);
 
+    static void _onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
     static void _onRequest(AsyncWebServerRequest *request);
     static void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
+
+    static void _sendDataWs(AsyncWebSocketClient * client);
 };
 
 #endif
