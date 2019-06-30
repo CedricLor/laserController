@@ -65,9 +65,12 @@ void setup() {
   delay(2000);
   serialInit();
   mySavedPrefs::loadPreferences();
-  LaserPinsArray::initLaserPins();
-  pirController::initPir();
+  if (IS_INTERFACE == false) {
+    LaserPinsArray::initLaserPins();
+    pirController::initPir();    
+  }
   myMesh::meshSetup();
+
   if (IS_INTERFACE == true) {
     myWebServerBase::startAsyncServer();
   }
@@ -79,12 +82,15 @@ void setup() {
   }
 
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
-  tone::initTones();
-  bar::initBars();
-  sequence::initSequences();
-  boxState::initBoxStates();
 
-  enableTasks();
+  if (IS_INTERFACE == false) {
+    tone::initTones();
+    bar::initBars();
+    sequence::initSequences();
+    boxState::initBoxStates();
+
+    enableTasks();
+  }
 
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
