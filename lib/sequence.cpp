@@ -232,7 +232,8 @@ long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   Serial.println("----- long int sequence::_ulSequenceDuration(). Starting.");
   unsigned long __ulDurationInMs = 0;
   for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
-    __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__thisBar);
+    short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
+    __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__activeBarIndexNumber);
   }
   Serial.println("----- long int sequence::_ulSequenceDuration(). Ending.");
   return __ulDurationInMs;
@@ -308,12 +309,14 @@ void sequence::_tcbPlaySequence(){
 
 // do something if bars[_activeBar]._ulBaseBeatInMs is longer than sequence.tempo[_activeSequence]
 long int sequence::_ulBarDuration(const short int _activeBar) {
-  Serial.println("----- void sequence::_ulBarDuration(). Starting.");
+  Serial.println("----- void sequence::_ulBarDuration(). Starting. *+*+*+*+*");
+  Serial.print("----- void sequence::_ulBarDuration(). _activeBar = ");Serial.println(_activeBar);
   unsigned long __ulDurationInMs = 0;
+  Serial.print("----- void sequence::_ulBarDuration(). bar::bars[_activeBar].iNotesCountInBar = ");Serial.println(bar::bars[_activeBar].iNotesCountInBar);
   for(short int __thisNote = 0; __thisNote < bar::bars[_activeBar].iNotesCountInBar; __thisNote++){
     __ulDurationInMs = __ulDurationInMs + bar::bars[_activeBar].getIntervalForEachNote(__thisNote);
   }
-  Serial.println("----- void sequence::_ulBarDuration(). Ending.");
+  Serial.println("----- void sequence::_ulBarDuration(). Ending. *+*+*+*+*");
   return __ulDurationInMs;
 }
 

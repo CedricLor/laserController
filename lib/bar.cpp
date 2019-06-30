@@ -74,8 +74,8 @@ void bar::initBars() {
   // load values into bars[0]:
   // a. the bar's name
   // b. the duration of each beats in ms (i.e. the tempo)
-  // c. the base note for each beat (full, half, quarter, etc.)
-  // d. the number of base note in the bar (either the full, the half, the quarter, etc.)
+  // c. which one is the base note for each beat (full, half, quarter, etc.)
+  // d. how many base notes does the bar count
   // e. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
   // e. the array of references to the notes and the tones to be played in the bar
   bars[0]._initBar("relays", 30000, 1, 2, _noteCountForThisBar, aRelays);
@@ -102,7 +102,7 @@ void bar::initBars() {
 
   _noteCountForThisBar = 1;
   const short int aAllOff[_noteCountForThisBar][2] = {{1,0}};
-  bars[5]._initBar("all of", 30000, 1, 2, _noteCountForThisBar, aAllOff);
+  bars[5]._initBar("all of", 30000, 1, 1, _noteCountForThisBar, aAllOff);
 
   Serial.println("------ void bar::_initBars(). Ending.");
 }
@@ -247,6 +247,12 @@ void bar::_odtcbPlayBar(){
 
 unsigned long bar::getIntervalForEachNote(const short int _iter){
   Serial.println("------ unsigned long bar::getIntervalForEachNote(). Starting.");
+  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _activeBar = ");Serial.println(_activeBar);
+  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
+  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _iter = ");Serial.println(_iter);
+  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
+  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar].ulBaseBeatInMs = ");Serial.println(bars[_activeBar].ulBaseBeatInMs);
+
   unsigned long __ulDurationInMs = bars[_activeBar]._iBaseNoteForBeat /
     bars[_activeBar]._note[_iter][0] *
     bars[_activeBar].ulBaseBeatInMs;
