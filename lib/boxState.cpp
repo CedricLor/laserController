@@ -246,14 +246,14 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   // Look for the sequence number to read when in this state
   short int _activeSequence = boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bAssociatedSequence;
-  // Serial.print("bool boxState::_oetcbPlayBoxState() _activeSequence: ");
-  // Serial.println(_activeSequence);
+  Serial.print("bool boxState::_oetcbPlayBoxState() _activeSequence: ");
+  Serial.println(_activeSequence);
   // set the active sequence
-  // Serial.println("bool boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
+  Serial.println("bool boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
 
   // Play sequence in loop until end
-  // Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
+  Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);

@@ -112,5 +112,5 @@ void tone::playTone(){
     // Serial.print(----------- "void tone::playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
     digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
-  Serial.println("----------- void tone::playTone(). Ending. Tone being played ");Serial.println(_cName);
+  Serial.print("----------- void tone::playTone(). Ending. Tone being played ");Serial.println(_cName);
 };
