@@ -29,7 +29,14 @@ Dependency structure
 |  |  |  |--global.cpp (called to start some tasks and play some functions)
 |  |  |  |  |--global.h
 |  |  |  |
-|  |  |  |--tone.cpp (called to play some member functions)
+|  |  |  |--bar.cpp (an array of bars (micro-sequences of notes, each with a tempo in ms)
+|  |  |  |  |--bar.h
+|  |  |  |  |--note.cpp (a static class playing a note for a maximum 30 seconds)
+|  |  |  |  |  |--note.h
+|  |  |  |  |  |--tone.cpp (an array of tones, containing all the possible lasers on/off configurations)
+|  |  |  |  |  |  |--tone.h
+|  |  |  |
+|  |  |  |--tone.cpp
 |  |  |  |  |--tone.h
 |  |  |  |  |--global.cpp (called to retrieve some values)
 |  |  |  |  |  |--global.h
