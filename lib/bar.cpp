@@ -52,7 +52,7 @@ bar::bar() {
 
 
 // Initialisers
-void bar::_initBar(const char __cName[_char_count_in_name], const unsigned long __ulBaseBeatInMs, const short __iBaseNoteForBeat, const short int __iNotesCountInBar, const short int __iNoteTone[4][2]){
+void bar::_initBar(const char __cName[_char_count_in_name], const unsigned long __ulBaseBeatInMs, const short __iBaseNoteForBeat, const short int __iBaseNotesCountInBar, const short int __iNotesCountInBar, const short int __iNoteTone[4][2]){
   // Serial.println("void bar::initBar(). Starting.");
   strcpy(_cName, __cName);
   ulBaseBeatInMs = __ulBaseBeatInMs;
@@ -75,9 +75,10 @@ void bar::initBars() {
   // a. the bar's name
   // b. the duration of each beats in ms (i.e. the tempo)
   // c. the base note for each beat (full, half, quarter, etc.)
-  // d. the number of note in the bar
-  // e. the array of references to the tones to be played in the bar
-  bars[0]._initBar("relays", 30000, 1, _noteCountForThisBar, aRelays);
+  // d. the number of base note in the bar (either the full, the half, the quarter, etc.)
+  // e. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
+  // e. the array of references to the notes and the tones to be played in the bar
+  bars[0]._initBar("relays", 30000, 1, 2, _noteCountForThisBar, aRelays);
   // Serial.println("void bar::_initBars(). bars[0].ulBaseBeatInMs: ");
   // Serial.println(bars[0].ulBaseBeatInMs);
   // Serial.println("void bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");
@@ -85,23 +86,23 @@ void bar::initBars() {
 
   _noteCountForThisBar = 2;
   const short int aTwins[_noteCountForThisBar][2] = {{1, 5},{1, 6}};
-  bars[1]._initBar("twins", 30000, 1, _noteCountForThisBar, aTwins);
+  bars[1]._initBar("twins", 30000, 1, 2, _noteCountForThisBar, aTwins);
 
   _noteCountForThisBar = 2;
   const short int aAll[_noteCountForThisBar][2] = {{1, 15},{1, 0}};
-  bars[2]._initBar("all", 30000, 1, _noteCountForThisBar, aAll);
+  bars[2]._initBar("all", 30000, 1, 2, _noteCountForThisBar, aAll);
 
   _noteCountForThisBar = 4;
   const short int aSwipeR[_noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
-  bars[3]._initBar("swipeR", 500, 1, _noteCountForThisBar, aSwipeR);
+  bars[3]._initBar("swipeR", 500, 1, 4, _noteCountForThisBar, aSwipeR);
 
   _noteCountForThisBar = 4;
   const short int aSwipeL[_noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
-  bars[4]._initBar("swipeL", 500, 1, _noteCountForThisBar, aSwipeL);
+  bars[4]._initBar("swipeL", 500, 1, 4, _noteCountForThisBar, aSwipeL);
 
   _noteCountForThisBar = 1;
   const short int aAllOff[_noteCountForThisBar][2] = {{1,0}};
-  bars[5]._initBar("all of", 30000, 1, _noteCountForThisBar, aAllOff);
+  bars[5]._initBar("all of", 30000, 1, 2, _noteCountForThisBar, aAllOff);
 
   Serial.println("------ void bar::_initBars(). Ending.");
 }

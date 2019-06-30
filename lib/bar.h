@@ -48,6 +48,7 @@ class bar
     unsigned long getIntervalForEachNote(const short int _iter);
     unsigned long  ulBaseBeatInMs; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
     short int iNotesCountInBar; // number of basic time unit for the smallest note to be played in one bar
+    short int iBaseNotesCountInBar;
 
   private:
     static const short int _bar_count;
@@ -64,7 +65,7 @@ class bar
     static void _odtcbPlayBar();
 
     // non-static
-    void _initBar(const char cName[], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const short int iNotesCountInBar, const short int iNoteTone[][2]);
+    void _initBar(const char cName[], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const short int __iBaseNotesCountInBar, const short int iNotesCountInBar, const short int iNoteTone[][2]);
 
     char _cName[7];  // array of character to hold the name of each bars
     short int _iBaseNoteForBeat;
