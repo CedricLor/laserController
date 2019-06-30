@@ -42,17 +42,18 @@ class sequence
 
     static Task tPlaySequenceInLoop;
 
-
   private:
     static const short int _sequence_count;
     static short int _activeSequence;
     static const short int _char_count_in_name;
 
+    static long int _ulBarDuration(const short int _activeBar);
+
     void _initSequence(const char cName[], const unsigned long ulTempo, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
 
     char _cName[7];  // array of character to hold the name of each sequences
     unsigned long _ulTempo; // tempo at which the task executing the sequence will change bar, in milliseconds
-    short int _iNumberOfBarsInSequence; // number of tempos required to execute one full sequence
+    short int _barCountInSequence; // number of tempos required to execute one full sequence
     short int _iAssociatedBarsSequence[4];  // array containing the state of each laser at each tempo
 
 
@@ -60,7 +61,7 @@ class sequence
     static bool _oetcbPlaySequenceInLoop();
     static void _odtcbPlaySequenceInLoop();
 
-    static void _playSequence();
+    void _playSequence(short int activeSequence);
     static Task _tPlaySequence;
     static void _tcbPlaySequence();
 };

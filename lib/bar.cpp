@@ -43,6 +43,7 @@ const short int bar::_char_count_in_name = 7;
 
 // Constructors
 bar::bar() {
+  ulBaseBeatInMs = -1;
 }
 
 
@@ -51,15 +52,15 @@ bar::bar() {
 
 
 // Initialisers
-void bar::_initBar(const char cName[_char_count_in_name], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const short int iNumberOfNotesInBar, const short int iNoteTone[4][2]){
+void bar::_initBar(const char __cName[_char_count_in_name], const unsigned long __ulBaseBeatInMs, const short __iBaseNoteForBeat, const short int __iNotesCountInBar, const short int __iNoteTone[4][2]){
   // Serial.println("void bar::initBar(). Starting.");
-  strcpy(_cName, cName);
-  _ulBaseBeatInMs = ulBaseBeatInMs;
-  _iBaseNoteForBeat = iBaseNoteForBeat;
-  _iNumberOfNotesInBar = iNumberOfNotesInBar;
-  for (short __thisNote = 0; __thisNote < iNumberOfNotesInBar; __thisNote++) {
-    _note[__thisNote][0] = iNoteTone[__thisNote][0];
-    _note[__thisNote][1] = iNoteTone[__thisNote][1];
+  strcpy(_cName, __cName);
+  ulBaseBeatInMs = __ulBaseBeatInMs;
+  _iBaseNoteForBeat = __iBaseNoteForBeat;
+  iNotesCountInBar = __iNotesCountInBar;
+  for (short __thisNote = 0; __thisNote < __iNotesCountInBar; __thisNote++) {
+    _note[__thisNote][0] = __iNoteTone[__thisNote][0]; // the note duration
+    _note[__thisNote][1] = __iNoteTone[__thisNote][1]; // the tone
   }
   // Serial.println("void bar::initBar(). Ending.");
 };
@@ -68,39 +69,39 @@ void bar::initBars() {
   Serial.println("void bar::_initBars(). Starting.");
   // define an array containing references to the note type and tones to be played in the bar
 
-  short _noteNumberForThisBar = 2;
-  const short int aRelays[_noteNumberForThisBar][2] = {{1,7},{1,8}};
+  short _noteCountForThisBar = 2;
+  const short int aRelays[_noteCountForThisBar][2] = {{1,7},{1,8}};
   // load values into bars[0]:
   // a. the bar's name
   // b. the duration of each beats in ms (i.e. the tempo)
   // c. the base note for each beat (full, half, quarter, etc.)
   // d. the number of note in the bar
   // e. the array of references to the tones to be played in the bar
-  bars[0]._initBar("relays", 30000, 1, _noteNumberForThisBar, aRelays);
-  // Serial.println("void bar::_initBars(). bars[0]._ulBaseBeatInMs: ");
-  // Serial.println(bars[0]._ulBaseBeatInMs);
+  bars[0]._initBar("relays", 30000, 1, _noteCountForThisBar, aRelays);
+  // Serial.println("void bar::_initBars(). bars[0].ulBaseBeatInMs: ");
+  // Serial.println(bars[0].ulBaseBeatInMs);
   // Serial.println("void bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");
   // Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
-  _noteNumberForThisBar = 2;
-  const short int aTwins[_noteNumberForThisBar][2] = {{1, 5},{1, 6}};
-  bars[1]._initBar("twins", 30000, 1, _noteNumberForThisBar, aTwins);
+  _noteCountForThisBar = 2;
+  const short int aTwins[_noteCountForThisBar][2] = {{1, 5},{1, 6}};
+  bars[1]._initBar("twins", 30000, 1, _noteCountForThisBar, aTwins);
 
-  _noteNumberForThisBar = 2;
-  const short int aAll[_noteNumberForThisBar][2] = {{1, 15},{1, 0}};
-  bars[2]._initBar("all", 30000, 1, _noteNumberForThisBar, aAll);
+  _noteCountForThisBar = 2;
+  const short int aAll[_noteCountForThisBar][2] = {{1, 15},{1, 0}};
+  bars[2]._initBar("all", 30000, 1, _noteCountForThisBar, aAll);
 
-  _noteNumberForThisBar = 4;
-  const short int aSwipeR[_noteNumberForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
-  bars[3]._initBar("swipeR", 500, 1, _noteNumberForThisBar, aSwipeR);
+  _noteCountForThisBar = 4;
+  const short int aSwipeR[_noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
+  bars[3]._initBar("swipeR", 500, 1, _noteCountForThisBar, aSwipeR);
 
-  _noteNumberForThisBar = 4;
-  const short int aSwipeL[_noteNumberForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
-  bars[4]._initBar("swipeL", 500, 1, _noteNumberForThisBar, aSwipeL);
+  _noteCountForThisBar = 4;
+  const short int aSwipeL[_noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
+  bars[4]._initBar("swipeL", 500, 1, _noteCountForThisBar, aSwipeL);
 
-  _noteNumberForThisBar = 1;
-  const short int aAllOff[_noteNumberForThisBar][2] = {{1,0}};
-  bars[5]._initBar("all of", 30000, 1, _noteNumberForThisBar, aAllOff);
+  _noteCountForThisBar = 1;
+  const short int aAllOff[_noteCountForThisBar][2] = {{1,0}};
+  bars[5]._initBar("all of", 30000, 1, _noteCountForThisBar, aAllOff);
 
   Serial.println("void bar::_initBars(). Ending.");
 }
@@ -130,7 +131,7 @@ void bar::initBars() {
 //   bars[_activeBar]._playBar(_activeBar);
 //
 //   // Calculate the interval at which each iteration occur, by multiplying the tempo of the bar by the number of beats in the bar
-//   unsigned long _duration = bars[_activeBar]._ulBaseBeatInMs * bars[_activeBar]._iNumberOfNotesInBar;
+//   unsigned long _duration = bars[_activeBar].ulBaseBeatInMs * bars[_activeBar].iNotesCountInBar;
 //   // Serial.print("----- bool bar::_oetcbPlayBars(). _duration: ");Serial.println(_duration);
 //
 //   // Set the interval at which each iteration occur.
@@ -183,7 +184,7 @@ Task bar::_tPlayBar(0, 0, &_tcbPlayBar, &userScheduler, false, NULL, &_odtcbPlay
 
 bool bar::_oetcbPlayBar(){
   // onEnable, set the number of iterations for the task to the number of notes to play
-  _tPlayBar.setIterations(bars[_activeBar]._iNumberOfNotesInBar);
+  _tPlayBar.setIterations(bars[_activeBar].iNotesCountInBar);
   return true;
 }
 
@@ -203,25 +204,30 @@ void bar::_tcbPlayBar(){
   // Enable the Task
   /*
      On enabling the Task, the onEnable callback will be immediately executed,
-     starting to play the note.
-     After expiration of the interval or if disabled by the bar class,
+     starting to play the bar.
+     After expiration of the interval or if disabled from the sequence,
      the Task will automatically be disabled.
      Its onDisable callback will just turn off all the lasers.
   */
   note::tPlayNote.enable();
 
+  // _tPlayBar
   // At each pass, reset the interval before the next iteration of the Task bar::_tPlayBar
-  unsigned long __ulDurationInMs = bars[_activeBar]._note[_iter][0] *
-    bars[_activeBar]._iBaseNoteForBeat *
-    bars[_activeBar]._ulBaseBeatInMs;
+  unsigned long __ulDurationInMs = bars[_activeBar].getIntervalForEachNote(_iter);
   _tPlayBar.setInterval(__ulDurationInMs);
+
   Serial.println("----- void bar::_tcbPlayBar(). Ending.");
 };
 
 void bar::_odtcbPlayBar(){
 }
 
-
+unsigned long bar::getIntervalForEachNote(const short int _iter){
+  unsigned long __ulDurationInMs = bars[_activeBar]._iBaseNoteForBeat /
+    bars[_activeBar]._note[_iter][0] *
+    bars[_activeBar].ulBaseBeatInMs;
+    return __ulDurationInMs;
+}
 
 
 
