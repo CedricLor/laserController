@@ -31,13 +31,17 @@
 #include "Arduino.h"
 #include "myWebServerBase.h"
 
-myWebServerBase::myWebServerBase()
-{
-}
 
 AsyncWebServer myWebServerBase::_asyncServer(80);
 AsyncWebSocket myWebServerBase::_ws("/ws"); // access at ws://[esp ip]/ws
 AsyncEventSource myWebServerBase::_events("/events"); // event source (Server-Sent events)
+uint32_t myWebServerBase::_ws_client_id = 0;
+
+
+myWebServerBase::myWebServerBase()
+{
+}
+
 
 void myWebServerBase::_listAllCollectedHeaders(AsyncWebServerRequest *request) {
   int __headers = request->headers();
@@ -185,16 +189,21 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
     } else if(type == WS_EVT_PONG){
         //pong message was received (in response to a ping request maybe)
         Serial.printf("ws[%s][%u] pong[%u]: %s\n", server->url(), client->id(), len, (len)?(char*)data:"");
+
+    // receiving data from client
     } else if(type == WS_EVT_DATA){
         //data packet
         AwsFrameInfo * info = (AwsFrameInfo*)arg;
+
         if(info->final && info->index == 0 && info->len == len){
             //the whole message is in a single frame and we got all of it's data
             Serial.printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
             if(info->opcode == WS_TEXT){
+              // message is a text message
                 data[len] = 0;
                 Serial.printf("%s\n", (char*)data);
             } else {
+              // message is a binary message
                 for(size_t i=0; i < info->len; i++){
                   Serial.printf("%02x ", data[i]);
                 }
@@ -204,7 +213,9 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
                 client->text("I got your text message");
             else
                 client->binary("I got your binary message");
-        } else {
+        }
+
+        else {
             //message is comprised of multiple frames or the frame is split into multiple packets
             if(info->index == 0){
                 if(info->num == 0)
@@ -214,9 +225,11 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
 
             Serial.printf("ws[%s][%u] frame[%u] %s[%llu - %llu]: ", server->url(), client->id(), info->num, (info->message_opcode == WS_TEXT)?"text":"binary", info->index, info->index + len);
             if(info->message_opcode == WS_TEXT){
+              // message is a text message
                 data[len] = 0;
                 Serial.printf("%s\n", (char*)data);
             } else {
+              // message is a binary message
                 for(size_t i=0; i < len; i++){
                   Serial.printf("%02x ", data[i]);
                 }
@@ -224,6 +237,7 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
             }
 
           if((info->index + len) == info->len){
+            // received the final frame or packet
               Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", server->url(), client->id(), info->num, info->len);
               if(info->final){
                   Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
@@ -259,24 +273,28 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 }
 
 
+// StaticJsonDocument<256> doc;
+// doc["a"] = "abc";
+// doc["b"] = "abcd";
+// doc["c"] = "abcde";
+// doc["d"] = "abcdef";
+// doc["e"] = "abcdefg";
 
 
-void myWebServerBase::_sendDataWs(AsyncWebSocketClient * client)
-{
-    StaticJsonDocument<256> doc;
-    doc["a"] = "abc";
-    doc["b"] = "abcd";
-    doc["c"] = "abcde";
-    doc["d"] = "abcdef";
-    doc["e"] = "abcdefg";
-    size_t len = measureJson(doc);
-    AsyncWebSocketMessageBuffer * buffer = _ws.makeBuffer(len); //  creates a buffer (len + 1) for you.
-    if (buffer) {
-        serializeJson(doc, (char *)buffer->get(), len + 1);
-        if (client) {
-            client->text(buffer);
+void myWebServerBase::sendDataWs(JsonDocument& doc) {
+    Serial.println("- myWebServerBase::_sendDataWs: Starting.");
+    size_t _len = measureJson(doc);
+    AsyncWebSocketMessageBuffer * _buffer = _ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
+    if (_buffer) {
+        serializeJson(doc, (char *)_buffer->get(), _len + 1);
+        if (_ws_client_id) {
+            Serial.printf("- myWebServerBase::_sendDataWs: About to send [%i] the following message:\n", _ws_client_id);
+            Serial.println((char *)_buffer);
+            _ws.text(_ws_client_id, (char *)_buffer);
+            Serial.println("- myWebServerBase::_sendDataWs: Message sent");
         } else {
-            _ws.textAll(buffer);
+            _ws.textAll(_buffer);
         }
     }
+    Serial.println("- myWebServerBase::_sendDataWs: Ending.");
 }
