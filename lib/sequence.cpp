@@ -268,7 +268,7 @@ void sequence::_playSequence(){
   Serial.print("----- void sequence::_playSequence(). _tPlaySequence.getInterval() = ");Serial.println(_tPlaySequence.getInterval());
   Serial.print("----- void sequence::_playSequence(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlaySequence));
   Serial.print("----- void sequence::_playSequence(). millis() = ");Serial.println(millis());
-  Serial.print("----- void sequence::_playSequence(). *!*!*!*!*!");
+  Serial.println("----- void sequence::_playSequence(). *!*!*!*!*!");
 
   // _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
   // Serial.print("----- void sequence::_playSequence(). Tempo of the sequence: ");Serial.println(sequences[_activeSequence]._ulTempo);
