@@ -166,7 +166,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). returning from sequences[_activeSequence]._playSequence(_activeSequence).");
 
   // Calculate the interval at which each iteration occur
-  Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to set the interval for tPlaySequenceinLoop.");
+  Serial.println("-- bool sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");
   unsigned long _duration = _ulSequenceDuration(_activeSequence);
   // sequences[_activeSequence]._ulTempo
   //  * sequences[_activeSequence]._barCountInSequence;
@@ -231,6 +231,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
 long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   Serial.println("----- long int sequence::_ulSequenceDuration(). Starting.");
   unsigned long __ulDurationInMs = 0;
+  // get the index number of each bar in the sequence and sum up their durations
   for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
     short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
     __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__activeBarIndexNumber);

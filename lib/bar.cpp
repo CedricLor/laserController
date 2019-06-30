@@ -247,16 +247,16 @@ void bar::_odtcbPlayBar(){
 
 unsigned long bar::getIntervalForEachNote(const short int _iter){
   Serial.println("------ unsigned long bar::getIntervalForEachNote(). Starting.");
-  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _activeBar = ");Serial.println(_activeBar);
-  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
-  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _iter = ");Serial.println(_iter);
-  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
-  Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar].ulBaseBeatInMs = ");Serial.println(bars[_activeBar].ulBaseBeatInMs);
+  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _activeBar = ");Serial.println(_activeBar);
+  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
+  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _iter = ");Serial.println(_iter);
+  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
+  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar].ulBaseBeatInMs = ");Serial.println(bars[_activeBar].ulBaseBeatInMs);
 
   unsigned long __ulDurationInMs = bars[_activeBar]._iBaseNoteForBeat /
     bars[_activeBar]._note[_iter][0] *
     bars[_activeBar].ulBaseBeatInMs;
-  Serial.print("------ unsigned long bar::getIntervalForEachNote(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  // Serial.print("------ unsigned long bar::getIntervalForEachNote(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   Serial.println("------ unsigned long bar::getIntervalForEachNote(). Ending.");
   return __ulDurationInMs;
 }
