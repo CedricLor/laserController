@@ -172,19 +172,33 @@ void bar::initBars() {
 // It is called by the Task tPlayBars
 void bar::playBar(const short activeBar){
   Serial.println("------- void bar::_playBar(). Starting");
-  // Serial.print("------- void bar::_playBar(). _activeBar: ");Serial.println(_activeBar);
+
+  if (MY_DG_LASER) {
+    Serial.print("------- void bar::_playBar(). activeBar: ");Serial.println(activeBar);
+    Serial.print("------- void bar::_playBar(). _activeBar: ");Serial.println(_activeBar);
+    Serial.println("------- void bar::_playBar(). about to call setActiveBar()");
+  }
 
   // set the active bar for the callbacks of _tPlayBar Task
   setActiveBar(activeBar);
 
-  Serial.println("------- void bar::_playBar(). Just before enabling _tPlayBar");
-  Serial.print("------- void bar::_playBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  Serial.print("------- void bar::_playBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  Serial.print("------- void bar::_playBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
+  if (MY_DG_LASER) {
+    Serial.print("------- void bar::_playBar(). _activeBar set to ");Serial.println(_activeBar);
+  }
+
+  if (MY_DG_LASER) {
+    Serial.println("------- void bar::_playBar(). Just before enabling _tPlayBar");
+    Serial.print("------- void bar::_playBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
+    Serial.print("------- void bar::_playBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
+    Serial.print("------- void bar::_playBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
+  }
 
   // Enable the _tPlayBar Task
   _tPlayBar.enable();
-  Serial.println("------- void bar::_playBar(). Task _tPlayBar enabled");
+
+  if (MY_DG_LASER) {
+    Serial.println("------- void bar::_playBar(). Task _tPlayBar enabled");
+  }
 
   Serial.println("------- void bar::_playBar(). Ending");
 };
@@ -202,25 +216,29 @@ bool bar::_oetcbPlayBar(){
   // onEnable, set the number of iterations for the task to the number of notes to play
   Serial.println("-------- void bar::_oetcbPlayBar(). Starting.");
 
-  Serial.println("-------- void bar::_oetcbPlayBar(). Before setting the iterations for this bar: *!*!*!*!*!");
-  Serial.println("-------- void bar::_oetcbPlayBar(). _tPlaySequence execution parameters:");
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  Serial.print("-------- void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
-  Serial.print("-------- void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
-  Serial.println("-------- void bar::_oetcbPlayBar(). *!*!*!*!*!");
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_oetcbPlayBar(). Before setting the iterations for this bar: *!*!*!*!*!");
+    Serial.println("-------- void bar::_oetcbPlayBar(). _tPlaySequence execution parameters:");
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
+    Serial.print("-------- void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
+    Serial.print("-------- void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
+    Serial.println("-------- void bar::_oetcbPlayBar(). *!*!*!*!*!");
+  }
 
   _tPlayBar.setIterations(bars[_activeBar].iNotesCountInBar);
 
-  Serial.println("-------- void bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  Serial.print("-------- void bar::_oetcbPlayBar(). bars[_activeBar].iNotesCountInBar = ");Serial.println(bars[_activeBar].iNotesCountInBar);
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  Serial.print("-------- void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
-  Serial.print("-------- void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
-  Serial.println("-------- void bar::_oetcbPlayBar(). *!*!*!*!*!");
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
+    Serial.print("-------- void bar::_oetcbPlayBar(). bars[_activeBar].iNotesCountInBar = ");Serial.println(bars[_activeBar].iNotesCountInBar);
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
+    Serial.print("-------- void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
+    Serial.print("-------- void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
+    Serial.println("-------- void bar::_oetcbPlayBar(). *!*!*!*!*!");
+  }
 
   Serial.println("-------- void bar::_oetcbPlayBar(). Ending.");
 
@@ -231,41 +249,51 @@ bool bar::_oetcbPlayBar(){
 void bar::_tcbPlayBar(){
   Serial.println("-------- void bar::_tcbPlayBar(). Starting.");
 
-  Serial.println("-------- void bar::_tcbPlayBar(). Execution parameters when starting : *!*!*!*!*!");
-  Serial.print("-------- void bar::_tcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  Serial.print("-------- void bar::_tcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  Serial.print("-------- void bar::_tcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  Serial.print("-------- void bar::_tcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
-  Serial.print("-------- void bar::_tcbPlayBar(). millis() = ");Serial.println(millis());
-  Serial.println("-------- void bar::_tcbPlayBar(). *!*!*!*!*!");
-
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_tcbPlayBar(). Execution parameters when starting : *!*!*!*!*!");
+    Serial.print("-------- void bar::_tcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
+    Serial.print("-------- void bar::_tcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
+    Serial.print("-------- void bar::_tcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
+    Serial.print("-------- void bar::_tcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
+    Serial.print("-------- void bar::_tcbPlayBar(). millis() = ");Serial.println(millis());
+    Serial.println("-------- void bar::_tcbPlayBar(). *!*!*!*!*!");
+  }
 
   // Each pass corresponds to a note in the notes array of the currently active bar:
   // bar[_activeBar]._note[ITERATION - 1][]
   short _iter = _tPlayBar.getRunCounter() - 1;
 
-  Serial.print("-------- void bar::_tcbPlayBar(). _iter: ");Serial.println(_iter);
-
+  if (MY_DG_LASER) {
+    Serial.print("-------- void bar::_tcbPlayBar(). _iter: ");Serial.println(_iter);
+  }
 
   // Set in the note class which will be the tone to be played
-  Serial.println("-------- void bar::_tcbPlayBar(). About to tell the Note class which tone shall be played");
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_tcbPlayBar(). About to tell the Note class which tone shall be played");
+  }
 
   note::activeTone = bars[_activeBar]._note[_iter][1];
 
-  Serial.print("-------- void bar::_tcbPlayBar(). bars[_activeBar]._note[_iter][1] = ");Serial.println(bars[_activeBar]._note[_iter][1]);
-  Serial.print("-------- void bar::_tcbPlayBar(). note::activeTone = ");Serial.println(note::activeTone);
-  Serial.println("-------- void bar::_tcbPlayBar(). Note class has been told which tone shall be played");
-
-
-  // Disable the Task tPlayNote (we are about to play a new note; if tPlayNote was currently playing a note, it shall stop immediately)
-  Serial.println("-------- void bar::_tcbPlayBar(). About to disable any currently playing tPlayNote Task.");
-  bool _tPlayNoteWasEnabled = note::tPlayNote.disable();
-  if (_tPlayNoteWasEnabled == true) {
-    Serial.println("-------- void bar::_tcbPlayBar(). tPlayNote Task has been disabled.");
-  } else {
-    Serial.println("-------- void bar::_tcbPlayBar(). no prior tPlayNote Task to disabled.");
+  if (MY_DG_LASER) {
+    Serial.print("-------- void bar::_tcbPlayBar(). bars[_activeBar]._note[_iter][1] = ");Serial.println(bars[_activeBar]._note[_iter][1]);
+    Serial.print("-------- void bar::_tcbPlayBar(). note::activeTone = ");Serial.println(note::activeTone);
+    Serial.println("-------- void bar::_tcbPlayBar(). Note class has been told which tone shall be played");
   }
 
+  // Disable the Task tPlayNote (we are about to play a new note; if tPlayNote was currently playing a note, it shall stop immediately)
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_tcbPlayBar(). About to disable any currently playing tPlayNote Task.");
+  }
+
+  bool _tPlayNoteWasEnabled = note::tPlayNote.disable();
+
+  if (MY_DG_LASER) {
+    if (_tPlayNoteWasEnabled == true) {
+      Serial.println("-------- void bar::_tcbPlayBar(). tPlayNote Task has been disabled.");
+    } else {
+      Serial.println("-------- void bar::_tcbPlayBar(). no prior tPlayNote Task to disabled.");
+    }
+  }
 
   // Enable the tPlayNote Task
   /*
@@ -275,54 +303,66 @@ void bar::_tcbPlayBar(){
      the Task will automatically be disabled.
      Its onDisable callback will just turn off all the lasers.
   */
-  Serial.println("-------- void bar::_tcbPlayBar(). About to enable tPlayNote Task.");
-  note::tPlayNote.enableDelayed();
-  Serial.println("-------- void bar::_tcbPlayBar(). tPlayNote Task enabled");
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_tcbPlayBar(). About to enable tPlayNote Task.");
+  }
 
+  note::tPlayNote.enableDelayed();
+
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_tcbPlayBar(). tPlayNote Task enabled");
+  }
 
   // _tPlayBar related stuffs
   // At each pass, reset the interval before the next iteration of the Task bar::_tPlayBar
-  unsigned long __ulDurationInMs = bars[_activeBar].getIntervalForEachNote(_iter);
+  unsigned long __ulDurationInMs = bars[_activeBar].getSingleNoteInterval(_iter);
 
-  Serial.println("-------- void bar::_tcbPlayBar(). _tPlayBar.setInterval about to be called");
-  Serial.print("-------- void bar::_tcbPlayBar(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_tcbPlayBar(). _tPlayBar.setInterval about to be called");
+    Serial.print("-------- void bar::_tcbPlayBar(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  }
 
   _tPlayBar.setInterval(__ulDurationInMs);
 
-  Serial.println("-------- void bar::_oetcbPlayBar(). Execution parameters after setInterval : *!*!*!*!*!");
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  Serial.print("-------- void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
-  Serial.print("-------- void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
-  Serial.println("-------- void bar::_oetcbPlayBar(). *!*!*!*!*!");
+
+  if (MY_DG_LASER) {
+    Serial.println("-------- void bar::_oetcbPlayBar(). Execution parameters after setInterval : *!*!*!*!*!");
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
+    Serial.print("-------- void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
+    Serial.print("-------- void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
+    Serial.print("-------- void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
+    Serial.println("-------- void bar::_oetcbPlayBar(). *!*!*!*!*!");
+  }
 
   Serial.println("-------- void bar::_tcbPlayBar(). Ending.");
 };
 
 
 void bar::_odtcbPlayBar(){
-  Serial.print("-------- void bar::_odtcbPlayBar(). millis() = ");Serial.println(millis());
-  Serial.println("-------- void bar::_odtcbPlayBar(). Task tPlayBar BYE BYE");
+  if (MY_DG_LASER) {
+    Serial.print("-------- void bar::_odtcbPlayBar(). millis() = ");Serial.println(millis());
+    Serial.println("-------- void bar::_odtcbPlayBar(). Task tPlayBar BYE BYE");
+  }
 }
 
 
 
 
 
-unsigned long bar::getIntervalForEachNote(const short int _iter){
-  Serial.println("-------- unsigned long bar::getIntervalForEachNote(). Starting.");
-  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _activeBar = ");Serial.println(_activeBar);
-  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
-  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). _iter = ");Serial.println(_iter);
-  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
-  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). bars[_activeBar].ulBaseBeatInMs = ");Serial.println(bars[_activeBar].ulBaseBeatInMs);
+unsigned long bar::getSingleNoteInterval(const short int _iter){
+  Serial.println("-------- unsigned long bar::getSingleNoteInterval(). Starting.");
+  // Serial.print("-------- unsigned long bar::getSingleNoteInterval(). _activeBar = ");Serial.println(_activeBar);
+  // Serial.print("-------- unsigned long bar::getSingleNoteInterval(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
+  // Serial.print("-------- unsigned long bar::getSingleNoteInterval(). _iter = ");Serial.println(_iter);
+  // Serial.print("-------- unsigned long bar::getSingleNoteInterval(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
+  // Serial.print("-------- unsigned long bar::getSingleNoteInterval(). bars[_activeBar].ulBaseBeatInMs = ");Serial.println(bars[_activeBar].ulBaseBeatInMs);
 
   unsigned long __ulDurationInMs = bars[_activeBar]._iBaseNoteForBeat /
     bars[_activeBar]._note[_iter][0] *
     bars[_activeBar].ulBaseBeatInMs;
-  // Serial.print("-------- unsigned long bar::getIntervalForEachNote(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
-  Serial.println("-------- unsigned long bar::getIntervalForEachNote(). Ending.");
+  // Serial.print("-------- unsigned long bar::getSingleNoteInterval(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  Serial.println("-------- unsigned long bar::getSingleNoteInterval(). Ending.");
   return __ulDurationInMs;
 }
 
@@ -332,8 +372,12 @@ unsigned long bar::getIntervalForEachNote(const short int _iter){
 
 void bar::setActiveBar(const short activeBar) {
   Serial.println("-------- void bar::setActiveBar(). Starting.");
-  Serial.print("-------- void bar::setActiveBar(). (before setting) _activeBar = ");Serial.println(_activeBar);
+  if (MY_DG_LASER) {
+    Serial.print("-------- void bar::setActiveBar(). (before setting) _activeBar = ");Serial.println(_activeBar);
+  }
   _activeBar = activeBar;
-  Serial.print("-------- void bar::setActiveBar(). (after setting) _activeBar = ");Serial.println(_activeBar);
+  if (MY_DG_LASER) {
+    Serial.print("-------- void bar::setActiveBar(). (after setting) _activeBar = ");Serial.println(_activeBar);
+  }
   Serial.println("-------- void bar::setActiveBar(). Ending.");
 };
