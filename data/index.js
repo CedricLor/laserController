@@ -16,20 +16,15 @@ function connect() {
   ws.onmessage = function(e) {
     var received_msg = e.data;
     console.log( "WS Received Message: " + received_msg);
-    // var _data = JSON.parse(evt.data);
-    // console.log( "Received Message: " + _data);
-    // if (_data.stationIp) {
-    //   updateStationIp(_data.stationIp);
-    // }
+    var _data = JSON.parse(e.data);
+    console.log("WS message: " + _data.message);
+    if (_data.type === 3) {
+      updateStationIp(_data.stationIp);
+    }
   };
 
   ws.onclose = function(e) {
-    console.log('Socket is closed. Reconnect will be attempted in 5 second.', e.reason);
-    // setTimeout (connect, Math.min(10000,timeout+=timeout))
-    // setTimeout(function() {
-    //   connect();
-    // }, 1000);
-    check();
+    console.log('Socket is closed. Reconnect will be attempted in 5 to 10 seconds.', e.reason);
   };
 
   ws.onerror = function(err) {
@@ -64,14 +59,27 @@ function onclickButton(e) {
   // turn this button red
   this.classList.add('button_clicked');
   // add sending a request in WS to the server
-  ws.send(this.getAttribute('data-href'));
+  var _json = JSON.stringify({ laserBox: this.getAttribute('data-lb'), boxState: this.getAttribute('data-boxstate') })
+  ws.send(_json);
 };
 
-/**
- * On window load
- */
+function updateStationIp(_stationIp) {
+  console.log("updateStationIp starting.");
+  document.getElementById('stationIp').innerHTML = _stationIp;
+  console.log("updateStationIp ending.");
+}
+// END DOM MANIPULATION
+
+
+// WINDOW LOAD
 window.onload = function(e){
     console.log("window.onload");
+    // Interval at which to check if WS server is still available (and reconnect as necessary)
+    setInterval(check, 5000);
+    // setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+
+    // select the whole button class
+    buttonClass = document.getElementsByClassName("button");
     // iterate over each buttons and add an eventListener on click
     for (var i = 0; i < buttonClass.length; i++) {
       buttonClass[i].addEventListener('click', onclickButton, false);
