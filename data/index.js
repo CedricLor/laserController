@@ -38,31 +38,20 @@ function connect() {
   };
 }
 
-
-/**
- * Check if WS server is still available (and reconnect as necessary)
- */
+// Check if WS server is still available (and reconnect as necessary)
 function check(){
   if(!ws || ws.readyState === WebSocket.CLOSED) connect();
   // if(!ws || ws.readyState == 3) connect();
 }
+// WEB SOCKET END
 
 
-connect();
 
-
+// DOM MANIPULATION
 /**
- * Interval to check if WS server is still available (and reconnect as necessary)
+ * Create a var that will in the future select all the buttons in the DOM by class "button"
  */
-setInterval(check, 5000);
-// setInterval(check, (getRandomArbitrary(10, 4) * 1000));
-
-
-/**
- * Select all the buttons in the DOM by class "button"
- */
-var buttonClass = document.getElementsByClassName("button");
-
+var buttonClass;
 
 /**
  * On click button callback function
