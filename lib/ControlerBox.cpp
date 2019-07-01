@@ -65,7 +65,8 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   ControlerBoxes[__bBoxIndex].bNodeName = __bNodeName;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i", __bBoxIndex, ControlerBoxes[__bBoxIndex].bNodeName);
   if (!(ControlerBoxes[__bBoxIndex].boxActiveState == doc["senderBoxActiveState"])) {
-    setBoxActiveState(__bBoxIndex, doc);
+    int __senderBoxActiveState = doc["senderBoxActiveState"];
+    setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
   }
   ControlerBoxes[__bBoxIndex].boxActiveState = doc["senderBoxActiveState"];
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", boxIndex, boxActiveState);
@@ -78,8 +79,8 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }
 
-void ControlerBox::setBoxActiveState(const byte bBoxIndex, JsonDocument& doc) {
-  ControlerBoxes[bBoxIndex].boxActiveState == doc["senderBoxActiveState"];
+void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState) {
+  ControlerBoxes[bBoxIndex].boxActiveState = senderBoxActiveState;
   ControlerBoxes[bBoxIndex].boxActiveStateHasChanged = true;
 }
 

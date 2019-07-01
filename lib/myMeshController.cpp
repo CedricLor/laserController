@@ -55,6 +55,7 @@ myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
     _changeMasterBox(root);
     return;
   }
+  
   // read boxState of other boxes
   const char* _s = "s";
   if (strcmp(_action, _s) == 0) {           // action 's' for boxState of another box has changed

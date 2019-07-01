@@ -33,7 +33,7 @@ class ControlerBox
     static short int connectedBoxesCount;
 
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
-    static void setBoxActiveState(const byte bBoxIndex, JsonDocument& doc);
+    static void setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState);
 
   private:
     static IPAddress _parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/);
