@@ -36,8 +36,8 @@ void ControlerBox::updateThisBoxProperties() {
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   bNodeName = B_NODE_NAME;
-  // valFromPir is updated by pirController (which sets it HIGH) and boxState (which sets it LOW)
-  // valFromMesh is updated by myMesh (--> update to be moved to myMeshController) and boxState
+  // For this box, boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime are updated
+  // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
 }
 
