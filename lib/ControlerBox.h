@@ -16,6 +16,7 @@ class ControlerBox
     IPAddress APIP; // set by painlessMesh
     byte bNodeName; // set by me, in global (201, 202, etc.)
     short int boxActiveState; // set by events or user
+    bool boxActiveStateHasChanged; // set by events or user
     uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
 
     // void updateProperties();
