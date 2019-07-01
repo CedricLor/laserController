@@ -119,7 +119,15 @@ void myWebServerBase::startAsyncServer() {
       //   } else send(404);
       // }
       request->send(SPIFFS, "/index.htm", String(), false, _processor);
-  }); // end _asyncServer.on
+  }); // end _asyncServer.on("/", ...)
+
+  _asyncServer.on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
+     request->send(SPIFFS, "/index.css", "text/css");
+   });
+
+   _asyncServer.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/index.js", "text/javascript");
+    });
 
   _asyncServer.onNotFound(&_onRequest);
   _asyncServer.onRequestBody(&_onBody);
