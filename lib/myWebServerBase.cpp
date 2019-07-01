@@ -178,20 +178,18 @@ String myWebServerBase::_processor(const String& var) {
 
 
 
-
-
 // Callback on websocket events
 void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
         //client connected
         Serial.printf("ws[%s][%i] connect\n", server->url(), client->id());
-        client->printf("Hello Client %u :)", client->id());
+        client->printf("Hello WS Client %u :)", client->id());
         client->ping();
         _ws_client_id = client->id();
     } else if(type == WS_EVT_DISCONNECT){
         //client disconnected
-        Serial.printf("ws[%s]disconnect %i\n", server->url(), client->id());
+        Serial.printf("ws[%s] disconnect %i\n", server->url(), client->id());
     } else if(type == WS_EVT_ERROR){
         //error was received from the other end
         Serial.printf("ws[%s][%u] error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
