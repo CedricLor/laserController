@@ -42,7 +42,6 @@ class myWebServerBase
     static void startAsyncServer();
     static void sendWSData(JsonDocument& doc);
 
-    static Task tSendWSData;
     // static Task tSendWEventData;
 
   private:
@@ -51,6 +50,8 @@ class myWebServerBase
     static AsyncEventSource _events; // event source (Server-Sent events)
 
     static JsonObject _empty_obj;
+
+    static Task _tSendWSData;
 
     static uint32_t _ws_client_id;
     static void _tcbSendWSData();
