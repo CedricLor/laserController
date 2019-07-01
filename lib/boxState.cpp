@@ -214,7 +214,7 @@ void boxState::_restart_tPlayBoxState() {
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
     // Serial.println(_tPlayBoxState.getInterval());
     if (!(_boxTargetState == ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState)) {
-      ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = _boxTargetState;
+      ControlerBox::setBoxActiveState(MY_INDEX_IN_CB_ARRAY, _boxTargetState);
     }
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
     _tPlayBoxState.restartDelayed();
