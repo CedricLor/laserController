@@ -35,6 +35,8 @@
 AsyncWebServer myWebServerBase::_asyncServer(80);
 AsyncWebSocket myWebServerBase::_ws("/ws"); // access at ws://[esp ip]/ws
 uint32_t myWebServerBase::_ws_client_id = 0;
+StaticJsonDocument<0> _empty_doc;
+JsonObject myWebServerBase::_empty_obj = _empty_doc.to<JsonObject>();
 
 
 myWebServerBase::myWebServerBase()
@@ -200,7 +202,7 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
 
         if(info->final && info->index == 0 && info->len == len){
             //the whole message is in a single frame and we got all of it's data
-            Serial.printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
+            Serial.printf("ws[%s][%u] %s-message length[%llu]: \n", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
             if(info->opcode == WS_TEXT)
                 _prepareDataWs(1); // text message confirmation
             else
@@ -301,9 +303,6 @@ void myWebServerBase::_decodeMessageWs(uint8_t *data) {
     return;
   }
   if (_type == 4) {           // 4 for change boxState
-    // send a response telling the instruction is in course of being executed
-    _prepareDataWs(5);
-
     // send a mesh request to the other boxes
     // convert the box name to a char array box name
     int __iNodeName = doc["lb"];
@@ -320,6 +319,13 @@ void myWebServerBase::_decodeMessageWs(uint8_t *data) {
     // instantiate a mesh view
     Serial.printf("myWebServerBase::_decodeMessageWs(): about to call __myMeshViews.changeBoxTargetState().\n");
     __myMeshViews.changeBoxTargetState(_cNodeName, _boxState);
+
+    // send a response telling the instruction is in course of being executed
+    StaticJsonDocument<64> _sub_doc;
+    JsonObject _sub_obj = _sub_doc.to<JsonObject>();;
+    _sub_obj["lb"] = _cNodeName;
+    _sub_obj["boxState"] = _boxState;
+    _prepareDataWs(4, _sub_obj);
   }
   Serial.println("myWebServerBase::_decodeMessageWs. Ending.");
 }
@@ -338,11 +344,13 @@ void myWebServerBase::_tcbSendWsData() {
   } // if
 }
 
-void myWebServerBase::_prepareDataWs(const short int _iMessageType) {
+
+
+
+void myWebServerBase::_prepareDataWs(const short int _iMessageType, JsonObject& _subdoc) {
   Serial.println("- myWebServerBase::_prepareDataWs. Starting.");
   StaticJsonDocument<256> doc;
   doc["type"] = _iMessageType;
-  doc["client"] = _ws_client_id;
 
   if (_iMessageType == 3) { // message type 3: change in station IP
     doc["message"] = (laserControllerMesh.getStationIP()).toString();
@@ -350,7 +358,10 @@ void myWebServerBase::_prepareDataWs(const short int _iMessageType) {
       const char* __stationIp = doc["stationIp"];
       Serial.print("- myWebServerBase::_prepareDataWs. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
     }
-  } else {
+  } else if (_iMessageType == 4) {
+    doc["message"] = _subdoc;
+  }
+  else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     doc["message"] = _messages_array[_iMessageType];
   }
@@ -360,11 +371,11 @@ void myWebServerBase::_prepareDataWs(const short int _iMessageType) {
 }
 
 
+
+
+
 void myWebServerBase::sendDataWs(JsonDocument& doc) {
     Serial.println("- myWebServerBase::_sendDataWs. Starting.");
-
-    const char* __stationIp = doc["stationIp"];
-    Serial.print("- myWebServerBase::_sendDataWs. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
 
     size_t _len = measureJson(doc);
     Serial.printf("- myWebServerBase::_sendDataWs. _len of JSON Document [%i]\n", _len);
@@ -375,16 +386,15 @@ void myWebServerBase::sendDataWs(JsonDocument& doc) {
         serializeJson(doc, (char *)_buffer->get(), _len + 1);
 
         Serial.print("- myWebServerBase::_sendDataWs: _ws_client_id = ");Serial.println(_ws_client_id);
-        if (_ws_client_id) {
-          AsyncWebSocketClient * _ws_client = _ws.client(_ws_client_id);
-          Serial.printf("- myWebServerBase::_sendDataWs. About to send a WS message message to [%i].\n", _ws_client_id);
-          _ws_client->text(_buffer);
-          Serial.println("- myWebServerBase::_sendDataWs. Message sent");
-        } else {
+        // if (_ws_client_id) {
+        //   Serial.printf("- myWebServerBase::_sendDataWs. About to send a WS message message to [%i].\n", _ws_client_id);
+        //   _ws.client(_ws_client_id)->text(_buffer);
+        //   Serial.println("- myWebServerBase::_sendDataWs. Message sent");
+        // } else {
           Serial.printf("- myWebServerBase::_sendDataWs. About to send a WS message message to all.\n");
           _ws.textAll(_buffer);
           Serial.println("- myWebServerBase::_sendDataWs. Message sent");
-        }
+        // }
     }
     Serial.println("- myWebServerBase::_sendDataWs. Ending.");
 }

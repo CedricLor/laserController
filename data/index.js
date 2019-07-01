@@ -23,7 +23,7 @@ function connect() {
       updateStationIp(_data.message);
     }
     if (_data.type === 4) {
-      updateButton(_data.lb, _data.boxstate);
+      updateButton(_data.message);
     }
   };
 
@@ -77,13 +77,13 @@ function updateStationIp(_stationIp) {
   console.log("updateStationIp ending.");
 }
 
-function updateButton(lb, boxState) {
+function updateButton(data) {
   console.log("updateButton starting.");
-  var _lb_selector = "[data-lb='" + lb + "']";
+  var _lb_selector = "[data-lb='" + data.lb + "']";
   console.log(_lb_selector);
   var _elts = document.querySelectorAll(_lb_selector);
   console.log(_elts);
-  var _boxstate_selector = "[data-boxstate='" + boxState + "']";
+  var _boxstate_selector = "[data-boxstate='" + data.boxState + "']";
   console.log(_boxstate_selector);
   var _elt_arr = document.querySelectorAll(_boxstate_selector);
   _elt_arr.forEach(

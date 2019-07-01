@@ -50,10 +50,12 @@ class myWebServerBase
     static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
     static AsyncEventSource _events; // event source (Server-Sent events)
 
+    static JsonObject _empty_obj;
+
     static uint32_t _ws_client_id;
     static void _tcbSendWsData();
     // static void _tcbSendWEventData();
-    static void _prepareDataWs(const short int _iMessageType);
+    static void _prepareDataWs(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
     static void _decodeMessageWs(uint8_t *data);
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
