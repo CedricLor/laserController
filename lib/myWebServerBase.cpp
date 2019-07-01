@@ -366,7 +366,7 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
     doc["message"] = _messages_array[_iMessageType];
   }
   Serial.println("- myWebServerBase::_prepareWSData. About to send JSON to sender function.");
-  sendDataWs(doc);
+  sendWSData(doc);
   Serial.println("- myWebServerBase::_prepareWSData. Ending.");
 }
 
@@ -374,27 +374,27 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
 
 
 
-void myWebServerBase::sendDataWs(JsonDocument& doc) {
-    Serial.println("- myWebServerBase::_sendDataWs. Starting.");
+void myWebServerBase::sendWSData(JsonDocument& doc) {
+    Serial.println("- myWebServerBase::_sendWSData. Starting.");
 
     size_t _len = measureJson(doc);
-    Serial.printf("- myWebServerBase::_sendDataWs. _len of JSON Document [%i]\n", _len);
+    Serial.printf("- myWebServerBase::_sendWSData. _len of JSON Document [%i]\n", _len);
 
     AsyncWebSocketMessageBuffer * _buffer = _ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
 
     if (_buffer) {
         serializeJson(doc, (char *)_buffer->get(), _len + 1);
 
-        Serial.print("- myWebServerBase::_sendDataWs: _ws_client_id = ");Serial.println(_ws_client_id);
+        Serial.print("- myWebServerBase::_sendWSData: _ws_client_id = ");Serial.println(_ws_client_id);
         // if (_ws_client_id) {
-        //   Serial.printf("- myWebServerBase::_sendDataWs. About to send a WS message message to [%i].\n", _ws_client_id);
+        //   Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to [%i].\n", _ws_client_id);
         //   _ws.client(_ws_client_id)->text(_buffer);
-        //   Serial.println("- myWebServerBase::_sendDataWs. Message sent");
+        //   Serial.println("- myWebServerBase::_sendWSData. Message sent");
         // } else {
-          Serial.printf("- myWebServerBase::_sendDataWs. About to send a WS message message to all.\n");
+          Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to all.\n");
           _ws.textAll(_buffer);
-          Serial.println("- myWebServerBase::_sendDataWs. Message sent");
+          Serial.println("- myWebServerBase::_sendWSData. Message sent");
         // }
     }
-    Serial.println("- myWebServerBase::_sendDataWs. Ending.");
+    Serial.println("- myWebServerBase::_sendWSData. Ending.");
 }

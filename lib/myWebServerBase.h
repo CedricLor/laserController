@@ -40,7 +40,7 @@ class myWebServerBase
     myWebServerBase();
 
     static void startAsyncServer();
-    static void sendDataWs(JsonDocument& doc);
+    static void sendWSData(JsonDocument& doc);
 
     static Task tSendWsData;
     // static Task tSendWEventData;
