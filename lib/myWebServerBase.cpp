@@ -34,7 +34,6 @@
 
 AsyncWebServer myWebServerBase::_asyncServer(80);
 AsyncWebSocket myWebServerBase::_ws("/ws"); // access at ws://[esp ip]/ws
-AsyncEventSource myWebServerBase::_events("/events"); // event source (Server-Sent events)
 uint32_t myWebServerBase::_ws_client_id = 0;
 
 
@@ -68,19 +67,6 @@ void myWebServerBase::_listAllCollectedParams(AsyncWebServerRequest *request) {
 void myWebServerBase::startAsyncServer() {
   // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
   // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
-
-  // // Web Events (to post events to the browser)
-  // _events.onConnect([](AsyncEventSourceClient *client){
-  //   if(client->lastId()){
-  //     Serial.printf("WE Client reconnected! Last message ID that it got is: %u\n", client->lastId());
-  //   }
-  //   // send event with message "hello!", id, current millis
-  //   // and set reconnect delay to 1 second
-  //   client->send("Hello client WE!",NULL,millis(),1000);
-  // });
-  //
-  // // attach AsyncEventSource
-  // _asyncServer.addHandler(&_events);
 
   // attach AsyncWebSocket
   _ws.onEvent(_onEvent);
@@ -293,26 +279,6 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 
 
 
-// Task myWebServerBase::tSendWEventData(10000, TASK_FOREVER, &_tcbSendWEventData, &userScheduler, true);
-//
-// void myWebServerBase::_tcbSendWEventData() {
-//   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
-//     Serial.println("- myWebServerBase::_tcbSendWEventData. interface stationIp has changed.");
-//     Serial.println("- myWebServerBase::_tcbSendWEventData. about to send new stationIp.");
-//
-//     // Serial.print("- myWebServerBase::_tcbSendWEventData. Number of connected clients: ");Serial.println(_events.count());
-//     if (_events.count()) {
-//       _events.send((laserControllerMesh.getStationIP()).toString().c_str(),"STATIONIP",millis());
-//       Serial.println("- myWebServerBase::_tcbSendWEventData. new StationIp sent.");
-//       Serial.println("- myWebServerBase::_tcbSendWEventData. about to update this box properties.");
-//     } else {
-//       Serial.println("- myWebServerBase::_tcbSendWEventData. No clients connected.");
-//     }
-//
-//     ControlerBoxes[0].updateThisBoxProperties();
-//   } // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP))
-// } // function
-
 
 Task myWebServerBase::tSendWsData(10000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
 
@@ -334,7 +300,7 @@ void myWebServerBase::_prepareDataWs(const short int _iMessageType) {
     doc["message"] = (laserControllerMesh.getStationIP()).toString();
     if (MY_DEBUG) {
       const char* __stationIp = doc["stationIp"];
-      Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);      
+      Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
     }
   } else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
