@@ -8,9 +8,10 @@ function connect() {
   ws.onopen = function() {
     console.log("WS connection open ...");
     ws.send("Hello WebSockets! This is Cedric.");
-    // ws.send(JSON.stringify({
-    //     //.... some message the I must send when I connect ....
-    // }));
+    ws.send(JSON.stringify({
+      type: 0,
+      message: "Hello WebSockets! This is Cedric."
+    }));
   };
 
   ws.onmessage = function(e) {
@@ -59,7 +60,10 @@ function onclickButton(e) {
   // turn this button red
   this.classList.add('button_clicked');
   // add sending a request in WS to the server
-  var _json = JSON.stringify({ laserBox: this.getAttribute('data-lb'), boxState: this.getAttribute('data-boxstate') })
+  var _json = JSON.stringify({
+    type: 3,
+    lb: this.getAttribute('data-lb'),
+    boxState: this.getAttribute('data-boxstate') })
   ws.send(_json);
 };
 
