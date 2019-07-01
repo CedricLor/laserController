@@ -79,8 +79,6 @@ myMeshViews::myMeshViews()
 
 void myMeshViews::statusMsg(const short int myBoxState) {
   Serial.println("myMeshViews::statusMsg(): Starting.");
-  // update this boxes BoxActiveStateStartTime
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"senderBoxActiveState":3;"action":"s";"mTime":6059117;"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"..."}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);

@@ -64,24 +64,22 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].stationIP);
   ControlerBoxes[__bBoxIndex].bNodeName = __bNodeName;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].bNodeName);
-  if (!(ControlerBoxes[__bBoxIndex].boxActiveState == doc["senderBoxActiveState"])) {
-    int __senderBoxActiveState = doc["senderBoxActiveState"];
-    setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
-  }
-  ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime = doc["senderBoxActiveStateStartTime"];
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].boxActiveState);
-  ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime = doc["senderBoxActiveStateStartTime"];
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].boxActiveState);
+  int __senderBoxActiveState = doc["senderBoxActiveState"];
+  setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
   // need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
   if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }
 
 void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState) {
+  Serial.println("ControlerBox::setBoxActiveState(): Starting");
   ControlerBoxes[bBoxIndex].boxActiveState = senderBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveState);
   ControlerBoxes[bBoxIndex].boxActiveStateHasChanged = true;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasChanged: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasChanged);
+  ControlerBoxes[bBoxIndex].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime);
+  Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
