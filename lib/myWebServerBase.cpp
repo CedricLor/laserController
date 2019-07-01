@@ -334,11 +334,11 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 
 
 // Web Socket Message Senders
-Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSData, &userScheduler, true);
+Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, true);
 
-void myWebServerBase::_tcbSendWSData() {
+void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
-    Serial.println("- myWebServerBase::_tcbSendWSData. interface station IP has changed.");
+    Serial.println("- myWebServerBase::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     _prepareWSData(3); // 3 for message sent in case of change in station IP
     ControlerBoxes[0].updateThisBoxProperties();
   } // if
