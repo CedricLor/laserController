@@ -1,17 +1,92 @@
 <!DOCTYPE HTML>
-<html>
-  <body>
-    <head>
-      <meta name='viewport' content='width=device-width, initial-scale=1'>
+<html lang="en" dir="ltr">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <meta name="HandheldFriendly" content="true" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
     </head>
+  </head>
+  <body>
     <h1>
-      %B_NODE_NAME% - Station IP: %STATION_IP% - AP IP: %AP_IP%
+      <span id='nodeName'>%B_NODE_NAME%</span> - Station IP: <span id='stationIp'>%STATION_IP%</span> - AP IP: <span id='apIp'>%AP_IP%</span>
     </h1>
-    <div class='boxes_state_setter'>Boxes State Setters
+    <div class='boxes_state_setter'>
       %BOX_SETTER%
-    </div>
+      <div class='box_state_setter'>Laser Box <span class='box_number'>0</span> - Station IP: <span class='station_ip'>0.0.0.0</span> - AP IP: <span class='ap_ip'>0.0.0.0</span>
+
+        <div class='setters_gp_title'>Special</div>
+        <div class="setters_group" id="special_gp">
+
+          <button class="button" data-href="?boxTargetState=0&lb=0">
+            Manual
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=1&lb=0">
+            Align
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=2&lb=0">
+            IRStUp
+          </button>&nbsp;
+        </div> <!-- special_gp -->
+
+        <div class='setters_gp_title'>Waiting</div>
+        <div class="setters_group" id="waiting_gp">
+          <button class="button" data-href="?boxTargetState=3&lb=0">
+            Both
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=4&lb=0">
+            IR
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=5&lb=0">
+            Mesh
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=0&lb=0">
+            None
+          </button>&nbsp;
+        </div> <!-- waiting_gp -->
+        <div class='setters_gp_title'>IR High</div>
+        <div class="setters_group" id="pir_high_gp">
+          <button class="button" data-href="?boxTargetState=6&lb=0">
+            Both
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=7&lb=0">
+            IR
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=8&lb=0">
+            Mesh
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=9&lb=0">
+            None
+          </button>&nbsp;
+        </div> <!-- pir_high_gp -->
+        <div class='setters_gp_title'>Mesh High</div>
+        <div class="setters_group" id="mesh_high_gp">
+          <button class="button" data-href="?boxTargetState=10&lb=0">
+            Both
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=11&lb=0">
+            IR
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=12&lb=0">
+            Mesh
+          </button>&nbsp;
+          <button class="button" data-href="?boxTargetState=13&lb=0">
+            None
+          </button>&nbsp;
+        </div> <!-- mesh_high_gp -->
+      </div> <!-- box_state_setter -->
+    </div> <!-- boxes_state_setter -->
     <div class='network_state_setter'>Network State Setters
       %NETWORK_SETTER%
-    </div>
+    </div> <!-- network_state_setter -->
+
+  <script src="index.js" type="application/javascript"></script>
+  <script>
+
+  </script>
+
+
   </body>
 </html>
