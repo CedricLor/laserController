@@ -52,8 +52,8 @@ void myMesh::meshSetup() {
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, MESH_CHANNEL );
 
   if ((IS_INTERFACE == true) && (IS_STATION_MANUAL == true)) {
-    laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);
-    //laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
+    // laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);
+    laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   }
 
   laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
