@@ -78,6 +78,7 @@ myMeshViews::myMeshViews()
 // }
 
 void myMeshViews::statusMsg(const short int myBoxState) {
+  Serial.println("myMeshViews::statusMsg(): Starting.");
   // update this boxes BoxActiveStateStartTime
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
   // prepare the JSON string to be sent via the mesh
@@ -89,13 +90,14 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // mesh time
   _broadcastMsg(msg);
+  Serial.println("myMeshViews::statusMsg(): Ending.");
 }
 
 void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *boxName) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"senderNodeName":"200";"senderAPIP":"...";"senderStIP":"..."}
   if (MY_DEBUG) {
-    Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = ");Serial.print(boxTargetState);Serial.print("boxName = ");Serial.print(boxName);Serial.print("\n");
+    Serial.print("myMeshViews::changeBoxTargetState(): boxTargetState = ");Serial.print(boxTargetState);Serial.print("boxName = ");Serial.print(boxName);Serial.print("\n");
   }
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -129,7 +131,7 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
 // Helper functions
 // serialization of message to be sent
 JsonObject myMeshViews::_createJsonobject() {
-  const int capacity = JSON_OBJECT_SIZE(10);
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
 
   JsonObject msg = doc.to<JsonObject>();
@@ -137,17 +139,32 @@ JsonObject myMeshViews::_createJsonobject() {
 }
 
 void myMeshViews::_broadcastMsg(JsonObject& msg) {
+  Serial.println("myMeshViews::_broadcastMsg(): Starting.");
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+
+  // Serial.println("myMeshViews::_broadcastMsg(): adding IPs to the JSON object before sending");
   char _cNodeName[4];
+  // Serial.println("myMeshViews::_broadcastMsg(): about to convert ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName to char array _cNodeName");
   itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName, _cNodeName, 10);
+  // Serial.println("myMeshViews::_broadcastMsg(): about to allocate _cNodeName to msg[\"senderNodeName\"]");
   msg["senderNodeName"] = _cNodeName;
+  // Serial.println("myMeshViews::_broadcastMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
   msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
+  // Serial.println("myMeshViews::_broadcastMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
   msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
+  // Serial.println("myMeshViews::_broadcastMsg(): added IPs to the JSON object before sending");
+
   int size_buff = 254;
   char output[size_buff];
+
+  Serial.println("myMeshViews::_broadcastMsg(): about to serialize JSON object");
   serializeJson(msg, output, size_buff);
+  Serial.println("myMeshViews::_broadcastMsg(): JSON object serialized");
+
+  Serial.println("myMeshViews::_broadcastMsg(): About to convert serialized object to String");
   String str;
   str = output;
+  Serial.println("myMeshViews::_broadcastMsg(): About to send message as String");
   laserControllerMesh.sendBroadcast(str);
-  Serial.print("myMeshViews:_broadcastMsg(...) done. Broadcasted message: ");Serial.println(str);
+  Serial.print("myMeshViews:_broadcastMsg(): done. Broadcasted message: ");Serial.println(str);
 }
