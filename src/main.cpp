@@ -67,7 +67,7 @@ void setup() {
   mySavedPrefs::loadPreferences();
   if (IS_INTERFACE == false) {
     LaserPinsArray::initLaserPins();
-    pirController::initPir();    
+    pirController::initPir();
   }
   myMesh::meshSetup();
 
@@ -87,10 +87,10 @@ void setup() {
     tone::initTones();
     bar::initBars();
     sequence::initSequences();
-    boxState::initBoxStates();
 
     enableTasks();
   }
+  boxState::initBoxStates();
 
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
