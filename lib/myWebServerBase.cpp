@@ -312,7 +312,7 @@ void myWebServerBase::_tcbSendWEventData() {
 } // function
 
 
-Task myWebServerBase::tSendWsData(1000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
+Task myWebServerBase::tSendWsData(10000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
 
 void myWebServerBase::_tcbSendWsData() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
@@ -323,10 +323,11 @@ void myWebServerBase::_tcbSendWsData() {
     const char* __stationIp = doc["stationIp"];
     Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
 
+    Serial.println("- myWebServerBase::_tcbSendWsData. About to send JSON to sender function.");
     sendDataWs(doc);
 
     ControlerBoxes[0].updateThisBoxProperties();
-  }
+  } // if
 }
 
 
@@ -343,12 +344,8 @@ void myWebServerBase::sendDataWs(JsonDocument& doc) {
 
     if (_buffer) {
         serializeJson(doc, (char *)_buffer->get(), _len + 1);
+        Serial.print("- myWebServerBase::_sendDataWs: _ws_client_id = ");Serial.println(_ws_client_id);
         if (_ws_client_id) {
-            Serial.printf("- myWebServerBase::_sendDataWs: About to send [%i] a WS message\n", _ws_client_id);
-
-            _ws.text(_ws_client_id, (char *)_buffer);
-            Serial.println("- myWebServerBase::_sendDataWs. Message sent");
-        } else {
             Serial.printf("- myWebServerBase::_sendDataWs. About to send a WS message message to all.\n");
             _ws.textAll(_buffer);
             Serial.println("- myWebServerBase::_sendDataWs. Message sent");
