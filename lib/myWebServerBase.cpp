@@ -313,14 +313,15 @@ void myWebServerBase::_tcbSendWEventData() {
 
 
 Task myWebServerBase::tSendWsData(1000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
+
 void myWebServerBase::_tcbSendWsData() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
     Serial.println("- myWebServerBase::_tcbSendWsData. interface station IP has changed.");
     StaticJsonDocument<256> doc;
-    doc["ifStationIp"] = (laserControllerMesh.getStationIP()).toString();
+    doc["stationIp"] = (laserControllerMesh.getStationIP()).toString();
 
-    const char* __stationIp = doc["ifStationIp"];
-    Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"ifStationIp\"] contains ");Serial.println(__stationIp);
+    const char* __stationIp = doc["stationIp"];
+    Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
 
     sendDataWs(doc);
 
@@ -332,8 +333,8 @@ void myWebServerBase::_tcbSendWsData() {
 void myWebServerBase::sendDataWs(JsonDocument& doc) {
     Serial.println("- myWebServerBase::_sendDataWs. Starting.");
 
-    const char* __stationIp = doc["ifStationIp"];
-    Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"ifStationIp\"] contains ");Serial.println(__stationIp);
+    const char* __stationIp = doc["stationIp"];
+    Serial.print("- myWebServerBase::_tcbSendWsData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
 
     size_t _len = measureJson(doc);
     Serial.printf("- myWebServerBase::_sendDataWs. _len of JSON Document [%i]\n", _len);
