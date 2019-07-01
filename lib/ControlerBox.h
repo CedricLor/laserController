@@ -28,6 +28,7 @@ class ControlerBox
     static short int valFromMesh;
     static uint32_t uiSettingTimeOfValFromMesh;
     static short int valFromWeb;
+    static short int connectedBoxesCount;
 
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
 
