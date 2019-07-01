@@ -282,6 +282,8 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 }
 
 
+
+
 // Web Socket Receiver
 void myWebServerBase::_decodeWSMessage(uint8_t *data) {
   Serial.println("- myWebServerBase::_decodeWSMessage. Starting.");
@@ -344,6 +346,13 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   } // if
 }
 
+Task myWebServerBase::_tSendWEventDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, true);
+
+void myWebServerBase::_tcbSendWEventDataIfChangeBoxState() {
+  // loop around each ControlerBox in the ControlerBox array
+  // if a new box has appeared, send a message to the browser to create a new row
+  // if a box has changed state, send a message to the browser to turn the corresponding button in red
+}
 
 
 
