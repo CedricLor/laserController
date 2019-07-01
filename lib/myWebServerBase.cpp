@@ -183,7 +183,7 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
         //client connected
         _ws_client_id = client->id();
         Serial.printf("ws[%s][%i] connect\n", server->url(), client->id());
-        _prepareDataWs(0); // 0 for messageType "hand shake"
+        _prepareWSData(0); // 0 for messageType "hand shake"
         client->ping();
     } else if(type == WS_EVT_DISCONNECT){
         //client disconnected
@@ -204,14 +204,14 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
             //the whole message is in a single frame and we got all of it's data
             Serial.printf("ws[%s][%u] %s-message length[%llu]: \n", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
             if(info->opcode == WS_TEXT)
-                _prepareDataWs(1); // text message confirmation
+                _prepareWSData(1); // text message confirmation
             else
                 client->binary("I got your WS binary message");
             if(info->opcode == WS_TEXT){
               // message is a text message
                 data[len] = 0;
                 // Serial.printf("%s\n", (char*)data);
-                _decodeMessageWs(data); // uint8_t *data
+                _decodeWSMessage(data); // uint8_t *data
             } else {
               // message is a binary message
                 for(size_t i=0; i < info->len; i++){
@@ -248,7 +248,7 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
               if(info->final){
                   Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
                   if(info->message_opcode == WS_TEXT)
-                    _prepareDataWs(1); // text message confirmation
+                    _prepareWSData(1); // text message confirmation
                     // client->text("I got your WS text message");
                   else
                     client->binary("I got your WS binary message");
@@ -283,41 +283,41 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 
 
 // Web Socket Receiver
-void myWebServerBase::_decodeMessageWs(uint8_t *data) {
-  Serial.println("- myWebServerBase::_decodeMessageWs. Starting.");
+void myWebServerBase::_decodeWSMessage(uint8_t *data) {
+  Serial.println("- myWebServerBase::_decodeWSMessage. Starting.");
 
   // create a StaticJsonDocument entitled doc
   StaticJsonDocument<256> doc;
-  Serial.print("myWebServerBase::_decodeMessageWs(): jsonDocument created\n");
+  Serial.print("myWebServerBase::_decodeWSMessage(): jsonDocument created\n");
 
   // deserialize the message msg received from the mesh into the StaticJsonDocument doc
   DeserializationError err = deserializeJson(doc, data);
-  Serial.print("myWebServerBase::_decodeMessageWs(): message msg deserialized into JsonDocument doc\n");
-  Serial.print("myWebServerBase::_decodeMessageWs(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
+  Serial.print("myWebServerBase::_decodeWSMessage(): message msg deserialized into JsonDocument doc\n");
+  Serial.print("myWebServerBase::_decodeWSMessage(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
 
   const int _type = doc["type"]; // correspondings to root[action] in meshController
-  Serial.printf("myWebServerBase::_decodeMessageWs(): (from JSON) message _type = %i \n", _type);
+  Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) message _type = %i \n", _type);
 
   if (_type == 0) {           // 0 for hand shake message
-    Serial.println("myWebServerBase::_decodeMessageWs. Ending on type 0 (received handshake message).");
+    Serial.println("myWebServerBase::_decodeWSMessage. Ending on type 0 (received handshake message).");
     return;
   }
   if (_type == 4) {           // 4 for change boxState
     // send a mesh request to the other boxes
     // convert the box name to a char array box name
     int __iNodeName = doc["lb"];
-    Serial.printf("myWebServerBase::_decodeMessageWs(): (from JSON) __iNodeName = %i \n", __iNodeName);
+    Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
     __iNodeName = __iNodeName + B_MASTER_NODE_PREFIX;
-    Serial.printf("myWebServerBase::_decodeMessageWs(): (after increment) __iNodeName = %i \n", __iNodeName);
+    Serial.printf("myWebServerBase::_decodeWSMessage(): (after increment) __iNodeName = %i \n", __iNodeName);
     char _cNodeName[4];
     itoa(__iNodeName, _cNodeName, 10);
-    Serial.printf("myWebServerBase::_decodeMessageWs(): _cNodeName = %s \n", _cNodeName);
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
     // convert the box state to a char array box state
     const char* _boxState = doc["boxState"];
-    Serial.printf("myWebServerBase::_decodeMessageWs(): _boxState = %s \n", _boxState);
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _boxState = %s \n", _boxState);
     myMeshViews __myMeshViews;
     // instantiate a mesh view
-    Serial.printf("myWebServerBase::_decodeMessageWs(): about to call __myMeshViews.changeBoxTargetState().\n");
+    Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeBoxTargetState().\n");
     __myMeshViews.changeBoxTargetState(_cNodeName, _boxState);
 
     // send a response telling the instruction is in course of being executed
@@ -325,9 +325,9 @@ void myWebServerBase::_decodeMessageWs(uint8_t *data) {
     JsonObject _sub_obj = _sub_doc.to<JsonObject>();;
     _sub_obj["lb"] = _cNodeName;
     _sub_obj["boxState"] = _boxState;
-    _prepareDataWs(4, _sub_obj);
+    _prepareWSData(4, _sub_obj);
   }
-  Serial.println("myWebServerBase::_decodeMessageWs. Ending.");
+  Serial.println("myWebServerBase::_decodeWSMessage. Ending.");
 }
 
 
@@ -339,7 +339,7 @@ Task myWebServerBase::tSendWsData(10000, TASK_FOREVER, &_tcbSendWsData, &userSch
 void myWebServerBase::_tcbSendWsData() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
     Serial.println("- myWebServerBase::_tcbSendWsData. interface station IP has changed.");
-    _prepareDataWs(3); // 3 for message sent in case of change in station IP
+    _prepareWSData(3); // 3 for message sent in case of change in station IP
     ControlerBoxes[0].updateThisBoxProperties();
   } // if
 }
@@ -347,8 +347,8 @@ void myWebServerBase::_tcbSendWsData() {
 
 
 
-void myWebServerBase::_prepareDataWs(const short int _iMessageType, JsonObject& _subdoc) {
-  Serial.println("- myWebServerBase::_prepareDataWs. Starting.");
+void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& _subdoc) {
+  Serial.println("- myWebServerBase::_prepareWSData. Starting.");
   StaticJsonDocument<256> doc;
   doc["type"] = _iMessageType;
 
@@ -356,7 +356,7 @@ void myWebServerBase::_prepareDataWs(const short int _iMessageType, JsonObject& 
     doc["message"] = (laserControllerMesh.getStationIP()).toString();
     if (MY_DEBUG) {
       const char* __stationIp = doc["stationIp"];
-      Serial.print("- myWebServerBase::_prepareDataWs. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
+      Serial.print("- myWebServerBase::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
     }
   } else if (_iMessageType == 4) {
     doc["message"] = _subdoc;
@@ -365,9 +365,9 @@ void myWebServerBase::_prepareDataWs(const short int _iMessageType, JsonObject& 
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     doc["message"] = _messages_array[_iMessageType];
   }
-  Serial.println("- myWebServerBase::_prepareDataWs. About to send JSON to sender function.");
+  Serial.println("- myWebServerBase::_prepareWSData. About to send JSON to sender function.");
   sendDataWs(doc);
-  Serial.println("- myWebServerBase::_prepareDataWs. Ending.");
+  Serial.println("- myWebServerBase::_prepareWSData. Ending.");
 }
 
 

@@ -55,8 +55,8 @@ class myWebServerBase
     static uint32_t _ws_client_id;
     static void _tcbSendWsData();
     // static void _tcbSendWEventData();
-    static void _prepareDataWs(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
-    static void _decodeMessageWs(uint8_t *data);
+    static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
+    static void _decodeWSMessage(uint8_t *data);
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
