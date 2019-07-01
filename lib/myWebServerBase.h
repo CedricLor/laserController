@@ -43,7 +43,7 @@ class myWebServerBase
     static void sendDataWs(JsonDocument& doc);
 
     static Task tSendWsData;
-    static Task tSendWEventData;
+    // static Task tSendWEventData;
 
   private:
     static AsyncWebServer _asyncServer;
@@ -52,7 +52,8 @@ class myWebServerBase
 
     static uint32_t _ws_client_id;
     static void _tcbSendWsData();
-    static void _tcbSendWEventData();
+    // static void _tcbSendWEventData();
+    static void _prepareDataWs(const short int _iMessageType);
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
