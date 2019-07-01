@@ -292,6 +292,25 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 
 
 Task myWebServerBase::tSendWsData(1000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
+Task myWebServerBase::tSendWEventData(10000, TASK_FOREVER, &_tcbSendWEventData, &userScheduler, true);
+
+void myWebServerBase::_tcbSendWEventData() {
+  if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
+    Serial.println("- myWebServerBase::_tcbSendWEventData. interface stationIp has changed.");
+    Serial.println("- myWebServerBase::_tcbSendWEventData. about to send new stationIp.");
+
+    // Serial.print("- myWebServerBase::_tcbSendWEventData. Number of connected clients: ");Serial.println(_events.count());
+    if (_events.count()) {
+      _events.send((laserControllerMesh.getStationIP()).toString().c_str(),"STATIONIP",millis());
+      Serial.println("- myWebServerBase::_tcbSendWEventData. new StationIp sent.");
+      Serial.println("- myWebServerBase::_tcbSendWEventData. about to update this box properties.");
+    } else {
+      Serial.println("- myWebServerBase::_tcbSendWEventData. No clients connected.");
+    }
+
+    ControlerBoxes[0].updateThisBoxProperties();
+  } // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP))
+} // function
 
 
 void myWebServerBase::_tcbSendWsData() {
