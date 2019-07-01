@@ -291,7 +291,6 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
 
 
 
-Task myWebServerBase::tSendWsData(1000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
 Task myWebServerBase::tSendWEventData(10000, TASK_FOREVER, &_tcbSendWEventData, &userScheduler, true);
 
 void myWebServerBase::_tcbSendWEventData() {
@@ -313,6 +312,7 @@ void myWebServerBase::_tcbSendWEventData() {
 } // function
 
 
+Task myWebServerBase::tSendWsData(1000, TASK_FOREVER, &_tcbSendWsData, &userScheduler, true);
 void myWebServerBase::_tcbSendWsData() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
     Serial.println("- myWebServerBase::_tcbSendWsData. interface station IP has changed.");
