@@ -55,8 +55,8 @@ class myWebServerBase
     static Task _tSendWSDataIfChangeStationIp;
     static void _tcbSendWSDataIfChangeStationIp();
 
-    static Task _tSendWEventDataIfChangeBoxState;
-    static void _tcbSendWEventDataIfChangeBoxState();
+    static Task _tSendWSDataIfChangeBoxState;
+    static void _tcbSendWSDataIfChangeBoxState();
 
     static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
     static void _decodeWSMessage(uint8_t *data);

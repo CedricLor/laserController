@@ -346,12 +346,28 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   } // if
 }
 
-Task myWebServerBase::_tSendWEventDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, true);
+Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, true);
 
-void myWebServerBase::_tcbSendWEventDataIfChangeBoxState() {
-  // loop around each ControlerBox in the ControlerBox array
-  // if a new box has appeared, send a message to the browser to create a new row
-  // if a box has changed state, send a message to the browser to turn the corresponding button in red
+void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
+  for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
+    if (ControlerBoxes[_boxIndex].nodeId == 0) {
+      continue;
+    }
+    if (ControlerBoxes[_boxIndex].boxActiveStateHasChanged == false) {
+      continue;
+    }
+    // if a box has changed state, send a message to the browser to turn the corresponding button in red
+    Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_boxIndex + 200));
+    StaticJsonDocument<64> _doc;
+    JsonObject _obj = _doc.to<JsonObject>();;
+    _obj["lb"] = _boxIndex;
+    _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
+    Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. About to call _prepareWSData.\n");
+    _prepareWSData(5, _obj);
+    Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. Ending.\n");
+
+    // TO DO - if a new box has appeared, send a message to the browser to create a new row
+  }
 }
 
 
