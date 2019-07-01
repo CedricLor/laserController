@@ -193,10 +193,10 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
         //client connected
-        Serial.printf("ws[%s][%i] connect\n", server->url(), client->id());
-        client->printf("Hello WS Client %u :)", client->id());
-        client->ping();
         _ws_client_id = client->id();
+        Serial.printf("ws[%s][%i] connect\n", server->url(), client->id());
+        _prepareDataWs(0); // 0 for messageType "hand shake"
+        client->ping();
     } else if(type == WS_EVT_DISCONNECT){
         //client disconnected
         Serial.printf("ws[%s] disconnect %i\n", server->url(), client->id());
@@ -227,7 +227,8 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
                 Serial.printf("\n");
             }
             if(info->opcode == WS_TEXT)
-                client->text("I got your WS text message");
+                _prepareDataWs(1); // text message confirmation
+                // client->text("I got your WS text message");
             else
                 client->binary("I got your WS binary message");
         }
@@ -259,7 +260,8 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
               if(info->final){
                   Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
                   if(info->message_opcode == WS_TEXT)
-                    client->text("I got your WS text message");
+                    _prepareDataWs(1); // text message confirmation
+                    // client->text("I got your WS text message");
                   else
                     client->binary("I got your WS binary message");
               }
