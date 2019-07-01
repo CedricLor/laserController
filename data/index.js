@@ -47,7 +47,7 @@ function connect() {
   };
 
   ws.onclose = function(e) {
-    console.log('Socket is closed. Reconnect will be attempted some time.', e.reason);
+    console.log('Socket is closed. Reconnect will be attempted in 5 second.', e.reason);
     // setTimeout (connect, Math.min(10000,timeout+=timeout))
     // setTimeout(function() {
     //   connect();
@@ -68,10 +68,19 @@ function check(){
 
 connect();
 
-setInterval(check, Math.min(10000,timeout+=timeout));
+/**
+ * Interval to check if WS server is still available (and reconnect as necessary)
+ */
+setInterval(check, (getRandomArbitrary(10, 4) * 1000));
 
+/**
+ * Select all the buttons in the DOM by class "button"
+ */
 var buttonClass = document.getElementsByClassName("button");
 
+/**
+ * On click button callback function
+ */
 function onclickButton(e) {
   // remove red on other buttons
   for (var i = 0; i < buttonClass.length; i++) {
@@ -83,9 +92,21 @@ function onclickButton(e) {
   ws.send(this.getAttribute('data-href'));
 };
 
+/**
+ * On window load
+ */
 window.onload = function(e){
     console.log("window.onload");
+    // iterate over each buttons and add an eventListener on click
     for (var i = 0; i < buttonClass.length; i++) {
       buttonClass[i].addEventListener('click', onclickButton, false);
     }
+}
+
+
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
 }
