@@ -1,31 +1,8 @@
 
 // Global variables
 var ws = null;
-// var source = new EventSource('/events');
 
-// Web events
-// source.addEventListener('open', function(e) {
-//   console.log('Web Events Connected');
-// }, false);
-//
-// source.addEventListener('error', function(e) {
-//   if (e.target.readyState != EventSource.OPEN) {
-//     console.log('Web Events Disconnected');
-//   }
-// }, false);
-//
-// source.addEventListener('message', function(e) {
-//   console.log('Web Events message', e.data);
-// }, false);
-//
-// source.addEventListener('STATIONIP', function(e) {
-//   console.log("received IP");
-//   console.log('Web Events stationIp', e.data);
-// }, false);
-
-
-
-// Web socket
+// WEB SOCKET
 function connect() {
   ws = new WebSocket('ws://192.168.43.84/ws');
   ws.onopen = function() {
