@@ -150,14 +150,14 @@ String myWebServerBase::_processor(const String& var) {
     // Serial.print("myWebServerBase::_processor(): if(var == \"AP_IP\")\n");
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
   }
-  if(var == "BOX_SETTER") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
-    myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
-    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): Just after instantiating __myWebServerView\n");
-    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): __myWebServerView.cBoxArray  =");Serial.println(__myWebServerView.cBoxArray);
-    // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"):  Just after __myWebServerView.loadBoxArray()\n");
-    return F(__myWebServerView.cBoxArray);
-  }
+  // if(var == "BOX_SETTER") {
+  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
+  //   myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
+  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): Just after instantiating __myWebServerView\n");
+  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): __myWebServerView.cBoxArray  =");Serial.println(__myWebServerView.cBoxArray);
+  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"):  Just after __myWebServerView.loadBoxArray()\n");
+  //   return F(__myWebServerView.cBoxArray);
+  // }
   if(var == "NETWORK_SETTER") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"NETWORK_SETTER\")\n");
     return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
