@@ -386,15 +386,15 @@ void myWebServerBase::sendWSData(JsonDocument& doc) {
         serializeJson(doc, (char *)_buffer->get(), _len + 1);
 
         Serial.print("- myWebServerBase::_sendWSData: _ws_client_id = ");Serial.println(_ws_client_id);
-        // if (_ws_client_id) {
-        //   Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to [%i].\n", _ws_client_id);
-        //   _ws.client(_ws_client_id)->text(_buffer);
-        //   Serial.println("- myWebServerBase::_sendWSData. Message sent");
-        // } else {
+        if (_ws_client_id) {
+          Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to [%i].\n", _ws_client_id);
+          _ws.client(_ws_client_id)->text(_buffer);
+          Serial.println("- myWebServerBase::_sendWSData. Message sent");
+        } else {
           Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to all.\n");
           _ws.textAll(_buffer);
           Serial.println("- myWebServerBase::_sendWSData. Message sent");
-        // }
+        }
     }
     Serial.println("- myWebServerBase::_sendWSData. Ending.");
 }
