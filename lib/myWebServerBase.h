@@ -51,7 +51,7 @@ class myWebServerBase
 
     static JsonObject _empty_obj;
 
-    static Task _tSendWSData;
+    static Task _tSendWSDataIfChangeStationIp;
 
     static uint32_t _ws_client_id;
     static void _tcbSendWSData();

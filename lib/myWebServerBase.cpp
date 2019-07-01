@@ -334,7 +334,7 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 
 
 // Web Socket Message Senders
-Task myWebServerBase::_tSendWSData(10000, TASK_FOREVER, &_tcbSendWSData, &userScheduler, true);
+Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSData, &userScheduler, true);
 
 void myWebServerBase::_tcbSendWSData() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
