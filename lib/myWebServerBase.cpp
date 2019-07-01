@@ -340,7 +340,7 @@ Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSe
 
 void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
-    Serial.println("- myWebServerBase::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
+    Serial.println("myWebServerBase::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     _prepareWSData(3); // 3 for message sent in case of change in station IP
     ControlerBoxes[0].updateThisBoxProperties();
   } // if
