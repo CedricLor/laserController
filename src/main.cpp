@@ -87,10 +87,12 @@ void setup() {
     tone::initTones();
     bar::initBars();
     sequence::initSequences();
-
-    enableTasks();
   }
   boxState::initBoxStates();
+
+  if (IS_INTERFACE == false) {
+    enableTasks();
+  }
 
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
