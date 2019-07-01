@@ -55,6 +55,9 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   byte __bNodeName = doc["senderNodeName"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
   byte __bBoxIndex = __bNodeName - B_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
+  if (ControlerBoxes[__bBoxIndex].nodeId == 0) {
+    connectedBoxesCount++;
+  }
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
   ControlerBoxes[__bBoxIndex].nodeId = senderNodeId;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i\n", senderNodeId);
