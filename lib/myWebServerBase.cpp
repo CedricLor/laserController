@@ -69,12 +69,22 @@ void myWebServerBase::startAsyncServer() {
   // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
   // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
 
-  // attach AsyncWebSocket
-  _ws.onEvent(_onEvent);
-  _asyncServer.addHandler(&_ws);
+  // Web Events (to post events to the browser)
+  _events.onConnect([](AsyncEventSourceClient *client){
+    if(client->lastId()){
+      Serial.printf("WE Client reconnected! Last message ID that it got is: %u\n", client->lastId());
+    }
+    // send event with message "hello!", id, current millis
+    // and set reconnect delay to 1 second
+    client->send("Hello client WE!",NULL,millis(),1000);
+  });
 
   // attach AsyncEventSource
   _asyncServer.addHandler(&_events);
+
+  // attach AsyncWebSocket
+  _ws.onEvent(_onEvent);
+  _asyncServer.addHandler(&_ws);
 
   // respond to GET requests
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
