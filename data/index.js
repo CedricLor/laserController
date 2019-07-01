@@ -1,27 +1,27 @@
 
 // Global variables
 var ws = null;
-var source = new EventSource('/events');
+// var source = new EventSource('/events');
 
 // Web events
-source.addEventListener('open', function(e) {
-  console.log('Web Events Connected');
-}, false);
-
-source.addEventListener('error', function(e) {
-  if (e.target.readyState != EventSource.OPEN) {
-    console.log('Web Events Disconnected');
-  }
-}, false);
-
-source.addEventListener('message', function(e) {
-  console.log('Web Events message', e.data);
-}, false);
-
-source.addEventListener('STATIONIP', function(e) {
-  console.log("received IP");
-  console.log('Web Events stationIp', e.data);
-}, false);
+// source.addEventListener('open', function(e) {
+//   console.log('Web Events Connected');
+// }, false);
+//
+// source.addEventListener('error', function(e) {
+//   if (e.target.readyState != EventSource.OPEN) {
+//     console.log('Web Events Disconnected');
+//   }
+// }, false);
+//
+// source.addEventListener('message', function(e) {
+//   console.log('Web Events message', e.data);
+// }, false);
+//
+// source.addEventListener('STATIONIP', function(e) {
+//   console.log("received IP");
+//   console.log('Web Events stationIp', e.data);
+// }, false);
 
 
 
@@ -61,22 +61,31 @@ function connect() {
   };
 }
 
+
+/**
+ * Check if WS server is still available (and reconnect as necessary)
+ */
 function check(){
   if(!ws || ws.readyState === WebSocket.CLOSED) connect();
   // if(!ws || ws.readyState == 3) connect();
 }
 
+
 connect();
+
 
 /**
  * Interval to check if WS server is still available (and reconnect as necessary)
  */
-setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+setInterval(check, 5000);
+// setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+
 
 /**
  * Select all the buttons in the DOM by class "button"
  */
 var buttonClass = document.getElementsByClassName("button");
+
 
 /**
  * On click button callback function
