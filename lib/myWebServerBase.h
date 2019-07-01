@@ -42,7 +42,6 @@ class myWebServerBase
     static void startAsyncServer();
     static void sendWSData(JsonDocument& doc);
 
-    // static Task tSendWEventData;
 
   private:
     static AsyncWebServer _asyncServer;
@@ -51,12 +50,14 @@ class myWebServerBase
 
     static JsonObject _empty_obj;
 
-    static Task _tSendWSDataIfChangeStationIp;
-
     static uint32_t _ws_client_id;
-    
+
+    static Task _tSendWSDataIfChangeStationIp;
     static void _tcbSendWSDataIfChangeStationIp();
-    // static void _tcbSendWEventData();
+
+    static Task _tSendWEventDataIfChangeBoxState;
+    static void _tcbSendWEventDataIfChangeBoxState();
+
     static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
     static void _decodeWSMessage(uint8_t *data);
 
