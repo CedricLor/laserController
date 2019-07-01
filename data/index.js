@@ -20,7 +20,10 @@ function connect() {
     var _data = JSON.parse(e.data);
     console.log("WS message: " + _data.message);
     if (_data.type === 3) {
-      updateStationIp(_data.stationIp);
+      updateStationIp(_data.message);
+    }
+    if (_data.type === 4) {
+      updateButton(_data.lb, _data.boxstate);
     }
   };
 
@@ -61,7 +64,7 @@ function onclickButton(e) {
   this.classList.add('button_clicked');
   // add sending a request in WS to the server
   var _json = JSON.stringify({
-    type: 3,
+    type: 4,
     lb: this.getAttribute('data-lb'),
     boxState: this.getAttribute('data-boxstate') })
   ws.send(_json);
@@ -69,8 +72,26 @@ function onclickButton(e) {
 
 function updateStationIp(_stationIp) {
   console.log("updateStationIp starting.");
+  console.log(_stationIp);
   document.getElementById('stationIp').innerHTML = _stationIp;
   console.log("updateStationIp ending.");
+}
+
+function updateButton(lb, boxState) {
+  console.log("updateButton starting.");
+  var _lb_selector = "[data-lb='" + lb + "']";
+  console.log(_lb_selector);
+  var _elts = document.querySelectorAll(_lb_selector);
+  console.log(_elts);
+  var _boxstate_selector = "[data-boxstate='" + boxState + "']";
+  console.log(_boxstate_selector);
+  var _elt_arr = document.querySelectorAll(_boxstate_selector);
+  _elt_arr.forEach(
+    function(currentValue, currentIndex, listObj) {
+      currentValue.classList.add('button_change_received');
+    }
+  );
+  console.log("updateButton ending.");
 }
 // END DOM MANIPULATION
 

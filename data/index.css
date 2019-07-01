@@ -11,6 +11,9 @@ h1 {
 .button_clicked {
   color: red;
 }
+.button_change_received {
+  border-color: red;  
+}
 .boxes_state_setter {
   text-align: center;
 }
