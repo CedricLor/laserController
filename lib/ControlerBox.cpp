@@ -20,7 +20,7 @@ uint32_t ControlerBox::uiSettingTimeOfValFromPir = 0;
 short int ControlerBox::valFromMesh = -1;
 uint32_t ControlerBox::uiSettingTimeOfValFromMesh = 0;
 short int ControlerBox::valFromWeb = -1;
-short int ControlerBox::connectedBoxesCount = 0;
+short int ControlerBox::connectedBoxesCount = 1;
 // PUBLIC
 ControlerBox::ControlerBox()
 {
