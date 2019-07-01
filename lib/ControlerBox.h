@@ -11,12 +11,12 @@ class ControlerBox
 {
   public:
     ControlerBox();
-    uint32_t nodeId;
-    IPAddress stationIP;
-    IPAddress APIP;
-    byte bNodeName;
-    short int boxActiveState;
-    uint32_t uiBoxActiveStateStartTime;
+    uint32_t nodeId; // calculated by painlessMesh from th mac address
+    IPAddress stationIP; // set by painlessMesh or, for the interface, by the AP to which it is connected
+    IPAddress APIP; // set by painlessMesh
+    byte bNodeName; // set by me, in global (201, 202, etc.)
+    short int boxActiveState; // set by events or user
+    uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
 
     // void updateProperties();
     void updateThisBoxProperties();
@@ -28,6 +28,7 @@ class ControlerBox
     static short int valFromMesh;
     static uint32_t uiSettingTimeOfValFromMesh;
     static short int valFromWeb;
+
     static short int connectedBoxesCount;
 
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
