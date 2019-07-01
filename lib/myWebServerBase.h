@@ -54,6 +54,7 @@ class myWebServerBase
     static void _tcbSendWsData();
     // static void _tcbSendWEventData();
     static void _prepareDataWs(const short int _iMessageType);
+    static void _decodeMessageWs(uint8_t *data);
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
