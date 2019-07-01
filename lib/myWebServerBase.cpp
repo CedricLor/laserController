@@ -211,9 +211,9 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
                 Serial.printf("\n");
             }
             if(info->opcode == WS_TEXT)
-                client->text("I got your text message");
+                client->text("I got your WS text message");
             else
-                client->binary("I got your binary message");
+                client->binary("I got your WS binary message");
         }
 
         else {
@@ -243,9 +243,9 @@ void myWebServerBase::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * c
               if(info->final){
                   Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
                   if(info->message_opcode == WS_TEXT)
-                    client->text("I got your text message");
+                    client->text("I got your WS text message");
                   else
-                    client->binary("I got your binary message");
+                    client->binary("I got your WS binary message");
               }
           }
         }
