@@ -12,7 +12,10 @@ h1 {
   color: red;
 }
 .button_change_received {
-  border-color: red;  
+  border-color: red;
+}
+.button_active_state {
+  background-color: red;
 }
 .boxes_state_setter {
   text-align: center;

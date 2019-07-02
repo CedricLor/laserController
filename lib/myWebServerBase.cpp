@@ -309,10 +309,8 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     // convert the box name to a char array box name
     int __iNodeName = doc["lb"];
     Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
-    __iNodeName = __iNodeName + B_MASTER_NODE_PREFIX;
-    Serial.printf("myWebServerBase::_decodeWSMessage(): (after increment) __iNodeName = %i \n", __iNodeName);
     char _cNodeName[4];
-    itoa(__iNodeName, _cNodeName, 10);
+    itoa((__iNodeName + B_MASTER_NODE_PREFIX), _cNodeName, 10);
     Serial.printf("myWebServerBase::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
     // convert the box state to a char array box state
     const char* _boxState = doc["boxState"];
@@ -320,12 +318,13 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     myMeshViews __myMeshViews;
     // instantiate a mesh view
     Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeBoxTargetState().\n");
-    __myMeshViews.changeBoxTargetState(_cNodeName, _boxState);
+    __myMeshViews.changeBoxTargetState(_boxState, _cNodeName);
 
     // send a response telling the instruction is in course of being executed
     StaticJsonDocument<64> _sub_doc;
-    JsonObject _sub_obj = _sub_doc.to<JsonObject>();;
-    _sub_obj["lb"] = _cNodeName;
+    JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+    Serial.printf("---------------------- %i -------------------\n", __iNodeName);
+    _sub_obj["lb"] = __iNodeName;
     _sub_obj["boxState"] = _boxState;
     _prepareWSData(4, _sub_obj);
   }
@@ -370,6 +369,12 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
   }
 }
 
+// void somefunction(void (*fptr)(void*, int, int), void* context) {
+//     fptr(context, 17, 42);
+// }
+
+
+
 
 
 void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& _subdoc) {
@@ -383,12 +388,13 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
       const char* __stationIp = doc["stationIp"];
       Serial.print("- myWebServerBase::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
     }
-  } else if (_iMessageType == 4) {
-    doc["message"] = _subdoc;
+  } else if (_iMessageType == 4 || _iMessageType == 5) { // type 4: change state request sent to destination box
+    doc["message"] = _subdoc;              // type 5: state of a box has effectively changed
   }
   else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     doc["message"] = _messages_array[_iMessageType];
+    Serial.printf("- myWebServerBase::_prepareWSData. _messages_array[%i] = %s", _iMessageType, (char*)_messages_array);
   }
   Serial.println("- myWebServerBase::_prepareWSData. About to send JSON to sender function.");
   sendWSData(doc);

@@ -172,6 +172,10 @@ TO DO:
   - rewrite the Serial.print and Serial.println to Serial.printf; don't forget https://stackoverflow.com/questions/8986625/warning-format-c-expects-type-int-but-argument-2-has-type-char
 
 
+- find a way to decrease ControlerBox::connectedBoxesCount when a box gets disconnected
+- add a little static array to ControlerBox to store the index numbers of ControlerBoxes of the box that are connected
+
+
 Notes on Task Scheduler
 When calling setInterval() within the onEnable callback of the Task, the main callback is called within the ancient delay.
 The following iteration on the main callback will take place after the new delay

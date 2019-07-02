@@ -2,12 +2,13 @@
 // Global variables
 var ws = null;
 
+
+
 // WEB SOCKET
 function connect() {
   ws = new WebSocket('ws://192.168.43.84/ws');
   ws.onopen = function() {
     console.log("WS connection open ...");
-    ws.send("Hello WebSockets! This is Cedric.");
     ws.send(JSON.stringify({
       type: 0,
       message: "Hello WebSockets! This is Cedric."
@@ -18,12 +19,15 @@ function connect() {
     var received_msg = e.data;
     console.log( "WS Received Message: " + received_msg);
     var _data = JSON.parse(e.data);
-    console.log("WS message: " + _data.message);
+    // console.log("WS JSON message: " + _data.message);
     if (_data.type === 3) {
       updateStationIp(_data.message);
     }
     if (_data.type === 4) {
       updateButton(_data.message);
+    }
+    if (_data.type === 5) {
+      setActiveStateButton(_data.message);
     }
   };
 
@@ -65,7 +69,7 @@ function onclickButton(e) {
   // add sending a request in WS to the server
   var _json = JSON.stringify({
     type: 4,
-    lb: this.getAttribute('data-lb'),
+    lb: this.parentNode.parentNode.getAttribute('data-lb'),
     boxState: this.getAttribute('data-boxstate') })
   ws.send(_json);
 };
@@ -79,19 +83,43 @@ function updateStationIp(_stationIp) {
 
 function updateButton(data) {
   console.log("updateButton starting.");
-  var _lb_selector = "[data-lb='" + data.lb + "']";
-  console.log(_lb_selector);
-  var _elts = document.querySelectorAll(_lb_selector);
-  console.log(_elts);
-  var _boxstate_selector = "[data-boxstate='" + data.boxState + "']";
-  console.log(_boxstate_selector);
-  var _elt_arr = document.querySelectorAll(_boxstate_selector);
-  _elt_arr.forEach(
-    function(currentValue, currentIndex, listObj) {
-      currentValue.classList.add('button_change_received');
-    }
-  );
+  var _elt = StateButtonDOMSelector(data);
+  console.log(_elt);
+  _elt.classList.add('button_change_received');
+  // var _elt = StateButtonsDOMSelector(data);
+  // _elt_arr.forEach(
+  //   function(currentValue, currentIndex, listObj) {
+  //     _elt_arr.classList.add('button_change_received');
+  //   }
+  // );
   console.log("updateButton ending.");
+}
+
+function setActiveStateButton(data) {
+  console.log("setActiveStateButton starting.");
+  var _elt = StateButtonDOMSelector(data);
+  console.log(_elt);
+  _elt.classList.add('button_active_state');
+  _elt.classList.remove('button_change_received');
+  // var _elt = StateButtonsDOMSelector(data);
+  // _elt_arr.forEach(
+  //   function(currentValue, currentIndex, listObj) {
+  //     currentValue.classList.add('button_active_state');
+  //   }
+  // );
+  console.log("setActiveStateButton ending.");
+}
+
+function StateButtonDOMSelector(data) {
+  console.log("buttonStateDOMSelector starting.");
+  // div[data-lb='1'] button[data-boxstate='1'
+  // "div[data-lb='1'] > div > button[data-boxstate='1'"
+  var _selector = "div[data-lb='" + data.lb + "'] > div > button[data-boxstate='" + data.boxState + "']";
+  console.log(_selector);
+  var _elts = document.querySelectorAll(_selector);
+  console.log(_elts);
+  console.log("buttonStateDOMSelector ending.");
+  return _elts[0];
 }
 // END DOM MANIPULATION
 
