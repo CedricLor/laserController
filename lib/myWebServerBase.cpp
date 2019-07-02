@@ -335,7 +335,7 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 
 
 // Web Socket Message Senders
-Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, true);
+Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
@@ -345,26 +345,24 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   } // if
 }
 
-Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, true);
+Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
   for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
-    if (ControlerBoxes[_boxIndex].nodeId == 0) {
-      continue;
+    if (ControlerBoxes[_boxIndex].nodeId != 0) {
+      if (ControlerBoxes[_boxIndex].boxActiveStateHasChanged == true) {
+        // if a box has changed state, send a message to the browser to turn the corresponding button in red
+        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_boxIndex + 200));
+        StaticJsonDocument<64> _doc;
+        JsonObject _obj = _doc.to<JsonObject>();;
+        _obj["lb"] = _boxIndex;
+        _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
+        Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. About to call _prepareWSData with message 5: state has changed.\n");
+        _prepareWSData(5, _obj);
+        ControlerBoxes[_boxIndex].boxActiveStateHasChanged = false;
+        Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. Ending.\n");
+      }
     }
-    if (ControlerBoxes[_boxIndex].boxActiveStateHasChanged == false) {
-      continue;
-    }
-    // if a box has changed state, send a message to the browser to turn the corresponding button in red
-    Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_boxIndex + 200));
-    StaticJsonDocument<64> _doc;
-    JsonObject _obj = _doc.to<JsonObject>();;
-    _obj["lb"] = _boxIndex;
-    _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
-    Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. About to call _prepareWSData.\n");
-    _prepareWSData(5, _obj);
-    Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. Ending.\n");
-
     // TO DO - if a new box has appeared, send a message to the browser to create a new row
   }
 }

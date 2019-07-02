@@ -90,9 +90,8 @@ void setup() {
   }
   boxState::initBoxStates();
 
-  if (IS_INTERFACE == false) {
-    enableTasks();
-  }
+  enableTasks();
+
 
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
@@ -118,5 +117,10 @@ void serialInit() {
 }
 
 void enableTasks() {
-  boxState::tPlayBoxStates.enable();
+  if (IS_INTERFACE == false) {
+    boxState::tPlayBoxStates.enable();
+  } else {
+    myWebServerBase::_tSendWSDataIfChangeStationIp.enable();
+    myWebServerBase::_tSendWSDataIfChangeBoxState.enable();
+  }
 }

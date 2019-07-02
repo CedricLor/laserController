@@ -22,18 +22,18 @@ const bool MY_DEBUG = true;
 const bool MY_DG_LASER = false;
 
 // CONTROLLER BOX 201
-const byte B_NODE_NAME = 201;                          // BOX BY BOX
-const byte B_DEFAULT_MASTER_NODE_NAME = 210;
-const bool MESH_ROOT = false;                            // BOX BY BOX
-const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
-const bool IS_STATION_MANUAL = false;                  // BOX BY BOX
+// const byte B_NODE_NAME = 201;                          // BOX BY BOX
+// const byte B_DEFAULT_MASTER_NODE_NAME = 210;
+// const bool MESH_ROOT = false;                            // BOX BY BOX
+// const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
+// const bool IS_STATION_MANUAL = false;                  // BOX BY BOX
 
 // CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
-// const byte B_NODE_NAME = 200;                          // BOX BY BOX
-// const byte B_DEFAULT_MASTER_NODE_NAME = 003;
-// const bool MESH_ROOT = true;                            // BOX BY BOX
-// const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or true
-// const bool IS_STATION_MANUAL = true;                  // BOX BY BOX
+const byte B_NODE_NAME = 200;                          // BOX BY BOX
+const byte B_DEFAULT_MASTER_NODE_NAME = 003;
+const bool MESH_ROOT = true;                            // BOX BY BOX
+const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or true
+const bool IS_STATION_MANUAL = true;                  // BOX BY BOX
 
 // CONTROLLER BOX 202
 // const byte B_NODE_NAME = 202;                          // BOX BY BOX

@@ -100,6 +100,7 @@ function setActiveStateButton(data) {
   var _elt = StateButtonDOMSelector(data);
   console.log(_elt);
   _elt.classList.add('button_active_state');
+  _elt.classList.remove('button_clicked');
   _elt.classList.remove('button_change_received');
   // var _elt = StateButtonsDOMSelector(data);
   // _elt_arr.forEach(
