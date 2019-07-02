@@ -86,7 +86,7 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   JsonObject msg = doc.to<JsonObject>();
   msg["senderBoxActiveState"] = myBoxState;
   msg["action"] = "s";
-  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // mesh time
+  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // get the mesh time
   _broadcastMsg(msg);
   Serial.println("myMeshViews::statusMsg(): Ending.");
 }
@@ -138,7 +138,7 @@ JsonObject myMeshViews::_createJsonobject() {
 
 void myMeshViews::_broadcastMsg(JsonObject& msg) {
   Serial.println("myMeshViews::_broadcastMsg(): Starting.");
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
 
   // Serial.println("myMeshViews::_broadcastMsg(): adding IPs to the JSON object before sending");
   char _cNodeName[4];
