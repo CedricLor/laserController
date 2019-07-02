@@ -64,6 +64,7 @@ void myMesh::meshSetup() {
   // This and all other mesh should ideally know that the mesh contains a root
   laserControllerMesh.setContainsRoot(true);
 
+  // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);

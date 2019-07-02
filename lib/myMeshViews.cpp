@@ -86,7 +86,7 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   JsonObject msg = doc.to<JsonObject>();
   msg["senderBoxActiveState"] = myBoxState;
   msg["action"] = "s";
-  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // get the mesh time
+  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
   _broadcastMsg(msg);
   Serial.println("myMeshViews::statusMsg(): Ending.");
 }
