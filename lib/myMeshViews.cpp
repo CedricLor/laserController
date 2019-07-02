@@ -88,6 +88,9 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
   _broadcastMsg(msg);
+  // I signaled my boxState change.
+  // => set my own boxActiveStateHasChanged to false
+  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasChanged = false;
   Serial.println("myMeshViews::statusMsg(): Ending.");
 }
 
