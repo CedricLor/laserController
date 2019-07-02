@@ -84,11 +84,22 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  // Serial.printf("myMesh::newConnectionCallback(): laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
+  Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
+  if (IS_INTERFACE == false) {
+    // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
+    // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
+    myMeshViews __myMeshViews;
+    __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+  } else {
+    Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
+  }
 }
 
 void myMesh::changedConnectionCallback() {
   Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
+  Serial.println("--------------------- CHANGED CONNECTION --------------------------");
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
 }
 
