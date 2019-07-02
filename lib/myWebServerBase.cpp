@@ -304,6 +304,11 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     Serial.println("myWebServerBase::_decodeWSMessage. Ending on type 0 (received handshake message).");
     return;
   }
+  if (_type == 3) {           // 3 for confirmation that change IP adress has been received
+    Serial.println("myWebServerBase::_decodeWSMessage. Type 3 (received confirmation that new station IP has been received).");
+    _tSendWSDataIfChangeStationIp.disable();
+    return;
+  }
   if (_type == 4) {           // 4 for change boxState
     // send a mesh request to the other boxes
     // convert the box name to a char array box name
@@ -345,6 +350,9 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   // } // if
 }
 
+// This task runs for ever and checks whether the boxState of any of the Controller boxes connected to
+// lasers has changed in the ControlerBox array of the Interface controller.
+// If so, it send a WS message with the new information.
 Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
@@ -388,9 +396,11 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
     }
   } else if (_iMessageType == 4 || _iMessageType == 5) { // type 4: change state request sent to destination box
     doc["message"] = _subdoc;              // type 5: state of a box has effectively changed
-  }
-  else {
+  } else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
+    if (_iMessageType == 0) {
+      _tSendWSDataIfChangeStationIp.enable();
+    }
     doc["message"] = _messages_array[_iMessageType];
     Serial.printf("- myWebServerBase::_prepareWSData. _messages_array[%i] = %s", _iMessageType, (char*)_messages_array);
   }

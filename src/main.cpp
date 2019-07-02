@@ -120,7 +120,6 @@ void enableTasks() {
   if (IS_INTERFACE == false) {
     boxState::tPlayBoxStates.enable();
   } else {
-    myWebServerBase::_tSendWSDataIfChangeStationIp.enable();
     myWebServerBase::_tSendWSDataIfChangeBoxState.enable();
   }
 }

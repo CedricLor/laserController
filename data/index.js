@@ -22,6 +22,10 @@ function connect() {
     // console.log("WS JSON message: " + _data.message);
     if (_data.type === 3) {
       updateStationIp(_data.message);
+      ws.send(JSON.stringify({
+        type: 3,
+        message: "received Station IP"
+      }));
     }
     if (_data.type === 4) {
       updateButton(_data.message);
