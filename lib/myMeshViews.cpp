@@ -138,7 +138,6 @@ JsonObject myMeshViews::_createJsonobject() {
 
 void myMeshViews::_broadcastMsg(JsonObject& msg) {
   Serial.println("myMeshViews::_broadcastMsg(): Starting.");
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
 
   // Serial.println("myMeshViews::_broadcastMsg(): adding IPs to the JSON object before sending");
   char _cNodeName[4];
