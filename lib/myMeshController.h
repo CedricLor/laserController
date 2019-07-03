@@ -37,13 +37,13 @@ class myMeshController
 
     char _action;
 
-    void _manualSwitch(JsonDocument& root);
-    void _changeInclusionIR(JsonDocument& root);
-    void _changeBlinkingInterval(JsonDocument& root);
-    void _changeMasterBox(JsonDocument& root);
-    void _slaveBoxSwitch(JsonDocument& root);
-    void _pinPairing(JsonDocument& root);
-    void _dataRequest();
+    // void _manualSwitch(JsonDocument& root);
+    // void _changeInclusionIR(JsonDocument& root);
+    // void _changeBlinkingInterval(JsonDocument& root);
+    // void _changeMasterBox(JsonDocument& root);
+    // void _slaveBoxSwitch(JsonDocument& root);
+    // void _pinPairing(JsonDocument& root);
+    // void _dataRequest();
 };
 
 #endif
