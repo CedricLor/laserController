@@ -374,30 +374,27 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState.State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 5;
       _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
+      ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
     }
 
     // if the box is an unsignaled new box
     if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 6;
+      ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
     }
 
     if (ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 7;
+      ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
     }
 
     if (_messageType != -1) {
       // pass it on, with the type of message (5, 6 or 7) we want to add
-      Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. About to call _prepareWSData with message of type %i.\n", _messageType);
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call _prepareWSData with message of type %i.\n", _messageType);
       _prepareWSData(_messageType, _obj);
     }
-
-    ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
-    ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
-    ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
-
-    Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. Ending.\n");
   }
 }
 
