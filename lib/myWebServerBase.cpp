@@ -420,8 +420,8 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
       const char* __stationIp = doc["stationIp"];
       Serial.print("- myWebServerBase::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
     }
-  } else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6) { // type 4: change state request sent to destination box
-    doc["message"] = _subdoc;                                                 // type 5: state of a box has effectively changed type 6: a new box has joined
+  } else if (_iMessageType == 4 || 5 || 6 || 7 ) { // type 4: change state request sent to destination box
+    doc["message"] = _subdoc;                      // type 5: state of a box has effectively changed // type 6: a new box has joined // tye 7: a box has disconnected
   } else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     if (_iMessageType == 0) {
