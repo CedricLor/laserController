@@ -101,7 +101,6 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
   // _updateConnectedBoxCount();
   // Only send my boxState to the mesh if I am not an interface (interface does not have boxStates)
-  if (IS_INTERFACE == false) {
     Serial.println("myMesh::newConnectionCallback(): I am not the interface. I am going to call send them my data.");
     // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
     // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
@@ -119,11 +118,6 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     //   _tSendStatusOnNewConnection.enableDelayed(MY_INDEX_IN_CB_ARRAY * 1000);
     //   Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
     // }
-  } else {
-    // else, I am the interface. Do nothing.
-    Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
-  }
 }
 
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
