@@ -118,6 +118,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
       // TO DO: Add a static Task to myMeshViews to wait for a little bit before sending
       // my boxState
     }
+  // else, I am the interface. Do nothing.
   } else {
     Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
