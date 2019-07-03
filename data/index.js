@@ -80,7 +80,7 @@ function onclickButton(e) {
 
 function updateButton(data) {
   console.log("updateButton starting.");
-  var _elt = StateButtonDOMSelector(data);
+  var _elt = StateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
   _elt.classList.add('button_change_received');
   // var _elt = StateButtonsDOMSelector(data);
@@ -94,7 +94,7 @@ function updateButton(data) {
 
 function setActiveStateButton(data) {
   console.log("setActiveStateButton starting.");
-  var _elt = StateButtonDOMSelector(data);
+  var _elt = StateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
   _elt.classList.add('button_active_state');
   _elt.classList.remove('button_clicked');
@@ -108,11 +108,11 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton ending.");
 }
 
-function StateButtonDOMSelector(data) {
+function StateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
   console.log("buttonStateDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
   // "div[data-lb='1'] > div > button[data-boxstate='1'"
-  var _selector = "div[data-lb='" + data.lb + "'] > div > button[data-boxstate='" + data.boxState + "']";
+  var _selector = "div[data-lb='" + laserBoxIndexNumber + "'] > div > button[data-boxstate='" + boxActiveState + "']";
   console.log(_selector);
   var _elts = document.querySelectorAll(_selector);
   console.log(_elts);
