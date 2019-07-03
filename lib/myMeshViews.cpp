@@ -87,7 +87,7 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   msg["senderBoxActiveState"] = myBoxState;
   msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 2);
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasBeenSignaled = true;
@@ -106,7 +106,7 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
   msg["receiverTargetState"] = boxTargetState;
   msg["receiverBoxName"] = boxName;
   msg["action"] = "c";
-  _broadcastMsg(msg);
+  _broadcastMsg(msg, 2);
 }
 
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
@@ -139,7 +139,7 @@ JsonObject myMeshViews::_createJsonobject() {
   return msg;
 }
 
-void myMeshViews::_broadcastMsg(JsonObject& msg) {
+void myMeshViews::_broadcastMsg(JsonObject& msg, byte diffusionType) {
   Serial.println("myMeshViews::_broadcastMsg(): Starting.");
 
   // Serial.println("myMeshViews::_broadcastMsg(): adding IPs to the JSON object before sending");
