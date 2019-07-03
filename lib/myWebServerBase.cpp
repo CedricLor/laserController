@@ -305,7 +305,7 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     return;
   }
   if (_type == 3) {           // 3 for confirmation that change IP adress has been received
-    Serial.println("myWebServerBase::_decodeWSMessage. Type 3 (received confirmation that new station IP has been received).");
+    Serial.println("myWebServerBase::_decodeWSMessage. Ending on type 3 (received confirmation that new station IP has been received).");
     _tSendWSDataIfChangeStationIp.disable();
     return;
   }
