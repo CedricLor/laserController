@@ -161,7 +161,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
 
   // pass the deserialized doc and the senderNodeId to the controller
-  myMeshController myMeshController(doc, senderNodeId);
+  myMeshController myMeshController(senderNodeId, doc);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

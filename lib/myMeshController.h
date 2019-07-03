@@ -30,7 +30,7 @@
 class myMeshController
 {
   public:
-    myMeshController(JsonDocument& root, uint32_t senderNodeId);
+    myMeshController(uint32_t senderNodeId, JsonDocument& root);
 
   private:
     static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];

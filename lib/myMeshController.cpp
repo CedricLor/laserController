@@ -25,7 +25,7 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
-myMeshController::myMeshController(JsonDocument& root, uint32_t senderNodeId)
+myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 {
   const char* _action = root["action"];
   if (MY_DEBUG) {
