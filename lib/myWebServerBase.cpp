@@ -340,7 +340,8 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 
 
 // Web Socket Message Senders
-Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, 6, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
+// Send WS message when I change Station IP
+Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
@@ -351,6 +352,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   // } // if
 }
 
+// Send WS message upon (i) boxState changes, (ii) appearance or (iii) disappearance of a new box
 // This task runs for ever and checks whether the boxState of any of the Controller boxes connected to
 // lasers has changed in the ControlerBox array of the Interface controller.
 // If so, it send a WS message with the new information.
