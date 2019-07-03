@@ -52,21 +52,21 @@ myMeshViews::myMeshViews()
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
 //   JsonObject msg = _createJsonobject();
 //   msg["ts"] = targetOnOffState;
-//   _broadcastMsg(msg, 'u');
+//   _sendMsg(msg, 'u');
 // }
 //
 // void myMeshViews::inclusionIRMsg(const short targetIrState) {
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
 //   JsonObject msg = _createJsonobject();
 //   msg["ts"] = targetIrState;
-//   _broadcastMsg(msg, 'i');
+//   _sendMsg(msg, 'i');
 // }
 //
 // void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
 //   JsonObject msg = _createJsonobject();
 //   msg["ti"] = targetBlinkingInterval;
-//   _broadcastMsg(msg, 'b');
+//   _sendMsg(msg, 'b');
 // }
 //
 // void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction) {
@@ -74,7 +74,7 @@ myMeshViews::myMeshViews()
 //   JsonObject msg = _createJsonobject();
 //   msg["ms"] = newMasterNodeName;
 //   msg["react"] = newReaction;
-//   _broadcastMsg(msg, 'm');
+//   _sendMsg(msg, 'm');
 // }
 
 void myMeshViews::statusMsg(const short int myBoxState) {
@@ -87,7 +87,7 @@ void myMeshViews::statusMsg(const short int myBoxState) {
   msg["senderBoxActiveState"] = myBoxState;
   msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  _broadcastMsg(msg, 2);
+  _sendMsg(msg, 2);
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasBeenSignaled = true;
@@ -106,27 +106,27 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
   msg["receiverTargetState"] = boxTargetState;
   msg["receiverBoxName"] = boxName;
   msg["action"] = "c";
-  _broadcastMsg(msg, 2);
+  _sendMsg(msg, 2);
 }
 
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
 //   JsonObject msg = _createJsonobject();
 //   msg["pinPairingType"] = sTargetPairingType;
-//   _broadcastMsg(msg, 'p');
+//   _sendMsg(msg, 'p');
 // }
 //
 // void myMeshViews::dataRequestMsg() {
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"d"}
 //   JsonObject msg = _createJsonobject();
-//   _broadcastMsg(msg, 'd');
+//   _sendMsg(msg, 'd');
 // }
 //
 // void myMeshViews::dataRequestResponse() {
 //   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"r";"response":{A DETERMINER}}
 //   JsonObject msg = _createJsonobject();
 //   // msg["response"] = {A DETERMINER};
-//   _broadcastMsg(msg, 'r');
+//   _sendMsg(msg, 'r');
 // }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
@@ -139,32 +139,32 @@ JsonObject myMeshViews::_createJsonobject() {
   return msg;
 }
 
-void myMeshViews::_broadcastMsg(JsonObject& msg, byte diffusionType) {
-  Serial.println("myMeshViews::_broadcastMsg(): Starting.");
+void myMeshViews::_sendMsg(JsonObject& msg, byte diffusionType) {
+  Serial.println("myMeshViews::_sendMsg(): Starting.");
 
-  // Serial.println("myMeshViews::_broadcastMsg(): adding IPs to the JSON object before sending");
+  // Serial.println("myMeshViews::_sendMsg(): adding IPs to the JSON object before sending");
   char _cNodeName[4];
-  // Serial.println("myMeshViews::_broadcastMsg(): about to convert ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName to char array _cNodeName");
+  // Serial.println("myMeshViews::_sendMsg(): about to convert ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName to char array _cNodeName");
   itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName, _cNodeName, 10);
-  // Serial.println("myMeshViews::_broadcastMsg(): about to allocate _cNodeName to msg[\"senderNodeName\"]");
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate _cNodeName to msg[\"senderNodeName\"]");
   msg["senderNodeName"] = _cNodeName;
-  // Serial.println("myMeshViews::_broadcastMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
   msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
-  // Serial.println("myMeshViews::_broadcastMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
   msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
-  // Serial.println("myMeshViews::_broadcastMsg(): added IPs to the JSON object before sending");
+  // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
 
   int size_buff = 254;
   char output[size_buff];
 
-  Serial.println("myMeshViews::_broadcastMsg(): about to serialize JSON object");
+  Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
   serializeJson(msg, output, size_buff);
-  Serial.println("myMeshViews::_broadcastMsg(): JSON object serialized");
+  Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
 
-  Serial.println("myMeshViews::_broadcastMsg(): About to convert serialized object to String");
+  Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
   String str;
   str = output;
-  Serial.println("myMeshViews::_broadcastMsg(): About to send message as String");
+  Serial.println("myMeshViews::_sendMsg(): About to send message as String");
   laserControllerMesh.sendBroadcast(str);
-  Serial.print("myMeshViews:_broadcastMsg(): done. Broadcasted message: ");Serial.println(str);
+  Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
 }
