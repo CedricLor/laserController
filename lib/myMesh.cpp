@@ -125,6 +125,12 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   }
 }
 
+void myMesh::droppedConnectionCallback(uint32_t nodeId) {
+  Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %i\n",nodeId);
+  Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection %s\n",laserControllerMesh.subConnectionJson().c_str());
+  Serial.println("--------------------- CHANGED CONNECTION --------------------------");
+}
+
 void myMesh::changedConnectionCallback() {
   Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.println("--------------------- CHANGED CONNECTION --------------------------");
