@@ -167,7 +167,13 @@ void myMeshViews::_sendMsg(JsonObject& msg, byte diffusionType) {
   String str;
   str = output;
   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
-  laserControllerMesh.sendBroadcast(str);
+
   // diffusion
+  if (diffusionType == 2) {
+    laserControllerMesh.sendBroadcast(str);
+  } else {
+    laserControllerMesh.sendSingle(destNodeId, str);
+    destNodeId = 0;
+  }
   Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
 }
