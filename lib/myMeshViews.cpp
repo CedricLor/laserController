@@ -77,7 +77,7 @@ myMeshViews::myMeshViews()
 //   _sendMsg(msg, 'm');
 // }
 
-void myMeshViews::statusMsg(const short int myBoxState) {
+void myMeshViews::statusMsg(const short int myBoxState, byte diffusionType) {
   Serial.println("myMeshViews::statusMsg(): Starting.");
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"senderBoxActiveState":3;"action":"s";"mTime":6059117;"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"..."}
