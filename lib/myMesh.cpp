@@ -82,6 +82,18 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
   _decodeRequest(from, msg);
 }
 
+
+
+Task myMesh::_tSendStatusOnNewConnection(4500, 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
+
+void myMesh::_tcbSendStatusOnNewConnection() {
+  short int _tIter = _tSendStatusOnNewConnection.getRunCounter();
+  Serial.printf("_tcbSendStatusOnNewConnection: Starting. Iteration: %i\n", _tIter);
+  myMeshViews __myMeshViews;
+  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+  Serial.printf("_tcbSendStatusOnNewConnection: EndingIteration: %i\n", _tIter);
+}
+
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
   // Serial.printf("myMesh::newConnectionCallback(): laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
@@ -90,8 +102,12 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   if (IS_INTERFACE == false) {
     // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
     // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
-    myMeshViews __myMeshViews;
-    __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+    // Only send immediately my boxState if I am newly connecting to the Mesh
+    if (ControlerBox::previousConnectedBoxesCount == 1) {
+      Serial.println("myMesh::newConnectionCallback(): I am not alone. I am going to call send them my data.");
+      _tSendStatusOnNewConnection.enableDelayed();
+      Serial.println("myMesh::newConnectionCallback(): I enabled task _tSendStatusOnNewConnection to do that.");
+    }
   } else {
     Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)

@@ -44,7 +44,11 @@ class myMesh
     static const uint8_t* STATION_IP;
 
     static void receivedCallback( uint32_t from, String &msg);
+
+    static Task _tSendStatusOnNewConnection;
+    static void _tcbSendStatusOnNewConnection();
     static void newConnectionCallback(uint32_t nodeId);
+
     static void changedConnectionCallback();
     static void nodeTimeAdjustedCallback(int32_t offset);
     static void delayReceivedCallback(uint32_t from, int32_t delay);
