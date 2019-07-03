@@ -36,6 +36,7 @@ ControlerBox::ControlerBox()
   uiBoxActiveStateStartTime = 0;
   isNewBoxHasBeenSignaled = true;
   boxActiveStateHasBeenSignaled = true;
+  boxDeletionHasBeenSignaled = true;
 }
 
 void ControlerBox::updateThisBoxProperties() {
@@ -115,6 +116,8 @@ void ControlerBox::deleteBox(uint32_t nodeId) {
       ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = 0;
       ControlerBoxes[__boxIndex].isNewBoxHasBeenSignaled = true;
       ControlerBoxes[__boxIndex].boxActiveStateHasBeenSignaled = true;
+      ControlerBoxes[__boxIndex].boxDeletionHasBeenSignaled = false;
+      updateConnectedBoxCount(connectedBoxesCount - 1);
       break;
     }
   }

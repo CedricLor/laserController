@@ -19,6 +19,7 @@ class ControlerBox
     short int boxActiveState; // set by events or user
     bool boxActiveStateHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a boxState change, the WebSocket can read this and send a message to the browser
     uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
+    bool boxDeletionHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a box disconnection, the WebSocket can read this and send a message to the browser
 
     // void updateProperties();
     void updateThisBoxProperties();
