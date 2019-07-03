@@ -75,6 +75,7 @@ function onclickButton(e) {
     lb: this.parentNode.parentNode.getAttribute('data-lb'),
     boxState: this.getAttribute('data-boxstate') })
   ws.send(_json);
+  console.log("onclickButton stoping");
 };
 
 function updateButton(data) {
