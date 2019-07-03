@@ -38,6 +38,8 @@ class ControlerBox
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
     static void setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState);
 
+    static void deleteBox(uint32_t nodeId);
+    
   private:
     static IPAddress _parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/);
     static void _parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);

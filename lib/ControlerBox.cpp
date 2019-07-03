@@ -29,7 +29,11 @@ short int ControlerBox::previousConnectedBoxesCount = 1;
 ControlerBox::ControlerBox()
 {
   nodeId = 0;
+  APIP = {0,0,0,0};
+  stationIP = {0,0,0,0};
+  bNodeName = 0;
   boxActiveState = -1;
+  uiBoxActiveStateStartTime = 0;
   isNewBoxHasBeenSignaled = true;
   boxActiveStateHasBeenSignaled = true;
 }
@@ -95,6 +99,26 @@ void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxAc
 void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
   previousConnectedBoxesCount = connectedBoxesCount;
   connectedBoxesCount = newConnectedBoxesCount;
+}
+
+void ControlerBox::deleteBox(uint32_t nodeId) {
+  Serial.println("ControlerBox::deleteBox(): Starting");
+  short int __boxIndex;
+  for (short int __it = 0; __it < BOXES_COUNT; __it++) {
+    if (ControlerBoxes[__it].nodeId == nodeId) {
+      __boxIndex = __it;
+      ControlerBoxes[__boxIndex].nodeId = 0;
+      ControlerBoxes[__boxIndex].APIP = {0,0,0,0};
+      ControlerBoxes[__boxIndex].stationIP = {0,0,0,0};
+      ControlerBoxes[__boxIndex].bNodeName = 0;
+      ControlerBoxes[__boxIndex].boxActiveState = -1;
+      ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = 0;
+      ControlerBoxes[__boxIndex].isNewBoxHasBeenSignaled = true;
+      ControlerBoxes[__boxIndex].boxActiveStateHasBeenSignaled = true;
+      break;
+    }
+  }
+  Serial.println("ControlerBox::deleteBox(): Ending");
 }
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
