@@ -85,9 +85,11 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
 
 
-    if (ControlerBoxes[__boxIndex].nodeId == 0) {
-      // Enable a Task to send this new box my current boxState.
-      myMeshViews::tSendBoxStateToNewBox.restartDelayed();
+    if (ControlerBox::connectedBoxesCount != 1) {
+      if (ControlerBoxes[__boxIndex].nodeId == 0) {
+        // Enable a Task to send this new box my current boxState.
+        myMeshViews::tSendBoxStateToNewBox.restartDelayed();
+      }
     }
     
     // update the box properties

@@ -107,7 +107,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     // Only send immediately my boxState if I am newly connecting to the Mesh
     // If I was already connected, I shall wait a little bit to avoid overflowing the Mesh
     // (all the boxes would send a message at the same time...)
-    if (ControlerBox::previousConnectedBoxesCount == 1) {
+    if (ControlerBox::connectedBoxesCount == 1) {
       Serial.println("myMesh::newConnectionCallback(): Not alone anymore. About to send them my data.");
       _tSendStatusOnNewConnection.enableDelayed();
       Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
