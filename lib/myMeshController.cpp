@@ -78,12 +78,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __bSenderNodeName = root["senderNodeName"];
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
 
-    // if the message does not come from the interface, update the other boxes properties
-    if ((__bSenderNodeName == bInterfaceNodeName)) { // bInterfaceNodeName is declared and defined in the global singleton
-      // in principle, the interface shall not send "s" type messages.
-      // Accordingly, this is just a safety check, but it may be deleted in the future
-      return;
-    }
+    // Update the sender box properties
 
     // calculate the box index of the sending box
     byte __boxIndex = __bSenderNodeName - B_CONTROLLER_BOX_PREFIX;
