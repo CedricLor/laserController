@@ -99,9 +99,11 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   // Serial.printf("myMesh::newConnectionCallback(): laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
   // _updateConnectedBoxCount();
+  // Only send my boxState to the mesh if I am not an interface (interface does not have boxStates)
   if (IS_INTERFACE == false) {
+    Serial.println("myMesh::newConnectionCallback(): I am not the interface. I am going to call send them my data.");
     // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
-    // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
+    // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
     // Only send immediately my boxState if I am newly connecting to the Mesh
     if (ControlerBox::previousConnectedBoxesCount == 1) {
       Serial.println("myMesh::newConnectionCallback(): I am not alone. I am going to call send them my data.");
