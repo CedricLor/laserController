@@ -105,10 +105,18 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
     // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
     // Only send immediately my boxState if I am newly connecting to the Mesh
+    // If I was already connected, I shall wait a little bit to avoid overflowing the Mesh
+    // (all the boxes would send a message at the same time...)
     if (ControlerBox::previousConnectedBoxesCount == 1) {
       Serial.println("myMesh::newConnectionCallback(): Not alone anymore. About to send them my data.");
       _tSendStatusOnNewConnection.enableDelayed();
       Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
+    } else {
+      Serial.println("myMesh::newConnectionCallback(): A new box has joined the existing mesh. About to send it my data.");
+      _tSendStatusOnNewConnection.enableDelayed(MY_INDEX_IN_CB_ARRAY * 1000);
+      Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
+      // TO DO: Add a static Task to myMeshViews to wait for a little bit before sending
+      // my boxState
     }
   } else {
     Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
