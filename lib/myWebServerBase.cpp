@@ -359,12 +359,14 @@ Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendW
 void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
   for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
     if (ControlerBoxes[_boxIndex].nodeId != 0) {
-      }
+      // if the box is not an uninitalized box
       if (ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled == false) {
+        // if the box has an unsignaled change of state
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState.State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
         short int _messageType = 5; // by default, we will send a "state change" signal
         // if a box has changed state, send a message to the browser to turn the corresponding button in red
         if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
+          // if the box is an unsignaled new box
           Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
           _messageType = 6; // if it is a new box, send a message with type 6
         }
