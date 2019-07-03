@@ -26,12 +26,23 @@ Created by Cedric Lor, January 22, 2019.
 #include "myMeshController.h"
 
 
+
+
 Task myMeshController::_tSendBoxStateToNewBox(MY_INDEX_IN_CB_ARRAY * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 
 void myMeshController::_odtcbSendBoxStateToNewBox() {
-  myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+  for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
+    if (ControlerBoxes[_boxIndex].nodeId != 0) {
+      if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
+        myMeshViews __myMeshViews;
+        __myMeshViews.statusMsg(ControlerBoxes[_boxIndex].nodeId);
+        ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
+      }
+    }
+  }
 }
+
+
 
 myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 {
