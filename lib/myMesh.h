@@ -55,6 +55,7 @@ class myMesh
 
     // static short _jsonToInt(JsonDocument root, String rootKey);
 
+    static void _updateConnectedBoxCount();
 };
 
 #endif

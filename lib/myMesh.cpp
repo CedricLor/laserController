@@ -86,6 +86,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
   // Serial.printf("myMesh::newConnectionCallback(): laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
+  // _updateConnectedBoxCount();
   if (IS_INTERFACE == false) {
     // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
     // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
@@ -93,7 +94,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   } else {
     Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime)
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
   }
 }
 
@@ -101,6 +102,7 @@ void myMesh::changedConnectionCallback() {
   Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.println("--------------------- CHANGED CONNECTION --------------------------");
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  // _updateConnectedBoxCount();
 }
 
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
@@ -156,4 +158,19 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
 //   const char* sValue = root[rootKey];
 //   iValue = atoi(sValue);
 //   return iValue;
+// }
+
+// void myMesh::_updateConnectedBoxCount() {
+//   StaticJsonDocument<256> doc;
+//   DeserializationError err = deserializeJson(doc, laserControllerMesh.subConnectionJson());
+//   if (err) {
+//     Serial.print(F("myMesh::_updateConnectedBoxCount(): deserializeJson() failed with code "));
+//     Serial.println(err.c_str());
+//   }
+//   const char* _containsSub = obj["subs"];
+//   if (_containsSub != nullptr) {
+//     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateConnectedBoxCount(2); // for the time being, a number of 2 means "2 or more"
+//   } else {
+//     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateConnectedBoxCount(1); // If subs does not exist, I am alone in the mesh
+//   }
 // }

@@ -22,6 +22,7 @@ short int ControlerBox::valFromMesh = -1;
 uint32_t ControlerBox::uiSettingTimeOfValFromMesh = 0;
 short int ControlerBox::valFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
+short int ControlerBox::previousConnectedBoxesCount = 1;
 
 
 // PUBLIC
@@ -29,6 +30,8 @@ ControlerBox::ControlerBox()
 {
   nodeId = 0;
   boxActiveState = -1;
+  isNewBoxHasBeenSignaled = true;
+  boxActiveStateHasBeenSignaled = true;
 }
 
 void ControlerBox::updateThisBoxProperties() {
@@ -36,7 +39,7 @@ void ControlerBox::updateThisBoxProperties() {
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   bNodeName = B_NODE_NAME;
-  // For this box, boxActiveState, boxActiveStateHasChanged and uiBoxActiveStateStartTime are updated
+  // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
 }
@@ -48,7 +51,8 @@ void ControlerBox::printProperties(const byte bBoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bNodeName: %i\n", bBoxIndex, bNodeName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, boxActiveState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %u\n", bBoxIndex, uiBoxActiveStateStartTime);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasChanged: %i\n", bBoxIndex, boxActiveStateHasChanged);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, boxActiveStateHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].isNewBoxHasBeenSignaled: %i\n", bBoxIndex, isNewBoxHasBeenSignaled);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
@@ -56,8 +60,11 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   byte __bNodeName = doc["senderNodeName"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
   byte __bBoxIndex = __bNodeName - B_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
+  Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
   if (ControlerBoxes[__bBoxIndex].nodeId == 0) {
-    connectedBoxesCount++;
+    updateConnectedBoxCount(connectedBoxesCount + 1);
+    ControlerBoxes[__bBoxIndex].isNewBoxHasBeenSignaled = false;
+    Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].isNewBoxHasBeenSignaled = %i\n", ControlerBoxes[__bBoxIndex].isNewBoxHasBeenSignaled);
   }
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
   ControlerBoxes[__bBoxIndex].nodeId = senderNodeId;
@@ -79,13 +86,17 @@ void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxAc
   Serial.println("ControlerBox::setBoxActiveState(): Starting");
   ControlerBoxes[bBoxIndex].boxActiveState = senderBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveState);
-  ControlerBoxes[bBoxIndex].boxActiveStateHasChanged = true;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasChanged: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasChanged);
+  ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled);
   ControlerBoxes[bBoxIndex].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime);
   Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
 
+void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
+  previousConnectedBoxesCount = connectedBoxesCount;
+  connectedBoxesCount = newConnectedBoxesCount;
+}
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 IPAddress ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/) {
