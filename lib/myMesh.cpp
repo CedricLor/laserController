@@ -71,6 +71,7 @@ void myMesh::meshSetup() {
   laserControllerMesh.onChangedConnections(&changedConnectionCallback);
   laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
   laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
+  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);                                   // Might not be needed
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +129,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %i\n",nodeId);
   Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection %s\n",laserControllerMesh.subConnectionJson().c_str());
-  Serial.println("--------------------- CHANGED CONNECTION --------------------------");
+  Serial.println("--------------------- DROPPED CONNECTION --------------------------");
 }
 
 void myMesh::changedConnectionCallback() {
