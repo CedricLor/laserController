@@ -110,7 +110,8 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
       Serial.println("myMesh::newConnectionCallback(): Not alone anymore. About to send them my data.");
       _tSendStatusOnNewConnection.enableDelayed();
       Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
-    } // else, do nothing; we will send it a statusMsg when it will have identified itself
+    }
+    // else, we were already connected to the mesh: do nothing; we will send it a statusMsg when it will have identified itself
     // else {
     //   Serial.println("myMesh::newConnectionCallback(): A new box has joined the existing mesh. About to send it my data.");
     //   _tSendStatusOnNewConnection.enableDelayed(MY_INDEX_IN_CB_ARRAY * 1000);
