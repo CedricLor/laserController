@@ -87,7 +87,7 @@ void myMeshViews::statusMsg(const short int myBoxState, byte diffusionType) {
   msg["senderBoxActiveState"] = myBoxState;
   msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  _sendMsg(msg, 2);
+  _sendMsg(msg);
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasBeenSignaled = true;
@@ -106,7 +106,7 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
   msg["receiverTargetState"] = boxTargetState;
   msg["receiverBoxName"] = boxName;
   msg["action"] = "c";
-  _sendMsg(msg, 2);
+  _sendMsg(msg);
 }
 
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
@@ -139,7 +139,7 @@ JsonObject myMeshViews::_createJsonobject() {
   return msg;
 }
 
-void myMeshViews::_sendMsg(JsonObject& msg, byte diffusionType) {
+void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   Serial.println("myMeshViews::_sendMsg(): Starting.");
 
   // Serial.println("myMeshViews::_sendMsg(): adding IPs to the JSON object before sending");
@@ -169,11 +169,10 @@ void myMeshViews::_sendMsg(JsonObject& msg, byte diffusionType) {
   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
 
   // diffusion
-  if (diffusionType == 2) {
-    laserControllerMesh.sendBroadcast(str);
-  } else {
+  if (destNodeId) {
     laserControllerMesh.sendSingle(destNodeId, str);
-    destNodeId = 0;
+  } else {
+    laserControllerMesh.sendBroadcast(str);
   }
   Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
 }
