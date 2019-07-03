@@ -360,31 +360,44 @@ Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendW
 
 void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
   for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
-    if (ControlerBoxes[_boxIndex].nodeId != 0) {
-      // if the box is not an uninitalized box
-      if (ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled == false) {
-        // if the box has an unsignaled change of state
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState.State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
-        short int _messageType = 5; // by default, we will send a "state change" signal
-        // if a box has changed state, send a message to the browser to turn the corresponding button in red
-        if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
-          // if the box is an unsignaled new box
-          Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
-          _messageType = 6; // if it is a new box, send a message with type 6
-        }
-        StaticJsonDocument<64> _doc;
-        JsonObject _obj = _doc.to<JsonObject>();;
-        _obj["lb"] = _boxIndex;
-        _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
+    // prepare a JSON document
+    StaticJsonDocument<64> _doc;
+    JsonObject _obj = _doc.to<JsonObject>();
+    // holder for type of message
+    short int _messageType = -1;
 
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. About to call _prepareWSData with message of type %i.\n", _messageType);
-        _prepareWSData(_messageType, _obj);
-        ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
-        ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. Ending.\n");
-      }
+    // populate the JSON object
+    _obj["lb"] = _boxIndex;
+
+    // if the box has an unsignaled change of state
+    if (ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState.State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+      _messageType = 5;
+      _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
     }
-    // TO DO - if a new box has appeared, send a message to the browser to create a new row
+
+    // if the box is an unsignaled new box
+    if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+      _messageType = 6;
+    }
+
+    if (ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+      _messageType = 7;
+    }
+
+    if (_messageType != -1) {
+      // pass it on, with the type of message (5, 6 or 7) we want to add
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. About to call _prepareWSData with message of type %i.\n", _messageType);
+      _prepareWSData(_messageType, _obj);
+    }
+
+    ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
+    ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
+    ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
+
+    Serial.printf("_tcbSendWSDataIfChangeBoxState::_prepareWSData. Ending.\n");
   }
 }
 
