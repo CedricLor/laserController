@@ -108,6 +108,18 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton ending.");
 }
 
+function StateButtonsDOMSelector(laserBoxIndexNumber) {
+  console.log("StateButtonsDOMSelector starting.");
+  // div[data-lb='1'] button[data-boxstate='1'
+  // "div[data-lb='1'] > div > button[data-boxstate='1'"
+  var _selector = "div[data-lb='" + laserBoxIndexNumber + "'] > div > button";
+  console.log(_selector);
+  var _elts = document.querySelectorAll(_selector);
+  console.log(_elts);
+  console.log("StateButtonsDOMSelector ending.");
+  return _elts;
+}
+
 function StateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
   console.log("buttonStateDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
