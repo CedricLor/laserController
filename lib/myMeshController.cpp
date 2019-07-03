@@ -84,15 +84,10 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __boxIndex = __bSenderNodeName - B_CONTROLLER_BOX_PREFIX;
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
 
-    if (ControlerBoxes[__boxIndex].nodeId == senderNodeId) {
-      // this is an already registered box in my ControlerBoxes[] array
-    } else {
-      // this is a new box that has joined the mesh
-      if (IS_INTERFACE == false) {
-        // I am not the interface.
-        // Enable a Task to send this new box my current boxState.
-        myMeshViews::tSendBoxStateToNewBox.restartDelayed();
-      }
+
+    if (ControlerBoxes[__boxIndex].nodeId == 0) {
+      // Enable a Task to send this new box my current boxState.
+      myMeshViews::tSendBoxStateToNewBox.restartDelayed();
     }
 
     // update the box properties
