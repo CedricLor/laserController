@@ -25,6 +25,14 @@ Created by Cedric Lor, January 22, 2019.
 #include "Arduino.h"
 #include "myMeshController.h"
 
+
+Task myMeshController::_tSendBoxStateToNewBox(MY_INDEX_IN_CB_ARRAY * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+
+void myMeshController::_odtcbSendBoxStateToNewBox() {
+  myMeshViews __myMeshViews;
+  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+}
+
 myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 {
   // read the action field
@@ -80,6 +88,20 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
       return;
     }
 
+    // calculate the box index of the sending box
+    byte __boxIndex = __bSenderNodeName - B_CONTROLLER_BOX_PREFIX;
+    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
+
+    if (ControlerBoxes[__boxIndex].nodeId == senderNodeId) {
+      // this is an already registered box in my ControlerBoxes[] array
+    } else {
+      // this is a new box that has joined the mesh
+      if (IS_INTERFACE == false) {
+        // I am not the interface.
+        // Enable a Task to send this new box my current boxState.
+        _tSendBoxStateToNewBox.restartDelayed();
+      }
+    }
 
     // update the box properties
     ControlerBox::updateOtherBoxProperties(senderNodeId, root);

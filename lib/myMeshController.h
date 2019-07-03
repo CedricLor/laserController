@@ -35,6 +35,9 @@ class myMeshController
   private:
     static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];
 
+    static Task _tSendBoxStateToNewBox;
+    static void _odtcbSendBoxStateToNewBox();
+
     char _action;
 
     // void _manualSwitch(JsonDocument& root);
