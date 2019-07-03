@@ -37,9 +37,23 @@
    painlessMesh takes care of the broadcast.
    Messages from controller boxes are not adressed to any other box in particular; all the other boxes
    receive the message and, as the case may be, react accordingly.
-   To modify the code all through the project, look for "myMeshViews myMeshViews(".
-   Currently in use in (i) myMesh class and (ii) pirController class.
 */
+
+
+Task myMeshViews::tSendBoxStateToNewBox(MY_INDEX_IN_CB_ARRAY * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+
+void myMeshViews::_odtcbSendBoxStateToNewBox() {
+  for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
+    if (ControlerBoxes[_boxIndex].nodeId != 0) {
+      if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
+        myMeshViews __myMeshViews;
+        __myMeshViews.statusMsg(ControlerBoxes[_boxIndex].nodeId);
+        ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
+      }
+    }
+  }
+}
+
 
 myMeshViews::myMeshViews()
 {

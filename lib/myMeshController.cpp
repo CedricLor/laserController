@@ -28,20 +28,6 @@ Created by Cedric Lor, January 22, 2019.
 
 
 
-Task myMeshController::_tSendBoxStateToNewBox(MY_INDEX_IN_CB_ARRAY * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
-
-void myMeshController::_odtcbSendBoxStateToNewBox() {
-  for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
-    if (ControlerBoxes[_boxIndex].nodeId != 0) {
-      if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
-        myMeshViews __myMeshViews;
-        __myMeshViews.statusMsg(ControlerBoxes[_boxIndex].nodeId);
-        ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
-      }
-    }
-  }
-}
-
 
 
 myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
@@ -110,7 +96,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
       if (IS_INTERFACE == false) {
         // I am not the interface.
         // Enable a Task to send this new box my current boxState.
-        _tSendBoxStateToNewBox.restartDelayed();
+        myMeshViews::tSendBoxStateToNewBox.restartDelayed();
       }
     }
 
