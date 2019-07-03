@@ -315,7 +315,7 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     int __iNodeName = doc["lb"];
     Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
     char _cNodeName[4];
-    itoa((__iNodeName + B_MASTER_NODE_PREFIX), _cNodeName, 10);
+    itoa((__iNodeName + B_CONTROLLER_BOX_PREFIX), _cNodeName, 10);
     Serial.printf("myWebServerBase::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
     // convert the box state to a char array box state
     const char* _boxState = doc["boxState"];
@@ -346,7 +346,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
   // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
     Serial.println("myWebServerBase::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     // Serial.printf("myWebServerBase::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
-_prepareWSData(3); // 3 for message sent in case of change in station IP
+    _prepareWSData(3); // 3 for message sent in case of change in station IP
     ControlerBoxes[0].updateThisBoxProperties();
   // } // if
 }

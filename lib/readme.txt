@@ -174,8 +174,178 @@ TO DO:
 
 - find a way to decrease ControlerBox::connectedBoxesCount when a box gets disconnected
 - add a little static array to ControlerBox to store the index numbers of ControlerBoxes of the box that are connected
+- on new connection callback (Mesh), the laser boxes send a message. As currently drafted,
+when I will have 10 laser boxes, this will overflow the mesh: add speed bumper
+(wait for x seconds before sending with x calculated from the index number or boxname)
 
 
 Notes on Task Scheduler
 When calling setInterval() within the onEnable callback of the Task, the main callback is called within the ancient delay.
 The following iteration on the main callback will take place after the new delay
+
+Notes on painlessMesh
+I. Connection and Disconnection: on the node that stays connected
+  A. when disconnecting a member from the Mesh, on the node that stays connected,
+  changedConnectionCallback() is triggered: laserControllerMesh.subConnectionJson() = {"nodeId":2760139053,"root":true}
+
+  B. when connecting a new member to the Mesh, on the node that stays connected,
+  1. changedConnectionCallback() is triggered; laserControllerMesh.subConnectionJson() = {"nodeId":2760139053,"root":true,"subs":[{"nodeId":764691274}]}
+  2. newConnectionCallback() is then triggered; laserControllerMesh.subConnectionJson() = {"nodeId":2760139053,"root":true,"subs":[{"nodeId":764691274}]}
+
+II: Connection and Disconnection: on the node that is newly connected
+  1. Sometimes, changed connection callback is called a first time; laserControllerMesh.subConnectionJson() = {"nodeId":764691274,"subs":[{
+"nodeId":2760139053}]}
+  2. Changed connection callback is called a second time; laserControllerMesh.subConnectionJson() = {"nodeId":764691274}
+  3. New connection callback is called; laserControllerMesh.subConnectionJson() = {"nodeId":764691274,"subs":[{
+"nodeId":2760139053}]}
+
+C. Mesh Protocol: message types
+  Time Synchronization (upon connecting (and maybe, if a time desync has appeared))
+  type: 4: Time Sync messages
+  type: 0: Other box shall request MeshTime
+  type: 1: Please send me MeshTime
+  type: 2: Please receive MeshTime
+
+  Routing Information (every 3 seconds)
+  type: 5: NODE_SYNC_REQUEST
+  type: 6: NODE_SYNC_REPLY
+
+  User Messages
+  type: 8: Mesh broadcast
+  type: 9: Single addressed message
+
+- DISCONNECTING TRACE:
+CONNECTION: onDisconnect():
+GENERAL: getNodeTime(): time=609264646
+CONNECTION: onDisconnect(): dropping 764691274 now= 609264646
+CONNECTION: MeshConnection::close().
+CONNECTION: mesh->_scheduler.addTask():
+CONNECTION: mesh->droppedConnectionTask.enable():
+CONNECTION: before if (client->connected()):
+CONNECTION: after if (client->connected()):
+CONNECTION: after if station && WiFi.status() == WL_CONNECTED):
+CONNECTION: eraseClosedConnections():
+CONNECTION: ~MeshConnection():
+CONNECTION: MeshConnection::close() Done.
+CONNECTION: closingTask():
+GENERAL: getNodeTime(): time=609300964
+
+CONNECTION: closingTask(): dropping 764691274 now= 609300964
+myMesh::changedConnectionCallback(): Changed connections {"nodeId":2760139053,"root":t
+rue}
+--------------------- CHANGED CONNECTION --------------------------
+
+- CONNECTING TRACE:
+- CHANGED CONNECTION STACK:
+CONNECTION: New AP connection incoming
+CONNECTION: meshConnectedCb(): we are AP
+GENERAL: MeshConnection(): leaving
+COMMUNICATION: meshRecvCb(): fromId=0
+GENERAL: getNodeTime(): time=93680589
+COMMUNICATION: meshRecvCb(): Recvd from 0-->{"nodeId":764691274,"type":5,"dest":0,"fro
+m":764691274}<--
+SYNC: handleNodeSync(): with 0
+myMesh::changedConnectionCallback(): Changed connections {"nodeId":2760139053,"root":t
+rue,"subs":[{"nodeId":764691274}]}
+--------------------- CHANGED CONNECTION --------------------------
+SYNC: syncSubConnections(): changedId = 764691274
+SYNC: syncSubConnections(): in for loop
+SYNC: syncSubConnections(): out of for loop
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239884
+
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":0,"from
+":764691274}
+
+- CONNECTING TRACE:
+- NEW CONNECTION STACK:
+CONNECTION: newConnectionTask():
+GENERAL: getNodeTime(): time=93781626
+CONNECTION: newConnectionTask(): adding 764691274 now= 93781626
+myMesh::newConnectionCallback(): New Connection, nodeId = 764691274
+++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++
+GENERAL: sentBufferTask()
+GENERAL: sentBufferTask()
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=94026507
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"type":4,"dest":2760139053,"from"
+:764691274,"msg":{"type":1,"t0":8852804}}<--
+GENERAL: getNodeTime(): time=94033827
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239656
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"type":4,"dest":2760139053,"from":76469127
+4,"msg":{"type":1,"t0":8852804}}
+GENERAL: sentBufferTask()
+GENERAL: sentBufferTask()
+COMMUNICATION: meshRecvCb(): fromId=764691274
+
+GENERAL: getNodeTime(): time=94281507
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"type":4,"dest":2760139053,"from"
+:764691274,"msg":{"type":1,"t0":94271188}}<--
+GENERAL: getNodeTime(): time=94288970
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239660
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"type":4,"dest":2760139053,"from":76469127
+4,"msg":{"type":1,"t0":94271188}}
+
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=101171102
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
+":2760139053,"from":764691274}<--
+SYNC: handleNodeSync(): with 764691274
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
+053,"from":764691274}
+
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=108715089
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
+":2760139053,"from":764691274}<--
+SYNC: handleNodeSync(): with 764691274
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
+GENERAL: sentBufferTask()
+
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
+053,"from":764691274}
+
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=116253675
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
+":2760139053,"from":764691274}<--
+SYNC: handleNodeSync(): with 764691274
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139053,"from":764691274}
+
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=123790550
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
+":2760139053,"from":764691274}<--
+SYNC: handleNodeSync(): with 764691274
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
+GENERAL: sentBufferTask()
+
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
+053,"from":764691274}
+
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=131333920
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
+":2760139053,"from":764691274}<--
+SYNC: handleNodeSync(): with 764691274
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
+
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
+053,"from":764691274}
+
+COMMUNICATION: meshRecvCb(): fromId=764691274
+GENERAL: getNodeTime(): time=138873884
+COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
+":2760139053,"from":764691274}<--
+SYNC: handleNodeSync(): with 764691274
+COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
+GENERAL: sentBufferTask()
+COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
+053,"from":764691274}
