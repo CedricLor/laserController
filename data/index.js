@@ -96,15 +96,17 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton starting.");
   var _elt = StateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
+  var _elt_arr = StateButtonsDOMSelector(data.lb);
+  _elt_arr.forEach(
+    function(currentValue, currentIndex, listObj) {
+      currentValue.classList.remove('button_active_state');
+      currentValue.classList.remove('button_change_received');
+      currentValue.classList.remove('button_clicked');
+    }
+  );
   _elt.classList.add('button_active_state');
   _elt.classList.remove('button_clicked');
   _elt.classList.remove('button_change_received');
-  // var _elt = StateButtonsDOMSelector(data);
-  // _elt_arr.forEach(
-  //   function(currentValue, currentIndex, listObj) {
-  //     currentValue.classList.add('button_active_state');
-  //   }
-  // );
   console.log("setActiveStateButton ending.");
 }
 
