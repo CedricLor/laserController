@@ -77,17 +77,19 @@ myMeshViews::myMeshViews()
 //   _sendMsg(msg, 'm');
 // }
 
-void myMeshViews::statusMsg(const short int myBoxState) {
+void myMeshViews::statusMsg(uint32_t destNodeId) {
   Serial.println("myMeshViews::statusMsg(): Starting.");
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"senderBoxActiveState":3;"action":"s";"mTime":6059117;"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"..."}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
-  msg["senderBoxActiveState"] = myBoxState;
+  // load the JSON document with values
+  msg["senderBoxActiveState"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState;
   msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  _sendMsg(msg);
+  // send to the sender
+  _sendMsg(msg, destNodeId);
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasBeenSignaled = true;

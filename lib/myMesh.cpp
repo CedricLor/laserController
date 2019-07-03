@@ -89,7 +89,7 @@ void myMesh::_tcbSendStatusOnNewConnection() {
   short int _tIter = _tSendStatusOnNewConnection.getRunCounter();
   Serial.printf("_tcbSendStatusOnNewConnection: Starting. Iteration: %i\n", _tIter);
   myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+  __myMeshViews.statusMsg();
   Serial.printf("_tcbSendStatusOnNewConnection: EndingIteration: %i\n", _tIter);
 }
 

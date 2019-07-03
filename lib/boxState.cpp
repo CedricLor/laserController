@@ -264,7 +264,7 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
   myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
+  __myMeshViews.statusMsg();
   Serial.println("bool boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
