@@ -78,13 +78,6 @@ function onclickButton(e) {
   ws.send(_json);
 };
 
-function updateStationIp(_stationIp) {
-  console.log("updateStationIp starting.");
-  console.log(_stationIp);
-  document.getElementById('stationIp').innerHTML = _stationIp;
-  console.log("updateStationIp ending.");
-}
-
 function updateButton(data) {
   console.log("updateButton starting.");
   var _elt = StateButtonDOMSelector(data);
@@ -125,6 +118,13 @@ function StateButtonDOMSelector(data) {
   console.log(_elts);
   console.log("buttonStateDOMSelector ending.");
   return _elts[0];
+}
+
+function updateStationIp(_stationIp) {
+  console.log("updateStationIp starting.");
+  console.log(_stationIp);
+  document.getElementById('stationIp').innerHTML = _stationIp;
+  console.log("updateStationIp ending.");
 }
 // END DOM MANIPULATION
 
