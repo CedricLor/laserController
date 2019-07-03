@@ -82,7 +82,8 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 }
 
 
-
+// This Task broadcasts all other boxes this boxState, when this box newly connects to the Mesh
+// after a delay of 4500 ms (before such delay, message are not send to the mesh)
 Task myMesh::_tSendStatusOnNewConnection(4500, 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
 
 void myMesh::_tcbSendStatusOnNewConnection() {
