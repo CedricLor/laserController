@@ -455,11 +455,12 @@ void myWebServerBase::sendWSData(JsonDocument& doc) {
           Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to [%i].\n", _ws_client_id);
           _ws.client(_ws_client_id)->text(_buffer);
           Serial.println("- myWebServerBase::_sendWSData. Message sent");
-        } else {
-          Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to all.\n");
-          _ws.textAll(_buffer);
-          Serial.println("- myWebServerBase::_sendWSData. Message sent");
         }
+        // else {
+        //   Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to all.\n");
+        //   _ws.textAll(_buffer);
+        //   Serial.println("- myWebServerBase::_sendWSData. Message sent");
+        // }
     }
     Serial.println("- myWebServerBase::_sendWSData. Ending.");
 }
