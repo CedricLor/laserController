@@ -407,9 +407,15 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
 
 
 void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& _subdoc) {
-  Serial.println("- myWebServerBase::_prepareWSData. Starting.");
+  Serial.printf("- myWebServerBase::_prepareWSData. Starting with message type [%i]\n", _iMessageType);
+  Serial.printf("- myWebServerBase::_prepareWSData. Preparing JSON document\n");
   StaticJsonDocument<256> doc;
   doc["type"] = _iMessageType;
+
+  if (MY_DEBUG) {
+    bool _test = (_iMessageType == 1);
+    Serial.printf("- myWebServerBase::_prepareWSData. (_iMessageType == 1) = %i\n", _test);
+  }
 
   if (_iMessageType == 3) { // message type 3: change in station IP
     doc["message"] = (laserControllerMesh.getStationIP()).toString();
@@ -421,11 +427,18 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
     doc["message"] = _subdoc;                      // type 5: state of a box has effectively changed // type 6: a new box has joined // tye 7: a box has disconnected
   } else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
+    Serial.printf("- myWebServerBase::_prepareWSData. Message type [%i] was none of 3 to 7\n", _iMessageType);
     if (_iMessageType == 0) {
+      if (MY_DEBUG) {
+        Serial.printf("- myWebServerBase::_prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _iMessageType);
+      }
       _tSendWSDataIfChangeStationIp.enable();
+      if (MY_DEBUG) {
+        Serial.printf("- myWebServerBase::_prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
+      }
     }
     doc["message"] = _messages_array[_iMessageType];
-    Serial.printf("- myWebServerBase::_prepareWSData. _messages_array[%i] = %s", _iMessageType, (char*)_messages_array);
+    Serial.printf("- myWebServerBase::_prepareWSData. _messages_array[%i] = %s\n", _iMessageType, (char*)_messages_array);
   }
   Serial.println("- myWebServerBase::_prepareWSData. About to send JSON to sender function.");
   sendWSData(doc);
