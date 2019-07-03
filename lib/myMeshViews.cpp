@@ -154,6 +154,7 @@ void myMeshViews::_sendMsg(JsonObject& msg, byte diffusionType) {
   msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
   // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
 
+  // JSON serialization
   int size_buff = 254;
   char output[size_buff];
 
@@ -161,10 +162,12 @@ void myMeshViews::_sendMsg(JsonObject& msg, byte diffusionType) {
   serializeJson(msg, output, size_buff);
   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
 
+  // JSON serialization conversion for painlessMesh
   Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
   String str;
   str = output;
   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
   laserControllerMesh.sendBroadcast(str);
+  // diffusion
   Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
 }
