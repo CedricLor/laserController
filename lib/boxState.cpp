@@ -264,7 +264,7 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
   myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState, 2); // second parameter is the diffusion type. 2 is broadcast to all (as opposed to send single)
+  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   Serial.println("bool boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }

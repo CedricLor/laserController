@@ -47,7 +47,6 @@ class myMesh
 
     static Task _tSendStatusOnNewConnection;
     static void _tcbSendStatusOnNewConnection();
-    static byte _diffusionTypeForSendStatus;
     static void newConnectionCallback(uint32_t nodeId);
 
     static void changedConnectionCallback();

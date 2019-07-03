@@ -38,8 +38,6 @@ const uint8_t* myMesh::STATION_IP = station_ip;
 const char myMesh::_PREFIX_AP_SSID[5] = "box_";
 char myMesh::_myApSsidBuf[8];
 
-byte myMesh::_diffusionTypeForSendStatus = 2; // by default, broadcast the messages to all (2). I would be for send message to single node.
-
 myMesh::myMesh()
 {
 }
@@ -91,7 +89,7 @@ void myMesh::_tcbSendStatusOnNewConnection() {
   short int _tIter = _tSendStatusOnNewConnection.getRunCounter();
   Serial.printf("_tcbSendStatusOnNewConnection: Starting. Iteration: %i\n", _tIter);
   myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState, _diffusionTypeForSendStatus); // second parameter is the diffusion type. 2 is broadcast to all (1 is send single)
+  __myMeshViews.statusMsg(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   Serial.printf("_tcbSendStatusOnNewConnection: EndingIteration: %i\n", _tIter);
 }
 
@@ -110,19 +108,16 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     // (all the boxes would send a message at the same time...)
     if (ControlerBox::previousConnectedBoxesCount == 1) {
       Serial.println("myMesh::newConnectionCallback(): Not alone anymore. About to send them my data.");
-      _diffusionTypeForSendStatus = 2; // diffusion type. 2 is broadcast to all (1 is send single)
       _tSendStatusOnNewConnection.enableDelayed();
       Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
-    } else {
-      Serial.println("myMesh::newConnectionCallback(): A new box has joined the existing mesh. About to send it my data.");
-      _diffusionTypeForSendStatus = 1; // diffusion type. 1 is send single, as opposed to 2, broadcast to all
-      _tSendStatusOnNewConnection.enableDelayed(MY_INDEX_IN_CB_ARRAY * 1000);
-      Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
-      // TO DO: Add a static Task to myMeshViews to wait for a little bit before sending
-      // my boxState
-    }
-  // else, I am the interface. Do nothing.
+    } // else, do nothing; we will send it a statusMsg when it will have identified itself
+    // else {
+    //   Serial.println("myMesh::newConnectionCallback(): A new box has joined the existing mesh. About to send it my data.");
+    //   _tSendStatusOnNewConnection.enableDelayed(MY_INDEX_IN_CB_ARRAY * 1000);
+    //   Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
+    // }
   } else {
+    // else, I am the interface. Do nothing.
     Serial.println("myMesh::newConnectionCallback(): I am the interface. About to call updateThisBoxProperties()");
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
   }
