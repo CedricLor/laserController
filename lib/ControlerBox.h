@@ -17,7 +17,7 @@ class ControlerBox
     IPAddress APIP; // set by painlessMesh
     byte bNodeName; // set by me, in global (201, 202, etc.)
     short int boxActiveState; // set by events or user
-    bool boxActiveStateHasBeenSignaled; // set by events or user
+    bool boxActiveStateHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a boxState change, the WebSocket can read this and send a message to the browser
     uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
 
     // void updateProperties();
@@ -39,7 +39,7 @@ class ControlerBox
     static void setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState);
 
     static void deleteBox(uint32_t nodeId);
-    
+
   private:
     static IPAddress _parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/);
     static void _parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);

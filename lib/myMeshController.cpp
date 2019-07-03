@@ -89,7 +89,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
       // Enable a Task to send this new box my current boxState.
       myMeshViews::tSendBoxStateToNewBox.restartDelayed();
     }
-
+    
     // update the box properties
     ControlerBox::updateOtherBoxProperties(senderNodeId, root);
 

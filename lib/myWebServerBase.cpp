@@ -349,7 +349,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
     // Serial.printf("myWebServerBase::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
     _prepareWSData(3); // 3 for message sent in case of change in station IP
     ControlerBoxes[0].updateThisBoxProperties();
-  // } // if
+  // }
 }
 
 // Send WS message upon (i) boxState changes, (ii) appearance or (iii) disappearance of a new box
