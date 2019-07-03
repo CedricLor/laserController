@@ -56,17 +56,16 @@ function check(){
 
 // DOM MANIPULATION
 /**
- * Create a var that will in the future select all the buttons in the DOM by class "button"
- */
-var buttonClass;
-
-/**
  * On click button callback function
  */
 function onclickButton(e) {
+  console.log("onclickButton starting");
+  var _laserBoxNumber = this.parentNode.parentNode.dataset.lb;
+  var _buttonList = StateButtonsDOMSelector(_laserBoxNumber);
+
   // remove red on other buttons
-  for (var i = 0; i < buttonClass.length; i++) {
-    buttonClass[i].classList.remove('button_clicked');
+  for (var i = 0; i < _buttonList.length; i++) {
+    _buttonList[i].classList.remove('button_clicked');
   }
   // turn this button red
   this.classList.add('button_clicked');
@@ -135,13 +134,6 @@ window.onload = function(e){
     // Interval at which to check if WS server is still available (and reconnect as necessary)
     setInterval(check, 5000);
     // setInterval(check, (getRandomArbitrary(10, 4) * 1000));
-
-    // select the whole button class
-    buttonClass = document.getElementsByClassName("button");
-    // iterate over each buttons and add an eventListener on click
-    for (var i = 0; i < buttonClass.length; i++) {
-      buttonClass[i].addEventListener('click', onclickButton, false);
-    }
 }
 
 
