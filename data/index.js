@@ -105,6 +105,7 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton starting.");
   // remove formerly added classes on all stateButtons of the boxRow
   var _elt_arr = StateButtonsDOMSelector(data.lb);
+  console.log("setActiveStateButton: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
       function(currentValue, currentIndex, listObj) {
@@ -128,31 +129,48 @@ function setActiveStateButton(data) {
 
 function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox starting.");
+
   // Check whether the boxRow has not already been created
   var _controlerBoxEntry = controlerBoxes.get(data.lb);
-  console.log(_controlerBoxEntry);
-
+  console.log("addNewRowForNewBox: looking if an entry exists in the map for this box");
+  console.log("addNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist" + _controlerBoxEntry);
+  console.log("addNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)):" + (!(_controlerBoxEntry === undefined)));
   if (!(_controlerBoxEntry === undefined)) {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
     console.log("addNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
+    console.log("addNewRowForNewBox: About to set the activeState button.");
     setActiveStateButton(data);
     console.log("addNewRowForNewBox ending after updating laser box [" + data.lb + "]");
     return;
-  } else {
+  }
+
+  // Case where it the box does not exist
+  else {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
+    console.log("addNewRowForNewBox: the boxRow does not already exist. I am about to create it.");
     var _boxRow = BoxRowDOMSelector(0);
+    console.log("addNewRowForNewBox: Selecting the hidden boxRow: ");console.log(_boxRow);
     if (_boxRow) {
+      console.log("addNewRowForNewBox: Hidden boxRow selected. About to clone it.");
       var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
+      console.log("addNewRowForNewBox: Clone _dupRow created:");console.log(_dupRow);
 
+      console.log("addNewRowForNewBox: _dupRow: setting the data-lb property of the div to: " + data.lb);
       _dupRow.dataset.lb = data.lb;     // update data-lb attribute
+      console.log("addNewRowForNewBox: _dupRow: removing the class hidden from the classes of the div");
       _dupRow.classList.remove('hidden');
+      console.log("addNewRowForNewBox: _dupRow: setting the laser box number: " + (data.lb + 200));
       _dupRow.children[0].textContent = data.lb + 200;
 
       var _selectorBoxState = "div > button[data-boxstate='" + data.boxState + "']";
+      console.log("addNewRowForNewBox: preparing a selector to select all the button included in _dupRow.");
+      console.log("addNewRowForNewBox: selector created: '" + _selectorBoxState + "'");
       var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
+      console.log("addNewRowForNewBox: button list selected: ");console.log(_stateButtonList);
       if (_stateButtonList) {
+        console.log("addNewRowForNewBox: about to add the active class to select button");
         _stateButtonList[0].classList.add('button_active_state');
       }
 
