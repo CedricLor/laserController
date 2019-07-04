@@ -21,6 +21,8 @@ short relayPins[] = { 5, 17, 16, 4 };
 const bool MY_DEBUG = true;
 const bool MY_DG_LASER = false;
 
+const short VERSION = 0;
+
 // CONTROLLER BOX 201
 // const byte B_NODE_NAME = 201;                          // BOX BY BOX
 // const byte B_DEFAULT_MASTER_NODE_NAME = 210;
@@ -45,6 +47,7 @@ const bool IS_STATION_MANUAL = true;                  // BOX BY BOX
 const uint8_t MESH_CHANNEL = 6;
 
 const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
+const int I_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
