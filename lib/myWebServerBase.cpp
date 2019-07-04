@@ -302,6 +302,29 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 
   if (_type == 0) {           // 0 for hand shake message
     Serial.println("myWebServerBase::_decodeWSMessage. Ending on type 0 (received handshake message).");
+    // Declare and define a JSONObject
+    JsonObject _obj = doc["message"].as<JsonObject>();
+    // if no boxRow in DOM and no boxes connected to the mesh, just return
+    if (_obj.size() == 0 && ControlerBox::connectedBoxesCount == 1) {
+      return;
+    }
+    //else, there is a JSON Object of this type: {1:3,4:5,7:2}
+    for (JsonPair p : _obj) { // for each pair boxIndex:boxState in the DOM,
+      if (ControlerBoxes[(int)p.key().c_str()].nodeId == 0) {
+        ControlerBoxes[(int)p.key().c_str()].boxDeletionHasBeenSignaled = false;
+      } // if
+      if (ControlerBoxes[(int)p.key().c_str()].boxActiveState != (int)p.value().as<char*>()) {
+        ControlerBoxes[(int)p.key().c_str()].boxActiveStateHasBeenSignaled = false;
+      } // if
+    } // for
+    for (short _i = 1; _i < BOXES_COUNT; _i++) {
+      char _c[3];
+      itoa(_i, _c, 10);
+      const char* _keyInJson = _obj[_c];
+      if ((ControlerBoxes[_i].nodeId != 0) &&_keyInJson == nullptr) {
+        ControlerBoxes[_i].isNewBoxHasBeenSignaled = false;
+      } // if
+    } // for
     return;
   }
   if (_type == 3) {           // 3 for confirmation that change IP adress has been received
@@ -381,6 +404,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
     if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 6;
+      _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
       ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
     }
 
