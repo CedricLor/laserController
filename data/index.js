@@ -81,6 +81,13 @@ function onclickButton(e) {
   console.log("onclickButton stoping");
 };
 
+function updateStationIp(_stationIp) {
+  console.log("updateStationIp starting.");
+  console.log(_stationIp);
+  document.getElementById('stationIp').innerHTML = _stationIp;
+  console.log("updateStationIp ending.");
+}
+
 function updateButton(data) {
   console.log("updateButton starting.");
   var _elt = StateButtonDOMSelector(data.lb, data.boxState);
@@ -169,12 +176,6 @@ function StateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
   return _elts[0];
 }
 
-function updateStationIp(_stationIp) {
-  console.log("updateStationIp starting.");
-  console.log(_stationIp);
-  document.getElementById('stationIp').innerHTML = _stationIp;
-  console.log("updateStationIp ending.");
-}
 // END DOM MANIPULATION
 
 
