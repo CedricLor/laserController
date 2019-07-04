@@ -297,34 +297,81 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
   Serial.print("myWebServerBase::_decodeWSMessage(): message msg deserialized into JsonDocument doc\n");
   Serial.print("myWebServerBase::_decodeWSMessage(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
 
+  // read the type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
   const int _type = doc["type"]; // correspondings to root[action] in meshController
-  Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) message _type = %i \n", _type);
+  Serial.printf("myWebServerBase::_decodeWSMessage(): The message _type is %i \n", _type);
 
+
+  // choose the type of reaction depending on the message type
+  // if type 0, handshake and comparing the number of boxRow vs the number of connected boxes
   if (_type == 0) {           // 0 for hand shake message
-    Serial.println("myWebServerBase::_decodeWSMessage. Ending on type 0 (received handshake message).");
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i - converting doc[\"message\"] to JSON Object \n", _type);
     // Declare and define a JSONObject
     JsonObject _obj = doc["message"].as<JsonObject>();
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _type);
+
     // if no boxRow in DOM and no boxes connected to the mesh, just return
     if (_obj.size() == 0 && ControlerBox::connectedBoxesCount == 1) {
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _type, (_obj.size() == 0));
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _type, (ControlerBox::connectedBoxesCount == 1));
+      Serial.printf("myWebServerBase::_decodeWSMessage(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _type);
       return;
     }
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, JSON Object _obj.size: %i. There are currently boxRow(s) in the DOM.\n", _type, _obj.size());
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", _type, ControlerBox::connectedBoxesCount);
+
+
     //else, there is a JSON Object of this type: {1:3,4:5,7:2}
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, about to iterate over the boxRows, looking for the existing boxRow and boxState in DOM\n", _type);
     for (JsonPair p : _obj) { // for each pair boxIndex:boxState in the DOM,
+      Serial.printf("myWebServerBase::_decodeWSMessage(): Mew iteration.\n");
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, about to use the key of the current pair of the JSON object to check whether the ControlerBox corresponding to the boxRow in the DOM really exists in ControlerBoxes.\n", _type);
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, testing (int)p.key().c_str(): %i\n", _type, (int)p.key().c_str());
+
+      // DELETED BOXES CHECKER
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, using this value to select a ControlerBoxes[]\n", _type);
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, ControlerBoxes[(int)p.key().c_str()].nodeId == 0 is equal to %i\n", _type, (ControlerBoxes[(int)p.key().c_str()].nodeId == 0));
+      // check if it still is connected; if not, ask for an update
       if (ControlerBoxes[(int)p.key().c_str()].nodeId == 0) {
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", _type, ControlerBoxes[(int)p.key().c_str()].nodeId);
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, about to turn [boxDeletionHasBeenSignaled] of ControlerBoxes[%i] to false.\n", _type, (int)p.key().c_str());
+        // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
         ControlerBoxes[(int)p.key().c_str()].boxDeletionHasBeenSignaled = false;
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, ControlerBoxes[%i].boxDeletionHasBeenSignaled turned to %i.\n", _type, (int)p.key().c_str(), ControlerBoxes[(int)p.key().c_str()].boxDeletionHasBeenSignaled);
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _type);
       } // if
+
+
+      // BOXSTATE CHECKER
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, ControlerBoxes[(int)p.key().c_str()].boxActiveState = %i\n", _type, ControlerBoxes[(int)p.key().c_str()].boxActiveState);
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, (int)p.value().as<char*>() = %i\n.", _type, (int)p.value().as<char*>());
+      Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, comparison between the two: %i\n.", _type, (ControlerBoxes[(int)p.key().c_str()].boxActiveState != (int)p.value().as<char*>()));
+      // check if it has the correct boxState; if not, ask for an update
       if (ControlerBoxes[(int)p.key().c_str()].boxActiveState != (int)p.value().as<char*>()) {
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n", _type);
+        // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
         ControlerBoxes[(int)p.key().c_str()].boxActiveStateHasBeenSignaled = false;
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, ControlerBoxes[(int)p.key().c_str()].boxActiveStateHasBeenSignaled = %i.\n", _type, ControlerBoxes[(int)p.key().c_str()].boxActiveStateHasBeenSignaled);
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _type);
       } // if
     } // for
+
+    // MISSING BOXES CHECKER
+    // look for the missing items and ask for an update
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n", _type);
     for (short _i = 1; _i < BOXES_COUNT; _i++) {
       char _c[3];
       itoa(_i, _c, 10);
       const char* _keyInJson = _obj[_c];
       if ((ControlerBoxes[_i].nodeId != 0) &&_keyInJson == nullptr) {
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, there is a missing box in the DOM. Add it.\n", _type);
+        // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
         ControlerBoxes[_i].isNewBoxHasBeenSignaled = false;
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, ControlerBoxes[_i].isNewBoxHasBeenSignaled = %i\n", _type, ControlerBoxes[_i].isNewBoxHasBeenSignaled);
+        Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _type);
       } // if
     } // for
+    Serial.println("myWebServerBase::_decodeWSMessage. Ending on type 0 (received handshake message with list of boxRows in DOM).");
     return;
   }
   if (_type == 3) {           // 3 for confirmation that change IP adress has been received
@@ -402,7 +449,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
 
     // if the box is an unsignaled new box
     if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
-      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 6;
       _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
       ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
@@ -414,6 +461,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
       ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
     }
 
+    // in all cases
     if (_messageType != -1) {
       // pass it on, with the type of message (5, 6 or 7) we want to add
       if (MY_DEBUG) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call _prepareWSData with message of type %i.\n", _messageType);}
@@ -464,6 +512,8 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
     doc["message"] = _messages_array[_iMessageType];
     Serial.printf("- myWebServerBase::_prepareWSData. _messages_array[%i] = %s\n", _iMessageType, (char*)_messages_array);
   }
+
+  // message ready. sending it to the send function
   Serial.println("- myWebServerBase::_prepareWSData. About to send JSON to sender function.");
   sendWSData(doc);
   Serial.println("- myWebServerBase::_prepareWSData. Ending.");
