@@ -11,7 +11,7 @@ function connect() {
     console.log("WS connection open ...");
     ws.send(JSON.stringify({
       type: 0,
-      message: "Hello WebSockets! This is Cedric."
+      message: mapToObj(controlerBoxes)
     }));
   };
 
@@ -254,4 +254,13 @@ window.onload = function(e){
  */
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
+}
+
+// Converts a Map to an Object
+function mapToObj(map) {
+    let obj = Object.create(null);
+    for (let [k,v] of map) {
+        obj[k] = v;
+    }
+    return obj;
 }
