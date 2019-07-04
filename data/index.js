@@ -2,7 +2,7 @@
 // Global variables
 var ws = null;
 
-
+var controlerBoxes = new Map();
 
 // WEB SOCKET
 function connect() {
@@ -27,16 +27,16 @@ function connect() {
         message: "received Station IP"
       }));
     }
-    if (_data.type === 4) {
+    if (_data.type === 4) { // User request to change boxState has been received and is being processed
       updateButton(_data.message);
     }
-    if (_data.type === 5) {
+    if (_data.type === 5) { // boxState of existing box has been updated
       setActiveStateButton(_data.message);
     }
-    if (_data.type === 6) {
+    if (_data.type === 6) { // a new box has connected to the mesh
       addNewRowForNewBox(_data.message);
     }
-    if (_data.type === 7) {
+    if (_data.type === 7) { // an existing box has been disconnected from the mesh
       deleteBoxRow(_data.message);
     }
   };
@@ -128,36 +128,64 @@ function setActiveStateButton(data) {
 
 function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox starting.");
-  var _boxRow = BoxRowDOMSelector(0);
-  if (_boxRow) {
-    var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
+  // Check whether the boxRow has not already been created
+  var _controlerBoxEntry = controlerBoxes.get(data.lb);
+  console.log(_controlerBoxEntry);
 
-    _dupRow.dataset.lb = data.lb;     // update data-lb attribute
-    _dupRow.classList.remove('hidden');
-    _dupRow.children[0].textContent = data.lb + 200;
+  if (!(_controlerBoxEntry === undefined)) {
+    // _controlerBoxEntry is not equal to undefined, the boxRow already exists
+    // let's update it instead
+    console.log("addNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
+    setActiveStateButton(data);
+    console.log("addNewRowForNewBox ending after updating laser box [" + data.lb + "]");
+    return;
+  } else {
+    // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
+    // let's create it
+    var _boxRow = BoxRowDOMSelector(0);
+    if (_boxRow) {
+      var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
 
-    var _selectorBoxState = "div > button[data-boxstate='" + data.boxState + "']";
-    var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
-    if (_stateButtonList) {
-      _stateButtonList[0].classList.add('button_active_state');
+      _dupRow.dataset.lb = data.lb;     // update data-lb attribute
+      _dupRow.classList.remove('hidden');
+      _dupRow.children[0].textContent = data.lb + 200;
+
+      var _selectorBoxState = "div > button[data-boxstate='" + data.boxState + "']";
+      var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
+      if (_stateButtonList) {
+        _stateButtonList[0].classList.add('button_active_state');
+      }
+
+      // render in DOM
+      _boxRow.parentNode.insertBefore(_dupRow, _boxRow);
+      console.log("addNewRowForNewBox: inserted _boxRow in DOM:");
+      console.log(_boxRow);
+
+      // set event listener on buttons
+      buttonList = document.querySelectorAll("div[data-lb='" + data.lb + "'] > div > button");
+      console.log(buttonList);
+      setStateButtonEvents(buttonList);
+
+      // add a key/entry pair to the controlerBoxes map
+      controlerBoxes.set(data.lb, data.boxState);
+      console.log("addNewRowForNewBox: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
+      console.log(controlerBoxes);
+
+      console.log("addNewRowForNewBox ending.");
     }
-
-    // render in DOM
-    _boxRow.parentNode.insertBefore(_dupRow, _boxRow);
-
-    // set event listener on buttons
-    buttonList = document.querySelectorAll("div[data-lb='" + data.lb + "'] > div > button");
-    console.log(buttonList);
-    setStateButtonEvents(buttonList);
   }
-  console.log("addNewRowForNewBox ending.");
 }
 
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
   let _boxRowToDelete = BoxRowDOMSelector(data.lb);
-  if (_boxRowToDelete.parentNode) {
+  if (!(_boxRowToDelete === undefined)) {
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
+    controlerBoxes.delete(data.lb);
+    console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes map.");
+    console.log(controlerBoxes);
+  } else {
+    console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
   }
   console.log("deleteBoxRow ending.");
 }
