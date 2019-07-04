@@ -36,6 +36,9 @@ function connect() {
     if (_data.type === 6) {
       addNewRowForNewBox(_data.message);
     }
+    if (_data.type === 7) {
+      deleteBoxRow(_data.message);
+    }
   };
 
   ws.onclose = function(e) {
