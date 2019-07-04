@@ -125,7 +125,7 @@ function setActiveStateButton(data) {
 
 function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox starting.");
-  var _boxRow = BoxRowDOMSelector(data);
+  var _boxRow = BoxRowDOMSelector(0);
   var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
 
   _dupRow.dataset.lb = data.lb;     // update data-lb attribute
@@ -145,10 +145,10 @@ function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox ending.");
 }
 
-function BoxRowDOMSelector() {
+function BoxRowDOMSelector(laserBoxIndexNumber) {
   console.log("BoxRowDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
-  var _selector = "div[data-lb='0']"; // selector for the whole div
+  var _selector = "div[data-lb='"+ laserBoxIndexNumber + "']"; // selector for the whole div
   console.log(_selector);
   var _rows = document.querySelectorAll(_selector); // should be a list composed of one single element
   console.log("BoxRowDOMSelector ending.");
