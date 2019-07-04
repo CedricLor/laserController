@@ -143,7 +143,10 @@ function addNewRowForNewBox(data) {
 
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
-
+  let _boxRowToDelete = BoxRowDOMSelector(data.lb);
+  if (_boxRowToDelete.parentNode) {
+    _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
+  }
   console.log("deleteBoxRow ending.");
 }
 
