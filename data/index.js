@@ -114,6 +114,7 @@ function setActiveStateButton(data) {
       }
     );
   }
+
   // add button_active_state class to the relevant stateButton
   var _elt = StateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
@@ -128,22 +129,27 @@ function setActiveStateButton(data) {
 function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox starting.");
   var _boxRow = BoxRowDOMSelector(0);
-  var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
+  if (_boxRow) {
+    var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
 
-  _dupRow.dataset.lb = data.lb;     // update data-lb attribute
-  _dupRow.classList.remove('hidden');
-  _dupRow.children[0].textContent = data.lb + 200;
+    _dupRow.dataset.lb = data.lb;     // update data-lb attribute
+    _dupRow.classList.remove('hidden');
+    _dupRow.children[0].textContent = data.lb + 200;
 
-  var _selectorBoxState = "div > button[data-boxstate='" + data.boxState + "']";
-  var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
-  _stateButtonList[0].classList.add('button_active_state');
+    var _selectorBoxState = "div > button[data-boxstate='" + data.boxState + "']";
+    var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
+    if (_stateButtonList) {
+      _stateButtonList[0].classList.add('button_active_state');
+    }
 
-  _boxRow.parentNode.insertBefore(_dupRow, _boxRow);
+    // render in DOM
+    _boxRow.parentNode.insertBefore(_dupRow, _boxRow);
 
-  buttonList = document.querySelectorAll("div[data-lb='" + data.lb + "'] > div > button");
-  console.log(buttonList);
-  setStateButtonEvents(buttonList);
-
+    // set event listener on buttons
+    buttonList = document.querySelectorAll("div[data-lb='" + data.lb + "'] > div > button");
+    console.log(buttonList);
+    setStateButtonEvents(buttonList);
+  }
   console.log("addNewRowForNewBox ending.");
 }
 
