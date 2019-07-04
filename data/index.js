@@ -164,8 +164,8 @@ function addNewRowForNewBox(data) {
       console.log("addNewRowForNewBox: _dupRow: setting the laser box number: " + (data.lb + 200));
       _dupRow.children[0].textContent = data.lb + 200;
 
-      var _selectorBoxState = "div > button[data-boxstate='" + data.boxState + "']";
       console.log("addNewRowForNewBox: preparing a selector to select all the button included in _dupRow.");
+      var _selectorBoxState = "button[data-boxstate='" + data.boxState + "']";
       console.log("addNewRowForNewBox: selector created: '" + _selectorBoxState + "'");
       var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
       console.log("addNewRowForNewBox: button list selected: ");console.log(_stateButtonList);
