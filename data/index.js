@@ -96,12 +96,6 @@ function updateButton(data) {
   var _elt = StateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
   _elt.classList.add('button_change_received');
-  // var _elt = StateButtonsDOMSelector(data);
-  // _elt_arr.forEach(
-  //   function(currentValue, currentIndex, listObj) {
-  //     _elt_arr.classList.add('button_change_received');
-  //   }
-  // );
   console.log("updateButton ending.");
 }
 
