@@ -374,7 +374,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 5;
       _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
-      ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
+      ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
     }
 
     // if the box is an unsignaled new box
@@ -387,7 +387,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
     if (ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 7;
-      ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
+      ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
     }
 
     if (_messageType != -1) {
