@@ -145,6 +145,12 @@ function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox ending.");
 }
 
+function deleteBoxRow(data) {
+  console.log("deleteBoxRow starting.");
+
+  console.log("deleteBoxRow ending.");
+}
+
 function BoxRowDOMSelector(laserBoxIndexNumber) {
   console.log("BoxRowDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
