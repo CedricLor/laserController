@@ -105,19 +105,23 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton starting.");
   // remove formerly added classes on all stateButtons of the boxRow
   var _elt_arr = StateButtonsDOMSelector(data.lb);
+  if (_elt_arr && _elt_arr.length) {
+    _elt_arr.forEach(
+      function(currentValue, currentIndex, listObj) {
+        currentValue.classList.remove('button_active_state');
+        currentValue.classList.remove('button_change_received');
+        currentValue.classList.remove('button_clicked');
+      }
+    );
+  }
   // add button_active_state class to the relevant stateButton
   var _elt = StateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
-  _elt_arr.forEach(
-    function(currentValue, currentIndex, listObj) {
-      currentValue.classList.remove('button_active_state');
-      currentValue.classList.remove('button_change_received');
-      currentValue.classList.remove('button_clicked');
-    }
-  );
-  _elt.classList.add('button_active_state');
-  _elt.classList.remove('button_clicked');
-  _elt.classList.remove('button_change_received');
+  if (_elt) {
+    _elt.classList.add('button_active_state');
+    _elt.classList.remove('button_clicked');
+    _elt.classList.remove('button_change_received');
+  }
   console.log("setActiveStateButton ending.");
 }
 
