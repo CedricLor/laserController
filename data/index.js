@@ -31,7 +31,7 @@ function connect() {
       updateButton(_data.message);
     }
     if (_data.type === 5) { // boxState of existing box has been updated
-      setActiveStateButton(_data.message);
+      addNewRowForNewBox(_data.message);
     }
     if (_data.type === 6) { // a new box has connected to the mesh
       addNewRowForNewBox(_data.message);
