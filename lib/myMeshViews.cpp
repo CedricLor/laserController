@@ -83,30 +83,47 @@ myMeshViews::myMeshViews()
 //   _sendMsg(msg, 'b');
 // }
 //
-// void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char* newReaction) {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
-//   JsonObject msg = _createJsonobject();
-//   msg["ms"] = newMasterNodeName;
-//   msg["react"] = newReaction;
-//   _sendMsg(msg, 'm');
-// }
+void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *boxName) {
+  Serial.printf("myMeshViews::changeBoxTargetState(): Starting. newMasterNodeName = %i, boxName = %s\n", newMasterNodeName, boxName);
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
+
+  // load the JSON document with values
+  msg["ms"] = newMasterNodeName;
+  msg["receiverBoxName"] = boxName;
+  msg["action"] = "m";
+
+  // get the destination nodeId
+  uint32_t _destNodeId = ControlerBoxes[(int)boxName].nodeId;
+
+  _sendMsg(msg, _destNodeId);
+
+  Serial.println("myMeshViews::changeMasterBoxMsg(): Starting.");
+}
 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
   Serial.println("myMeshViews::statusMsg(): Starting.");
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"senderBoxActiveState":3;"action":"s";"mTime":6059117;"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"..."}
+
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
+
   // load the JSON document with values
   msg["senderBoxActiveState"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState;
-  msg["action"] = "s";
   msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  msg["action"] = "s";
+
   // send to the sender
   _sendMsg(msg, destNodeId);
+
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
   ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasBeenSignaled = true;
+
   Serial.println("myMeshViews::statusMsg(): Ending.");
 }
 
@@ -114,14 +131,17 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"senderNodeName":"200";"senderAPIP":"...";"senderStIP":"..."}
   if (MY_DEBUG) {
-    Serial.print("myMeshViews::changeBoxTargetState(): boxTargetState = ");Serial.print(boxTargetState);Serial.print("boxName = ");Serial.print(boxName);Serial.print("\n");
+    Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = %s, boxName = %s\n", boxTargetState, boxName);
   }
+
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
+
   msg["receiverTargetState"] = boxTargetState;
   msg["receiverBoxName"] = boxName;
   msg["action"] = "c";
+
   _sendMsg(msg);
 }
 
