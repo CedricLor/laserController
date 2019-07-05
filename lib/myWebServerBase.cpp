@@ -403,7 +403,8 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     _sub_obj["boxState"] = _boxState;
     _prepareWSData(4, _sub_obj);
   }
-  if (_type == 4) {             // 8 for change master
+  if (_type == 8) {             // 8 for change master
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i - starting \n", _type);
     // send a mesh request to the other box
     // convert the box name to a char array box name
     int __iNodeName = doc["lb"];
@@ -411,13 +412,13 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     char _cNodeName[4];
     itoa((__iNodeName + B_CONTROLLER_BOX_PREFIX), _cNodeName, 10);
     Serial.printf("myWebServerBase::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
-    // convert the masterbox number to a char array
-    const char* _cmasterBox = doc["masterbox"];
-    Serial.printf("myWebServerBase::_decodeWSMessage(): _boxState = %s \n", _cmasterBox);
+    // get the masterbox number
+    int _iMasterBox = doc["masterbox"];
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _boxState = %i \n", _iMasterBox);
     myMeshViews __myMeshViews;
     // instantiate a mesh view
     Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeMasterBoxe().\n");
-    // __myMeshViews.changeMasterBoxe(_cmasterBox, _cNodeName);
+    __myMeshViews.changeMasterBoxMsg(_iMasterBox, _cNodeName);
   }
   Serial.println("myWebServerBase::_decodeWSMessage. Ending.");
 }
