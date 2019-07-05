@@ -83,8 +83,24 @@ myMeshViews::myMeshViews()
 //   _sendMsg(msg, 'b');
 // }
 //
+void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
+  Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. newMasterNodeName = %i\n", newMasterNodeName);
+  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
+
+  // load the JSON document with values
+  msg["ms"] = newMasterNodeName;
+  msg["action"] = "mc";
+
+  _sendMsg(msg, i_interface_node_id);
+
+  Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+}
+
 void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *boxName) {
-  Serial.printf("myMeshViews::changeBoxTargetState(): Starting. newMasterNodeName = %i, boxName = %s\n", newMasterNodeName, boxName);
+  Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, boxName = %s\n", newMasterNodeName, boxName);
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -99,7 +115,7 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *bo
 
   _sendMsg(msg, _destNodeId);
 
-  Serial.println("myMeshViews::changeMasterBoxMsg(): Starting.");
+  Serial.println("myMeshViews::changeMasterBoxMsg(): Ending.");
 }
 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
