@@ -118,7 +118,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // if the message comes from the interface, this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
       ControlerBox::valFromWeb = root["receiverTargetState"];
-      if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: will change my target state to ");Serial.println(ControlerBox::valFromWeb);}
+      if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my target state to %i", ControlerBox::valFromWeb);}
     }
 
     return;
