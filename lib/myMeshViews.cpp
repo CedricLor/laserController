@@ -92,7 +92,6 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *bo
 
   // load the JSON document with values
   msg["ms"] = newMasterNodeName;
-  msg["receiverBoxName"] = boxName;
   msg["action"] = "m";
 
   // get the destination nodeId
