@@ -18,8 +18,6 @@
 // STATIC VARIABLES - SIGNAL CATCHERS
 bool ControlerBox::valFromPir = LOW;
 uint32_t ControlerBox::uiSettingTimeOfValFromPir = 0;
-short int ControlerBox::valFromMesh = -1;
-uint32_t ControlerBox::uiSettingTimeOfValFromMesh = 0;
 short int ControlerBox::valFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
 short int ControlerBox::previousConnectedBoxesCount = 1;
@@ -39,6 +37,7 @@ ControlerBox::ControlerBox()
   boxDeletionHasBeenSignaled = true;
   bMasterBoxName = 255;
   bMasterBoxNameChangeHasBeenSignaled = true;
+  boxActiveStateHasBeenTakenIntoAccount = false;
 }
 
 void ControlerBox::updateThisBoxProperties() {
@@ -96,6 +95,8 @@ void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxAc
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled);
   ControlerBoxes[bBoxIndex].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime);
+  ControlerBoxes[bBoxIndex].boxActiveStateHasBeenTakenIntoAccount = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenTakenIntoAccount: %i\n", __bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenTakenIntoAccount);
   Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
 

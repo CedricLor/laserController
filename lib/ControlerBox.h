@@ -18,6 +18,7 @@ class ControlerBox
     byte bNodeName; // set by me, in global (201, 202, etc.)
     short int boxActiveState; // set by events or user
     bool boxActiveStateHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a boxState change, the WebSocket can read this and send a message to the browser
+    bool boxActiveStateHasBeenTakenIntoAccount; // set to false when updating another box value (not in use for self) and to true by boxState, once boxState has taken the new state into account
     uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
     bool boxDeletionHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a box disconnection, the WebSocket can read this and send a message to the browser
     byte bMasterBoxName;
@@ -30,8 +31,6 @@ class ControlerBox
     // Signal catchers -- static variables
     static bool valFromPir;
     static uint32_t uiSettingTimeOfValFromPir;
-    static short int valFromMesh;
-    static uint32_t uiSettingTimeOfValFromMesh;
     static short int valFromWeb;
 
     static void updateConnectedBoxCount(short int newConnectedBoxesCount);
