@@ -165,12 +165,12 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1 && boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1) {
     // if both IR and mesh have sent a signal, compare the time at which each of
     // them came and give priority to the latest
-    if (ControlerBox::valFromPir == HIGH && !(ControlerBox::valFromMesh == -1)) {
+    if (ControlerBox::valFromPir == HIGH && ControlerBox::valFromMesh != -1) {
       // compare the times at which each signal catcher has been set
       if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBox::uiSettingTimeOfValFromMesh) {
         _setBoxTargetState(3);
       } else {
-        _setBoxTargetState(4);
+        _setBoxTargetState(6);
       }
     }
     return;
