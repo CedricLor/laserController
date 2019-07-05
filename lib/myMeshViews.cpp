@@ -83,6 +83,8 @@ myMeshViews::myMeshViews()
 //   _sendMsg(msg, 'b');
 // }
 //
+
+// This function is called exclusively from the laser controllers -- not the interface
 void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
   Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. newMasterNodeName = %i\n", newMasterNodeName);
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
@@ -91,7 +93,7 @@ void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
   JsonObject msg = doc.to<JsonObject>();
 
   // load the JSON document with values
-  msg["ms"] = newMasterNodeName;
+  msg["ms"] = (int)newMasterNodeName;
   msg["action"] = "mc";
 
   _sendMsg(msg, i_interface_node_id);
@@ -99,6 +101,7 @@ void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
   Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
 }
 
+// This function is called exclusively from the webserver -- the interface
 void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *boxName) {
   Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, boxName = %s\n", newMasterNodeName, boxName);
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
