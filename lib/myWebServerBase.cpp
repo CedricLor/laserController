@@ -419,6 +419,15 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     // instantiate a mesh view
     Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeMasterBoxe().\n");
     __myMeshViews.changeMasterBoxMsg(_iMasterBox, _cNodeName);
+
+    // send a response telling the instruction is in course of being executed
+    StaticJsonDocument<64> _sub_doc;
+    JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+    Serial.printf("---------------------- %i -------------------\n", __iNodeName);
+    _sub_obj["lb"] = __iNodeName;
+    _sub_obj["ms"] = _iMasterBox;
+    _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
+    _prepareWSData(8, _sub_obj);
   }
   Serial.println("myWebServerBase::_decodeWSMessage. Ending.");
 }
