@@ -470,6 +470,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 5;
       _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
+      _obj["ms"] = (int)ControlerBoxes[_boxIndex].bMasterBoxName;
       ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
     }
 
@@ -478,6 +479,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 6;
       _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
+      _obj["ms"] = (int)ControlerBoxes[_boxIndex].bMasterBoxName;
       ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
     }
 
