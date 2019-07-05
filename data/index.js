@@ -1,8 +1,8 @@
 
 // Global variables
 var ws = null;
-
 var controlerBoxes = new Map();
+var boxRowTemplate = boxRowTemplateSelector();
 
 // WEB SOCKET
 function connect() {
@@ -28,7 +28,7 @@ function connect() {
       }));
     }
     if (_data.type === 4) { // User request to change boxState has been received and is being processed
-      updateButton(_data.message);
+      updateStateButton(_data.message);
     }
     if (_data.type === 5) { // boxState of existing box has been updated
       addNewRowForNewBox(_data.message);
@@ -66,8 +66,9 @@ function check(){
  */
 function onclickButton(e) {
   console.log("onclickButton starting");
-  var _laserBoxNumber = this.parentNode.parentNode.dataset.lb;
-  var _buttonList = StateButtonsDOMSelector(_laserBoxNumber);
+
+  var _laserBoxNumber = this.parentNode.parentNode.parentNode.dataset.lb; // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
+  var _buttonList = stateButtonsDOMSelector(_laserBoxNumber); // modified
 
   // remove red on other buttons
   for (var i = 0; i < _buttonList.length; i++) {
@@ -75,12 +76,14 @@ function onclickButton(e) {
   }
   // turn this button red
   this.classList.add('button_clicked');
-  // add sending a request in WS to the server
+
+  // send a request in WS to the server
   var _json = JSON.stringify({
     type: 4,
-    lb: this.parentNode.parentNode.getAttribute('data-lb'),
-    boxState: this.getAttribute('data-boxstate') })
+    lb: _laserBoxNumber,
+    boxState: this.dataset.boxstate })
   ws.send(_json);
+
   console.log("onclickButton stoping");
 };
 
@@ -91,20 +94,20 @@ function updateStationIp(_stationIp) {
   console.log("updateStationIp ending.");
 }
 
-function updateButton(data) {
-  console.log("updateButton starting.");
-  var _elt = StateButtonDOMSelector(data.lb, data.boxState);
+function updateStateButton(data) {
+  console.log("updateStateButton starting.");
+  var _elt = stateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
   }
-  console.log("updateButton ending.");
+  console.log("updateStateButton ending.");
 }
 
 function setActiveStateButton(data) {
   console.log("setActiveStateButton starting.");
   // remove formerly added classes on all stateButtons of the boxRow
-  var _elt_arr = StateButtonsDOMSelector(data.lb);
+  var _elt_arr = stateButtonsDOMSelector(data.lb);
   console.log("setActiveStateButton: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
@@ -117,12 +120,12 @@ function setActiveStateButton(data) {
   }
 
   // add button_active_state class to the relevant stateButton
-  var _elt = StateButtonDOMSelector(data.lb, data.boxState);
+  var _elt = stateButtonDOMSelector(data.lb, data.boxState);
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_active_state');
-    _elt.classList.remove('button_clicked');
     _elt.classList.remove('button_change_received');
+    _elt.classList.remove('button_clicked');
   }
   console.log("setActiveStateButton ending.");
 }
@@ -133,8 +136,8 @@ function addNewRowForNewBox(data) {
   // Check whether the boxRow has not already been created
   var _controlerBoxEntry = controlerBoxes.get(data.lb);
   console.log("addNewRowForNewBox: looking if an entry exists in the map for this box");
-  console.log("addNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist" + _controlerBoxEntry);
-  console.log("addNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)):" + (!(_controlerBoxEntry === undefined)));
+  console.log("addNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
+  console.log("addNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
   if (!(_controlerBoxEntry === undefined)) {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
@@ -150,39 +153,48 @@ function addNewRowForNewBox(data) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
     console.log("addNewRowForNewBox: the boxRow does not already exist. I am about to create it.");
-    var _boxRow = BoxRowDOMSelector(0);
-    console.log("addNewRowForNewBox: Selecting the hidden boxRow: ");console.log(_boxRow);
-    if (_boxRow) {
+    if (boxRowTemplate) {
+      // clone the template
       console.log("addNewRowForNewBox: Hidden boxRow selected. About to clone it.");
-      var _dupRow = _boxRow.cloneNode(true);  // duplicate the box
-      console.log("addNewRowForNewBox: Clone _dupRow created:");console.log(_dupRow);
+      var _dupRow = boxRowTemplate.cloneNode(true);  // duplicate the box
+      console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
 
-      console.log("addNewRowForNewBox: _dupRow: setting the data-lb property of the div to: " + data.lb);
+      // set properties
+      console.log("addNewRowForNewBox: _dupRow: setting the id of the new wrapper div to: " + data.lb);
+      _dupRow.id = "boxRow" + data.lb;     // update data-lb attribute
+      console.log("addNewRowForNewBox: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
       _dupRow.dataset.lb = data.lb;     // update data-lb attribute
-      console.log("addNewRowForNewBox: _dupRow: removing the class hidden from the classes of the div");
+      console.log("addNewRowForNewBox: _dupRow: removing the class hidden from the classes of the new wrapper div");
       _dupRow.classList.remove('hidden');
       console.log("addNewRowForNewBox: _dupRow: setting the laser box number: " + (data.lb + 200));
-      _dupRow.children[0].textContent = data.lb + 200;
+      _dupRow.children[0].children[0].children[0].textContent = data.lb + 200;
 
-      console.log("addNewRowForNewBox: preparing a selector to select all the button included in _dupRow.");
-      var _selectorBoxState = "button[data-boxstate='" + data.boxState + "']";
-      console.log("addNewRowForNewBox: selector created: '" + _selectorBoxState + "'");
-      var _stateButtonList = _dupRow.querySelectorAll(_selectorBoxState);
-      console.log("addNewRowForNewBox: button list selected: ");console.log(_stateButtonList);
-      if (_stateButtonList) {
+      // set the activeState button
+      console.log("addNewRowForNewBox: preparing a selector to select the state buttons included in _dupRow.");
+      var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
+      console.log("addNewRowForNewBox: selector created: '" + _selectorActiveBoxState + "'");
+      var _activeStateButtonList = _dupRow.querySelectorAll(_selectorActiveBoxState);
+      console.log("addNewRowForNewBox: button list selected: ");console.log(_activeStateButtonList);
+      if (_activeStateButtonList) {
         console.log("addNewRowForNewBox: about to add the active class to select button");
-        _stateButtonList[0].classList.add('button_active_state');
+        _activeStateButtonList[0].classList.add('button_active_state');
       }
 
-      // render in DOM
-      _boxRow.parentNode.insertBefore(_dupRow, _boxRow);
-      console.log("addNewRowForNewBox: inserted _boxRow in DOM:");
-      console.log(_boxRow);
-
       // set event listener on buttons
-      buttonList = document.querySelectorAll("div[data-lb='" + data.lb + "'] > div > button");
-      console.log(buttonList);
-      setStateButtonEvents(buttonList);
+      console.log("addNewRowForNewBox: about to set event listeners");
+      _stateButtonListSelector = "button[data-boxstate]";
+      console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
+      _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
+      console.log("addNewRowForNewBox: buttonList selected");
+      console.log(_buttonList);
+      console.log("addNewRowForNewBox: about to call setStateButtonEvents");
+      setStateButtonEvents(_buttonList);
+
+      // render in DOM
+      console.log("addNewRowForNewBox: about to insert the new box in the DOM");
+      boxRowTemplate.parentNode.insertBefore(_dupRow, boxRowTemplate);
+      console.log("addNewRowForNewBox: inserted the new box in the in DOM:");
+      console.log(_dupRow);
 
       // add a key/entry pair to the controlerBoxes map
       controlerBoxes.set(data.lb, data.boxState);
@@ -191,15 +203,16 @@ function addNewRowForNewBox(data) {
 
       console.log("addNewRowForNewBox ending.");
     }
+    console.log("addNewRowForNewBox: did not find the template. Ending.");
   }
 }
 
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
-  let _boxRowToDelete = BoxRowDOMSelector(data.lb);
+  let _boxRowToDelete = boxRowDOMSelector(data.lb);
   if (!(_boxRowToDelete === undefined)) {
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
-    controlerBoxes.delete(data.lb);
+    controlerBoxes.delete(data.lb); // updating the controlesBoxes map
     console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes map.");
     console.log(controlerBoxes);
   } else {
@@ -208,37 +221,53 @@ function deleteBoxRow(data) {
   console.log("deleteBoxRow ending.");
 }
 
-function BoxRowDOMSelector(laserBoxIndexNumber) {
-  console.log("BoxRowDOMSelector starting.");
+function boxRowDOMSelector(laserBoxIndexNumber) {
+  console.log("boxRowDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
-  var _selector = "div[data-lb='"+ laserBoxIndexNumber + "']"; // selector for the whole div
+  // var _selector = "div[data-lb='"+ laserBoxIndexNumber + "']"; // selector for the whole div
+
+  // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
+  var _selector = "div.box_wrapper[data-lb='" + laserBoxIndexNumber + "']";
   console.log(_selector);
   var _rows = document.querySelectorAll(_selector); // should be a list composed of one single element
-  console.log("BoxRowDOMSelector ending.");
+  console.log("boxRowDOMSelector ending.");
   return _rows[0]; // return the first (and unique) element of the list
 }
 
-function StateButtonsDOMSelector(laserBoxIndexNumber) {
-  console.log("StateButtonsDOMSelector starting.");
+function boxRowTemplateSelector(laserBoxIndexNumber) {
+  console.log("boxRowTemplateSelector starting.");
+  var _row = document.getElementById("boxTemplate"); // should be a list composed of one single element
+  console.log("boxRowTemplateSelector ending.");
+  return _row; // return the first (and unique) element of the list
+}
+
+function stateButtonsDOMSelector(laserBoxIndexNumber) {
+  console.log("stateButtonsDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
   // "div[data-lb='1'] > div > button[data-boxstate='1'"
-  var _selector = "div[data-lb='" + laserBoxIndexNumber + "'] > div > button";
+  // var _selector = "div[data-lb='" + laserBoxIndexNumber + "'] > div > button";
+
+  // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
+  var _selector = "div.box_wrapper[data-lb='" + laserBoxIndexNumber + "'] > div.box_state_setter > div.setters_group > button";
   console.log(_selector);
   var _elts = document.querySelectorAll(_selector);
   console.log(_elts);
-  console.log("StateButtonsDOMSelector ending.");
+  console.log("stateButtonsDOMSelector ending.");
   return _elts;
 }
 
-function StateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
-  console.log("buttonStateDOMSelector starting.");
+function stateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
+  console.log("stateButtonDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
   // "div[data-lb='1'] > div > button[data-boxstate='1'"
-  var _selector = "div[data-lb='" + laserBoxIndexNumber + "'] > div > button[data-boxstate='" + boxActiveState + "']";
+  // var _selector = "div[data-lb='" + laserBoxIndexNumber + "'] > div > button[data-boxstate='" + boxActiveState + "']";
+
+  // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
+  var _selector = "div.box_wrapper[data-lb='" + laserBoxIndexNumber + "'] > div.box_state_setter > div.setters_group > button[data-boxstate='" + boxActiveState + "']";
   console.log(_selector);
   var _elts = document.querySelectorAll(_selector);
   console.log(_elts);
-  console.log("buttonStateDOMSelector ending.");
+  console.log("stateButtonDOMSelector ending.");
   return _elts[0];
 }
 
@@ -267,9 +296,8 @@ window.onload = function(e){
 }
 
 
-/**
- * Returns a random number between min (inclusive) and max (exclusive)
- */
+
+// Returns a random number between min (inclusive) and max (exclusive)
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }

@@ -23,7 +23,10 @@ h1 {
 .box_state_setter {
   text-align: center;
   padding-top: 20px;
-  padding-bottom: 20px;  
+  padding-bottom: 20px;
+}
+.box_num_title {
+  font-weight: bold;
 }
 .setters_gp_title {
   text-align: center;
