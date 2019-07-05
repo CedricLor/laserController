@@ -113,7 +113,7 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, fal
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed:
   - ControlerBox::valFromPir (when the current boxState is set to react to signals from the PIR);
-  - ControlerBox::valFromMesh (when the current boxState is set to react to signals from the mesh);
+  - ControlerBoxes[PARENT].boxActiveState (when the current boxState is set to react to signals from the mesh);
   - _boxActiveStateHasBeenReset;
   - _boxTargetState;
   Depending on the changes, it will:
@@ -165,14 +165,17 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bIRTrigger == 1 && boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1) {
     // if both IR and mesh have sent a signal, compare the time at which each of
     // them came and give priority to the latest
-    if (ControlerBox::valFromPir == HIGH && ControlerBox::valFromMesh != -1) {
-      // compare the times at which each signal catcher has been set
-      if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBox::uiSettingTimeOfValFromMesh) {
-        _setBoxTargetState(3);
-      } else {
-        _setBoxTargetState(6);
+    if (ControlerBox::valFromPir == HIGH &&
+      ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveState != -1 &&
+      ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount == false
+      ){
+        // compare the times at which each signal catcher has been set
+        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].uiBoxActiveStateStartTime) {
+          _setBoxTargetState(3);
+        } else {
+          _setBoxTargetState(6);
+        }
       }
-    }
     return;
   }
 
@@ -183,16 +186,16 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     return;
   }
 
-  // 4. If the current boxState has Mesh trigger and the valueFromMesh is other
-  // than -1, change to the Mesh_High state (4)
-  // TO BE REDRAFTED to accept various signal from various Master boxes and eventually, play various sequences
-  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1 && !(ControlerBox::valFromMesh == -1)) {
-    // TO DO: IMPORTANT!!!
-    // uiSettingTimeOfValFromMesh shall not be set in this sub. It shall be done in MasterSlaveBox
-    // ControlerBox::uiSettingTimeOfValFromMesh = laserControllerMesh.getNodeTime();
-    _setBoxTargetState(4);
-    return;
-  }
+  // 4. If the current boxState has Mesh trigger and
+  // its parent box has a state other than -1 and
+  // its activeState has not been taken into account
+  if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1 &&
+    ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveState != -1 &&
+    ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount == false
+    ){
+      _setBoxTargetState(6);
+      return;
+    }
 }
 
 void boxState::_resetSignalCatchers() {
@@ -200,8 +203,7 @@ void boxState::_resetSignalCatchers() {
   // reset all the signals catchers to their initial values
   ControlerBox::valFromPir = LOW;
   ControlerBox::uiSettingTimeOfValFromPir = 0;
-  ControlerBox::valFromMesh = -1;
-  ControlerBox::uiSettingTimeOfValFromMesh = 0;
+  ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount = true;
   ControlerBox::valFromWeb = -1;
 }
 
