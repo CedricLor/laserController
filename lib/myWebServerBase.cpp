@@ -529,19 +529,32 @@ void myWebServerBase::_prepareWSData(const short int _iMessageType, JsonObject& 
       const char* __stationIp = doc["stationIp"];
       Serial.print("- myWebServerBase::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
     }
-  } else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6 || _iMessageType == 7) { // type 4: change state request sent to destination box
-    doc["message"] = _subdoc;                      // type 5: state of a box has effectively changed // type 6: a new box has joined // tye 7: a box has disconnected
-  } else {
+  }
+
+  // messages 4 to 8:
+  // (4): change boxState request being processed;
+  // (5): change boxState executed
+  // (6): a new box has joined the mesh
+  // (7): a box has been deleted from the mesh
+  // (8): master for a given is being processed, then has been changed
+  else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6 || _iMessageType == 7 || _iMessageType == 8) {
+    doc["message"] = _subdoc;
+  }
+
+  // message 0 on handshake: activate the exchange of station IP
+  else if (_iMessageType == 0) {
     Serial.printf("- myWebServerBase::_prepareWSData. Message type [%i] was none of 3 to 7\n", _iMessageType);
-    if (_iMessageType == 0) {
-      if (MY_DEBUG) {
-        Serial.printf("- myWebServerBase::_prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _iMessageType);
-      }
-      _tSendWSDataIfChangeStationIp.enable();
-      if (MY_DEBUG) {
-        Serial.printf("- myWebServerBase::_prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
-      }
+    if (MY_DEBUG) {
+      Serial.printf("- myWebServerBase::_prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _iMessageType);
     }
+    _tSendWSDataIfChangeStationIp.enable();
+    if (MY_DEBUG) {
+      Serial.printf("- myWebServerBase::_prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
+    }
+  }
+
+  // small confirmation messages (type 1 to 3)
+  else {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     doc["message"] = _messages_array[_iMessageType];
     Serial.printf("- myWebServerBase::_prepareWSData. _messages_array[%i] = %s\n", _iMessageType, (char*)_messages_array);
