@@ -60,10 +60,6 @@ function check(){
 
 
 
-// DOM MANIPULATION
-/**
- * On click button callback function
- */
 function onclickButton(e) {
   console.log("onclickButton starting");
 
@@ -77,16 +73,36 @@ function onclickButton(e) {
   // turn this button red
   this.classList.add('button_clicked');
 
-  // send a request in WS to the server
+  // send a WSrequest to the server to change the boxState to the corresponding boxstate
   var _json = JSON.stringify({
     type: 4,
     lb: _laserBoxNumber,
-    boxState: this.dataset.boxstate })
+    boxState: this.dataset.boxstate });
+  console.log("onclickButton: about to send json via WS: " + _json);
   ws.send(_json);
+  console.log("onclickButton: json sent.");
 
-  console.log("onclickButton stoping");
+  console.log("onclickButton: ending");
 };
 
+function oninputSlaveSelect(e) {
+  console.log("oninputSlaveSelect: starting");
+  if ((this.parentNode.parentNode.dataset.lb !== "undefined" )) { // selector to update in case of change in the DOM structure
+    console.log("oninputSlaveSelect: slave box: " + (this.parentNode.parentNode.dataset.lb + 200));
+    console.log("oninputSlaveSelect: master box " + this.selectedIndex);
+    var _json = JSON.stringify({
+      type: 8,
+      lb: this.parentNode.parentNode.dataset.lb,
+      masterbox: this.selectedIndex });
+    console.log("oninputSlaveSelect: about to send json via WS: " + _json);
+    ws.send(_json);
+    console.log("onclickButton: json sent.");
+  }
+  console.log("oninputSlaveSelect: ending");
+}
+// END EVENT HANDLERS
+
+// DOM MANIPULATION
 function updateStationIp(_stationIp) {
   console.log("updateStationIp starting.");
   console.log(_stationIp);
@@ -181,7 +197,7 @@ function addNewRowForNewBox(data) {
       }
 
       // set event listener on buttons
-      console.log("addNewRowForNewBox: about to set event listeners");
+      console.log("addNewRowForNewBox: about to set event listeners on buttons");
       _stateButtonListSelector = "button[data-boxstate]";
       console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
       _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
@@ -189,6 +205,16 @@ function addNewRowForNewBox(data) {
       console.log(_buttonList);
       console.log("addNewRowForNewBox: about to call setStateButtonEvents");
       setStateButtonEvents(_buttonList);
+
+      // set event listener on slave select
+      console.log("addNewRowForNewBox: about to set event listeners on buttons");
+      _slaveSelectSelector = "select";
+      console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
+      _selectAsList = _dupRow.querySelectorAll(_slaveSelectSelector);
+      console.log("addNewRowForNewBox: buttonList selected");
+      console.log(_selectAsList);
+      console.log("addNewRowForNewBox: about to call setStateButtonEvents");
+      setSelectEvents(_selectAsList[0]);
 
       // render in DOM
       console.log("addNewRowForNewBox: about to insert the new box in the DOM");
@@ -201,9 +227,8 @@ function addNewRowForNewBox(data) {
       console.log("addNewRowForNewBox: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
       console.log(controlerBoxes);
 
-      console.log("addNewRowForNewBox ending.");
     }
-    console.log("addNewRowForNewBox: did not find the template. Ending.");
+    console.log("addNewRowForNewBox ending.");
   }
 }
 
@@ -281,6 +306,10 @@ function setStateButtonEvents(buttonList) {
   for (var i = 0; i < buttonList.length; i++) {
     buttonList[i].addEventListener('click', onclickButton, false);
   }
+}
+
+function setSelectEvents(selectElt) {
+  selectElt.addEventListener('input', oninputSlaveSelect, false);
 }
 // END EVENT LISTENERS
 
