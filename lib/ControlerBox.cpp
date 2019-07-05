@@ -37,6 +37,7 @@ ControlerBox::ControlerBox()
   isNewBoxHasBeenSignaled = true;
   boxActiveStateHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
+  bMasterBoxName = 255;
 }
 
 void ControlerBox::updateThisBoxProperties() {
