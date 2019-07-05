@@ -92,12 +92,10 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __boxIndex = __bSenderNodeName - B_CONTROLLER_BOX_PREFIX;
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
 
-
-    if (ControlerBox::connectedBoxesCount != 1) {
-      if (ControlerBoxes[__boxIndex].nodeId == 0) {
-        // Enable a Task to send this new box my current boxState.
-        myMeshViews::tSendBoxStateToNewBox.restartDelayed();
-      }
+    // if the sender is a newly connected box
+    if (ControlerBoxes[__boxIndex].nodeId == 0) { //
+      // Enable a Task to send this new box my current boxState.
+      myMeshViews::tSendBoxStateToNewBox.restartDelayed();
     }
 
     // update the box properties
@@ -117,8 +115,8 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 
     // if the message comes from the interface, this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
-      ControlerBox::valFromWeb = root["receiverTargetState"];
       if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my target state to %i", ControlerBox::valFromWeb);}
+      ControlerBox::valFromWeb = root["receiverTargetState"];
     }
 
     return;
