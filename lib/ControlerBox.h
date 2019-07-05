@@ -21,6 +21,7 @@ class ControlerBox
     uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
     bool boxDeletionHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a box disconnection, the WebSocket can read this and send a message to the browser
     byte bMasterBoxName;
+    bool bMasterBoxNameChangeHasBeenSignaled;
 
     // void updateProperties();
     void updateThisBoxProperties();
