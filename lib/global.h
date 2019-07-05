@@ -30,6 +30,8 @@ extern const bool IS_STATION_MANUAL;                                            
 extern const uint8_t MESH_CHANNEL;
 
 extern const byte B_DEFAULT_INTERFACE_NODE_NAME;
+extern int i_interface_node_id;
+
 extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
