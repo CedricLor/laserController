@@ -59,16 +59,22 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   //   _changeBlinkingInterval(root);
   //   return;
   // }
-  //////// masterBox and reaction to masterBox status change
-  // const char* _m = "m";
-  // if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-  //   _changeMasterBox(root);
-  //   return;
-  // }
 
 
+  // change masterBox request
+  const char* _m = "m";
+  if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
+    byte __masterBoxName = root["ms"];
+    __masterBoxName = __masterBoxName + B_CONTROLLER_BOX_PREFIX;
 
-  // upon receiving a status message from other boxes, read and save the state of the other boxes
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = __masterBoxName;
+    return;
+  }
+
+
+  // status message
+  // upon receiving a status message from other boxes,
+  // read and save the state of the other boxes
   const char* _s = "s";
   if (strcmp(_action, _s) == 0) {
     // action 's': the boxState of another box has changed and is being signalled to the mesh
@@ -91,7 +97,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
         myMeshViews::tSendBoxStateToNewBox.restartDelayed();
       }
     }
-    
+
     // update the box properties
     ControlerBox::updateOtherBoxProperties(senderNodeId, root);
 
@@ -99,8 +105,8 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   }
 
 
-
-  // change this boxState (this is a signal sent from the web and relayed by the mesh)
+  // change this boxState request
+  // This is a signal sent from the web and relayed by the mesh
   const char* _c = "c";
   if (strcmp(_action, _c) == 0) {
     // action 'c': this message orders to change the boxTargetState
