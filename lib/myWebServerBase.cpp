@@ -487,6 +487,14 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
       ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
     }
 
+    if (ControlerBoxes[_boxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+      _messageType = 8;
+      _obj["ms"] = (int)ControlerBoxes[_boxIndex].bMasterBoxName;
+      _obj["st"] = 2; // "st" for status, 2 for executed
+      ControlerBoxes[_boxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
+    }
+
     // in all cases
     if (_messageType != -1) {
       // pass it on, with the type of message (5, 6 or 7) we want to add
