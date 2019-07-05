@@ -65,8 +65,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   if (strcmp(_action, _mc) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
     byte __masterBoxName = root["ms"];
     __masterBoxName = __masterBoxName + B_CONTROLLER_BOX_PREFIX;
-    int __slaveBoxIndexNumber = msg["senderNodeName"];
-    __slaveBoxIndexNumber - B_CONTROLLER_BOX_PREFIX;
+    int __slaveBoxIndexNumber = (int)root["senderNodeName"] - B_CONTROLLER_BOX_PREFIX;
 
     ControlerBoxes[__slaveBoxIndexNumber].bMasterBoxName = __masterBoxName;
     ControlerBoxes[__slaveBoxIndexNumber].bMasterBoxNameChangeHasBeenSignaled = false;
