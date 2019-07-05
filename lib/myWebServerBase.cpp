@@ -380,14 +380,14 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     return;
   }
   if (_type == 4) {           // 4 for change boxState
-    // send a mesh request to the other boxes
+    // send a mesh request to the other box
     // convert the box name to a char array box name
     int __iNodeName = doc["lb"];
     Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
     char _cNodeName[4];
     itoa((__iNodeName + B_CONTROLLER_BOX_PREFIX), _cNodeName, 10);
     Serial.printf("myWebServerBase::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
-    // convert the box state to a char array box state
+    // convert the box state to a char array
     const char* _boxState = doc["boxState"];
     Serial.printf("myWebServerBase::_decodeWSMessage(): _boxState = %s \n", _boxState);
     myMeshViews __myMeshViews;
@@ -402,6 +402,22 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     _sub_obj["lb"] = __iNodeName;
     _sub_obj["boxState"] = _boxState;
     _prepareWSData(4, _sub_obj);
+  }
+  if (_type == 4) {             // 8 for change master
+    // send a mesh request to the other box
+    // convert the box name to a char array box name
+    int __iNodeName = doc["lb"];
+    Serial.printf("myWebServerBase::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
+    char _cNodeName[4];
+    itoa((__iNodeName + B_CONTROLLER_BOX_PREFIX), _cNodeName, 10);
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
+    // convert the masterbox number to a char array
+    const char* _cmasterBox = doc["masterbox"];
+    Serial.printf("myWebServerBase::_decodeWSMessage(): _boxState = %s \n", _cmasterBox);
+    myMeshViews __myMeshViews;
+    // instantiate a mesh view
+    Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeMasterBoxe().\n");
+    // __myMeshViews.changeMasterBoxe(_cmasterBox, _cNodeName);
   }
   Serial.println("myWebServerBase::_decodeWSMessage. Ending.");
 }
