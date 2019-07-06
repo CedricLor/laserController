@@ -45,14 +45,20 @@ void mySavedPrefs::loadPreferences() {
   // Instanciate preferences
   Preferences preferences;
   if (preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
+
+    // read the value of "savedSettingsNS":"savedSettings"
     unsigned int _savedSettings = preferences.getShort("savedSettings", 0);
     Serial.printf("SETUP: loadPreferences(). \"savedSettings\" = _savedSettings = %i \n", _savedSettings);
+
+    // if the value of _savedSettings > 0, this means that some settings have been saved in the past
     if (_savedSettings > 0) {
       Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
 
+      // iSlaveOnOffReaction
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
       // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
 
+      // bMasterBoxName
       // If there is a value saved for bMasterNName, reset
       // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
       // which is set by default to B_DEFAULT_MASTER_NODE_NAME
