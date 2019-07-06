@@ -219,6 +219,14 @@ function addNewRowForNewBox(data) {
       console.log("addNewRowForNewBox: about to call setStateButtonEvents");
       setSelectEvents(_select);
 
+      // indicate masterbox number
+      console.log("addNewRowForNewBox: about to write masterbox number");
+      _masterBoxNumberSelector = "span.master_box_number";
+      console.log("addNewRowForNewBox: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+      var _select = _dupRow.querySelector(_masterBoxNumberSelector);
+      console.log("addNewRowForNewBox: masterbox span selected");
+      _dupRow.children[1].children[0].textContent = data.ms + 200;
+
       // render in DOM
       console.log("addNewRowForNewBox: about to insert the new box in the DOM");
       boxRowTemplate.parentNode.insertBefore(_dupRow, boxRowTemplate);
