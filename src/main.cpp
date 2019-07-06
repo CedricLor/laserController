@@ -81,7 +81,8 @@ void setup() {
     return;
   }
 
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
+  // commented out to check whether this has any impact
+  // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
 
   if (IS_INTERFACE == false) {
     tone::initTones();
@@ -94,7 +95,7 @@ void setup() {
 
   // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("Box number: %i\n", B_NODE_NAME);
-  Serial.printf("Version: %i\n", VERSION);  
+  Serial.printf("Version: %i\n", VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
   //    digitalWrite(relayPins[__thisPin], LOW);
