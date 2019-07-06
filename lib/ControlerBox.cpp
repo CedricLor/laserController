@@ -42,8 +42,10 @@ ControlerBox::ControlerBox()
   // this->bMasterBoxName
   // setters:
   // - here; -> from the global.bMasterNodeName, itself set in (i) global and (ii) in mySavedPrefs::loadPreferences()
-  // - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
-  // - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
+  // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
+  //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
+  //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
+  //    - mySavedPrefs
   // tested or used in:
   // - boxState class (on the laser boxes)
   // - here (printProperties)
@@ -87,6 +89,11 @@ void ControlerBox::printProperties(const byte bBoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bMasterBoxName: %i\n", bBoxIndex, bMasterBoxName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bMasterBoxNameChangeHasBeenSignaled: %i\n", bBoxIndex, bMasterBoxNameChangeHasBeenSignaled);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasBeenTakenIntoAccount: %i\n", bBoxIndex, boxActiveStateHasBeenTakenIntoAccount);
+}
+
+void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
+  this->bMasterBoxName = _bMasterBoxName;
+  bMasterBoxNameChangeHasBeenSignaled = false;
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {

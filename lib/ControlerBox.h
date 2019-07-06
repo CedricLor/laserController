@@ -27,6 +27,7 @@ class ControlerBox
     // void updateProperties();
     void updateThisBoxProperties();
     void printProperties(const byte bBoxIndex);
+    void updateMasterBoxName(const byte _bMasterBoxName);
 
     // Signal catchers -- static variables
     static bool valFromPir;

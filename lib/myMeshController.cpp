@@ -86,13 +86,11 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
     // }
 
-    ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxName = __bMasterBoxName;
+    // set the new master box number in the relevant ControlerBox (on the interface)
+    // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
+    ControlerBoxes[__sSlaveBoxIndexNumber].updateMasterBoxName(__bMasterBoxName);
     if (MY_DEBUG) {
       Serial.printf("myMeshController::myMeshController: _action = %s, ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", _action, __sSlaveBoxIndexNumber, ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxName);
-    }
-    ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxNameChangeHasBeenSignaled = false;
-
-    if (MY_DEBUG) {
       Serial.printf("myMeshController::myMeshController: ending on _action = %s\n", _action);
     }
     return;
@@ -105,9 +103,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __bMasterBoxName = root["ms"];
     __bMasterBoxName = __bMasterBoxName + B_CONTROLLER_BOX_PREFIX;
 
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = __bMasterBoxName;
-
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxNameChangeHasBeenSignaled = false;
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateMasterBoxName(__bMasterBoxName);
     myMeshViews __myMeshViews;
     __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxNameChangeHasBeenSignaled = true;
