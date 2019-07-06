@@ -16,11 +16,11 @@ void mySavedPrefs::savePreferences() {
   preferences.begin("savedSettingsNS", /*read only = */false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
 
   preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
-  preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
+  // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
   preferences.putShort("bMasterNName", bMasterNodeName);
 
   preferences.end();
-  Serial.print("WEB CONTROLLER: savePreferences(): done\n");
+  Serial.print("PREFERENCES: savePreferences(): done\n");
 }
 
 void mySavedPrefs::loadPreferences() {
@@ -31,10 +31,10 @@ void mySavedPrefs::loadPreferences() {
     unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
     if (savedSettings > 0) {
       Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
-      iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", I_DEFAULT_SLAVE_ON_OFF_REACTION);
-      Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
       bMasterNodeName = preferences.getShort("bMasterNName", bMasterNodeName);
       Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %u\n", bMasterNodeName);
+      // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
+      // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
     }
   }
 
