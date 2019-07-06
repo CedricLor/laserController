@@ -30,14 +30,17 @@ ControlerBox::ControlerBox()
   APIP = {0,0,0,0};
   stationIP = {0,0,0,0};
   bNodeName = 0;
+
   boxActiveState = -1;
   uiBoxActiveStateStartTime = 0;
+  boxActiveStateHasBeenSignaled = true; // to the browser by the interface
+  boxActiveStateHasBeenTakenIntoAccount = false; // by the boxState class
+
   isNewBoxHasBeenSignaled = true;
-  boxActiveStateHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
+
   bMasterBoxName = 255;
   bMasterBoxNameChangeHasBeenSignaled = true;
-  boxActiveStateHasBeenTakenIntoAccount = false;
 }
 
 void ControlerBox::updateThisBoxProperties() {
@@ -55,9 +58,11 @@ void ControlerBox::printProperties(const byte bBoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", bBoxIndex);Serial.println(APIP);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", bBoxIndex);Serial.println(stationIP);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bNodeName: %i\n", bBoxIndex, bNodeName);
+
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, boxActiveState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %u\n", bBoxIndex, uiBoxActiveStateStartTime);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, boxActiveStateHasBeenSignaled);
+
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].isNewBoxHasBeenSignaled: %i\n", bBoxIndex, isNewBoxHasBeenSignaled);
 }
 
