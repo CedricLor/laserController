@@ -151,12 +151,14 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __bSenderNodeName = root["senderNodeName"];
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
 
-    // if the message comes from the interface, this is a relayed message coming from the web
+    // if the message comes from the interface,
+    // this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
       if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my target state to %i", ControlerBox::valFromWeb);}
       ControlerBox::valFromWeb = root["receiverTargetState"];
-    }
-
+    } // else it might be a message coming from some other box,
+    // but I shall not react. Reactions to changes in the mesh are
+    // detected via status messages
     return;
   }
 
