@@ -166,8 +166,11 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     // if both IR and mesh have sent a signal, compare the time at which each of
     // them came and give priority to the latest
     if (ControlerBox::valFromPir == HIGH &&
+      // testing if IR has been set HIGH
       ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveState != -1 &&
+      // testing if the state of the master boxActiveState has been set to something
       ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount == false
+      // testing if the state of the master boxActiveState has been taken into account
       ){
         // compare the times at which each signal catcher has been set
         if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].uiBoxActiveStateStartTime) {
@@ -279,6 +282,7 @@ void boxState::_odtcbPlayBoxState(){
   Serial.println("void boxState::_odtcbPlayBoxState(). Starting.");
   // Serial.print("void boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
   // Serial.println(_tPlayBoxState.getInterval());
+  // disable the associated sequence player
   sequence::tPlaySequenceInLoop.disable();
   // Serial.println("void boxState::_odtcbPlayBoxState(): ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState");
   // Serial.println(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);

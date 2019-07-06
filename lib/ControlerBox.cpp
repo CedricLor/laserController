@@ -24,6 +24,9 @@ short int ControlerBox::previousConnectedBoxesCount = 1;
 
 
 // PUBLIC
+// Instance Methods
+
+// Constructor
 ControlerBox::ControlerBox()
 {
   nodeId = 0;
@@ -63,6 +66,7 @@ ControlerBox::ControlerBox()
   bMasterBoxNameChangeHasBeenSignaled = true;
 }
 
+
 void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
@@ -72,6 +76,7 @@ void ControlerBox::updateThisBoxProperties() {
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
 }
+
 
 void ControlerBox::printProperties(const byte bBoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: %u\n", bBoxIndex, nodeId);
@@ -96,11 +101,22 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
   bMasterBoxNameChangeHasBeenSignaled = false;
 }
 
+
+
+// Static Methods
+
+// updater of the properties of the other boxes in the mesh
+// called from myMeshController
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
   Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
+
+  // Setting nodeName, nodeId and IP properties
+  // extract the index of the relevant box from its senderNodeName in the JSON
   byte __bNodeName = doc["senderNodeName"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
   byte __bBoxIndex = __bNodeName - B_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
+
+  // set the nodeId
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
   if (ControlerBoxes[__bBoxIndex].nodeId == 0) {
     updateConnectedBoxCount(connectedBoxesCount + 1);
@@ -109,36 +125,60 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   }
   ControlerBoxes[__bBoxIndex].nodeId = senderNodeId;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i\n", ControlerBoxes[__bBoxIndex].senderNodeId);
+
+  // set the IPs
   ControlerBoxes[__bBoxIndex].APIP = _parseIpStringToIPAddress(doc, "senderAPIP");
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].APIP);
   ControlerBoxes[__bBoxIndex].stationIP = _parseIpStringToIPAddress(doc, "senderStIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].stationIP);
+
+  // set the bNodeName
   ControlerBoxes[__bBoxIndex].bNodeName = __bNodeName;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].bNodeName);
+
+  // Setting activeState stack
+  // extract the __senderBoxActiveState from the JSON
+  // need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
   int __senderBoxActiveState = doc["senderBoxActiveState"];
   setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
-  // need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
+
+  // Print out the updated properties
   if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }
 
+
+
+
+// setter for the activeState and associated variables
 void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState) {
   Serial.println("ControlerBox::setBoxActiveState(): Starting");
+
   ControlerBoxes[bBoxIndex].boxActiveState = senderBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveState);
+
   ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled);
+
   ControlerBoxes[bBoxIndex].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime);
+
   ControlerBoxes[bBoxIndex].boxActiveStateHasBeenTakenIntoAccount = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenTakenIntoAccount: %i\n", __bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenTakenIntoAccount);
+
   Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
+
+
+
+
 
 void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
   previousConnectedBoxesCount = connectedBoxesCount;
   connectedBoxesCount = newConnectedBoxesCount;
 }
+
+
 
 void ControlerBox::deleteBox(uint32_t nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
@@ -161,6 +201,9 @@ void ControlerBox::deleteBox(uint32_t nodeId) {
   }
   Serial.println("ControlerBox::deleteBox(): Ending");
 }
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 IPAddress ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/) {
