@@ -417,8 +417,8 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     Serial.printf("myWebServerBase::_decodeWSMessage(): _boxState = %i \n", _iMasterBox);
     myMeshViews __myMeshViews;
     // instantiate a mesh view
-    Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeMasterBoxe().\n");
-    __myMeshViews.changeMasterBoxMsg(_iMasterBox, _cNodeName);
+    Serial.printf("myWebServerBase::_decodeWSMessage(): about to call __myMeshViews.changeMasterBox().\n");
+    __myMeshViews.changeMasterBoxMsg(_iMasterBox, __iNodeName);
 
     // send a response telling the instruction is in course of being executed
     StaticJsonDocument<64> _sub_doc;

@@ -102,8 +102,8 @@ void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
 }
 
 // This function is called exclusively from the webserver -- the interface
-void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *boxName) {
-  Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, boxName = %s\n", newMasterNodeName, boxName);
+void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const int iBoxName) {
+  Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, iBoxName (dest index nb) = %i\n", newMasterNodeName, iBoxName);
   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -114,7 +114,7 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const char *bo
   msg["action"] = "m";
 
   // get the destination nodeId
-  uint32_t _destNodeId = ControlerBoxes[(int)boxName].nodeId;
+  uint32_t _destNodeId = ControlerBoxes[iBoxName].nodeId;
 
   _sendMsg(msg, _destNodeId);
 

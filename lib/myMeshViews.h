@@ -36,7 +36,7 @@ class myMeshViews
     // static void inclusionIRMsg(const short targetIrState);
     // static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
     void changedMasterBoxConfirmation(const byte newMasterNodeName);
-    void changeMasterBoxMsg(const int newMasterNodeName, const char *boxName);
+    void changeMasterBoxMsg(const int newMasterNodeName, const int iBoxName);
     void statusMsg(uint32_t destNodeId=0);
     void changeBoxTargetState(const char *boxTargetState, const char *boxName);
     // static void pinPairingMsg(const short sTargetPairingType);
