@@ -39,8 +39,26 @@ ControlerBox::ControlerBox()
   isNewBoxHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
 
+  // this->bMasterBoxName
+  // setters:
+  // - here; -> from the global.bMasterNodeName, itself set in (i) global and (ii) in mySavedPrefs::loadPreferences()
+  // - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
+  // - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
+  // tested or used in:
+  // - boxState class (on the laser boxes)
+  // - here (printProperties)
+  // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
+  // - -> indirectly to from the global.bMasterNodeName, itself set in (i) global and (ii) in mySavedPrefs::loadPreferences()
   this->bMasterBoxName = bMasterNodeName;
-  bMasterBoxNameChangeHasBeenSignaled = true; 
+  // bMasterBoxNameChangeHasBeenSignaled
+  // setters:
+  // - here
+  // - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
+  // - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message); setting it to false
+  // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) (setting it to true, once a message has been sent to the browser)
+  // testers:
+  // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) (tests whether a change has been made and whether it needs to inform the browser)
+  bMasterBoxNameChangeHasBeenSignaled = true;
 }
 
 void ControlerBox::updateThisBoxProperties() {
