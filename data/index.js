@@ -39,6 +39,9 @@ function connect() {
     if (_data.type === 7) { // an existing box has been disconnected from the mesh
       deleteBoxRow(_data.message);
     }
+    if (_data.type === 8) { // a box has changed master
+      updateMasterBoxNumber(_data.message);
+    }
   };
 
   ws.onclose = function(e) {
@@ -244,6 +247,32 @@ function deleteBoxRow(data) {
     console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
   }
   console.log("deleteBoxRow ending.");
+}
+
+function updateMasterBoxNumber(data) {
+  console.log("updateMasterBoxNumber starting.");
+  // select the relevant row
+  var _row = boxRowDOMSelector(data.lb);
+  console.log("updateMasterBoxNumber: about to write masterbox number");
+  _masterBoxNumberSelector = "span.master_box_number";
+  console.log("updateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+  var _select = _row.querySelector(_masterBoxNumberSelector);
+  console.log("addNewRowForNewBox: masterbox span selected");
+  _row.children[1].children[0].textContent = data.ms + 200;
+  console.log("addNewRowForNewBox: masterbox span updated: " + (data.ms + 200));
+  console.log("addNewRowForNewBox: data.st === 1: " + (data.st === 1))
+  if (data.st === 1) {
+    _row.children[1].children[0].classList.add("change_ms_received");
+    console.log("addNewRowForNewBox: added class change_ms_received to masterbox span");
+  } else if (data.st === 2) {
+    console.log("addNewRowForNewBox: data.st === 2: " + (data.st === 2))
+    _row.children[1].children[0].classList.remove("change_ms_received");
+    console.log("addNewRowForNewBox: removed class change_ms_received to masterbox span");
+    _row.children[1].children[0].classList.add("change_ms_executed");
+    console.log("addNewRowForNewBox: added class change_ms_executed to masterbox span");
+  }
+
+  console.log("updateMasterBoxNumber ending.");
 }
 
 function boxRowDOMSelector(laserBoxIndexNumber) {
