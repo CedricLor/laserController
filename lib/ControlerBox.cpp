@@ -139,7 +139,8 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
 
   // Setting activeState stack
   // extract the __senderBoxActiveState from the JSON
-  // need to send via myMeshViews and add to ControlerBox the time for which the new sender boxState shall apply
+  // need to send via myMeshViews and add to ControlerBox the time
+  // for which the new sender boxState shall apply
   int __senderBoxActiveState = doc["senderBoxActiveState"];
   setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
 
@@ -151,7 +152,9 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
 
 
 
-// setter for the activeState and associated variables
+// Setter for the activeState and associated variables
+// Called only from this class (for the other boxes) and by
+// boxState (when an effective update has been made).
 void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState) {
   Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
