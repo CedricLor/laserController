@@ -96,7 +96,7 @@ void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
   msg["ms"] = (int)newMasterNodeName;
   msg["action"] = "mc";
 
-  _sendMsg(msg, i_interface_node_id);
+  _sendMsg(msg, iInterfaceNodeId);
 
   Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
 }
