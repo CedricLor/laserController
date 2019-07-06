@@ -455,7 +455,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
 Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
-  for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
+  for (short int _iBoxIndex = 1; _iBoxIndex < BOXES_COUNT; _iBoxIndex++) {
     // prepare a JSON document
     StaticJsonDocument<64> _doc;
     JsonObject _obj = _doc.to<JsonObject>();
@@ -463,38 +463,41 @@ void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
     short int _messageType = -1;
 
     // populate the JSON object
-    _obj["lb"] = _boxIndex;
+    _obj["lb"] = _iBoxIndex;
 
     // if the box has an unsignaled change of state
-    if (ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled == false) {
-      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+    if (ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_iBoxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 5;
-      _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
-      _obj["ms"] = (int)ControlerBoxes[_boxIndex].bMasterBoxName;
-      ControlerBoxes[_boxIndex].boxActiveStateHasBeenSignaled = true;
+      _obj["boxState"] = ControlerBoxes[_iBoxIndex].boxActiveState;
+      _obj["ms"] = (int)ControlerBoxes[_iBoxIndex].bMasterBoxName - B_CONTROLLER_BOX_PREFIX;
+      ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = true;
     }
 
     // if the box is an unsignaled new box
-    if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
-      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+    if (ControlerBoxes[_iBoxIndex].isNewBoxHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_iBoxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 6;
-      _obj["boxState"] = ControlerBoxes[_boxIndex].boxActiveState;
-      _obj["ms"] = (int)ControlerBoxes[_boxIndex].bMasterBoxName;
-      ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
+      _obj["boxState"] = ControlerBoxes[_iBoxIndex].boxActiveState;
+      _obj["ms"] = (int)ControlerBoxes[_iBoxIndex].bMasterBoxName - B_CONTROLLER_BOX_PREFIX;
+      ControlerBoxes[_iBoxIndex].isNewBoxHasBeenSignaled = true;
     }
 
-    if (ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled == false) {
-      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+    if (ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_iBoxIndex + B_CONTROLLER_BOX_PREFIX));
       _messageType = 7;
-      ControlerBoxes[_boxIndex].boxDeletionHasBeenSignaled = true;
+      ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled = true;
     }
 
-    if (ControlerBoxes[_boxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
-      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_boxIndex + B_CONTROLLER_BOX_PREFIX));
+    if (ControlerBoxes[_iBoxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has changed master\n", (_iBoxIndex + int(B_CONTROLLER_BOX_PREFIX)));
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. (int)(ControlerBoxes[%i].bMasterBoxName) == %i\n", _iBoxIndex, (int)(ControlerBoxes[_iBoxIndex].bMasterBoxName));
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%i].bMasterBoxName) == %i\n", _iBoxIndex, (ControlerBoxes[_iBoxIndex].bMasterBoxName));
+      Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. New master: %i\n", (int)(ControlerBoxes[_iBoxIndex].bMasterBoxName));
       _messageType = 8;
-      _obj["ms"] = (int)ControlerBoxes[_boxIndex].bMasterBoxName;
+      _obj["ms"] = (int)(ControlerBoxes[_iBoxIndex].bMasterBoxName);
       _obj["st"] = 2; // "st" for status, 2 for executed
-      ControlerBoxes[_boxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
+      ControlerBoxes[_iBoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
     }
 
     // in all cases
