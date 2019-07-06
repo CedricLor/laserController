@@ -33,8 +33,13 @@ void mySavedPrefs::savePreferences() {
 
   preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
-  preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
-  Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i has been saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+
+  size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+  if (_masterNodeNameRet) {
+    Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i has been saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+  } else {
+    Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i could not be saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+  }
 
   preferences.end();
   Serial.print("PREFERENCES: savePreferences(): done\n");
