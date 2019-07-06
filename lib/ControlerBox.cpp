@@ -64,6 +64,11 @@ void ControlerBox::printProperties(const byte bBoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, boxActiveStateHasBeenSignaled);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].isNewBoxHasBeenSignaled: %i\n", bBoxIndex, isNewBoxHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxDeletionHasBeenSignaled: %i\n", bBoxIndex, boxDeletionHasBeenSignaled);
+
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bMasterBoxName: %i\n", bBoxIndex, bMasterBoxName);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bMasterBoxNameChangeHasBeenSignaled: %i\n", bBoxIndex, bMasterBoxNameChangeHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasBeenTakenIntoAccount: %i\n", bBoxIndex, boxActiveStateHasBeenTakenIntoAccount);
 }
 
 void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
