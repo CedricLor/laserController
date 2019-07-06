@@ -14,6 +14,12 @@ h1 {
 .button_change_received {
   border-color: red;
 }
+.change_ms_received {
+  color: red;
+}
+.change_ms_executed {
+  color: green;
+}
 .button_active_state {
   background-color: red;
 }
