@@ -45,8 +45,9 @@ void mySavedPrefs::loadPreferences() {
   // Instanciate preferences
   Preferences preferences;
   if (preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
-    unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
-    if (savedSettings > 0) {
+    unsigned int _savedSettings = preferences.getShort("savedSettings", 0);
+    Serial.printf("SETUP: loadPreferences(). \"savedSettings\" = _savedSettings = %i \n", _savedSettings);
+    if (_savedSettings > 0) {
       Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
 
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
