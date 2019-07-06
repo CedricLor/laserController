@@ -32,12 +32,16 @@ Created by Cedric Lor, January 22, 2019.
 
 myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 {
+  if (MY_DEBUG) {
+    Serial.print("myMeshController::myMeshController: Starting\n");
+  }
+
   // read the action field
   const char* _action = root["action"];
 
   // if debug, serial print the action field
   if (MY_DEBUG) {
-    Serial.print("myMeshController::myMeshController: _action = ");Serial.println(_action);
+    Serial.printf("myMeshController::myMeshController: _action = %s\n", _action);
   }
 
   // Temporarily commented out
@@ -63,28 +67,49 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   // change masterBox confirmation (received by the interface only)
   const char* _mc = "mc";
   if (strcmp(_action, _mc) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-    byte __masterBoxName = root["ms"];
-    __masterBoxName = __masterBoxName + B_CONTROLLER_BOX_PREFIX;
-    int __slaveBoxIndexNumber = (int)root["senderNodeName"] - B_CONTROLLER_BOX_PREFIX;
 
-    ControlerBoxes[__slaveBoxIndexNumber].bMasterBoxName = __masterBoxName;
-    ControlerBoxes[__slaveBoxIndexNumber].bMasterBoxNameChangeHasBeenSignaled = false;
+    byte __bMasterBoxName = root["ms"];
+    if (MY_DEBUG) {
+      Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName = %i\n", _action, __bMasterBoxName);
+    }
+    // reduce it from [e.g. 205] to [e.g. 5] send less data via the web
+    __bMasterBoxName = __bMasterBoxName - B_CONTROLLER_BOX_PREFIX;
+    if (MY_DEBUG) {
+      Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName - B_CONTROLLER_BOX_PREFIX = %i\n", _action, (__bMasterBoxName - B_CONTROLLER_BOX_PREFIX));
+    }
 
+    // get the index as an int:
+    // root["senderNodeName"] is a char -> cast it as int
+    // B_CONTROLLER_BOX_PREFIX is a byte -> cast it as int
+    short int __sSlaveBoxIndexNumber = (int)root["senderNodeName"] - (int)B_CONTROLLER_BOX_PREFIX;
+    // if (MY_DEBUG) {
+    //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
+    // }
+
+    ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxName = __bMasterBoxName;
+    if (MY_DEBUG) {
+      Serial.printf("myMeshController::myMeshController: _action = %s, ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", _action, __sSlaveBoxIndexNumber, ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxName);
+    }
+    ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxNameChangeHasBeenSignaled = false;
+
+    if (MY_DEBUG) {
+      Serial.printf("myMeshController::myMeshController: ending on _action = %s\n", _action);
+    }
     return;
   }
 
 
-  // change masterBox request
+  // change masterBox request (received by the laser boxes only)
   const char* _m = "m";
   if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-    byte __masterBoxName = root["ms"];
-    __masterBoxName = __masterBoxName + B_CONTROLLER_BOX_PREFIX;
+    byte __bMasterBoxName = root["ms"];
+    __bMasterBoxName = __bMasterBoxName + B_CONTROLLER_BOX_PREFIX;
 
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = __masterBoxName;
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = __bMasterBoxName;
 
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxNameChangeHasBeenSignaled = false;
     myMeshViews __myMeshViews;
-    __myMeshViews.changedMasterBoxConfirmation(__masterBoxName);
+    __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxNameChangeHasBeenSignaled = true;
 
     return;
