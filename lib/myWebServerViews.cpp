@@ -44,7 +44,7 @@ myWebServerViews::myWebServerViews()
 
 void myWebServerViews::_loadBoxArray() {
   // Serial.print("myWebServerViews::loadBoxArray(): STARTING\n");
-  for (short int __i = 1; __i < BOXES_COUNT; __i++) {
+  for (short int __i = 1; __i < sBoxesCount; __i++) {
     // Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP STARTING: iter %i\n", __i);
     strcat(cBoxArray, "<div>Laser Box ");
     char __cNodeName[4];         // the ASCII of the integer will be stored in this char array
@@ -102,7 +102,7 @@ void myWebServerViews::_loadBoxArray() {
 // String myWebServerViews::_printLinksToBoxes() {
 //   String __linksToBoxes = "<div class=\"box_links_wrapper\">";
 //   // IPAddress testIp(0,0,0,0);
-//   for (short i = 0; i < BOXES_COUNT; i++) {
+//   for (short i = 0; i < sBoxesCount; i++) {
 //     if (ControlerBoxes[i].bNodeName) {                          // dependancy
 //       __linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
 //       __linksToBoxes += String((ControlerBoxes[i].bNodeName));   // dependancy

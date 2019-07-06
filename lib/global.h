@@ -49,6 +49,7 @@ extern const char* slaveReactionHtml[4];
 
 extern const short BOXES_COUNT;                                                   // NETWORK BY NETWORK
 extern ControlerBox ControlerBoxes[];
+extern short sBoxesCount;                           // NETWORK BY NETWORK
 // declare and size an array to contain the LaserPins class instances as a global variable
 extern LaserPin LaserPins[];
 

@@ -74,8 +74,9 @@ unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
-const short BOXES_COUNT = 10;                           // NETWORK BY NETWORK
+const short BOXES_COUNT = 10;
 ControlerBox ControlerBoxes[BOXES_COUNT];
+short sBoxesCount = BOXES_COUNT;                           // NETWORK BY NETWORK
 LaserPin LaserPins[PIN_COUNT];
 
 // LaserGroupedUnit LaserGroupedUnits[PIN_COUNT];

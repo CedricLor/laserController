@@ -43,7 +43,7 @@
 Task myMeshViews::tSendBoxStateToNewBox(MY_INDEX_IN_CB_ARRAY * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 
 void myMeshViews::_odtcbSendBoxStateToNewBox() {
-  for (short int _boxIndex = 1; _boxIndex < BOXES_COUNT; _boxIndex++) {
+  for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
     if (ControlerBoxes[_boxIndex].nodeId != 0) {
       if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
         myMeshViews __myMeshViews;

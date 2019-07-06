@@ -21,7 +21,7 @@ mySavedPrefs::mySavedPrefs()
   *  global::B_NODE_NAME, B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
   *  MESH_ROOT, IS_INTERFACE and/or IS_STATION_MANUAL
-  *  BOXES_COUNT
+  *  sBoxesCount
 
   *  PIN_COUNT
   */

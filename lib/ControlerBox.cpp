@@ -187,7 +187,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 void ControlerBox::deleteBox(uint32_t nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
   short int __boxIndex;
-  for (short int __it = 0; __it < BOXES_COUNT; __it++) {
+  for (short int __it = 0; __it < sBoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == nodeId) {
       __boxIndex = __it;
       ControlerBoxes[__boxIndex].nodeId = 0;

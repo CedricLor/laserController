@@ -359,7 +359,7 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
     // MISSING BOXES CHECKER
     // look for the missing items and ask for an update
     Serial.printf("myWebServerBase::_decodeWSMessage(): _type = %i, about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n", _type);
-    for (short _i = 1; _i < BOXES_COUNT; _i++) {
+    for (short _i = 1; _i < sBoxesCount; _i++) {
       char _c[3];
       itoa(_i, _c, 10);
       const char* _keyInJson = _obj[_c];
@@ -455,7 +455,7 @@ void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
 Task myWebServerBase::_tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeBoxState() {
-  for (short int _iBoxIndex = 1; _iBoxIndex < BOXES_COUNT; _iBoxIndex++) {
+  for (short int _iBoxIndex = 1; _iBoxIndex < sBoxesCount; _iBoxIndex++) {
     // prepare a JSON document
     StaticJsonDocument<64> _doc;
     JsonObject _obj = _doc.to<JsonObject>();
