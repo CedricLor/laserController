@@ -43,7 +43,6 @@ extern const byte B_CONTROLLER_BOX_PREFIX;
 extern const byte MY_INDEX_IN_CB_ARRAY;
 
 extern short iSlaveOnOffReaction;
-extern byte bMasterNodeName;
 extern byte bInterfaceNodeName;
 
 extern unsigned long pinBlinkingInterval;

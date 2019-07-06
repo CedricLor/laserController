@@ -44,17 +44,17 @@ ControlerBox::ControlerBox()
 
   // this->bMasterBoxName
   // setters:
-  // - here; -> from the global.bMasterNodeName, itself set in (i) global and (ii) in mySavedPrefs::loadPreferences()
+  // - here; -> from the global.B_DEFAULT_MASTER_NODE_NAME
   // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
   //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
   //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
-  //    - mySavedPrefs
+  // - in mySavedPrefs::loadPreferences()
   // tested or used in:
   // - boxState class (on the laser boxes)
   // - here (printProperties)
-  // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
-  // - -> indirectly to from the global.bMasterNodeName, itself set in (i) global and (ii) in mySavedPrefs::loadPreferences()
-  this->bMasterBoxName = bMasterNodeName;
+  // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
+  // - in mySavedPrefs::savePreferences()
+  this->bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
   // - here
@@ -190,11 +190,19 @@ void ControlerBox::deleteBox(uint32_t nodeId) {
       ControlerBoxes[__boxIndex].APIP = {0,0,0,0};
       ControlerBoxes[__boxIndex].stationIP = {0,0,0,0};
       ControlerBoxes[__boxIndex].bNodeName = 0;
+
       ControlerBoxes[__boxIndex].boxActiveState = -1;
       ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = 0;
-      ControlerBoxes[__boxIndex].isNewBoxHasBeenSignaled = true;
       ControlerBoxes[__boxIndex].boxActiveStateHasBeenSignaled = true;
+      ControlerBoxes[__boxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+
+      ControlerBoxes[__boxIndex].isNewBoxHasBeenSignaled = true;
       ControlerBoxes[__boxIndex].boxDeletionHasBeenSignaled = false;
+
+      ControlerBoxes[__boxIndex].bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
+      ControlerBoxes[__boxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
+      ControlerBoxes[__boxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+
       updateConnectedBoxCount(connectedBoxesCount - 1);
       break;
     }

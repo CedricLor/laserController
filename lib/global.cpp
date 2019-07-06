@@ -23,6 +23,17 @@ const bool MY_DG_LASER = false;
 
 const short VERSION = 0;
 
+// B_DEFAULT_MASTER_NODE_NAME is now common to all the ControlerBoxes().
+// They are initiated with default master at 255.
+// 255 shall mean no master.
+// Otherwise, set to which ever value.
+// !! infinite loop potential:
+// !! do not set a box to be its own master!!
+// B_DEFAULT_MASTER_NODE_NAME shall never be equal to B_NODE_NAME
+// In principle, B_DEFAULT_MASTER_NODE_NAME shall not be changed (this is why it is a constant).
+// Todo: draft a security
+const byte B_DEFAULT_MASTER_NODE_NAME = 255;
+
 // CONTROLLER BOX 201
 // node id in the current configuration 764691274
 // const byte B_NODE_NAME = 201;                          // BOX BY BOX
@@ -43,16 +54,6 @@ const bool IS_STATION_MANUAL = true;                  // BOX BY BOX
 // const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
 // const bool IS_STATION_MANUAL = false;                  // BOX BY BOX
 
-// B_DEFAULT_MASTER_NODE_NAME is now common to all the ControlerBoxes().
-// They are initiated with default master at 255.
-// 255 shall mean no master.
-// Otherwise, set to which ever value.
-// !! infinite loop potential:
-// !! do not set a box to be its own master!!
-// B_DEFAULT_MASTER_NODE_NAME shall never be equal to B_NODE_NAME
-// Todo: draft a security
-const byte B_DEFAULT_MASTER_NODE_NAME = 255;
-
 const uint8_t MESH_CHANNEL = 6;
 
 const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
@@ -69,7 +70,6 @@ const byte B_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the 
 const byte MY_INDEX_IN_CB_ARRAY = B_NODE_NAME - B_CONTROLLER_BOX_PREFIX;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
-byte bMasterNodeName = B_DEFAULT_MASTER_NODE_NAME;
 byte bInterfaceNodeName = B_DEFAULT_INTERFACE_NODE_NAME;
 
 unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
@@ -78,6 +78,7 @@ const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
 ControlerBox ControlerBoxes[BOXES_COUNT];
 LaserPin LaserPins[PIN_COUNT];
+
 // LaserGroupedUnit LaserGroupedUnits[PIN_COUNT];
 // PIN_COUNT? We define the array of LaserGroupUnits as large as the number of pins connected to the lasers.
 // Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.

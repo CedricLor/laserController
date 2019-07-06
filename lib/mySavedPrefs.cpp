@@ -10,6 +10,12 @@ mySavedPrefs::mySavedPrefs()
 {
 }
 
+  /* variables to be saved in NVS:
+  *  short int boxState::_boxDefaultState = 5;
+  *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
+  *  global::iSlaveOnOffReaction;
+  */
+
 void mySavedPrefs::savePreferences() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
   Preferences preferences;
@@ -17,7 +23,7 @@ void mySavedPrefs::savePreferences() {
 
   preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
-  preferences.putShort("bMasterNName", bMasterNodeName);
+  preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
 
   preferences.end();
   Serial.print("PREFERENCES: savePreferences(): done\n");
@@ -31,15 +37,21 @@ void mySavedPrefs::loadPreferences() {
     unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
     if (savedSettings > 0) {
       Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
+
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
       // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
-      // If there is a value saved for bMasterNodeName, reset bMasterNodeName which is set by default to
-      // B_DEFAULT_MASTER_NODE_NAME in global.
-      bMasterNodeName = (byte)preferences.getShort("bMasterNName", bMasterNodeName);
-      Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %i\n", bMasterNodeName);
+
+      // If there is a value saved for bMasterNName, reset
+      // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
+      // which is set by default to B_DEFAULT_MASTER_NODE_NAME
+      // in the ControlerBox constructor. Else, the value of
+      // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
+      // will stay unchanged.
+      ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = (byte)preferences.getShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+      Serial.printf("SETUP: loadPreferences(). ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName set to: %i\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
     }
   } else {
-    Serial.printf("SETUP: loadPreferences(): \"savedSettingsNS\" does not exist. global bMasterNodeName will keep the default B_DEFAULT_MASTER_NODE_NAME = %i\n", bMasterNodeName);
+    Serial.printf("SETUP: loadPreferences(): \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName will keep the default B_DEFAULT_MASTER_NODE_NAME = %i\n", MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
   }
 
   preferences.end();
