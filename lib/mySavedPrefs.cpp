@@ -12,8 +12,18 @@ mySavedPrefs::mySavedPrefs()
 
   /* variables to be saved in NVS:
   *  short int boxState::_boxDefaultState = 5;
+
   *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
-  *  global::iSlaveOnOffReaction;
+  *  global::iSlaveOnOffReaction; or I_DEFAULT_SLAVE_ON_OFF_REACTION
+
+  *  global::I_DEFAULT_INTERFACE_NODE_ID; or iInterfaceNodeId
+  *  global::bInterfaceNodeName or B_DEFAULT_INTERFACE_NODE_NAME
+  *  global::B_NODE_NAME, B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
+
+  *  MESH_ROOT, IS_INTERFACE and/or IS_STATION_MANUAL
+  *  BOXES_COUNT
+
+  *  PIN_COUNT
   */
 
 void mySavedPrefs::savePreferences() {
@@ -24,6 +34,7 @@ void mySavedPrefs::savePreferences() {
   preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
   preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+  Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i has been saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
 
   preferences.end();
   Serial.print("PREFERENCES: savePreferences(): done\n");
@@ -55,5 +66,9 @@ void mySavedPrefs::loadPreferences() {
   }
 
   preferences.end();
+
+  // for testing purposes
+  // savePreferences();
+
   Serial.print("SETUP: loadPreferences(): done\n");
 }
