@@ -13,12 +13,11 @@ mySavedPrefs::mySavedPrefs()
 void mySavedPrefs::savePreferences() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
   Preferences preferences;
-  preferences.begin("savedSettingsNS", false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
+  preferences.begin("savedSettingsNS", /*read only = */false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
 
-  preferences.putUInt("savedSettings", preferences.getUInt("savedSettings", 0) + 1);
+  preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
   preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
   preferences.putShort("bMasterNName", bMasterNodeName);
-  preferences.putULong("pinBlinkInt", pinBlinkingInterval);
 
   preferences.end();
   Serial.print("WEB CONTROLLER: savePreferences(): done\n");
@@ -26,18 +25,19 @@ void mySavedPrefs::savePreferences() {
 
 void mySavedPrefs::loadPreferences() {
   Serial.print("\nSETUP: loadPreferences(): starting\n");
+  // Instanciate preferences
   Preferences preferences;
-  preferences.begin("savedSettingsNS", true);        // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
-  unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
-  if (savedSettings > 0) {
-    Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
-    iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", I_DEFAULT_SLAVE_ON_OFF_REACTION);
-    Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
-    bMasterNodeName = preferences.getShort("bMasterNName", bMasterNodeName);
-    Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %u\n", bMasterNodeName);
-    pinBlinkingInterval = preferences.getULong("pinBlinkInt", pinBlinkingInterval);
-    Serial.print("SETUP: loadPreferences(). pinBlinkingInterval set to: ");Serial.println(pinBlinkingInterval);
+  if (preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
+    unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
+    if (savedSettings > 0) {
+      Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
+      iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", I_DEFAULT_SLAVE_ON_OFF_REACTION);
+      Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
+      bMasterNodeName = preferences.getShort("bMasterNName", bMasterNodeName);
+      Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %u\n", bMasterNodeName);
+    }
   }
+
   preferences.end();
   Serial.print("SETUP: loadPreferences(): done\n");
 }
