@@ -31,11 +31,13 @@ void mySavedPrefs::loadPreferences() {
     unsigned int savedSettings = preferences.getUInt("savedSettings", 0);
     if (savedSettings > 0) {
       Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
-      bMasterNodeName = preferences.getShort("bMasterNName", bMasterNodeName);
-      Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %u\n", bMasterNodeName);
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
       // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
+      bMasterNodeName = (byte)preferences.getShort("bMasterNName", bMasterNodeName);
+      Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %i\n", bMasterNodeName);
     }
+  } else {
+    Serial.printf("SETUP: loadPreferences(): \"savedSettingsNS\" does not exist. global bMasterNodeName will keep the default B_DEFAULT_MASTER_NODE_NAME = %i\n", bMasterNodeName);
   }
 
   preferences.end();
