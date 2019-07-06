@@ -440,11 +440,11 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
-  // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[0].stationIP)) {
+  // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP)) {
     Serial.println("myWebServerBase::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     // Serial.printf("myWebServerBase::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
     _prepareWSData(3); // 3 for message sent in case of change in station IP
-    ControlerBoxes[0].updateThisBoxProperties();
+    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
   // }
 }
 
