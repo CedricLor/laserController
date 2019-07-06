@@ -50,8 +50,8 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, MESH_CHANNEL );
 
-  if ((IS_INTERFACE == true) && (IS_STATION_MANUAL == true)) {
-    // laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);
+  if ((IS_INTERFACE == true)) {
+    // laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);  // this does not work. Unstable connection
     laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   }
 
@@ -60,7 +60,7 @@ void myMesh::meshSetup() {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
   }
-  // This and all other mesh should ideally know that the mesh contains a root
+  // This and all other mesh member should ideally know that the mesh contains a root
   laserControllerMesh.setContainsRoot(true);
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
