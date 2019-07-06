@@ -33,6 +33,8 @@ void mySavedPrefs::loadPreferences() {
       Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
       // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
+      // If there is a value saved for bMasterNodeName, reset bMasterNodeName which is set by default to
+      // B_DEFAULT_MASTER_NODE_NAME in global.
       bMasterNodeName = (byte)preferences.getShort("bMasterNName", bMasterNodeName);
       Serial.printf("SETUP: loadPreferences(). bMasterNodeName set to: %i\n", bMasterNodeName);
     }
