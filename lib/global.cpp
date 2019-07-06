@@ -62,8 +62,6 @@ const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my cust
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
-const short BOXES_COUNT = 10;                           // NETWORK BY NETWORK
-
 const byte B_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
 const byte B_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 const byte MY_INDEX_IN_CB_ARRAY = B_NODE_NAME - B_CONTROLLER_BOX_PREFIX;
@@ -76,6 +74,7 @@ unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
+const short BOXES_COUNT = 10;                           // NETWORK BY NETWORK
 ControlerBox ControlerBoxes[BOXES_COUNT];
 LaserPin LaserPins[PIN_COUNT];
 
