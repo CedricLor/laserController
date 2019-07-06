@@ -201,9 +201,9 @@ function addNewRowForNewBox(data) {
 
       // set event listener on buttons
       console.log("addNewRowForNewBox: about to set event listeners on buttons");
-      _stateButtonListSelector = "button[data-boxstate]";
+      var _stateButtonListSelector = "button[data-boxstate]";
       console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
-      _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
+      var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
       console.log("addNewRowForNewBox: buttonList selected");
       console.log(_buttonList);
       console.log("addNewRowForNewBox: about to call setStateButtonEvents");
@@ -211,13 +211,13 @@ function addNewRowForNewBox(data) {
 
       // set event listener on slave select
       console.log("addNewRowForNewBox: about to set event listeners on buttons");
-      _slaveSelectSelector = "select";
+      var _slaveSelectSelector = "select";
       console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
-      _selectAsList = _dupRow.querySelectorAll(_slaveSelectSelector);
+      var _select = _dupRow.querySelector(_slaveSelectSelector);
       console.log("addNewRowForNewBox: buttonList selected");
-      console.log(_selectAsList);
+      console.log(_select);
       console.log("addNewRowForNewBox: about to call setStateButtonEvents");
-      setSelectEvents(_selectAsList[0]);
+      setSelectEvents(_select);
 
       // render in DOM
       console.log("addNewRowForNewBox: about to insert the new box in the DOM");
