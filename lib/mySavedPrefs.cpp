@@ -44,9 +44,20 @@ void mySavedPrefs::savePreferences() {
     Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i could not be saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
   }
 
+  // sBoxesCount
+  size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
+  if (_sBoxesCountRet) {
+    Serial.printf("PREFERENCES: savePreferences(): the value of sBoxesCount == %i has been saved to \"savedSettingsNS\":\"bMasterNName\"\n", sBoxesCount);
+  } else {
+    Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i could not be saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+  }
+
   preferences.end();
   Serial.print("PREFERENCES: savePreferences(): done\n");
 }
+
+
+
 
 void mySavedPrefs::loadPreferences() {
   Serial.print("\nSETUP: loadPreferences(): starting\n");
@@ -75,9 +86,14 @@ void mySavedPrefs::loadPreferences() {
       // will stay unchanged.
       ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = (byte)preferences.getShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
       Serial.printf("SETUP: loadPreferences(). ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName set to: %i\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+
+      // sBoxesCount
+      sBoxesCount = preferences.getShort("sBoxesCount", sBoxesCount);
+      Serial.printf("SETUP: loadPreferences(). sBoxesCount set to: %i\n", sBoxesCount);
+
     }
   } else {
-    Serial.printf("SETUP: loadPreferences(): \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName will keep the default B_DEFAULT_MASTER_NODE_NAME = %i\n", MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+    Serial.printf("SETUP: loadPreferences(): \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
   }
 
   preferences.end();
