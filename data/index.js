@@ -96,7 +96,9 @@ function oninputSlaveSelect(e) {
     var _json = JSON.stringify({
       type: 8,
       lb: this.parentNode.parentNode.dataset.lb,
-      masterbox: this.selectedIndex + 1 });
+      masterbox: parseInt(this.options[this.selectedIndex].value, 10)
+      // masterbox: this.selectedIndex + 1
+     });
     console.log("oninputSlaveSelect: about to send json via WS: " + _json);
     ws.send(_json);
     console.log("onclickButton: json sent.");
