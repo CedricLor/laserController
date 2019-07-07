@@ -151,6 +151,18 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton ending.");
 }
 
+function _newBoxRowSetProperties(data, _dupRow) {
+  console.log("addNewRowForNewBox: _dupRow: setting the id of the new wrapper div to: " + data.lb);
+  _dupRow.id = "boxRow" + data.lb;     // update data-lb attribute
+  console.log("addNewRowForNewBox: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
+  _dupRow.dataset.lb = data.lb;     // update data-lb attribute
+  console.log("addNewRowForNewBox: _dupRow: removing the class hidden from the classes of the new wrapper div");
+  _dupRow.classList.remove('hidden');
+  console.log("addNewRowForNewBox: _dupRow: setting the laser box number: " + (data.lb + 200));
+  _dupRow.children[0].children[0].children[0].textContent = data.lb + 200;
+  return _dupRow;
+}
+
 function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox starting.");
 
@@ -181,14 +193,7 @@ function addNewRowForNewBox(data) {
       console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
 
       // set properties
-      console.log("addNewRowForNewBox: _dupRow: setting the id of the new wrapper div to: " + data.lb);
-      _dupRow.id = "boxRow" + data.lb;     // update data-lb attribute
-      console.log("addNewRowForNewBox: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
-      _dupRow.dataset.lb = data.lb;     // update data-lb attribute
-      console.log("addNewRowForNewBox: _dupRow: removing the class hidden from the classes of the new wrapper div");
-      _dupRow.classList.remove('hidden');
-      console.log("addNewRowForNewBox: _dupRow: setting the laser box number: " + (data.lb + 200));
-      _dupRow.children[0].children[0].children[0].textContent = data.lb + 200;
+      _newBoxRowSetProperties(data, _dupRow);
 
       // set the activeState button
       console.log("addNewRowForNewBox: preparing a selector to select the state buttons included in _dupRow.");
