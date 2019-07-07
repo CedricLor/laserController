@@ -107,6 +107,9 @@ void mySavedPrefs::loadPreferences() {
       sBoxesCount = preferences.getShort("sBoxesCount", sBoxesCount);
       Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, sBoxesCount);
 
+      // iInterfaceNodeId
+      sBoxesCount = preferences.getInt("iIFNodId", iInterfaceNodeId);
+      Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, iInterfaceNodeId);
     }
   } else {
     Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
