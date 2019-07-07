@@ -23,15 +23,16 @@ const bool MY_DG_LASER = false;
 const short VERSION = 0;
 
 // B_DEFAULT_MASTER_NODE_NAME is now common to all the ControlerBoxes().
-// They are initiated with default master at 255.
-// 255 shall mean no master.
+// They are initiated with default master at 254.
+// 254 shall mean no master.
 // Otherwise, set to which ever value.
 // !! infinite loop potential:
 // !! do not set a box to be its own master!!
 // B_DEFAULT_MASTER_NODE_NAME shall never be equal to B_NODE_NAME
 // In principle, B_DEFAULT_MASTER_NODE_NAME shall not be changed (this is why it is a constant).
 // Todo: draft a security
-const byte B_DEFAULT_MASTER_NODE_NAME = 255;
+// To reset
+const byte B_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 
 // CONTROLLER BOX 201
 // node id in the current configuration 764691274
@@ -57,7 +58,7 @@ bool isMeshRoot = IS_MESH_ROOT;
 bool isInterface = IS_INTERFACE;
 
 const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
-const unsigned int I_DEFAULT_INTERFACE_NODE_ID = 2760139053;
+const uint32_t I_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
@@ -69,7 +70,7 @@ byte myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
-unsigned int iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
+uint32_t iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
 byte bInterfaceNodeName = B_DEFAULT_INTERFACE_NODE_NAME;
 byte bInterfaceIndexInCBArray = bInterfaceNodeName - bControllerBoxPrefix;
 

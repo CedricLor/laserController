@@ -50,11 +50,11 @@ void mySavedPrefs::savePreferences() {
 
   // save value of iInterfaceNodeId
   size_t _iInterfaceNodeIdRet = preferences.putUInt("iIFNodId", iInterfaceNodeId);
-  Serial.printf("%s iInterfaceNodeId == %i %s\"iIFNodId\"\n", _debugMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+  Serial.printf("%s iInterfaceNodeId == %u %s\"iIFNodId\"\n", _debugMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of bInterfaceNodeName
-  size_t _bInterfaceNodeNameRet = preferences.putShort("iIFNodId", (short)bInterfaceNodeName);
-  Serial.printf("%s bInterfaceNodeName == %i %s\"iIFNodId\"\n", _debugMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+  size_t _bInterfaceNodeNameRet = preferences.putShort("sIFNodNam", (short)bInterfaceNodeName);
+  Serial.printf("%s bInterfaceNodeName == %i %s\"sIFNodNam\"\n", _debugMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of bControllerBoxPrefix
   size_t _gbControllerBoxPrefixRet = preferences.putShort("bContrBPref", (short)bControllerBoxPrefix);
@@ -116,6 +116,7 @@ void mySavedPrefs::savePreferences() {
 
 void mySavedPrefs::loadPreferences() {
   Serial.print("\nSETUP: loadPreferences(): starting\n");
+
   // Instanciate preferences
   Preferences preferences;
 
@@ -208,12 +209,9 @@ void mySavedPrefs::loadPreferences() {
 
   // Tell user how many free entries remain
   size_t _freeEntries = preferences.freeEntries();
-  Serial.printf("%s Save complete. Remaining free entries in NVS: %i", _debugMsgStart, _freeEntries);
+  Serial.printf("%s Remaining free entries in NVS: %i", _debugMsgStart, _freeEntries);
 
   preferences.end();
-
-  // for testing purposes
-  // savePreferences();
 
   Serial.print("%s done\n");
 }
