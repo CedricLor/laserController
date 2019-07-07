@@ -94,7 +94,7 @@ void setup() {
   enableTasks();
 
   // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
-  Serial.printf("Box number: %i\n", B_NODE_NAME);
+  Serial.printf("Box number: %i\n", gbNodeName);
   Serial.printf("Version: %i\n", VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {

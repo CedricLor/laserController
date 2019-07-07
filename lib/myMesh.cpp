@@ -174,8 +174,8 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   strcat(_apSsidBuf, _PREFIX_AP_SSID);
   // after the preceeding line, _apSsidBuf shall be equal to "box_"
   char _cNodeName[4];
-  itoa(B_NODE_NAME, _cNodeName, 10);
-  // itoa convert B_NODE_NAME (201, 202, etc.) from into to char array, the resulting char array being stored into
+  itoa((int)gbNodeName, _cNodeName, 10);
+  // itoa convert gbNodeName (201, 202, etc.) into to char array, the resulting char array being stored into _cNodeName
   strcat(_apSsidBuf, _cNodeName);
   // strcat appends 201, 202, etc. to box_
   // _apSsidBuf shall equal to something like box_201, box_202, etc.

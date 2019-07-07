@@ -18,7 +18,8 @@ mySavedPrefs::mySavedPrefs()
 
   *  iInterfaceNodeId (e.g. 2760139053)
   *  bInterfaceNodeName (e.g. 201)
-  *  global::B_NODE_NAME, B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
+  *  gbNodeName
+  *  B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
   *  isMeshRoot
   *  IS_INTERFACE

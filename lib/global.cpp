@@ -52,6 +52,7 @@ const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or
 
 const uint8_t MESH_CHANNEL = 6;
 
+byte gbNodeName = B_NODE_NAME;
 bool isMeshRoot = IS_MESH_ROOT;
 
 const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
