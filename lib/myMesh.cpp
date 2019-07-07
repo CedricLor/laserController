@@ -56,7 +56,7 @@ void myMesh::meshSetup() {
   }
 
   laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
-  if (MESH_ROOT == true) {
+  if (IS_MESH_ROOT == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
   }

@@ -21,7 +21,7 @@ extern const short VERSION;
 
 extern const byte B_NODE_NAME;                                                   // BOX BY BOX
 extern const byte B_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
-extern const bool MESH_ROOT;                                                      // BOX BY BOX
+extern const bool IS_MESH_ROOT;                                                      // BOX BY BOX
 
 extern const bool IS_INTERFACE;                                                  // BOX BY BOX
 
