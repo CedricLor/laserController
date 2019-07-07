@@ -43,19 +43,11 @@ void mySavedPrefs::savePreferences() {
 
   // bMasterBoxName
   size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
-  if (_masterNodeNameRet) {
-    Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, _debugMsgEndSuccess);
-  } else {
-    Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, _debugMsgEndFail);
-  }
+  Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, (_masterNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // sBoxesCount
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
-  if (_sBoxesCountRet) {
-    Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, _debugMsgEndSuccess);
-  } else {
-    Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, _debugMsgEndFail);
-  }
+  Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, (_sBoxesCountRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // iInterfaceNodeId
   size_t _iInterfaceNodeId = preferences.putShort("iIFNodId", iInterfaceNodeId);
