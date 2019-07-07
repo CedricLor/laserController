@@ -190,6 +190,16 @@ function _setEVentListenersStateButtons(_dupRow) {
   return _dupRow;
 }
 
+function _indicateMasterBoxNumber(data, _dupRow) {
+  console.log("_indicateMasterBoxNumber: about to write masterbox number");
+  var _masterBoxNumberSelector = "span.master_box_number";
+  console.log("_indicateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+  var _select = _dupRow.querySelector(_masterBoxNumberSelector);
+  console.log("_indicateMasterBoxNumber: masterbox span selected in _select var");
+  _select.textContent = data.ms + 200;
+  return _dupRow;
+}
+
 function _setEventListenerOnMasterSelect(_dupRow) {
   console.log("_setEventListenerOnMasterSelect: about to set event listeners on buttons");
   var _slaveSelectSelector = "select";
@@ -199,16 +209,6 @@ function _setEventListenerOnMasterSelect(_dupRow) {
   console.log(_select);
   console.log("_setEventListenerOnMasterSelect: about to call setStateButtonEvents");
   setSelectEvents(_select);
-  return _dupRow;
-}
-
-function _indicateMasterBoxNumber(data, _dupRow) {
-  console.log("_indicateMasterBoxNumber: about to write masterbox number");
-  var _masterBoxNumberSelector = "span.master_box_number";
-  console.log("_indicateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  var _select = _dupRow.querySelector(_masterBoxNumberSelector);
-  console.log("_indicateMasterBoxNumber: masterbox span selected in _select var");
-  _select.textContent = data.ms + 200;
   return _dupRow;
 }
 
