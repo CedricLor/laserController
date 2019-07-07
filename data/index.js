@@ -2,6 +2,7 @@
 // Global variables
 var ws = null;
 var controlerBoxes = new Map();
+var boxesRows = new Map();
 var boxRowTemplate = boxRowTemplateSelector();
 
 // WEB SOCKET
@@ -164,28 +165,66 @@ function _newBoxRowSetProperties(data, _dupRow) {
 }
 
 function _setActiveStateButton(data, _dupRow) {
-  console.log("addNewRowForNewBox: preparing a selector to select the state buttons included in _dupRow.");
+  console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
-  console.log("addNewRowForNewBox: selector created: '" + _selectorActiveBoxState + "'");
+  console.log("_setActiveStateButton: selector created: '" + _selectorActiveBoxState + "'");
   var _activeStateButtonList = _dupRow.querySelectorAll(_selectorActiveBoxState);
-  console.log("addNewRowForNewBox: button list selected: ");console.log(_activeStateButtonList);
+  console.log("_setActiveStateButton: button list selected: ");console.log(_activeStateButtonList);
   if (_activeStateButtonList) {
-    console.log("addNewRowForNewBox: about to add the active class to select button");
+    console.log("_setActiveStateButton: about to add the active class to select button");
     _activeStateButtonList[0].classList.add('button_active_state');
   }
   return _dupRow;
 }
 
 function _setEVentListenersStateButtons(_dupRow) {
-  console.log("addNewRowForNewBox: about to set event listeners on buttons");
+  console.log("_setEVentListenersStateButtons: about to set event listeners on buttons");
   var _stateButtonListSelector = "button[data-boxstate]";
-  console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
+  console.log("_setEVentListenersStateButtons: _stateButtonListSelector = " + _stateButtonListSelector);
   var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
-  console.log("addNewRowForNewBox: buttonList selected");
+  console.log("_setEVentListenersStateButtons: buttonList selected");
   console.log(_buttonList);
-  console.log("addNewRowForNewBox: about to call setStateButtonEvents");
+  console.log("_setEVentListenersStateButtons: about to call setStateButtonEvents");
   setStateButtonEvents(_buttonList);
   return _dupRow;
+}
+
+function _setEventListenerOnMasterSelect(_dupRow) {
+  console.log("_setEventListenerOnMasterSelect: about to set event listeners on buttons");
+  var _slaveSelectSelector = "select";
+  console.log("_setEventListenerOnMasterSelect: _slaveSelectSelector = " + _slaveSelectSelector);
+  var _select = _dupRow.querySelector(_slaveSelectSelector);
+  console.log("_setEventListenerOnMasterSelect: buttonList selected: ");
+  console.log(_select);
+  console.log("_setEventListenerOnMasterSelect: about to call setStateButtonEvents");
+  setSelectEvents(_select);
+  return _dupRow;
+}
+
+function _indicateMasterBoxNumber(data, _dupRow) {
+  console.log("_indicateMasterBoxNumber: about to write masterbox number");
+  var _masterBoxNumberSelector = "span.master_box_number";
+  console.log("_indicateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+  var _select = _dupRow.querySelector(_masterBoxNumberSelector);
+  console.log("_indicateMasterBoxNumber: masterbox span selected in _select var");
+  _select.textContent = data.ms + 200;
+  return _dupRow;
+}
+
+function _renderInDom(_dupRow, boxRowTemplate) {
+  console.log("_renderInDom: about to insert the new box in the DOM");
+  _dupRow = boxRowTemplate.parentNode.insertBefore(_dupRow, boxRowTemplate);
+  console.log("_renderInDom: inserted the new box in the in DOM:");
+  console.log(_dupRow);
+  return _dupRow;
+}
+
+function _addToMaps(data, _dupRow) {
+  controlerBoxes.set(data.lb, data.boxState);
+  console.log("_addToMaps: controlerBoxes map: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
+  boxesRows.set(data.lb, _dupRow);
+  console.log("_addToMaps: boxesRows map: set key [" + data.lb + "] with value [" + _dupRow +  "] in boxesRows map.");
+  console.log(controlerBoxes);
 }
 
 function addNewRowForNewBox(data) {
@@ -227,34 +266,16 @@ function addNewRowForNewBox(data) {
       _dupRow = _setEVentListenersStateButtons(_dupRow);
 
       // set event listener on slave select
-      console.log("addNewRowForNewBox: about to set event listeners on buttons");
-      var _slaveSelectSelector = "select";
-      console.log("addNewRowForNewBox: _slaveSelectSelector = " + _slaveSelectSelector);
-      var _select = _dupRow.querySelector(_slaveSelectSelector);
-      console.log("addNewRowForNewBox: buttonList selected");
-      console.log(_select);
-      console.log("addNewRowForNewBox: about to call setStateButtonEvents");
-      setSelectEvents(_select);
+      _dupRow = _setEventListenerOnMasterSelect(_dupRow);
 
       // indicate masterbox number
-      console.log("addNewRowForNewBox: about to write masterbox number");
-      _masterBoxNumberSelector = "span.master_box_number";
-      console.log("addNewRowForNewBox: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-      var _select = _dupRow.querySelector(_masterBoxNumberSelector);
-      console.log("addNewRowForNewBox: masterbox span selected");
-      _dupRow.children[1].children[0].textContent = data.ms + 200;
+      _dupRow = _indicateMasterBoxNumber(data, _dupRow);
 
       // render in DOM
-      console.log("addNewRowForNewBox: about to insert the new box in the DOM");
-      boxRowTemplate.parentNode.insertBefore(_dupRow, boxRowTemplate);
-      console.log("addNewRowForNewBox: inserted the new box in the in DOM:");
-      console.log(_dupRow);
+      _dupRow = _renderInDom(_dupRow, boxRowTemplate);
 
-      // add a key/entry pair to the controlerBoxes map
-      controlerBoxes.set(data.lb, data.boxState);
-      console.log("addNewRowForNewBox: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
-      console.log(controlerBoxes);
-
+      // add a key/entry pair to the controlerBoxes map and to the rowsMap map
+      _dupRow = _addToMaps(data, _dupRow);
     }
     console.log("addNewRowForNewBox ending.");
   }
@@ -330,6 +351,7 @@ function stateButtonsDOMSelector(laserBoxIndexNumber) {
   var _selector = "div.box_wrapper[data-lb='" + laserBoxIndexNumber + "'] > div.box_state_setter > div.setters_group > button";
   console.log(_selector);
   var _elts = document.querySelectorAll(_selector);
+  var _elets = boxesRows.get(laserBoxIndexNumber);
   console.log(_elts);
   console.log("stateButtonsDOMSelector ending.");
   return _elts;
