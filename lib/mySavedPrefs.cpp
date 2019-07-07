@@ -16,11 +16,12 @@ mySavedPrefs::mySavedPrefs()
   *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
   *  global::iSlaveOnOffReaction; or I_DEFAULT_SLAVE_ON_OFF_REACTION
 
-  *  global::I_DEFAULT_INTERFACE_NODE_ID; or iInterfaceNodeId
+  *  iInterfaceNodeId
   *  global::bInterfaceNodeName or B_DEFAULT_INTERFACE_NODE_NAME
   *  global::B_NODE_NAME, B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
-  *  MESH_ROOT & IS_INTERFACE
+  *  MESH_ROOT
+  *  IS_INTERFACE
   *  sBoxesCount
 
   *  PIN_COUNT
@@ -33,27 +34,35 @@ void mySavedPrefs::savePreferences() {
 
   preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
 
+  const PROGMEM char _debugMsgStart[] = "PREFERENCES: savePreferences(): the value of";
+  const PROGMEM char _debugMsgEndSuccess[] = "has been saved to \"savedSettingsNS\":";
+  const PROGMEM char _debugMsgEndFail[] = "could not be saved to \"savedSettingsNS\":";
+
   // iSlaveOnOffReaction
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
 
   // bMasterBoxName
   size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
   if (_masterNodeNameRet) {
-    Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i has been saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+    Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, _debugMsgEndSuccess);
   } else {
-    Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i could not be saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+    Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, _debugMsgEndFail);
   }
 
   // sBoxesCount
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
   if (_sBoxesCountRet) {
-    Serial.printf("PREFERENCES: savePreferences(): the value of sBoxesCount == %i has been saved to \"savedSettingsNS\":\"bMasterNName\"\n", sBoxesCount);
+    Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, _debugMsgEndSuccess);
   } else {
-    Serial.printf("PREFERENCES: savePreferences(): the value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName == %i could not be saved to \"savedSettingsNS\":\"bMasterNName\"\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+    Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, _debugMsgEndFail);
+  }
+
+  } else {
+    Serial.printf("%s iInterfaceNodeId == %i %s\"bMasterNName\"\n", _debugMsgStart, iInterfaceNodeId, _debugMsgEndFail);
   }
 
   preferences.end();
-  Serial.print("PREFERENCES: savePreferences(): done\n");
+  Serial.print(F("PREFERENCES: savePreferences(): done\n"));
 }
 
 
@@ -63,15 +72,18 @@ void mySavedPrefs::loadPreferences() {
   Serial.print("\nSETUP: loadPreferences(): starting\n");
   // Instanciate preferences
   Preferences preferences;
+
+  const PROGMEM char _debugMsgStart[] = "SETUP: loadPreferences():";
+
   if (preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
 
     // read the value of "savedSettingsNS":"savedSettings"
     unsigned int _savedSettings = preferences.getShort("savedSettings", 0);
-    Serial.printf("SETUP: loadPreferences(). \"savedSettings\" = _savedSettings = %i \n", _savedSettings);
+    Serial.printf("%s \"savedSettings\" = _savedSettings = %i \n", _debugMsgStart, _savedSettings);
 
     // if the value of _savedSettings > 0, this means that some settings have been saved in the past
     if (_savedSettings > 0) {
-      Serial.print("SETUP: loadPreferences(). NVS has saved settings. Loading values.\n");
+      Serial.printf("%s NVS has saved settings. Loading values.\n", _debugMsgStart);
 
       // iSlaveOnOffReaction
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
@@ -85,15 +97,15 @@ void mySavedPrefs::loadPreferences() {
       // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
       // will stay unchanged.
       ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = (byte)preferences.getShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
-      Serial.printf("SETUP: loadPreferences(). ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName set to: %i\n", ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+      Serial.printf("%s ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName set to: %i\n", _debugMsgStart, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
 
       // sBoxesCount
       sBoxesCount = preferences.getShort("sBoxesCount", sBoxesCount);
-      Serial.printf("SETUP: loadPreferences(). sBoxesCount set to: %i\n", sBoxesCount);
+      Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, sBoxesCount);
 
     }
   } else {
-    Serial.printf("SETUP: loadPreferences(): \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
+    Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
   }
 
   preferences.end();
@@ -101,5 +113,5 @@ void mySavedPrefs::loadPreferences() {
   // for testing purposes
   // savePreferences();
 
-  Serial.print("SETUP: loadPreferences(): done\n");
+  Serial.print("%s done\n");
 }
