@@ -11,7 +11,6 @@
 #include "LaserPin.h"
 
 
-extern unsigned long const DEFAULT_PIN_BLINKING_INTERVAL;
 extern const short PIN_COUNT;                                                     // BOX BY BOX
 extern short relayPins[];  // an array of pin numbers to which relays are attached// BOX BY BOX
 
@@ -41,8 +40,6 @@ extern const byte MY_INDEX_IN_CB_ARRAY;
 
 extern short iSlaveOnOffReaction;
 extern byte bInterfaceNodeName;
-
-extern unsigned long pinBlinkingInterval;
 
 extern const char* slaveReactionHtml[4];
 

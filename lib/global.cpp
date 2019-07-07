@@ -12,7 +12,6 @@
 #include "Arduino.h"
 #include "global.h"
 
-unsigned long const DEFAULT_PIN_BLINKING_INTERVAL = 10000UL;
 const short PIN_COUNT = 4;
 short relayPins[] = { 5, 17, 16, 4 };
 // const short PIN_COUNT = 8;
@@ -66,8 +65,6 @@ const byte MY_INDEX_IN_CB_ARRAY = B_NODE_NAME - B_CONTROLLER_BOX_PREFIX;
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 int iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
 byte bInterfaceNodeName = B_DEFAULT_INTERFACE_NODE_NAME;
-
-unsigned long pinBlinkingInterval = DEFAULT_PIN_BLINKING_INTERVAL;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 

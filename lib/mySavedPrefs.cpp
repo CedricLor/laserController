@@ -14,7 +14,7 @@ mySavedPrefs::mySavedPrefs()
   *  sBoxDefaultState = S_BOX_DEFAULT_STATE;
 
   *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
-  *  global::iSlaveOnOffReaction; or I_DEFAULT_SLAVE_ON_OFF_REACTION
+  *  iSlaveOnOffReaction
 
   *  iInterfaceNodeId (e.g. 2760139053)
   *  bInterfaceNodeName (e.g. 201)
