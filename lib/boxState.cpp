@@ -42,7 +42,6 @@ reverse dependency graph
 
 short int boxState::_boxTargetState = 0;
 bool boxState::_boxActiveStateHasBeenReset = 0;
-short int boxState::_boxDefaultState = 5;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 const short int boxState::_NAME_CHAR_COUNT = 25;
@@ -288,8 +287,8 @@ void boxState::_odtcbPlayBoxState(){
   // Serial.println(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState);
   // Serial.println("void boxState::_odtcbPlayBoxState(): _boxTargetState");
   // Serial.println(_boxTargetState);
-  if (!(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState == _boxDefaultState)) {
-    _setBoxTargetState(_boxDefaultState);
+  if (!(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState == sBoxDefaultState)) {
+    _setBoxTargetState(sBoxDefaultState);
   }
   Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }

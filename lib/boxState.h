@@ -64,7 +64,6 @@ class boxState
     static const short int _HTML_TAG_CHAR_COUNT;
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
-    static short int _boxDefaultState;
 
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();
