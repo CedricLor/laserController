@@ -78,6 +78,10 @@ void mySavedPrefs::savePreferences() {
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
   Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, (_sBoxesCountRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
+  // Tell user how many free entries remain
+  size_t _freeEntries = preferences.freeEntries();
+  Serial.printf("%s Save complete. Remaining free entries in NVS: %i", _debugMsgStart, _freeEntries);
+
   preferences.end();
   Serial.print(F("PREFERENCES: savePreferences(): done\n"));
 }
@@ -143,6 +147,10 @@ void mySavedPrefs::loadPreferences() {
   } else {
     Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
   }
+
+  // Tell user how many free entries remain
+  size_t _freeEntries = preferences.freeEntries();
+  Serial.printf("%s Save complete. Remaining free entries in NVS: %i", _debugMsgStart, _freeEntries);
 
   preferences.end();
 
