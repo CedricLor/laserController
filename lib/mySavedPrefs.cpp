@@ -13,7 +13,8 @@ mySavedPrefs::mySavedPrefs()
   /* variables to be saved in NVS:
   *  sBoxDefaultState;
   *  gbNodeName
-  *  B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
+  *  bMasterNodePrefix
+  *  MY_INDEX_IN_CB_ARRAY
 
   *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
   *  iSlaveOnOffReaction

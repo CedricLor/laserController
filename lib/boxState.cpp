@@ -166,13 +166,13 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     // them came and give priority to the latest
     if (ControlerBox::valFromPir == HIGH &&
       // testing if IR has been set HIGH
-      ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveState != -1 &&
+      ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)bControllerBoxPrefix].boxActiveState != -1 &&
       // testing if the state of the master boxActiveState has been set to something
-      ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount == false
+      ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)bControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
       // testing if the state of the master boxActiveState has been taken into account
       ){
         // compare the times at which each signal catcher has been set
-        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].uiBoxActiveStateStartTime) {
+        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)bControllerBoxPrefix].uiBoxActiveStateStartTime) {
           _setBoxTargetState(3);
         } else {
           _setBoxTargetState(6);
@@ -192,8 +192,8 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
   if (boxStates[ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState]._bMeshTrigger == 1 &&
-    ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveState != -1 &&
-    ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount == false
+    ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)bControllerBoxPrefix].boxActiveState != -1 &&
+    ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)bControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
     ){
       _setBoxTargetState(6);
       return;
@@ -205,7 +205,7 @@ void boxState::_resetSignalCatchers() {
   // reset all the signals catchers to their initial values
   ControlerBox::valFromPir = LOW;
   ControlerBox::uiSettingTimeOfValFromPir = 0;
-  ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)B_CONTROLLER_BOX_PREFIX].boxActiveStateHasBeenTakenIntoAccount = true;
+  ControlerBoxes[ControlerBoxes[(int)MY_INDEX_IN_CB_ARRAY].bMasterBoxName - (int)bControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount = true;
   ControlerBox::valFromWeb = -1;
 }
 

@@ -64,7 +64,8 @@ const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
 const byte B_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
 const byte B_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
-const byte MY_INDEX_IN_CB_ARRAY = B_NODE_NAME - B_CONTROLLER_BOX_PREFIX;
+byte bControllerBoxPrefix = B_CONTROLLER_BOX_PREFIX;
+const byte MY_INDEX_IN_CB_ARRAY = gbNodeName - bControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 int iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;

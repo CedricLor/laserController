@@ -73,15 +73,15 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
       Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName = %i\n", _action, __bMasterBoxName);
     }
     // reduce it from [e.g. 205] to [e.g. 5] send less data via the web
-    __bMasterBoxName = __bMasterBoxName - B_CONTROLLER_BOX_PREFIX;
+    __bMasterBoxName = __bMasterBoxName - bControllerBoxPrefix;
     if (MY_DEBUG) {
-      Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName - B_CONTROLLER_BOX_PREFIX = %i\n", _action, (__bMasterBoxName - B_CONTROLLER_BOX_PREFIX));
+      Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName - bControllerBoxPrefix = %i\n", _action, (__bMasterBoxName - bControllerBoxPrefix));
     }
 
     // get the index as an int:
     // root["senderNodeName"] is a char -> cast it as int
-    // B_CONTROLLER_BOX_PREFIX is a byte -> cast it as int
-    short int __sSlaveBoxIndexNumber = (int)root["senderNodeName"] - (int)B_CONTROLLER_BOX_PREFIX;
+    // bControllerBoxPrefix is a byte -> cast it as int
+    short int __sSlaveBoxIndexNumber = (int)root["senderNodeName"] - (int)bControllerBoxPrefix;
     // if (MY_DEBUG) {
     //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
     // }
@@ -101,7 +101,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   const char* _m = "m";
   if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
     byte __bMasterBoxName = root["ms"];
-    __bMasterBoxName = __bMasterBoxName + B_CONTROLLER_BOX_PREFIX;
+    __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
 
     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateMasterBoxName(__bMasterBoxName);
     myMeshViews __myMeshViews;
@@ -127,7 +127,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // Update the sender box properties
 
     // calculate the box index of the sending box
-    byte __boxIndex = __bSenderNodeName - B_CONTROLLER_BOX_PREFIX;
+    byte __boxIndex = __bSenderNodeName - bControllerBoxPrefix;
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
 
     // if the sender is a newly connected box

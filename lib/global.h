@@ -35,7 +35,7 @@ extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my cu
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern const byte B_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
-extern const byte B_CONTROLLER_BOX_PREFIX;
+extern byte bControllerBoxPrefix;
 extern const byte MY_INDEX_IN_CB_ARRAY;
 
 extern short iSlaveOnOffReaction;

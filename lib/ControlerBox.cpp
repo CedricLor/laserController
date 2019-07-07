@@ -115,7 +115,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // extract the index of the relevant box from its senderNodeName in the JSON
   byte __bNodeName = doc["senderNodeName"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
-  byte __bBoxIndex = __bNodeName - B_CONTROLLER_BOX_PREFIX; // 201 - 200 = 1
+  byte __bBoxIndex = __bNodeName - bControllerBoxPrefix; // 201 - 200 = 1
 
   // set the nodeId
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
