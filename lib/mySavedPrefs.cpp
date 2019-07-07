@@ -57,6 +57,10 @@ void mySavedPrefs::savePreferences() {
   size_t _bInterfaceNodeNameRet = preferences.putShort("iIFNodId", (short)bInterfaceNodeName);
   Serial.printf("%s bInterfaceNodeName == %i %s\"iIFNodId\"\n", _debugMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
+  // isMeshRoot
+  size_t _isMeshRootRet = preferences.putBool("isMeshRoot", isMeshRoot);
+  Serial.printf("%s isMeshRoot == %i %s\"isMeshRoot\"\n", _debugMsgStart, isMeshRoot, (_isMeshRootRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+
   // sBoxesCount
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
   Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, (_sBoxesCountRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
@@ -105,11 +109,15 @@ void mySavedPrefs::loadPreferences() {
 
       // iInterfaceNodeId
       iInterfaceNodeId = preferences.getInt("iIFNodId", iInterfaceNodeId);
-      Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, iInterfaceNodeId);
+      Serial.printf("%s iInterfaceNodeId set to: %i\n", _debugMsgStart, iInterfaceNodeId);
 
       // bInterfaceNodeName
       bInterfaceNodeName = preferences.getShort("iIFNodName", bInterfaceNodeName);
-      Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, bInterfaceNodeName);
+      Serial.printf("%s bInterfaceNodeName set to: %i\n", _debugMsgStart, bInterfaceNodeName);
+
+      // isMeshRoot
+      isMeshRoot = preferences.getBool("isMeshRoot", isMeshRoot);
+      Serial.printf("%s isMeshRoot set to: %i\n", _debugMsgStart, isMeshRoot);
 
       // sBoxesCount
       sBoxesCount = preferences.getShort("sBoxesCount", sBoxesCount);
