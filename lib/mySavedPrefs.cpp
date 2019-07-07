@@ -20,7 +20,7 @@ mySavedPrefs::mySavedPrefs()
   *  bInterfaceNodeName (e.g. 201)
   *  global::B_NODE_NAME, B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
-  *  IS_MESH_ROOT
+  *  isMeshRoot
   *  IS_INTERFACE
   *  sBoxesCount
 
