@@ -87,9 +87,9 @@ void myWebServerViews::_loadBoxArray() {
 //   __myResponse += "<h1>";
 //   __myResponse += String(B_NODE_NAME); // B_NODE_NAME defined and declared in global
 //   __myResponse += " - Station IP: ";
-//   __myResponse += (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString(); // dependancy
+//   __myResponse += (ControlerBoxes[myIndexInCBArray].stationIP).toString(); // dependancy
 //   __myResponse += " - AP IP: ";
-//   __myResponse += (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();  // dependancy
+//   __myResponse += (ControlerBoxes[myIndexInCBArray].APIP).toString();  // dependancy
 //   __myResponse += "</h1>";
 //   __myResponse += _printAllLasersCntrl();
 //   __myResponse += _printIndivLaserCntrls();

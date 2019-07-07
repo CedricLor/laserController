@@ -125,6 +125,15 @@ DONE:
 - review webServerControler to start decoding requests properly
 - add additional states as drafted on the paper
 
+- refactor the notes and sequences to get closer to a music score player
+
+- on new connection callback (Mesh), the laser boxes send a message. As currently drafted,
+when I will have 10 laser boxes, this will overflow the mesh: add speed bumper
+(wait for x seconds before sending with x calculated from the index number or boxname)
+-> modified: on newConnection, only the newly connected box sends broadcast all its status message. The other boxes do not do anything and just wait.
+
+C. Implement websockets
+
 
 TO DO:
 - manual state communication sequence
@@ -133,8 +142,6 @@ TO DO:
   - webServerControler: draft the manual state receiver
   - meshViews: draft the manual state sender
   - meshController: draft the manual state receiver
-
-- refactor the notes and sequences to get closer to a music score player
 
 - save and read data in NVS or SPIFFS
 
@@ -150,7 +157,6 @@ TO DO:
     - each time I use a short int as a bool, change it to a bool
     - each time I use a short for a very short number, change it to a byte
 
-  C. Implement websockets
   D. Implement network sequences
   E. Implement some kind of non-volatile storage of sequences, boxStotes or network sequences
 
@@ -174,10 +180,6 @@ TO DO:
 
 - find a way to decrease ControlerBox::connectedBoxesCount when a box gets disconnected
 - add a little static array to ControlerBox to store the index numbers of ControlerBoxes of the box that are connected
-- on new connection callback (Mesh), the laser boxes send a message. As currently drafted,
-when I will have 10 laser boxes, this will overflow the mesh: add speed bumper
-(wait for x seconds before sending with x calculated from the index number or boxname)
-
 
 Notes on Task Scheduler
 When calling setInterval() within the onEnable callback of the Task, the main callback is called within the ancient delay.

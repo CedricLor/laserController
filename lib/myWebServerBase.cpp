@@ -145,16 +145,16 @@ String myWebServerBase::_processor(const String& var) {
   if(var == "B_NODE_NAME") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"B_NODE_NAME\")\n");
     char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName,_cNodeName,10); //(integer, yourBuffer, base)
+    itoa(ControlerBoxes[myIndexInCBArray].bNodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);
   }
   if(var == "STATION_IP") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"STATION_IP\")\n");
-    return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP.toString().c_str());
+    return F(ControlerBoxes[myIndexInCBArray].stationIP.toString().c_str());
   }
   if(var == "AP_IP") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"AP_IP\")\n");
-    return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
+    return F(ControlerBoxes[myIndexInCBArray].APIP.toString().c_str());
   }
   // if(var == "BOX_SETTER") {
   //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
@@ -166,7 +166,7 @@ String myWebServerBase::_processor(const String& var) {
   // }
   if(var == "NETWORK_SETTER") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"NETWORK_SETTER\")\n");
-    return F(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP.toString().c_str());
+    return F(ControlerBoxes[myIndexInCBArray].APIP.toString().c_str());
   }
   Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");
   return String();
@@ -440,11 +440,11 @@ void myWebServerBase::_decodeWSMessage(uint8_t *data) {
 Task myWebServerBase::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
 
 void myWebServerBase::_tcbSendWSDataIfChangeStationIp() {
-  // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP)) {
+  // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[myIndexInCBArray].stationIP)) {
     Serial.println("myWebServerBase::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     // Serial.printf("myWebServerBase::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
     _prepareWSData(3); // 3 for message sent in case of change in station IP
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+    ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
   // }
 }
 

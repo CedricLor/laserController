@@ -40,7 +40,7 @@
 */
 
 
-Task myMeshViews::tSendBoxStateToNewBox(MY_INDEX_IN_CB_ARRAY * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+Task myMeshViews::tSendBoxStateToNewBox(myIndexInCBArray * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 
 void myMeshViews::_odtcbSendBoxStateToNewBox() {
   for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
@@ -57,7 +57,7 @@ void myMeshViews::_odtcbSendBoxStateToNewBox() {
 
 myMeshViews::myMeshViews()
 {
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,8 +131,8 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   JsonObject msg = doc.to<JsonObject>();
 
   // load the JSON document with values
-  msg["senderBoxActiveState"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState;
-  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[MY_INDEX_IN_CB_ARRAY].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  msg["senderBoxActiveState"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
+  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
   msg["action"] = "s";
 
   // send to the sender
@@ -140,7 +140,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveStateHasBeenSignaled = true;
+  ControlerBoxes[myIndexInCBArray].boxActiveStateHasBeenSignaled = true;
 
   Serial.println("myMeshViews::statusMsg(): Ending.");
 }
@@ -198,14 +198,14 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
 
   // Serial.println("myMeshViews::_sendMsg(): adding IPs to the JSON object before sending");
   char _cNodeName[4];
-  // Serial.println("myMeshViews::_sendMsg(): about to convert ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName to char array _cNodeName");
-  itoa(ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bNodeName, _cNodeName, 10);
+  // Serial.println("myMeshViews::_sendMsg(): about to convert ControlerBoxes[myIndexInCBArray].bNodeName to char array _cNodeName");
+  itoa(ControlerBoxes[myIndexInCBArray].bNodeName, _cNodeName, 10);
   // Serial.println("myMeshViews::_sendMsg(): about to allocate _cNodeName to msg[\"senderNodeName\"]");
   msg["senderNodeName"] = _cNodeName;
   // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
-  msg["senderAPIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].APIP).toString();
+  msg["senderAPIP"] = (ControlerBoxes[myIndexInCBArray].APIP).toString();
   // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
-  msg["senderStIP"] = (ControlerBoxes[MY_INDEX_IN_CB_ARRAY].stationIP).toString();
+  msg["senderStIP"] = (ControlerBoxes[myIndexInCBArray].stationIP).toString();
   // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
 
   // JSON serialization

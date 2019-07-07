@@ -14,9 +14,9 @@ mySavedPrefs::mySavedPrefs()
   *  sBoxDefaultState;
   *  gbNodeName
   *  bMasterNodePrefix
-  *  MY_INDEX_IN_CB_ARRAY
+  *  myIndexInCBArray
 
-  *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
+  *  ControlerBoxes[myIndexInCBArray].bMasterBoxName;
   *  iSlaveOnOffReaction
 
   *  iInterfaceNodeId (e.g. 2760139053)
@@ -63,9 +63,9 @@ void mySavedPrefs::savePreferences() {
   size_t _gbControllerBoxPrefixRet = preferences.putShort("bContrBPref", (short)bControllerBoxPrefix);
   Serial.printf("%s bControllerBoxPrefix == %i %s\"bContrBPref\"\n", _debugMsgStart, bControllerBoxPrefix, (_gbControllerBoxPrefixRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // save value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
-  size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
-  Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, (_masterNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+  // save value of ControlerBoxes[myIndexInCBArray].bMasterBoxName
+  size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[myIndexInCBArray].bMasterBoxName);
+  Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, myIndexInCBArray, (short)ControlerBoxes[myIndexInCBArray].bMasterBoxName, (_masterNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of iSlaveOnOffReaction
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
@@ -138,15 +138,18 @@ void mySavedPrefs::loadPreferences() {
       bControllerBoxPrefix = (byte)preferences.getShort("bContrBPref", (short)bControllerBoxPrefix);
       Serial.printf("%s bControllerBoxPrefix set to: %i\n", _debugMsgStart, bControllerBoxPrefix);
 
-      // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
+      // recalculate myIndexInCBArray with the new values of gbNodeName and bControllerBoxPrefix
+      myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
+
+      // ControlerBoxes[myIndexInCBArray].bMasterBoxName
       // If there is a value saved for bMasterNName, reset
-      // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
+      // ControlerBoxes[myIndexInCBArray].bMasterBoxName
       // which is set by default to B_DEFAULT_MASTER_NODE_NAME
       // in the ControlerBox constructor. Else, the value of
-      // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
+      // ControlerBoxes[myIndexInCBArray].bMasterBoxName
       // will stay unchanged.
-      ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = (byte)preferences.getShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
-      Serial.printf("%s ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName set to: %i\n", _debugMsgStart, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
+      ControlerBoxes[myIndexInCBArray].bMasterBoxName = (byte)preferences.getShort("bMasterNName", (short)ControlerBoxes[myIndexInCBArray].bMasterBoxName);
+      Serial.printf("%s ControlerBoxes[myIndexInCBArray].bMasterBoxName set to: %i\n", _debugMsgStart, ControlerBoxes[myIndexInCBArray].bMasterBoxName);
 
       // iSlaveOnOffReaction
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
@@ -187,7 +190,7 @@ void mySavedPrefs::loadPreferences() {
       }
     }
   } else {
-    Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
+    Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, myIndexInCBArray, ControlerBoxes[myIndexInCBArray].bMasterBoxName, sBoxesCount);
   }
 
   // Tell user how many free entries remain

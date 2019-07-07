@@ -103,10 +103,10 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __bMasterBoxName = root["ms"];
     __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
 
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateMasterBoxName(__bMasterBoxName);
+    ControlerBoxes[myIndexInCBArray].updateMasterBoxName(__bMasterBoxName);
     myMeshViews __myMeshViews;
     __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
-    ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxNameChangeHasBeenSignaled = true;
+    ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
 
     return;
   }

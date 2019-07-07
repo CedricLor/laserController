@@ -82,7 +82,7 @@ void setup() {
   }
 
   // commented out to check whether this has any impact
-  // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
+  // ControlerBoxes[myIndexInCBArray].boxActiveState = 0;
 
   if (isInterface == false) {
     tone::initTones();

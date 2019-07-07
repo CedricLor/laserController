@@ -64,7 +64,7 @@ void myMesh::meshSetup() {
   laserControllerMesh.setContainsRoot(true);
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
@@ -78,7 +78,7 @@ void myMesh::meshSetup() {
 // Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
   _decodeRequest(from, msg);
 }
 
@@ -103,7 +103,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   // Only send my boxState to the mesh if I am not an interface (interface does not have boxStates)
     Serial.println("myMesh::newConnectionCallback(): I am not the interface. I am going to call send them my data.");
     // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
-    // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
+    // ControlerBoxes[myIndexInCBArray].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
     // Only send immediately my boxState if I am newly connecting to the Mesh
     // If I was already connected, I shall wait a little bit to avoid overflowing the Mesh
     // (all the boxes would send a message at the same time...)
@@ -115,7 +115,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     // else, we were already connected to the mesh: do nothing; we will send it a statusMsg when it will have identified itself
     // else {
     //   Serial.println("myMesh::newConnectionCallback(): A new box has joined the existing mesh. About to send it my data.");
-    //   _tSendStatusOnNewConnection.enableDelayed(MY_INDEX_IN_CB_ARRAY * 1000);
+    //   _tSendStatusOnNewConnection.enableDelayed(myIndexInCBArray * 1000);
     //   Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
     // }
 }
@@ -130,7 +130,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 void myMesh::changedConnectionCallback() {
   Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.println("--------------------- CHANGED CONNECTION --------------------------");
-  // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateThisBoxProperties();
+  // ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
   // _updateConnectedBoxCount();
 }
 
@@ -198,8 +198,8 @@ char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
 //   }
 //   const char* _containsSub = obj["subs"];
 //   if (_containsSub != nullptr) {
-//     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateConnectedBoxCount(2); // for the time being, a number of 2 means "2 or more"
+//     ControlerBoxes[myIndexInCBArray].updateConnectedBoxCount(2); // for the time being, a number of 2 means "2 or more"
 //   } else {
-//     ControlerBoxes[MY_INDEX_IN_CB_ARRAY].updateConnectedBoxCount(1); // If subs does not exist, I am alone in the mesh
+//     ControlerBoxes[myIndexInCBArray].updateConnectedBoxCount(1); // If subs does not exist, I am alone in the mesh
 //   }
 // }

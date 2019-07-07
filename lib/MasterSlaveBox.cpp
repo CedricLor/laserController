@@ -34,7 +34,7 @@ void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const byte bMasterBox
 
 void MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber) {
   // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Starting with bMasterBoxNumber = %u\n", bMasterBoxNumber);
-  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName = B_MASTER_NODE_PREFIX + bMasterBoxNumber; 
+  ControlerBoxes[myIndexInCBArray].bMasterBoxName = B_MASTER_NODE_PREFIX + bMasterBoxNumber; 
   // Serial.print("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Done\n");
 }
 

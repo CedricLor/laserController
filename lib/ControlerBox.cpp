@@ -74,7 +74,7 @@ void ControlerBox::updateThisBoxProperties() {
   this->bNodeName = gbNodeName;
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
-  if (MY_DEBUG == true) {ControlerBoxes[MY_INDEX_IN_CB_ARRAY].printProperties(MY_INDEX_IN_CB_ARRAY);};
+  if (MY_DEBUG == true) {ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);};
 }
 
 
