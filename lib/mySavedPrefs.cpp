@@ -30,43 +30,51 @@ mySavedPrefs::mySavedPrefs()
 
 void mySavedPrefs::savePreferences() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
+
+  // Instantiate Preferences
   Preferences preferences;
+
+  // Open namespace "savedSettingsNS" in read-write
   preferences.begin("savedSettingsNS", /*read only = */false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
 
+  // Immediately add a "savedSettings" key:value pair
+  // (incrementing a counter of the number of time save
+  // operations have taken place)
   preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
 
+  // Prepare some debug constant in PROGMEM
   const PROGMEM char _debugMsgStart[] = "PREFERENCES: savePreferences(): the value of";
   const PROGMEM char _debugMsgEndSuccess[] = "has been saved to \"savedSettingsNS\":";
   const PROGMEM char _debugMsgEndFail[] = "could not be saved to \"savedSettingsNS\":";
 
-  // sBoxDefaultState
+  // save value of sBoxDefaultState
   size_t _sBoxDefaultStateRet = preferences.putShort("sBoxDefSta", sBoxDefaultState);
   Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", _debugMsgStart, sBoxDefaultState, (_sBoxDefaultStateRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // bMasterBoxName
+  // save value of bMasterBoxName
   size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
   Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, (_masterNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // iSlaveOnOffReaction
+  // save value of iSlaveOnOffReaction
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
 
-  // iInterfaceNodeId
+  // save value of iInterfaceNodeId
   size_t _iInterfaceNodeIdRet = preferences.putInt("iIFNodId", iInterfaceNodeId);
   Serial.printf("%s iInterfaceNodeId == %i %s\"iIFNodId\"\n", _debugMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // bInterfaceNodeName
+  // save value of bInterfaceNodeName
   size_t _bInterfaceNodeNameRet = preferences.putShort("iIFNodId", (short)bInterfaceNodeName);
   Serial.printf("%s bInterfaceNodeName == %i %s\"iIFNodId\"\n", _debugMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // gbNodeName
+  // save value of gbNodeName
   size_t _gbNodeNameRet = preferences.putShort("bNodeName", (short)gbNodeName);
   Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // isMeshRoot
+  // save value of isMeshRoot
   size_t _isMeshRootRet = preferences.putBool("isMeshRoot", isMeshRoot);
   Serial.printf("%s isMeshRoot == %i %s\"isMeshRoot\"\n", _debugMsgStart, isMeshRoot, (_isMeshRootRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // sBoxesCount
+  // save value of sBoxesCount
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
   Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, (_sBoxesCountRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
