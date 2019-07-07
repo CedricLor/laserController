@@ -60,6 +60,7 @@ void mySavedPrefs::savePreferences() {
   Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of bMasterBoxName
+  // save value of ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
   size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
   Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, (_masterNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
@@ -130,7 +131,7 @@ void mySavedPrefs::loadPreferences() {
       gbNodeName = preferences.getShort("bNodeName", (short)gbNodeName);
       Serial.printf("%s gbNodeName set to: %i\n", _debugMsgStart, gbNodeName);
 
-      // bMasterBoxName
+      // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
       // If there is a value saved for bMasterNName, reset
       // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
       // which is set by default to B_DEFAULT_MASTER_NODE_NAME
