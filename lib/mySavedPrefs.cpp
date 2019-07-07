@@ -57,6 +57,10 @@ void mySavedPrefs::savePreferences() {
     Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, _debugMsgEndFail);
   }
 
+  // iInterfaceNodeId
+  size_t _iInterfaceNodeId = preferences.putShort("iIFNodId", iInterfaceNodeId);
+  if (_iInterfaceNodeId) {
+    Serial.printf("%s iInterfaceNodeId == %i %s\"iIFNodId\"\n", _debugMsgStart, iInterfaceNodeId, _debugMsgEndSuccess);
   } else {
     Serial.printf("%s iInterfaceNodeId == %i %s\"bMasterNName\"\n", _debugMsgStart, iInterfaceNodeId, _debugMsgEndFail);
   }
