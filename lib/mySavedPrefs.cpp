@@ -16,8 +16,8 @@ mySavedPrefs::mySavedPrefs()
   *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
   *  global::iSlaveOnOffReaction; or I_DEFAULT_SLAVE_ON_OFF_REACTION
 
-  *  global::bInterfaceNodeName or B_DEFAULT_INTERFACE_NODE_NAME
   *  iInterfaceNodeId (e.g. 2760139053)
+  *  bInterfaceNodeName (e.g. 201)
   *  global::B_NODE_NAME, B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
   *  MESH_ROOT
@@ -53,6 +53,9 @@ void mySavedPrefs::savePreferences() {
   size_t _iInterfaceNodeIdRet = preferences.putInt("iIFNodId", iInterfaceNodeId);
   Serial.printf("%s iInterfaceNodeId == %i %s\"iIFNodId\"\n", _debugMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
+  // bInterfaceNodeName
+  size_t _bInterfaceNodeNameRet = preferences.putShort("iIFNodId", (short)bInterfaceNodeName);
+  Serial.printf("%s bInterfaceNodeName == %i %s\"iIFNodId\"\n", _debugMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
   preferences.end();
   Serial.print(F("PREFERENCES: savePreferences(): done\n"));
 }
@@ -98,6 +101,10 @@ void mySavedPrefs::loadPreferences() {
       // iInterfaceNodeId
       iInterfaceNodeId = preferences.getInt("iIFNodId", iInterfaceNodeId);
       Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, iInterfaceNodeId);
+
+      // bInterfaceNodeName
+      bInterfaceNodeName = preferences.getShort("iIFNodName", bInterfaceNodeName);
+      Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, bInterfaceNodeName);
     }
   } else {
     Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
