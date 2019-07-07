@@ -71,7 +71,7 @@ void mySavedPrefs::savePreferences() {
   // preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
 
   // save value of iInterfaceNodeId
-  size_t _iInterfaceNodeIdRet = preferences.putInt("iIFNodId", iInterfaceNodeId);
+  size_t _iInterfaceNodeIdRet = preferences.putUInt("iIFNodId", iInterfaceNodeId);
   Serial.printf("%s iInterfaceNodeId == %i %s\"iIFNodId\"\n", _debugMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of bInterfaceNodeName
@@ -140,6 +140,7 @@ void mySavedPrefs::loadPreferences() {
 
       // recalculate myIndexInCBArray with the new values of gbNodeName and bControllerBoxPrefix
       myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
+      Serial.printf("%s myIndexInCBArray reset to: %i\n", _debugMsgStart, myIndexInCBArray);
 
       // ControlerBoxes[myIndexInCBArray].bMasterBoxName
       // If there is a value saved for bMasterNName, reset
@@ -149,19 +150,27 @@ void mySavedPrefs::loadPreferences() {
       // ControlerBoxes[myIndexInCBArray].bMasterBoxName
       // will stay unchanged.
       ControlerBoxes[myIndexInCBArray].bMasterBoxName = (byte)preferences.getShort("bMasterNName", (short)ControlerBoxes[myIndexInCBArray].bMasterBoxName);
-      Serial.printf("%s ControlerBoxes[myIndexInCBArray].bMasterBoxName set to: %i\n", _debugMsgStart, ControlerBoxes[myIndexInCBArray].bMasterBoxName);
+      Serial.printf("%s ControlerBoxes[%i].bMasterBoxName set to: %i\n", _debugMsgStart, myIndexInCBArray, ControlerBoxes[myIndexInCBArray].bMasterBoxName);
 
       // iSlaveOnOffReaction
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
       // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
 
       // iInterfaceNodeId
-      iInterfaceNodeId = preferences.getInt("iIFNodId", iInterfaceNodeId);
-      Serial.printf("%s iInterfaceNodeId set to: %i\n", _debugMsgStart, iInterfaceNodeId);
+      // Serial.printf("%s TRACING I_DEFAULT_INTERFACE_NODE_ID AND iInterfaceNodeId\n", _debugMsgStart);
+      // Serial.print("I_DEFAULT_INTERFACE_NODE_ID = ");Serial.println(I_DEFAULT_INTERFACE_NODE_ID);
+      // Serial.print("iInterfaceNodeId = ");Serial.println(iInterfaceNodeId);
+      iInterfaceNodeId = preferences.getUInt("iIFNodId", iInterfaceNodeId);
+      // Serial.print("iInterfaceNodeId = ");Serial.println(iInterfaceNodeId);
+      Serial.printf("%s iInterfaceNodeId set to: %u\n", _debugMsgStart, iInterfaceNodeId);
 
       // bInterfaceNodeName
       bInterfaceNodeName = (byte)preferences.getShort("iIFNodName", (short)bInterfaceNodeName);
       Serial.printf("%s bInterfaceNodeName set to: %i\n", _debugMsgStart, bInterfaceNodeName);
+
+      // recalculate bInterfaceIndexInCBArray with the new values of bInterfaceNodeName and bControllerBoxPrefix
+      bInterfaceIndexInCBArray = bInterfaceNodeName - bControllerBoxPrefix;
+      Serial.printf("%s bInterfaceIndexInCBArray reset to: %i\n", _debugMsgStart, bInterfaceIndexInCBArray);
 
       // isInterface
       isInterface = preferences.getBool("isIF", isInterface);

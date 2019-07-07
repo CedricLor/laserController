@@ -28,7 +28,8 @@ extern bool isMeshRoot;
 extern bool isInterface;
 
 extern const byte B_DEFAULT_INTERFACE_NODE_NAME;
-extern int iInterfaceNodeId;
+extern unsigned int iInterfaceNodeId;
+extern byte bInterfaceIndexInCBArray;
 
 extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 

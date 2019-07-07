@@ -57,7 +57,7 @@ bool isMeshRoot = IS_MESH_ROOT;
 bool isInterface = IS_INTERFACE;
 
 const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
-const int I_DEFAULT_INTERFACE_NODE_ID = 2760139053;
+const unsigned int I_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
@@ -68,8 +68,10 @@ byte bControllerBoxPrefix = B_CONTROLLER_BOX_PREFIX;
 byte myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
-int iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
+
+unsigned int iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
 byte bInterfaceNodeName = B_DEFAULT_INTERFACE_NODE_NAME;
+byte bInterfaceIndexInCBArray = bInterfaceNodeName - bControllerBoxPrefix;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
