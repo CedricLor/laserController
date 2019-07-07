@@ -128,7 +128,7 @@ void mySavedPrefs::loadPreferences() {
       Serial.printf("%s sBoxDefaultState set to: %i\n", _debugMsgStart, sBoxDefaultState);
 
       // gbNodeName
-      gbNodeName = preferences.getShort("bNodeName", (short)gbNodeName);
+      gbNodeName = (byte)preferences.getShort("bNodeName", (short)gbNodeName);
       Serial.printf("%s gbNodeName set to: %i\n", _debugMsgStart, gbNodeName);
 
       // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
@@ -150,7 +150,7 @@ void mySavedPrefs::loadPreferences() {
       Serial.printf("%s iInterfaceNodeId set to: %i\n", _debugMsgStart, iInterfaceNodeId);
 
       // bInterfaceNodeName
-      bInterfaceNodeName = preferences.getShort("iIFNodName", bInterfaceNodeName);
+      bInterfaceNodeName = (byte)preferences.getShort("iIFNodName", (short)bInterfaceNodeName);
       Serial.printf("%s bInterfaceNodeName set to: %i\n", _debugMsgStart, bInterfaceNodeName);
 
       // isInterface
