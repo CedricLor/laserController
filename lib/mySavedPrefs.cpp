@@ -11,7 +11,7 @@ mySavedPrefs::mySavedPrefs()
 }
 
   /* variables to be saved in NVS:
-  *  sBoxDefaultState = S_BOX_DEFAULT_STATE;
+  *  sBoxDefaultState;
   *  gbNodeName
   *  B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
@@ -25,6 +25,10 @@ mySavedPrefs::mySavedPrefs()
 
   *  sBoxesCount
   *  PIN_COUNT
+
+  *  ssid
+  *  pass
+
   */
 
 void mySavedPrefs::savePreferences() {
@@ -80,6 +84,14 @@ void mySavedPrefs::savePreferences() {
   // save value of sBoxesCount
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
   Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugMsgStart, sBoxesCount, (_sBoxesCountRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+
+  // save value of ssid
+  size_t _sssidRet = preferences.putString("ssid", ssid);
+  Serial.printf("%s ssid == %s %s\"ssid\"\n", _debugMsgStart, ssid, (_sssidRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+
+  // save value of pass
+  size_t _spassRet = preferences.putString("pass", pass);
+  Serial.printf("%s pass == %s %s\"pass\"\n", _debugMsgStart, pass, (_spassRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // Tell user how many free entries remain
   size_t _freeEntries = preferences.freeEntries();
@@ -150,6 +162,20 @@ void mySavedPrefs::loadPreferences() {
       // sBoxesCount
       sBoxesCount = preferences.getShort("sBoxesCount", sBoxesCount);
       Serial.printf("%s sBoxesCount set to: %i\n", _debugMsgStart, sBoxesCount);
+
+      // ssid
+      char _ssid[20];
+      if (preferences.getString("ssid", _ssid, 20)) {
+        strcpy(ssid, (const char*)_ssid);
+        Serial.printf("%s ssid set to: %s\n", _debugMsgStart, ssid);
+      }
+
+      // pass
+      char _pass[30];
+      if (preferences.getString("pass", _pass, 30)) {
+        strcpy(pass, (const char*)_pass);
+        Serial.printf("%s pass set to: %s\n", _debugMsgStart, pass);
+      }
     }
   } else {
     Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, sBoxesCount);
