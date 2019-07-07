@@ -65,13 +65,13 @@ void setup() {
   delay(2000);
   serialInit();
   mySavedPrefs::loadPreferences();
-  if (IS_INTERFACE == false) {
+  if (isInterface == false) {
     LaserPinsArray::initLaserPins();
     pirController::initPir();
   }
   myMesh::meshSetup();
 
-  if (IS_INTERFACE == true) {
+  if (isInterface == true) {
     myWebServerBase::startAsyncServer();
   }
   // Myota::OTAConfig();
@@ -84,7 +84,7 @@ void setup() {
   // commented out to check whether this has any impact
   // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0;
 
-  if (IS_INTERFACE == false) {
+  if (isInterface == false) {
     tone::initTones();
     bar::initBars();
     sequence::initSequences();
@@ -120,7 +120,7 @@ void serialInit() {
 }
 
 void enableTasks() {
-  if (IS_INTERFACE == false) {
+  if (isInterface == false) {
     boxState::tPlayBoxStates.enable();
   } else {
     myWebServerBase::_tSendWSDataIfChangeBoxState.enable();

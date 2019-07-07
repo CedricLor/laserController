@@ -12,19 +12,18 @@ mySavedPrefs::mySavedPrefs()
 
   /* variables to be saved in NVS:
   *  sBoxDefaultState = S_BOX_DEFAULT_STATE;
+  *  gbNodeName
+  *  B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
 
   *  ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName;
   *  iSlaveOnOffReaction
 
   *  iInterfaceNodeId (e.g. 2760139053)
   *  bInterfaceNodeName (e.g. 201)
-  *  gbNodeName
-  *  B_MASTER_NODE_PREFIX and/or MY_INDEX_IN_CB_ARRAY
-
   *  isMeshRoot
-  *  IS_INTERFACE
-  *  sBoxesCount
+  *  isInterface
 
+  *  sBoxesCount
   *  PIN_COUNT
   */
 
@@ -51,6 +50,10 @@ void mySavedPrefs::savePreferences() {
   size_t _sBoxDefaultStateRet = preferences.putShort("sBoxDefSta", sBoxDefaultState);
   Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", _debugMsgStart, sBoxDefaultState, (_sBoxDefaultStateRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
+  // save value of gbNodeName
+  size_t _gbNodeNameRet = preferences.putShort("bNodeName", (short)gbNodeName);
+  Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+
   // save value of bMasterBoxName
   size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName);
   Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugMsgStart, MY_INDEX_IN_CB_ARRAY, (short)ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName, (_masterNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
@@ -66,13 +69,13 @@ void mySavedPrefs::savePreferences() {
   size_t _bInterfaceNodeNameRet = preferences.putShort("iIFNodId", (short)bInterfaceNodeName);
   Serial.printf("%s bInterfaceNodeName == %i %s\"iIFNodId\"\n", _debugMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // save value of gbNodeName
-  size_t _gbNodeNameRet = preferences.putShort("bNodeName", (short)gbNodeName);
-  Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
-
   // save value of isMeshRoot
   size_t _isMeshRootRet = preferences.putBool("isMeshRoot", isMeshRoot);
   Serial.printf("%s isMeshRoot == %i %s\"isMeshRoot\"\n", _debugMsgStart, isMeshRoot, (_isMeshRootRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
+
+  // save value of isInterface
+  size_t _isInterfaceRet = preferences.putBool("isIF", isInterface);
+  Serial.printf("%s isInterface == %i %s\"isIF\"\n", _debugMsgStart, isInterface, (_isInterfaceRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of sBoxesCount
   size_t _sBoxesCountRet = preferences.putShort("sBoxesCount", sBoxesCount);
@@ -110,6 +113,10 @@ void mySavedPrefs::loadPreferences() {
       sBoxDefaultState = preferences.getShort("sBoxDefSta", sBoxDefaultState);
       Serial.printf("%s sBoxDefaultState set to: %i\n", _debugMsgStart, sBoxDefaultState);
 
+      // gbNodeName
+      gbNodeName = preferences.getShort("bNodeName", (short)gbNodeName);
+      Serial.printf("%s gbNodeName set to: %i\n", _debugMsgStart, gbNodeName);
+
       // bMasterBoxName
       // If there is a value saved for bMasterNName, reset
       // ControlerBoxes[MY_INDEX_IN_CB_ARRAY].bMasterBoxName
@@ -132,9 +139,9 @@ void mySavedPrefs::loadPreferences() {
       bInterfaceNodeName = preferences.getShort("iIFNodName", bInterfaceNodeName);
       Serial.printf("%s bInterfaceNodeName set to: %i\n", _debugMsgStart, bInterfaceNodeName);
 
-      // gbNodeName
-      gbNodeName = preferences.getShort("bNodeName", (short)gbNodeName);
-      Serial.printf("%s gbNodeName set to: %i\n", _debugMsgStart, gbNodeName);
+      // isInterface
+      isInterface = preferences.getBool("isIF", isInterface);
+      Serial.printf("%s isInterface set to: %i\n", _debugMsgStart, isInterface);
 
       // isMeshRoot
       isMeshRoot = preferences.getBool("isMeshRoot", isMeshRoot);

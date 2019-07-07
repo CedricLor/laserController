@@ -50,7 +50,7 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, MESH_CHANNEL );
 
-  if ((IS_INTERFACE == true)) {
+  if ((isInterface == true)) {
     // laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);  // this does not work. Unstable connection
     laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   }
