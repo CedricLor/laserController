@@ -152,14 +152,39 @@ function setActiveStateButton(data) {
 }
 
 function _newBoxRowSetProperties(data, _dupRow) {
-  console.log("addNewRowForNewBox: _dupRow: setting the id of the new wrapper div to: " + data.lb);
+  console.log("_newBoxRowSetProperties: _dupRow: setting the id of the new wrapper div to: " + data.lb);
   _dupRow.id = "boxRow" + data.lb;     // update data-lb attribute
-  console.log("addNewRowForNewBox: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
+  console.log("_newBoxRowSetProperties: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
   _dupRow.dataset.lb = data.lb;     // update data-lb attribute
-  console.log("addNewRowForNewBox: _dupRow: removing the class hidden from the classes of the new wrapper div");
+  console.log("_newBoxRowSetProperties: _dupRow: removing the class hidden from the classes of the new wrapper div");
   _dupRow.classList.remove('hidden');
-  console.log("addNewRowForNewBox: _dupRow: setting the laser box number: " + (data.lb + 200));
+  console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (data.lb + 200));
   _dupRow.children[0].children[0].children[0].textContent = data.lb + 200;
+  return _dupRow;
+}
+
+function _setActiveStateButton(data, _dupRow) {
+  console.log("addNewRowForNewBox: preparing a selector to select the state buttons included in _dupRow.");
+  var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
+  console.log("addNewRowForNewBox: selector created: '" + _selectorActiveBoxState + "'");
+  var _activeStateButtonList = _dupRow.querySelectorAll(_selectorActiveBoxState);
+  console.log("addNewRowForNewBox: button list selected: ");console.log(_activeStateButtonList);
+  if (_activeStateButtonList) {
+    console.log("addNewRowForNewBox: about to add the active class to select button");
+    _activeStateButtonList[0].classList.add('button_active_state');
+  }
+  return _dupRow;
+}
+
+function _setEVentListenersStateButtons(_dupRow) {
+  console.log("addNewRowForNewBox: about to set event listeners on buttons");
+  var _stateButtonListSelector = "button[data-boxstate]";
+  console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
+  var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
+  console.log("addNewRowForNewBox: buttonList selected");
+  console.log(_buttonList);
+  console.log("addNewRowForNewBox: about to call setStateButtonEvents");
+  setStateButtonEvents(_buttonList);
   return _dupRow;
 }
 
@@ -193,33 +218,18 @@ function addNewRowForNewBox(data) {
       console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
 
       // set properties
-      _newBoxRowSetProperties(data, _dupRow);
+      _dupRow = _newBoxRowSetProperties(data, _dupRow);
 
       // set the activeState button
-      console.log("addNewRowForNewBox: preparing a selector to select the state buttons included in _dupRow.");
-      var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
-      console.log("addNewRowForNewBox: selector created: '" + _selectorActiveBoxState + "'");
-      var _activeStateButtonList = _dupRow.querySelectorAll(_selectorActiveBoxState);
-      console.log("addNewRowForNewBox: button list selected: ");console.log(_activeStateButtonList);
-      if (_activeStateButtonList) {
-        console.log("addNewRowForNewBox: about to add the active class to select button");
-        _activeStateButtonList[0].classList.add('button_active_state');
-      }
+      _dupRow = _setActiveStateButton(data, _dupRow);
 
       // set event listener on buttons
-      console.log("addNewRowForNewBox: about to set event listeners on buttons");
-      var _stateButtonListSelector = "button[data-boxstate]";
-      console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
-      var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
-      console.log("addNewRowForNewBox: buttonList selected");
-      console.log(_buttonList);
-      console.log("addNewRowForNewBox: about to call setStateButtonEvents");
-      setStateButtonEvents(_buttonList);
+      _dupRow = _setEVentListenersStateButtons(_dupRow);
 
       // set event listener on slave select
       console.log("addNewRowForNewBox: about to set event listeners on buttons");
       var _slaveSelectSelector = "select";
-      console.log("addNewRowForNewBox: _stateButtonListSelector = " + _stateButtonListSelector);
+      console.log("addNewRowForNewBox: _slaveSelectSelector = " + _slaveSelectSelector);
       var _select = _dupRow.querySelector(_slaveSelectSelector);
       console.log("addNewRowForNewBox: buttonList selected");
       console.log(_select);
