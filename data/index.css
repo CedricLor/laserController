@@ -39,6 +39,9 @@ h1 {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+.sm-rel-descr {
+  text-align: left;
+}
 .network_state_setter{
   margin-top: 20px;
   text-align: center;
