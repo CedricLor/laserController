@@ -228,7 +228,7 @@ function _indicateMasterBoxNumber(data, _dupRow) {
 
   // Select corresponding option in masterBoxSelect
   var _select = _selectMasterSelectInRow(_dupRow);
-  console.log("_indicateMasterBoxNumber: starting. About to select correct option in master select");
+  console.log("_indicateMasterBoxNumber: About to select correct option in master select");
   _select.value=parseInt(data.ms);
   console.log("_indicateMasterBoxNumber: ending. About to return _dupRow.");
 
@@ -393,17 +393,23 @@ function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber: selected row: " + data.lb);
 
   // write box number in box number span
-  var _span = selectMasterBoxNumberSpan(_dupRow, data);
+  var _span = selectMasterBoxNumberSpan(_row, data);
   writeMasterBoxNumberInBoxNumberSpan(_span, data);
 
   if (data.st === 1) {
     _span.classList.add("change_ms_received");
     console.log("updateMasterBoxNumber: added class change_ms_received to masterbox span");
   } else if (data.st === 2) {
+    // update the number mentionned in html
     _span.classList.remove("change_ms_received");
     console.log("updateMasterBoxNumber: removed class change_ms_received to masterbox span");
     _span.classList.add("change_ms_executed");
     console.log("updateMasterBoxNumber: added class change_ms_executed to masterbox span");
+
+    // update the select by choosing the correct option
+    var _select = _selectMasterSelectInRow(_row);
+    console.log("updateMasterBoxNumber: About to select correct option in master select");
+    _select.value=parseInt(data.ms);
   }
 
   console.log("updateMasterBoxNumber ending.");
