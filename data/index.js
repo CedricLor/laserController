@@ -128,15 +128,26 @@ function updateStateButton(data) {
   console.log("updateStateButton ending.");
 }
 
-function setActiveStateButton(data) {
-  console.log("setActiveStateButton starting.");
+function updateActiveStateButton(data) {
+  console.log("updateActiveStateButton starting.");
   // remove formerly added classes on all stateButtons of the boxRow
   var _boxRow = boxesRows.get(data.lb);
+
+  // remove classes on all the others stateButtons of this boxRow
+  _removeClassesOnAllRowStateButtons(_boxRow);
+
+  // add button_active_state class to the relevant stateButton
+  _setActiveStateButton(data, _boxRow);
+  console.log("updateActiveStateButton ending.");
+}
+
+
+
+
+function _removeClassesOnAllRowStateButtons(_boxRow) {
+  console.log("_removeClassesOnAllRowStateButtons starting.");
   var _elt_arr = stateButtonsDOMSelector(_boxRow);
-
-
-
-  console.log("setActiveStateButton: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
+  console.log("_removeClassesOnAllRowStateButtons: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
       function(currentValue, currentIndex, listObj) {
@@ -146,10 +157,7 @@ function setActiveStateButton(data) {
       }
     );
   }
-
-  // add button_active_state class to the relevant stateButton
-  _setActiveStateButton(data, _boxRow);
-  console.log("setActiveStateButton ending.");
+  console.log("_removeClassesOnAllRowStateButtons ending.");
 }
 
 
@@ -290,7 +298,7 @@ function addNewRowForNewBox(data) {
     // let's update it instead
     console.log("addNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
     console.log("addNewRowForNewBox: About to set the activeState button.");
-    setActiveStateButton(data);
+    updateActiveStateButton(data);
     console.log("addNewRowForNewBox ending after updating laser box [" + data.lb + "]");
     return;
   }
