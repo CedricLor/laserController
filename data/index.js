@@ -281,11 +281,12 @@ function addNewRowForNewBox(data) {
       // set event listener on buttons
       _dupRow = _setEVentListenersStateButtons(_dupRow);
 
-      // set event listener on slave select
-      _dupRow = _setEventListenerOnMasterSelect(_dupRow);
-
       // indicate masterbox number
       _dupRow = _indicateMasterBoxNumber(data, _dupRow);
+
+      // set event listener on slave select
+      var _select = selectMasterSelectInRow(_dupRow);
+      setSelectEvents(_select);
 
       // render in DOM
       _dupRow = _renderInDom(_dupRow);
