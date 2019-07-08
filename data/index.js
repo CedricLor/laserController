@@ -223,12 +223,7 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   console.log("_indicateMasterBoxNumber: starting. About to write masterbox number");
 
   // Write box number in box number span
-  var _masterBoxNumberSelector = "span.master_box_number";
-  console.log("_indicateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  var _masterBoxNumbSpan = _dupRow.querySelector(_masterBoxNumberSelector);
-  console.log("_indicateMasterBoxNumber: masterbox span selected. Writing box number:" + data.ms);
-  _masterBoxNumbSpan.textContent = data.ms + 200;
-  console.log("_indicateMasterBoxNumber: Writed box number in masterBox span.");
+  writeBoxNumberInBoxNumberSpan(_dupRow, data);
 
   // Select corresponding option in masterBoxSelect
   var _select = _selectMasterSelectInRow(_dupRow);
@@ -367,17 +362,31 @@ function deleteBoxRow(data) {
 
 
 
+function writeBoxNumberInBoxNumberSpan(_dupRow, data) {
+  console.log("writeBoxNumberInBoxNumberSpan: starting.");
+  var _masterBoxNumberSelector = "span.master_box_number";
+  console.log("writeBoxNumberInBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+  var _masterBoxNumbSpan = _dupRow.querySelector(_masterBoxNumberSelector);
+  console.log("writeBoxNumberInBoxNumberSpan: masterbox span selected. Writing box number:" + data.ms);
+  _masterBoxNumbSpan.textContent = data.ms + 200;
+  // _row.children[1].children[0].textContent = data.ms + 200;
+  console.log("_indicateMasterBoxNumber: masterbox span updated: " + (data.ms + 200));
+  console.log("writeBoxNumberInBoxNumberSpan: ending.");
+}
+
+
+
+
 function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber starting.");
+
   // select the relevant row
   var _row = boxRows.get(data.lb);
-  console.log("updateMasterBoxNumber: about to write masterbox number");
-  _masterBoxNumberSelector = "span.master_box_number";
-  console.log("updateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  var _select = _row.querySelector(_masterBoxNumberSelector);
-  console.log("updateMasterBoxNumber: masterbox span selected");
-  _row.children[1].children[0].textContent = data.ms + 200;
-  console.log("updateMasterBoxNumber: masterbox span updated: " + (data.ms + 200));
+  console.log("updateMasterBoxNumber: selected row: " + data.lb);
+
+  // write box number in box number span
+  writeBoxNumberInBoxNumberSpan(_row, data);
+
   console.log("updateMasterBoxNumber: data.st === 1: " + (data.st === 1))
   if (data.st === 1) {
     _row.children[1].children[0].classList.add("change_ms_received");
