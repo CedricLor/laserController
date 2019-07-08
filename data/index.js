@@ -345,13 +345,13 @@ function addNewRowForNewBox(data) {
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
   let _boxRowToDelete = boxRowDOMSelector(data.lb);
-  if (!(_boxRowToDelete === undefined)) {
+  if (_boxRowToDelete === undefined) {
+    console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
+  } else {
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
     _deleteFromMaps(data.lb); // updating the controlesBoxes map
     console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes map.");
     console.log(controlerBoxes);
-  } else {
-    console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
   }
   console.log("deleteBoxRow ending.");
 }
