@@ -50,7 +50,7 @@ extern short sBoxesCount;                           // NETWORK BY NETWORK
 // declare and size an array to contain the LaserPins class instances as a global variable
 extern LaserPin LaserPins[];
 
-extern short sBoxDefaultState;
+extern const short S_BOX_DEFAULT_STATE;
 
 extern painlessMesh laserControllerMesh;
 extern Scheduler    userScheduler;             // to control your personal task

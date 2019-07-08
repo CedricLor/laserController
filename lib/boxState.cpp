@@ -287,8 +287,8 @@ void boxState::_odtcbPlayBoxState(){
   // Serial.println(ControlerBoxes[myIndexInCBArray].boxActiveState);
   // Serial.println("void boxState::_odtcbPlayBoxState(): _boxTargetState");
   // Serial.println(_boxTargetState);
-  if (!(ControlerBoxes[myIndexInCBArray].boxActiveState == sBoxDefaultState)) {
-    _setBoxTargetState(sBoxDefaultState);
+  if (!(ControlerBoxes[myIndexInCBArray].boxActiveState == ControlerBoxes[myIndexInCBArray].sBoxDefaultState)) {
+    _setBoxTargetState(ControlerBoxes[myIndexInCBArray].sBoxDefaultState);
   }
   Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }

@@ -86,7 +86,6 @@ LaserPin LaserPins[PIN_COUNT];
 // Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.
 
 const short S_BOX_DEFAULT_STATE = 5;
-short sBoxDefaultState = S_BOX_DEFAULT_STATE;
 
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;             // to control your personal task

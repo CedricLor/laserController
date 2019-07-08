@@ -76,9 +76,6 @@ void mySavedPrefs::savePreferences() {
   size_t _spassRet = preferences.putString("pass", pass);
   Serial.printf("%s pass == %s %s\"pass\"\n", _debugMsgStart, pass, (_spassRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
-  // save value of sBoxDefaultState
-  size_t _sBoxDefaultStateRet = preferences.putShort("sBoxDefSta", sBoxDefaultState);
-  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", _debugMsgStart, sBoxDefaultState, (_sBoxDefaultStateRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
   // save value of gbNodeName
   size_t _gbNodeNameRet = preferences.putShort("bNodeName", (short)gbNodeName);
   Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
@@ -86,6 +83,10 @@ void mySavedPrefs::savePreferences() {
   // recalculate myIndexInCBArray with the new values of gbNodeName and bControllerBoxPrefix
   myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
   Serial.printf("%s myIndexInCBArray recalculated to: %i (not saved)\n", _debugMsgStart, myIndexInCBArray);
+
+  // save value of sBoxDefaultState
+  size_t _sBoxDefaultStateRet = preferences.putShort("sBoxDefSta", ControlerBoxes[myIndexInCBArray].sBoxDefaultState);
+  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", _debugMsgStart, ControlerBoxes[myIndexInCBArray].sBoxDefaultState, (_sBoxDefaultStateRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of ControlerBoxes[myIndexInCBArray].bMasterBoxName
   size_t _masterNodeNameRet = preferences.putShort("bMasterNName", (short)ControlerBoxes[myIndexInCBArray].bMasterBoxName);
@@ -172,9 +173,6 @@ void mySavedPrefs::loadPreferences() {
         Serial.printf("%s pass set to: %s\n", _debugMsgStart, pass);
       }
 
-      // sBoxDefaultState
-      sBoxDefaultState = preferences.getShort("sBoxDefSta", sBoxDefaultState);
-      Serial.printf("%s sBoxDefaultState set to: %i\n", _debugMsgStart, sBoxDefaultState);
 
       // Box Instance Level Variables (may change for each box)
 
@@ -199,6 +197,10 @@ void mySavedPrefs::loadPreferences() {
       // recalculate myIndexInCBArray with the new values of gbNodeName and bControllerBoxPrefix
       myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
       Serial.printf("%s myIndexInCBArray reset to: %i\n", _debugMsgStart, myIndexInCBArray);
+
+      // sBoxDefaultState
+      ControlerBoxes[myIndexInCBArray].sBoxDefaultState = preferences.getShort("sBoxDefSta", ControlerBoxes[myIndexInCBArray].sBoxDefaultState);
+      Serial.printf("%s sBoxDefaultState set to: %i\n", _debugMsgStart, ControlerBoxes[myIndexInCBArray].sBoxDefaultState);
 
       // ControlerBoxes[myIndexInCBArray].bMasterBoxName
       // If there is a value saved for bMasterNName, reset

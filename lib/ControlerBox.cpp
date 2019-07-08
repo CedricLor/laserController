@@ -55,6 +55,7 @@ ControlerBox::ControlerBox()
   // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
   // - in mySavedPrefs::savePreferences()
   this->bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
+
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
   // - here
@@ -64,6 +65,9 @@ ControlerBox::ControlerBox()
   // testers:
   // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) (tests whether a change has been made and whether it needs to inform the browser)
   bMasterBoxNameChangeHasBeenSignaled = true;
+
+  sBoxDefaultState = S_BOX_DEFAULT_STATE;
+  sBoxDefaultStateChangeHasBeenSignaled = true;
 }
 
 
@@ -71,7 +75,7 @@ void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  this->bNodeName = gbNodeName;
+  bNodeName = gbNodeName;
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);};
