@@ -257,6 +257,8 @@ function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox: looking if an entry exists in the map for this box");
   console.log("addNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
   console.log("addNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
+
+  // Case where the box exists
   if (!(_controlerBoxEntry === undefined)) {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
