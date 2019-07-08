@@ -193,12 +193,17 @@ function _setEVentListenersStateButtons(_dupRow) {
 
 
 function _indicateMasterBoxNumber(data, _dupRow) {
-  console.log("_indicateMasterBoxNumber: about to write masterbox number");
+  console.log("_indicateMasterBoxNumber: starting. About to write masterbox number");
+
+  // Write box number in box number span
   var _masterBoxNumberSelector = "span.master_box_number";
   console.log("_indicateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  var _select = _dupRow.querySelector(_masterBoxNumberSelector);
-  console.log("_indicateMasterBoxNumber: masterbox span selected in _select var");
-  _select.textContent = data.ms + 200;
+  var _masterBoxNumbSpan = _dupRow.querySelector(_masterBoxNumberSelector);
+  console.log("_indicateMasterBoxNumber: masterbox span selected. Writing box number:" + data.ms);
+  _masterBoxNumbSpan.textContent = data.ms + 200;
+  console.log("_indicateMasterBoxNumber: Writed box number in masterBox span.");
+
+
   return _dupRow;
 }
 
