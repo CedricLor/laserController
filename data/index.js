@@ -223,7 +223,8 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   console.log("_indicateMasterBoxNumber: starting. About to write masterbox number");
 
   // Write box number in box number span
-  writeBoxNumberInBoxNumberSpan(_dupRow, data);
+  var _span = selectBoxNumberSpan(_dupRow, data);
+  writeBoxNumberInBoxNumberSpan(_span, data);
 
   // Select corresponding option in masterBoxSelect
   var _select = _selectMasterSelectInRow(_dupRow);
@@ -362,13 +363,20 @@ function deleteBoxRow(data) {
 
 
 
-function writeBoxNumberInBoxNumberSpan(_dupRow, data) {
-  console.log("writeBoxNumberInBoxNumberSpan: starting.");
+function selectBoxNumberSpan(_dupRow, data) {
+  console.log("selectBoxNumberSpan: starting.");
   var _masterBoxNumberSelector = "span.master_box_number";
-  console.log("writeBoxNumberInBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  var _masterBoxNumbSpan = _dupRow.querySelector(_masterBoxNumberSelector);
-  console.log("writeBoxNumberInBoxNumberSpan: masterbox span selected. Writing box number:" + data.ms);
-  _masterBoxNumbSpan.textContent = data.ms + 200;
+  console.log("selectBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+  console.log("selectBoxNumberSpan: ending.");
+  return _dupRow.querySelector(_masterBoxNumberSelector);
+}
+
+
+
+
+function writeBoxNumberInBoxNumberSpan(_span, data) {
+  console.log("writeBoxNumberInBoxNumberSpan: starting.");
+  _span.textContent = data.ms + 200;
   // _row.children[1].children[0].textContent = data.ms + 200;
   console.log("_indicateMasterBoxNumber: masterbox span updated: " + (data.ms + 200));
   console.log("writeBoxNumberInBoxNumberSpan: ending.");
@@ -381,21 +389,20 @@ function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber starting.");
 
   // select the relevant row
-  var _row = boxRows.get(data.lb);
+  var _row = boxesRows.get(data.lb);
   console.log("updateMasterBoxNumber: selected row: " + data.lb);
 
   // write box number in box number span
-  writeBoxNumberInBoxNumberSpan(_row, data);
+  var _span = selectBoxNumberSpan(_dupRow, data);
+  writeBoxNumberInBoxNumberSpan(_span, data);
 
-  console.log("updateMasterBoxNumber: data.st === 1: " + (data.st === 1))
   if (data.st === 1) {
-    _row.children[1].children[0].classList.add("change_ms_received");
+    _span.classList.add("change_ms_received");
     console.log("updateMasterBoxNumber: added class change_ms_received to masterbox span");
   } else if (data.st === 2) {
-    console.log("updateMasterBoxNumber: data.st === 2: " + (data.st === 2))
-    _row.children[1].children[0].classList.remove("change_ms_received");
+    _span.classList.remove("change_ms_received");
     console.log("updateMasterBoxNumber: removed class change_ms_received to masterbox span");
-    _row.children[1].children[0].classList.add("change_ms_executed");
+    _span.classList.add("change_ms_executed");
     console.log("updateMasterBoxNumber: added class change_ms_executed to masterbox span");
   }
 
