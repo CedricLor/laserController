@@ -203,6 +203,11 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   _masterBoxNumbSpan.textContent = data.ms + 200;
   console.log("_indicateMasterBoxNumber: Writed box number in masterBox span.");
 
+  // Select corresponding option in masterBoxSelect
+  var _select = _selectMasterSelectInRow(_dupRow);
+  console.log("_indicateMasterBoxNumber: starting. About to select correct option in master select");
+  _select.value=parseInt(data.ms);
+  console.log("_indicateMasterBoxNumber: ending. About to return _dupRow.");
 
   return _dupRow;
 }
