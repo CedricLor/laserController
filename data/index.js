@@ -292,19 +292,8 @@ function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
   console.log("addNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
 
-  // Case where the box exists
-  if (!(_controlerBoxEntry === undefined)) {
-    // _controlerBoxEntry is not equal to undefined, the boxRow already exists
-    // let's update it instead
-    console.log("addNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
-    console.log("addNewRowForNewBox: About to set the activeState button.");
-    updateActiveStateButton(data);
-    console.log("addNewRowForNewBox ending after updating laser box [" + data.lb + "]");
-    return;
-  }
-
   // Case where it the box does not exist
-  else {
+  if (_controlerBoxEntry === undefined) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
     console.log("addNewRowForNewBox: the boxRow does not already exist. I am about to create it.");
@@ -334,11 +323,24 @@ function addNewRowForNewBox(data) {
       _dupRow = _renderInDom(_dupRow);
 
       // add a key/entry pair to the controlerBoxes map and to the rowsMap map
-      _dupRow = _addToMaps(data, _dupRow);
+      _addToMaps(data, _dupRow);
     }
-    console.log("addNewRowForNewBox ending.");
+    console.log("addNewRowForNewBox ending after adding laser box [" + data.lb + "]");
+  }
+
+  // Case where the box exists
+  else {
+    // _controlerBoxEntry is not equal to undefined, the boxRow already exists
+    // let's update it instead
+    console.log("addNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
+    console.log("addNewRowForNewBox: About to set the activeState button.");
+    updateActiveStateButton(data);
+    console.log("addNewRowForNewBox ending after updating laser box [" + data.lb + "]");
   }
 }
+
+
+
 
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
@@ -353,6 +355,9 @@ function deleteBoxRow(data) {
   }
   console.log("deleteBoxRow ending.");
 }
+
+
+
 
 function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber starting.");
