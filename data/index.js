@@ -167,6 +167,7 @@ function _setActiveStateButton(data, memRow) {
     _activeStateButtonList[0].classList.remove('button_change_received');
     _activeStateButtonList[0].classList.remove('button_clicked');
   }
+  console.log("_setActiveStateButton: ending on returning row");
   return memRow;
 }
 
@@ -222,6 +223,7 @@ function _indicateMasterBoxNumber(data, _dupRow) {
 
   return _dupRow;
 }
+
 
 
 
