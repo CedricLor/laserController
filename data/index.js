@@ -437,17 +437,6 @@ function boxRowTemplateSelector() {
 }
 
 
-// function stateButtonsDOMSelector(laserBoxIndexNumber) {
-//   console.log("stateButtonsDOMSelector starting.");
-//   var _boxRow = boxesRows.get(laserBoxIndexNumber);
-//   var _buttonsSelector = "div.box_state_setter > div.setters_group > button";
-//   var _elts = _boxRow.querySelectorAll(_buttonsSelector);
-//
-//   console.log(_elts);
-//   console.log("stateButtonsDOMSelector ending.");
-//   return _elts;
-// }
-//
 
 
 function stateButtonsDOMSelector(_boxRow) {
