@@ -223,8 +223,8 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   console.log("_indicateMasterBoxNumber: starting. About to write masterbox number");
 
   // Write box number in box number span
-  var _span = selectBoxNumberSpan(_dupRow, data);
-  writeBoxNumberInBoxNumberSpan(_span, data);
+  var _span = selectMasterBoxNumberSpan(_dupRow, data);
+  writeMasterBoxNumberInBoxNumberSpan(_span, data);
 
   // Select corresponding option in masterBoxSelect
   var _select = _selectMasterSelectInRow(_dupRow);
@@ -363,23 +363,23 @@ function deleteBoxRow(data) {
 
 
 
-function selectBoxNumberSpan(_dupRow, data) {
-  console.log("selectBoxNumberSpan: starting.");
+function selectMasterBoxNumberSpan(_dupRow, data) {
+  console.log("selectMasterBoxNumberSpan: starting.");
   var _masterBoxNumberSelector = "span.master_box_number";
-  console.log("selectBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  console.log("selectBoxNumberSpan: ending.");
+  console.log("selectMasterBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
+  console.log("selectMasterBoxNumberSpan: ending.");
   return _dupRow.querySelector(_masterBoxNumberSelector);
 }
 
 
 
 
-function writeBoxNumberInBoxNumberSpan(_span, data) {
-  console.log("writeBoxNumberInBoxNumberSpan: starting.");
+function writeMasterBoxNumberInBoxNumberSpan(_span, data) {
+  console.log("writeMasterBoxNumberInBoxNumberSpan: starting.");
   _span.textContent = data.ms + 200;
   // _row.children[1].children[0].textContent = data.ms + 200;
-  console.log("_indicateMasterBoxNumber: masterbox span updated: " + (data.ms + 200));
-  console.log("writeBoxNumberInBoxNumberSpan: ending.");
+  console.log("writeMasterBoxNumberInBoxNumberSpan: masterbox span updated: " + (data.ms + 200));
+  console.log("writeMasterBoxNumberInBoxNumberSpan: ending.");
 }
 
 
@@ -393,8 +393,8 @@ function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber: selected row: " + data.lb);
 
   // write box number in box number span
-  var _span = selectBoxNumberSpan(_dupRow, data);
-  writeBoxNumberInBoxNumberSpan(_span, data);
+  var _span = selectMasterBoxNumberSpan(_dupRow, data);
+  writeMasterBoxNumberInBoxNumberSpan(_span, data);
 
   if (data.st === 1) {
     _span.classList.add("change_ms_received");
@@ -432,6 +432,7 @@ function boxRowTemplateSelector() {
   console.log("boxRowTemplateSelector starting.");
   var _row = document.getElementById('boxTemplate'); // should be a list composed of one single element
   var _templateDup = _row.cloneNode(true);
+
   console.log("boxRowTemplateSelector ending.");
   return _templateDup; // return the first (and unique) element of the list
 }
@@ -448,6 +449,8 @@ function stateButtonsDOMSelector(_boxRow) {
   console.log("stateButtonsDOMSelector ending.");
   return _elts;
 }
+
+
 
 
 function stateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
