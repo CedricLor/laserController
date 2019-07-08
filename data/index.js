@@ -375,19 +375,19 @@ function updateMasterBoxNumber(data) {
   _masterBoxNumberSelector = "span.master_box_number";
   console.log("updateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
   var _select = _row.querySelector(_masterBoxNumberSelector);
-  console.log("addNewRowForNewBox: masterbox span selected");
+  console.log("updateMasterBoxNumber: masterbox span selected");
   _row.children[1].children[0].textContent = data.ms + 200;
-  console.log("addNewRowForNewBox: masterbox span updated: " + (data.ms + 200));
-  console.log("addNewRowForNewBox: data.st === 1: " + (data.st === 1))
+  console.log("updateMasterBoxNumber: masterbox span updated: " + (data.ms + 200));
+  console.log("updateMasterBoxNumber: data.st === 1: " + (data.st === 1))
   if (data.st === 1) {
     _row.children[1].children[0].classList.add("change_ms_received");
-    console.log("addNewRowForNewBox: added class change_ms_received to masterbox span");
+    console.log("updateMasterBoxNumber: added class change_ms_received to masterbox span");
   } else if (data.st === 2) {
-    console.log("addNewRowForNewBox: data.st === 2: " + (data.st === 2))
+    console.log("updateMasterBoxNumber: data.st === 2: " + (data.st === 2))
     _row.children[1].children[0].classList.remove("change_ms_received");
-    console.log("addNewRowForNewBox: removed class change_ms_received to masterbox span");
+    console.log("updateMasterBoxNumber: removed class change_ms_received to masterbox span");
     _row.children[1].children[0].classList.add("change_ms_executed");
-    console.log("addNewRowForNewBox: added class change_ms_executed to masterbox span");
+    console.log("updateMasterBoxNumber: added class change_ms_executed to masterbox span");
   }
 
   console.log("updateMasterBoxNumber ending.");
