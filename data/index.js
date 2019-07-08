@@ -207,16 +207,7 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   return _dupRow;
 }
 
-function _setEventListenerOnMasterSelect(_dupRow) {
-  console.log("_setEventListenerOnMasterSelect: about to set event listeners on buttons");
-  var _slaveSelectSelector = "select";
-  console.log("_setEventListenerOnMasterSelect: _slaveSelectSelector = " + _slaveSelectSelector);
-  var _select = _dupRow.querySelector(_slaveSelectSelector);
-  console.log("_setEventListenerOnMasterSelect: buttonList selected: ");
   console.log(_select);
-  console.log("_setEventListenerOnMasterSelect: about to call setStateButtonEvents");
-  setSelectEvents(_select);
-  return _dupRow;
 }
 
 
