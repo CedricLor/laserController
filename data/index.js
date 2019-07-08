@@ -285,7 +285,7 @@ function addNewRowForNewBox(data) {
       _dupRow = _indicateMasterBoxNumber(data, _dupRow);
 
       // set event listener on slave select
-      var _select = selectMasterSelectInRow(_dupRow);
+      var _select = _selectMasterSelectInRow(_dupRow);
       setSelectEvents(_select);
 
       // render in DOM
