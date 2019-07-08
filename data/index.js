@@ -212,7 +212,10 @@ function _setEventListenerOnMasterSelect(_dupRow) {
   return _dupRow;
 }
 
-function _renderInDom(_dupRow, boxRowTemplate) {
+
+
+
+function _renderInDom(_dupRow) {
   console.log("_renderInDom: about to insert the new box in the DOM");
   _dupRow = boxRowTemplate.parentNode.insertBefore(_dupRow, boxRowTemplate);
   console.log("_renderInDom: inserted the new box in the in DOM:");
@@ -273,7 +276,7 @@ function addNewRowForNewBox(data) {
       _dupRow = _indicateMasterBoxNumber(data, _dupRow);
 
       // render in DOM
-      _dupRow = _renderInDom(_dupRow, boxRowTemplate);
+      _dupRow = _renderInDom(_dupRow);
 
       // add a key/entry pair to the controlerBoxes map and to the rowsMap map
       _dupRow = _addToMaps(data, _dupRow);
