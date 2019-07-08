@@ -90,22 +90,22 @@ function onclickButton(e) {
   console.log("onclickButton: ending");
 };
 
-function oninputSlaveSelect(e) {
-  console.log("oninputSlaveSelect: starting");
+function oninputMasterSelect(e) {
+  console.log("oninputMasterSelect: starting");
   if ((this.parentNode.parentNode.dataset.lb !== "undefined" )) { // selector to update in case of change in the DOM structure
-    console.log("oninputSlaveSelect: slave box: " + (this.parentNode.parentNode.dataset.lb + 200));
-    console.log("oninputSlaveSelect: master box " + this.selectedIndex);
+    console.log("oninputMasterSelect: slave box: " + (this.parentNode.parentNode.dataset.lb + 200));
+    console.log("oninputMasterSelect: master box " + this.selectedIndex);
     var _json = JSON.stringify({
       type: 8,
       lb: this.parentNode.parentNode.dataset.lb,
       masterbox: parseInt(this.options[this.selectedIndex].value, 10)
       // masterbox: this.selectedIndex + 1
      });
-    console.log("oninputSlaveSelect: about to send json via WS: " + _json);
+    console.log("oninputMasterSelect: about to send json via WS: " + _json);
     ws.send(_json);
     console.log("onclickButton: json sent.");
   }
-  console.log("oninputSlaveSelect: ending");
+  console.log("oninputMasterSelect: ending");
 }
 // END EVENT HANDLERS
 
@@ -390,7 +390,7 @@ function setStateButtonEvents(buttonList) {
 }
 
 function setSelectEvents(selectElt) {
-  selectElt.addEventListener('input', oninputSlaveSelect, false);
+  selectElt.addEventListener('input', oninputMasterSelect, false);
 }
 // END EVENT LISTENERS
 
