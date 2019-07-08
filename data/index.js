@@ -363,7 +363,7 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
 function boxRowTemplateSelector() {
   console.log("boxRowTemplateSelector starting.");
   var _row = document.getElementById("boxTemplate"); // should be a list composed of one single element
-  var _templateDup = boxRowTemplate.cloneNode(true);
+  var _templateDup = _row.cloneNode(true);
   console.log("boxRowTemplateSelector ending.");
   return _templateDup; // return the first (and unique) element of the list
 }
