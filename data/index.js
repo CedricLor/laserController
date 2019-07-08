@@ -230,7 +230,7 @@ function _selectMasterSelectInRow(_dupRow) {
 
 function _renderInDom(_dupRow) {
   console.log("_renderInDom: about to insert the new box in the DOM");
-  _dupRow = boxRowTemplate.parentNode.insertBefore(_dupRow, boxRowTemplate);
+  _dupRow = document.getElementById('boxTemplate').parentNode.insertBefore(_dupRow, document.getElementById('boxTemplate'));
   console.log("_renderInDom: inserted the new box in the in DOM:");
   console.log(_dupRow);
   return _dupRow;
