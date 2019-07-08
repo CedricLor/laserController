@@ -344,10 +344,11 @@ function addNewRowForNewBox(data) {
 
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
-  let _boxRowToDelete = boxRowDOMSelector(data.lb);
+  var _boxRowToDelete = boxRowDOMSelector(data.lb);
   if (_boxRowToDelete === undefined) {
     console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
   } else {
+    console.log("deleteBoxRow: About to delete row corresponding to laser box [" + data.lb + "] in DOM and maps.");
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
     _deleteFromMaps(data.lb); // updating the controlesBoxes map
     console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes map.");
@@ -387,6 +388,7 @@ function updateMasterBoxNumber(data) {
 
 
 
+
 function boxRowDOMSelector(laserBoxIndexNumber) {
   console.log("boxRowDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
@@ -399,6 +401,8 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
   console.log("boxRowDOMSelector ending.");
   return _rows[0]; // return the first (and unique) element of the list
 }
+
+
 
 
 function boxRowTemplateSelector() {
