@@ -79,7 +79,6 @@ void mySavedPrefs::savePreferences() {
   // save value of sBoxDefaultState
   size_t _sBoxDefaultStateRet = preferences.putShort("sBoxDefSta", sBoxDefaultState);
   Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", _debugMsgStart, sBoxDefaultState, (_sBoxDefaultStateRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
-
   // save value of gbNodeName
   size_t _gbNodeNameRet = preferences.putShort("bNodeName", (short)gbNodeName);
   Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
@@ -132,6 +131,9 @@ void mySavedPrefs::loadPreferences() {
     if (_savedSettings > 0) {
       Serial.printf("%s NVS has saved settings. Loading values.\n", _debugMsgStart);
 
+
+      // Box Collection Level Variables --> affect the whole mesh
+
       // iInterfaceNodeId
       // Serial.printf("%s TRACING I_DEFAULT_INTERFACE_NODE_ID AND iInterfaceNodeId\n", _debugMsgStart);
       // Serial.print("I_DEFAULT_INTERFACE_NODE_ID = ");Serial.println(I_DEFAULT_INTERFACE_NODE_ID);
@@ -174,6 +176,22 @@ void mySavedPrefs::loadPreferences() {
       sBoxDefaultState = preferences.getShort("sBoxDefSta", sBoxDefaultState);
       Serial.printf("%s sBoxDefaultState set to: %i\n", _debugMsgStart, sBoxDefaultState);
 
+      // Box Instance Level Variables (may change for each box)
+
+      // "quasi-static"
+      // -> their changes require a reboot of the whole mesh
+
+      // isInterface
+      isInterface = preferences.getBool("isIF", isInterface);
+      Serial.printf("%s isInterface set to: %i\n", _debugMsgStart, isInterface);
+
+      // isMeshRoot
+      isMeshRoot = preferences.getBool("isMeshRoot", isMeshRoot);
+      Serial.printf("%s isMeshRoot set to: %i\n", _debugMsgStart, isMeshRoot);
+
+
+      // "non-static"
+
       // gbNodeName
       gbNodeName = (byte)preferences.getShort("bNodeName", (short)gbNodeName);
       Serial.printf("%s gbNodeName set to: %i\n", _debugMsgStart, gbNodeName);
@@ -195,13 +213,6 @@ void mySavedPrefs::loadPreferences() {
       // iSlaveOnOffReaction
       // iSlaveOnOffReaction = preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
       // Serial.printf("SETUP: loadPreferences(). iSlaveOnOffReaction set to: %u\n", iSlaveOnOffReaction);
-      // isInterface
-      isInterface = preferences.getBool("isIF", isInterface);
-      Serial.printf("%s isInterface set to: %i\n", _debugMsgStart, isInterface);
-
-      // isMeshRoot
-      isMeshRoot = preferences.getBool("isMeshRoot", isMeshRoot);
-      Serial.printf("%s isMeshRoot set to: %i\n", _debugMsgStart, isMeshRoot);
     }
   } else {
     Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugMsgStart, myIndexInCBArray, ControlerBoxes[myIndexInCBArray].bMasterBoxName, sBoxesCount);
