@@ -448,7 +448,7 @@ function boxRowTemplateSelector() {
 
 function stateButtonsDOMSelector(_boxRow) {
   console.log("stateButtonsDOMSelector starting.");
-  var _buttonsSelector = "div.box_state_setter > div.setters_group > button";
+  var _buttonsSelector = "button[data-boxstate]";
   var _elts = _boxRow.querySelectorAll(_buttonsSelector);
 
   console.log(_elts);
@@ -459,12 +459,11 @@ function stateButtonsDOMSelector(_boxRow) {
 
 
 
-function stateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
+function stateButtonDOMSelector(_boxRow, boxActiveState) {
   console.log("stateButtonDOMSelector starting.");
 
   // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
-  var _boxRow = boxesRows.get(laserBoxIndexNumber);
-  var _buttonSelector = "div.box_state_setter > div.setters_group > button[data-boxstate='" + boxActiveState + "']";
+  var _buttonSelector = "button[data-boxstate='" + boxActiveState + "']";
   var _elts = _boxRow.querySelectorAll(_buttonSelector);
 
   console.log(_elts);
