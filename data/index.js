@@ -207,7 +207,17 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   return _dupRow;
 }
 
+
+
+function _selectMasterSelectInRow(_dupRow) {
+  console.log("_selectMasterSelectInRow: starting");
+  var _masterSelectSelector = "select.master_select";
+  console.log("_selectMasterSelectInRow: _masterSelectSelector = " + _masterSelectSelector);
+  var _select = _dupRow.querySelector(_masterSelectSelector);
+  console.log("_selectMasterSelectInRow: master select selected: ");
   console.log(_select);
+  console.log("_selectMasterSelectInRow: ending returning _select:");
+  return _select;
 }
 
 
