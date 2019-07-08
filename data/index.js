@@ -135,6 +135,7 @@ function setActiveStateButton(data) {
   var _elt_arr = stateButtonsDOMSelector(_boxRow);
 
 
+
   console.log("setActiveStateButton: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
@@ -151,6 +152,9 @@ function setActiveStateButton(data) {
   console.log("setActiveStateButton ending.");
 }
 
+
+
+
 function _setActiveStateButton(data, memRow) {
   console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
@@ -166,6 +170,9 @@ function _setActiveStateButton(data, memRow) {
   return memRow;
 }
 
+
+
+
 function _newBoxRowSetProperties(data, _dupRow) {
   console.log("_newBoxRowSetProperties: _dupRow: setting the id of the new wrapper div to: " + data.lb);
   _dupRow.id = "boxRow" + data.lb;     // update data-lb attribute
@@ -178,6 +185,9 @@ function _newBoxRowSetProperties(data, _dupRow) {
   return _dupRow;
 }
 
+
+
+
 function _setEVentListenersStateButtons(_dupRow) {
   console.log("_setEVentListenersStateButtons: about to set event listeners on buttons");
   var _stateButtonListSelector = "button[data-boxstate]";
@@ -189,6 +199,7 @@ function _setEVentListenersStateButtons(_dupRow) {
   setStateButtonEvents(_buttonList);
   return _dupRow;
 }
+
 
 
 
@@ -240,12 +251,25 @@ function _renderInDom(_dupRow) {
 
 
 function _addToMaps(data, _dupRow) {
+  console.log("_addToMaps starting.");
   controlerBoxes.set(data.lb, data.boxState);
   console.log("_addToMaps: controlerBoxes map: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
   boxesRows.set(data.lb, _dupRow);
   console.log("_addToMaps: boxesRows map: set key [" + data.lb + "] with value [" + _dupRow +  "] in boxesRows map.");
   console.log(controlerBoxes);
+  console.log("_addToMaps ending.");
 }
+
+
+
+
+function _deleteFromMaps(boxNumber) {
+  console.log("_deleteFromMaps starting.");
+  controlerBoxes.delete(boxNumber);
+  boxesRows.delete(boxNumber);
+  console.log("_deleteFromMaps ending.");
+}
+
 
 
 
@@ -311,7 +335,7 @@ function deleteBoxRow(data) {
   let _boxRowToDelete = boxRowDOMSelector(data.lb);
   if (!(_boxRowToDelete === undefined)) {
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
-    controlerBoxes.delete(data.lb); // updating the controlesBoxes map
+    _deleteFromMaps(data.lb); // updating the controlesBoxes map
     console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes map.");
     console.log(controlerBoxes);
   } else {
