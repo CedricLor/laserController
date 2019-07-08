@@ -109,6 +109,9 @@ function oninputMasterSelect(e) {
 }
 // END EVENT HANDLERS
 
+
+
+
 // DOM MANIPULATION
 function updateStationIp(_stationIp) {
   console.log("updateStationIp starting.");
@@ -116,6 +119,8 @@ function updateStationIp(_stationIp) {
   document.getElementById('stationIp').innerHTML = _stationIp;
   console.log("updateStationIp ending.");
 }
+
+
 
 function updateStateButton(data) {
   console.log("updateStateButton starting.");
@@ -128,9 +133,11 @@ function updateStateButton(data) {
   console.log("updateStateButton ending.");
 }
 
+
+
 function updateActiveStateButton(data) {
   console.log("updateActiveStateButton starting.");
-  // remove formerly added classes on all stateButtons of the boxRow
+  // select the correct row in the map
   var _boxRow = boxesRows.get(data.lb);
 
   // remove classes on all the others stateButtons of this boxRow
@@ -363,7 +370,7 @@ function deleteBoxRow(data) {
 function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber starting.");
   // select the relevant row
-  var _row = boxRowDOMSelector(data.lb);
+  var _row = boxRows.get(data.lb);
   console.log("updateMasterBoxNumber: about to write masterbox number");
   _masterBoxNumberSelector = "span.master_box_number";
   console.log("updateMasterBoxNumber: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
