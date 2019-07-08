@@ -190,6 +190,8 @@ function _setEVentListenersStateButtons(_dupRow) {
   return _dupRow;
 }
 
+
+
 function _indicateMasterBoxNumber(data, _dupRow) {
   console.log("_indicateMasterBoxNumber: about to write masterbox number");
   var _masterBoxNumberSelector = "span.master_box_number";
@@ -223,6 +225,9 @@ function _renderInDom(_dupRow) {
   return _dupRow;
 }
 
+
+
+
 function _addToMaps(data, _dupRow) {
   controlerBoxes.set(data.lb, data.boxState);
   console.log("_addToMaps: controlerBoxes map: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
@@ -230,6 +235,8 @@ function _addToMaps(data, _dupRow) {
   console.log("_addToMaps: boxesRows map: set key [" + data.lb + "] with value [" + _dupRow +  "] in boxesRows map.");
   console.log(controlerBoxes);
 }
+
+
 
 function addNewRowForNewBox(data) {
   console.log("addNewRowForNewBox starting.");
@@ -325,6 +332,8 @@ function updateMasterBoxNumber(data) {
   console.log("updateMasterBoxNumber ending.");
 }
 
+
+
 function boxRowDOMSelector(laserBoxIndexNumber) {
   console.log("boxRowDOMSelector starting.");
   // div[data-lb='1'] button[data-boxstate='1'
@@ -338,12 +347,15 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
   return _rows[0]; // return the first (and unique) element of the list
 }
 
+
 function boxRowTemplateSelector() {
   console.log("boxRowTemplateSelector starting.");
   var _row = document.getElementById("boxTemplate"); // should be a list composed of one single element
+  var _templateDup = boxRowTemplate.cloneNode(true);
   console.log("boxRowTemplateSelector ending.");
-  return _row; // return the first (and unique) element of the list
+  return _templateDup; // return the first (and unique) element of the list
 }
+
 
 // function stateButtonsDOMSelector(laserBoxIndexNumber) {
 //   console.log("stateButtonsDOMSelector starting.");
@@ -356,6 +368,8 @@ function boxRowTemplateSelector() {
 //   return _elts;
 // }
 //
+
+
 function stateButtonsDOMSelector(_boxRow) {
   console.log("stateButtonsDOMSelector starting.");
   // var _boxRow = boxesRows.get(laserBoxIndexNumber);
@@ -366,6 +380,7 @@ function stateButtonsDOMSelector(_boxRow) {
   console.log("stateButtonsDOMSelector ending.");
   return _elts;
 }
+
 
 function stateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
   console.log("stateButtonDOMSelector starting.");
@@ -381,6 +396,8 @@ function stateButtonDOMSelector(laserBoxIndexNumber, boxActiveState) {
 }
 
 // END DOM MANIPULATION
+
+
 
 
 
@@ -400,6 +417,7 @@ function setSelectEvents(selectElt) {
 
 
 
+
 // WINDOW LOAD
 window.onload = function(e){
     console.log("window.onload");
@@ -407,9 +425,12 @@ window.onload = function(e){
     setInterval(check, 5000);
     // setInterval(check, (getRandomArbitrary(10, 4) * 1000));
 }
+// END WINDOW LOAD
 
 
 
+
+// HELPERS
 // Returns a random number between min (inclusive) and max (exclusive)
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
