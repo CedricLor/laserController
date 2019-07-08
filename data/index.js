@@ -362,7 +362,7 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
 
 function boxRowTemplateSelector() {
   console.log("boxRowTemplateSelector starting.");
-  var _row = document.getElementById("boxTemplate"); // should be a list composed of one single element
+  var _row = document.getElementById('boxTemplate'); // should be a list composed of one single element
   var _templateDup = _row.cloneNode(true);
   console.log("boxRowTemplateSelector ending.");
   return _templateDup; // return the first (and unique) element of the list
@@ -384,7 +384,6 @@ function boxRowTemplateSelector() {
 
 function stateButtonsDOMSelector(_boxRow) {
   console.log("stateButtonsDOMSelector starting.");
-  // var _boxRow = boxesRows.get(laserBoxIndexNumber);
   var _buttonsSelector = "div.box_state_setter > div.setters_group > button";
   var _elts = _boxRow.querySelectorAll(_buttonsSelector);
 
