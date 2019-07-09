@@ -123,6 +123,6 @@ void enableTasks() {
   if (isInterface == false) {
     boxState::tPlayBoxStates.enable();
   } else {
-    myWebServerWS::_tSendWSDataIfChangeBoxState.enable();
+    myWSSender::tSendWSDataIfChangeBoxState.enable();
   }
 }
