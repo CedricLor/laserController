@@ -36,8 +36,8 @@
 #define myWebServerWS_h
 
 #include "Arduino.h"
+#include "./myWSSender/myWSSender.h"
 #include "./myWSReceiver/myWSReceiver.h"
-#include "./myWSReceiver/myWSReceiver.cpp"
 
 class myWebServerWS
 {
@@ -48,17 +48,7 @@ class myWebServerWS
 
     static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 
-    static void sendWSData(JsonDocument& doc);
-
-  private:
-
-    static JsonObject _empty_obj;
-
-    static uint32_t _ws_client_id;
-
-    static void _tcbSendWSDataIfChangeBoxState();
-
-    static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
+    static uint32_t ws_client_id;
 
 };
 

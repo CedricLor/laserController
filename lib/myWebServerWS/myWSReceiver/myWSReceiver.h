@@ -42,8 +42,6 @@
 #define myWSReceiver_h
 
 #include "Arduino.h"
-#include "../myWSSender/myWSSender.h"
-#include "../myWSSender/myWSSender.cpp"
 
 class myWSReceiver
 {
