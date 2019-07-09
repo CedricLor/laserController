@@ -46,10 +46,9 @@
 class myWSReceiver
 {
   public:
-    myWSReceiver();
+    myWSReceiver(uint8_t *data);
 
   private:
-    static void _decodeWSMessage(uint8_t *data);
 };
 
 #endif
