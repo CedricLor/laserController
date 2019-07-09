@@ -82,65 +82,87 @@ myWSReceiver::myWSReceiver(uint8_t *data)
 
   if (_type == 4) {           // 4 for change boxState
     // send a mesh request to the relevant laser box
-    // convert the box name to a char array box name
-    int __iNodeName = doc["lb"];
-    Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
-    char _cNodeName[4];
-    itoa((__iNodeName + bControllerBoxPrefix), _cNodeName, 10);
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
-    // convert the box state to a char array
-    const char* _boxState = doc["boxState"];
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %s \n", _boxState);
-    myMeshViews __myMeshViews;
-    // instantiate a mesh view
-    Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeBoxTargetState().\n");
-    __myMeshViews.changeBoxTargetState(_boxState, _cNodeName);
 
-    // send a response telling the instruction is in course of being executed
-    StaticJsonDocument<64> _sub_doc;
-    JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-    Serial.printf("---------------------- %i -------------------\n", __iNodeName);
-    _sub_obj["lb"] = __iNodeName;
-    _sub_obj["boxState"] = _boxState;
-
-    myWSSender _myWSSender;
-    _myWSSender.prepareWSData(4, _sub_obj);
+    _requestBoxStateChange(doc);
 
     return;
 
   }
   if (_type == 8) {             // 8 for change master
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - starting \n", _type);
-    // send a mesh request to the other box
-    // convert the box name to a char array box name
-    int __iNodeName = doc["lb"];
-    Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
-    char _cNodeName[4];
-    itoa((__iNodeName + bControllerBoxPrefix), _cNodeName, 10);
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
-    // get the masterbox number
-    int _iMasterBox = doc["masterbox"];
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %i \n", _iMasterBox);
-    myMeshViews __myMeshViews;
-    // instantiate a mesh view
-    Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeMasterBox().\n");
-    __myMeshViews.changeMasterBoxMsg(_iMasterBox, __iNodeName);
+    // send a mesh request to the relevant laser box
 
-    // send a response telling the instruction is in course of being executed
-    StaticJsonDocument<64> _sub_doc;
-    JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-    Serial.printf("---------------------- %i -------------------\n", __iNodeName);
-    _sub_obj["lb"] = __iNodeName;
-    _sub_obj["ms"] = _iMasterBox;
-    _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
+    _requestMasterChange(_type, doc);
 
-    myWSSender _myWSSender;
-    _myWSSender.prepareWSData(8, _sub_obj);
-
+    return;
   }
   Serial.println("myWSReceiver::_decodeWSMessage. Ending.");
 
 }
+
+
+
+
+void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument& doc) {
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - starting \n", _sMessageType);
+  // send a mesh request to the other box
+
+  // convert the box name to a char array box name
+  int __iNodeName = doc["lb"];
+  Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON + 200) __iNodeName = %i \n", (__iNodeName + bControllerBoxPrefix));
+
+  // get the masterbox number
+  int _iMasterBox = doc["masterbox"];
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %i \n", _iMasterBox);
+  myMeshViews __myMeshViews;
+
+  // instantiate a mesh view
+  Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeMasterBox().\n");
+  __myMeshViews.changeMasterBoxMsg(_iMasterBox, __iNodeName);
+
+  // send a response telling the instruction is in course of being executed
+  StaticJsonDocument<64> _sub_doc;
+  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+  Serial.printf("---------------------- %i -------------------\n", __iNodeName);
+  _sub_obj["lb"] = __iNodeName;
+  _sub_obj["ms"] = _iMasterBox;
+  _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
+
+  // send an update to the browser
+  myWSSender _myWSSender;
+  _myWSSender.prepareWSData(8, _sub_obj);
+}
+
+
+
+
+
+void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
+  // convert the box name to a char array box name
+  int __iNodeName = doc["lb"];
+  Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
+  char _cNodeName[4];
+  itoa((__iNodeName + bControllerBoxPrefix), _cNodeName, 10);
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
+  // convert the box state to a char array
+  const char* _boxState = doc["boxState"];
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %s \n", _boxState);
+
+  // instantiate a mesh view
+  myMeshViews __myMeshViews;
+  Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeBoxTargetState().\n");
+  __myMeshViews.changeBoxTargetState(_boxState, _cNodeName);
+
+  // send a response telling the instruction is in course of being executed
+  StaticJsonDocument<64> _sub_doc;
+  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+  Serial.printf("---------------------- %i -------------------\n", __iNodeName);
+  _sub_obj["lb"] = __iNodeName;
+  _sub_obj["boxState"] = _boxState;
+
+  myWSSender _myWSSender;
+  _myWSSender.prepareWSData(4, _sub_obj);
+}
+
 
 
 
