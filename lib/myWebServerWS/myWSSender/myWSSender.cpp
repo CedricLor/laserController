@@ -64,7 +64,10 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[myIndexInCBArray].stationIP)) {
     Serial.println("myWebServerWS::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     // Serial.printf("myWebServerWS::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
-    prepareWSData(3); // 3 for message sent in case of change in station IP
+
+    myWSSender _myWSSender;
+    _myWSSender.prepareWSData(3); // 3 for message sent in case of change in station IP
+
     ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
   // }
 }
@@ -131,7 +134,9 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     if (_messageType != -1) {
       // pass it on, with the type of message (5, 6 or 7) we want to add
       if (MY_DEBUG) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call _prepareWSData with message of type %i.\n", _messageType);}
-      prepareWSData(_messageType, _obj);
+
+      myWSSender _myWSSender;
+      _myWSSender.prepareWSData(_messageType, _obj);
     }
   }
 }
