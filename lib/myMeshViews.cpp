@@ -63,21 +63,21 @@ myMeshViews::myMeshViews()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Views (or messages)
 // void myMeshViews::manualSwitchMsg(const short targetOnOffState) {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"u";"ts":"0"}
 //   JsonObject msg = _createJsonobject();
 //   msg["ts"] = targetOnOffState;
 //   _sendMsg(msg, 'u');
 // }
 //
 // void myMeshViews::inclusionIRMsg(const short targetIrState) {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"i";"ts":"0"}
 //   JsonObject msg = _createJsonobject();
 //   msg["ts"] = targetIrState;
 //   _sendMsg(msg, 'i');
 // }
 //
 // void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"b";"ti":"5000"}
 //   JsonObject msg = _createJsonobject();
 //   msg["ti"] = targetBlinkingInterval;
 //   _sendMsg(msg, 'b');
@@ -87,7 +87,7 @@ myMeshViews::myMeshViews()
 // This function is called exclusively from the laser controllers -- not the interface
 void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
   Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. newMasterNodeName = %i\n", newMasterNodeName);
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
@@ -104,7 +104,7 @@ void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
 // This function is called exclusively from the webserver -- the interface
 void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const int iBoxName) {
   Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, iBoxName (dest index nb) = %i\n", newMasterNodeName, iBoxName);
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
@@ -124,7 +124,7 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const int iBox
 void myMeshViews::statusMsg(uint32_t destNodeId) {
   Serial.println("myMeshViews::statusMsg(): Starting.");
   // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"defBxSt":5;"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"..."}
+  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"defBxSt":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -148,7 +148,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *boxName) {
   // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"senderNodeName":"200";"senderAPIP":"...";"senderStIP":"..."}
+  // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"NNa":"200";"APIP":"...";"StIP":"..."}
   if (MY_DEBUG) {
     Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = %s, boxName = %s\n", boxTargetState, boxName);
   }
@@ -165,20 +165,20 @@ void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *b
 }
 
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"p";"pt":"0"}
 //   JsonObject msg = _createJsonobject();
 //   msg["pinPairingType"] = sTargetPairingType;
 //   _sendMsg(msg, 'p');
 // }
 //
 // void myMeshViews::dataRequestMsg() {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"d"}
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"d"}
 //   JsonObject msg = _createJsonobject();
 //   _sendMsg(msg, 'd');
 // }
 //
 // void myMeshViews::dataRequestResponse() {
-//   // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"r";"response":{A DETERMINER}}
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"r";"response":{A DETERMINER}}
 //   JsonObject msg = _createJsonobject();
 //   // msg["response"] = {A DETERMINER};
 //   _sendMsg(msg, 'r');
@@ -198,11 +198,11 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   Serial.println("myMeshViews::_sendMsg(): Starting.");
 
   // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
-  msg["senderNodeName"] = ControlerBoxes[myIndexInCBArray].bNodeName;
+  msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
   // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
-  msg["senderAPIP"] = (ControlerBoxes[myIndexInCBArray].APIP).toString();
+  msg["APIP"] = (ControlerBoxes[myIndexInCBArray].APIP).toString();
   // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
-  msg["senderStIP"] = (ControlerBoxes[myIndexInCBArray].stationIP).toString();
+  msg["StIP"] = (ControlerBoxes[myIndexInCBArray].stationIP).toString();
   // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
 
   // JSON serialization

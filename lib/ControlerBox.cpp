@@ -123,7 +123,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
 
   // Setting nodeName, nodeId and IP properties
   // extract the index of the relevant box from its senderNodeName in the JSON
-  byte __bNodeName = doc["senderNodeName"]; // ex. 201
+  byte __bNodeName = doc["NNa"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
   byte __bBoxIndex = __bNodeName - bControllerBoxPrefix; // 201 - 200 = 1
 
@@ -138,9 +138,9 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i\n", ControlerBoxes[__bBoxIndex].senderNodeId);
 
   // set the IPs
-  ControlerBoxes[__bBoxIndex].APIP = _parseIpStringToIPAddress(doc, "senderAPIP");
+  ControlerBoxes[__bBoxIndex].APIP = _parseIpStringToIPAddress(doc, "APIP");
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].APIP);
-  ControlerBoxes[__bBoxIndex].stationIP = _parseIpStringToIPAddress(doc, "senderStIP");
+  ControlerBoxes[__bBoxIndex].stationIP = _parseIpStringToIPAddress(doc, "StIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].stationIP);
 
   // set the bNodeName

@@ -79,9 +79,9 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     }
 
     // get the index as an int:
-    // root["senderNodeName"] is a char -> cast it as int
+    // root["NNa"] is a char -> cast it as int
     // bControllerBoxPrefix is a byte -> cast it as int
-    short int __sSlaveBoxIndexNumber = (int)root["senderNodeName"] - (int)bControllerBoxPrefix;
+    short int __sSlaveBoxIndexNumber = (int)root["NNa"] - (int)bControllerBoxPrefix;
     // if (MY_DEBUG) {
     //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
     // }
@@ -124,7 +124,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // update the ControlerBoxes[] array with the values received from the other box
     // if the sender box is not the interface
 
-    byte __bSenderNodeName = root["senderNodeName"];
+    byte __bSenderNodeName = root["NNa"];
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
 
     // Update the sender box properties
@@ -151,7 +151,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   const char* _c = "c";
   if (strcmp(_action, _c) == 0) {
     // action 'c': this message orders to change the boxTargetState
-    byte __bSenderNodeName = root["senderNodeName"];
+    byte __bSenderNodeName = root["NNa"];
     if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
 
     // if the message comes from the interface,
@@ -197,7 +197,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // void myMeshController::_manualSwitch(JsonDocument& _root) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"u";"ts":"0"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"u";"ts":"0"}
   // short _iTargetState;
   // const char* _sTargetState = _root["ts"];
   // _iTargetState = atoi(_sTargetState);
@@ -206,7 +206,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 // }
 
 // void myMeshController::_changeInclusionIR(JsonDocument& _root) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"i";"ts":"0"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"i";"ts":"0"}
   // short _iTargetState;
   // const char* _sTargetState = _root["ts"];
   // _iTargetState = atoi(_sTargetState);
@@ -214,7 +214,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 // }
 
 // void myMeshController::_changeBlinkingInterval(JsonDocument& _root) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"b";"ti":"5000"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"b";"ti":"5000"}
   // unsigned long _ulTargetBlinkingInterval;
   // const char* _sTargetBlinkingInterval = _root["ti"];
   // _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
@@ -222,7 +222,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 // }
 
 // void myMeshController::_changeMasterBox(JsonDocument& _root) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
   // byte bNewMasterBoxNumber;
   // const char* sNewMasterBoxNumber = _root["ms"];
   // bNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
@@ -244,7 +244,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // slaveReactionStruct slaveReactionStructsArray[4];
 
 // void myMeshController::_slaveBoxSwitch(JsonDocument& root) {
-  // expected JSON string: {"senderNodeName":"201";"senderAPIP":"...";"senderStIP":"...";"action":"s";"senderBoxActiveState":"on"}
+  // expected JSON string: {"NNa":"201";"APIP":"...";"StIP":"...";"action":"s";"senderBoxActiveState":"on"}
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
       const bool B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -276,7 +276,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // }
 
 // void myMeshController::_pinPairing(JsonDocument& root) {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"p";"pt":"0"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"p";"pt":"0"}
   // short _iTargetPairingType;
   // const char* _sTargetPairingType = root["ts"];
   // _iTargetPairingType = atoi(_sTargetPairingType);
@@ -284,6 +284,6 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 // }
 
 // void myMeshController::_dataRequest() {
-  // expected JSON string: {"senderNodeName":"001";"senderAPIP":"...";"senderStIP":"...";"action":"d"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"d"}
   // ----------------------
 // }
