@@ -38,11 +38,11 @@ class myWebServerViews
   public:
     myWebServerViews();
     // String returnTheResponse();
-    char cBoxArray[13000];
+    // char cBoxArray[13000];
 
 
   private:
-    void _loadBoxArray();
+    // void _loadBoxArray();
     // static const char* _slave_Reaction[];
     // static const char* _pairing_Type[];
     //
