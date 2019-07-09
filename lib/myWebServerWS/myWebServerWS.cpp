@@ -63,7 +63,9 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
         //client connected
         ws_client_id = client->id();
         Serial.printf("ws[%s][%i] connect\n", server->url(), client->id());
+
         myWSSender::prepareWSData(0); // 0 for messageType "hand shake"
+
         client->ping();
     } else if(type == WS_EVT_DISCONNECT){
         //client disconnected
@@ -84,14 +86,18 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
             //the whole message is in a single frame and we got all of it's data
             Serial.printf("ws[%s][%u] %s-message length[%llu]: \n", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
             if(info->opcode == WS_TEXT)
+
                 myWSSender::prepareWSData(1); // text message confirmation
+
             else
                 client->binary("I got your WS binary message");
             if(info->opcode == WS_TEXT){
               // message is a text message
                 data[len] = 0;
                 // Serial.printf("%s\n", (char*)data);
+
                 myWSReceiver _myWSReceiver(data);
+
             } else {
               // message is a binary message
                 for(size_t i=0; i < info->len; i++){
@@ -128,7 +134,9 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
               if(info->final){
                   Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
                   if(info->message_opcode == WS_TEXT)
+
                     myWSSender::prepareWSData(1); // text message confirmation
+
                     // client->text("I got your WS text message");
                   else
                     client->binary("I got your WS binary message");
