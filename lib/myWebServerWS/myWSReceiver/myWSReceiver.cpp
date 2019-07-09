@@ -66,13 +66,15 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i - converting doc[\"message\"] to JSON Object \n", _type);
     // Declare and define a JSONObject
     JsonObject _obj = doc["message"].as<JsonObject>();
-    Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _type);
+    if (MY_DEBUG) { Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _type); }
 
     // if no boxRow in DOM and no boxes connected to the mesh, just return
     if (_obj.size() == 0 && ControlerBox::connectedBoxesCount == 1) {
-      Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _type, (_obj.size() == 0));
-      Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _type, (ControlerBox::connectedBoxesCount == 1));
-      Serial.printf("myWebServerWS::_decodeWSMessage(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _type);
+      if (MY_DEBUG) {
+        Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _type, (_obj.size() == 0));
+        Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _type, (ControlerBox::connectedBoxesCount == 1));
+        Serial.printf("myWebServerWS::_decodeWSMessage(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _type);
+      }
       return;
     }
     Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i, JSON Object _obj.size: %i. There are currently boxRow(s) in the DOM.\n", _type, _obj.size());
