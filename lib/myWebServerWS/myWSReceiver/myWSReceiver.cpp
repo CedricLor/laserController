@@ -134,7 +134,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   }
   if (_type == 3) {           // 3 for confirmation that change IP adress has been received
     Serial.println("myWebServerWS::_decodeWSMessage. Ending on type 3 (received confirmation that new station IP has been received).");
-    _tSendWSDataIfChangeStationIp.disable();
+    myWSSender::tSendWSDataIfChangeStationIp.disable();
     return;
   }
   if (_type == 4) {           // 4 for change boxState
@@ -159,7 +159,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     Serial.printf("---------------------- %i -------------------\n", __iNodeName);
     _sub_obj["lb"] = __iNodeName;
     _sub_obj["boxState"] = _boxState;
-    _prepareWSData(4, _sub_obj);
+    myWSSender::prepareWSData(4, _sub_obj);
   }
   if (_type == 8) {             // 8 for change master
     Serial.printf("myWebServerWS::_decodeWSMessage(): _type = %i - starting \n", _type);
@@ -185,7 +185,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     _sub_obj["lb"] = __iNodeName;
     _sub_obj["ms"] = _iMasterBox;
     _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
-    _prepareWSData(8, _sub_obj);
+    myWSSender::prepareWSData(8, _sub_obj);
   }
   Serial.println("myWebServerWS::_decodeWSMessage. Ending.");
 
