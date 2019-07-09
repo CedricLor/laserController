@@ -191,7 +191,7 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
 
     // message ready. sending it to the send function
     Serial.println("- myWebServerWS::_prepareWSData. About to send JSON to sender function.");
-    sendWSData(doc);
+    _sendWSData(doc);
     Serial.println("- myWebServerWS::_prepareWSData. Ending.");
 }
 
@@ -201,7 +201,7 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
 
 
 
-void myWSSender::sendWSData(JsonDocument& doc) {
+void myWSSender::_sendWSData(JsonDocument& doc) {
     Serial.println("- myWebServerWS::_sendWSData. Starting.");
 
     size_t _len = measureJson(doc);
