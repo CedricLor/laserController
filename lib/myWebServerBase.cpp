@@ -74,7 +74,7 @@ void myWebServerBase::startAsyncServer() {
   _ws.onEvent(_onEvent);
   _asyncServer.addHandler(&_ws);
 
-  // respond to GET requests
+  // respond to GET requests by sending index.htm to the browser
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
       Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
 
@@ -119,10 +119,12 @@ void myWebServerBase::startAsyncServer() {
       request->send(SPIFFS, "/index.htm", String(), false, _processor);
   }); // end _asyncServer.on("/", ...)
 
+  // respond to GET requests requesting index.css by sending index.css to the browser
   _asyncServer.on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
      request->send(SPIFFS, "/index.css", "text/css");
    });
 
+   // respond to GET requests requesting index.js by sending index.js to the browser
    _asyncServer.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
       request->send(SPIFFS, "/index.js", "text/javascript");
     });
