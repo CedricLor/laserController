@@ -44,6 +44,8 @@ class myWebServerWS
 
     static AsyncWebSocket ws; // access at ws://[esp ip]/ws
 
+    static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
+
     static void sendWSData(JsonDocument& doc);
 
     static Task _tSendWSDataIfChangeStationIp;
@@ -62,7 +64,6 @@ class myWebServerWS
     static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
     static void _decodeWSMessage(uint8_t *data);
 
-    static void _onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 };
 
 #endif

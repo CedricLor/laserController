@@ -51,7 +51,7 @@ myWebServerWS::myWebServerWS()
 
 
 // Callback on websocket events
-void myWebServerWS::_onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
+void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
         //client connected

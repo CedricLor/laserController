@@ -44,29 +44,12 @@ class myWebServerBase
     static void startAsyncServer();
     static void sendWSData(JsonDocument& doc);
 
-    static Task _tSendWSDataIfChangeStationIp;
-    static Task _tSendWSDataIfChangeBoxState;
-
   private:
     static AsyncWebServer _asyncServer;
-    // static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
-    static AsyncEventSource _events; // event source (Server-Sent events)
-
-    static JsonObject _empty_obj;
-
-    static uint32_t _ws_client_id;
-
-    static void _tcbSendWSDataIfChangeStationIp();
-
-    static void _tcbSendWSDataIfChangeBoxState();
-
-    static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
-    static void _decodeWSMessage(uint8_t *data);
 
     static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
     static void _listAllCollectedParams(AsyncWebServerRequest *request);
 
-    static void _onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
     static void _onRequest(AsyncWebServerRequest *request);
     static void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 
