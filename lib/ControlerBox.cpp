@@ -59,8 +59,10 @@ ControlerBox::ControlerBox()
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
   // - here
-  // - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
-  // - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message); setting it to false
+  // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
+  //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
+  //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
+  // - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface); setting it to true
   // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) (setting it to true, once a message has been sent to the browser)
   // testers:
   // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) (tests whether a change has been made and whether it needs to inform the browser)
@@ -104,8 +106,8 @@ void ControlerBox::printProperties(const byte bBoxIndex) {
 }
 
 void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
-  this->bMasterBoxName = _bMasterBoxName;
-  bMasterBoxNameChangeHasBeenSignaled = false;
+  bMasterBoxName = _bMasterBoxName;  // see in constructor for information on where this variable is set and read
+  bMasterBoxNameChangeHasBeenSignaled = false; // see in constructor for information on where this variable is set and read
 }
 
 

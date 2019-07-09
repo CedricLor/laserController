@@ -103,9 +103,12 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     byte __bMasterBoxName = root["ms"];
     __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
 
+    // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
     ControlerBoxes[myIndexInCBArray].updateMasterBoxName(__bMasterBoxName);
+    // send a message to the IF telling it that I have taken the change into account
     myMeshViews __myMeshViews;
     __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
+    // mark the change has signaled
     ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
 
     return;
