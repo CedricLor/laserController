@@ -49,8 +49,11 @@ class myWSReceiver
     myWSReceiver(uint8_t *data);
 
   private:
-    void _checkConsistancyDOMDB(const short _messageType, JsonObject& _obj);
-    void _lookForDisconnectedBoxes(const short _messageType, JsonPair& p);
+    void _onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageType, JsonDocument& doc);
+    void _checkConsistancyDOMDB(const short _sMessageType, JsonObject& _obj);
+    void _lookForDisconnectedBoxes(const short _sMessageType, JsonPair& _p);
+    void _checkBoxStateConsistancy(const short _sMessageType, JsonPair& _p);
+    void _lookForDOMMissingRows(const short _sMessageType, JsonObject& _obj);
 };
 
 #endif
