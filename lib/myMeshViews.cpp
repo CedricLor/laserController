@@ -200,9 +200,15 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
   msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
   // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
-  msg["APIP"] = (ControlerBoxes[myIndexInCBArray].APIP).toString();
+  JsonArray _APIP = msg.createNestedArray("APIP");
+  for (short _i = 0; _i < 4; _i++) {
+    _APIP.add(ControlerBoxes[myIndexInCBArray].APIP[_i]);
+  }
   // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
-  msg["StIP"] = (ControlerBoxes[myIndexInCBArray].stationIP).toString();
+  JsonArray _StIP = msg.createNestedArray("StIP");
+  for (short _i = 0; _i < 4; _i++) {
+    _StIP.add(ControlerBoxes[myIndexInCBArray].stationIP[_i]);
+  }
   // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
 
   // JSON serialization

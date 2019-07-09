@@ -138,9 +138,9 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i\n", ControlerBoxes[__bBoxIndex].senderNodeId);
 
   // set the IPs
-  ControlerBoxes[__bBoxIndex].APIP = _parseIpStringToIPAddress(doc, "APIP");
+  ControlerBoxes[__bBoxIndex].APIP = IPAddress(doc["APIP"][0], doc["APIP"][1], doc["APIP"][2], doc["APIP"][3]);; // _parseIpStringToIPAddress(doc, "APIP");
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].APIP);
-  ControlerBoxes[__bBoxIndex].stationIP = _parseIpStringToIPAddress(doc, "StIP");
+  ControlerBoxes[__bBoxIndex].stationIP = IPAddress(doc["StIP"][0], doc["StIP"][1], doc["StIP"][2], doc["StIP"][3]);; // _parseIpStringToIPAddress(doc, "APIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].stationIP);
 
   // set the bNodeName
