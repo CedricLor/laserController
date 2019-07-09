@@ -36,12 +36,12 @@ myWebServerViews contains the webPage being displayed by the webServer.
 class myWebServerViews
 {
   public:
-    myWebServerViews();
+    myWebServerViews(AsyncWebServerRequest *request);
     // String returnTheResponse();
     // char cBoxArray[13000];
 
-
   private:
+    static String _processor(const String& var);
     // void _loadBoxArray();
     // static const char* _slave_Reaction[];
     // static const char* _pairing_Type[];
