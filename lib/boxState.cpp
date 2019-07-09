@@ -218,7 +218,7 @@ void boxState::_restart_tPlayBoxState() {
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
     // Serial.println(_tPlayBoxState.getInterval());
     if (!(_boxTargetState == ControlerBoxes[myIndexInCBArray].boxActiveState)) {
-      ControlerBox::setBoxActiveState(myIndexInCBArray, _boxTargetState);
+      ControlerBox::setBoxActiveState(myIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
     }
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
     _tPlayBoxState.restartDelayed();

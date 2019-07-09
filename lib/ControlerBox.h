@@ -41,7 +41,7 @@ class ControlerBox
     static short int previousConnectedBoxesCount;
 
     static void updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc);
-    static void setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState);
+    static void setBoxActiveState(const byte bBoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime);
 
     static void deleteBox(uint32_t nodeId);
 

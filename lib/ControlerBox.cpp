@@ -146,10 +146,10 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // Setting activeState stack
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
-  setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
   // extract the __senderBoxActiveState from the JSON
   const short int __senderBoxActiveState = doc["actSt"];
   const uint32_t __uiSenderBoxActiveStateStartTime = doc["actStStartT"];
+  setBoxActiveState(__bBoxIndex, __senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
 
   // Print out the updated properties
   if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};
@@ -162,20 +162,32 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
 // Setter for the activeState and associated variables
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
-void ControlerBox::setBoxActiveState(const byte bBoxIndex, const int senderBoxActiveState) {
+void ControlerBox::setBoxActiveState(const byte bBoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime) {
   Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
-  ControlerBoxes[bBoxIndex].boxActiveState = senderBoxActiveState;
+  ControlerBoxes[bBoxIndex].boxActiveState = _sBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveState);
 
   ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled);
+  // setters:
+  // - by default to true upon init (controlerBox constructor);
+  // - to false here (usefull for the IF, for the received states of other boxes);
+  // - to true in myMeshViews (for this box only, upon sending a statusMsg);
+  // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
+  // used by the interface mostly
 
-  ControlerBoxes[bBoxIndex].uiBoxActiveStateStartTime = laserControllerMesh.getNodeTime();
+  ControlerBoxes[bBoxIndex].uiBoxActiveStateStartTime = _uiBoxActiveStateStartTime;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].uiBoxActiveStateStartTime: %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].uiBoxActiveStateStartTime);
 
   ControlerBoxes[bBoxIndex].boxActiveStateHasBeenTakenIntoAccount = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenTakenIntoAccount: %i\n", __bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenTakenIntoAccount);
+  // setters:
+  // - by default at true upon init (controlerBox constructor);
+  // - to false here (useful so that the boxState can check if a boxState change request has come);
+  // - to true (for this box only) by boxState.
+  // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
+  // It is used when the laserBox receives an order to change active state from the interface.
 
   Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
