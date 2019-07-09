@@ -102,7 +102,9 @@ void ControlerBox::printProperties(const byte bBoxIndex) {
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bMasterBoxName: %i\n", bBoxIndex, bMasterBoxName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bMasterBoxNameChangeHasBeenSignaled: %i\n", bBoxIndex, bMasterBoxNameChangeHasBeenSignaled);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveStateHasBeenTakenIntoAccount: %i\n", bBoxIndex, boxActiveStateHasBeenTakenIntoAccount);
+
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].sBoxDefaultState: %i\n", bBoxIndex, sBoxDefaultState);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].sBoxDefaultStateChangeHasBeenSignaled: %i\n", bBoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
 void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
@@ -152,6 +154,13 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   const short int __senderBoxActiveState = doc["actSt"];
   const uint32_t __uiSenderBoxActiveStateStartTime = doc["actStStartT"];
   setBoxActiveState(__bBoxIndex, __senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
+
+  // Setting defaultState stack
+  // need to send via myMeshViews and add to ControlerBox the time
+  // for which the new sender boxState shall apply
+  // extract the __senderBoxActiveState from the JSON
+  const short int __senderBoxDefaultState = doc["defBxSt"];
+  setBoxDefaultState(__bBoxIndex, __senderBoxDefaultState);
 
   // Print out the updated properties
   if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};
