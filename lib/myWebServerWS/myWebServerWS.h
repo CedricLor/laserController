@@ -36,8 +36,6 @@
 #define myWebServerWS_h
 
 #include "Arduino.h"
-#include "./myWSSender/myWSSender.h"
-#include "./myWSSender/myWSSender.cpp"
 #include "./myWSReceiver/myWSReceiver.h"
 #include "./myWSReceiver/myWSReceiver.cpp"
 
@@ -66,7 +64,6 @@ class myWebServerWS
     static void _tcbSendWSDataIfChangeBoxState();
 
     static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
-    static void _decodeWSMessage(uint8_t *data);
 
 };
 
