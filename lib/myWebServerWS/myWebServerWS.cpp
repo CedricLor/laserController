@@ -146,17 +146,6 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
 
 
 // Web Socket Message Senders
-// Send WS message when I change Station IP
-Task myWebServerWS::_tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
-
-void myWebServerWS::_tcbSendWSDataIfChangeStationIp() {
-  // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[myIndexInCBArray].stationIP)) {
-    Serial.println("myWebServerWS::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-    // Serial.printf("myWebServerWS::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
-    _prepareWSData(3); // 3 for message sent in case of change in station IP
-    ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
-  // }
-}
 
 // Send WS message upon (i) boxState changes, (ii) appearance or (iii) disappearance of a new box
 // This task runs for ever and checks whether the boxState of any of the Controller boxes connected to
@@ -262,7 +251,7 @@ void myWebServerWS::_prepareWSData(const short int _iMessageType, JsonObject& _s
     if (MY_DEBUG) {
       Serial.printf("- myWebServerWS::_prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _iMessageType);
     }
-    _tSendWSDataIfChangeStationIp.enable();
+    myWSSender::tSendWSDataIfChangeStationIp.enable();
     if (MY_DEBUG) {
       Serial.printf("- myWebServerWS::_prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
     }
