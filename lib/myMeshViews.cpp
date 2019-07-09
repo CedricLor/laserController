@@ -197,12 +197,8 @@ JsonObject myMeshViews::_createJsonobject() {
 void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   Serial.println("myMeshViews::_sendMsg(): Starting.");
 
-  // Serial.println("myMeshViews::_sendMsg(): adding IPs to the JSON object before sending");
-  char _cNodeName[4];
-  // Serial.println("myMeshViews::_sendMsg(): about to convert ControlerBoxes[myIndexInCBArray].bNodeName to char array _cNodeName");
-  itoa(ControlerBoxes[myIndexInCBArray].bNodeName, _cNodeName, 10);
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate _cNodeName to msg[\"senderNodeName\"]");
-  msg["senderNodeName"] = _cNodeName;
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
+  msg["senderNodeName"] = ControlerBoxes[myIndexInCBArray].bNodeName;
   // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
   msg["senderAPIP"] = (ControlerBoxes[myIndexInCBArray].APIP).toString();
   // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
