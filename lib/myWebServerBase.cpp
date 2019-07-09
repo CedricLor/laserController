@@ -33,9 +33,9 @@
 
 
 AsyncWebServer myWebServerBase::_asyncServer(80);
-AsyncWebSocket myWebServerBase::_ws("/ws"); // access at ws://[esp ip]/ws
+// AsyncWebSocket myWebServerBase::_ws("/ws"); // access at ws://[esp ip]/ws
 uint32_t myWebServerBase::_ws_client_id = 0;
-StaticJsonDocument<0> _empty_doc;
+// StaticJsonDocument<0> _empty_doc;
 JsonObject myWebServerBase::_empty_obj = _empty_doc.to<JsonObject>();
 
 
@@ -71,8 +71,9 @@ void myWebServerBase::startAsyncServer() {
   // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
 
   // attach AsyncWebSocket
-  _ws.onEvent(_onEvent);
-  _asyncServer.addHandler(&_ws);
+  myWebServerWS::ws.onEvent(_onEvent);
+  _asyncServer.addHandler(&myWebServerWS::ws);
+  // _asyncServer.addHandler(&_ws);
 
   // respond to GET requests by sending index.htm to the browser
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -519,7 +520,7 @@ void myWebServerBase::sendWSData(JsonDocument& doc) {
     size_t _len = measureJson(doc);
     Serial.printf("- myWebServerBase::_sendWSData. _len of JSON Document [%i]\n", _len);
 
-    AsyncWebSocketMessageBuffer * _buffer = _ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
+    AsyncWebSocketMessageBuffer * _buffer = myWebServerWS::ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
 
     if (_buffer) {
         serializeJson(doc, (char *)_buffer->get(), _len + 1);
@@ -527,7 +528,7 @@ void myWebServerBase::sendWSData(JsonDocument& doc) {
         Serial.print("- myWebServerBase::_sendWSData: _ws_client_id = ");Serial.println(_ws_client_id);
         if (_ws_client_id) {
           Serial.printf("- myWebServerBase::_sendWSData. About to send a WS message message to [%i].\n", _ws_client_id);
-          _ws.client(_ws_client_id)->text(_buffer);
+          myWebServerWS::ws.client(_ws_client_id)->text(_buffer);
           Serial.println("- myWebServerBase::_sendWSData. Message sent");
         }
         // else {

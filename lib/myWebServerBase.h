@@ -33,6 +33,8 @@
 #include "AsyncTCP.h"
 #include "myWebServerViews.cpp"
 #include "myWebServerControler.cpp"
+#include "./myWebServerWS/myWebServerWS.h"
+#include "./myWebServerWS/myWebServerWS.cpp"
 
 class myWebServerBase
 {
@@ -47,7 +49,7 @@ class myWebServerBase
 
   private:
     static AsyncWebServer _asyncServer;
-    static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
+    // static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
     static AsyncEventSource _events; // event source (Server-Sent events)
 
     static JsonObject _empty_obj;

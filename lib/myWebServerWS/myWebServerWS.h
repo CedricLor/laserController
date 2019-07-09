@@ -1,12 +1,14 @@
 /*
-  myWebServerBase.h - Library web server controller related functions.
-  Created by Cedric Lor, January 19, 2019.
+  myWebServerWS.h - Library web socket related functions.
+  Created by Cedric Lor, July 9, 2019.
 
   |--main.cpp
   |  |
   |  |--myWebServerBase.cpp
   |  |  |--myWebServerBase.h
   |  |  |  |--AsyncTCP.h
+  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
+  |  |  |  |--ControlerBox.h
   |  |  |
   |  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerControler.h
@@ -23,32 +25,31 @@
   |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
   |  |  |  |  |--global.h
   |  |  |  |--//LaserPin.cpp
+  |  |  |
+  |  |  |--myWebServerWS
+  |  |  |  |--myWebServerWS.cpp
+  |  |  |  |  |--myWebServerWS.h
 
 */
 
-#ifndef myWebServerBase_h
-#define myWebServerBase_h
+#ifndef myWebServerWS_h
+#define myWebServerWS_h
 
 #include "Arduino.h"
-#include "AsyncTCP.h"
-#include "myWebServerViews.cpp"
-#include "myWebServerControler.cpp"
 
-class myWebServerBase
+class myWebServerWS
 {
   public:
-    myWebServerBase();
+    myWebServerWS();
 
-    static void startAsyncServer();
+    static AsyncWebSocket ws; // access at ws://[esp ip]/ws
+
     static void sendWSData(JsonDocument& doc);
 
     static Task _tSendWSDataIfChangeStationIp;
     static Task _tSendWSDataIfChangeBoxState;
 
   private:
-    static AsyncWebServer _asyncServer;
-    static AsyncWebSocket _ws; // access at ws://[esp ip]/ws
-    static AsyncEventSource _events; // event source (Server-Sent events)
 
     static JsonObject _empty_obj;
 
@@ -61,13 +62,7 @@ class myWebServerBase
     static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
     static void _decodeWSMessage(uint8_t *data);
 
-    static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
-    static void _listAllCollectedParams(AsyncWebServerRequest *request);
-
     static void _onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
-    static void _onRequest(AsyncWebServerRequest *request);
-    static void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
-
 };
 
 #endif
