@@ -196,6 +196,24 @@ void ControlerBox::setBoxActiveState(const byte bBoxIndex, const short _sBoxActi
 
 
 
+// Setter for the defaultState and associated variables
+// Called only from this class (for the other boxes).
+void ControlerBox::setBoxDefaultState(const byte bBoxIndex, const short _sBoxDefaultState) {
+  Serial.println("ControlerBox::setBoxDefaultState(): Starting");
+
+  ControlerBoxes[bBoxIndex].sBoxDefaultState = _sBoxDefaultState;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveState);
+
+  ControlerBoxes[bBoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].boxActiveStateHasBeenSignaled: %i\n", bBoxIndex, ControlerBoxes[bBoxIndex].boxActiveStateHasBeenSignaled);
+
+  Serial.println("ControlerBox::setBoxDefaultState(): Ending");
+}
+
+
+
+
+
 void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
   previousConnectedBoxesCount = connectedBoxesCount;
   connectedBoxesCount = newConnectedBoxesCount;
