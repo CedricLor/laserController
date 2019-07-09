@@ -49,6 +49,8 @@ class myWSReceiver
     myWSReceiver(uint8_t *data);
 
   private:
+    void _checkConsistancyDOMDB(const short _messageType, JsonObject& _obj);
+    void _lookForDisconnectedBoxes(const short _messageType, JsonPair& p);
 };
 
 #endif
