@@ -48,22 +48,26 @@ myWSReceiver::myWSReceiver(uint8_t *data)
 
   // create a StaticJsonDocument entitled doc
   StaticJsonDocument<256> doc;
-  Serial.print("myWSReceiver::_decodeWSMessage(): jsonDocument created\n");
+  if (MY_DEBUG) {
+    Serial.print("myWSReceiver::_decodeWSMessage(): jsonDocument created\n");
+  }
 
   // deserialize the message msg received from the mesh into the StaticJsonDocument doc
   DeserializationError err = deserializeJson(doc, data);
-  Serial.print("myWSReceiver::_decodeWSMessage(): message msg deserialized into JsonDocument doc\n");
-  Serial.print("myWSReceiver::_decodeWSMessage(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
+  if (MY_DEBUG) {
+    Serial.print("myWSReceiver::_decodeWSMessage(): message msg deserialized into JsonDocument doc\n");
+    Serial.print("myWSReceiver::_decodeWSMessage(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
+  }
 
   // read the type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
   const short _type = doc["type"]; // correspondings to root[action] in meshController
-  Serial.printf("myWSReceiver::_decodeWSMessage(): The message _type is %i \n", _type);
+  if (MY_DEBUG) { Serial.printf("myWSReceiver::_decodeWSMessage(): The message _type is %i \n", _type); }
 
 
   // choose the type of reaction depending on the message type
   // if type 0, handshake and comparing the number of boxRow vs the number of connected boxes
   if (_type == 0) {           // 0 for hand shake message
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - converting doc[\"message\"] to JSON Object \n", _type);
+    if (MY_DEBUG) { Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - converting doc[\"message\"] to JSON Object \n", _type); }
 
     _onHandshakeCheckWhetherDOMNeedsUpdate(_type, doc);
   }
@@ -77,7 +81,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   }
 
   if (_type == 4) {           // 4 for change boxState
-    // send a mesh request to the other box
+    // send a mesh request to the relevant laser box
     // convert the box name to a char array box name
     int __iNodeName = doc["lb"];
     Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
