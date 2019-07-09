@@ -1,5 +1,5 @@
 /*
-  myWebServerWS.h - Library web socket related functions.
+  myWebServerWS.cpp - Library web socket related functions.
   Created by Cedric Lor, July 9, 2019.
 
   |--main.cpp
@@ -29,6 +29,12 @@
   |  |  |--myWebServerWS
   |  |  |  |--myWebServerWS.cpp
   |  |  |  |  |--myWebServerWS.h
+  |  |  |  |--myWSReceiver
+  |  |  |  |  |--myWSReceiver.cpp
+  |  |  |  |  |  |--myWSReceiver.H
+  |  |  |  |--myWSSender
+  |  |  |  |  |--myWSSender.cpp
+  |  |  |  |  |  |--myWSSender.H
 
 */
 
