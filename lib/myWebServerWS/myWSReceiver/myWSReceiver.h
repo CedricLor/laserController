@@ -37,3 +37,19 @@
   |  |  |  |  |  |--myWSSender.H
 
 */
+
+#ifndef myWSReceiver_h
+#define myWSReceiver_h
+
+#include "Arduino.h"
+
+class myWSReceiver
+{
+  public:
+    myWSReceiver();
+
+  private:
+    static void _decodeWSMessage(uint8_t *data);
+};
+
+#endif

@@ -37,3 +37,6 @@
   |  |  |  |  |  |--myWSSender.H
 
 */
+
+#include "Arduino.h"
+#include "myWSReceiver.h"

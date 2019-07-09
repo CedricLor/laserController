@@ -37,3 +37,32 @@
   |  |  |  |  |  |--myWSSender.H
 
 */
+
+#ifndef myWSSender_h
+#define myWSSender_h
+
+#include "Arduino.h"
+
+class myWSSender
+{
+  public:
+    myWSSender();
+
+    static void sendWSData(JsonDocument& doc);
+
+    static Task _tSendWSDataIfChangeStationIp;
+    static Task _tSendWSDataIfChangeBoxState;
+
+  private:
+
+    static JsonObject _empty_obj;
+
+    static void _tcbSendWSDataIfChangeStationIp();
+
+    static void _tcbSendWSDataIfChangeBoxState();
+
+    static void _prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
+
+};
+
+#endif
