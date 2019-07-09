@@ -50,16 +50,11 @@ class myWebServerWS
 
     static void sendWSData(JsonDocument& doc);
 
-    static Task _tSendWSDataIfChangeStationIp;
-    static Task _tSendWSDataIfChangeBoxState;
-
   private:
 
     static JsonObject _empty_obj;
 
     static uint32_t _ws_client_id;
-
-    static void _tcbSendWSDataIfChangeStationIp();
 
     static void _tcbSendWSDataIfChangeBoxState();
 
