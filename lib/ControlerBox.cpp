@@ -71,6 +71,7 @@ ControlerBox::ControlerBox()
 }
 
 
+
 void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
@@ -80,6 +81,7 @@ void ControlerBox::updateThisBoxProperties() {
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);};
 }
+
 
 
 void ControlerBox::printProperties(const byte bBoxIndex) {
@@ -142,11 +144,12 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].bNodeName = %i\n", __bBoxIndex, ControlerBoxes[__bBoxIndex].bNodeName);
 
   // Setting activeState stack
-  // extract the __senderBoxActiveState from the JSON
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
-  int __senderBoxActiveState = doc["senderBoxActiveState"];
   setBoxActiveState(__bBoxIndex, __senderBoxActiveState);
+  // extract the __senderBoxActiveState from the JSON
+  const short int __senderBoxActiveState = doc["actSt"];
+  const uint32_t __uiSenderBoxActiveStateStartTime = doc["actStStartT"];
 
   // Print out the updated properties
   if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};

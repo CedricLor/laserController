@@ -131,8 +131,8 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   JsonObject msg = doc.to<JsonObject>();
 
   // load the JSON document with values
-  msg["senderBoxActiveState"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
-  msg["senderBoxActiveStateStartTime"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  msg["actSt"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
+  msg["actStStartT"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
   msg["action"] = "s";
 
   // send to the sender
