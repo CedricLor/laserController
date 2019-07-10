@@ -66,11 +66,19 @@ function connect() {
   };
 }
 
+
 // Check if WS server is still available (and reconnect as necessary)
 function check(){
-  if(!ws || ws.readyState === WebSocket.CLOSED) connect();
+  if(!ws || ws.readyState === WebSocket.CLOSED) {
+    console.log("!!! -- WE HAVE BEEN DISCONNECTED -- !!!");
+    console.log("!!! Trying to reconnect !!!");
+    connect();
+  }
 }
 // WEB SOCKET END
+
+
+
 
 
 function findUpLaserBoxNumber(el) {
@@ -563,8 +571,8 @@ function setSelectEvents(selectElt) {
 window.onload = function(e){
     console.log("window.onload");
     // Interval at which to check if WS server is still available (and reconnect as necessary)
-    setInterval(check, 5000);
-    // setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+    // setInterval(check, 5000);
+    setInterval(check, (getRandomArbitrary(10, 4) * 1000));
 }
 // END WINDOW LOAD
 
