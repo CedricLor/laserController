@@ -113,9 +113,9 @@ void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument&
   // get the masterbox number
   int _iMasterBox = doc["masterbox"];
   Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %i \n", _iMasterBox);
-  myMeshViews __myMeshViews;
 
-  // instantiate a mesh view
+  // instantiate a mesh view and send a changeMasterBoxMsg
+  myMeshViews __myMeshViews;
   Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeMasterBox().\n");
   __myMeshViews.changeMasterBoxMsg(_iMasterBox, __iNodeName);
 
@@ -184,6 +184,10 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
     return;
   }
 
+  // if there are boxRows in DOM and no boxes are connected to the mesh,
+  // deleted every thing in the DOM
+  // else if there are boxes connected to the mesh, check consistency between
+  // the DOM and the ControlerBoxes[] stored on the interface
   if (_obj.size() != 0) {
     if (ControlerBox::connectedBoxesCount == 1) {
       // send instruction to delete all the boxRows from the DOM
