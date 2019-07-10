@@ -88,10 +88,19 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     return;
 
   }
+
   if (_type == 8) {             // 8 for change master
     // send a mesh request to the relevant laser box
 
     _requestMasterChange(_type, doc);
+
+    return;
+  }
+
+  if (_type == 9) {             // 8 for change master
+    // send a mesh request to the relevant laser box
+
+    _requestDefaultStateChange(doc);
 
     return;
   }
@@ -157,6 +166,30 @@ void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
   _myWSSender.prepareWSData(4, _sub_obj);
 }
 
+
+
+
+void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
+  // convert the box name to a char array box name
+  const short __sNodeName = doc["lb"];
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): (from JSON) __sNodeName = %i \n", __sNodeName);
+  const short _sBoxDefaultState = doc["boxDefstate"];
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): _sBoxDefaultState = %i \n", _sBoxDefaultState);
+
+  // instantiate a mesh view
+  myMeshViews __myMeshViews;
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
+  __myMeshViews.changeBoxDefaultState(_sBoxDefaultState, (__sNodeName + bControllerBoxPrefix));
+
+  // send a response telling the instruction is in course of being executed
+  StaticJsonDocument<64> _sub_doc;
+  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+  _sub_obj["lb"] = __sNodeName;
+  _sub_obj["boxState"] = _sBoxDefaultState;
+
+  myWSSender _myWSSender;
+  _myWSSender.prepareWSData(9, _sub_obj);
+}
 
 
 
