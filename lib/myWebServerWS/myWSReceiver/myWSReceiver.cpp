@@ -191,7 +191,10 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
   if (_obj.size() != 0) {
     if (ControlerBox::connectedBoxesCount == 1) {
       // send instruction to delete all the boxRows from the DOM
-      // return;
+      _obj["lb"] = "a"; // "a" means delete all the boxes
+      myWSSender _myWSSender;
+      _myWSSender.prepareWSData(7, _obj);
+      return;
     } else {
       //else, there is a JSON Object of this type: {1:3,4:5,7:2}
       _checkConsistancyDOMDB(_sMessageType, _obj);

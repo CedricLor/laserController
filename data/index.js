@@ -27,18 +27,29 @@ function connect() {
         type: 3,
         message: "received Station IP"
       }));
+      return;
     }
     if (_data.type === 4) { // User request to change boxState has been received and is being processed
       updateStateButton(_data.message);
+      return;
     }
     if (_data.type === 5) { // boxState of existing box has been updated
       addNewRowForNewBox(_data.message);
+      return;
     }
     if (_data.type === 6) { // a new box has connected to the mesh
       addNewRowForNewBox(_data.message);
+      return;
     }
     if (_data.type === 7) { // an existing box has been disconnected from the mesh
-      deleteBoxRow(_data.message);
+      // or the DOM contained boxRows corresponding to boxes that have been disconnected
+      // from the mesh
+      if (_data.message === "a") {
+        deleteAllBoxRows();
+      } else {
+        deleteBoxRow(_data.message);
+      }
+      return;
     }
     if (_data.type === 8) { // a box has changed master
       updateMasterBoxNumber(_data.message);
@@ -58,12 +69,13 @@ function connect() {
 // Check if WS server is still available (and reconnect as necessary)
 function check(){
   if(!ws || ws.readyState === WebSocket.CLOSED) connect();
-  // if(!ws || ws.readyState == 3) connect();
 }
 // WEB SOCKET END
 
 
 
+
+// EVENTS HANDLER
 function onclickButton(e) {
   console.log("onclickButton starting");
 
@@ -89,6 +101,8 @@ function onclickButton(e) {
 
   console.log("onclickButton: ending");
 };
+
+
 
 function oninputMasterSelect(e) {
   console.log("oninputMasterSelect: starting");
@@ -345,6 +359,24 @@ function addNewRowForNewBox(data) {
 
 
 
+function deleteAllBoxRows() {
+  // delete from maps represenations
+  if (controlerBoxes.size) {
+    controlerBoxes.clear();
+  }
+  if (boxesRows.size) {
+    boxesRows.clear();
+  }
+  // delete from DOM
+  var _boxRowsContainer = document.querySelector(".boxes_state_setter");
+  while (_boxRowsContainer.firstChild) {
+    _boxRowsContainer.removeChild(_boxRowsContainer.firstChild);
+  }
+}
+
+
+
+
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
   var _boxRowToDelete = boxRowDOMSelector(data.lb);
@@ -414,6 +446,7 @@ function updateMasterBoxNumber(data) {
 
   console.log("updateMasterBoxNumber ending.");
 }
+
 
 
 
