@@ -113,12 +113,14 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       ControlerBoxes[_iBoxIndex].isNewBoxHasBeenSignaled = true;
     }
 
+    // if the box is an unsignaled deleted box
     if (ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_iBoxIndex + bControllerBoxPrefix));
       _messageType = 7;
       ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled = true;
     }
 
+    // if the box master has changed
     if (ControlerBoxes[_iBoxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has changed master\n", (_iBoxIndex + int(bControllerBoxPrefix)));
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. (int)(ControlerBoxes[%i].bMasterBoxName) == %i\n", _iBoxIndex, (int)(ControlerBoxes[_iBoxIndex].bMasterBoxName));
@@ -130,9 +132,8 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       ControlerBoxes[_iBoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
     }
 
-    // in all cases
+    // in each of the above cases, send a message to the browser
     if (_messageType != -1) {
-      // pass it on, with the type of message (5, 6 or 7) we want to add
       if (MY_DEBUG) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call _prepareWSData with message of type %i.\n", _messageType);}
 
       myWSSender _myWSSender;
