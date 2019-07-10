@@ -157,7 +157,9 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // if the message comes from the interface,
     // this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
-      if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my target state to %i", ControlerBox::valFromWeb);}
+      if (MY_DEBUG) {
+        Serial.printf("myMeshController::myMeshController: will change my target state to %s", root["receiverTargetState"].as<char*>());
+      }
       ControlerBox::valFromWeb = root["receiverTargetState"];
     } // else it might be a message coming from some other box,
     // but I shall not react. Reactions to changes in the mesh are
@@ -165,6 +167,29 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     return;
   }
 
+
+
+  // change this defaultBoxState request
+  // This is a signal sent from the web and relayed by the mesh
+  const char* _d = "d";
+  if (strcmp(_action, _d) == 0) {
+    // action 'c': this message orders to change the boxDefaultState
+    byte __bSenderNodeName = root["NNa"];
+    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+
+    // if the message comes from the interface,
+    // this is a relayed message coming from the web
+    if ((__bSenderNodeName == bInterfaceNodeName)) {
+      if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my default state to %s", root["receiverDefaultState"].as<char*>());}
+      byte __bSenderIndexInCB = root["receiverBoxName"];
+      __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
+      ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
+      ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
+    } // else it might be a message coming from some other box,
+    // but I shall not react. Reactions to changes in the mesh are
+    // detected via status messages
+    return;
+  }
 
 
   // Temporarily commented out
