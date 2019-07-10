@@ -63,6 +63,7 @@ class myWSSender
 
     static void _tcbSendWSDataIfChangeBoxState();
 
+    static void _resetAllControlerBoxBoolsToTrue(const short _sBoxIndex);
 };
 
 #endif
