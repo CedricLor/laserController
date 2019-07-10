@@ -209,7 +209,6 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
     // -> check consistency between the DOM and ControlerBoxes[]
     {
       _checkConsistancyDOMDB(_sMessageType, _obj);
-
     } // end else
   } // end if (_obj.size() != 0)
 
