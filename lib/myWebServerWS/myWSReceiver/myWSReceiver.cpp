@@ -230,7 +230,7 @@ void myWSReceiver::_checkConsistancyDOMDB(const short _sMessageType, JsonObject&
     if (MY_DEBUG) {
       Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _sMessageType = %i, new iteration.\n", _sMessageType);
       Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _sMessageType = %i, about to use the key of the current pair of the JSON object to check whether the ControlerBox corresponding to the boxRow in the DOM really exists in ControlerBoxes.\n", _sMessageType);
-      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _sMessageType = %i, testing (int)p.key().c_str(): %i\n", _sMessageType, (int)_p.key().c_str());
+      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _sMessageType = %i, testing p.key().c_str(): %s\n", _sMessageType, _p.key().c_str());
     }
 
     // DISCONNECTED BOXES CHECKER
@@ -277,25 +277,25 @@ void myWSReceiver::_lookForDOMMissingRows(const short _sMessageType, JsonObject&
 
 
 
-
-
-
 void myWSReceiver::_lookForDisconnectedBoxes(const short _sMessageType, JsonPair& _p) {
+  const char* _ccBoxIndex = _p.key().c_str();
+  short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
+
   if (MY_DEBUG) {
     Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, using this value to select a ControlerBoxes[]\n", _sMessageType);
-    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, ControlerBoxes[(int)_p.key().c_str()].nodeId == 0 is equal to %i\n", _sMessageType, (ControlerBoxes[(int)_p.key().c_str()].nodeId == 0));
+    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].nodeId == 0 is equal to %i\n", _sMessageType, (ControlerBoxes[_iBoxIndex].nodeId == 0));
   }
 
   // check if it still is connected; if not, request an update of the DOM
-  if (ControlerBoxes[(int)_p.key().c_str()].nodeId == 0) {
+  if (ControlerBoxes[_iBoxIndex].nodeId == 0) {
     if (MY_DEBUG) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", _sMessageType, ControlerBoxes[(int)_p.key().c_str()].nodeId);
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, about to turn [boxDeletionHasBeenSignaled] of ControlerBoxes[%i] to false.\n", _sMessageType, (int)_p.key().c_str());
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", _sMessageType, ControlerBoxes[_iBoxIndex].nodeId);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, about to turn [boxDeletionHasBeenSignaled] of ControlerBoxes[%i] to false.\n", _sMessageType, _iBoxIndex);
     }
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-    ControlerBoxes[(int)_p.key().c_str()].boxDeletionHasBeenSignaled = false;
+    ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled = false;
     if (MY_DEBUG) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, ControlerBoxes[%i].boxDeletionHasBeenSignaled turned to %i.\n", _sMessageType, (int)_p.key().c_str(), ControlerBoxes[(int)_p.key().c_str()].boxDeletionHasBeenSignaled);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, ControlerBoxes[%i].boxDeletionHasBeenSignaled turned to %i.\n", _sMessageType, _iBoxIndex, ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled);
       Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _sMessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _sMessageType);
     }
   } // if
@@ -307,15 +307,18 @@ void myWSReceiver::_lookForDisconnectedBoxes(const short _sMessageType, JsonPair
 
 
 void myWSReceiver::_checkBoxStateConsistancy(const short _sMessageType, JsonPair& _p) {
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, ControlerBoxes[(int)_p.key().c_str()].boxActiveState = %i\n", _sMessageType, ControlerBoxes[(int)_p.key().c_str()].boxActiveState);
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, (int)_p.value().as<char*>() = %i\n.", _sMessageType, (int)_p.value().as<char*>());
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, comparison between the two: %i\n.", _sMessageType, (ControlerBoxes[(int)_p.key().c_str()].boxActiveState != (int)_p.value().as<char*>()));
+  const char* _ccBoxIndex = _p.key().c_str();
+  short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
+
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].boxActiveState = %i\n", _sMessageType, ControlerBoxes[_iBoxIndex].boxActiveState);
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, (int)(_p.value().as<char*>()) = %i\n.", _sMessageType, (int)(_p.value().as<char*>()));
+  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, comparison between the two: %i\n.", _sMessageType, (ControlerBoxes[_iBoxIndex].boxActiveState == (int)(_p.value().as<char*>())));
   // check if it has the correct boxState; if not, ask for an update
-  if (ControlerBoxes[(int)_p.key().c_str()].boxActiveState != (int)_p.value().as<char*>()) {
+  if (ControlerBoxes[_iBoxIndex].boxActiveState != (int)(_p.value().as<char*>())) {
     Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n", _sMessageType);
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-    ControlerBoxes[(int)_p.key().c_str()].boxActiveStateHasBeenSignaled = false;
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, ControlerBoxes[(int)_p.key().c_str()].boxActiveStateHasBeenSignaled = %i.\n", _sMessageType, ControlerBoxes[(int)_p.key().c_str()].boxActiveStateHasBeenSignaled);
+    ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = false;
+    Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = %i.\n", _sMessageType, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled);
     Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _sMessageType);
   } // end if
 }
