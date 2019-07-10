@@ -192,21 +192,42 @@ function _removeClassesOnAllRowStateButtons(_boxRow) {
 
 
 
+function _setDefaultStateButton(data, memRow) {
+  console.log("_setDefaultStateButton: preparing a selector to select the state buttons included in _dupRow.");
+  var _selectorDefaultBoxState = "button[data-boxstate='" + data.boxDefstate + "']";
+  console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
+  memRow = _setStateButtonAsActive(_selectorDefaultBoxState, memrow);
+  return memRow;
+}
+
+
+
+
 function _setActiveStateButton(data, memRow) {
   console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
   console.log("_setActiveStateButton: selector created: '" + _selectorActiveBoxState + "'");
-  var _activeStateButtonList = memRow.querySelectorAll(_selectorActiveBoxState);
-  console.log("_setActiveStateButton: button list selected: ");console.log(_activeStateButtonList);
-  if (_activeStateButtonList) {
-    console.log("_setActiveStateButton: about to add the active class to select button");
-    _activeStateButtonList[0].classList.add('button_active_state');
-    _activeStateButtonList[0].classList.remove('button_change_received');
-    _activeStateButtonList[0].classList.remove('button_clicked');
-  }
-  console.log("_setActiveStateButton: ending on returning row");
+  memRow = _setStateButtonAsActive(_selectorActiveBoxState, memrow);
   return memRow;
 }
+
+
+
+
+
+function _setStateButtonAsActive(_selector, memrow) {
+  var _targetButton = memRow.querySelector(_selector);
+  console.log("_setStateButtonAsActive: button selected: ");console.log(_targetButton);
+  if (_targetButton) {
+    console.log("_setStateButtonAsActive: about to add the active class to selected button");
+    _targetButton.classList.add('button_active_state');
+    _targetButton.classList.remove('button_change_received');
+    _targetButton.classList.remove('button_clicked');
+  }
+  console.log("_setStateButtonAsActive: ending on returning row");
+  return memRow;
+}
+
 
 
 
@@ -334,7 +355,7 @@ function addNewRowForNewBox(data) {
       // set the activeState button
       _dupRow = _setActiveStateButton(data, _dupRow);
 
-      // set event listener on buttons
+      // set event listener on current state buttons
       _dupRow = _setEVentListenersStateButtons(_dupRow);
 
       // indicate masterbox number
@@ -343,6 +364,12 @@ function addNewRowForNewBox(data) {
       // set event listener on slave select
       var _select = _selectMasterSelectInRow(_dupRow);
       setSelectEvents(_select);
+
+      // set boxDefaultState button
+      _dupRow = _setDefaultStateButton(data, _duprRow);
+
+      // set event listener on default state buttons
+      // _dupRow = _setEVentListenersDefStateButtons(_dupRow);
 
       // render in DOM
       _dupRow = _renderInDom(_dupRow);
