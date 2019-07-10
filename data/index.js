@@ -136,10 +136,7 @@ function oninputMasterSelect(e) {
 
 // DOM MANIPULATION
 function updateStationIp(_stationIp) {
-  console.log("updateStationIp starting.");
-  console.log(_stationIp);
   document.getElementById('stationIp').innerHTML = _stationIp;
-  console.log("updateStationIp ending.");
 }
 
 
@@ -194,9 +191,9 @@ function _removeClassesOnAllRowStateButtons(_boxRow) {
 
 function _setDefaultStateButton(data, memRow) {
   console.log("_setDefaultStateButton: preparing a selector to select the state buttons included in _dupRow.");
-  var _selectorDefaultBoxState = "button[data-boxstate='" + data.boxDefstate + "']";
+  var _selectorDefaultBoxState = "button[data-boxDefstate='" + data.defBxSt + "']";
   console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
-  memRow = _setStateButtonAsActive(_selectorDefaultBoxState, memrow);
+  memRow = _setStateButtonAsActive(_selectorDefaultBoxState, memRow);
   return memRow;
 }
 
@@ -207,7 +204,7 @@ function _setActiveStateButton(data, memRow) {
   console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
   console.log("_setActiveStateButton: selector created: '" + _selectorActiveBoxState + "'");
-  memRow = _setStateButtonAsActive(_selectorActiveBoxState, memrow);
+  memRow = _setStateButtonAsActive(_selectorActiveBoxState, memRow);
   return memRow;
 }
 
@@ -215,7 +212,7 @@ function _setActiveStateButton(data, memRow) {
 
 
 
-function _setStateButtonAsActive(_selector, memrow) {
+function _setStateButtonAsActive(_selector, memRow) {
   var _targetButton = memRow.querySelector(_selector);
   console.log("_setStateButtonAsActive: button selected: ");console.log(_targetButton);
   if (_targetButton) {
@@ -366,7 +363,7 @@ function addNewRowForNewBox(data) {
       setSelectEvents(_select);
 
       // set boxDefaultState button
-      _dupRow = _setDefaultStateButton(data, _duprRow);
+      _dupRow = _setDefaultStateButton(data, _dupRow);
 
       // set event listener on default state buttons
       // _dupRow = _setEVentListenersDefStateButtons(_dupRow);
