@@ -94,59 +94,52 @@ function findUpLaserBoxNumber(el) {
 // EVENTS HANDLER
 function onclickButton(e) {
   console.log("onclickButton starting");
-
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
-  var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _buttonList = stateButtonsDOMSelector(_boxRow); // modified
-
-  // remove red on other buttons
-  for (var i = 0; i < _buttonList.length; i++) {
-    _buttonList[i].classList.remove('button_clicked');
-  }
-  // turn this button red
-  this.classList.add('button_clicked');
-
-  // send a WSrequest to the server to change the boxState to the corresponding boxstate
-  var _json = JSON.stringify({
-    type: 4,
-    lb: _laserBoxNumber,
-    boxState: this.dataset.boxstate });
-  console.log("onclickButton: about to send json via WS: " + _json);
-  ws.send(_json);
-  console.log("onclickButton: json sent.");
-
+  _onclickButtonWrapper(this, "button[data-boxstate]", 4, this.dataset.boxstate, "boxState");
   console.log("onclickButton: ending");
 };
 
 
-
 function onclickDefStateButton(e) {
   console.log("onclickDefStateButton starting");
+  _onclickButtonWrapper(this, "button[data-boxDefstate]", 9, this.dataset.boxdefstate, "boxDefstate");
+  console.log("onclickDefStateButton: ending");
+};
 
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+function _onclickButtonWrapper(clickedTarget, buttonSelector, messageType, _datasetValue, _clef) {
+  var _laserBoxNumber = _onclickButtonClassSetter(clickedTarget, buttonSelector);
+  _onclickButtonWSSender(messageType, _laserBoxNumber, _datasetValue, _clef);
+}
+
+function _onclickButtonClassSetter(clickedTarget, buttonSelector) {
+  var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
   var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _buttonList = defaultStateButtonsDOMSelector(_boxRow);
-
+  var _buttonList = buttonsGroupSelector(_boxRow, buttonSelector);
   // remove red on other buttons
   for (var i = 0; i < _buttonList.length; i++) {
     _buttonList[i].classList.remove('button_clicked');
   }
   // turn this button red
-  this.classList.add('button_clicked');
+  clickedTarget.classList.add('button_clicked');
 
-  // send a WSrequest to the server to change the defaultBoxState to the corresponding defaultBoxState
-  var _json = JSON.stringify({
-    type: 9,
-    lb: _laserBoxNumber,
-    boxDefstate: this.dataset.boxdefstate });
-  console.log("onclickDefStateButton: about to send json via WS: " + _json);
+  return _laserBoxNumber;
+}
+
+function _onclickButtonWSSender(_messageType, _laserBoxNumber, _datasetValue, _clef) {
+  var __toBeStringified = {};
+  __toBeStringified["type"] = _messageType;
+  __toBeStringified["lb"] = _laserBoxNumber;
+  __toBeStringified[_clef] = _datasetValue;
+
+  var _json = JSON.stringify(__toBeStringified);
+    // type: _messageType,
+    // lb: _laserBoxNumber,
+    // dataSet
+  // /*boxDefstate: _datasetValue*/ });
+  console.log("_onclickButtonWSSender: about to send json via WS: " + _json);
   ws.send(_json);
-  console.log("onclickDefStateButton: json sent.");
+  console.log("_onclickButtonWSSender: json sent.");
 
-  console.log("onclickDefStateButton: ending");
-};
-
-
+}
 
 function oninputMasterSelect(e) {
   console.log("oninputMasterSelect: starting");
@@ -208,7 +201,7 @@ function updateActiveStateButton(data) {
 
 function _removeClassesOnAllStateButtonsForRow(_boxRow) {
   console.log("_removeClassesOnAllStateButtonsForRow starting.");
-  var _elt_arr = stateButtonsDOMSelector(_boxRow);
+  var _elt_arr = buttonsGroupSelector(_boxRow, "button[data-boxstate]");
   console.log("_removeClassesOnAllStateButtonsForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
@@ -562,27 +555,6 @@ function boxRowTemplateSelector() {
   return _templateDup; // return the first (and unique) element of the list
 }
 
-
-
-
-function stateButtonsDOMSelector(_boxRow) {
-  console.log("stateButtonsDOMSelector starting.");
-  var _buttonsSelector = "button[data-boxstate]";
-  var _elts = buttonsGroupSelector(_boxRow, _buttonsSelector);
-  console.log("stateButtonsDOMSelector ending.");
-  return _elts;
-}
-
-
-
-
-function defaultStateButtonsDOMSelector(_boxRow) {
-  console.log("defaultStateButtonsDOMSelector starting.");
-  var _buttonsSelector = "button[data-boxDefstate]";
-  var _elts = buttonsGroupSelector(_boxRow, _buttonsSelector);
-  console.log("defaultStateButtonsDOMSelector ending.");
-  return _elts;
-}
 
 
 
