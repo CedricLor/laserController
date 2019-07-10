@@ -146,19 +146,19 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   Serial.println("myMeshViews::statusMsg(): Ending.");
 }
 
-void myMeshViews::changeBoxTargetState(const char *boxTargetState, const char *boxName) {
+void myMeshViews::changeBoxTargetState(const short _sBoxTargetState, const short _sBoxName /*const char *boxTargetState, const char *boxName*/) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"NNa":"200";"APIP":"...";"StIP":"..."}
   if (MY_DEBUG) {
-    Serial.printf("myMeshViews::changeBoxTargetState(): boxTargetState = %s, boxName = %s\n", boxTargetState, boxName);
+    Serial.printf("myMeshViews::changeBoxTargetState(): _sBoxTargetState = %i, _sBoxName = %i\n", _sBoxTargetState, _sBoxName);
   }
 
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
 
-  msg["receiverTargetState"] = boxTargetState;
-  msg["receiverBoxName"] = boxName;
+  msg["receiverTargetState"] = _sBoxTargetState;
+  msg["receiverBoxName"] = _sBoxName;
   msg["action"] = "c";
 
   _sendMsg(msg);

@@ -38,7 +38,7 @@ class myMeshViews
     void changedMasterBoxConfirmation(const byte newMasterNodeName);
     void changeMasterBoxMsg(const int newMasterNodeName, const int iBoxName);
     void statusMsg(uint32_t destNodeId=0);
-    void changeBoxTargetState(const char *boxTargetState, const char *boxName);
+    void changeBoxTargetState(const short _sBoxTargetState, const short _sBoxName);
     // static void pinPairingMsg(const short sTargetPairingType);
     // static void dataRequestMsg();
     // static void dataRequestResponse();
