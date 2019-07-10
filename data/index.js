@@ -73,13 +73,21 @@ function check(){
 // WEB SOCKET END
 
 
-
+function findUpLaserBoxNumber(el) {
+    while (el.parentNode) {
+        el = el.parentNode;
+        if (el.dataset.lb) {
+          return parseInt(el.dataset.lb, 10);
+        }
+    }
+    return null;
+}
 
 // EVENTS HANDLER
 function onclickButton(e) {
   console.log("onclickButton starting");
 
-  var _laserBoxNumber = parseInt(this.parentNode.parentNode.parentNode.dataset.lb); // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
+  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
   var _boxRow = boxesRows.get(_laserBoxNumber);
   var _buttonList = stateButtonsDOMSelector(_boxRow); // modified
 
@@ -106,14 +114,14 @@ function onclickButton(e) {
 
 function oninputMasterSelect(e) {
   console.log("oninputMasterSelect: starting");
-  if ((this.parentNode.parentNode.dataset.lb !== "undefined" )) { // selector to update in case of change in the DOM structure
-    console.log("oninputMasterSelect: slave box: " + (this.parentNode.parentNode.dataset.lb + 200));
-    console.log("oninputMasterSelect: master box " + this.selectedIndex);
+  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+  if ((_laserBoxNumber !== null )) {
+    console.log("oninputMasterSelect: slave box: " + (_laserBoxNumber + 200));
+    console.log("oninputMasterSelect: master box " + this.options[this.selectedIndex].value);
     var _json = JSON.stringify({
       type: 8,
-      lb: this.parentNode.parentNode.dataset.lb,
+      lb: _laserBoxNumber,
       masterbox: parseInt(this.options[this.selectedIndex].value, 10)
-      // masterbox: this.selectedIndex + 1
      });
     console.log("oninputMasterSelect: about to send json via WS: " + _json);
     ws.send(_json);
@@ -243,7 +251,7 @@ function _indicateMasterBoxNumber(data, _dupRow) {
   // Select corresponding option in masterBoxSelect
   var _select = _selectMasterSelectInRow(_dupRow);
   console.log("_indicateMasterBoxNumber: About to select correct option in master select");
-  _select.value=parseInt(data.ms);
+  _select.value=parseInt(data.ms, 10);
   console.log("_indicateMasterBoxNumber: ending. About to return _dupRow.");
 
   return _dupRow;
@@ -441,7 +449,7 @@ function updateMasterBoxNumber(data) {
     // update the select by choosing the correct option
     var _select = _selectMasterSelectInRow(_row);
     console.log("updateMasterBoxNumber: About to select correct option in master select");
-    _select.value=parseInt(data.ms);
+    _select.value=parseInt(data.ms, 10);
   }
 
   console.log("updateMasterBoxNumber ending.");
