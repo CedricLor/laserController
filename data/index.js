@@ -30,7 +30,7 @@ function connect() {
       return;
     }
     if (_data.type === 4) { // User request to change boxState has been received and is being processed
-      updateStateButton(_data.message);
+      updateClickedStateButton(_data.message);
       return;
     }
     if (_data.type === 5) { // boxState of existing box has been updated
@@ -141,15 +141,15 @@ function updateStationIp(_stationIp) {
 
 
 
-function updateStateButton(data) {
-  console.log("updateStateButton starting.");
+function updateClickedStateButton(data) {
+  console.log("updateClickedStateButton starting.");
   var _boxRow = boxesRows.get(data.lb);
   var _elt = stateButtonDOMSelector(_boxRow, data.boxState);
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
   }
-  console.log("updateStateButton ending.");
+  console.log("updateClickedStateButton ending.");
 }
 
 
@@ -160,7 +160,7 @@ function updateActiveStateButton(data) {
   var _boxRow = boxesRows.get(data.lb);
 
   // remove classes on all the others stateButtons of this boxRow
-  _removeClassesOnAllRowStateButtons(_boxRow);
+  _removeClassesOnAllStateButtonsForRow(_boxRow);
 
   // add button_active_state class to the relevant stateButton
   _setActiveStateButton(data, _boxRow);
@@ -170,10 +170,10 @@ function updateActiveStateButton(data) {
 
 
 
-function _removeClassesOnAllRowStateButtons(_boxRow) {
-  console.log("_removeClassesOnAllRowStateButtons starting.");
+function _removeClassesOnAllStateButtonsForRow(_boxRow) {
+  console.log("_removeClassesOnAllStateButtonsForRow starting.");
   var _elt_arr = stateButtonsDOMSelector(_boxRow);
-  console.log("_removeClassesOnAllRowStateButtons: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
+  console.log("_removeClassesOnAllStateButtonsForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
       function(currentValue, currentIndex, listObj) {
@@ -183,7 +183,7 @@ function _removeClassesOnAllRowStateButtons(_boxRow) {
       }
     );
   }
-  console.log("_removeClassesOnAllRowStateButtons ending.");
+  console.log("_removeClassesOnAllStateButtonsForRow ending.");
 }
 
 
