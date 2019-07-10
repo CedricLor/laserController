@@ -175,13 +175,22 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
 
 
   // if no boxRow in DOM and no boxes connected to the mesh, just return
-  if (_obj.size() == 0 && ControlerBox::connectedBoxesCount == 1) {
-    if (MY_DEBUG) {
-      Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _sMessageType, (_obj.size() == 0));
-      Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _sMessageType, (ControlerBox::connectedBoxesCount == 1));
-      Serial.printf("myWSReceiver::_decodeWSMessage(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _sMessageType);
+  if (_obj.size() == 0) {
+    // there are no boxRows in the DOM
+    if (ControlerBox::connectedBoxesCount == 1) {
+      // there are no boxes connected to the mesh
+      if (MY_DEBUG) {
+        Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _sMessageType, (_obj.size() == 0));
+        Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _sMessageType, (ControlerBox::connectedBoxesCount == 1));
+        Serial.printf("myWSReceiver::_decodeWSMessage(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _sMessageType);
+      }
+      return;
     }
-    return;
+    else
+    // there are boxes connected to the mesh
+    {
+      _lookForDOMMissingRows(_sMessageType, _obj);
+    }
   }
 
   // if there are boxRows in DOM and no boxes are connected to the mesh,
@@ -189,14 +198,19 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
   // else if there are boxes connected to the mesh, check consistency between
   // the DOM and the ControlerBoxes[] stored on the interface
   if (_obj.size() != 0) {
+    // there are boxRows in the DOM
     if (ControlerBox::connectedBoxesCount == 1) {
-      // send instruction to delete all the boxRows from the DOM
+      // there are no connected boxes:
+      // -> send instruction to delete all the boxRows from the DOM
       _obj["lb"] = "a"; // "a" means delete all the boxes
       myWSSender _myWSSender;
       _myWSSender.prepareWSData(7, _obj);
       return;
-    } else {
-      //else, there is a JSON Object of this type: {1:3,4:5,7:2}
+    }
+    else
+    // there are boxes connected:
+    // -> send instruction to delete all the boxRows from the DOM
+    {
       _checkConsistancyDOMDB(_sMessageType, _obj);
 
     } // end else
