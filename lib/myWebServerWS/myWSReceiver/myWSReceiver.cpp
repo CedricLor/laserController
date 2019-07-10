@@ -174,11 +174,11 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
   if (MY_DEBUG) { Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _sMessageType); }
 
 
-  // if no boxRow in DOM and no boxes connected to the mesh, just return
+
   if (_obj.size() == 0) {
     // there are no boxRows in the DOM
     if (ControlerBox::connectedBoxesCount == 1) {
-      // there are no boxes connected to the mesh
+      // there are no boxes connected to the mesh, just return
       if (MY_DEBUG) {
         Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _sMessageType, (_obj.size() == 0));
         Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _sMessageType, (ControlerBox::connectedBoxesCount == 1));
@@ -186,19 +186,16 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
       }
       return;
     }
-    else
+    else // re. if (ControlerBox::connectedBoxesCount == 1)
     // there are boxes connected to the mesh
     {
       _lookForDOMMissingRows(_sMessageType, _obj);
+      return;
     }
   }
-
-  // if there are boxRows in DOM and no boxes are connected to the mesh,
-  // deleted every thing in the DOM
-  // else if there are boxes connected to the mesh, check consistency between
-  // the DOM and the ControlerBoxes[] stored on the interface
-  if (_obj.size() != 0) {
-    // there are boxRows in the DOM
+  else // re. (_obj.size() != 0)
+  // there are boxRows in DOM
+  {
     if (ControlerBox::connectedBoxesCount == 1) {
       // there are no connected boxes:
       // -> send instruction to delete all the boxRows from the DOM
@@ -207,9 +204,9 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
       _myWSSender.prepareWSData(7, _obj);
       return;
     }
-    else
-    // there are boxes connected:
-    // -> send instruction to delete all the boxRows from the DOM
+    else // re. if (ControlerBox::connectedBoxesCount == 1)
+    // there are boxes connected to the mesh:
+    // -> check consistency between the DOM and ControlerBoxes[]
     {
       _checkConsistancyDOMDB(_sMessageType, _obj);
 
