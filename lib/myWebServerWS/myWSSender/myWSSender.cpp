@@ -240,8 +240,7 @@ void myWSSender::_sendWSData(JsonDocument& doc) {
           if (myWebServerWS::ws_client_id &&
             myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr &&
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) {
-            Serial.printf("- myWebServerWS::_sendWSData. About to send a WS message message to [%i].\n", myWebServerWS::ws_client_id);
-            Serial.printf("- myWebServerWS::_sendWSData. myWebServerWS::ws_client_id = %i\n", myWebServerWS::ws_client_id);
+            Serial.printf("- myWebServerWS::_sendWSData. About to send a WS message message to client [%i].\n", myWebServerWS::ws_client_id);
             myWebServerWS::ws.client(myWebServerWS::ws_client_id);
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->text(_buffer);
             Serial.println("- myWebServerWS::_sendWSData. Message sent");

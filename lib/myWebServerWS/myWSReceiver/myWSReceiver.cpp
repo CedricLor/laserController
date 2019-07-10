@@ -103,26 +103,25 @@ myWSReceiver::myWSReceiver(uint8_t *data)
 
 
 void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument& doc) {
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - starting \n", _sMessageType);
+  Serial.printf("myWSReceiver::_requestMasterChange(): _type = %i - starting \n", _sMessageType);
   // send a mesh request to the other box
 
   // convert the box name to a char array box name
   int __iNodeName = doc["lb"];
-  Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON + 200) __iNodeName = %i \n", (__iNodeName + bControllerBoxPrefix));
+  Serial.printf("myWSReceiver::_requestMasterChange(): (from JSON + 200) __iNodeName = %i \n", (__iNodeName + bControllerBoxPrefix));
 
   // get the masterbox number
   int _iMasterBox = doc["masterbox"];
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %i \n", _iMasterBox);
+  Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", _iMasterBox);
 
   // instantiate a mesh view and send a changeMasterBoxMsg
   myMeshViews __myMeshViews;
-  Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeMasterBox().\n");
+  Serial.printf("myWSReceiver::_requestMasterChange(): about to call __myMeshViews.changeMasterBox().\n");
   __myMeshViews.changeMasterBoxMsg(_iMasterBox, __iNodeName);
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  Serial.printf("---------------------- %i -------------------\n", __iNodeName);
   _sub_obj["lb"] = __iNodeName;
   _sub_obj["ms"] = _iMasterBox;
   _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
@@ -139,23 +138,22 @@ void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument&
 void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
   // convert the box name to a char array box name
   int __iNodeName = doc["lb"];
-  Serial.printf("myWSReceiver::_decodeWSMessage(): (from JSON) __iNodeName = %i \n", __iNodeName);
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): (from JSON) __iNodeName = %i \n", __iNodeName);
   char _cNodeName[4];
   itoa((__iNodeName + bControllerBoxPrefix), _cNodeName, 10);
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _cNodeName = %s \n", _cNodeName);
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): _cNodeName = %s \n", _cNodeName);
   // convert the box state to a char array
   const char* _boxState = doc["boxState"];
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _boxState = %s \n", _boxState);
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): _boxState = %s \n", _boxState);
 
   // instantiate a mesh view
   myMeshViews __myMeshViews;
-  Serial.printf("myWSReceiver::_decodeWSMessage(): about to call __myMeshViews.changeBoxTargetState().\n");
+  Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
   __myMeshViews.changeBoxTargetState(_boxState, _cNodeName);
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  Serial.printf("---------------------- %i -------------------\n", __iNodeName);
   _sub_obj["lb"] = __iNodeName;
   _sub_obj["boxState"] = _boxState;
 
@@ -171,7 +169,7 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
 
   // Declare and define a JSONObject
   JsonObject _obj = doc["message"].as<JsonObject>();
-  if (MY_DEBUG) { Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _sMessageType); }
+  if (MY_DEBUG) { Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _sMessageType = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _sMessageType); }
 
 
 
@@ -180,9 +178,9 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
     if (ControlerBox::connectedBoxesCount == 1) {
       // there are no boxes connected to the mesh, just return
       if (MY_DEBUG) {
-        Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _sMessageType, (_obj.size() == 0));
-        Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _sMessageType, (ControlerBox::connectedBoxesCount == 1));
-        Serial.printf("myWSReceiver::_decodeWSMessage(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _sMessageType);
+        Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _sMessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _sMessageType, (_obj.size() == 0));
+        Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _sMessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _sMessageType, (ControlerBox::connectedBoxesCount == 1));
+        Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _sMessageType);
       }
       return;
     }
@@ -310,15 +308,15 @@ void myWSReceiver::_checkBoxStateConsistancy(const short _sMessageType, JsonPair
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
 
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].boxActiveState = %i\n", _sMessageType, ControlerBoxes[_iBoxIndex].boxActiveState);
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, (int)(_p.value().as<char*>()) = %i\n.", _sMessageType, (int)(_p.value().as<char*>()));
-  Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, comparison between the two: %i\n.", _sMessageType, (ControlerBoxes[_iBoxIndex].boxActiveState == (int)(_p.value().as<char*>())));
+  Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].boxActiveState = %i\n", _sMessageType, ControlerBoxes[_iBoxIndex].boxActiveState);
+  Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _sMessageType = %i, (int)(_p.value().as<char*>()) = %i\n.", _sMessageType, (int)(_p.value().as<char*>()));
+  Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _sMessageType = %i, comparison between the two: %i\n.", _sMessageType, (ControlerBoxes[_iBoxIndex].boxActiveState == (int)(_p.value().as<char*>())));
   // check if it has the correct boxState; if not, ask for an update
   if (ControlerBoxes[_iBoxIndex].boxActiveState != (int)(_p.value().as<char*>())) {
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n", _sMessageType);
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _sMessageType = %i, the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n", _sMessageType);
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
     ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = false;
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = %i.\n", _sMessageType, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled);
-    Serial.printf("myWSReceiver::_decodeWSMessage(): _sMessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _sMessageType);
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _sMessageType = %i, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = %i.\n", _sMessageType, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled);
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _sMessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _sMessageType);
   } // end if
 }
