@@ -44,7 +44,7 @@ function connect() {
     if (_data.type === 7) { // an existing box has been disconnected from the mesh
       // or the DOM contained boxRows corresponding to boxes that have been disconnected
       // from the mesh
-      if (_data.message === "a") {
+      if (_data.message.lb === 'a') {
         deleteAllBoxRows();
       } else {
         deleteBoxRow(_data.message);
@@ -190,9 +190,9 @@ function _removeClassesOnAllRowStateButtons(_boxRow) {
 
 
 function _setDefaultStateButton(data, memRow) {
-  console.log("_setDefaultStateButton: preparing a selector to select the state buttons included in _dupRow.");
+  // console.log("_setDefaultStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorDefaultBoxState = "button[data-boxDefstate='" + data.defBxSt + "']";
-  console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
+  // console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
   memRow = _setStateButtonAsActive(_selectorDefaultBoxState, memRow);
   return memRow;
 }
@@ -201,9 +201,9 @@ function _setDefaultStateButton(data, memRow) {
 
 
 function _setActiveStateButton(data, memRow) {
-  console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
+  // console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
-  console.log("_setActiveStateButton: selector created: '" + _selectorActiveBoxState + "'");
+  // console.log("_setActiveStateButton: selector created: '" + _selectorActiveBoxState + "'");
   memRow = _setStateButtonAsActive(_selectorActiveBoxState, memRow);
   return memRow;
 }
@@ -401,7 +401,7 @@ function deleteAllBoxRows() {
   }
   // delete from DOM
   var _boxRowsContainer = document.querySelector(".boxes_state_setter");
-  while (_boxRowsContainer.firstChild) {
+  while (_boxRowsContainer.children[1]) {
     _boxRowsContainer.removeChild(_boxRowsContainer.firstChild);
   }
 }
@@ -418,7 +418,7 @@ function deleteBoxRow(data) {
     console.log("deleteBoxRow: About to delete row corresponding to laser box [" + data.lb + "] in DOM and maps.");
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
     _deleteFromMaps(data.lb); // updating the controlesBoxes map
-    console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes map.");
+    console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes and boxesRows maps.");
     console.log(controlerBoxes);
   }
   console.log("deleteBoxRow ending.");
