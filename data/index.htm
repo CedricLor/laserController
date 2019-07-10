@@ -76,7 +76,7 @@
           </div> <!-- mesh_high_gp -->
         </div> <!-- box_state_setter -->
 
-        <hr>
+        <p>
         <div class='slave_master_box_setter'>Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
           <select class='master_select'>
             <option value='1'>201</option>
@@ -99,7 +99,7 @@
               <option value='1'>Get Deeper</option>
             </select>
 
-            <div class='sm-rel-descr'>
+            <div class='sm-rel-descr hidden'>
               <ul class='sm-rel-title'>Safety Mode: Waiting Both Light On, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Quick Blinks
                 <li>Special States: Manual --> Manual</li>
                 <li>Special States: Align --> Manual</li>
@@ -189,10 +189,45 @@
             </div>
           </div>
 
-        </div> <!-- default box params setters -->
+        </div> <!-- slave_master_box_setter -->
+
+        <div class='box_def_state_setter'>Default State
+          <div class='setters_gp_title'>Waiting</div>
+          <div class='setters_group waiting_gp'>
+            <button class='button' data-boxDefstate='3'>
+              Both
+            </button>&nbsp;
+            <button class='button' data-boxDefstate='4'>
+              IR
+            </button>&nbsp;
+            <button class='button' data-boxDefstate='5'>
+              Mesh
+            </button>&nbsp;
+            <button class='button' data-boxDefstate='0'>
+              None
+            </button>&nbsp;
+          </div> <!-- waiting_gp -->
+        </div> <!-- box_def_state_setter -->
+
+        <div class='box_next_state_setter'>Default State
+          <div class='setters_gp_title'>Waiting</div>
+          <div class='setters_group waiting_gp'>
+            <button class='button' data-boxNextstate='3'>
+              Both
+            </button>&nbsp;
+            <button class='button' data-boxNextstate='4'>
+              IR
+            </button>&nbsp;
+            <button class='button' data-boxNextstate='5'>
+              Mesh
+            </button>&nbsp;
+            <button class='button' data-boxNextstate='0'>
+              None
+            </button>&nbsp;
+          </div> <!-- waiting_gp -->
+        </div> <!-- box_next_state_setter -->
 
         <div class='default_box_param_setter'>Box Default Values:&nbsp;
-          <div data-defstate='sBoxDefaultState'>Box Default State:&nbsp;<span></span><input type='text' ></div>
           <div data-defstate='gbNodeName'>Node Name:&nbsp;<span></span><input type='text' ></div>
           <div data-defstate='myIndexInCBArray'>myIndexInCBArray:&nbsp;(calculated)</div>
           <div data-defstate='isMeshRoot'>isMeshRoot:&nbsp;
@@ -208,7 +243,7 @@
             </select>
           </div>
 
-        </div> <!-- default box params setters -->
+        </div> <!-- default_box_param_setter -->
     </div> <!-- box_wrapper -->
   </div> <!-- boxes_state_setter -->
 
