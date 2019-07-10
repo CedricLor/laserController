@@ -120,6 +120,34 @@ function onclickButton(e) {
 
 
 
+function onclickDefStateButton(e) {
+  console.log("onclickDefStateButton starting");
+
+  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+  var _boxRow = boxesRows.get(_laserBoxNumber);
+  var _buttonList = defaultStateButtonsDOMSelector(_boxRow);
+
+  // remove red on other buttons
+  for (var i = 0; i < _buttonList.length; i++) {
+    _buttonList[i].classList.remove('button_clicked');
+  }
+  // turn this button red
+  this.classList.add('button_clicked');
+
+  // send a WSrequest to the server to change the defaultBoxState to the corresponding defaultBoxState
+  var _json = JSON.stringify({
+    type: 9,
+    lb: _laserBoxNumber,
+    boxDefstate: this.dataset.boxdefstate });
+  console.log("onclickDefStateButton: about to send json via WS: " + _json);
+  ws.send(_json);
+  console.log("onclickDefStateButton: json sent.");
+
+  console.log("onclickDefStateButton: ending");
+};
+
+
+
 function oninputMasterSelect(e) {
   console.log("oninputMasterSelect: starting");
   var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
@@ -200,7 +228,7 @@ function _removeClassesOnAllStateButtonsForRow(_boxRow) {
 function _setDefaultStateButton(data, memRow) {
   // console.log("_setDefaultStateButton: preparing a selector to select the state buttons included in _dupRow.");
   var _selectorDefaultBoxState = "button[data-boxDefstate='" + data.defBxSt + "']";
-  // console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
+  console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
   memRow = _setStateButtonAsActive(_selectorDefaultBoxState, memRow);
   return memRow;
 }
@@ -252,6 +280,7 @@ function _newBoxRowSetProperties(data, _dupRow) {
 
 
 
+
 function _setEVentListenersStateButtons(_dupRow) {
   console.log("_setEVentListenersStateButtons: about to set event listeners on buttons");
   var _stateButtonListSelector = "button[data-boxstate]";
@@ -263,6 +292,23 @@ function _setEVentListenersStateButtons(_dupRow) {
   setStateButtonEvents(_buttonList);
   return _dupRow;
 }
+
+
+
+
+
+function _setEVentListenersDefStateButtons(_dupRow) {
+  console.log("_setEVentListenersDefStateButtons: about to set event listeners on buttons");
+  var _stateButtonListSelector = "button[data-boxDefstate]";
+  console.log("_setEVentListenersDefStateButtons: _stateButtonListSelector = " + _stateButtonListSelector);
+  var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
+  console.log("_setEVentListenersDefStateButtons: buttonList selected");
+  console.log(_buttonList);
+  console.log("_setEVentListenersDefStateButtons: about to call setDefaultStateButtonEvents");
+  setDefaultStateButtonEvents(_buttonList);
+  return _dupRow;
+}
+
 
 
 
@@ -374,7 +420,7 @@ function addNewRowForNewBox(data) {
       _dupRow = _setDefaultStateButton(data, _dupRow);
 
       // set event listener on default state buttons
-      // _dupRow = _setEVentListenersDefStateButtons(_dupRow);
+      _dupRow = _setEVentListenersDefStateButtons(_dupRow);
 
       // render in DOM
       _dupRow = _renderInDom(_dupRow);
@@ -522,13 +568,31 @@ function boxRowTemplateSelector() {
 function stateButtonsDOMSelector(_boxRow) {
   console.log("stateButtonsDOMSelector starting.");
   var _buttonsSelector = "button[data-boxstate]";
-  var _elts = _boxRow.querySelectorAll(_buttonsSelector);
-
-  console.log(_elts);
+  var _elts = buttonsGroupSelector(_boxRow, _buttonsSelector);
   console.log("stateButtonsDOMSelector ending.");
   return _elts;
 }
 
+
+
+
+function defaultStateButtonsDOMSelector(_boxRow) {
+  console.log("defaultStateButtonsDOMSelector starting.");
+  var _buttonsSelector = "button[data-boxDefstate]";
+  var _elts = buttonsGroupSelector(_boxRow, _buttonsSelector);
+  console.log("defaultStateButtonsDOMSelector ending.");
+  return _elts;
+}
+
+
+
+function buttonsGroupSelector(_boxRow, _buttonsSelector) {
+  console.log("buttonsGroupSelector starting.");
+  var _elts = _boxRow.querySelectorAll(_buttonsSelector);
+  console.log(_elts);
+  console.log("buttonsGroupSelector ending.");
+  return _elts;
+}
 
 
 
@@ -560,6 +624,13 @@ function setStateButtonEvents(buttonList) {
 
 function setSelectEvents(selectElt) {
   selectElt.addEventListener('input', oninputMasterSelect, false);
+}
+
+function setDefaultStateButtonEvents(buttonList) {
+  // iterate over each default state buttons and add an eventListener on click
+  for (var i = 0; i < buttonList.length; i++) {
+    buttonList[i].addEventListener('click', onclickDefStateButton, false);
+  }
 }
 // END EVENT LISTENERS
 
