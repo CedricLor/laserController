@@ -185,7 +185,7 @@ void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
   _sub_obj["lb"] = __sNodeName;
-  _sub_obj["boxState"] = _sBoxDefaultState;
+  _sub_obj["boxDefstate"] = _sBoxDefaultState;
 
   myWSSender _myWSSender;
   _myWSSender.prepareWSData(9, _sub_obj);
