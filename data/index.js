@@ -447,7 +447,7 @@ function addOrUpdateNewRowForNewBox(data) {
   else {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
-    updateCurrentStateButtons(data, _controlerBoxEntry);
+    updateBoxRow(data);
   }
 }
 
