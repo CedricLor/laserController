@@ -558,7 +558,7 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 
-function boxRowEltSelector(_boxRow, _buttonSelector) {
+function boxRowEltSelector(_boxRow, _buttonsSelector) {
   console.log("boxRowEltSelector starting: _buttonsSelector = " + _buttonsSelector + "; _boxRow = ");console.log(_boxRow);
   var _elts = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
   console.log(_elts[0]);
