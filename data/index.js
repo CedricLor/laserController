@@ -223,7 +223,7 @@ function updateCurrentStateButtons(data, _boxRow) {
 
   // add button_active_state class to the relevant default stateButton
   // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.defBxSt);
+  _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
 
   console.log("updateCurrentStateButtons: ending after updating laser box [" + data.lb + "]");
 }
@@ -407,7 +407,7 @@ function addNewRowForNewBox(data) {
 
     // set boxDefaultState button
     // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-    _setCurrentStateButton(_dupRow, "boxDefstate", data.defBxSt);
+    _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
 
     // set event listener on default state buttons
     // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);

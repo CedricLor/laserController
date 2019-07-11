@@ -124,7 +124,7 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const int iBox
 void myMeshViews::statusMsg(uint32_t destNodeId) {
   Serial.println("myMeshViews::statusMsg(): Starting.");
   // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"defBxSt":5;"NNa":"201";"APIP":"...";"StIP":"..."}
+  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -133,7 +133,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // load the JSON document with values
   msg["actSt"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
   msg["actStStartT"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  msg["defBxSt"] = ControlerBoxes[myIndexInCBArray].sBoxDefaultState;
+  msg["boxDefstate"] = ControlerBoxes[myIndexInCBArray].sBoxDefaultState;
   msg["action"] = "s";
 
   // send to the sender

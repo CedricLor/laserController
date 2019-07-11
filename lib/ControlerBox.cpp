@@ -159,7 +159,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument&
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
-  const short int __senderBoxDefaultState = doc["defBxSt"];
+  const short int __senderBoxDefaultState = doc["boxDefstate"];
   setBoxDefaultState(__bBoxIndex, __senderBoxDefaultState);
 
   // Print out the updated properties

@@ -101,7 +101,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       _messageType = 6;
       _obj["boxState"] = ControlerBoxes[_sBoxIndex].boxActiveState;
       _obj["ms"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
-      _obj["defBxSt"] = ControlerBoxes[_sBoxIndex].sBoxDefaultState;
+      _obj["boxDefstate"] = ControlerBoxes[_sBoxIndex].sBoxDefaultState;
       // reset all the booleans to true
       _resetAllControlerBoxBoolsToTrue(_sBoxIndex);
     }
