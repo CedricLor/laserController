@@ -233,7 +233,7 @@ function updateCurrentStateButtons(data, _boxRow) {
 
 
 function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
-  console.log("_removeClassesOnButtonsGroupForRow starting.");
+  console.log("_removeClassesOnButtonsGroupForRow starting: _buttonsSelector: " + _buttonsSelector + "; _boxRow: ");console.log(_boxRow);
   var _elt_arr = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
   console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
@@ -575,7 +575,7 @@ function boxRowTemplateSelector() {
 
 
 function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
-  console.log("boxRowEltsGroupSelector starting.");
+  console.log("boxRowEltsGroupSelector starting: _buttonsSelector = " + _buttonsSelector + "; _boxRow = ");console.log(_boxRow);
   var _elts = _boxRow.querySelectorAll(_buttonsSelector);
   console.log(_elts);
   console.log("boxRowEltsGroupSelector ending.");
