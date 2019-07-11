@@ -177,7 +177,7 @@ function updateStationIp(_stationIp) {
 function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNumberSelector) {
   console.log("updateClickedStateButton starting.");
   var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _elt = buttonDOMSelector(_boxRow, "button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
+  var _elt = boxRowEltSelector(_boxRow, "button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
@@ -573,13 +573,13 @@ function buttonsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 
-function buttonDOMSelector(_boxRow, _buttonSelector) {
-  console.log("buttonDOMSelector starting.");
+function boxRowEltSelector(_boxRow, _buttonSelector) {
+  console.log("boxRowEltSelector starting.");
 
   var _elts = _boxRow.querySelectorAll(_buttonSelector);
 
   console.log(_elts);
-  console.log("buttonDOMSelector ending.");
+  console.log("boxRowEltSelector ending.");
   return _elts[0];
 }
 // END DOM MANIPULATION
