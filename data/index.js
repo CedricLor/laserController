@@ -34,11 +34,11 @@ function connect() {
       return;
     }
     if (_data.type === 5) { // boxState of existing box has been updated
-      addNewRowForNewBox(_data.message);
+      addOrUpdateNewRowForNewBox(_data.message);
       return;
     }
     if (_data.type === 6) { // a new box has connected to the mesh
-      addNewRowForNewBox(_data.message);
+      addOrUpdateNewRowForNewBox(_data.message);
       return;
     }
     if (_data.type === 7) { // an existing box has been disconnected from the mesh
@@ -360,25 +360,25 @@ function _deleteFromMaps(boxNumber) {
 
 
 
-function addNewRowForNewBox(data) {
-  console.log("addNewRowForNewBox starting.");
+function addOrUpdateNewRowForNewBox(data) {
+  console.log("addOrUpdateNewRowForNewBox starting.");
 
   // Check whether the boxRow has not already been created
   var _controlerBoxEntry = controlerBoxes.get(data.lb);
-  console.log("addNewRowForNewBox: looking if an entry exists in the map for this box");
-  console.log("addNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
-  console.log("addNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
+  console.log("addOrUpdateNewRowForNewBox: looking if an entry exists in the map for this box");
+  console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
+  console.log("addOrUpdateNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
 
   // Case where it the box does not exist
   if (_controlerBoxEntry === undefined) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
-    console.log("addNewRowForNewBox: the boxRow does not already exist. I am about to create it.");
+    console.log("addOrUpdateNewRowForNewBox: the boxRow does not already exist. I am about to create it.");
     if (boxRowTemplate) {
       // clone the template
-      console.log("addNewRowForNewBox: Hidden boxRow selected. About to clone it.");
+      console.log("addOrUpdateNewRowForNewBox: Hidden boxRow selected. About to clone it.");
       var _dupRow = boxRowTemplate.cloneNode(true);  // duplicate the box
-      console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
+      console.log("addOrUpdateNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
 
       // set properties
       _dupRow = _newBoxRowSetProperties(data, _dupRow);
