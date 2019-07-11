@@ -257,6 +257,7 @@ void myWSSender::_sendWSData(JsonDocument& doc) {
               Serial.print("- myWebServerWS::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
             }
             Serial.printf("- myWebServerWS::_sendWSData. Client not found. About to send a WS message message to all.\n");
+            myWebServerWS::ws.textAll(_buffer);
             Serial.println("- myWebServerWS::_sendWSData. Message sent");
           } // end else
         } // end if client.count > 0
