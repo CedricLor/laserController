@@ -157,7 +157,7 @@ function oninputMasterSelect(e) {
      });
     console.log("oninputMasterSelect: about to send json via WS: " + _json);
     ws.send(_json);
-    console.log("onclickButton: json sent.");
+    console.log("oninputMasterSelect: json sent.");
   }
   console.log("oninputMasterSelect: ending");
 }
