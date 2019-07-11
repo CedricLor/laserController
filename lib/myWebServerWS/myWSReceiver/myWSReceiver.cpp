@@ -154,7 +154,7 @@ void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
-  __myMeshViews.changeBoxTargetState(_sBoxState, (__sNodeName + bControllerBoxPrefix));
+  __myMeshViews.changeBoxTargetState(_sBoxState, (short)(__sNodeName + bControllerBoxPrefix));
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
@@ -179,7 +179,7 @@ void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
-  __myMeshViews.changeBoxDefaultState(_sBoxDefaultState, (__sNodeName + bControllerBoxPrefix));
+  __myMeshViews.changeBoxDefaultState(_sBoxDefaultState, (short)(__sNodeName + bControllerBoxPrefix));
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;

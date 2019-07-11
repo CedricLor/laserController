@@ -152,13 +152,17 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   if (strcmp(_action, _c) == 0) {
     // action 'c': this message orders to change the boxTargetState
     byte __bSenderNodeName = root["NNa"];
-    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+    if (MY_DEBUG) {
+      Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
+      Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
+      Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
+    }
 
     // if the message comes from the interface,
     // this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
       if (MY_DEBUG) {
-        Serial.printf("myMeshController::myMeshController: will change my target state to %s", root["receiverTargetState"].as<char*>());
+        Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["receiverTargetState"].as<int>());
       }
       ControlerBox::valFromWeb = root["receiverTargetState"];
     } // else it might be a message coming from some other box,
@@ -175,12 +179,16 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   if (strcmp(_action, _d) == 0) {
     // action 'c': this message orders to change the boxDefaultState
     byte __bSenderNodeName = root["NNa"];
-    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+    if (MY_DEBUG) {
+      Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
+      Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
+      Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
+    }
 
     // if the message comes from the interface,
     // this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
-      if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my default state to %s", root["receiverDefaultState"].as<char*>());}
+      if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", root["receiverDefaultState"].as<int>());}
       byte __bSenderIndexInCB = root["receiverBoxName"];
       __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
       ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
