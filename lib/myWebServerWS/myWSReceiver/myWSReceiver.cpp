@@ -97,7 +97,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     return;
   }
 
-  if (_type == 9) {             // 8 for change master
+  if (_type == 9) {             // 9 for change default state
     // send a mesh request to the relevant laser box
 
     _requestDefaultStateChange(doc);
@@ -172,13 +172,13 @@ void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
 void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
   // convert the box name to a char array box name
   const short __sNodeName = doc["lb"];
-  Serial.printf("myWSReceiver::_requestBoxStateChange(): (from JSON) __sNodeName = %i \n", __sNodeName);
+  Serial.printf("myWSReceiver::_requestDefaultStateChange(): (from JSON) __sNodeName = %i \n", __sNodeName);
   const short _sBoxDefaultState = doc["boxDefstate"];
-  Serial.printf("myWSReceiver::_requestBoxStateChange(): _sBoxDefaultState = %i \n", _sBoxDefaultState);
+  Serial.printf("myWSReceiver::_requestDefaultStateChange(): _sBoxDefaultState = %i \n", _sBoxDefaultState);
 
   // instantiate a mesh view
   myMeshViews __myMeshViews;
-  Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
+  Serial.printf("myWSReceiver::_requestDefaultStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
   __myMeshViews.changeBoxDefaultState(_sBoxDefaultState, (short)(__sNodeName + bControllerBoxPrefix));
 
   // send a response telling the instruction is in course of being executed
