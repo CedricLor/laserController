@@ -284,8 +284,8 @@ function _setEVentListenersStateButtons(_dupRow) {
   var _buttonList = boxRowEltsGroupSelector(_dupRow, _stateButtonListSelector);
   console.log("_setEVentListenersStateButtons: buttonList selected");
   console.log(_buttonList);
-  console.log("_setEVentListenersStateButtons: about to call setStateButtonEvents");
-  setStateButtonEvents(_buttonList);
+  console.log("_setEVentListenersStateButtons: about to call setButtonsGroupEvents");
+  setButtonsGroupEvents(_buttonList, onclickButton);
   return _dupRow;
 }
 
@@ -300,8 +300,8 @@ function _setEVentListenersDefStateButtons(_dupRow) {
   var _buttonList = boxRowEltsGroupSelector(_dupRow, _stateButtonListSelector);
   console.log("_setEVentListenersDefStateButtons: buttonList selected");
   console.log(_buttonList);
-  console.log("_setEVentListenersDefStateButtons: about to call setDefaultStateButtonEvents");
-  setDefaultStateButtonEvents(_buttonList);
+  console.log("_setEVentListenersDefStateButtons: about to call setButtonsGroupEvents");
+  setButtonsGroupEvents(_buttonList, onclickDefStateButton);
   return _dupRow;
 }
 
@@ -586,22 +586,15 @@ function boxRowEltSelector(_boxRow, _buttonSelector) {
 
 
 // EVENT LISTENERS
-function setStateButtonEvents(buttonList) {
+function setButtonsGroupEvents(buttonList, eventHandler) {
   // iterate over each buttons and add an eventListener on click
   for (var i = 0; i < buttonList.length; i++) {
-    buttonList[i].addEventListener('click', onclickButton, false);
+    buttonList[i].addEventListener('click', eventHandler, false);
   }
 }
 
 function setSelectEvents(selectElt) {
   selectElt.addEventListener('input', oninputMasterSelect, false);
-}
-
-function setDefaultStateButtonEvents(buttonList) {
-  // iterate over each default state buttons and add an eventListener on click
-  for (var i = 0; i < buttonList.length; i++) {
-    buttonList[i].addEventListener('click', onclickDefStateButton, false);
-  }
 }
 // END EVENT LISTENERS
 
