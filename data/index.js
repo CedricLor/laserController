@@ -175,8 +175,10 @@ function updateStationIp(_stationIp) {
 
 
 function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNumberSelector) {
-  console.log("updateClickedStateButton starting.");
+  console.log("updateClickedStateButton starting. _laserBoxNumber = " + _laserBoxNumber + "; _stateTypeSelector = " + _stateTypeSelector + "; _stateNumberSelector = " + _stateNumberSelector + ".");
   var _boxRow = boxesRows.get(_laserBoxNumber);
+  console.log("updateClickedStateButton: _boxRow = ");
+  console.log(_boxRow);
   var _elt = boxRowEltSelector(_boxRow, "button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
   console.log(_elt);
   if (_elt) {
@@ -408,17 +410,17 @@ function addNewRowForNewBox(data) {
       // add a key/entry pair to the controlerBoxes map and to the rowsMap map
       _addToMaps(data, _dupRow);
     }
-    console.log("addNewRowForNewBox ending after adding laser box [" + data.lb + "]");
+    console.log("addOrUpdateNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
   }
 
   // Case where the box exists
   else {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
-    console.log("addNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
-    console.log("addNewRowForNewBox: About to set the activeState button.");
+    console.log("addOrUpdateNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
+    console.log("addOrUpdateNewRowForNewBox: About to set the activeState button.");
     updateActiveStateButton(data);
-    console.log("addNewRowForNewBox ending after updating laser box [" + data.lb + "]");
+    console.log("addOrUpdateNewRowForNewBox: ending after updating laser box [" + data.lb + "]");
   }
 }
 
@@ -557,7 +559,7 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 function boxRowEltSelector(_boxRow, _buttonSelector) {
-  console.log("boxRowEltSelector starting.");
+  console.log("boxRowEltSelector starting: _buttonsSelector = " + _buttonsSelector + "; _boxRow = ");console.log(_boxRow);
   var _elts = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
   console.log(_elts[0]);
   console.log("boxRowEltSelector ending.");
