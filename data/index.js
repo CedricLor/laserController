@@ -275,35 +275,17 @@ function _newBoxRowSetProperties(data, _dupRow) {
 }
 
 
-
-
-function _setEVentListenersStateButtons(_dupRow) {
-  console.log("_setEVentListenersStateButtons: about to set event listeners on buttons");
-  var _stateButtonListSelector = "button[data-boxstate]";
-  console.log("_setEVentListenersStateButtons: _stateButtonListSelector = " + _stateButtonListSelector);
-  var _buttonList = boxRowEltsGroupSelector(_dupRow, _stateButtonListSelector);
-  console.log("_setEVentListenersStateButtons: buttonList selected");
+function _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
+  console.log("_setEVentListenersOnGroupOfButtons: about to set event listeners on buttons");
+  console.log("_setEVentListenersOnGroupOfButtons: _buttonGroupSelector = " + _buttonGroupSelector);
+  var _buttonList = boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector);
+  console.log("_setEVentListenersOnGroupOfButtons: _buttonList selected");
   console.log(_buttonList);
-  console.log("_setEVentListenersStateButtons: about to call setButtonsGroupEvents");
-  setButtonsGroupEvents(_buttonList, onclickButton);
+  console.log("_setEVentListenersOnGroupOfButtons: about to call setButtonsGroupEvents");
+  setButtonsGroupEvents(_buttonList, _eventHandler);
   return _dupRow;
 }
 
-
-
-
-
-function _setEVentListenersDefStateButtons(_dupRow) {
-  console.log("_setEVentListenersDefStateButtons: about to set event listeners on buttons");
-  var _stateButtonListSelector = "button[data-boxDefstate]";
-  console.log("_setEVentListenersDefStateButtons: _stateButtonListSelector = " + _stateButtonListSelector);
-  var _buttonList = boxRowEltsGroupSelector(_dupRow, _stateButtonListSelector);
-  console.log("_setEVentListenersDefStateButtons: buttonList selected");
-  console.log(_buttonList);
-  console.log("_setEVentListenersDefStateButtons: about to call setButtonsGroupEvents");
-  setButtonsGroupEvents(_buttonList, onclickDefStateButton);
-  return _dupRow;
-}
 
 
 
@@ -403,7 +385,8 @@ function addNewRowForNewBox(data) {
       _dupRow = _setActiveStateButton(data, _dupRow);
 
       // set event listener on current state buttons
-      _dupRow = _setEVentListenersStateButtons(_dupRow);
+      // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+      _setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
 
       // indicate masterbox number
       _dupRow = _indicateMasterBoxNumber(data, _dupRow);
@@ -416,7 +399,8 @@ function addNewRowForNewBox(data) {
       _dupRow = _setDefaultStateButton(data, _dupRow);
 
       // set event listener on default state buttons
-      _dupRow = _setEVentListenersDefStateButtons(_dupRow);
+      // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+      _setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
 
       // render in DOM
       _dupRow = _renderInDom(_dupRow);
