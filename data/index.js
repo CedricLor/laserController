@@ -54,6 +54,9 @@ function connect() {
     if (_data.type === 8) { // a box has changed master
       updateMasterBoxNumber(_data.message);
     }
+    if (_data.type === 9) { // a box has changed master
+      updateClickedStateButton(_data.message.lb, "boxDefstate", _data.message.boxDefstate)
+    }
   };
 
   ws.onclose = function(e) {
