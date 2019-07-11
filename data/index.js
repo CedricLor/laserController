@@ -277,12 +277,11 @@ function _newBoxRowSetProperties(data, _dupRow) {
 
 
 
-
 function _setEVentListenersStateButtons(_dupRow) {
   console.log("_setEVentListenersStateButtons: about to set event listeners on buttons");
   var _stateButtonListSelector = "button[data-boxstate]";
   console.log("_setEVentListenersStateButtons: _stateButtonListSelector = " + _stateButtonListSelector);
-  var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
+  var _buttonList = boxRowEltsGroupSelector(_dupRow, _stateButtonListSelector);
   console.log("_setEVentListenersStateButtons: buttonList selected");
   console.log(_buttonList);
   console.log("_setEVentListenersStateButtons: about to call setStateButtonEvents");
@@ -298,7 +297,7 @@ function _setEVentListenersDefStateButtons(_dupRow) {
   console.log("_setEVentListenersDefStateButtons: about to set event listeners on buttons");
   var _stateButtonListSelector = "button[data-boxDefstate]";
   console.log("_setEVentListenersDefStateButtons: _stateButtonListSelector = " + _stateButtonListSelector);
-  var _buttonList = _dupRow.querySelectorAll(_stateButtonListSelector);
+  var _buttonList = boxRowEltsGroupSelector(_dupRow, _stateButtonListSelector);
   console.log("_setEVentListenersDefStateButtons: buttonList selected");
   console.log(_buttonList);
   console.log("_setEVentListenersDefStateButtons: about to call setDefaultStateButtonEvents");
