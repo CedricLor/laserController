@@ -109,12 +109,12 @@ function onclickDefStateButton(e) {
 };
 
 function _onclickButtonWrapper(clickedTarget, buttonSelector, messageType, _datasetValue, _clef) {
-  var _laserBoxNumber = _onclickButtonClassSetter(clickedTarget, buttonSelector);
+  var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
+  _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber);
   _onclickButtonWSSender(messageType, _laserBoxNumber, _datasetValue, _clef);
 }
 
-function _onclickButtonClassSetter(clickedTarget, buttonSelector) {
-  var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
+function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
   var _boxRow = boxesRows.get(_laserBoxNumber);
   var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
   // remove red on other buttons
