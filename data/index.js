@@ -189,26 +189,53 @@ function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNum
 
 
 
-function updateActiveStateButton(data) {
-  console.log("updateActiveStateButton starting.");
+
+function updateBoxRow(data) {
+  console.log("updateBoxRow: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
   // select the correct row in the map
   var _boxRow = boxesRows.get(data.lb);
 
-  // remove classes on all the others stateButtons of this boxRow
-  _removeClassesOnAllStateButtonsForRow(_boxRow);
+  // update the currently active state
+  updateCurrentStateButtons(data, _boxRow);
 
-  // add button_active_state class to the relevant stateButton
-  _setActiveStateButton(data, _boxRow);
-  console.log("updateActiveStateButton ending.");
+  console.log("updateBoxRow: ending after updating laser box [" + data.lb + "]");
 }
 
 
 
 
-function _removeClassesOnAllStateButtonsForRow(_boxRow) {
-  console.log("_removeClassesOnAllStateButtonsForRow starting.");
-  var _elt_arr = boxRowEltsGroupSelector(_boxRow, "button[data-boxstate]");
-  console.log("_removeClassesOnAllStateButtonsForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
+
+function updateCurrentStateButtons(data, _boxRow) {
+  console.log("updateCurrentStateButtons starting.");
+  console.log("updateCurrentStateButtons: About to set the activeState button.");
+
+  // remove classes on all the others stateButtons of this boxRow
+  // _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector)
+  _removeClassesOnButtonsGroupForRow(_boxRow, "button[data-boxstate]");
+
+  // add button_active_state class to the relevant stateButton
+  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+  _dupRow = _setCurrentStateButton(_boxRow, "boxstate", data.boxState);
+
+  // remove classes on all the others default stateButtons of this boxRow
+  // _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector)
+  _removeClassesOnButtonsGroupForRow(_boxRow, "button[data-boxDefstate]");
+
+  // add button_active_state class to the relevant default stateButton
+  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+  _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.defBxSt);
+
+  console.log("updateCurrentStateButtons: ending after updating laser box [" + data.lb + "]");
+}
+
+
+
+
+
+function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
+  console.log("_removeClassesOnButtonsGroupForRow starting.");
+  var _elt_arr = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
+  console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
       function(currentValue, currentIndex, listObj) {
@@ -218,30 +245,21 @@ function _removeClassesOnAllStateButtonsForRow(_boxRow) {
       }
     );
   }
-  console.log("_removeClassesOnAllStateButtonsForRow ending.");
+  console.log("_removeClassesOnButtonsGroupForRow ending.");
 }
 
 
 
 
-function _setDefaultStateButton(data, memRow) {
-  // console.log("_setDefaultStateButton: preparing a selector to select the state buttons included in _dupRow.");
-  var _selectorDefaultBoxState = "button[data-boxDefstate='" + data.defBxSt + "']";
-  console.log("_setDefaultStateButton: selector created: '" + _selectorDefaultBoxState + "'");
-  memRow = _setStateButtonAsActive(_selectorDefaultBoxState, memRow);
+function _setCurrentStateButton(memRow, datasetKey, datasetValue) {
+  // console.log("_setCurrentStateButton: preparing a selector to select the state buttons included in _dupRow.");
+  var _buttonSelector = "button[data-" + datasetKey + "='" + datasetValue + "']";
+  console.log("_setCurrentStateButton: selector created: '" + _buttonSelector + "'");
+  memRow = _setStateButtonAsActive(_buttonSelector, memRow);
   return memRow;
 }
 
 
-
-
-function _setActiveStateButton(data, memRow) {
-  // console.log("_setActiveStateButton: preparing a selector to select the state buttons included in _dupRow.");
-  var _selectorActiveBoxState = "button[data-boxstate='" + data.boxState + "']";
-  // console.log("_setActiveStateButton: selector created: '" + _selectorActiveBoxState + "'");
-  memRow = _setStateButtonAsActive(_selectorActiveBoxState, memRow);
-  return memRow;
-}
 
 
 
@@ -360,6 +378,55 @@ function _deleteFromMaps(boxNumber) {
 
 
 
+
+function addNewRowForNewBox(data) {
+  console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
+  if (boxRowTemplate) {
+    // clone the template
+    console.log("addNewRowForNewBox: Hidden boxRow selected. About to clone it.");
+    var _dupRow = boxRowTemplate.cloneNode(true);  // duplicate the box
+    console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
+
+    // set properties
+    _dupRow = _newBoxRowSetProperties(data, _dupRow);
+
+    // set the activeState button
+    // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+    _dupRow = _setCurrentStateButton(_dupRow, "boxstate", data.boxState);
+
+    // set event listener on current state buttons
+    // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+    _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
+
+    // indicate masterbox number
+    _dupRow = _indicateMasterBoxNumber(data, _dupRow);
+
+    // set event listener on slave select
+    var _select = _selectMasterSelectInRow(_dupRow);
+    setSelectEvents(_select);
+
+    // set boxDefaultState button
+    // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+    _setCurrentStateButton(_dupRow, "boxDefstate", data.defBxSt);
+
+    // set event listener on default state buttons
+    // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+    _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
+
+    // render in DOM
+    _dupRow = _renderInDom(_dupRow);
+
+    // add a key/entry pair to the controlerBoxes map and to the rowsMap map
+    _addToMaps(data, _dupRow);
+  }
+  console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
+}
+
+
+
+
+
+
 function addOrUpdateNewRowForNewBox(data) {
   console.log("addOrUpdateNewRowForNewBox starting.");
 
@@ -369,58 +436,18 @@ function addOrUpdateNewRowForNewBox(data) {
   console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
   console.log("addOrUpdateNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
 
-  // Case where it the box does not exist
+  // Case where the box does not exist
   if (_controlerBoxEntry === undefined) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
-    console.log("addOrUpdateNewRowForNewBox: the boxRow does not already exist. I am about to create it.");
-    if (boxRowTemplate) {
-      // clone the template
-      console.log("addOrUpdateNewRowForNewBox: Hidden boxRow selected. About to clone it.");
-      var _dupRow = boxRowTemplate.cloneNode(true);  // duplicate the box
-      console.log("addOrUpdateNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
-
-      // set properties
-      _dupRow = _newBoxRowSetProperties(data, _dupRow);
-
-      // set the activeState button
-      _dupRow = _setActiveStateButton(data, _dupRow);
-
-      // set event listener on current state buttons
-      // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-      _setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
-
-      // indicate masterbox number
-      _dupRow = _indicateMasterBoxNumber(data, _dupRow);
-
-      // set event listener on slave select
-      var _select = _selectMasterSelectInRow(_dupRow);
-      setSelectEvents(_select);
-
-      // set boxDefaultState button
-      _dupRow = _setDefaultStateButton(data, _dupRow);
-
-      // set event listener on default state buttons
-      // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-      _setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
-
-      // render in DOM
-      _dupRow = _renderInDom(_dupRow);
-
-      // add a key/entry pair to the controlerBoxes map and to the rowsMap map
-      _addToMaps(data, _dupRow);
-    }
-    console.log("addOrUpdateNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
+    addNewRowForNewBox(data);
   }
 
   // Case where the box exists
   else {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
-    console.log("addOrUpdateNewRowForNewBox: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
-    console.log("addOrUpdateNewRowForNewBox: About to set the activeState button.");
-    updateActiveStateButton(data);
-    console.log("addOrUpdateNewRowForNewBox: ending after updating laser box [" + data.lb + "]");
+    updateCurrentStateButtons(data, _controlerBoxEntry);
   }
 }
 
