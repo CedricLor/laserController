@@ -116,7 +116,7 @@ function _onclickButtonWrapper(clickedTarget, buttonSelector, messageType, _data
 function _onclickButtonClassSetter(clickedTarget, buttonSelector) {
   var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
   var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _buttonList = buttonsGroupSelector(_boxRow, buttonSelector);
+  var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
   // remove red on other buttons
   for (var i = 0; i < _buttonList.length; i++) {
     _buttonList[i].classList.remove('button_clicked');
@@ -205,7 +205,7 @@ function updateActiveStateButton(data) {
 
 function _removeClassesOnAllStateButtonsForRow(_boxRow) {
   console.log("_removeClassesOnAllStateButtonsForRow starting.");
-  var _elt_arr = buttonsGroupSelector(_boxRow, "button[data-boxstate]");
+  var _elt_arr = boxRowEltsGroupSelector(_boxRow, "button[data-boxstate]");
   console.log("_removeClassesOnAllStateButtonsForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
   if (_elt_arr && _elt_arr.length) {
     _elt_arr.forEach(
@@ -562,11 +562,11 @@ function boxRowTemplateSelector() {
 
 
 
-function buttonsGroupSelector(_boxRow, _buttonsSelector) {
-  console.log("buttonsGroupSelector starting.");
+function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
+  console.log("boxRowEltsGroupSelector starting.");
   var _elts = _boxRow.querySelectorAll(_buttonsSelector);
   console.log(_elts);
-  console.log("buttonsGroupSelector ending.");
+  console.log("boxRowEltsGroupSelector ending.");
   return _elts;
 }
 
@@ -575,10 +575,8 @@ function buttonsGroupSelector(_boxRow, _buttonsSelector) {
 
 function boxRowEltSelector(_boxRow, _buttonSelector) {
   console.log("boxRowEltSelector starting.");
-
-  var _elts = _boxRow.querySelectorAll(_buttonSelector);
-
-  console.log(_elts);
+  var _elts = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
+  console.log(_elts[0]);
   console.log("boxRowEltSelector ending.");
   return _elts[0];
 }
