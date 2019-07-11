@@ -30,7 +30,7 @@ function connect() {
       return;
     }
     if (_data.type === 4) { // User request to change boxState has been received and is being processed
-      updateClickedStateButton(_data.message);
+      updateClickedStateButton(_data.message.lb, "boxstate", _data.message.boxState)
       return;
     }
     if (_data.type === 5) { // boxState of existing box has been updated
@@ -170,10 +170,11 @@ function updateStationIp(_stationIp) {
 
 
 
-function updateClickedStateButton(data) {
+
+function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNumberSelector) {
   console.log("updateClickedStateButton starting.");
-  var _boxRow = boxesRows.get(data.lb);
-  var _elt = stateButtonDOMSelector(_boxRow, data.boxState);
+  var _boxRow = boxesRows.get(_laserBoxNumber);
+  var _elt = buttonDOMSelector(_boxRow, "button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
@@ -568,18 +569,16 @@ function buttonsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 
-function stateButtonDOMSelector(_boxRow, boxActiveState) {
-  console.log("stateButtonDOMSelector starting.");
 
-  // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
-  var _buttonSelector = "button[data-boxstate='" + boxActiveState + "']";
+function buttonDOMSelector(_boxRow, _buttonSelector) {
+  console.log("buttonDOMSelector starting.");
+
   var _elts = _boxRow.querySelectorAll(_buttonSelector);
 
   console.log(_elts);
-  console.log("stateButtonDOMSelector ending.");
+  console.log("buttonDOMSelector ending.");
   return _elts[0];
 }
-
 // END DOM MANIPULATION
 
 
