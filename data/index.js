@@ -562,9 +562,9 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
   // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
   var _selector = "div.box_wrapper[data-lb='" + laserBoxIndexNumber + "']";
   console.log(_selector);
-  var _rows = document.querySelectorAll(_selector); // should be a list composed of one single element
+  var _row = document.querySelector(_selector); // should be a list composed of one single element
   console.log("boxRowDOMSelector ending.");
-  return _rows[0]; // return the first (and unique) element of the list
+  return _row; // return the first (and unique) element of the list
 }
 
 
