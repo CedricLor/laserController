@@ -188,8 +188,8 @@ function updateStationIp(_stationIp) {
 function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNumberSelector) {
   console.log("updateClickedStateButton starting. _laserBoxNumber = " + _laserBoxNumber + "; _stateTypeSelector = " + _stateTypeSelector + "; _stateNumberSelector = " + _stateNumberSelector + ".");
   var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _elt = boxRowEltSelector(_boxRow, "button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
   console.log("updateClickedStateButton: _boxRow = ");console.log(_boxRow);
+  var _elt = _boxRow.querySelector("button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
@@ -257,6 +257,7 @@ function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
   }
   console.log("_removeClassesOnButtonsGroupForRow ending.");
 }
+
 
 
 
@@ -587,17 +588,6 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
   console.log(_elts);
   console.log("boxRowEltsGroupSelector ending.");
   return _elts;
-}
-
-
-
-
-function boxRowEltSelector(_boxRow, _buttonsSelector) {
-  console.log("boxRowEltSelector starting: _buttonsSelector = " + _buttonsSelector + "; _boxRow = ");console.log(_boxRow);
-  var _elts = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
-  console.log(_elts[0]);
-  console.log("boxRowEltSelector ending.");
-  return _elts[0];
 }
 // END DOM MANIPULATION
 
