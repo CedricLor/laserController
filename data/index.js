@@ -482,7 +482,7 @@ function deleteAllBoxRows() {
 
 function deleteBoxRow(data) {
   console.log("deleteBoxRow starting.");
-  var _boxRowToDelete = boxRowDOMSelector(data.lb);
+  var _boxRowToDelete = boxesRows.get(data.lb);
   if (_boxRowToDelete === undefined) {
     console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
   } else {
