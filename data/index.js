@@ -244,10 +244,10 @@ function updateCurrentStateButtons(data, _boxRow) {
 
 function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
   console.log("_removeClassesOnButtonsGroupForRow starting: _buttonsSelector: " + _buttonsSelector + "; _boxRow: ");console.log(_boxRow);
-  var _elt_arr = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
-  console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_elt_arr);
-  if (_elt_arr && _elt_arr.length) {
-    _elt_arr.forEach(
+  var _buttonList = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
+  console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_buttonList);
+  if (_buttonList && _buttonList.length) {
+    _buttonList.forEach(
       function(currentValue, currentIndex, listObj) {
         currentValue.classList.remove('button_active_state');
         currentValue.classList.remove('button_change_received');
