@@ -297,7 +297,7 @@ function _newBoxRowSetProperties(data, _dupRow) {
   console.log("_newBoxRowSetProperties: _dupRow: removing the class hidden from the classes of the new wrapper div");
   _dupRow.classList.remove('hidden');
   console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (data.lb + 200));
-  _dupRow.children[0].children[0].children[0].textContent = data.lb + 200;
+  _dupRow.querySelector("span.box_num").textContent = data.lb + 200;
   return _dupRow;
 }
 
