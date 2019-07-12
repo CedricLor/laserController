@@ -5,17 +5,26 @@ var controlerBoxes = new Map();
 var boxesRows = new Map();
 var boxRowTemplate = boxRowTemplateSelector();
 
+
+
+
+
+
 // WEB SOCKET
 function connect() {
   ws = new WebSocket('ws://192.168.43.84/ws');
+
+  // onopen websocket, send a message to the server with the list of controlerBoxes
+  // currently in the DOM and their states
   ws.onopen = function() {
-    console.log("WS connection open ...");
+    console.log("WS connection open. Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
     ws.send(JSON.stringify({
       type: 0,
       message: mapToObj(controlerBoxes)
     }));
   };
 
+  // on receive a message, decode its type to dispatch it
   ws.onmessage = function(e) {
     var received_msg = e.data;
     console.log( "WS Received Message: " + received_msg);
@@ -59,10 +68,12 @@ function connect() {
     }
   };
 
+  // onclose, just inform the user that an attempt to reconnect will be made soon
   ws.onclose = function(e) {
-    console.log('Socket is closed. Reconnect will be attempted in 5 to 10 seconds.', e.reason);
+    console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds.', e.reason);
   };
 
+  // onerror, inform the user that you are closing the socket
   ws.onerror = function(err) {
     console.error('Socket encountered error: ', err.message, 'Closing socket');
     ws.close();
@@ -138,9 +149,9 @@ function _onclickButtonWSSender(_messageType, _laserBoxNumber, _datasetValue, _c
     // lb: _laserBoxNumber,
     // dataSet
   // /*boxDefstate: _datasetValue*/ });
-  console.log("_onclickButtonWSSender: about to send json via WS: " + _json);
+  console.log("_onclickButtonWSSender: about to send JSON via WS: " + _json);
   ws.send(_json);
-  console.log("_onclickButtonWSSender: json sent.");
+  console.log("_onclickButtonWSSender: JSON sent.");
 
 }
 
@@ -177,9 +188,8 @@ function updateStationIp(_stationIp) {
 function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNumberSelector) {
   console.log("updateClickedStateButton starting. _laserBoxNumber = " + _laserBoxNumber + "; _stateTypeSelector = " + _stateTypeSelector + "; _stateNumberSelector = " + _stateNumberSelector + ".");
   var _boxRow = boxesRows.get(_laserBoxNumber);
-  console.log("updateClickedStateButton: _boxRow = ");
-  console.log(_boxRow);
   var _elt = boxRowEltSelector(_boxRow, "button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
+  console.log("updateClickedStateButton: _boxRow = ");console.log(_boxRow);
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
@@ -195,7 +205,7 @@ function updateBoxRow(data) {
   // select the correct row in the map
   var _boxRow = boxesRows.get(data.lb);
 
-  // update the currently active state
+  // update the current active and default states
   updateCurrentStateButtons(data, _boxRow);
 
   console.log("updateBoxRow: ending after updating laser box [" + data.lb + "]");
@@ -261,10 +271,6 @@ function _setCurrentStateButton(memRow, datasetKey, datasetValue) {
 
 
 
-
-
-
-
 function _setStateButtonAsActive(_selector, memRow) {
   var _targetButton = memRow.querySelector(_selector);
   console.log("_setStateButtonAsActive: button selected: ");console.log(_targetButton);
@@ -284,7 +290,7 @@ function _setStateButtonAsActive(_selector, memRow) {
 
 function _newBoxRowSetProperties(data, _dupRow) {
   console.log("_newBoxRowSetProperties: _dupRow: setting the id of the new wrapper div to: " + data.lb);
-  _dupRow.id = "boxRow" + data.lb;     // update data-lb attribute
+  _dupRow.id = "boxRow" + data.lb;     // set a unique id
   console.log("_newBoxRowSetProperties: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
   _dupRow.dataset.lb = data.lb;     // update data-lb attribute
   console.log("_newBoxRowSetProperties: _dupRow: removing the class hidden from the classes of the new wrapper div");
@@ -359,9 +365,10 @@ function _addToMaps(data, _dupRow) {
   console.log("_addToMaps starting.");
   controlerBoxes.set(data.lb, data.boxState);
   console.log("_addToMaps: controlerBoxes map: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
+  console.log(controlerBoxes);
   boxesRows.set(data.lb, _dupRow);
   console.log("_addToMaps: boxesRows map: set key [" + data.lb + "] with value [" + _dupRow +  "] in boxesRows map.");
-  console.log(controlerBoxes);
+  console.log(boxesRows);
   console.log("_addToMaps ending.");
 }
 
@@ -618,8 +625,8 @@ function setSelectEvents(selectElt) {
 // WINDOW LOAD
 window.onload = function(e){
     console.log("window.onload");
-    // Interval at which to check if WS server is still available (and reconnect as necessary)
-    // setInterval(check, 5000);
+    // Interval at which to check if WS server is still available
+    // (and reconnect as necessary) setInterval(check, 5000);
     setInterval(check, (getRandomArbitrary(10, 4) * 1000));
 }
 // END WINDOW LOAD
