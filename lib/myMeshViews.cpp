@@ -87,7 +87,7 @@ myMeshViews::myMeshViews()
 // This function is called exclusively from the laser controllers -- not the interface
 void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
   Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. newMasterNodeName = %i\n", newMasterNodeName);
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
   JsonObject msg = doc.to<JsonObject>();
