@@ -193,11 +193,36 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
       byte __bSenderIndexInCB = root["receiverBoxName"];
       __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
       ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
+      // send a message to the IF telling it that I have taken the change into account
+      myMeshViews __myMeshViews;
+      __myMeshViews.changedBoxDefaultStateConfirmation(ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState);
       // mark the change has signaled
       ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
     } // else it might be a message coming from some other box,
     // but I shall not react. Reactions to changes in the mesh are
     // detected via status messages
+    return;
+  }
+
+
+  // defaultBoxState change confirmation
+  // This is a signal received by the IF from a laser controller
+  const char* _dc = "dc";
+  if (strcmp(_action, _dc) == 0) {
+    // action 'dc': this message confirms a change the boxDefaultState for a given box
+    short int __sSenderIndexInCB  = root["NNa"].as<short>() - (int)bControllerBoxPrefix;
+    short int __sDefaultState = root["ds"].as<short>();
+    if (MY_DEBUG) {
+      Serial.print("myMeshController::myMeshController: __sSenderIndexInCB = ");Serial.println(__sSenderIndexInCB);
+      Serial.print("myMeshController::myMeshController: __sDefaultState = ");Serial.println(__sDefaultState);
+    }
+
+    // set the new default state in the relevant ControlerBox (on the interface)
+    // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
+    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultState = __sDefaultState;
+    // mark the change has unsignaled
+    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
+
     return;
   }
 

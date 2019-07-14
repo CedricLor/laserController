@@ -182,6 +182,24 @@ void myMeshViews::changeBoxDefaultState(const short _sBoxDefaultState, const sho
   _sendMsg(msg);
 }
 
+// This function is called exclusively from the laser controllers -- not the interface
+void myMeshViews::changedBoxDefaultStateConfirmation(const short _sBoxDefaultState) {
+  // prepare the JSON string to be sent via the mesh
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"dc";"ds":3}
+  if (MY_DEBUG) {
+    Serial.printf("myMeshViews::changeBoxDefaultStateConfirmation(): _sBoxDefaultState = %i\n", _sBoxDefaultState);
+  }
+
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
+
+  msg["ds"] = _sBoxDefaultState;
+  msg["action"] = "dc";
+
+  _sendMsg(msg);
+}
+
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
 //   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"p";"pt":"0"}
 //   JsonObject msg = _createJsonobject();
