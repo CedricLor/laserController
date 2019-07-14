@@ -179,7 +179,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   const char* _d = "d";
   if (strcmp(_action, _d) == 0) {
     // action 'c': this message orders to change the boxDefaultState
-    byte __bSenderNodeName = root["NNa"];
+    byte __bSenderNodeName = (byte)root["NNa"].as<int>();
     if (MY_DEBUG) {
       Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
       Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
