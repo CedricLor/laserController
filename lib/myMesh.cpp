@@ -33,7 +33,7 @@
 
 const char* myMesh::STATION_SSID = ssid;
 const char* myMesh::STATION_PASSWORD = pass;
-const uint8_t* myMesh::STATION_IP = station_ip;
+// const uint8_t* myMesh::STATION_IP = station_ip;
 
 const char myMesh::_PREFIX_AP_SSID[5] = "box_";
 char myMesh::_myApSsidBuf[8];

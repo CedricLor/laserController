@@ -146,7 +146,8 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   }
 
 
-  // change this boxState request
+  // Receiving a "change this boxState" request
+  // It may only be received on laser boxes
   // This is a signal sent from the web and relayed by the mesh
   const char* _c = "c";
   if (strcmp(_action, _c) == 0) {
@@ -192,6 +193,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
       byte __bSenderIndexInCB = root["receiverBoxName"];
       __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
       ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
+      // mark the change has signaled
       ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
     } // else it might be a message coming from some other box,
     // but I shall not react. Reactions to changes in the mesh are
@@ -200,17 +202,6 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   }
 
 
-  // Temporarily commented out
-  // const char* _p = "p";
-  // if (strcmp(_action, _p) == 0) {           // action 'p' for this message orders the pairing
-  //   _pinPairing(root);            // (either of type unpairing, twin pairing or cooperative)
-  //   return;                       // of the pins, that this box should update as the case may be
-  // }
-  // const char* _d = "d";
-  // if (strcmp(_action, _d) == 0) {           // action 'd' for this message requests that this box returns Data on it current states
-  //   _dataRequest();
-  //   return;
-  // }
 }
 
 
@@ -252,16 +243,6 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   // const char* _sTargetBlinkingInterval = _root["ti"];
   // _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
   // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
-// }
-
-// void myMeshController::_changeMasterBox(JsonDocument& _root) {
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
-  // byte bNewMasterBoxNumber;
-  // const char* sNewMasterBoxNumber = _root["ms"];
-  // bNewMasterBoxNumber = atoi(sNewMasterBoxNumber);
-  // const char* sNewReaction = _root["react"];
-  // // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
-  // MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(bNewMasterBoxNumber, sNewReaction);
 // }
 
 const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
@@ -306,17 +287,4 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
   //   // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][1]);
   // }
   // Serial.print("myMeshController::_slaveBoxSwitch(): done\n");
-// }
-
-// void myMeshController::_pinPairing(JsonDocument& root) {
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"p";"pt":"0"}
-  // short _iTargetPairingType;
-  // const char* _sTargetPairingType = root["ts"];
-  // _iTargetPairingType = atoi(_sTargetPairingType);
-  // LaserGroupedUnitsArray::pairUnpairAllPins(_iTargetPairingType /*-1 unpair, 0 twin pairing, 1 cooperative pairing*/);
-// }
-
-// void myMeshController::_dataRequest() {
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"d"}
-  // ----------------------
 // }
