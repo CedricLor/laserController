@@ -103,7 +103,9 @@ String myWebServerViews::_processor(const String& var) {
     // Serial.print("myWebServerBase::_processor(): if(var == \"NETWORK_SETTER\")\n");
     return F(ControlerBoxes[myIndexInCBArray].APIP.toString().c_str());
   }
-  Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");
+  if (MY_DG_WEB) {
+    Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");  
+  }
   return String();
 }
 

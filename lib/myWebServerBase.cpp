@@ -73,9 +73,8 @@ void myWebServerBase::startAsyncServer() {
 
   // respond to GET requests by sending index.htm to the browser
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
-
-      if (MY_DEBUG) {
+      if (MY_DG_WEB) {
+        Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
         // List all collected headers
         _listAllCollectedHeaders(request);
         // List all parameters
@@ -121,12 +120,16 @@ void myWebServerBase::_onRequest(AsyncWebServerRequest *request){
 void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
   //Handle body
   if(!index){
-    Serial.printf("myWebServerBase::_onBody. BodyStart: %u B\n", total);
+    if (MY_DG_WEB) {
+      Serial.printf("myWebServerBase::_onBody. BodyStart: %u B\n", total);
+    }
   }
   for(size_t i=0; i<len; i++){
     Serial.write(data[i]);
   }
   if(index + len == total){
-    Serial.printf("BodyEnd: %u B\n", total);
+    if (MY_DG_WEB) {
+      Serial.printf("BodyEnd: %u B\n", total);
+    }
   }
 }

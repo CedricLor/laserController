@@ -20,6 +20,7 @@ short relayPins[] = { 5, 17, 16, 4 };
 const bool MY_DEBUG = true;
 const bool MY_DG_LASER = false;
 const bool MY_DG_WS = true;
+const bool MY_DG_WEB = true;
 
 const short VERSION = 0;
 

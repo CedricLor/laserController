@@ -85,17 +85,18 @@ myWebServerControler::myWebServerControler()
 // }
 
 void myWebServerControler::decodeRequest(AsyncWebServerRequest *request) {
-  Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
-
+  if (MY_DG_WEB) {
+    Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): DECODING WEB REQUEST >>>>>>>>>>>>>>>>\n");
+  }
   // if request is change status
   // expected request: http://192.168.43.84/?status=[some boxTargetState index number]&lb=[sboxname]
   // if(request->hasParam("boxTargetState")) {
-  //   if (MY_DEBUG) {
+  //   if (MY_DG_WEB) {
   //     Serial.print("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): request->hasParam(\"boxTargetState\")");
   //   }
   //   AsyncWebParameter* _boxTargetState = request->getParam("boxTargetState");
   //   AsyncWebParameter* _relatedLaserBoxNodeName = request->getParam("lb");
-  //   if (MY_DEBUG) {
+  //   if (MY_DG_WEB) {
   //     Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"boxTargetState\" = %c", *(_boxTargetState->value().c_str()));
   //     Serial.printf("WEB CONTROLLER: decodeRequest(AsyncWebServerRequest *request): param \"lb\" = %c", *(_relatedLaserBoxNodeName->value().c_str()));
   //   }
