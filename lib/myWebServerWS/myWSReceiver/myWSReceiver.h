@@ -49,11 +49,13 @@ class myWSReceiver
     myWSReceiver(uint8_t *data);
 
   private:
+
     void _onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageType, JsonDocument& doc);
     void _checkConsistancyDOMDB(const short _sMessageType, JsonObject& _obj);
     void _lookForDisconnectedBoxes(const short _sMessageType, JsonPair& _p);
     void _checkBoxStateConsistancy(const short _sMessageType, JsonPair& _p);
     void _lookForDOMMissingRows(const short _sMessageType, JsonObject& _obj);
+
     void _requestBoxStateChange( JsonDocument& doc);
     void _requestMasterChange(const short _sMessageType, JsonDocument& doc);
     void _requestDefaultStateChange(JsonDocument& doc);

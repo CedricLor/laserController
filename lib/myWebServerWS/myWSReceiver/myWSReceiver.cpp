@@ -66,10 +66,12 @@ myWSReceiver::myWSReceiver(uint8_t *data)
 
 
   // choose the type of reaction depending on the message type
-  // if type 0, handshake and comparing the number of boxRow vs the number of connected boxes
-  if (_type == 0) {           // 0 for hand shake message
-    if (MY_DG_WS) { Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - converting doc[\"message\"] to JSON Object \n", _type); }
 
+  // if type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
+  if (_type == 0) {           // 0 for hand shake message
+    if (MY_DG_WS) {
+      Serial.printf("myWSReceiver::_decodeWSMessage(): _type = %i - new WS: going to check whether the DOM needs to be updated. \n", _type);
+    }
     _onHandshakeCheckWhetherDOMNeedsUpdate(_type, doc);
   }
 
@@ -114,7 +116,9 @@ myWSReceiver::myWSReceiver(uint8_t *data)
 
 
 
-
+// we received a master change request from the Web.
+// 1. sending it to the mesh
+// 2. sending reply to the browser (request being processed)
 void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument& doc) {
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestMasterChange(): _type = %i - starting \n", _sMessageType);
@@ -131,6 +135,7 @@ void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument&
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", _iMasterBox);
   }
+  
   // instantiate a mesh view and send a changeMasterBoxMsg
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
