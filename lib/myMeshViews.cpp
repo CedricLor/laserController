@@ -238,6 +238,23 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
+void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
+  }
+
+  _sendMsg(obj, ControlerBoxes[0].nodeId);
+
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+  }
+}
+
+
+
+
+
+
 // This function is called exclusively from the laser controllers -- not the interface
 void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
   if (MY_DG_MESH) {

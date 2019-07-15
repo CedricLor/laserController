@@ -118,7 +118,7 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
 
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
-void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonDocument& doc) {
+void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonObject& doc) {
   Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
 
   // Setting nodeName, nodeId and IP properties

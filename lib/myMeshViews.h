@@ -42,6 +42,7 @@ class myMeshViews
     // void changeMasterBox(const int8_t _i8MasterBox, const int8_t _i8BoxIndexInCB);
     // void changeBoxDefaultState(const int8_t _sBoxDefaultState, const int8_t _i8BoxIndexInCB);
 
+    void changedBoxConfirmation(JsonObject& obj);
     void changedMasterBoxConfirmation(const int8_t _i8MasterBox);
     void changedBoxDefaultStateConfirmation(const int8_t _sBoxDefaultState);
 

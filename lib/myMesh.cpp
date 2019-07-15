@@ -175,6 +175,9 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
 
   // create a StaticJsonDocument entitled doc
   StaticJsonDocument<capacity> doc;
+  // Convert the document to an object
+  JsonObject obj = doc.to<JsonObject>();
+
   if (MY_DG_MESH) {
     Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
   }
@@ -187,7 +190,7 @@ void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
   }
 
   // pass the deserialized doc and the senderNodeId to the controller
-  myMeshController myMeshController(senderNodeId, doc);
+  myMeshController myMeshController(senderNodeId, obj);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

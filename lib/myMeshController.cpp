@@ -30,7 +30,7 @@ Created by Cedric Lor, January 22, 2019.
 
 
 
-myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
+myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*JsonDocument& root*/)
 {
   if (MY_DG_MESH) {
     Serial.print("myMeshController::myMeshController: Starting\n");
@@ -97,22 +97,107 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   }
 
 
-  // change masterBox request (received by the laser boxes only)
-  const char* _m = "m";
-  if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-    byte __bMasterBoxName = root["ms"];
-    __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
+  // changeBox request (received by the laser boxes only)
+  const char* _actionChangeBox = "changeBox";
 
-    // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-    ControlerBoxes[myIndexInCBArray].updateMasterBoxName(__bMasterBoxName);
-    // send a message to the IF telling it that I have taken the change into account
-    myMeshViews __myMeshViews;
-    __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
-    // mark the change has signaled
-    ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+  // if (MY_DG_MESH) {
+  //   // Serial.printf("myMeshController::myMeshController: _action = %s\n", _action);
+  //   // Serial.printf("myMeshController::myMeshController: _actionChangeBox = %s\n", _actionChangeBox);
+  //   // Serial.printf("myMeshController::myMeshController: (strcmp(_action, _actionChangeBox) == 0) =  %i\n", (strcmp(_action, _actionChangeBox) == 0));
+  //   Serial.printf("myMeshController::myMeshController: root.containsKey(\"boxState\") = %i\n", (root.containsKey("boxState")));
+  //   Serial.printf("myMeshController::myMeshController: root.containsKey(\"masterbox\") = %i\n", (root.containsKey("masterbox")));
+  //   Serial.printf("myMeshController::myMeshController: root.containsKey(\"boxDefstate\") = %i\n", (root.containsKey("boxDefstate")));
+  // }
+
+  if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
+
+    // "boxState": 0; // "masterbox":201 // "boxDefstate": 4
+
+    // if this is a change active state request
+    if (root.containsKey("boxState")) {
+      // if the message comes from the interface, this is a relayed message coming from the web
+      if (senderNodeId == ControlerBoxes[0].nodeId) {
+        if (MY_DG_MESH) {
+          Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["boxState"].as<int8_t>());
+        }
+        ControlerBox::valFromWeb = root["boxState"].as<int8_t>();
+      } // else it might be a message coming from some other box,
+      // but I shall not react. Reactions to changes in the mesh are
+      // detected via status messages
+      return;
+    }
+
+    // if this is a change master box request
+    if (root.containsKey("masterbox")) {
+      // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
+      ControlerBoxes[myIndexInCBArray].updateMasterBoxName(root["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+      // send a message to the IF telling it that I have taken the change into account
+      root["action"].set("changedBx");
+      myMeshViews __myMeshViews;
+      __myMeshViews.changedBoxConfirmation(root);
+      // __myMeshViews.changedMasterBoxConfirmation(root["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+      // mark the change as signaled
+      ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+      return;
+    }
+
+    // if this is a change default state request
+    if (root.containsKey("boxDefstate")) {
+      // if (MY_DG_MESH) {
+      //   // Serial.printf("myMeshController::myMeshController: ----------------------------------------------------------\n");
+      //   Serial.printf("myMeshController::myMeshController: senderNodeId = %u\n", senderNodeId);
+      //   Serial.printf("myMeshController::myMeshController: ControlerBoxes[0].nodeId = %u\n", ControlerBoxes[0].nodeId);
+      //   Serial.printf("myMeshController::myMeshController: (senderNodeId == ControlerBoxes[0].nodeId) = %i\n", (senderNodeId == ControlerBoxes[0].nodeId));
+      // }
+      // if the message comes from the interface,
+      // this is a relayed message coming from the web
+      if (senderNodeId == ControlerBoxes[0].nodeId) {
+        // if (MY_DG_MESH) {
+        //   Serial.printf("myMeshController::myMeshController: will change my default state to %i\n", root["boxDefstate"].as<int>());
+        // }
+        ControlerBoxes[myIndexInCBArray].sBoxDefaultState = root["boxDefstate"].as<int8_t>();
+
+        // send a message to the IF telling it that I have taken the change into account
+        bool _bHasChangedAction = root["action"].set("changedBx");
+        // if (MY_DG_MESH) {
+        //   Serial.printf("myMeshController::myMeshController: root[\"action\"] = %s\n", root["action"].as<const char*>());
+        //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
+        // }
+
+        myMeshViews __myMeshViews;
+        __myMeshViews.changedBoxConfirmation(root);
+        // if (MY_DG_MESH) {
+        //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
+        // }
+
+        // mark the change as signaled
+        ControlerBoxes[myIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
+      } // else it might be a message coming from some other box,
+      // but I shall not react. Reactions to changes in the mesh are
+      // detected via status messages
+      return;
+    }
 
     return;
   }
+
+
+  // change masterBox request (received by the laser boxes only)
+  // const char* _m = "m";
+  // if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
+  //   byte __bMasterBoxName = root["ms"];
+  //   __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
+  //
+  //   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
+  //   ControlerBoxes[myIndexInCBArray].updateMasterBoxName(__bMasterBoxName);
+  //   // send a message to the IF telling it that I have taken the change into account
+  //   myMeshViews __myMeshViews;
+  //   __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
+  //   // mark the change has signaled
+  //   ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+  //
+  //   return;
+  // }
 
 
   // status message
@@ -149,60 +234,60 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   // Receiving a "change this boxState" request
   // It may only be received on laser boxes
   // This is a signal sent from the web and relayed by the mesh
-  const char* _c = "c";
-  if (strcmp(_action, _c) == 0) {
-    // action 'c': this message orders to change the boxTargetState
-    byte __bSenderNodeName = root["NNa"];
-    if (MY_DG_MESH) {
-      Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
-      Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
-      Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
-    }
-
-    // if the message comes from the interface,
-    // this is a relayed message coming from the web
-    if ((__bSenderNodeName == bInterfaceNodeName)) {
-      if (MY_DG_MESH) {
-        Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["receiverTargetState"].as<int>());
-      }
-      ControlerBox::valFromWeb = root["receiverTargetState"];
-    } // else it might be a message coming from some other box,
-    // but I shall not react. Reactions to changes in the mesh are
-    // detected via status messages
-    return;
-  }
+  // const char* _c = "c";
+  // if (strcmp(_action, _c) == 0) {
+  //   // action 'c': this message orders to change the boxTargetState
+  //   byte __bSenderNodeName = root["NNa"];
+  //   if (MY_DG_MESH) {
+  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
+  //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
+  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
+  //   }
+  //
+  //   // if the message comes from the interface,
+  //   // this is a relayed message coming from the web
+  //   if ((__bSenderNodeName == bInterfaceNodeName)) {
+  //     if (MY_DG_MESH) {
+  //       Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["receiverTargetState"].as<int>());
+  //     }
+  //     ControlerBox::valFromWeb = root["receiverTargetState"];
+  //   } // else it might be a message coming from some other box,
+  //   // but I shall not react. Reactions to changes in the mesh are
+  //   // detected via status messages
+  //   return;
+  // }
 
 
 
   // change this defaultBoxState request
   // This is a signal sent from the web and relayed by the mesh
-  const char* _d = "d";
-  if (strcmp(_action, _d) == 0) {
-    // action 'c': this message orders to change the boxDefaultState
-    byte __bSenderNodeName = (byte)root["NNa"].as<int>();
-    if (MY_DG_MESH) {
-      Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
-      Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
-      Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
-    }
-
-    // if the message comes from the interface,
-    // this is a relayed message coming from the web
-    if ((__bSenderNodeName == bInterfaceNodeName)) {
-      if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", root["receiverDefaultState"].as<int>());}
-      byte __bSenderIndexInCB = root["receiverBoxName"];
-      __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
-      ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
-      // send a message to the IF telling it that I have taken the change into account
-      myMeshViews __myMeshViews;
-      __myMeshViews.changedBoxDefaultStateConfirmation(ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState);
-      // mark the change has signaled
-      ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
-    } // else it might be a message coming from some other box,
-    // but I shall not react. Reactions to changes in the mesh are
-    // detected via status messages
-    return;
-  }
+  // const char* _d = "d";
+  // if (strcmp(_action, _d) == 0) {
+  //   // action 'c': this message orders to change the boxDefaultState
+  //   byte __bSenderNodeName = (byte)root["NNa"].as<int>();
+  //   if (MY_DG_MESH) {
+  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
+  //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
+  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
+  //   }
+  //
+  //   // if the message comes from the interface,
+  //   // this is a relayed message coming from the web
+  //   if ((__bSenderNodeName == bInterfaceNodeName)) {
+  //     if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", root["receiverDefaultState"].as<int>());}
+  //     byte __bSenderIndexInCB = root["receiverBoxName"];
+  //     __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
+  //     ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
+  //     // send a message to the IF telling it that I have taken the change into account
+  //     myMeshViews __myMeshViews;
+  //     __myMeshViews.changedBoxDefaultStateConfirmation(ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState);
+  //     // mark the change has signaled
+  //     ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
+  //   } // else it might be a message coming from some other box,
+  //   // but I shall not react. Reactions to changes in the mesh are
+  //   // detected via status messages
+  //   return;
+  // }
 
 
   // defaultBoxState change confirmation
