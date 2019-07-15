@@ -109,7 +109,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box has an unsignaled change of default state
     if (ControlerBoxes[_sBoxIndex].sBoxDefaultStateChangeHasBeenSignaled == false) {
       Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. Default state of box [%i] has changed\n", (_sBoxIndex + bControllerBoxPrefix));
-      _messageType = 9;
+      _messageType = 10;
       _obj["boxDefstate"] = ControlerBoxes[_sBoxIndex].sBoxDefaultState;
       _obj["ms"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
       ControlerBoxes[_sBoxIndex].sBoxDefaultStateChangeHasBeenSignaled = true;
@@ -191,7 +191,7 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
     // (6): a new box has joined the mesh
     // (7): a box has been deleted from the mesh
     // (8): master for a given is being processed, then has been changed
-    else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6 || _iMessageType == 7 || _iMessageType == 8 || _iMessageType == 9) {
+    else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6 || _iMessageType == 7 || _iMessageType == 8 || _iMessageType == 9 || _iMessageType == 10) {
       doc["message"] = _subdoc;
     }
 

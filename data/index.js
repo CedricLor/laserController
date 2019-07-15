@@ -66,6 +66,9 @@ function connect() {
     if (_data.type === 9) { // a box has changed master
       updateClickedStateButton(_data.message.lb, "boxDefstate", _data.message.boxDefstate)
     }
+    if (_data.type === 10) { // the default state of a given box has changed
+      updateDefaultStateButton(_data);
+    }
   };
 
   // onclose, just inform the user that an attempt to reconnect will be made soon
@@ -200,6 +203,22 @@ function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNum
 
 
 
+function updateDefaultStateButton(data) {
+  console.log("updateDefaultStateButton: default state for laser box [" + data.lb + "] has changed.");
+  // select the correct row in the map
+  var _boxRow = boxesRows.get(data.message.lb);
+
+  // 1. remove classes on all the others default stateButtons of this boxRow
+  // 2. add button_active_state class to the relevant default stateButton
+  // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
+  _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.message.boxDefstate);
+
+  console.log("updateBoxRow: ending after updating laser box [" + data.message.lb + "]");
+}
+
+
+
+
 function updateBoxRow(data) {
   console.log("updateBoxRow: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
   // select the correct row in the map
@@ -217,25 +236,42 @@ function updateBoxRow(data) {
 
 function updateCurrentStateButtons(data, _boxRow) {
   console.log("updateCurrentStateButtons starting.");
-  console.log("updateCurrentStateButtons: About to set the activeState button.");
+  console.log("updateCurrentStateButtons: About to set the activeState and defaultState buttons.");
 
-  // remove classes on all the others stateButtons of this boxRow
-  // _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector)
-  _removeClassesOnButtonsGroupForRow(_boxRow, "button[data-boxstate]");
+  // 1. remove classes on all the others stateButtons of this boxRow
+  // 2. add button_active_state class to the relevant stateButton
+  // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
+  _boxRow = updateCurrentStateButton(_boxRow, "boxstate", data.boxState);
 
-  // add button_active_state class to the relevant stateButton
-  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _dupRow = _setCurrentStateButton(_boxRow, "boxstate", data.boxState);
-
-  // remove classes on all the others default stateButtons of this boxRow
-  // _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector)
-  _removeClassesOnButtonsGroupForRow(_boxRow, "button[data-boxDefstate]");
-
-  // add button_active_state class to the relevant default stateButton
-  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
+  // 1. remove classes on all the others default stateButtons of this boxRow
+  // 2. add button_active_state class to the relevant default stateButton
+  // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
+  _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.boxDefstate);
 
   console.log("updateCurrentStateButtons: ending after updating laser box [" + data.lb + "]");
+}
+
+
+
+
+
+function updateCurrentStateButton(_boxRow, datasetKey, datasetValue) {
+  // 1. remove classes on all the others stateButtons of this boxRow
+  // 2. add button_active_state class to the relevant stateButton
+  console.log("updateCurrentStateButton starting.");
+  console.log("updateCurrentStateButton: datasetKey = " + datasetKey + "; datasetValue = " + datasetValue + "; _boxRow = ");console.log(_boxRow);
+
+  // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
+  // _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector)
+  _removeClassesOnButtonsGroupForRow(_boxRow, "button[data-" + datasetKey + "]");
+
+  // add button_active_state class to the relevant active / default stateButton
+  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+  _boxRow = _setCurrentStateButton(_boxRow, datasetKey, datasetValue);
+
+  console.log("updateCurrentStateButton: ending.");
+
+  return _boxRow;
 }
 
 
