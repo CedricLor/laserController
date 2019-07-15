@@ -30,22 +30,29 @@
 class myMeshViews
 {
   public:
+    static Task tSendBoxStateToNewBox;
+
     myMeshViews();
     // Views
+    void statusMsg(uint32_t destNodeId=0);
+
+    void WStoMeshView(const int8_t __i8RequestedChange, const char& _cChangeKey, const int8_t __i8BoxIndexInCB);
+
+    void changeBoxTargetState(const int8_t __i8BoxTargetState, const int8_t _i8BoxIndexInCB);
+
+    void changeMasterBox(const int8_t _i8MasterBox, const int8_t _i8BoxIndexInCB);
+    void changedMasterBoxConfirmation(const int8_t _i8MasterBox);
+
+    void changeBoxDefaultState(const int8_t _sBoxDefaultState, const int8_t _i8BoxIndexInCB);
+    void changedBoxDefaultStateConfirmation(const int8_t _sBoxDefaultState);
+
+
     // static void manualSwitchMsg(const short targetOnOffState);
     // static void inclusionIRMsg(const short targetIrState);
     // static void blinkingIntervalMsg(const unsigned long targetBlinkingInterval);
-    void changedMasterBoxConfirmation(const byte newMasterNodeName);
-    void changeMasterBoxMsg(const int newMasterNodeName, const int iBoxName);
-    void statusMsg(uint32_t destNodeId=0);
-    void changeBoxTargetState(const short _sBoxTargetState, const short _sBoxName);
-    void changeBoxDefaultState(const short _sBoxDefaultState, const short _sBoxName);
-    void changedBoxDefaultStateConfirmation(const short _sBoxDefaultState);
     // static void pinPairingMsg(const short sTargetPairingType);
     // static void dataRequestMsg();
     // static void dataRequestResponse();
-
-    static Task tSendBoxStateToNewBox;
 
   private:
     static void _odtcbSendBoxStateToNewBox();
