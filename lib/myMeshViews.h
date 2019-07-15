@@ -38,12 +38,11 @@ class myMeshViews
 
     void relayWSChangeRequest(const int8_t __i8RequestedChange, const char& _cChangeKey, const int8_t __i8BoxIndexInCB);
 
-    void changeBoxTargetState(const int8_t __i8BoxTargetState, const int8_t _i8BoxIndexInCB);
+    // void changeBoxTargetState(const int8_t __i8BoxTargetState, const int8_t _i8BoxIndexInCB);
+    // void changeMasterBox(const int8_t _i8MasterBox, const int8_t _i8BoxIndexInCB);
+    // void changeBoxDefaultState(const int8_t _sBoxDefaultState, const int8_t _i8BoxIndexInCB);
 
-    void changeMasterBox(const int8_t _i8MasterBox, const int8_t _i8BoxIndexInCB);
     void changedMasterBoxConfirmation(const int8_t _i8MasterBox);
-
-    void changeBoxDefaultState(const int8_t _sBoxDefaultState, const int8_t _i8BoxIndexInCB);
     void changedBoxDefaultStateConfirmation(const int8_t _sBoxDefaultState);
 
 
