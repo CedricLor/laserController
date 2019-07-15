@@ -62,23 +62,25 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   }
 
   // read the type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
-  const int8_t _i8MessageType = doc["type"]; // correspondings to root[action] in meshController
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_decodeWSMessage(): The message _i8MessageType is %i \n", _i8MessageType); }
+  const int8_t __i8MessageType = doc["type"]; // correspondings to root[action] in meshController
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_decodeWSMessage(): The message __i8MessageType is %i \n", __i8MessageType); }
 
 
   // choose the type of reaction depending on the message type
 
   // if type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
-  if (_i8MessageType == 0) {           // 0 for hand shake message
+  if (__i8MessageType == 0) {           // 0 for hand shake message
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_decodeWSMessage(): _i8MessageType = %i - new WS: going to check whether the DOM needs to be updated. \n", _i8MessageType);
+      Serial.printf("myWSReceiver::_decodeWSMessage(): __i8MessageType = %i - new WS: going to check whether the DOM needs to be updated. \n", __i8MessageType);
     }
-    _onHandshakeCheckWhetherDOMNeedsUpdate(_i8MessageType, doc);
+    _onHandshakeCheckWhetherDOMNeedsUpdate(__i8MessageType, doc);
+
+    return;
   }
 
-  if (_i8MessageType == 3) {           // 3 for confirmation that change IP adress has been received
+  if (__i8MessageType == 3) {           // 3 for confirmation that change IP adress has been received
     if (MY_DG_WS) {
-      Serial.println("myWSReceiver::_decodeWSMessage. Ending on _i8MessageType == 3 (received confirmation that new station IP has been received).");
+      Serial.println("myWSReceiver::_decodeWSMessage. Ending on __i8MessageType == 3 (received confirmation that new station IP has been received).");
     }
     // disable the task sending the station IP
     myWSSender::tSendWSDataIfChangeStationIp.disable();
@@ -86,32 +88,28 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     return;
   }
 
-  if (_i8MessageType == 4) {           // 4 for change boxState
+  if (__i8MessageType == 4) {           // 4 for change boxState
     // send a mesh request to the relevant laser box
 
-    _requestBoxStateChange(doc);
-
-    return;
-
-  }
-
-  if (_i8MessageType == 8) {             // 8 for change master
-    // send a mesh request to the relevant laser box
-
-    _requestMasterChange(_i8MessageType, doc);
+    _requestActiveStateChange(doc);
 
     return;
   }
 
-  if (_i8MessageType == 9) {             // 9 for change default state
+  if (__i8MessageType == 8) {             // 8 for change master
+    // send a mesh request to the relevant laser box
+
+    _requestMasterChange(__i8MessageType, doc);
+
+    return;
+  }
+
+  if (__i8MessageType == 9) {             // 9 for change default state
     // send a mesh request to the relevant laser box
 
     _requestDefaultStateChange(doc);
 
     return;
-  }
-  if (MY_DG_WS) {
-    Serial.println("myWSReceiver::_decodeWSMessage. Ending.");
   }
 }
 
@@ -124,17 +122,15 @@ void myWSReceiver::_requestMasterChange(const int8_t _i8MessageType, JsonDocumen
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestMasterChange(): _i8MessageType = %i - starting \n", _i8MessageType);
   }
-  // send a mesh request to the other box
 
-  // convert the box name to a char array box name
-  int __iNodeName = doc["lb"];
+  const int8_t __i8NodeName = doc["lb"];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): (from JSON + 200) __iNodeName = %i \n", (__iNodeName + bControllerBoxPrefix));
+    Serial.printf("myWSReceiver::_requestMasterChange(): (from JSON + 200) __i8NodeName = %i \n", (__i8NodeName + bControllerBoxPrefix));
   }
   // get the masterbox number
-  int _iMasterBox = doc["masterbox"];
+  const int8_t __i8MasterBox = doc["masterbox"];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", _iMasterBox);
+    Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", __i8MasterBox);
   }
 
   // instantiate a mesh view and send a changeMasterBoxMsg
@@ -142,13 +138,13 @@ void myWSReceiver::_requestMasterChange(const int8_t _i8MessageType, JsonDocumen
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestMasterChange(): about to call __myMeshViews.changeMasterBox().\n");
   }
-  __myMeshViews.changeMasterBoxMsg(_iMasterBox, __iNodeName);
+  __myMeshViews.changeMasterBoxMsg(__i8MasterBox, __i8NodeName);
 
-  // send a response telling the instruction is in course of being executed
+  // send a response to the browser telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  _sub_obj["lb"] = __iNodeName;
-  _sub_obj["ms"] = _iMasterBox;
+  _sub_obj["lb"] = __i8NodeName;
+  _sub_obj["ms"] = __i8MasterBox;
   _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
 
   // send an update to the browser
@@ -160,7 +156,7 @@ void myWSReceiver::_requestMasterChange(const int8_t _i8MessageType, JsonDocumen
 
 
 
-void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
+void myWSReceiver::_requestActiveStateChange(JsonDocument& doc) {
   const int8_t __i8NodeName = doc["lb"];
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestActiveStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
@@ -172,7 +168,7 @@ void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
+    Serial.printf("myWSReceiver::_requestActiveStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
   }
   __myMeshViews.changeBoxTargetState(__i8BoxState, (short)(__i8NodeName + bControllerBoxPrefix));
 
