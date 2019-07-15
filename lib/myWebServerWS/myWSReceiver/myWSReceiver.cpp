@@ -298,9 +298,9 @@ void myWSReceiver::_requestBoxChange(JsonDocument& doc, const char& _cChangeKey,
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.WStoMeshView().\n");
+    Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.relayWSChangeRequest().\n");
   }
-  __myMeshViews.WStoMeshView(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
+  __myMeshViews.relayWSChangeRequest(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;

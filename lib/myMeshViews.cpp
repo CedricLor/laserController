@@ -71,9 +71,9 @@ myMeshViews::myMeshViews()
 
 
 
-void myMeshViews::WStoMeshView(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
+void myMeshViews::relayWSChangeRequest(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
     if (MY_DG_MESH) {
-      Serial.printf("myMeshViews::WStoMeshView(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);
+      Serial.printf("myMeshViews::relayWSChangeRequest(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);
     }
     // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
     const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
@@ -90,7 +90,7 @@ void myMeshViews::WStoMeshView(const int8_t _i8RequestedChange, const char& _cCh
     _sendMsg(msg, _destNodeId);
 
     if (MY_DG_MESH) {
-      Serial.println("myMeshViews::WStoMeshView(): Ending.");
+      Serial.println("myMeshViews::relayWSChangeRequest(): Ending.");
     }
 }
 
