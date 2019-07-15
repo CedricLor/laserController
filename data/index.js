@@ -204,7 +204,7 @@ function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNum
 
 
 function updateDefaultStateButton(data) {
-  console.log("updateDefaultStateButton: default state for laser box [" + data.lb + "] has changed.");
+  console.log("updateDefaultStateButton: default state for laser box [" + data.message.lb + "] has changed.");
   // select the correct row in the map
   var _boxRow = boxesRows.get(data.message.lb);
 
@@ -213,7 +213,7 @@ function updateDefaultStateButton(data) {
   // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
   _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.message.boxDefstate);
 
-  console.log("updateBoxRow: ending after updating laser box [" + data.message.lb + "]");
+  console.log("updateDefaultStateButton: ending after updating laser box [" + data.message.lb + "]");
 }
 
 
