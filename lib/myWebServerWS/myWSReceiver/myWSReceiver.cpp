@@ -62,7 +62,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   }
 
   // read the type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
-  const int8_t _i8MessageType = doc["type"].as<int8_t>(); // correspondings to root[action] in meshController
+  const int8_t _i8MessageType = doc["type"]; // correspondings to root[action] in meshController
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_decodeWSMessage(): The message _i8MessageType is %i \n", _i8MessageType); }
 
 
@@ -161,27 +161,26 @@ void myWSReceiver::_requestMasterChange(const int8_t _i8MessageType, JsonDocumen
 
 
 void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
-  // convert the box name to a char array box name
-  const short __sNodeName = doc["lb"];
+  const int8_t __i8NodeName = doc["lb"];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxStateChange(): (from JSON) __sNodeName = %i \n", __sNodeName);
+    Serial.printf("myWSReceiver::_requestActiveStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
   }
-  const short _sBoxState = doc["boxState"];
+  const int8_t __i8BoxState = doc["boxState"];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxStateChange(): _boxState = %i \n", _sBoxState);
+    Serial.printf("myWSReceiver::_requestActiveStateChange(): _boxState = %i \n", __i8BoxState);
   }
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
   }
-  __myMeshViews.changeBoxTargetState(_sBoxState, (short)(__sNodeName + bControllerBoxPrefix));
+  __myMeshViews.changeBoxTargetState(__i8BoxState, (short)(__i8NodeName + bControllerBoxPrefix));
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  _sub_obj["lb"] = __sNodeName;
-  _sub_obj["boxState"] = _sBoxState;
+  _sub_obj["lb"] = __i8NodeName;
+  _sub_obj["boxState"] = __i8BoxState;
 
   myWSSender _myWSSender;
   _myWSSender.prepareWSData(4, _sub_obj);
@@ -191,27 +190,26 @@ void myWSReceiver::_requestBoxStateChange(JsonDocument& doc) {
 
 
 void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
-  // convert the box name to a char array box name
-  const short __sNodeName = doc["lb"];
+  const int8_t __i8NodeName = doc["lb"];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestDefaultStateChange(): (from JSON) __sNodeName = %i \n", __sNodeName);
+    Serial.printf("myWSReceiver::_requestDefaultStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
   }
-  const short _sBoxDefaultState = doc["boxDefstate"];
+  const int8_t __i8BoxDefaultState = doc["boxDefstate"];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestDefaultStateChange(): _sBoxDefaultState = %i \n", _sBoxDefaultState);
+    Serial.printf("myWSReceiver::_requestDefaultStateChange(): __i8BoxDefaultState = %i \n", __i8BoxDefaultState);
   }
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestDefaultStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
   }
-  __myMeshViews.changeBoxDefaultState(_sBoxDefaultState, (short)(__sNodeName + bControllerBoxPrefix));
+  __myMeshViews.changeBoxDefaultState(__i8BoxDefaultState, (short)(__i8NodeName + bControllerBoxPrefix));
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  _sub_obj["lb"] = __sNodeName;
-  _sub_obj["boxDefstate"] = _sBoxDefaultState;
+  _sub_obj["lb"] = __i8NodeName;
+  _sub_obj["boxDefstate"] = __i8BoxDefaultState;
 
   myWSSender _myWSSender;
   _myWSSender.prepareWSData(9, _sub_obj);
