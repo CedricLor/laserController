@@ -185,31 +185,6 @@ void myMeshViews::changeBoxDefaultState(const int8_t _i8BoxDefaultState, const i
 
 
 
-// This function is called exclusively from the laser controllers -- not the interface
-void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
-  if (MY_DG_MESH) {
-    Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. _i8MasterBox = %i\n", _i8MasterBox);
-  }
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
-  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<capacity> doc;
-  JsonObject msg = doc.to<JsonObject>();
-
-  // load the JSON document with values
-  msg["ms"] = _i8MasterBox;
-  msg["action"] = "mc";
-
-  _sendMsg(msg, ControlerBoxes[0].nodeId);
-
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
-  }
-}
-
-
-
-
-
 void myMeshViews::statusMsg(uint32_t destNodeId) {
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::statusMsg(): Starting.");
@@ -239,6 +214,31 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   }
 }
 
+
+
+
+
+
+// This function is called exclusively from the laser controllers -- not the interface
+void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. _i8MasterBox = %i\n", _i8MasterBox);
+  }
+  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
+
+  // load the JSON document with values
+  msg["ms"] = _i8MasterBox;
+  msg["action"] = "mc";
+
+  _sendMsg(msg, ControlerBoxes[0].nodeId);
+
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+  }
+}
 
 
 
