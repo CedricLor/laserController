@@ -86,7 +86,9 @@ myMeshViews::myMeshViews()
 
 // This function is called exclusively from the laser controllers -- not the interface
 void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
-  Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. newMasterNodeName = %i\n", newMasterNodeName);
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. newMasterNodeName = %i\n", newMasterNodeName);
+  }
   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -98,12 +100,16 @@ void myMeshViews::changedMasterBoxConfirmation(const byte newMasterNodeName) {
 
   _sendMsg(msg, ControlerBoxes[0].nodeId);
 
-  Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+  }
 }
 
 // This function is called exclusively from the webserver -- the interface
 void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const int iBoxName) {
-  Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, iBoxName (dest index nb) = %i\n", newMasterNodeName, iBoxName);
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshViews::changeMasterBoxMsg(): Starting. newMasterNodeName = %i, iBoxName (dest index nb) = %i\n", newMasterNodeName, iBoxName);
+  }
   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<capacity> doc;
@@ -118,11 +124,15 @@ void myMeshViews::changeMasterBoxMsg(const int newMasterNodeName, const int iBox
 
   _sendMsg(msg, _destNodeId);
 
-  Serial.println("myMeshViews::changeMasterBoxMsg(): Ending.");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changeMasterBoxMsg(): Ending.");
+  }
 }
 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
-  Serial.println("myMeshViews::statusMsg(): Starting.");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::statusMsg(): Starting.");
+  }
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
@@ -143,13 +153,15 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // => set my own boxActiveStateHasBeenSignaled to true
   ControlerBoxes[myIndexInCBArray].boxActiveStateHasBeenSignaled = true;
 
-  Serial.println("myMeshViews::statusMsg(): Ending.");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::statusMsg(): Ending.");
+  }
 }
 
 void myMeshViews::changeBoxTargetState(const short _sBoxTargetState, const short _sBoxName /*const char *boxTargetState, const char *boxName*/) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"NNa":"200";"APIP":"...";"StIP":"..."}
-  if (MY_DEBUG) {
+  if (MY_DG_MESH) {
     Serial.printf("myMeshViews::changeBoxTargetState(): _sBoxTargetState = %i, _sBoxName = %i\n", _sBoxTargetState, _sBoxName);
   }
 
@@ -162,12 +174,16 @@ void myMeshViews::changeBoxTargetState(const short _sBoxTargetState, const short
   msg["action"] = "c";
 
   _sendMsg(msg);
+
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changeBoxTargetState(): Ending.");
+  }
 }
 
 void myMeshViews::changeBoxDefaultState(const short _sBoxDefaultState, const short _sBoxName /*const char *boxTargetState, const char *boxName*/) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"receiverDefaultState":3;"action":"c";"receiverBoxName":201;"NNa":"200";"APIP":"...";"StIP":"..."}
-  if (MY_DEBUG) {
+  if (MY_DG_MESH) {
     Serial.printf("myMeshViews::changeBoxDefaultState(): _sBoxDefaultState = %i, _sBoxName = %i\n", _sBoxDefaultState, _sBoxName);
   }
 
@@ -180,13 +196,16 @@ void myMeshViews::changeBoxDefaultState(const short _sBoxDefaultState, const sho
   msg["action"] = "d";
 
   _sendMsg(msg);
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changeBoxDefaultState(): Ending.");
+  }
 }
 
 // This function is called exclusively from the laser controllers -- not the interface
 void myMeshViews::changedBoxDefaultStateConfirmation(const short _sBoxDefaultState) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"dc";"ds":3}
-  if (MY_DEBUG) {
+  if (MY_DG_MESH) {
     Serial.printf("myMeshViews::changeBoxDefaultStateConfirmation(): _sBoxDefaultState = %i\n", _sBoxDefaultState);
   }
 
@@ -198,6 +217,9 @@ void myMeshViews::changedBoxDefaultStateConfirmation(const short _sBoxDefaultSta
   msg["action"] = "dc";
 
   _sendMsg(msg);
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedBoxDefaultStateConfirmation(): Ending.");
+  }
 }
 
 // void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
@@ -231,8 +253,9 @@ JsonObject myMeshViews::_createJsonobject() {
 }
 
 void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
-  Serial.println("myMeshViews::_sendMsg(): Starting.");
-
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): Starting.");
+  }
   // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
   msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
   // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
@@ -251,15 +274,22 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   int size_buff = 254;
   char output[size_buff];
 
-  Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
+  }
   serializeJson(msg, output, size_buff);
-  Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
-
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
+  }
   // JSON serialization conversion for painlessMesh
-  Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
+  }
   String str;
   str = output;
-  Serial.println("myMeshViews::_sendMsg(): About to send message as String");
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): About to send message as String");
+  }
 
   // diffusion
   if (destNodeId) {
@@ -267,5 +297,7 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   } else {
     laserControllerMesh.sendBroadcast(str);
   }
-  Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
+  if (MY_DG_MESH) {
+    Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
+  }
 }

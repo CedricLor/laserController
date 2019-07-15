@@ -32,7 +32,7 @@ Created by Cedric Lor, January 22, 2019.
 
 myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
 {
-  if (MY_DEBUG) {
+  if (MY_DG_MESH) {
     Serial.print("myMeshController::myMeshController: Starting\n");
   }
 
@@ -40,7 +40,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   const char* _action = root["action"];
 
   // if debug, serial print the action field
-  if (MY_DEBUG) {
+  if (MY_DG_MESH) {
     Serial.printf("myMeshController::myMeshController: _action = %s\n", _action);
   }
 
@@ -69,12 +69,12 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   if (strcmp(_action, _mc) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
 
     byte __bMasterBoxName = root["ms"];
-    if (MY_DEBUG) {
+    if (MY_DG_MESH) {
       Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName = %i\n", _action, __bMasterBoxName);
     }
     // reduce it from [e.g. 205] to [e.g. 5] send less data via the web
     __bMasterBoxName = __bMasterBoxName - bControllerBoxPrefix;
-    if (MY_DEBUG) {
+    if (MY_DG_MESH) {
       Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName - bControllerBoxPrefix = %i\n", _action, (__bMasterBoxName - bControllerBoxPrefix));
     }
 
@@ -82,14 +82,14 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // root["NNa"] is a char -> cast it as int
     // bControllerBoxPrefix is a byte -> cast it as int
     short int __sSlaveBoxIndexNumber = (int)root["NNa"] - (int)bControllerBoxPrefix;
-    // if (MY_DEBUG) {
+    // if (MY_DG_MESH) {
     //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
     // }
 
     // set the new master box number in the relevant ControlerBox (on the interface)
     // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
     ControlerBoxes[__sSlaveBoxIndexNumber].updateMasterBoxName(__bMasterBoxName);
-    if (MY_DEBUG) {
+    if (MY_DG_MESH) {
       Serial.printf("myMeshController::myMeshController: _action = %s, ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", _action, __sSlaveBoxIndexNumber, ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxName);
       Serial.printf("myMeshController::myMeshController: ending on _action = %s\n", _action);
     }
@@ -125,13 +125,13 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // if the sender box is not the interface
 
     byte __bSenderNodeName = root["NNa"];
-    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+    if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
 
     // Update the sender box properties
 
     // calculate the box index of the sending box
     byte __boxIndex = __bSenderNodeName - bControllerBoxPrefix;
-    if (MY_DEBUG) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
+    if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
 
     // if the sender is a newly connected box
     if (ControlerBoxes[__boxIndex].nodeId == 0) { //
@@ -153,7 +153,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   if (strcmp(_action, _c) == 0) {
     // action 'c': this message orders to change the boxTargetState
     byte __bSenderNodeName = root["NNa"];
-    if (MY_DEBUG) {
+    if (MY_DG_MESH) {
       Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
       Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
       Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
@@ -162,7 +162,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // if the message comes from the interface,
     // this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
-      if (MY_DEBUG) {
+      if (MY_DG_MESH) {
         Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["receiverTargetState"].as<int>());
       }
       ControlerBox::valFromWeb = root["receiverTargetState"];
@@ -180,7 +180,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
   if (strcmp(_action, _d) == 0) {
     // action 'c': this message orders to change the boxDefaultState
     byte __bSenderNodeName = (byte)root["NNa"].as<int>();
-    if (MY_DEBUG) {
+    if (MY_DG_MESH) {
       Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
       Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
       Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
@@ -189,7 +189,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // if the message comes from the interface,
     // this is a relayed message coming from the web
     if ((__bSenderNodeName == bInterfaceNodeName)) {
-      if (MY_DEBUG) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", root["receiverDefaultState"].as<int>());}
+      if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", root["receiverDefaultState"].as<int>());}
       byte __bSenderIndexInCB = root["receiverBoxName"];
       __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
       ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
@@ -212,7 +212,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonDocument& root)
     // action 'dc': this message confirms a change the boxDefaultState for a given box
     short int __sSenderIndexInCB  = root["NNa"].as<short>() - (int)bControllerBoxPrefix;
     short int __sDefaultState = root["ds"].as<short>();
-    if (MY_DEBUG) {
+    if (MY_DG_MESH) {
       Serial.print("myMeshController::myMeshController: __sSenderIndexInCB = ");Serial.println(__sSenderIndexInCB);
       Serial.print("myMeshController::myMeshController: __sDefaultState = ");Serial.println(__sDefaultState);
     }
