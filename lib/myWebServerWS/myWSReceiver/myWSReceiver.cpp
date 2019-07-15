@@ -121,26 +121,27 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8Messag
   if (_obj.size() == 0) {
     // there are no boxRows in the DOM
     if (ControlerBox::connectedBoxesCount == 1) {
-      // there are no boxes connected to the mesh, just return
-      if (MY_DG_WS) {
-        Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _i8MessageType, (_obj.size() == 0));
-        Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _i8MessageType, (ControlerBox::connectedBoxesCount == 1));
-        Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _i8MessageType);
-      }
+      // there are no boxes connected to the mesh (and no boxes in the DOM), just return
+      // if (MY_DG_WS) {
+      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageType = %i, JSON Object _obj.size: %i. There are currently no boxRow in the DOM.\n", _i8MessageType, (_obj.size() == 0));
+      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _i8MessageType, (ControlerBox::connectedBoxesCount == 1));
+      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending on message type [%i], because there are no boxRow, nor connectedBoxes.\n", _i8MessageType);
+      // }
       return;
     }
     else // re. if (ControlerBox::connectedBoxesCount == 1)
-    // there are boxes connected to the mesh
+    // there are boxes connected to the mesh (and no boxes in the DOM), look for the missing boxes
     {
       _lookForDOMMissingRows(_i8MessageType, _obj);
       return;
     }
   }
+
   else // re. (_obj.size() != 0)
   // there are boxRows in DOM
   {
     if (ControlerBox::connectedBoxesCount == 1) {
-      // there are no connected boxes:
+      // there are no connected boxes (and boxes in the DOM):
       // -> send instruction to delete all the boxRows from the DOM
       _obj["lb"] = "a"; // "a" means delete all the boxes
       myWSSender _myWSSender;
@@ -148,7 +149,7 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8Messag
       return;
     }
     else // re. if (ControlerBox::connectedBoxesCount == 1)
-    // there are boxes connected to the mesh:
+    // there are boxes connected to the mesh (and boxes in the DOM):
     // -> check consistency between the DOM and ControlerBoxes[]
     {
       _checkConsistancyDOMDB(_i8MessageType, _obj);
@@ -185,7 +186,7 @@ void myWSReceiver::_checkConsistancyDOMDB(const int8_t _i8MessageType, JsonObjec
   } // end for (JsonPair _p : _obj)
 
   // MISSING BOXES CHECKER
-  // look for boxes missing in the DOM and ask for an update
+  // look for missing boxes in the DOM and ask for an update
   _lookForDOMMissingRows(_i8MessageType, _obj);
 
   if (MY_DG_WS) {

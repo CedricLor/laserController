@@ -279,6 +279,8 @@ void myWSSender::_sendWSData(JsonDocument& doc) {
             if (MY_DG_WS) { Serial.println("- myWebServerWS::_sendWSData. Message sent"); }
           }  // end if (myWebServerWS::ws_client_id && ..
           else {
+            // the ws_client_id you have does not match existing client
+            // send the info to all the clients 
             if (MY_DG_WS) {
               Serial.print("- myWebServerWS::_sendWSData: AsyncWebSocket::count() = ");Serial.println(_client_count);
               Serial.print("- myWebServerWS::_sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
