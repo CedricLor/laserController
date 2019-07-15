@@ -56,6 +56,7 @@ class myWSReceiver
     void _checkBoxStateConsistancy(const int8_t _i8MessageType, JsonPair& _p);
     void _lookForDOMMissingRows(const int8_t _i8MessageType, JsonObject& _obj);
 
+    void _requestBoxChange(JsonDocument& doc, const char& _cChangeKey, void (*_meshViewCallback)(int8_t, int8_t), const int8_t _i8WebMessagCode);
     void _requestActiveStateChange( JsonDocument& doc);
     void _requestMasterChange(const int8_t _i8MessageType, JsonDocument& doc);
     void _requestDefaultStateChange(JsonDocument& doc);

@@ -279,6 +279,39 @@ void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageType, JsonObjec
 
 
 
+// void myWSReceiver::_requestBoxChange(JsonDocument& doc, const char& _cChangeKey, void (*_meshViewCallback)(int8_t, int8_t), const int8_t _i8WebMessagCode) {
+//   const int8_t __i8NodeName = doc["lb"];
+//   if (MY_DG_WS) {
+//     Serial.printf("myWSReceiver::_requestBoxChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
+//   }
+//   const int8_t __i8RequestedChange = doc[_cChangeKey];
+//   if (MY_DG_WS) {
+//     Serial.printf("myWSReceiver::_requestActiveStateChange(): %c = %i \n", _cChangeKey, __i8RequestedChange);
+//   }
+//   // instantiate a mesh view
+//   myMeshViews __myMeshViews;
+//   if (MY_DG_WS) {
+//     Serial.printf("myWSReceiver::_requestActiveStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
+//   }
+//   // __myMeshViews.changeBoxTargetState(__i8BoxState, (short)(__i8NodeName + bControllerBoxPrefix));
+//   // __myMeshViews.changeMasterBoxMsg(__i8MasterBox, __i8NodeName);
+//   // __myMeshViews.changeBoxDefaultState(__i8BoxDefaultState, (short)(__i8NodeName + bControllerBoxPrefix));
+//   __myMeshViews._meshViewCallback(__i8RequestedChange, (short)(__i8NodeName + bControllerBoxPrefix));
+//
+//   // send a response telling the instruction is in course of being executed
+//   StaticJsonDocument<64> _sub_doc;
+//   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+//   _sub_obj["lb"] = __i8NodeName;
+//   _sub_obj[&_cChangeKey] = __i8RequestedChange;
+//
+//   myWSSender _myWSSender;
+//   _myWSSender.prepareWSData(_i8WebMessagCode, _sub_obj);
+// }
+
+
+
+
+
 void myWSReceiver::_requestActiveStateChange(JsonDocument& doc) {
   const int8_t __i8NodeName = doc["lb"];
   if (MY_DG_WS) {
