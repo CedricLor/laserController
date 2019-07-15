@@ -74,7 +74,6 @@ myWSReceiver::myWSReceiver(uint8_t *data)
       Serial.printf("myWSReceiver::_decodeWSMessage(): __i8MessageType = %i - new WS: going to check whether the DOM needs to be updated. \n", __i8MessageType);
     }
     _onHandshakeCheckWhetherDOMNeedsUpdate(__i8MessageType, doc);
-
     return;
   }
 
@@ -84,7 +83,6 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     }
     // disable the task sending the station IP
     myWSSender::tSendWSDataIfChangeStationIp.disable();
-
     return;
   }
 
@@ -92,7 +90,6 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     // send a mesh request to the relevant laser box
 
     _requestActiveStateChange(doc);
-
     return;
   }
 
@@ -100,7 +97,6 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     // send a mesh request to the relevant laser box
 
     _requestMasterChange(__i8MessageType, doc);
-
     return;
   }
 
@@ -108,109 +104,9 @@ myWSReceiver::myWSReceiver(uint8_t *data)
     // send a mesh request to the relevant laser box
 
     _requestDefaultStateChange(doc);
-
     return;
   }
 }
-
-
-
-// we received a master change request from the Web.
-// 1. sending it to the mesh
-// 2. sending reply to the browser (request being processed)
-void myWSReceiver::_requestMasterChange(const int8_t _i8MessageType, JsonDocument& doc) {
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): _i8MessageType = %i - starting \n", _i8MessageType);
-  }
-
-  const int8_t __i8NodeName = doc["lb"];
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): (from JSON + 200) __i8NodeName = %i \n", (__i8NodeName + bControllerBoxPrefix));
-  }
-  // get the masterbox number
-  const int8_t __i8MasterBox = doc["masterbox"];
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", __i8MasterBox);
-  }
-
-  // instantiate a mesh view and send a changeMasterBoxMsg
-  myMeshViews __myMeshViews;
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): about to call __myMeshViews.changeMasterBox().\n");
-  }
-  __myMeshViews.changeMasterBoxMsg(__i8MasterBox, __i8NodeName);
-
-  // send a response to the browser telling the instruction is in course of being executed
-  StaticJsonDocument<64> _sub_doc;
-  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  _sub_obj["lb"] = __i8NodeName;
-  _sub_obj["ms"] = __i8MasterBox;
-  _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
-
-  // send an update to the browser
-  myWSSender _myWSSender;
-  _myWSSender.prepareWSData(8, _sub_obj);
-}
-
-
-
-
-
-void myWSReceiver::_requestActiveStateChange(JsonDocument& doc) {
-  const int8_t __i8NodeName = doc["lb"];
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestActiveStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
-  }
-  const int8_t __i8BoxState = doc["boxState"];
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestActiveStateChange(): _boxState = %i \n", __i8BoxState);
-  }
-  // instantiate a mesh view
-  myMeshViews __myMeshViews;
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestActiveStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
-  }
-  __myMeshViews.changeBoxTargetState(__i8BoxState, (short)(__i8NodeName + bControllerBoxPrefix));
-
-  // send a response telling the instruction is in course of being executed
-  StaticJsonDocument<64> _sub_doc;
-  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  _sub_obj["lb"] = __i8NodeName;
-  _sub_obj["boxState"] = __i8BoxState;
-
-  myWSSender _myWSSender;
-  _myWSSender.prepareWSData(4, _sub_obj);
-}
-
-
-
-
-void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
-  const int8_t __i8NodeName = doc["lb"];
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestDefaultStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
-  }
-  const int8_t __i8BoxDefaultState = doc["boxDefstate"];
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestDefaultStateChange(): __i8BoxDefaultState = %i \n", __i8BoxDefaultState);
-  }
-  // instantiate a mesh view
-  myMeshViews __myMeshViews;
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestDefaultStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
-  }
-  __myMeshViews.changeBoxDefaultState(__i8BoxDefaultState, (short)(__i8NodeName + bControllerBoxPrefix));
-
-  // send a response telling the instruction is in course of being executed
-  StaticJsonDocument<64> _sub_doc;
-  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-  _sub_obj["lb"] = __i8NodeName;
-  _sub_obj["boxDefstate"] = __i8BoxDefaultState;
-
-  myWSSender _myWSSender;
-  _myWSSender.prepareWSData(9, _sub_obj);
-}
-
 
 
 
@@ -302,30 +198,6 @@ void myWSReceiver::_checkConsistancyDOMDB(const int8_t _i8MessageType, JsonObjec
 
 
 
-void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageType, JsonObject& _obj) {
-  if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n", _i8MessageType);
-  }
-
-  for (short _i = 1; _i < sBoxesCount; _i++) {
-    char _c[3];
-    itoa(_i, _c, 10);
-    const char* _keyInJson = _obj[_c];
-    if ((ControlerBoxes[_i].nodeId != 0) && _keyInJson == nullptr) {
-      if (MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, there is a missing box in the DOM. Add it.\n", _i8MessageType);}
-      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-      ControlerBoxes[_i].isNewBoxHasBeenSignaled = false;
-
-      if (MY_DG_WS) {
-        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, ControlerBoxes[_i].isNewBoxHasBeenSignaled = %i\n", _i8MessageType, ControlerBoxes[_i].isNewBoxHasBeenSignaled);
-        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _i8MessageType);
-      }
-    } // if
-  } // for
-}
-
-
-
 void myWSReceiver::_lookForDisconnectedBoxes(const int8_t _i8MessageType, JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
@@ -373,4 +245,132 @@ void myWSReceiver::_checkBoxStateConsistancy(const int8_t _i8MessageType, JsonPa
       Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _i8MessageType);
     }
   } // end if
+}
+
+
+
+
+
+void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageType, JsonObject& _obj) {
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n", _i8MessageType);
+  }
+
+  for (short _i = 1; _i < sBoxesCount; _i++) {
+    char _c[3];
+    itoa(_i, _c, 10);
+    const char* _keyInJson = _obj[_c];
+    if ((ControlerBoxes[_i].nodeId != 0) && _keyInJson == nullptr) {
+      if (MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, there is a missing box in the DOM. Add it.\n", _i8MessageType);}
+      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
+      ControlerBoxes[_i].isNewBoxHasBeenSignaled = false;
+
+      if (MY_DG_WS) {
+        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, ControlerBoxes[_i].isNewBoxHasBeenSignaled = %i\n", _i8MessageType, ControlerBoxes[_i].isNewBoxHasBeenSignaled);
+        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _i8MessageType);
+      }
+    } // if
+  } // for
+}
+
+
+
+
+
+
+void myWSReceiver::_requestActiveStateChange(JsonDocument& doc) {
+  const int8_t __i8NodeName = doc["lb"];
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestActiveStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
+  }
+  const int8_t __i8BoxState = doc["boxState"];
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestActiveStateChange(): _boxState = %i \n", __i8BoxState);
+  }
+  // instantiate a mesh view
+  myMeshViews __myMeshViews;
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestActiveStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
+  }
+  __myMeshViews.changeBoxTargetState(__i8BoxState, (short)(__i8NodeName + bControllerBoxPrefix));
+
+  // send a response telling the instruction is in course of being executed
+  StaticJsonDocument<64> _sub_doc;
+  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+  _sub_obj["lb"] = __i8NodeName;
+  _sub_obj["boxState"] = __i8BoxState;
+
+  myWSSender _myWSSender;
+  _myWSSender.prepareWSData(4, _sub_obj);
+}
+
+
+
+
+
+// we received a master change request from the Web.
+// 1. sending it to the mesh
+// 2. sending reply to the browser (request being processed)
+void myWSReceiver::_requestMasterChange(const int8_t _i8MessageType, JsonDocument& doc) {
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestMasterChange(): _i8MessageType = %i - starting \n", _i8MessageType);
+  }
+
+  const int8_t __i8NodeName = doc["lb"];
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestMasterChange(): (from JSON + 200) __i8NodeName = %i \n", (__i8NodeName + bControllerBoxPrefix));
+  }
+  // get the masterbox number
+  const int8_t __i8MasterBox = doc["masterbox"];
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", __i8MasterBox);
+  }
+
+  // instantiate a mesh view and send a changeMasterBoxMsg
+  myMeshViews __myMeshViews;
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestMasterChange(): about to call __myMeshViews.changeMasterBox().\n");
+  }
+  __myMeshViews.changeMasterBoxMsg(__i8MasterBox, __i8NodeName);
+
+  // send a response to the browser telling the instruction is in course of being executed
+  StaticJsonDocument<64> _sub_doc;
+  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+  _sub_obj["lb"] = __i8NodeName;
+  _sub_obj["ms"] = __i8MasterBox;
+  _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
+
+  // send an update to the browser
+  myWSSender _myWSSender;
+  _myWSSender.prepareWSData(8, _sub_obj);
+}
+
+
+
+
+
+void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
+  const int8_t __i8NodeName = doc["lb"];
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestDefaultStateChange(): (from JSON) __i8NodeName = %i \n", __i8NodeName);
+  }
+  const int8_t __i8BoxDefaultState = doc["boxDefstate"];
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestDefaultStateChange(): __i8BoxDefaultState = %i \n", __i8BoxDefaultState);
+  }
+  // instantiate a mesh view
+  myMeshViews __myMeshViews;
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_requestDefaultStateChange(): about to call __myMeshViews.changeBoxTargetState().\n");
+  }
+  __myMeshViews.changeBoxDefaultState(__i8BoxDefaultState, (short)(__i8NodeName + bControllerBoxPrefix));
+
+  // send a response telling the instruction is in course of being executed
+  StaticJsonDocument<64> _sub_doc;
+  JsonObject _sub_obj = _sub_doc.to<JsonObject>();
+  _sub_obj["lb"] = __i8NodeName;
+  _sub_obj["boxDefstate"] = __i8BoxDefaultState;
+
+  myWSSender _myWSSender;
+  _myWSSender.prepareWSData(9, _sub_obj);
 }
