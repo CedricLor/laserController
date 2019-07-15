@@ -38,7 +38,7 @@ function connect() {
       }));
       return;
     }
-    if (_data.type === 4) { // User request to change boxState has been received and is being processed
+    if (_data.type === 4) { // User request to change boxState of a given box has been received and is being processed
       updateClickedStateButton(_data.message.lb, "boxstate", _data.message.boxState)
       return;
     }
@@ -63,7 +63,7 @@ function connect() {
     if (_data.type === 8) { // a box has changed master
       updateMasterBoxNumber(_data.message);
     }
-    if (_data.type === 9) { // a box has changed master
+    if (_data.type === 9) { // User request to change default boxState of a given box has been received and is being processed
       updateClickedStateButton(_data.message.lb, "boxDefstate", _data.message.boxDefstate)
     }
     if (_data.type === 10) { // the default state of a given box has changed

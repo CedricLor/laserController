@@ -197,7 +197,7 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
 
     // message 0 on handshake: activate the exchange of station IP
     else if (_iMessageType == 0) {
-      Serial.printf("- myWebServerWS::_prepareWSData. Message type [%i] was none of 3 to 7\n", _iMessageType);
+      Serial.printf("- myWebServerWS::_prepareWSData. Message type [%i] was none of 3 to 10\n", _iMessageType);
       if (MY_DEBUG) {
         Serial.printf("- myWebServerWS::_prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _iMessageType);
       }
@@ -207,7 +207,7 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
       }
     }
 
-    // small confirmation messages (type 1 to 3)
+    // small confirmation messages (type 0 to 2)
     else {
       const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
       doc["message"] = _messages_array[_iMessageType];
