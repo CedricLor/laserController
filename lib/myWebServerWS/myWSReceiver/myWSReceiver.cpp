@@ -47,6 +47,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   if (MY_DG_WS) {
     Serial.println("myWSReceiver::_decodeWSMessage. Starting.");
   }
+
   // create a StaticJsonDocument entitled doc
   StaticJsonDocument<256> doc;
   if (MY_DG_WS) {
@@ -61,7 +62,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   }
 
   // read the type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
-  const short _type = doc["type"]; // correspondings to root[action] in meshController
+  const int8_t _type = doc["type"].as<byte>(); // correspondings to root[action] in meshController
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_decodeWSMessage(): The message _type is %i \n", _type); }
 
 
@@ -119,9 +120,9 @@ myWSReceiver::myWSReceiver(uint8_t *data)
 // we received a master change request from the Web.
 // 1. sending it to the mesh
 // 2. sending reply to the browser (request being processed)
-void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument& doc) {
+void myWSReceiver::_requestMasterChange(const int8_t _sMessageType, JsonDocument& doc) {
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestMasterChange(): _type = %i - starting \n", _sMessageType);
+    Serial.printf("myWSReceiver::_requestMasterChange(): _sMessageType = %i - starting \n", _sMessageType);
   }
   // send a mesh request to the other box
 
@@ -135,7 +136,7 @@ void myWSReceiver::_requestMasterChange(const short _sMessageType, JsonDocument&
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestMasterChange(): _boxState = %i \n", _iMasterBox);
   }
-  
+
   // instantiate a mesh view and send a changeMasterBoxMsg
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
@@ -219,7 +220,7 @@ void myWSReceiver::_requestDefaultStateChange(JsonDocument& doc) {
 
 
 
-void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageType, JsonDocument& doc) {
+void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _sMessageType, JsonDocument& doc) {
 
   // Declare and define a JSONObject
   JsonObject _obj = doc["message"].as<JsonObject>();
@@ -270,7 +271,7 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const short _sMessageT
 
 
 
-void myWSReceiver::_checkConsistancyDOMDB(const short _sMessageType, JsonObject& _obj) {
+void myWSReceiver::_checkConsistancyDOMDB(const int8_t _sMessageType, JsonObject& _obj) {
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _sMessageType = %i, JSON Object _obj.size: %i. There are currently boxRow(s) in the DOM.\n", _sMessageType, _obj.size());
     Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _sMessageType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", _sMessageType, ControlerBox::connectedBoxesCount);
@@ -307,7 +308,7 @@ void myWSReceiver::_checkConsistancyDOMDB(const short _sMessageType, JsonObject&
 
 
 
-void myWSReceiver::_lookForDOMMissingRows(const short _sMessageType, JsonObject& _obj) {
+void myWSReceiver::_lookForDOMMissingRows(const int8_t _sMessageType, JsonObject& _obj) {
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _sMessageType = %i, about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n", _sMessageType);
   }
@@ -331,7 +332,7 @@ void myWSReceiver::_lookForDOMMissingRows(const short _sMessageType, JsonObject&
 
 
 
-void myWSReceiver::_lookForDisconnectedBoxes(const short _sMessageType, JsonPair& _p) {
+void myWSReceiver::_lookForDisconnectedBoxes(const int8_t _sMessageType, JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
 
@@ -360,7 +361,7 @@ void myWSReceiver::_lookForDisconnectedBoxes(const short _sMessageType, JsonPair
 
 
 
-void myWSReceiver::_checkBoxStateConsistancy(const short _sMessageType, JsonPair& _p) {
+void myWSReceiver::_checkBoxStateConsistancy(const int8_t _sMessageType, JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
   if (MY_DG_WS) {
