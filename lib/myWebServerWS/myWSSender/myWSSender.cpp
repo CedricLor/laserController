@@ -173,7 +173,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdoc) {
     if (MY_DG_WS) {
       Serial.printf("- myWebServerWS::_prepareWSData. Starting with message type [%i]\n", _iMessageType);
-      Serial.printf("- myWebServerWS::_prepareWSData. Preparing JSON document\n");
+      // Serial.printf("- myWebServerWS::_prepareWSData. Preparing JSON document\n");
     }
     // if (MY_DG_WS) {
     //   Serial.printf("- myWebServerWS::_prepareWSData. Keys in _subdoc\n");
@@ -185,25 +185,27 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
     StaticJsonDocument<256> doc;
     doc["type"] = _iMessageType;
 
-    if (MY_DG_WS) {
-      bool _test = (_iMessageType == 1);
-      Serial.printf("- myWebServerWS::_prepareWSData. (_iMessageType == 1) = %i\n", _test);
-    }
+    // if (MY_DG_WS) {
+    //   bool _test = (_iMessageType == 1);
+    //   Serial.printf("- myWebServerWS::_prepareWSData. (_iMessageType == 1) = %i\n", _test);
+    // }
 
     if (_iMessageType == 3) { // message type 3: change in station IP
       doc["message"] = (laserControllerMesh.getStationIP()).toString();
-      if (MY_DG_WS) {
-        const char* __stationIp = doc["stationIp"];
-        Serial.print("- myWebServerWS::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
-      }
+      // if (MY_DG_WS) {
+      //   const char* __stationIp = doc["stationIp"];
+      //   Serial.print("- myWebServerWS::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
+      // }
     }
 
     // messages 4 to 8:
-    // (4): change boxState request being processed;
+    // (4): change boxState request being processed
     // (5): change boxState executed
     // (6): a new box has joined the mesh
     // (7): a box has been deleted from the mesh
     // (8): master for a given is being processed, then has been changed
+    // (9): change default boxState request being processed
+    // (10): change default boxState executed
     else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6 || _iMessageType == 7 || _iMessageType == 8 || _iMessageType == 9 || _iMessageType == 10) {
       doc["message"] = _subdoc;
     }
@@ -280,7 +282,7 @@ void myWSSender::_sendWSData(JsonDocument& doc) {
           }  // end if (myWebServerWS::ws_client_id && ..
           else {
             // the ws_client_id you have does not match existing client
-            // send the info to all the clients 
+            // send the info to all the clients
             if (MY_DG_WS) {
               Serial.print("- myWebServerWS::_sendWSData: AsyncWebSocket::count() = ");Serial.println(_client_count);
               Serial.print("- myWebServerWS::_sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
