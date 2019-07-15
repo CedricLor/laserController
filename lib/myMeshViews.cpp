@@ -72,7 +72,6 @@ myMeshViews::myMeshViews()
 
 
 void myMeshViews::WStoMeshView(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
-  // void myMeshViews::changeMasterBox(const int8_t _i8MasterBox /*newMasterNodeName*/, const int8_t _i8BoxIndexInCB) {
     if (MY_DG_MESH) {
       Serial.printf("myMeshViews::WStoMeshView(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);
     }
@@ -93,7 +92,6 @@ void myMeshViews::WStoMeshView(const int8_t _i8RequestedChange, const char& _cCh
     if (MY_DG_MESH) {
       Serial.println("myMeshViews::WStoMeshView(): Ending.");
     }
-  // }
 }
 
 

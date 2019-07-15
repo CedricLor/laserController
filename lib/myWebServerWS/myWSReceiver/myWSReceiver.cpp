@@ -300,9 +300,6 @@ void myWSReceiver::_requestBoxChange(JsonDocument& doc, const char& _cChangeKey,
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.WStoMeshView().\n");
   }
-  // __myMeshViews.changeBoxTargetState(__i8BoxTargetState, (short)(__i8BoxIndexInCB + bControllerBoxPrefix));
-  // __myMeshViews.changeMasterBox(__i8MasterBox, __i8BoxIndexInCB);
-  // __myMeshViews.changeBoxDefaultState(__i8BoxDefaultState, (short)(__i8BoxIndexInCB + bControllerBoxPrefix));
   __myMeshViews.WStoMeshView(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
 
   // send a response telling the instruction is in course of being executed
