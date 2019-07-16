@@ -62,10 +62,20 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
 
   // CHANGEBOX REQUEST (received by the laser boxes only)
   const char* _actionChangeBox = "changeBox";
-
   if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
 
     _changeBox(_ui32SenderNodeId, _obj);
+    return;
+  }
+
+
+
+
+  // CHANGED BOX CONFIRMATION (received by all the boxes)
+  const char* _actionChangedBx = "changedBx";
+  if (strcmp(_action, _actionChangedBx) == 0) {           // action 'changedBx' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
+
+    _changedBx(_ui32SenderNodeId, _obj);
     return;
   }
 
@@ -347,6 +357,10 @@ void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
 
 
+
+void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS

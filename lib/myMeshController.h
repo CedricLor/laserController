@@ -39,6 +39,7 @@ class myMeshController
 
     void _statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _obj);
     void _changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void _changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 
     // void _manualSwitch(JsonDocument& root);
     // void _changeInclusionIR(JsonDocument& root);
