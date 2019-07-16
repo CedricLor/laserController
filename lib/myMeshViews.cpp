@@ -166,13 +166,22 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 
 
 
+
 void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::_sendMsg(): Starting.");
+    // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
   }
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
+
+
+  // adding my nodeName to the JSON to be sent to other boxes
   msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
+  // if (MY_DG_MESH) {
+  //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
+  // }
+
+
+  // adding the APIP and the StationIP to the JSON to be sent to other boxes
   JsonArray _APIP = msg.createNestedArray("APIP");
   for (short _i = 0; _i < 4; _i++) {
     _APIP.add(ControlerBoxes[myIndexInCBArray].APIP[_i]);
@@ -182,29 +191,33 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   for (short _i = 0; _i < 4; _i++) {
     _StIP.add(ControlerBoxes[myIndexInCBArray].stationIP[_i]);
   }
-  // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
+  // if (MY_DG_MESH) {
+  //  Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
+  // }
+
 
   // JSON serialization
   int size_buff = 254;
   char output[size_buff];
 
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
-  }
+  // if (MY_DG_MESH) {
+  //   Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
+  // }
   serializeJson(msg, output, size_buff);
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
-  }
+  // if (MY_DG_MESH) {
+  //   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
+  // }
+
 
   // JSON conversion to String for painlessMesh
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
-  }
+  // if (MY_DG_MESH) {
+  //   Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
+  // }
   String str;
   str = output;
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): About to send message as String");
-  }
+  // if (MY_DG_MESH) {
+  //   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
+  // }
 
   // diffusion
   if (destNodeId) {
@@ -212,8 +225,10 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   } else {
     laserControllerMesh.sendBroadcast(str);
   }
+
+
   if (MY_DG_MESH) {
-    Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
+    Serial.print("myMeshViews:_sendMsg(): done. Sent message: ");Serial.println(str);
   }
 }
 
