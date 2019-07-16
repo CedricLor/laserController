@@ -42,6 +42,8 @@ myMesh::myMesh()
 {
 }
 
+
+
 void myMesh::meshSetup() {
   if ( MY_DEBUG == true ) {
     // laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
@@ -74,6 +76,12 @@ void myMesh::meshSetup() {
   laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);                                   // Might not be needed
 }
 
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Network Callbacks
 void myMesh::receivedCallback( uint32_t from, String &msg ) {
@@ -100,6 +108,9 @@ void myMesh::_tcbSendStatusOnNewConnection() {
     Serial.printf("_tcbSendStatusOnNewConnection: EndingIteration: %i\n", _tIter);
   }
 }
+
+
+
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
     if (MY_DG_MESH) {
@@ -130,6 +141,10 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     // }
 }
 
+
+
+
+
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %i\n",nodeId);
@@ -139,6 +154,10 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   ControlerBox::deleteBox(nodeId);
 }
 
+
+
+
+
 void myMesh::changedConnectionCallback() {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
@@ -147,17 +166,30 @@ void myMesh::changedConnectionCallback() {
   // ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
 }
 
+
+
+
+
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(), offset);
   }
 }
 
+
+
+
+
 void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
   if (MY_DG_MESH) {
     Serial.printf("Delay to node %u is %d us\n", from, delay);
   }
 }
+
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Decode Request
@@ -167,31 +199,35 @@ void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
     It determines whether the messages is sent by my Master Node or by the Interface Node.
     If so, it calls the meshController
 */
-void myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) {
+void myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::_decodeRequest(uint32_t senderNodeId, String &msg) starting with senderNodeId == %u and &msg == %s \n", senderNodeId, msg.c_str());
+    Serial.printf("myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) starting. _ui32SenderNodeId == %u; &_msg == %s \n", _ui32SenderNodeId, _msg.c_str());
   }
   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
 
   // create a StaticJsonDocument entitled doc
-  StaticJsonDocument<capacity> doc;
+  StaticJsonDocument<capacity> _doc;
   // Convert the document to an object
-  JsonObject obj = doc.to<JsonObject>();
+  JsonObject _obj = _doc.to<JsonObject>();
 
   if (MY_DG_MESH) {
     Serial.print("myMesh::_decodeRequest(...): jsonDocument created\n");
   }
 
-  // deserialize the message msg received from the mesh into the StaticJsonDocument doc
-  DeserializationError err = deserializeJson(doc, msg.c_str());
+  // deserialize the message _msg received from the mesh into the StaticJsonDocument doc
+  DeserializationError _err = deserializeJson(_doc, _msg.c_str());
   if (MY_DG_MESH) {
-    Serial.print("myMesh::_decodeRequest(...): message msg deserialized into JsonDocument doc\n");
-    Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
+    Serial.print("myMesh::_decodeRequest(...): message _msg deserialized into JsonDocument doc\n");
+    Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
   }
 
-  // pass the deserialized doc and the senderNodeId to the controller
-  myMeshController myMeshController(senderNodeId, obj);
+  // pass the deserialized doc and the _ui32SenderNodeId to the controller
+  myMeshController myMeshController(_ui32SenderNodeId, _obj);
 }
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
