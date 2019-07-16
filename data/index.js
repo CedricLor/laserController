@@ -401,6 +401,8 @@ function _renderInDom(_dupRow) {
 function _addToMaps(data, _dupRow) {
   console.log("_addToMaps starting.");
   controlerBoxes.set(data.lb, data.boxState);
+  // Map.prototype.set(key, value)
+  // {1:4;2:3;etc.}
   console.log("_addToMaps: controlerBoxes map: set key [" + data.lb + "] with value [" + data.boxState +  "] in controlerBoxes map.");
   console.log(controlerBoxes);
   boxesRows.set(data.lb, _dupRow);
