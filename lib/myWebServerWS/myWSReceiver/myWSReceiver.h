@@ -50,6 +50,8 @@ class myWSReceiver
 
   private:
 
+    void _actionSwitch(const int8_t __i8MessageActionType, JsonObject& _obj);
+
     void _onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8MessageActionType, JsonObject& _obj);
     void _checkConsistancyDOMDB(const int8_t _i8MessageActionType, JsonObject& _joBoxState);
     void _lookForDisconnectedBoxes(const int8_t _i8MessageActionType, JsonPair& _p);

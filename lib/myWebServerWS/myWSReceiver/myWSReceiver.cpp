@@ -41,6 +41,9 @@
 #include "Arduino.h"
 #include "myWSReceiver.h"
 
+
+
+
 myWSReceiver::myWSReceiver(uint8_t *_data)
 {
 
@@ -69,7 +72,15 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 
   // choose the type of reaction depending on the message action type
+  _actionSwitch(__i8MessageActionType, _obj);
+}
 
+
+
+
+
+
+void myWSReceiver::_actionSwitch(const int8_t __i8MessageActionType, JsonObject& _obj) {
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
   // Received JSON: {action:0, message:{1:4;2:3}}
   if (__i8MessageActionType == 0) {           // 0 for hand shake message
@@ -80,7 +91,8 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
     return;
   }
 
-  if (__i8MessageActionType == 3) {           // 3 for confirmation that change IP adress has been received
+  // 3 for confirmation that change IP adress has been received
+  if (__i8MessageActionType == 3) {
     if (MY_DG_WS) {
       Serial.println("myWSReceiver::myWSReceiver. Ending on __i8MessageActionType == 3 (received confirmation that new station IP has been received).");
     }
@@ -89,14 +101,16 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
     return;
   }
 
-  if (__i8MessageActionType == 4) {           // 4 for change boxState
+  // 4 for change boxState
+  if (__i8MessageActionType == 4) {
     // _obj = {action: 4; lb: 1; "boxState": 3}
     _requestBoxChange(_obj, (const char&)"boxState", __i8MessageActionType);
     // _requestActiveStateChange(_obj);
     return;
   }
 
-  if (__i8MessageActionType == 8) {             // 8 for change master
+  // 8 for change master
+  if (__i8MessageActionType == 8) {
     // send a mesh request to the relevant laser box
     // _obj = {action: 8, lb: 1, "masterbox": 4}
     _requestBoxChange(_obj, (const char&)"masterbox", __i8MessageActionType);
@@ -104,7 +118,8 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
     return;
   }
 
-  if (__i8MessageActionType == 9) {             // 9 for change default state
+  // 9 for change default state
+  if (__i8MessageActionType == 9) {
     // send a mesh request to the relevant laser box
     // _obj = {action: 9; lb: 1; "boxDefstate": 3}
     _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
@@ -112,6 +127,9 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
     return;
   }
 }
+
+
+
 
 
 
