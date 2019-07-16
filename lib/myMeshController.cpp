@@ -116,14 +116,8 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
     with the values received from the other box.
   */
 
-  int8_t __i8SenderNodeName = _obj["NNa"];
-  if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
-
-  // Update the sender box properties
-
-  // calculate the box index of the sending box
-  int8_t __i8BoxIndex = __i8SenderNodeName - bControllerBoxPrefix;
-  if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
+  // get the index number of the sender
+  int8_t __i8BoxIndex = _getSenderBoxIndexNumber(_obj);
 
   // if the sender is a newly connected box
   if (ControlerBoxes[__i8BoxIndex].nodeId == 0) { //
@@ -233,8 +227,12 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
 
 
 
+
 void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   // lloking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
+
+  // get the index number of the sender
+  int8_t __i8BoxIndex = _getSenderBoxIndexNumber(_obj);
 
   // if this is a "change master box request" confirmation
   if (_obj.containsKey("masterbox")) {
@@ -244,13 +242,6 @@ void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
     if (MY_DG_MESH) {
       Serial.printf("myMeshController::_changedBx: __i8MasterBoxName = %i\n",  __i8MasterBoxName);
     }
-
-    // get the index number of the slave
-    int8_t __i8SenderNodeName = _obj["NNa"];
-    if (MY_DG_MESH) {Serial.print("myMeshController::_changedBx: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
-
-    int8_t __i8BoxIndex = __i8SenderNodeName - bControllerBoxPrefix;
-    if (MY_DG_MESH) {Serial.print("myMeshController::_changedBx: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
 
     // set the new master box number in the relevant ControlerBox (on the interface)
     // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
@@ -265,29 +256,21 @@ void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
   // if this is a "change default state request" confirmation
   if (_obj.containsKey("boxDefstate")) {
 
-    return;
-  }
-
-  // FORMER CHANGED CONFIRMATIONS
-
-
-  // defaultBoxState change confirmation
-  // This is a signal received by the IF from a laser controller
-    // action 'dc': this message confirms a change the boxDefaultState for a given box
-    short int __sSenderIndexInCB  = _obj["NNa"].as<short>() - (int)bControllerBoxPrefix;
-    short int __sDefaultState = _obj["ds"].as<short>();
+    // get the new defaultState from the JSON
+    int8_t __i8DefaultState = _obj["boxDefstate"].as<int8_t>();
     if (MY_DG_MESH) {
-      Serial.print("myMeshController::myMeshController: __sSenderIndexInCB = ");Serial.println(__sSenderIndexInCB);
-      Serial.print("myMeshController::myMeshController: __sDefaultState = ");Serial.println(__sDefaultState);
+      Serial.printf("myMeshController::myMeshController: __i8DefaultState = %i\n", __i8DefaultState);
     }
 
     // set the new default state in the relevant ControlerBox (on the interface)
     // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
-    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultState = __sDefaultState;
+    ControlerBoxes[__i8BoxIndex].sBoxDefaultState = __sDefaultState;
     // mark the change has unsignaled
-    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
+    ControlerBoxes[__i8BoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
 
     return;
+  }
+
 }
 
 
@@ -295,8 +278,18 @@ void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
 
 
+// _changedBox and _statusMessage helper function
+int8_t myMeshController::_getSenderBoxIndexNumber(JsonObject& _obj) {
+  // get the nodeName number of the sender
+  int8_t __i8SenderNodeName = _obj["NNa"];
+  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
 
+  // get index number of the sender
+  int8_t __i8BoxIndex = __i8SenderNodeName - bControllerBoxPrefix;
+  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
 
+  return __i8BoxIndex;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
