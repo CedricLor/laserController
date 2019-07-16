@@ -173,7 +173,7 @@ function oninputMasterSelect(e) {
       lb: _laserBoxNumber,
       masterbox: parseInt(this.options[this.selectedIndex].value, 10)
      });
-     // {action: 8, lb: 1, masterbox: 4}
+     // {action: 8, lb: 1, "masterbox": 4}
     console.log("oninputMasterSelect: about to send json via WS: " + _json);
     ws.send(_json);
     console.log("oninputMasterSelect: json sent.");

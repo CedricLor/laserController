@@ -98,7 +98,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
   if (__i8MessageActionType == 8) {             // 8 for change master
     // send a mesh request to the relevant laser box
-    // _obj = {action: 8, lb: 1, masterbox: 4}
+    // _obj = {action: 8, lb: 1, "masterbox": 4}
     _requestBoxChange(_obj, (const char&)"masterbox", __i8MessageActionType);
     // _requestMasterChange(__i8MessageActionType, _obj);
     return;
