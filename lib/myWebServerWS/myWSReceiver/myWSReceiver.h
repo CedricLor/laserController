@@ -46,7 +46,7 @@
 class myWSReceiver
 {
   public:
-    myWSReceiver(uint8_t *data);
+    myWSReceiver(uint8_t *_data);
 
   private:
 

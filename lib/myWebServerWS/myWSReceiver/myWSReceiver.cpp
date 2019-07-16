@@ -41,7 +41,7 @@
 #include "Arduino.h"
 #include "myWSReceiver.h"
 
-myWSReceiver::myWSReceiver(uint8_t *data)
+myWSReceiver::myWSReceiver(uint8_t *_data)
 {
 
   if (MY_DG_WS) {
@@ -57,7 +57,7 @@ myWSReceiver::myWSReceiver(uint8_t *data)
   JsonObject _obj = _doc.to<JsonObject>();
 
   // deserialize the message msg received from the mesh into the StaticJsonDocument _doc
-  DeserializationError err = deserializeJson(_doc, data);
+  DeserializationError err = deserializeJson(_doc, _data);
   if (MY_DG_WS) {
     Serial.print("myWSReceiver::_decodeWSMessage(): message msg deserialized into JsonDocument _doc\n");
     Serial.print("myWSReceiver::_decodeWSMessage(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
