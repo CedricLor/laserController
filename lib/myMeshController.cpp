@@ -289,69 +289,87 @@ void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
   // if this is a change active state request
   if (_obj.containsKey("boxState")) {
-    // if the message comes from the interface, this is a relayed message coming from the web
-    if (_ui32SenderNodeId == ControlerBoxes[0].nodeId) {
-      if (MY_DG_MESH) {
-        Serial.printf("myMeshController::myMeshController: will change my target state to %i", _obj["boxState"].as<int8_t>());
-      }
-      // set the valFromWeb
-      ControlerBox::valFromWeb = _obj["boxState"].as<int8_t>();
-    } // else it might be a message coming from some other box,
-    // but I shall not react. Reactions to changes in the mesh are
-    // detected via status messages
+
+    _updateMyValFromWeb(_obj);
     return;
   }
 
   // if this is a change master box request
   if (_obj.containsKey("masterbox")) {
-    // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-    ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
-    // send a message to the IF telling it that I have taken the change into account
-    _obj["action"].set("changedBx");
-    myMeshViews __myMeshViews;
-    __myMeshViews.changedBoxConfirmation(_obj);
-    // __myMeshViews.changedMasterBoxConfirmation(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
-    // mark the change as signaled
-    ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+
+    _updateMyMasterBoxName(_obj);
     return;
   }
 
   // if this is a change default state request
   if (_obj.containsKey("boxDefstate")) {
-    // if (MY_DG_MESH) {
-    //   // Serial.printf("myMeshController::myMeshController: ----------------------------------------------------------\n");
-    //   Serial.printf("myMeshController::myMeshController: _ui32SenderNodeId = %u\n", _ui32SenderNodeId);
-    //   Serial.printf("myMeshController::myMeshController: ControlerBoxes[0].nodeId = %u\n", ControlerBoxes[0].nodeId);
-    //   Serial.printf("myMeshController::myMeshController: (_ui32SenderNodeId == ControlerBoxes[0].nodeId) = %i\n", (_ui32SenderNodeId == ControlerBoxes[0].nodeId));
-    // }
-    // if the message comes from the interface,
-    // this is a relayed message coming from the web
-    if (_ui32SenderNodeId == ControlerBoxes[0].nodeId) {
-      // if (MY_DG_MESH) {
-      //   Serial.printf("myMeshController::myMeshController: will change my default state to %i\n", _obj["boxDefstate"].as<int>());
-      // }
-      ControlerBoxes[myIndexInCBArray].sBoxDefaultState = _obj["boxDefstate"].as<int8_t>();
 
-      // send a message to the IF telling it that I have taken the change into account
-      _obj["action"] = "changedBx";
-      // if (MY_DG_MESH) {
-      //   Serial.printf("myMeshController::myMeshController: _obj[\"action\"] = %s\n", _obj["action"].as<const char*>());
-      //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
-      // }
-
-      myMeshViews __myMeshViews;
-      __myMeshViews.changedBoxConfirmation(_obj);
-      // if (MY_DG_MESH) {
-      //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
-      // }
-
-      // mark the change as signaled
-      ControlerBoxes[myIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
-    } // else it might be a message coming from some other box,
-    // but I shall not react. Reactions to changes in the mesh are
-    // detected via status messages
+    _updateMyDefaultState(_obj);
     return;
   }
+}
+
+
+
+
+// helper functions to myMeshController::_changeBox
+void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to %i", _obj["boxState"].as<int8_t>());
+  }
+
+  // update the valFromWeb
+  ControlerBox::valFromWeb = _obj["boxState"].as<int8_t>();
+}
+
+
+
+void myMeshController::_updateMyMasterBoxName(JsonObject& _obj) {
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i", _obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+  }
+
+  // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
+  ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+
+  // send confirmation message
+  _changeBoxSendConfirmationMsg(_obj);
+
+  // mark the change as signaled
+  ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+}
+
+
+
+void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to %i", _obj["boxDefstate"].as<int8_t>());
+  }
+
+  ControlerBoxes[myIndexInCBArray].sBoxDefaultState = _obj["boxDefstate"].as<int8_t>();
+
+  // send confirmation message
+  _changeBoxSendConfirmationMsg(_obj);
+
+  // mark the change as signaled
+  ControlerBoxes[myIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
+}
+
+
+
+void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
+  // send a message to the IF telling it that I have taken the change into account
+  _obj["action"] = "changedBx";
+  // if (MY_DG_MESH) {
+  //   Serial.printf("myMeshController::myMeshController: _obj[\"action\"] = %s\n", _obj["action"].as<const char*>());
+  //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
+  // }
+
+  myMeshViews __myMeshViews;
+  __myMeshViews.changedBoxConfirmation(_obj);
+  // if (MY_DG_MESH) {
+  //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
+  // }
 }
 
 

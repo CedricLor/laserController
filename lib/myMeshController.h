@@ -38,7 +38,13 @@ class myMeshController
     char _action;
 
     void _statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+
     void _changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void _updateMyValFromWeb(JsonObject& _obj);
+    void _updateMyMasterBoxName(JsonObject& _obj);
+    void _updateMyDefaultState(JsonObject& _obj);
+    void _changeBoxSendConfirmationMsg(JsonObject& _obj);
+
     void _changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 
     // void _manualSwitch(JsonDocument& root);
