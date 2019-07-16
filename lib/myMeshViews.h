@@ -43,8 +43,8 @@ class myMeshViews
     // void changeBoxDefaultState(const int8_t _sBoxDefaultState, const int8_t _i8BoxIndexInCB);
 
     void changedBoxConfirmation(JsonObject& obj);
-    void changedMasterBoxConfirmation(const int8_t _i8MasterBox);
-    void changedBoxDefaultStateConfirmation(const int8_t _sBoxDefaultState);
+    // void changedMasterBoxConfirmation(const int8_t _i8MasterBox);
+    // void changedBoxDefaultStateConfirmation(const int8_t _sBoxDefaultState);
 
 
     // static void manualSwitchMsg(const short targetOnOffState);

@@ -158,7 +158,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
         ControlerBoxes[myIndexInCBArray].sBoxDefaultState = root["boxDefstate"].as<int8_t>();
 
         // send a message to the IF telling it that I have taken the change into account
-        bool _bHasChangedAction = root["action"].set("changedBx");
+        root["action"] = "changedBx";
         // if (MY_DG_MESH) {
         //   Serial.printf("myMeshController::myMeshController: root[\"action\"] = %s\n", root["action"].as<const char*>());
         //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);

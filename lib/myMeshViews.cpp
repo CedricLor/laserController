@@ -256,50 +256,50 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 
 
 // This function is called exclusively from the laser controllers -- not the interface
-void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
-  if (MY_DG_MESH) {
-    Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. _i8MasterBox = %i\n", _i8MasterBox);
-  }
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
-  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<capacity> doc;
-  JsonObject msg = doc.to<JsonObject>();
-
-  // load the JSON document with values
-  msg["ms"] = _i8MasterBox;
-  msg["action"] = "mc";
-
-  _sendMsg(msg, ControlerBoxes[0].nodeId);
-
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
-  }
-}
+// void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. _i8MasterBox = %i\n", _i8MasterBox);
+//   }
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
+//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+//   StaticJsonDocument<capacity> doc;
+//   JsonObject msg = doc.to<JsonObject>();
+//
+//   // load the JSON document with values
+//   msg["ms"] = _i8MasterBox;
+//   msg["action"] = "mc";
+//
+//   _sendMsg(msg, ControlerBoxes[0].nodeId);
+//
+//   if (MY_DG_MESH) {
+//     Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+//   }
+// }
 
 
 
 
 
 // This function is called exclusively from the laser controllers -- not the interface
-void myMeshViews::changedBoxDefaultStateConfirmation(const int8_t _i8BoxDefaultState) {
-  // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"dc";"ds":3}
-  if (MY_DG_MESH) {
-    Serial.printf("myMeshViews::changeBoxDefaultStateConfirmation(): _i8BoxDefaultState = %i\n", _i8BoxDefaultState);
-  }
-
-  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<capacity> doc;
-  JsonObject msg = doc.to<JsonObject>();
-
-  msg["ds"] = _i8BoxDefaultState;
-  msg["action"] = "dc";
-
-  _sendMsg(msg);
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedBoxDefaultStateConfirmation(): Ending.");
-  }
-}
+// void myMeshViews::changedBoxDefaultStateConfirmation(const int8_t _i8BoxDefaultState) {
+//   // prepare the JSON string to be sent via the mesh
+//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"dc";"ds":3}
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshViews::changeBoxDefaultStateConfirmation(): _i8BoxDefaultState = %i\n", _i8BoxDefaultState);
+//   }
+//
+//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+//   StaticJsonDocument<capacity> doc;
+//   JsonObject msg = doc.to<JsonObject>();
+//
+//   msg["ds"] = _i8BoxDefaultState;
+//   msg["action"] = "dc";
+//
+//   _sendMsg(msg);
+//   if (MY_DG_MESH) {
+//     Serial.println("myMeshViews::changedBoxDefaultStateConfirmation(): Ending.");
+//   }
+// }
 
 
 
