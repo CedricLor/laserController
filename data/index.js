@@ -19,38 +19,40 @@ function connect() {
   ws.onopen = function() {
     console.log("WS connection open. Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
     ws.send(JSON.stringify({
-      type: 0,
-      message: mapToObj(controlerBoxes)
+      action: 0,
+      boxesStatesInDOM: mapToObj(controlerBoxes)
     }));
+    // {action:0, boxStateInDOM:{1:4;2:3}}
   };
 
-  // on receive a message, decode its type to dispatch it
+  // on receive a message, decode its action type to dispatch it
   ws.onmessage = function(e) {
     var received_msg = e.data;
     console.log( "WS Received Message: " + received_msg);
     var _data = JSON.parse(e.data);
     // console.log("WS JSON message: " + _data.message);
-    if (_data.type === 3) {
+    if (_data.action === 3) {
       updateStationIp(_data.message);
       ws.send(JSON.stringify({
-        type: 3,
+        action: 3,
         message: "received Station IP"
       }));
+      // {action:3, message:"received Station IP"}
       return;
     }
-    if (_data.type === 4) { // User request to change boxState of a given box has been received and is being processed
+    if (_data.action === 4) { // User request to change boxState of a given box has been received and is being processed
       updateClickedStateButton(_data.message.lb, "boxstate", _data.message.boxState)
       return;
     }
-    if (_data.type === 5) { // boxState of existing box has been updated
+    if (_data.action === 5) { // boxState of existing box has been updated
       addOrUpdateNewRowForNewBox(_data.message);
       return;
     }
-    if (_data.type === 6) { // a new box has connected to the mesh
+    if (_data.action === 6) { // a new box has connected to the mesh
       addOrUpdateNewRowForNewBox(_data.message);
       return;
     }
-    if (_data.type === 7) { // an existing box has been disconnected from the mesh
+    if (_data.action === 7) { // an existing box has been disconnected from the mesh
       // or the DOM contained boxRows corresponding to boxes that have been disconnected
       // from the mesh
       if (_data.message.lb === 'a') {
@@ -60,13 +62,13 @@ function connect() {
       }
       return;
     }
-    if (_data.type === 8) { // a box has changed master
+    if (_data.action === 8) { // a box has changed master
       updateMasterBoxNumber(_data.message);
     }
-    if (_data.type === 9) { // User request to change default boxState of a given box has been received and is being processed
+    if (_data.action === 9) { // User request to change default boxState of a given box has been received and is being processed
       updateClickedStateButton(_data.message.lb, "boxDefstate", _data.message.boxDefstate)
     }
-    if (_data.type === 10) { // the default state of a given box has changed
+    if (_data.action === 10) { // the default state of a given box has changed
       updateDefaultStateButton(_data);
     }
   };
@@ -143,12 +145,14 @@ function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumbe
 
 function _onclickButtonWSSender(_messageType, _laserBoxNumber, _datasetValue, _clef) {
   var __toBeStringified = {};
-  __toBeStringified["type"] = _messageType;
+  __toBeStringified["action"] = _messageType;
   __toBeStringified["lb"] = _laserBoxNumber;
   __toBeStringified[_clef] = _datasetValue;
 
   var _json = JSON.stringify(__toBeStringified);
-    // type: _messageType,
+  // {action: 4; lb: 1; "boxState": 3}
+  // {action: 9; lb: 1; "boxDefstate": 3}
+    // action: _messageType,
     // lb: _laserBoxNumber,
     // dataSet
   // /*boxDefstate: _datasetValue*/ });
@@ -165,10 +169,11 @@ function oninputMasterSelect(e) {
     console.log("oninputMasterSelect: slave box: " + (_laserBoxNumber + 200));
     console.log("oninputMasterSelect: master box " + this.options[this.selectedIndex].value);
     var _json = JSON.stringify({
-      type: 8,
+      action: 8,
       lb: _laserBoxNumber,
       masterbox: parseInt(this.options[this.selectedIndex].value, 10)
      });
+     // {action: 8, lb: 1, masterbox: 4}
     console.log("oninputMasterSelect: about to send json via WS: " + _json);
     ws.send(_json);
     console.log("oninputMasterSelect: json sent.");
