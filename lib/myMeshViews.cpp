@@ -27,16 +27,14 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // myMeshViews: message sender for controller boxes
-// myMeshViews::myMeshViews(const char* state)
-/* To broadcast a message, you just have to instantiate the class. The sender is located in the constructor.
-   Upon instantiation, the constructor updates the properties of the representation of this box
+// myMeshViews::myMeshViews()
+/*
+   Upon instantiation, the constructor updates the properties of this ControlerBox
    in the array of ControlerBoxes (APIP, StationIP, NodeName).
-   After having called the constructor, you have to call a message builder, that will:
+   After having instantiating it, you have to call a message builder, that will:
    2. create a structured String with the params you passed it on;
-   3. passe this String to the sendBroadcast method of painlessMesh.
-   painlessMesh takes care of the broadcast.
-   Messages from controller boxes are not adressed to any other box in particular; all the other boxes
-   receive the message and, as the case may be, react accordingly.
+   3. passe this String to the sendBroadcast or sendSingle methods of painlessMesh.
+   painlessMesh takes care of the broadcast/sending.
 */
 
 
@@ -66,6 +64,40 @@ myMeshViews::myMeshViews()
 {
   ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
 }
+
+
+
+
+
+void myMeshViews::statusMsg(uint32_t destNodeId) {
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::statusMsg(): Starting.");
+  }
+  // prepare the JSON string to be sent via the mesh
+  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
+
+  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<capacity> doc;
+  JsonObject msg = doc.to<JsonObject>();
+
+  // load the JSON document with values
+  msg["actSt"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
+  msg["actStStartT"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  msg["boxDefstate"] = ControlerBoxes[myIndexInCBArray].sBoxDefaultState;
+  msg["action"] = "s";
+
+  // send to the sender
+  _sendMsg(msg, destNodeId);
+
+  // I signaled my boxState change.
+  // => set my own boxActiveStateHasBeenSignaled to true
+  ControlerBoxes[myIndexInCBArray].boxActiveStateHasBeenSignaled = true;
+
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::statusMsg(): Ending.");
+  }
+}
+
 
 
 
@@ -113,6 +145,77 @@ void myMeshViews::relayWSChangeRequest(const int8_t _i8RequestedChange, const ch
     }
 }
 
+
+
+
+
+void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
+  }
+
+  _sendMsg(obj, ControlerBoxes[0].nodeId);
+
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+  }
+}
+
+
+
+
+
+
+void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): Starting.");
+  }
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
+  msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
+  JsonArray _APIP = msg.createNestedArray("APIP");
+  for (short _i = 0; _i < 4; _i++) {
+    _APIP.add(ControlerBoxes[myIndexInCBArray].APIP[_i]);
+  }
+  // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
+  JsonArray _StIP = msg.createNestedArray("StIP");
+  for (short _i = 0; _i < 4; _i++) {
+    _StIP.add(ControlerBoxes[myIndexInCBArray].stationIP[_i]);
+  }
+  // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
+
+  // JSON serialization
+  int size_buff = 254;
+  char output[size_buff];
+
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
+  }
+  serializeJson(msg, output, size_buff);
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
+  }
+
+  // JSON conversion to String for painlessMesh
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
+  }
+  String str;
+  str = output;
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): About to send message as String");
+  }
+
+  // diffusion
+  if (destNodeId) {
+    laserControllerMesh.sendSingle(destNodeId, str);
+  } else {
+    laserControllerMesh.sendBroadcast(str);
+  }
+  if (MY_DG_MESH) {
+    Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
+  }
+}
 
 
 
@@ -204,57 +307,6 @@ void myMeshViews::relayWSChangeRequest(const int8_t _i8RequestedChange, const ch
 
 
 
-void myMeshViews::statusMsg(uint32_t destNodeId) {
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::statusMsg(): Starting.");
-  }
-  // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
-
-  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<capacity> doc;
-  JsonObject msg = doc.to<JsonObject>();
-
-  // load the JSON document with values
-  msg["actSt"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
-  msg["actStStartT"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  msg["boxDefstate"] = ControlerBoxes[myIndexInCBArray].sBoxDefaultState;
-  msg["action"] = "s";
-
-  // send to the sender
-  _sendMsg(msg, destNodeId);
-
-  // I signaled my boxState change.
-  // => set my own boxActiveStateHasBeenSignaled to true
-  ControlerBoxes[myIndexInCBArray].boxActiveStateHasBeenSignaled = true;
-
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::statusMsg(): Ending.");
-  }
-}
-
-
-
-
-
-
-void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
-  }
-
-  _sendMsg(obj, ControlerBoxes[0].nodeId);
-
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
-  }
-}
-
-
-
-
-
-
 // This function is called exclusively from the laser controllers -- not the interface
 // void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
 //   if (MY_DG_MESH) {
@@ -307,66 +359,13 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 
 // Helper functions
 // serialization of message to be sent
-JsonObject myMeshViews::_createJsonobject() {
-  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<capacity> doc;
-
-  JsonObject msg = doc.to<JsonObject>();
-  return msg;
-}
-
-
-
-
-void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): Starting.");
-  }
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
-  msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
-  JsonArray _APIP = msg.createNestedArray("APIP");
-  for (short _i = 0; _i < 4; _i++) {
-    _APIP.add(ControlerBoxes[myIndexInCBArray].APIP[_i]);
-  }
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
-  JsonArray _StIP = msg.createNestedArray("StIP");
-  for (short _i = 0; _i < 4; _i++) {
-    _StIP.add(ControlerBoxes[myIndexInCBArray].stationIP[_i]);
-  }
-  // Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
-
-  // JSON serialization
-  int size_buff = 254;
-  char output[size_buff];
-
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
-  }
-  serializeJson(msg, output, size_buff);
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
-  }
-  // JSON serialization conversion for painlessMesh
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
-  }
-  String str;
-  str = output;
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): About to send message as String");
-  }
-
-  // diffusion
-  if (destNodeId) {
-    laserControllerMesh.sendSingle(destNodeId, str);
-  } else {
-    laserControllerMesh.sendBroadcast(str);
-  }
-  if (MY_DG_MESH) {
-    Serial.print("myMeshViews:_sendMsg(): done. Broadcasted message: ");Serial.println(str);
-  }
-}
+// JsonObject myMeshViews::_createJsonobject() {
+//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+//   StaticJsonDocument<capacity> doc;
+//
+//   JsonObject msg = doc.to<JsonObject>();
+//   return msg;
+// }
 
 
 
