@@ -30,14 +30,14 @@ Created by Cedric Lor, January 22, 2019.
 
 
 
-myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*JsonDocument& root*/)
+myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
 {
   if (MY_DG_MESH) {
     Serial.print("myMeshController::myMeshController: Starting\n");
   }
 
   // read the action field
-  const char* _action = root["action"];
+  const char* _action = _obj["action"];
 
   // if debug, serial print the action field
   if (MY_DG_MESH) {
@@ -48,19 +48,19 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   //////// Manual mode
   // const char* _u = "u";
   // if (strcmp(_action, _u) == 0) {           // action 'u' for this message requests that the laserPin be turned into or out of User controlled mode
-  //   _manualSwitch(root);
+  //   _manualSwitch(_obj);
   //   return;
   // }
   //////// IR mode
   // const char* _i = "i";
   // if (strcmp(_action, _i) == 0) {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
-  //   _changeInclusionIR(root);
+  //   _changeInclusionIR(_obj);
   //   return;
   // }
   //////// Blinking interval
   // const char* _b = "b";
   // if (strcmp(_action, _b) == 0) {           // action 'b' for this message relates to a blinking interval, that this box should update as the case may be
-  //   _changeBlinkingInterval(root);
+  //   _changeBlinkingInterval(_obj);
   //   return;
   // }
 
@@ -68,7 +68,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   const char* _mc = "mc";
   if (strcmp(_action, _mc) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
 
-    byte __bMasterBoxName = root["ms"];
+    byte __bMasterBoxName = _obj["ms"];
     if (MY_DG_MESH) {
       Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName = %i\n", _action, __bMasterBoxName);
     }
@@ -79,9 +79,9 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
     }
 
     // get the index as an int:
-    // root["NNa"] is a char -> cast it as int
+    // _obj["NNa"] is a char -> cast it as int
     // bControllerBoxPrefix is a byte -> cast it as int
-    short int __sSlaveBoxIndexNumber = (int)root["NNa"] - (int)bControllerBoxPrefix;
+    short int __sSlaveBoxIndexNumber = (int)_obj["NNa"] - (int)bControllerBoxPrefix;
     // if (MY_DG_MESH) {
     //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
     // }
@@ -104,9 +104,9 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   //   // Serial.printf("myMeshController::myMeshController: _action = %s\n", _action);
   //   // Serial.printf("myMeshController::myMeshController: _actionChangeBox = %s\n", _actionChangeBox);
   //   // Serial.printf("myMeshController::myMeshController: (strcmp(_action, _actionChangeBox) == 0) =  %i\n", (strcmp(_action, _actionChangeBox) == 0));
-  //   Serial.printf("myMeshController::myMeshController: root.containsKey(\"boxState\") = %i\n", (root.containsKey("boxState")));
-  //   Serial.printf("myMeshController::myMeshController: root.containsKey(\"masterbox\") = %i\n", (root.containsKey("masterbox")));
-  //   Serial.printf("myMeshController::myMeshController: root.containsKey(\"boxDefstate\") = %i\n", (root.containsKey("boxDefstate")));
+  //   Serial.printf("myMeshController::myMeshController: _obj.containsKey(\"boxState\") = %i\n", (_obj.containsKey("boxState")));
+  //   Serial.printf("myMeshController::myMeshController: _obj.containsKey(\"masterbox\") = %i\n", (_obj.containsKey("masterbox")));
+  //   Serial.printf("myMeshController::myMeshController: _obj.containsKey(\"boxDefstate\") = %i\n", (_obj.containsKey("boxDefstate")));
   // }
 
   if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
@@ -114,13 +114,14 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
     // "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
     // if this is a change active state request
-    if (root.containsKey("boxState")) {
+    if (_obj.containsKey("boxState")) {
       // if the message comes from the interface, this is a relayed message coming from the web
-      if (senderNodeId == ControlerBoxes[0].nodeId) {
+      if (_ui32SenderNodeId == ControlerBoxes[0].nodeId) {
         if (MY_DG_MESH) {
-          Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["boxState"].as<int8_t>());
+          Serial.printf("myMeshController::myMeshController: will change my target state to %i", _obj["boxState"].as<int8_t>());
         }
-        ControlerBox::valFromWeb = root["boxState"].as<int8_t>();
+        // set the valFromWeb
+        ControlerBox::valFromWeb = _obj["boxState"].as<int8_t>();
       } // else it might be a message coming from some other box,
       // but I shall not react. Reactions to changes in the mesh are
       // detected via status messages
@@ -128,44 +129,44 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
     }
 
     // if this is a change master box request
-    if (root.containsKey("masterbox")) {
+    if (_obj.containsKey("masterbox")) {
       // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-      ControlerBoxes[myIndexInCBArray].updateMasterBoxName(root["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+      ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
       // send a message to the IF telling it that I have taken the change into account
-      root["action"].set("changedBx");
+      _obj["action"].set("changedBx");
       myMeshViews __myMeshViews;
-      __myMeshViews.changedBoxConfirmation(root);
-      // __myMeshViews.changedMasterBoxConfirmation(root["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+      __myMeshViews.changedBoxConfirmation(_obj);
+      // __myMeshViews.changedMasterBoxConfirmation(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
       // mark the change as signaled
       ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
       return;
     }
 
     // if this is a change default state request
-    if (root.containsKey("boxDefstate")) {
+    if (_obj.containsKey("boxDefstate")) {
       // if (MY_DG_MESH) {
       //   // Serial.printf("myMeshController::myMeshController: ----------------------------------------------------------\n");
-      //   Serial.printf("myMeshController::myMeshController: senderNodeId = %u\n", senderNodeId);
+      //   Serial.printf("myMeshController::myMeshController: _ui32SenderNodeId = %u\n", _ui32SenderNodeId);
       //   Serial.printf("myMeshController::myMeshController: ControlerBoxes[0].nodeId = %u\n", ControlerBoxes[0].nodeId);
-      //   Serial.printf("myMeshController::myMeshController: (senderNodeId == ControlerBoxes[0].nodeId) = %i\n", (senderNodeId == ControlerBoxes[0].nodeId));
+      //   Serial.printf("myMeshController::myMeshController: (_ui32SenderNodeId == ControlerBoxes[0].nodeId) = %i\n", (_ui32SenderNodeId == ControlerBoxes[0].nodeId));
       // }
       // if the message comes from the interface,
       // this is a relayed message coming from the web
-      if (senderNodeId == ControlerBoxes[0].nodeId) {
+      if (_ui32SenderNodeId == ControlerBoxes[0].nodeId) {
         // if (MY_DG_MESH) {
-        //   Serial.printf("myMeshController::myMeshController: will change my default state to %i\n", root["boxDefstate"].as<int>());
+        //   Serial.printf("myMeshController::myMeshController: will change my default state to %i\n", _obj["boxDefstate"].as<int>());
         // }
-        ControlerBoxes[myIndexInCBArray].sBoxDefaultState = root["boxDefstate"].as<int8_t>();
+        ControlerBoxes[myIndexInCBArray].sBoxDefaultState = _obj["boxDefstate"].as<int8_t>();
 
         // send a message to the IF telling it that I have taken the change into account
-        root["action"] = "changedBx";
+        _obj["action"] = "changedBx";
         // if (MY_DG_MESH) {
-        //   Serial.printf("myMeshController::myMeshController: root[\"action\"] = %s\n", root["action"].as<const char*>());
+        //   Serial.printf("myMeshController::myMeshController: _obj[\"action\"] = %s\n", _obj["action"].as<const char*>());
         //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
         // }
 
         myMeshViews __myMeshViews;
-        __myMeshViews.changedBoxConfirmation(root);
+        __myMeshViews.changedBoxConfirmation(_obj);
         // if (MY_DG_MESH) {
         //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
         // }
@@ -185,7 +186,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   // change masterBox request (received by the laser boxes only)
   // const char* _m = "m";
   // if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-  //   byte __bMasterBoxName = root["ms"];
+  //   byte __bMasterBoxName = _obj["ms"];
   //   __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
   //
   //   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
@@ -209,7 +210,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
     // update the ControlerBoxes[] array with the values received from the other box
     // if the sender box is not the interface
 
-    byte __bSenderNodeName = root["NNa"];
+    byte __bSenderNodeName = _obj["NNa"];
     if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
 
     // Update the sender box properties
@@ -225,7 +226,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
     }
 
     // update the box properties
-    ControlerBox::updateOtherBoxProperties(senderNodeId, root);
+    ControlerBox::updateOtherBoxProperties(_ui32SenderNodeId, _obj);
 
     return;
   }
@@ -237,7 +238,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   // const char* _c = "c";
   // if (strcmp(_action, _c) == 0) {
   //   // action 'c': this message orders to change the boxTargetState
-  //   byte __bSenderNodeName = root["NNa"];
+  //   byte __bSenderNodeName = _obj["NNa"];
   //   if (MY_DG_MESH) {
   //     Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
   //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
@@ -248,9 +249,9 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   //   // this is a relayed message coming from the web
   //   if ((__bSenderNodeName == bInterfaceNodeName)) {
   //     if (MY_DG_MESH) {
-  //       Serial.printf("myMeshController::myMeshController: will change my target state to %i", root["receiverTargetState"].as<int>());
+  //       Serial.printf("myMeshController::myMeshController: will change my target state to %i", _obj["receiverTargetState"].as<int>());
   //     }
-  //     ControlerBox::valFromWeb = root["receiverTargetState"];
+  //     ControlerBox::valFromWeb = _obj["receiverTargetState"];
   //   } // else it might be a message coming from some other box,
   //   // but I shall not react. Reactions to changes in the mesh are
   //   // detected via status messages
@@ -264,7 +265,7 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   // const char* _d = "d";
   // if (strcmp(_action, _d) == 0) {
   //   // action 'c': this message orders to change the boxDefaultState
-  //   byte __bSenderNodeName = (byte)root["NNa"].as<int>();
+  //   byte __bSenderNodeName = (byte)_obj["NNa"].as<int>();
   //   if (MY_DG_MESH) {
   //     Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
   //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
@@ -274,10 +275,10 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   //   // if the message comes from the interface,
   //   // this is a relayed message coming from the web
   //   if ((__bSenderNodeName == bInterfaceNodeName)) {
-  //     if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", root["receiverDefaultState"].as<int>());}
-  //     byte __bSenderIndexInCB = root["receiverBoxName"];
+  //     if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", _obj["receiverDefaultState"].as<int>());}
+  //     byte __bSenderIndexInCB = _obj["receiverBoxName"];
   //     __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
-  //     ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = root["receiverDefaultState"].as<short>();
+  //     ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = _obj["receiverDefaultState"].as<short>();
   //     // send a message to the IF telling it that I have taken the change into account
   //     myMeshViews __myMeshViews;
   //     __myMeshViews.changedBoxDefaultStateConfirmation(ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState);
@@ -295,8 +296,8 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
   const char* _dc = "dc";
   if (strcmp(_action, _dc) == 0) {
     // action 'dc': this message confirms a change the boxDefaultState for a given box
-    short int __sSenderIndexInCB  = root["NNa"].as<short>() - (int)bControllerBoxPrefix;
-    short int __sDefaultState = root["ds"].as<short>();
+    short int __sSenderIndexInCB  = _obj["NNa"].as<short>() - (int)bControllerBoxPrefix;
+    short int __sDefaultState = _obj["ds"].as<short>();
     if (MY_DG_MESH) {
       Serial.print("myMeshController::myMeshController: __sSenderIndexInCB = ");Serial.println(__sSenderIndexInCB);
       Serial.print("myMeshController::myMeshController: __sDefaultState = ");Serial.println(__sDefaultState);
@@ -330,27 +331,27 @@ myMeshController::myMeshController(uint32_t senderNodeId, JsonObject& root/*Json
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// void myMeshController::_manualSwitch(JsonDocument& _root) {
+// void myMeshController::_manualSwitch(JsonDocument& _obj) {
   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"u";"ts":"0"}
   // short _iTargetState;
-  // const char* _sTargetState = _root["ts"];
+  // const char* _sTargetState = _obj["ts"];
   // _iTargetState = atoi(_sTargetState);
   // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_iTargetState);
   // LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
 // }
 
-// void myMeshController::_changeInclusionIR(JsonDocument& _root) {
+// void myMeshController::_changeInclusionIR(JsonDocument& _obj) {
   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"i";"ts":"0"}
   // short _iTargetState;
-  // const char* _sTargetState = _root["ts"];
+  // const char* _sTargetState = _obj["ts"];
   // _iTargetState = atoi(_sTargetState);
   // LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
 // }
 
-// void myMeshController::_changeBlinkingInterval(JsonDocument& _root) {
+// void myMeshController::_changeBlinkingInterval(JsonDocument& _obj) {
   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"b";"ti":"5000"}
   // unsigned long _ulTargetBlinkingInterval;
-  // const char* _sTargetBlinkingInterval = _root["ti"];
+  // const char* _sTargetBlinkingInterval = _obj["ti"];
   // _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
   // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
 // }
@@ -367,7 +368,7 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
 //
 // slaveReactionStruct slaveReactionStructsArray[4];
 
-// void myMeshController::_slaveBoxSwitch(JsonDocument& root) {
+// void myMeshController::_slaveBoxSwitch(JsonDocument& _obj) {
   // expected JSON string: {"NNa":"201";"APIP":"...";"StIP":"...";"action":"s";"senderBoxActiveState":"on"}
   /*
       Explanation of index numbers in the array of boolean arrays B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0 or 1]:
@@ -378,9 +379,9 @@ const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LO
         - via the changeSlaveReaction sub (in case the user has decided to change it via a web control).
       - The second index number (0 or 1) indicates the current status of the masterBox and selects, within the HIGH/LOW pair, the reaction of the slaveBox.
   */
-  // extract the root[rootKey]
-  // const char* __cSenderBoxActiveState = root["senderBoxActiveState"];
-  // Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from root[\"senderBoxActiveState\"] to senderBoxActiveState \n", __cSenderBoxActiveState);
+  // extract the _obj[rootKey]
+  // const char* __cSenderBoxActiveState = _obj["senderBoxActiveState"];
+  // Serial.printf("myMeshController::_slaveBoxSwitch() %s alloted from _obj[\"senderBoxActiveState\"] to senderBoxActiveState \n", __cSenderBoxActiveState);
 
   // The following line has for sole purpose to provide data to the Serial.printfs below
   // const char* myFutureState = _B_SLAVE_ON_OFF_REACTIONS[iSlaveOnOffReaction][0] == LOW ? "on" : "off";
