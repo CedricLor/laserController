@@ -75,7 +75,7 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
   const char* _actionChangedBx = "changedBx";
   if (strcmp(_action, _actionChangedBx) == 0) {           // action 'changedBx' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
 
-    _changedBx(_ui32SenderNodeId, _obj);
+    _changedBoxConfirmation(_ui32SenderNodeId, _obj);
     return;
   }
 
@@ -167,7 +167,7 @@ void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject&
 
 
 // CHANGED BOX CONFIRMATION (received by all the boxes)
-void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+void myMeshController::_changedBoxConfirmation(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   // lloking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
   // get the index number of the sender
