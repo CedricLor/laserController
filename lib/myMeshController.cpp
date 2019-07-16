@@ -82,62 +82,6 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
 
 
 
-  // FORMER CHANGED CONFIRMATIONS
-
-  // change masterBox confirmation (received by the interface only)
-  const char* _mc = "mc";
-  if (strcmp(_action, _mc) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-
-    byte __bMasterBoxName = _obj["ms"];
-    if (MY_DG_MESH) {
-      Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName = %i\n", _action, __bMasterBoxName);
-    }
-    // reduce it from [e.g. 205] to [e.g. 5] send less data via the web
-    __bMasterBoxName = __bMasterBoxName - bControllerBoxPrefix;
-    if (MY_DG_MESH) {
-      Serial.printf("myMeshController::myMeshController: _action = %s, __bMasterBoxName - bControllerBoxPrefix = %i\n", _action, (__bMasterBoxName - bControllerBoxPrefix));
-    }
-
-    // get the index as an int:
-    // _obj["NNa"] is a char -> cast it as int
-    // bControllerBoxPrefix is a byte -> cast it as int
-    short int __sSlaveBoxIndexNumber = (int)_obj["NNa"] - (int)bControllerBoxPrefix;
-    // if (MY_DG_MESH) {
-    //   Serial.printf("myMeshController::myMeshController: _action = %s, __sSlaveBoxIndexNumber = %i\n", _action, __sSlaveBoxIndexNumber);
-    // }
-
-    // set the new master box number in the relevant ControlerBox (on the interface)
-    // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
-    ControlerBoxes[__sSlaveBoxIndexNumber].updateMasterBoxName(__bMasterBoxName);
-    if (MY_DG_MESH) {
-      Serial.printf("myMeshController::myMeshController: _action = %s, ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", _action, __sSlaveBoxIndexNumber, ControlerBoxes[__sSlaveBoxIndexNumber].bMasterBoxName);
-      Serial.printf("myMeshController::myMeshController: ending on _action = %s\n", _action);
-    }
-    return;
-  }
-
-
-  // defaultBoxState change confirmation
-  // This is a signal received by the IF from a laser controller
-  const char* _dc = "dc";
-  if (strcmp(_action, _dc) == 0) {
-    // action 'dc': this message confirms a change the boxDefaultState for a given box
-    short int __sSenderIndexInCB  = _obj["NNa"].as<short>() - (int)bControllerBoxPrefix;
-    short int __sDefaultState = _obj["ds"].as<short>();
-    if (MY_DG_MESH) {
-      Serial.print("myMeshController::myMeshController: __sSenderIndexInCB = ");Serial.println(__sSenderIndexInCB);
-      Serial.print("myMeshController::myMeshController: __sDefaultState = ");Serial.println(__sDefaultState);
-    }
-
-    // set the new default state in the relevant ControlerBox (on the interface)
-    // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
-    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultState = __sDefaultState;
-    // mark the change has unsignaled
-    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
-
-    return;
-  }
-
   // Temporarily commented out
   //////// Manual mode
   // const char* _u = "u";
@@ -198,7 +142,7 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
 
 
 void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
-  // "boxState": 0; // "masterbox":201 // "boxDefstate": 4
+  // looking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
   // if this is a change active state request
   if (_obj.containsKey("boxState")) {
@@ -290,7 +234,60 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
 
 
 void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+  // lloking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
+  // if this is a "change master box request" confirmation
+  if (_obj.containsKey("masterbox")) {
+
+    // get the new masterBoxName from the JSON
+    int8_t __i8MasterBoxName = _obj["masterbox"].as<int8_t>() + bControllerBoxPrefix;
+    if (MY_DG_MESH) {
+      Serial.printf("myMeshController::_changedBx: __i8MasterBoxName = %i\n",  __i8MasterBoxName);
+    }
+
+    // get the index number of the slave
+    int8_t __i8SenderNodeName = _obj["NNa"];
+    if (MY_DG_MESH) {Serial.print("myMeshController::_changedBx: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
+
+    int8_t __i8BoxIndex = __i8SenderNodeName - bControllerBoxPrefix;
+    if (MY_DG_MESH) {Serial.print("myMeshController::_changedBx: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
+
+    // set the new master box number in the relevant ControlerBox (on the interface)
+    // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
+    ControlerBoxes[__i8BoxIndex].updateMasterBoxName(__i8MasterBoxName);
+    if (MY_DG_MESH) {
+      Serial.printf("myMeshController::_changedBx: ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", __i8BoxIndex, ControlerBoxes[__i8BoxIndex].bMasterBoxName);
+    }
+
+    return;
+  }
+
+  // if this is a "change default state request" confirmation
+  if (_obj.containsKey("boxDefstate")) {
+
+    return;
+  }
+
+  // FORMER CHANGED CONFIRMATIONS
+
+
+  // defaultBoxState change confirmation
+  // This is a signal received by the IF from a laser controller
+    // action 'dc': this message confirms a change the boxDefaultState for a given box
+    short int __sSenderIndexInCB  = _obj["NNa"].as<short>() - (int)bControllerBoxPrefix;
+    short int __sDefaultState = _obj["ds"].as<short>();
+    if (MY_DG_MESH) {
+      Serial.print("myMeshController::myMeshController: __sSenderIndexInCB = ");Serial.println(__sSenderIndexInCB);
+      Serial.print("myMeshController::myMeshController: __sDefaultState = ");Serial.println(__sDefaultState);
+    }
+
+    // set the new default state in the relevant ControlerBox (on the interface)
+    // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
+    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultState = __sDefaultState;
+    // mark the change has unsignaled
+    ControlerBoxes[__sSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
+
+    return;
 }
 
 
