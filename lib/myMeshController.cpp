@@ -109,6 +109,7 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
 
 
 
+// STATUS MESSAGE (received by all, sent by LBs only).
 void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   /*
     action 's': the boxState of another box has changed and is being
@@ -125,7 +126,7 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
     myMeshViews::tSendBoxStateToNewBox.restartDelayed();
   }
 
-  // update the box properties
+  // update the box properties in my CB array
   ControlerBox::updateOtherBoxProperties(_ui32SenderNodeId, _obj);
 }
 
@@ -135,6 +136,7 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
 
 
 
+// CHANGEBOX REQUEST (received by the laser boxes only)
 void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   // looking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
@@ -164,6 +166,7 @@ void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
 
 
+// CHANGED BOX CONFIRMATION (received by all the boxes)
 void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   // lloking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
@@ -203,6 +206,23 @@ void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
 
 
 
+// void myMeshController::_updateMyProperty(char& _cPropertyKey, JsonObject& _obj) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateMyProperty: will change my property %s to %i", _obj[_cPropertyKey].as<int8_t>());
+//   }
+//
+//   // update property and propertyChangeHasBeenSignaled for my box
+//   _updatePropertyForBox(_cPropertyKey, myIndexInCBArray, _obj)
+//
+//   // send confirmation message
+//   _changeBoxSendConfirmationMsg(_obj);
+//
+//   // mark the change as signaled
+//   ControlerBoxes[_i8BoxIndex]._cPropertyKey = true;
+// }
+
+
+
 void myMeshController::_updateMyMasterBoxName(JsonObject& _obj) {
   if (MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i", _obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
@@ -238,12 +258,15 @@ void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
 
 void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
   // send a message to the IF telling it that I have taken the change into account
+
+  // change the "action" key of the received JSON object from "changeBox" to "changedBx"
   _obj["action"] = "changedBx";
   // if (MY_DG_MESH) {
   //   Serial.printf("myMeshController::myMeshController: _obj[\"action\"] = %s\n", _obj["action"].as<const char*>());
   //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
   // }
 
+  // send the received JSON object with its amended "action" key
   myMeshViews __myMeshViews;
   __myMeshViews.changedBoxConfirmation(_obj);
   // if (MY_DG_MESH) {
@@ -269,6 +292,28 @@ int8_t myMeshController::_getSenderBoxIndexNumber(JsonObject& _obj) {
 }
 
 
+// void myMeshController::_updatePropertyForBox(char& _cPropertyKey, int8_t _i8BoxIndex, JsonObject& _obj) {
+//   // get the new property from the JSON
+//   int8_t __i8PropertyValue = _obj[_cPropertyKey].as<int8_t>();
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateSenderProperty: %s = %i\n", _cPropertyKey, __i8PropertyValue);
+//   }
+//
+//   // 1. set the new property of the relevant ControlerBox in the
+//   // ControlerBoxes array
+//   // 2. set the bool announcing that the change has not been signaled,
+//   // to have it caught by the webServerTask (on the interface).
+//   // TODO:
+//   // a. ControlerBoxes[_i8BoxIndex].updateProperty needs to be drafted
+//   // b. in ControlerBoxes[_i8BoxIndex].updateProperty, if it is a master nodeName
+//   // change, add the bControllerBoxPrefix.
+//   ControlerBoxes[_i8BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
+//
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateSenderProperty: ControlerBoxes[%i], property %s has been updated to %i\n", _i8BoxIndex, _cPropertyKey, __i8PropertyValue);
+//   }
+// }
+
 
 // _changedBox helper functions
 void myMeshController::_updateSenderMasterBox(int8_t _i8BoxIndex, JsonObject& _obj) {
@@ -278,8 +323,10 @@ void myMeshController::_updateSenderMasterBox(int8_t _i8BoxIndex, JsonObject& _o
     Serial.printf("myMeshController::_updateSenderMasterBox: __i8MasterBoxName = %i\n",  __i8MasterBoxName);
   }
 
-  // set the new master box number in the relevant ControlerBox (on the interface)
-  // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
+  // 1. set the new master box number of the relevant ControlerBox in the
+  // ControlerBoxes array
+  // 2. set the bool announcing that the change has not been signaled,
+  // to have it caught by the webServerTask (on the interface)
   ControlerBoxes[_i8BoxIndex].updateMasterBoxName(__i8MasterBoxName);
 
   if (MY_DG_MESH) {
@@ -294,16 +341,21 @@ void myMeshController::_updateSenderDefaultState(int8_t _i8BoxIndex, JsonObject&
     Serial.printf("myMeshController::_updateSenderDefaultState: __i8DefaultState = %i\n", __i8DefaultState);
   }
 
-  // set the new default state in the relevant ControlerBox (on the interface)
-  // set the bool announcing that the change has not been signaled, to have it caught by the webServerTask
-  ControlerBoxes[_i8BoxIndex].sBoxDefaultState = __i8DefaultState;
-  // mark the change has unsignaled
-  ControlerBoxes[_i8BoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
+  // 1. set the new default state of the relevant ControlerBox in the
+  // ControlerBoxes array
+  // 2. set the bool announcing that the change has not been signaled,
+  // to have it caught by the webServerTask (on the interface)
+  ControlerBox::setBoxDefaultState(_i8BoxIndex, __i8DefaultState);
 
   if (MY_DG_MESH) {
     Serial.printf("myMeshController::_updateSenderDefaultState: ControlerBoxes[%i].sBoxDefaultState has been updated to %i\n", _i8BoxIndex, ControlerBoxes[_i8BoxIndex].sBoxDefaultState);
   }
 }
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 ///////////////////////////////
