@@ -103,6 +103,10 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
+// void myMeshViews::changeBoxRequest(JsonObject& _obj) {
+// _obj = {action: 4; lb: 1; "boxState": 3}
+// _obj = {action: 8, lb: 1, "masterbox": 4}
+// _obj = {action: 9; lb: 1; "boxDefstate": 3}
 void myMeshViews::changeBoxRequest(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
     if (MY_DG_MESH) {
       Serial.printf("myMeshViews::changeBoxRequest(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);

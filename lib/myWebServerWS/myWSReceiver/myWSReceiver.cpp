@@ -52,7 +52,8 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
   }
 
   // create a StaticJsonDocument entitled _doc
-  StaticJsonDocument<256> _doc;
+  const int _iCapacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<_iCapacity> _doc;
   if (MY_DG_WS) {
     Serial.print("myWSReceiver::myWSReceiver(): jsonDocument created\n");
   }
@@ -67,7 +68,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
   }
 
   // read the action type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
-  const int8_t __i8MessageActionType = _doc["action"]; // correspondings to root[action] in meshController
+  const int8_t __i8MessageActionType = _obj["action"]; // correspondings to root[action] in meshController
   if (MY_DG_WS) { Serial.printf("myWSReceiver::myWSReceiver(): The message __i8MessageActionType is %i \n", __i8MessageActionType); }
 
 
@@ -304,6 +305,13 @@ void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageActionType, Jso
 
 
 void myWSReceiver::_requestBoxChange(JsonObject& _obj, const char& _cChangeKey, const int8_t _i8MessageActionType) {
+  // _obj = {action: 4; lb: 1; "boxState": 3}
+  // _obj = {action: 8, lb: 1, "masterbox": 4}
+  // _obj = {action: 9; lb: 1; "boxDefstate": 3}
+  // (const char&)"boxState"
+  // (const char&)"masterbox"
+  // (const char&)"boxDefstate"
+
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxChange(): Starting with _cChangeKey = %s, _i8MessageActionType = %i \n", &_cChangeKey, _i8MessageActionType);
   }
@@ -325,6 +333,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, const char& _cChangeKey, 
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.changeBoxRequest().\n");
   }
+  // __myMeshViews.changeBoxRequest(_obj);
   __myMeshViews.changeBoxRequest(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
 
   // send a response telling the instruction is in course of being executed

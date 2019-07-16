@@ -36,6 +36,7 @@ class myMeshViews
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
+    // void changeBoxRequest(JsonObject& _obj);
     void changeBoxRequest(const int8_t __i8RequestedChange, const char& _cChangeKey, const int8_t __i8BoxIndexInCB);
 
     // void changeBoxTargetState(const int8_t __i8BoxTargetState, const int8_t _i8BoxIndexInCB);
