@@ -138,93 +138,6 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
     return;
   }
 
-
-
-
-
-
-
-  // FORMER CHANGE REQUESTS
-
-  // Receiving a "change this boxState" request
-  // It may only be received on laser boxes
-  // This is a signal sent from the web and relayed by the mesh
-  // const char* _c = "c";
-  // if (strcmp(_action, _c) == 0) {
-  //   // action 'c': this message orders to change the boxTargetState
-  //   byte __i8SenderNodeName = _obj["NNa"];
-  //   if (MY_DG_MESH) {
-  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);
-  //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
-  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName == bInterfaceNodeName = ");Serial.println(__i8SenderNodeName == bInterfaceNodeName);
-  //   }
-  //
-  //   // if the message comes from the interface,
-  //   // this is a relayed message coming from the web
-  //   if ((__i8SenderNodeName == bInterfaceNodeName)) {
-  //     if (MY_DG_MESH) {
-  //       Serial.printf("myMeshController::myMeshController: will change my target state to %i", _obj["receiverTargetState"].as<int>());
-  //     }
-  //     ControlerBox::valFromWeb = _obj["receiverTargetState"];
-  //   } // else it might be a message coming from some other box,
-  //   // but I shall not react. Reactions to changes in the mesh are
-  //   // detected via status messages
-  //   return;
-  // }
-
-
-
-
-  // change masterBox request (received by the laser boxes only)
-  // const char* _m = "m";
-  // if (strcmp(_action, _m) == 0) {           // action 'm' for this message relates to a master node number, that this box should update as the case may be
-  //   byte __bMasterBoxName = _obj["ms"];
-  //   __bMasterBoxName = __bMasterBoxName + bControllerBoxPrefix;
-  //
-  //   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-  //   ControlerBoxes[myIndexInCBArray].updateMasterBoxName(__bMasterBoxName);
-  //   // send a message to the IF telling it that I have taken the change into account
-  //   myMeshViews __myMeshViews;
-  //   __myMeshViews.changedMasterBoxConfirmation(__bMasterBoxName);
-  //   // mark the change has signaled
-  //   ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
-  //
-  //   return;
-  // }
-
-
-
-  // change this defaultBoxState request
-  // This is a signal sent from the web and relayed by the mesh
-  // const char* _d = "d";
-  // if (strcmp(_action, _d) == 0) {
-  //   // action 'c': this message orders to change the boxDefaultState
-  //   byte __i8SenderNodeName = (byte)_obj["NNa"].as<int>();
-  //   if (MY_DG_MESH) {
-  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);
-  //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
-  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName == bInterfaceNodeName = ");Serial.println(__i8SenderNodeName == bInterfaceNodeName);
-  //   }
-  //
-  //   // if the message comes from the interface,
-  //   // this is a relayed message coming from the web
-  //   if ((__i8SenderNodeName == bInterfaceNodeName)) {
-  //     if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", _obj["receiverDefaultState"].as<int>());}
-  //     byte __bSenderIndexInCB = _obj["receiverBoxName"];
-  //     __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
-  //     ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState = _obj["receiverDefaultState"].as<short>();
-  //     // send a message to the IF telling it that I have taken the change into account
-  //     myMeshViews __myMeshViews;
-  //     __myMeshViews.changedBoxDefaultStateConfirmation(ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultState);
-  //     // mark the change has signaled
-  //     ControlerBoxes[(int)__bSenderIndexInCB].sBoxDefaultStateChangeHasBeenSignaled = false;
-  //   } // else it might be a message coming from some other box,
-  //   // but I shall not react. Reactions to changes in the mesh are
-  //   // detected via status messages
-  //   return;
-  // }
-
-
   // Temporarily commented out
   //////// Manual mode
   // const char* _u = "u";
@@ -379,6 +292,14 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
 void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
 
 }
+
+
+
+
+
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
