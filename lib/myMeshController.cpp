@@ -152,16 +152,16 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
   // const char* _c = "c";
   // if (strcmp(_action, _c) == 0) {
   //   // action 'c': this message orders to change the boxTargetState
-  //   byte __bSenderNodeName = _obj["NNa"];
+  //   byte __i8SenderNodeName = _obj["NNa"];
   //   if (MY_DG_MESH) {
-  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
+  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);
   //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
-  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
+  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName == bInterfaceNodeName = ");Serial.println(__i8SenderNodeName == bInterfaceNodeName);
   //   }
   //
   //   // if the message comes from the interface,
   //   // this is a relayed message coming from the web
-  //   if ((__bSenderNodeName == bInterfaceNodeName)) {
+  //   if ((__i8SenderNodeName == bInterfaceNodeName)) {
   //     if (MY_DG_MESH) {
   //       Serial.printf("myMeshController::myMeshController: will change my target state to %i", _obj["receiverTargetState"].as<int>());
   //     }
@@ -199,16 +199,16 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
   // const char* _d = "d";
   // if (strcmp(_action, _d) == 0) {
   //   // action 'c': this message orders to change the boxDefaultState
-  //   byte __bSenderNodeName = (byte)_obj["NNa"].as<int>();
+  //   byte __i8SenderNodeName = (byte)_obj["NNa"].as<int>();
   //   if (MY_DG_MESH) {
-  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);
+  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);
   //     Serial.print("myMeshController::myMeshController: bInterfaceNodeName = ");Serial.println(bInterfaceNodeName);
-  //     Serial.print("myMeshController::myMeshController: __bSenderNodeName == bInterfaceNodeName = ");Serial.println(__bSenderNodeName == bInterfaceNodeName);
+  //     Serial.print("myMeshController::myMeshController: __i8SenderNodeName == bInterfaceNodeName = ");Serial.println(__i8SenderNodeName == bInterfaceNodeName);
   //   }
   //
   //   // if the message comes from the interface,
   //   // this is a relayed message coming from the web
-  //   if ((__bSenderNodeName == bInterfaceNodeName)) {
+  //   if ((__i8SenderNodeName == bInterfaceNodeName)) {
   //     if (MY_DG_MESH) {Serial.printf("myMeshController::myMeshController: will change my default state to %i", _obj["receiverDefaultState"].as<int>());}
   //     byte __bSenderIndexInCB = _obj["receiverBoxName"];
   //     __bSenderIndexInCB = __bSenderIndexInCB - bControllerBoxPrefix;
@@ -259,13 +259,13 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
     with the values received from the other box.
   */
 
-  byte __bSenderNodeName = _obj["NNa"];
-  if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __bSenderNodeName = ");Serial.println(__bSenderNodeName);}
+  int8_t __i8SenderNodeName = _obj["NNa"];
+  if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
 
   // Update the sender box properties
 
   // calculate the box index of the sending box
-  byte __boxIndex = __bSenderNodeName - bControllerBoxPrefix;
+  byte __boxIndex = __i8SenderNodeName - bControllerBoxPrefix;
   if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
 
   // if the sender is a newly connected box
