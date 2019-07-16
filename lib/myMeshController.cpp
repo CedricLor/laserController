@@ -64,7 +64,7 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
   const char* _actionChangeBox = "changeBox";
   if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
 
-    _changeBox(_ui32SenderNodeId, _obj);
+    _changeBoxRequest(_ui32SenderNodeId, _obj);
     return;
   }
 
@@ -137,7 +137,7 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
 
 
 // CHANGEBOX REQUEST (received by the laser boxes only)
-void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   // looking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
   // if this is a change active state request
@@ -194,7 +194,7 @@ void myMeshController::_changedBx(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
 
 
-// helper functions to myMeshController::_changeBox
+// helper functions to myMeshController::_changeBoxRequest
 void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
   if (MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to %i", _obj["boxState"].as<int8_t>());
