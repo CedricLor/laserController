@@ -118,12 +118,12 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
 
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
-void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonObject& doc) {
+void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
 
   // Setting nodeName, nodeId and IP properties
   // extract the index of the relevant box from its senderNodeName in the JSON
-  byte __bNodeName = doc["NNa"]; // ex. 201
+  byte __bNodeName = _obj["NNa"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
   byte __bBoxIndex = __bNodeName - bControllerBoxPrefix; // 201 - 200 = 1
 
@@ -134,13 +134,13 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonObject& d
     ControlerBoxes[__bBoxIndex].isNewBoxHasBeenSignaled = false;
     Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].isNewBoxHasBeenSignaled = %i\n", ControlerBoxes[__bBoxIndex].isNewBoxHasBeenSignaled);
   }
-  ControlerBoxes[__bBoxIndex].nodeId = senderNodeId;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i\n", ControlerBoxes[__bBoxIndex].senderNodeId);
+  ControlerBoxes[__bBoxIndex].nodeId = _ui32SenderNodeId;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__bBoxIndex].nodeId = %i\n", ControlerBoxes[__bBoxIndex]._ui32SenderNodeId);
 
   // set the IPs
-  ControlerBoxes[__bBoxIndex].APIP = IPAddress(doc["APIP"][0], doc["APIP"][1], doc["APIP"][2], doc["APIP"][3]);; // _parseIpStringToIPAddress(doc, "APIP");
+  ControlerBoxes[__bBoxIndex].APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].APIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].APIP);
-  ControlerBoxes[__bBoxIndex].stationIP = IPAddress(doc["StIP"][0], doc["StIP"][1], doc["StIP"][2], doc["StIP"][3]);; // _parseIpStringToIPAddress(doc, "APIP");
+  ControlerBoxes[__bBoxIndex].stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%i].stationIP = ", __bBoxIndex);Serial.println(ControlerBoxes[__bBoxIndex].stationIP);
 
   // set the bNodeName
@@ -151,15 +151,15 @@ void ControlerBox::updateOtherBoxProperties(uint32_t senderNodeId, JsonObject& d
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
-  const short int __senderBoxActiveState = doc["actSt"];
-  const uint32_t __uiSenderBoxActiveStateStartTime = doc["actStStartT"];
+  const short int __senderBoxActiveState = _obj["actSt"];
+  const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
   setBoxActiveState(__bBoxIndex, __senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
 
   // Setting defaultState stack
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
-  const short int __senderBoxDefaultState = doc["boxDefstate"];
+  const short int __senderBoxDefaultState = _obj["boxDefstate"];
   setBoxDefaultState(__bBoxIndex, __senderBoxDefaultState);
 
   // Print out the updated properties

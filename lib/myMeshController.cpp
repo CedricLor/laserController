@@ -265,11 +265,11 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
   // Update the sender box properties
 
   // calculate the box index of the sending box
-  byte __boxIndex = __i8SenderNodeName - bControllerBoxPrefix;
-  if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __boxIndex = ");Serial.println(__boxIndex);}
+  int8_t __i8BoxIndex = __i8SenderNodeName - bControllerBoxPrefix;
+  if (MY_DG_MESH) {Serial.print("myMeshController::myMeshController: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
 
   // if the sender is a newly connected box
-  if (ControlerBoxes[__boxIndex].nodeId == 0) { //
+  if (ControlerBoxes[__i8BoxIndex].nodeId == 0) { //
     // Enable a Task to send this new box my current boxState.
     myMeshViews::tSendBoxStateToNewBox.restartDelayed();
   }
