@@ -283,7 +283,7 @@ void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageType, JsonObjec
 
 void myWSReceiver::_requestBoxChange(JsonDocument& doc, const char& _cChangeKey, const int8_t _i8MessageType) {
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxChange(): Starting with _cChangeKey = %s, _i8MessageType = %i \n", _cChangeKey, _i8MessageType);
+    Serial.printf("myWSReceiver::_requestBoxChange(): Starting with _cChangeKey = %s, _i8MessageType = %i \n", &_cChangeKey, _i8MessageType);
   }
   // get destination box number
   const int8_t __i8BoxIndexInCB = doc["lb"];
@@ -293,14 +293,14 @@ void myWSReceiver::_requestBoxChange(JsonDocument& doc, const char& _cChangeKey,
   // read target state
   const int8_t __i8RequestedChange = doc[&_cChangeKey];
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxChange(): %s = %i \n", _cChangeKey, __i8RequestedChange);
+    Serial.printf("myWSReceiver::_requestBoxChange(): %s = %i \n", &_cChangeKey, __i8RequestedChange);
   }
   // instantiate a mesh view
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.relayWSChangeRequest().\n");
+    Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.changeBoxRequest().\n");
   }
-  __myMeshViews.relayWSChangeRequest(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
+  __myMeshViews.changeBoxRequest(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
 
   // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;

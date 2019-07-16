@@ -103,9 +103,9 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
-void myMeshViews::relayWSChangeRequest(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
+void myMeshViews::changeBoxRequest(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
     if (MY_DG_MESH) {
-      Serial.printf("myMeshViews::relayWSChangeRequest(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);
+      Serial.printf("myMeshViews::changeBoxRequest(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);
     }
     /* expected JSON string: {
       "NNa":"001";
@@ -141,7 +141,7 @@ void myMeshViews::relayWSChangeRequest(const int8_t _i8RequestedChange, const ch
     _sendMsg(msg, _destNodeId);
 
     if (MY_DG_MESH) {
-      Serial.println("myMeshViews::relayWSChangeRequest(): Ending.");
+      Serial.println("myMeshViews::changeBoxRequest(): Ending.");
     }
 }
 
