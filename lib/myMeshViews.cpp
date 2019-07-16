@@ -116,29 +116,29 @@ void myMeshViews::changeBoxRequest(const int8_t _i8RequestedChange, const char& 
     */
     const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
     StaticJsonDocument<capacity> doc;
-    JsonObject msg = doc.to<JsonObject>();
+    JsonObject _joChangeBoxMsg = doc.to<JsonObject>();
 
     // load the JSON document with values
-    msg[&_cChangeKey] = _i8RequestedChange;
-    msg["action"] = "changeBox";
+    _joChangeBoxMsg[&_cChangeKey] = _i8RequestedChange;
+    _joChangeBoxMsg["action"] = "changeBox";
 
-    // msg["receiverTargetState"] = _i8BoxTargetState;
-    // // msg["receiverBoxName"] = _i8NodeName;
-    // msg["boxIndex"] = _i8BoxIndexInCB;
-    // msg["action"] = "c";
+    // _joChangeBoxMsg["receiverTargetState"] = _i8BoxTargetState;
+    // // _joChangeBoxMsg["receiverBoxName"] = _i8NodeName;
+    // _joChangeBoxMsg["boxIndex"] = _i8BoxIndexInCB;
+    // _joChangeBoxMsg["action"] = "c";
 
-    // msg["ms"] = _i8MasterBox;
-    // msg["action"] = "m";
+    // _joChangeBoxMsg["ms"] = _i8MasterBox;
+    // _joChangeBoxMsg["action"] = "m";
 
-    // msg["receiverDefaultState"] = _i8BoxDefaultState;
-    // // msg["receiverBoxName"] = _i8NodeName;
-    // msg["boxIndex"] = _i8BoxIndexInCB;
-    // msg["action"] = "d";
+    // _joChangeBoxMsg["receiverDefaultState"] = _i8BoxDefaultState;
+    // // _joChangeBoxMsg["receiverBoxName"] = _i8NodeName;
+    // _joChangeBoxMsg["boxIndex"] = _i8BoxIndexInCB;
+    // _joChangeBoxMsg["action"] = "d";
 
     // get the destination nodeId
     uint32_t _destNodeId = ControlerBoxes[_i8BoxIndexInCB].nodeId;
 
-    _sendMsg(msg, _destNodeId);
+    _sendMsg(_joChangeBoxMsg, _destNodeId);
 
     if (MY_DG_MESH) {
       Serial.println("myMeshViews::changeBoxRequest(): Ending.");
