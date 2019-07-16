@@ -45,13 +45,13 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 {
 
   if (MY_DG_WS) {
-    Serial.println("myWSReceiver::_decodeWSMessage. Starting.");
+    Serial.println("myWSReceiver::myWSReceiver. Starting.");
   }
 
   // create a StaticJsonDocument entitled _doc
   StaticJsonDocument<256> _doc;
   if (MY_DG_WS) {
-    Serial.print("myWSReceiver::_decodeWSMessage(): jsonDocument created\n");
+    Serial.print("myWSReceiver::myWSReceiver(): jsonDocument created\n");
   }
   // Convert the JSON document to a JSON object
   JsonObject _obj = _doc.to<JsonObject>();
@@ -59,13 +59,13 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
   // deserialize the message msg received from the mesh into the StaticJsonDocument _doc
   DeserializationError err = deserializeJson(_doc, _data);
   if (MY_DG_WS) {
-    Serial.print("myWSReceiver::_decodeWSMessage(): message msg deserialized into JsonDocument _doc\n");
-    Serial.print("myWSReceiver::_decodeWSMessage(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
+    Serial.print("myWSReceiver::myWSReceiver(): message msg deserialized into JsonDocument _doc\n");
+    Serial.print("myWSReceiver::myWSReceiver(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
   }
 
   // read the action type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
   const int8_t __i8MessageActionType = _doc["action"]; // correspondings to root[action] in meshController
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_decodeWSMessage(): The message __i8MessageActionType is %i \n", __i8MessageActionType); }
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::myWSReceiver(): The message __i8MessageActionType is %i \n", __i8MessageActionType); }
 
 
   // choose the type of reaction depending on the message action type
@@ -74,7 +74,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
   // Received JSON: {action:0, message:{1:4;2:3}}
   if (__i8MessageActionType == 0) {           // 0 for hand shake message
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_decodeWSMessage(): __i8MessageActionType = %i - new WS: going to check whether the DOM needs to be updated. \n", __i8MessageActionType);
+      Serial.printf("myWSReceiver::myWSReceiver(): __i8MessageActionType = %i - new WS: going to check whether the DOM needs to be updated. \n", __i8MessageActionType);
     }
     _onHandshakeCheckWhetherDOMNeedsUpdate(__i8MessageActionType, _obj); // _obj = {action:0, message:{1:4;2:3}}
     return;
@@ -82,7 +82,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
   if (__i8MessageActionType == 3) {           // 3 for confirmation that change IP adress has been received
     if (MY_DG_WS) {
-      Serial.println("myWSReceiver::_decodeWSMessage. Ending on __i8MessageActionType == 3 (received confirmation that new station IP has been received).");
+      Serial.println("myWSReceiver::myWSReceiver. Ending on __i8MessageActionType == 3 (received confirmation that new station IP has been received).");
     }
     // disable the task sending the station IP
     myWSSender::tSendWSDataIfChangeStationIp.disable();
