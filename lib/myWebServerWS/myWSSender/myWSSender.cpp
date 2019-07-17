@@ -345,7 +345,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
         } // end if client.count > 0
         else { // there is no client connected
           if (MY_DG_WS) {
-            Serial.println("- myWSSender::sendWSData: The message could not be sent.");
+            Serial.println("- myWSSender::sendWSData: The message could not be sent because there are no WS client connected.");
           }
         }
     }

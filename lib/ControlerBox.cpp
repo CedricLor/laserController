@@ -82,7 +82,7 @@ void ControlerBox::updateThisBoxProperties() {
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {
-    Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().");
+    Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
     ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);
   };
 }
