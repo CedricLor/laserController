@@ -19,7 +19,7 @@ function connect() {
   ws.onopen = function() {
     console.log("WS connection open. Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
     ws.send(JSON.stringify({
-      action: 0,
+      action: "handshake",
       boxesStatesInDOM: mapToObj(controlerBoxes)
     }));
     // {action:0, boxStateInDOM:{1:4;2:3}}
@@ -30,14 +30,13 @@ function connect() {
     var received_msg = e.data;
     console.log( "WS Received Message: " + received_msg);
     var _data = JSON.parse(e.data);
-    // console.log("WS JSON message: " + _data.message);
     if (_data.action === 3) {
       updateStationIp(_data.message);
+      // console.log("WS JSON message: " + _data.ServerIP);
       ws.send(JSON.stringify({
-        action: 3,
-        message: "received Station IP"
+        action: "ReceivedIP"
       }));
-      // {action:3, message:"received Station IP"}
+      // {action:"ReceivedIP}
       return;
     }
     if (_data.action === 4) { // User request to change boxState of a given box has been received and is being processed
@@ -113,21 +112,25 @@ function findUpLaserBoxNumber(el) {
 // EVENTS HANDLER
 function onclickButton(e) {
   console.log("onclickButton starting");
-  _onclickButtonWrapper(this, "button[data-boxstate]", 4, this.dataset.boxstate, "boxState");
+  _onclickButtonWrapper(this, "button[data-boxstate]", this.dataset.boxstate, "boxState");
   console.log("onclickButton: ending");
 };
 
 
 function onclickDefStateButton(e) {
   console.log("onclickDefStateButton starting");
-  _onclickButtonWrapper(this, "button[data-boxDefstate]", 9, this.dataset.boxdefstate, "boxDefstate");
+  _onclickButtonWrapper(this, "button[data-boxDefstate]", this.dataset.boxdefstate, "boxDefstate");
   console.log("onclickDefStateButton: ending");
 };
 
-function _onclickButtonWrapper(clickedTarget, buttonSelector, messageType, _datasetValue, _clef) {
+//   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+//   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+//   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+
+function _onclickButtonWrapper(clickedTarget, buttonSelector, _datasetValue, _clef) {
   var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
   _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber);
-  _onclickButtonWSSender(messageType, _laserBoxNumber, _datasetValue, _clef);
+  _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef);
 }
 
 function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
@@ -143,19 +146,19 @@ function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumbe
   return _laserBoxNumber;
 }
 
-function _onclickButtonWSSender(_messageType, _laserBoxNumber, _datasetValue, _clef) {
+function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
   var __toBeStringified = {};
-  __toBeStringified["action"] = _messageType;
+  __toBeStringified["action"] = "changeBox";
+  __toBeStringified["key"] = _clef;
   __toBeStringified["lb"] = _laserBoxNumber;
-  __toBeStringified[_clef] = _datasetValue;
+  __toBeStringified["val"] = _datasetValue;
 
   var _json = JSON.stringify(__toBeStringified);
   // {action: 4; lb: 1; "boxState": 3}
   // {action: 9; lb: 1; "boxDefstate": 3}
-    // action: _messageType,
-    // lb: _laserBoxNumber,
-    // dataSet
-  // /*boxDefstate: _datasetValue*/ });
+  //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+  //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+  //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
   console.log("_onclickButtonWSSender: about to send JSON via WS: " + _json);
   ws.send(_json);
   console.log("_onclickButtonWSSender: JSON sent.");
@@ -169,11 +172,14 @@ function oninputMasterSelect(e) {
     console.log("oninputMasterSelect: slave box: " + (_laserBoxNumber + 200));
     console.log("oninputMasterSelect: master box " + this.options[this.selectedIndex].value);
     var _json = JSON.stringify({
-      action: 8,
+      action: "changeBox",
+      key: "masterbox",
       lb: _laserBoxNumber,
-      masterbox: parseInt(this.options[this.selectedIndex].value, 10)
+      val: parseInt(this.options[this.selectedIndex].value, 10)
      });
-     // {action: 8, lb: 1, "masterbox": 4}
+     //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+     //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+     //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
     console.log("oninputMasterSelect: about to send json via WS: " + _json);
     ws.send(_json);
     console.log("oninputMasterSelect: json sent.");
@@ -198,6 +204,10 @@ function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNum
   var _boxRow = boxesRows.get(_laserBoxNumber);
   console.log("updateClickedStateButton: _boxRow = ");console.log(_boxRow);
   var _elt = _boxRow.querySelector("button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
+
+
+
+
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
@@ -313,6 +323,7 @@ function _setCurrentStateButton(memRow, datasetKey, datasetValue) {
 
 
 
+
 function _setStateButtonAsActive(_selector, memRow) {
   var _targetButton = memRow.querySelector(_selector);
   console.log("_setStateButtonAsActive: button selected: ");console.log(_targetButton);
@@ -341,6 +352,8 @@ function _newBoxRowSetProperties(data, _dupRow) {
   _dupRow.querySelector("span.box_num").textContent = data.lb + 200;
   return _dupRow;
 }
+
+
 
 
 function _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
