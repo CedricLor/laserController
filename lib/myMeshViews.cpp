@@ -203,29 +203,33 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 
 
 
-void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
+void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::_sendMsg(): Starting.");
-    // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to msg[\"senderNodeName\"]");
+    // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[myIndexInCBArray].bNodeName to _joMsg[\"senderNodeName\"]");
   }
 
 
   // adding my nodeName to the JSON to be sent to other boxes
-  msg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
+  _joMsg["NNa"] = ControlerBoxes[myIndexInCBArray].bNodeName;
   // if (MY_DG_MESH) {
-  //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to msg[\"senderAPIP\"]");
+  //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
   // }
 
 
   // adding the APIP and the StationIP to the JSON to be sent to other boxes
-  JsonArray _APIP = msg.createNestedArray("APIP");
-  for (short _i = 0; _i < 4; _i++) {
-    _APIP.add(ControlerBoxes[myIndexInCBArray].APIP[_i]);
-  }
-  // Serial.println("myMeshViews::_sendMsg(): about to allocate stationIP to msg[\"senderStIP\"]");
-  JsonArray _StIP = msg.createNestedArray("StIP");
-  for (short _i = 0; _i < 4; _i++) {
-    _StIP.add(ControlerBoxes[myIndexInCBArray].stationIP[_i]);
+  if (_joMsg.containsKey("APIP") && _joMsg.containsKey("StIP")) {
+    for (short _i = 0; _i < 4; _i++) {
+      _joMsg["APIP"][_i] = ControlerBoxes[myIndexInCBArray].APIP[_i];
+      _joMsg["StIP"][_i] = ControlerBoxes[myIndexInCBArray].stationIP[_i];
+    }
+  } else {
+    JsonArray _APIP = _joMsg.createNestedArray("APIP");
+    JsonArray _StIP = _joMsg.createNestedArray("StIP");
+    for (short _i = 0; _i < 4; _i++) {
+      _APIP.add(ControlerBoxes[myIndexInCBArray].APIP[_i]);
+      _StIP.add(ControlerBoxes[myIndexInCBArray].stationIP[_i]);
+    }
   }
   // if (MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
@@ -239,7 +243,7 @@ void myMeshViews::_sendMsg(JsonObject& msg, uint32_t destNodeId) {
   // if (MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
   // }
-  serializeJson(msg, output, size_buff);
+  serializeJson(_joMsg, output, size_buff);
   // if (MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
   // }
