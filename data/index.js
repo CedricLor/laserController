@@ -46,10 +46,9 @@ function connect() {
       updateStateButton(_data);
       return;
     }
-      return;
-    }
-    if (_data.action === 6) { // a new box has connected to the mesh
-      addOrUpdateNewRowForNewBox(_data.message);
+    if (_data.action === "addBox") { // 6. a new box has connected to the mesh
+      // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+      addOrUpdateNewRowForNewBox(_data);
       return;
     }
     if (_data.action === 7) { // an existing box has been disconnected from the mesh
@@ -269,36 +268,41 @@ function updateClickedStateButton(_boxRow, _stateTypeSelector, _stateNumberSelec
 
 
 
-function updateBoxRow(data) {
-  console.log("updateBoxRow: a boxRow for laser box [" + data.lb + "] already exists in DOM.");
+function updateBoxRow(_data) {
+  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+  console.log("updateBoxRow: a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
   // select the correct row in the map
-  var _boxRow = boxesRows.get(data.lb);
+  var _boxRow = boxesRows.get(_data.lb);
 
   // update the current active and default states
-  updateCurrentStateButtons(data, _boxRow);
+  updateCurrentStateButtons(_data, _boxRow);
 
-  console.log("updateBoxRow: ending after updating laser box [" + data.lb + "]");
+  // update the master select
+  _indicateMasterBoxNumber(data.masterbox, _boxRow);
+
+  console.log("updateBoxRow: ending after updating laser box [" + _data.lb + "]");
 }
 
 
 
 
 
-function updateCurrentStateButtons(data, _boxRow) {
+function updateCurrentStateButtons(_data, _boxRow) {
+  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("updateCurrentStateButtons starting.");
   console.log("updateCurrentStateButtons: About to set the activeState and defaultState buttons.");
 
   // 1. remove classes on all the others stateButtons of this boxRow
   // 2. add button_active_state class to the relevant stateButton
   // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-  _boxRow = updateCurrentStateButton(_boxRow, "boxstate", data.boxState);
+  _boxRow = updateCurrentStateButton(_boxRow, "boxstate", _data.boxState);
 
   // 1. remove classes on all the others default stateButtons of this boxRow
   // 2. add button_active_state class to the relevant default stateButton
   // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-  _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.boxDefstate);
+  _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", _data.boxDefstate);
 
-  console.log("updateCurrentStateButtons: ending after updating laser box [" + data.lb + "]");
+  console.log("updateCurrentStateButtons: ending after updating laser box [" + _data.lb + "]");
 }
 
 
@@ -376,15 +380,15 @@ function _setStateButtonAsActive(_selector, memRow) {
 
 
 
-function _newBoxRowSetProperties(data, _dupRow) {
-  console.log("_newBoxRowSetProperties: _dupRow: setting the id of the new wrapper div to: " + data.lb);
-  _dupRow.id = "boxRow" + data.lb;     // set a unique id
-  console.log("_newBoxRowSetProperties: _dupRow: setting the data-lb property of the new wrapper div to: " + data.lb);
-  _dupRow.dataset.lb = data.lb;     // update data-lb attribute
+function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
+  console.log("_newBoxRowSetProperties: _dupRow: setting the id of the new wrapper div to: " + _laserBoxIndexNumber);
+  _dupRow.id = "boxRow" + _laserBoxIndexNumber;     // set a unique id
+  console.log("_newBoxRowSetProperties: _dupRow: setting the data-lb property of the new wrapper div to: " + _laserBoxIndexNumber);
+  _dupRow.dataset.lb = _laserBoxIndexNumber;     // update data-lb attribute
   console.log("_newBoxRowSetProperties: _dupRow: removing the class hidden from the classes of the new wrapper div");
   _dupRow.classList.remove('hidden');
-  console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (data.lb + 200));
-  _dupRow.querySelector("span.box_num").textContent = data.lb + 200;
+  console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (_laserBoxIndexNumber + 200));
+  _dupRow.querySelector("span.box_num").textContent = _laserBoxIndexNumber + 200;
   return _dupRow;
 }
 
@@ -487,7 +491,7 @@ function addNewRowForNewBox(data) {
     console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
 
     // set properties
-    _dupRow = _newBoxRowSetProperties(data, _dupRow);
+    _dupRow = _newBoxRowSetProperties(data.lb, _dupRow);
 
     // set the activeState button
     // _setCurrentStateButton(memRow, datasetKey, datasetValue)
@@ -498,15 +502,15 @@ function addNewRowForNewBox(data) {
     _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
 
     // indicate masterbox number
-    _dupRow = _indicateMasterBoxNumber(data, _dupRow);
+    _dupRow = _indicateMasterBoxNumber(data.masterbox, _dupRow);
 
-    // set event listener on slave select
+    // set event listener on master select
     var _select = _selectMasterSelectInRow(_dupRow);
     setSelectEvents(_select);
 
     // set boxDefaultState button
     // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-    _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
+    _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
 
     // set event listener on default state buttons
     // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
@@ -527,6 +531,7 @@ function addNewRowForNewBox(data) {
 
 
 function addOrUpdateNewRowForNewBox(data) {
+  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addOrUpdateNewRowForNewBox starting.");
 
   // Check whether the boxRow has not already been created
@@ -540,6 +545,7 @@ function addOrUpdateNewRowForNewBox(data) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
     addNewRowForNewBox(data);
+    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   }
 
   // Case where the box exists
@@ -589,7 +595,6 @@ function deleteBoxRow(data) {
 
 
 
-function selectMasterBoxNumberSpan(_dupRow, data) {
   console.log("selectMasterBoxNumberSpan: starting.");
   var _masterBoxNumberSelector = "span.master_box_number";
   console.log("selectMasterBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
