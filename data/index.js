@@ -116,6 +116,18 @@ function findUpLaserBoxNumber(el) {
 }
 
 // EVENTS HANDLER
+function onclickRebootBoxButton(e) {
+  console.log("onclickRebootBoxButton starting");
+  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+
+  ws.send(JSON.stringify({
+    action: "reboot",
+    lb: _laserBoxNumber
+  }));
+  // {action:"reboot", lb:1}
+  console.log("onclickRebootBoxButton: ending");
+};
+
 function onclickButton(e) {
   console.log("onclickButton starting");
   _onclickButtonWrapper(this, "button[data-boxstate]", this.dataset.boxstate, "boxState");
@@ -168,7 +180,6 @@ function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
   console.log("_onclickButtonWSSender: about to send JSON via WS: " + _json);
   ws.send(_json);
   console.log("_onclickButtonWSSender: JSON sent.");
-
 }
 
 function oninputMasterSelect(e) {
@@ -393,6 +404,9 @@ function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
   _dupRow.classList.remove('hidden');
   console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (_laserBoxIndexNumber + 200));
   _dupRow.querySelector("span.box_num").textContent = _laserBoxIndexNumber + 200;
+  console.log("_newBoxRowSetProperties: _dupRow: setting the reboot button for this box");
+  _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
+  _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 
@@ -675,7 +689,7 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
 
 function boxRowTemplateSelector() {
   console.log("boxRowTemplateSelector starting.");
-  var _row = document.getElementById('boxTemplate'); // should be a list composed of one single element
+  var _row = document.getElementById('boxTemplate');
   var _templateDup = _row.cloneNode(true);
 
   console.log("boxRowTemplateSelector ending.");
@@ -709,6 +723,7 @@ function setButtonsGroupEvents(buttonList, eventHandler) {
 function setSelectEvents(selectElt) {
   selectElt.addEventListener('input', oninputMasterSelect, false);
 }
+
 // END EVENT LISTENERS
 
 
