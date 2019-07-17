@@ -87,6 +87,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
 Task myWSSender::tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, &userScheduler, false);
 
 void myWSSender::_tcbSendWSDataIfChangeBoxState() {
+  myWSSender _myWSSender;
   for (short _sBoxIndex = 1; _sBoxIndex < sBoxesCount; _sBoxIndex++) {
     // prepare a JSON document
     StaticJsonDocument<64> _doc;
@@ -159,7 +160,6 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     if (_messageType != -1) {
       if (MY_DG_WS) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call _prepareWSData with message of type %i.\n", _messageType);}
 
-      myWSSender _myWSSender;
       _myWSSender.prepareWSData(_messageType, _obj);
     }
   }
