@@ -68,28 +68,6 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
     return;
   }
 
-
-
-  // Temporarily commented out
-  //////// Manual mode
-  // const char* _u = "u";
-  // if (strcmp(_action, _u) == 0) {           // action 'u' for this message requests that the laserPin be turned into or out of User controlled mode
-  //   _manualSwitch(_obj);
-  //   return;
-  // }
-  //////// IR mode
-  // const char* _i = "i";
-  // if (strcmp(_action, _i) == 0) {           // action 'i' for this message requests that the laserPin be turned into or out of IR control mode
-  //   _changeInclusionIR(_obj);
-  //   return;
-  // }
-  //////// Blinking interval
-  // const char* _b = "b";
-  // if (strcmp(_action, _b) == 0) {           // action 'b' for this message relates to a blinking interval, that this box should update as the case may be
-  //   _changeBlinkingInterval(_obj);
-  //   return;
-  // }
-
 }
 
 
