@@ -114,6 +114,15 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
+  // save the IF
+  if ((_obj["action"] == "changeBox")  && (_obj["key"] == "save") && (_obj["lb"] == 0)) {
+    // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
+    // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
+    // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
+    _saveIF(_obj);
+    return;
+  }
+
   // Former 4 (change boxState), 8 (change master) and 9 (change default state)
   // added also key "reboot" and "save"
   if (_obj["action"] == "changeBox") {
@@ -129,14 +138,15 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   }
 
   // reboot all or part of the laser boxes
-  if ((_obj["action"] == "changeNet") && (_obj["key"] == "reboot")) {
+  if (_obj["action"] == "changeNet") {
     // send a mesh request to the existing laser boxes
-    // _obj = {action: "changeNet", key: "reboot", save:0, val: "all"}
-    // _obj = {action: "changeNet", key: "reboot", save: 0, val: "LBs"}
-    _rebootNet(_obj);
+    // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+    // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
+    // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
+    // {action: "changeNet", key: "save", val: "all", lb: "all"}
+    _requestNetChange(_obj);
     return;
   }
-
 }
 
 
@@ -363,31 +373,47 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
 }
 
 
+
+
 void myWSReceiver::_rebootIF(JsonObject& _obj) {
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
   ControlerBox::tReboot.enableDelayed();
 }
 
+void myWSReceiver::_saveIF(JsonObject& _obj) {
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
+  // save preferences
+  mySavedPrefs::savePreferences();
+}
 
 
 
 
-void myWSReceiver::_rebootNet(JsonObject& _obj) {
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootNet(): Starting.\n"); }
+void myWSReceiver::_requestNetChange(JsonObject& _obj) {
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Starting.\n"); }
 
-  // If reboot "all", IF shall be rebooted
-  if (_obj["val"] == "all") {
-    _rebootIF(_obj);
+  // If this is a reboot message
+  if (_obj["key"] == "reboot") {
+    // If reboot "all", IF shall be rebooted
+    if (_obj["lb"] == "all") {
+      _rebootIF(_obj);
+    }
   }
 
-  // remove the "val" which is of no use
-  _obj.remove("val");
+  // If this is a save message
+  if (_obj["key"] == "save") {
+    // If save "all", IF shall be rebooted
+    if (_obj["lb"] == "all") {
+      _saveIF(_obj);
+    }
+  }
 
-  // remove the "val" which is of no use
+  // change action to "changeBox", as this "changeNet" is being dispatched
+  // to each LBs
   _obj["action"] = "changeBox";
 
-  // broadcast the _obj (including with its "reboot" key)
+  // broadcast the _obj (including its "reboot" or "save" key)
   _requestBoxChange(_obj, true /*_bBroadcast*/);
 
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootNet(): Ending.\n"); }
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Ending.\n"); }
 }

@@ -60,7 +60,8 @@ class myWSReceiver
 
     void _requestBoxChange(JsonObject& _obj, bool _bBroadcast=false);
     void _rebootIF(JsonObject& _obj);
-    void _rebootNet(JsonObject& _obj);
+    void _saveIF(JsonObject& _obj);
+    void _requestNetChange(JsonObject& _obj);
 
 };
 #endif

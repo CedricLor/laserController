@@ -150,6 +150,7 @@ function onclickRebootAndSaveBoxButton(e) {
 
 
 
+
 function onclickSavePrefsBoxButton(e) {
   console.log("onclickSavePrefsBoxButton starting");
   var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
@@ -174,9 +175,9 @@ function onclickRebootLBsButton(e) {
     action: "changeNet",
     key: "reboot",
     save: 0, // reboot without saving
-    val: "LBs"
+    lb: "LBs"
   }));
-  // {action: "changeNet", key: "reboot", save: 0, val: "LBs"}
+  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
   console.log("onclickRebootLBsButton: ending");
 };
 
@@ -204,10 +205,60 @@ function onclickRebootAllButton(e) {
     action: "changeNet",
     key: "reboot",
     save: 0,
-    val: "all"
+    lb: "all"
   }));
-  // {action: "changeNet", key: "reboot", save: 0, val: "all"}
+  // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
   console.log("onclickRebootAllButton: ending");
+};
+
+
+
+
+function onclickSaveLBsButton(e) {
+  console.log("onclickSaveLBsButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "save",
+    val: "all",
+    lb: "LBs"
+  }));
+  // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
+  console.log("onclickSaveLBsButton: ending");
+};
+
+
+
+
+
+function onclickSaveIFButton(e) {
+  console.log("onclickSaveIFButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "save",
+    val: "all",
+    lb: 0
+  }));
+  // {action: "changeBox", key: "save", val: "all", lb: 0}
+  console.log("onclickSaveIFButton: ending");
+};
+
+
+
+
+
+function onclickSaveAllButton(e) {
+  console.log("onclickSaveAllButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "save",
+    val: "all",
+    lb: "all"
+  }));
+  // {action: "changeNet", key: "save", val: "all", lb: "all"}
+  console.log("onclickSaveAllButton: ending");
 };
 
 
@@ -817,6 +868,9 @@ function setGroupEvents() {
   document.getElementById("rebootLBs").addEventListener('click', onclickRebootLBsButton, false);
   document.getElementById("rebootIF").addEventListener('click', onclickRebootIFButton, false);
   document.getElementById("rebootAll").addEventListener('click', onclickRebootAllButton, false);
+  document.getElementById("saveLBs").addEventListener('click', onclickSaveLBsButton, false);
+  document.getElementById("saveIF").addEventListener('click', onclickSaveIFButton, false);
+  document.getElementById("saveAll").addEventListener('click', onclickSaveAllButton, false);
 }
 // END EVENT LISTENERS
 
@@ -830,7 +884,7 @@ window.onload = function(e){
     // Interval at which to check if WS server is still available
     // (and reconnect as necessary) setInterval(check, 5000);
     setInterval(check, (getRandomArbitrary(10, 4) * 1000));
-    setTimeout(setGroupEvents, 10000);
+    setTimeout(setGroupEvents, 2000);
 }
 // END WINDOW LOAD
 

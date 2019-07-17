@@ -374,6 +374,14 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
 
+  // if the message was a "changeNet" request, it was broadcasted and
+  // its "lb" field was equal to either "LBs" or "all";
+  // replace it with thix box's index number so that the ControlerBoxes array
+  // be properly updated in _changedBoxConfirmation
+  if ((_obj["lb"] == "LBs") || (_obj["lb"] == "all")) {
+    _obj["lb"] = myIndexInCBArray;
+  }
+
   // send back the received JSON object with its amended "st" key
   myMeshViews __myMeshViews;
   __myMeshViews.changedBoxConfirmation(_obj);
