@@ -197,6 +197,7 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
       //   Serial.print("- myWSSender::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
       // }
     }
+  sendWSData(__newObj);
 
     // messages 4 to 8:
     // (4): change boxState request being processed

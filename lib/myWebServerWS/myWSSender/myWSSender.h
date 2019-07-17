@@ -50,13 +50,12 @@ class myWSSender
     myWSSender();
 
     void prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
+    void sendWSData(JsonObject& _joMsg);
 
     static Task tSendWSDataIfChangeStationIp;
     static Task tSendWSDataIfChangeBoxState;
 
   private:
-    void _sendWSData(JsonDocument& doc);
-
     static JsonObject _empty_obj;
 
     static void _tcbSendWSDataIfChangeStationIp();
