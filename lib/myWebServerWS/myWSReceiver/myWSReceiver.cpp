@@ -132,17 +132,29 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     // send a mesh request to the relevant laser box
     // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
     _requestBoxChange(_obj);
-    // ancient: _obj = {action: 9; lb: 1; "boxDefstate": 3}
-    // ancient: _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
-    // ancient: _requestDefaultStateChange(_obj);
     return;
   }
 
-  // 9 for change default state
+  // reboot the IF
+  if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot") && (_obj["lb"] == 0)) {
+    // _obj = {action: "changeBox"; key: "reboot"; lb: 0}
+    _rebootIF(_obj);
+    return;
+  }
+
+  // reboot box
   if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot")) {
     // send a mesh request to the relevant laser box
-    // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+    // _obj = {action: "changeBox"; key: "reboot"; lb: 1}
     _requestBoxChange(_obj);
+    return;
+  }
+
+  // reboot all the laser boxes
+  if ((_obj["action"] == "changeNet")  && (_obj["key"] == "reboot")) {
+    // send a mesh request to all the existing laser boxes
+    // _obj = {action: "changeNet"; key: "reboot"; lb: "All" OR "LBs"} // boxDefstate // ancient 9
+    _rebootNet(_obj);
     // ancient: _obj = {action: 9; lb: 1; "boxDefstate": 3}
     // ancient: _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
     // ancient: _requestDefaultStateChange(_obj);
@@ -375,62 +387,37 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
 }
 
 
-// void myWSReceiver::_requestBoxChange(JsonObject& _obj, const char& _cChangeKey, const int8_t _i8MessageActionType) {
-//   // _obj = {action: 4; lb: 1; "boxState": 3}
-//   // _obj = {action: 8, lb: 1, "masterbox": 4}
-//   // _obj = {action: 9; lb: 1; "boxDefstate": 3}
-//   // (const char&)"boxState"
-//   // (const char&)"masterbox"
-//   // (const char&)"boxDefstate"
-//
-//   if (MY_DG_WS) {
-//     Serial.printf("myWSReceiver::_requestBoxChange(): Starting with _cChangeKey = %s, _i8MessageActionType = %i \n", &_cChangeKey, _i8MessageActionType);
-//   }
-//
-//   // get destination box number
-//   const int8_t __i8BoxIndexInCB = _obj["lb"];
-//   if (MY_DG_WS) {
-//     Serial.printf("myWSReceiver::_requestBoxChange(): (from JSON) __i8BoxIndexInCB = %i \n", __i8BoxIndexInCB);
-//   }
-//
-//   // read target state
-//   const int8_t __i8RequestedChange = _obj[&_cChangeKey];
-//   if (MY_DG_WS) {
-//     Serial.printf("myWSReceiver::_requestBoxChange(): %s = %i \n", &_cChangeKey, __i8RequestedChange);
-//   }
-//
-//   // instantiate a mesh view
-//   myMeshViews __myMeshViews;
-//   if (MY_DG_WS) {
-//     Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.changeBoxRequest().\n");
-//   }
-//   __myMeshViews.changeBoxRequest(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
-//
-//   // send a response to the browser telling the instruction is in course of being executed
-//   StaticJsonDocument<64> _sub_doc;
-//   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-//   _sub_obj["lb"] = __i8BoxIndexInCB;
-//   _sub_obj[&_cChangeKey] = __i8RequestedChange;
-//
-//   // // send a response telling the instruction is in course of being executed
-//   // StaticJsonDocument<64> _sub_doc;
-//   // JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-//   // _sub_obj["lb"] = __i8BoxIndexInCB;
-//   // _sub_obj["boxState"] = __i8BoxTargetState;
-//
-//   // // send a response to the browser telling the instruction is in course of being executed
-//   // StaticJsonDocument<64> _sub_doc;
-//   // JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-//   // _sub_obj["lb"] = __i8BoxIndexInCB;
-//   // _sub_obj["ms"] = __i8MasterBox;
-//   // _sub_obj["st"] = 1; // "st" for status, 1 for sent to laser controller; waiting execution
-//
-//   // // send a response telling the instruction is in course of being executed
-//   // StaticJsonDocument<64> _sub_doc;
-//   // JsonObject _sub_obj = _sub_doc.to<JsonObject>();
-//   // _sub_obj["lb"] = __i8BoxIndexInCB;
-//   // _sub_obj["boxDefstate"] = __i8BoxDefaultState;
-//
-//   myWSSender _myWSSender;
-//   _myWSSender.prepareWSData(_i8MessageActionType, _sub_obj);
-// }
+void myWSReceiver::_rebootIF(JsonObject& _obj) {
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
+  ESP.restart();
+}
+
+
+
+
+
+void myWSReceiver::_rebootNet(JsonObject& _obj) {
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootNet(): Starting.\n"); }
+
+  bool __rebootIF = false;
+
+  if (_obj["val"] == "All") {
+    __rebootIF = true;
+  }
+
+  _obj.remove("val");
+
+  for (short _i = 1; _i < sBoxesCount; _i++) {
+    if (ControlerBoxes[_i].nodeId != 0) {
+      _obj["action"] = "changeBox";
+      _obj["lb"] = _i;
+      _requestBoxChange(_obj);
+    }
+  }
+
+  if (__rebootIF == true) {
+    _rebootIF(_obj);
+  }
+
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootNet(): Ending.\n"); }
+}

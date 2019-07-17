@@ -115,6 +115,8 @@ function findUpLaserBoxNumber(el) {
     return null;
 }
 
+
+
 // EVENTS HANDLER
 function onclickRebootBoxButton(e) {
   console.log("onclickRebootBoxButton starting");
@@ -128,6 +130,50 @@ function onclickRebootBoxButton(e) {
   // {action:"reboot", lb:1}
   console.log("onclickRebootBoxButton: ending");
 };
+
+
+
+function onclickRebootLBsButton(e) {
+  console.log("onclickRebootBoxButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "reboot",
+    val: "LBs"
+  }));
+  // {action:"reboot", lb:1}
+  console.log("onclickRebootBoxButton: ending");
+};
+
+
+
+function onclickRebootIFButton(e) {
+  console.log("onclickRebootBoxButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "reboot",
+    lb: 0
+  }));
+  // {action:"reboot", lb:1}
+  console.log("onclickRebootBoxButton: ending");
+};
+
+
+
+function onclickRebootAllButton(e) {
+  console.log("onclickRebootBoxButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "reboot",
+    val: "All"
+  }));
+  // {action:"reboot", lb:1}
+  console.log("onclickRebootBoxButton: ending");
+};
+
+
 
 function onclickButton(e) {
   console.log("onclickButton starting");
@@ -725,6 +771,11 @@ function setSelectEvents(selectElt) {
   selectElt.addEventListener('input', oninputMasterSelect, false);
 }
 
+function setGroupEvents() {
+  document.getElementById("rebootLBs").addEventListener('click', onclickRebootLBsButton, false);
+  document.getElementById("rebootIF").addEventListener('click', onclickRebootIFButton, false);
+  document.getElementById("rebootAll").addEventListener('click', onclickRebootAllButton, false);
+}
 // END EVENT LISTENERS
 
 
@@ -737,6 +788,7 @@ window.onload = function(e){
     // Interval at which to check if WS server is still available
     // (and reconnect as necessary) setInterval(check, 5000);
     setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+    setTimeout(setGroupEvents, 10000);
 }
 // END WINDOW LOAD
 

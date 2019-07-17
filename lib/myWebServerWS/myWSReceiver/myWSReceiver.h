@@ -59,8 +59,8 @@ class myWSReceiver
     void _lookForDOMMissingRows(JsonObject& _joBoxState);
 
     void _requestBoxChange(JsonObject& _obj);
-    void _requestActiveStateChange(JsonDocument& doc);
-    void _requestMasterChange(const int8_t _i8MessageActionType, JsonDocument& doc);
-    void _requestDefaultStateChange(JsonDocument& doc);
+    void _rebootIF(JsonObject& _obj);
+    void _rebootNet(JsonObject& _obj);
+
 };
 #endif
