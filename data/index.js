@@ -51,13 +51,15 @@ function connect() {
       addOrUpdateNewRowForNewBox(_data);
       return;
     }
-    if (_data.action === 7) { // an existing box has been disconnected from the mesh
+    if (_data.action === "deleteBox") { // 7. an existing box has been disconnected from the mesh
       // or the DOM contained boxRows corresponding to boxes that have been disconnected
       // from the mesh
-      if (_data.message.lb === 'a') {
+      if (_data.lb === 'a') {
+        // _data = {action: "deleteBox"; lb: "a"}
         deleteAllBoxRows();
       } else {
-        deleteBoxRow(_data.message);
+        // _data = {lb:1; action:"deleteBox"}
+        deleteBoxRow(_data);
       }
       return;
     }
