@@ -177,29 +177,29 @@ void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
 
 
-
-
 // CHANGEBOX REQUEST (received by the laser boxes only)
 void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
-  // looking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   // if this is a change active state request
-  if (_obj.containsKey("boxState")) {
-
+  if (_obj["key"] == "boxState") {
+    Serial.println("------------------------------ THIS IS A CHANGE BOXSTATE REQUEST ---------------------------");
     _updateMyValFromWeb(_obj);
     return;
   }
 
   // if this is a change master box request
-  if (_obj.containsKey("masterbox")) {
-
+  if (_obj["key"] == "masterbox") {
+    Serial.println("------------------------------ THIS IS A CHANGE MASTERBOX REQUEST ---------------------------");
     _updateMyMasterBoxName(_obj);
     return;
   }
 
   // if this is a change default state request
-  if (_obj.containsKey("boxDefstate")) {
-
+  if (_obj["key"] == "boxDefstate") {
+    Serial.println("------------------------------ THIS IS A CHANGE DEFSTATE REQUEST ---------------------------");
     _updateMyDefaultState(_obj);
     return;
   }
