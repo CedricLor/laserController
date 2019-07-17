@@ -217,7 +217,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
   if (_i8messageType == 3) {
     if (MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
-      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP %s \n", _i8messageType, (laserControllerMesh.getStationIP()).toString());
+      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
     __newObj["serverIP"] = (laserControllerMesh.getStationIP()).toString();
     // if (MY_DG_WS) {
