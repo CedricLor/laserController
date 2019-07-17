@@ -63,10 +63,11 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
         //client connected
         ws_client_id = client->id();
         if (MY_DG_WS) {
-          Serial.printf("- myWebServerWS::onEvent: ws[%s][%i] connect\n", server->url(), client->id());
+          Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; server->url(): [%s], client->id(): [%i] connect\n", server->url(), client->id());
+          Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; About to call myWSSender::prepareWSData \n");
         }
         myWSSender _myWSSender;
-        _myWSSender.prepareWSData(0); // 0 for messageType "hand shake"
+        _myWSSender.prepareWSData(0); // 0 for messageType "handshake"
 
         client->ping();
     } else if(type == WS_EVT_DISCONNECT){

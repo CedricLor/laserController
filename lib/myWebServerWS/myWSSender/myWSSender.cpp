@@ -247,27 +247,38 @@ void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdo
 
 
 
-void myWSSender::_sendWSData(JsonDocument& doc) {
+void myWSSender::sendWSData(JsonObject& _joMsg) {
     if (MY_DG_WS) {
-      Serial.println("- myWSSender::_sendWSData. Starting.");
+      Serial.println("- myWSSender::sendWSData. Starting.");
     }
-    size_t _len = measureJson(doc);
+
+    size_t _len = measureJson(_joMsg);
     if (MY_DG_WS) {
-      Serial.printf("- myWSSender::_sendWSData. _len of JSON Document [%i]\n", _len);
+      Serial.printf("- myWSSender::sendWSData. _len of JSON document _joMsg [%i]\n", _len);
+
+      // Loop through all the key-value pairs in obj
+      // Serial.println("- myWSSender::sendWSData. Content of the JSON document _joMsg:");
+      // for (JsonPair p : _joMsg) {
+      //   Serial.print("- myWSSender::sendWSData. ");
+      //   Serial.print(p.key()); // is a JsonString
+      //   Serial.print(" : ");
+      //   Serial.print((String)(p.value())); // is a JsonVariant
+      // }
+
     }
     AsyncWebSocketMessageBuffer * _buffer = myWebServerWS::ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
 
     if (_buffer) {
-        serializeJson(doc, (char *)_buffer->get(), _len + 1);
+        serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
 
         // Before sending anything, check if you have any client
         if (size_t _client_count = myWebServerWS::ws.count()) {
           // if (MY_DG_WS) {
-          //   Serial.print("- myWSSender::_sendWSData: myWebServerWS::count() = ");Serial.println(_client_count);
-          //   Serial.print("- myWSSender::_sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
-          //   Serial.print("- myWSSender::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
-          //   Serial.print("- myWSSender::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
-          //   Serial.print("- myWSSender::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
+          //   Serial.print("- myWSSender::sendWSData: myWebServerWS::count() = ");Serial.println(_client_count);
+          //   Serial.print("- myWSSender::sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
+          //   Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
+          //   Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
+          //   Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
           // }
 
           // check that you have the client_id
@@ -276,35 +287,35 @@ void myWSSender::_sendWSData(JsonDocument& doc) {
           if (myWebServerWS::ws_client_id &&
             myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr &&
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) {
-            if (MY_DG_WS) { Serial.printf("- myWSSender::_sendWSData. About to send a WS message message to client [%i].\n", myWebServerWS::ws_client_id); }
+            if (MY_DG_WS) { Serial.printf("- myWSSender::sendWSData. About to send a WS message message to client [%i].\n", myWebServerWS::ws_client_id); }
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->text(_buffer);
-            if (MY_DG_WS) { Serial.println("- myWSSender::_sendWSData. Message sent"); }
+            if (MY_DG_WS) { Serial.println("- myWSSender::sendWSData. Message sent"); }
           }  // end if (myWebServerWS::ws_client_id && ..
           else {
             // the ws_client_id you have does not match existing client
             // send the info to all the clients
             if (MY_DG_WS) {
-              Serial.print("- myWSSender::_sendWSData: myWebServerWS::count() = ");Serial.println(_client_count);
-              Serial.print("- myWSSender::_sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
-              Serial.print("- myWSSender::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
-              Serial.print("- myWSSender::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
-              Serial.print("- myWSSender::_sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
-              Serial.printf("- myWSSender::_sendWSData. Client not found. About to send a WS message message to all.\n");
+              Serial.print("- myWSSender::sendWSData: myWebServerWS::count() = ");Serial.println(_client_count);
+              Serial.print("- myWSSender::sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
+              Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
+              Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
+              Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
+              Serial.printf("- myWSSender::sendWSData. Client not found. About to send a WS message message to all.\n");
             }
             myWebServerWS::ws.textAll(_buffer);
             if (MY_DG_WS) {
-              Serial.println("- myWSSender::_sendWSData. Message sent");
+              Serial.println("- myWSSender::sendWSData. Message broadcasted");
             }
           } // end else
         } // end if client.count > 0
         else { // there is no client connected
           if (MY_DG_WS) {
-            Serial.println("- myWSSender::_sendWSData: The message could not be sent.");
+            Serial.println("- myWSSender::sendWSData: The message could not be sent.");
           }
         }
     }
     if (MY_DG_WS) {
-      Serial.println("- myWSSender::_sendWSData. Ending.");
+      Serial.println("- myWSSender::sendWSData. Ending.");
     }
 }
 

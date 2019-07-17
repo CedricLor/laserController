@@ -168,7 +168,7 @@ void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject&
 
 // CHANGED BOX CONFIRMATION (received by all the boxes)
 void myMeshController::_changedBoxConfirmation(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
-  // lloking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
+  // looking for "boxState": 0; // "masterbox":201 // "boxDefstate": 4
 
   // get the index number of the sender
   int8_t __i8BoxIndex = _getSenderBoxIndexNumber(_obj);
