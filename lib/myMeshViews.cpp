@@ -125,47 +125,7 @@ void myMeshViews::changeBoxRequest(JsonObject& _obj) {
   }
 }
 
-// void myMeshViews::changeBoxRequest(const int8_t _i8RequestedChange, const char& _cChangeKey, const int8_t _i8BoxIndexInCB) {
-//     if (MY_DG_MESH) {
-//       Serial.printf("myMeshViews::changeBoxRequest(): Starting. _i8RequestedChange = %i, _cChangeKey = %c, _i8BoxIndexInCB (dest index nb) = %i\n", _i8RequestedChange, _cChangeKey, _i8BoxIndexInCB);
-//     }
-//     /* expected JSON string: {
-//       "NNa":"001";
-//       "APIP":"...";
-//       "StIP":"...";
-//       "action":"changeBox";
-//       "boxState": 0; // "boxDefstate": 4; // "masterbox":201}
-//     */
-//     const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//     StaticJsonDocument<capacity> doc;
-//     JsonObject _joChangeBoxMsg = doc.to<JsonObject>();
-//
-//     // load the JSON document with values
-//     _joChangeBoxMsg[&_cChangeKey] = _i8RequestedChange;
-//     _joChangeBoxMsg["action"] = "changeBox";
-//
-//     // _joChangeBoxMsg["receiverTargetState"] = _i8BoxTargetState;
-//     // // _joChangeBoxMsg["receiverBoxName"] = _i8NodeName;
-//     // _joChangeBoxMsg["boxIndex"] = _i8BoxIndexInCB;
-//     // _joChangeBoxMsg["action"] = "c";
-//
-//     // _joChangeBoxMsg["ms"] = _i8MasterBox;
-//     // _joChangeBoxMsg["action"] = "m";
-//
-//     // _joChangeBoxMsg["receiverDefaultState"] = _i8BoxDefaultState;
-//     // // _joChangeBoxMsg["receiverBoxName"] = _i8NodeName;
-//     // _joChangeBoxMsg["boxIndex"] = _i8BoxIndexInCB;
-//     // _joChangeBoxMsg["action"] = "d";
-//
-//     // get the destination nodeId
-//     uint32_t _destNodeId = ControlerBoxes[_i8BoxIndexInCB].nodeId;
-//
-//     _sendMsg(_joChangeBoxMsg, _destNodeId);
-//
-//     if (MY_DG_MESH) {
-//       Serial.println("myMeshViews::changeBoxRequest(): Ending.");
-//     }
-// }
+
 
 
 
@@ -185,17 +145,7 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 }
 
 
-// void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
-//   }
-//
-//   _sendMsg(obj, ControlerBoxes[0].nodeId);
-//
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
-//   }
-// }
+
 
 
 
@@ -275,138 +225,7 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
 
 
 
-// void myMeshViews::changeBoxTargetState(const int8_t _i8BoxTargetState, const int8_t _i8BoxIndexInCB/*_i8NodeName *//* const short _sBoxTargetState, const short _sBoxName */) {
-//   // prepare the JSON string to be sent via the mesh
-//   // expected JSON string: {"receiverTargetState":3;"action":"c";"receiverBoxName":201;"NNa":"200";"APIP":"...";"StIP":"..."}
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshViews::changeBoxTargetState(): _i8BoxTargetState = %i, _i8BoxIndexInCB = %i\n", _i8BoxTargetState, _i8BoxIndexInCB);
-//   }
-//
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//   JsonObject msg = doc.to<JsonObject>();
-//
-//   msg["receiverTargetState"] = _i8BoxTargetState;
-//   // msg["receiverBoxName"] = _i8NodeName;
-//   msg["boxIndex"] = _i8BoxIndexInCB;
-//   msg["action"] = "c";
-//
-//   // get the destination nodeId
-//   uint32_t _destNodeId = ControlerBoxes[_i8BoxIndexInCB].nodeId;
-//
-//   _sendMsg(msg, _destNodeId);
-//
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changeBoxTargetState(): Ending.");
-//   }
-// }
-//
-//
-//
-//
-// // This function is called exclusively from the webserver -- the interface
-// void myMeshViews::changeMasterBox(const int8_t _i8MasterBox /*newMasterNodeName*/, const int8_t _i8BoxIndexInCB) {
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshViews::changeMasterBox(): Starting. _i8MasterBox = %i, _i8BoxIndexInCB (dest index nb) = %i\n", _i8MasterBox, _i8BoxIndexInCB);
-//   }
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201";"react":"syn"}
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//   JsonObject msg = doc.to<JsonObject>();
-//
-//   // load the JSON document with values
-//   msg["ms"] = _i8MasterBox;
-//   msg["action"] = "m";
-//
-//   // get the destination nodeId
-//   uint32_t _destNodeId = ControlerBoxes[_i8BoxIndexInCB].nodeId;
-//
-//   _sendMsg(msg, _destNodeId);
-//
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changeMasterBox(): Ending.");
-//   }
-// }
-//
-//
-//
-//
-//
-// void myMeshViews::changeBoxDefaultState(const int8_t _i8BoxDefaultState, const int8_t _i8BoxIndexInCB/*_i8BoxName*/ /*const char *boxTargetState, const char *boxName*/) {
-//   // prepare the JSON string to be sent via the mesh
-//   // expected JSON string: {"receiverDefaultState":3;"action":"c";"receiverBoxName":201;"NNa":"200";"APIP":"...";"StIP":"..."}
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshViews::changeBoxDefaultState(): _i8BoxDefaultState = %i, _i8BoxIndexInCB = %i\n", _i8BoxDefaultState, _i8BoxIndexInCB);
-//   }
-//
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//   JsonObject msg = doc.to<JsonObject>();
-//
-//   msg["receiverDefaultState"] = _i8BoxDefaultState;
-//   // msg["receiverBoxName"] = _i8NodeName;
-//   msg["boxIndex"] = _i8BoxIndexInCB;
-//   msg["action"] = "d";
-//
-//   // get the destination nodeId
-//   uint32_t _destNodeId = ControlerBoxes[_i8BoxIndexInCB].nodeId;
-//
-//   _sendMsg(msg, _destNodeId);
-//
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changeBoxDefaultState(): Ending.");
-//   }
-// }
 
-
-
-
-
-// This function is called exclusively from the laser controllers -- not the interface
-// void myMeshViews::changedMasterBoxConfirmation(const int8_t _i8MasterBox) {
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshViews::changedMasterBoxConfirmation(): Starting. _i8MasterBox = %i\n", _i8MasterBox);
-//   }
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"m";"ms":"201"}
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//   JsonObject msg = doc.to<JsonObject>();
-//
-//   // load the JSON document with values
-//   msg["ms"] = _i8MasterBox;
-//   msg["action"] = "mc";
-//
-//   _sendMsg(msg, ControlerBoxes[0].nodeId);
-//
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
-//   }
-// }
-
-
-
-
-
-// This function is called exclusively from the laser controllers -- not the interface
-// void myMeshViews::changedBoxDefaultStateConfirmation(const int8_t _i8BoxDefaultState) {
-//   // prepare the JSON string to be sent via the mesh
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"dc";"ds":3}
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshViews::changeBoxDefaultStateConfirmation(): _i8BoxDefaultState = %i\n", _i8BoxDefaultState);
-//   }
-//
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//   JsonObject msg = doc.to<JsonObject>();
-//
-//   msg["ds"] = _i8BoxDefaultState;
-//   msg["action"] = "dc";
-//
-//   _sendMsg(msg);
-//   if (MY_DG_MESH) {
-//     Serial.println("myMeshViews::changedBoxDefaultStateConfirmation(): Ending.");
-//   }
-// }
 
 
 
@@ -421,50 +240,3 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
 //   JsonObject msg = doc.to<JsonObject>();
 //   return msg;
 // }
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Views (or messages)
-// void myMeshViews::manualSwitchMsg(const short targetOnOffState) {
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"u";"ts":"0"}
-//   JsonObject msg = _createJsonobject();
-//   msg["ts"] = targetOnOffState;
-//   _sendMsg(msg, 'u');
-// }
-//
-// void myMeshViews::inclusionIRMsg(const short targetIrState) {
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"i";"ts":"0"}
-//   JsonObject msg = _createJsonobject();
-//   msg["ts"] = targetIrState;
-//   _sendMsg(msg, 'i');
-// }
-//
-// void myMeshViews::blinkingIntervalMsg(const unsigned long targetBlinkingInterval) {
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"b";"ti":"5000"}
-//   JsonObject msg = _createJsonobject();
-//   msg["ti"] = targetBlinkingInterval;
-//   _sendMsg(msg, 'b');
-// }
-//
-// void myMeshViews::pinPairingMsg(const short sTargetPairingType) {
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"p";"pt":"0"}
-//   JsonObject msg = _createJsonobject();
-//   msg["pinPairingType"] = sTargetPairingType;
-//   _sendMsg(msg, 'p');
-// }
-//
-// void myMeshViews::dataRequestMsg() {
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"d"}
-//   JsonObject msg = _createJsonobject();
-//   _sendMsg(msg, 'd');
-// }
-//
-// void myMeshViews::dataRequestResponse() {
-//   // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"r";"response":{A DETERMINER}}
-//   JsonObject msg = _createJsonobject();
-//   // msg["response"] = {A DETERMINER};
-//   _sendMsg(msg, 'r');
-// }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
