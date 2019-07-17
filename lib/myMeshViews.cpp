@@ -40,7 +40,7 @@
 
 
 // Tasks
-Task myMeshViews::tSendBoxStateToNewBox(myIndexInCBArray * 1000, 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+Task myMeshViews::tSendBoxStateToNewBox((myIndexInCBArray * 1000 + 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 
 void myMeshViews::_odtcbSendBoxStateToNewBox() {
   for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
@@ -103,7 +103,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
-void myMeshViews::changeBoxRequest(JsonObject& _obj) {
+void myMeshViews::changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
@@ -111,11 +111,14 @@ void myMeshViews::changeBoxRequest(JsonObject& _obj) {
     Serial.print("myMeshViews::changeBoxRequest(): Starting.\n");
   }
 
-  // get the destination nodeId
-  uint32_t _destNodeId = ControlerBoxes[_obj["lb"].as<int8_t>()].nodeId;
-
-  // send the message
-  _sendMsg(_obj, _destNodeId);
+  // broadcast or send the message
+  if (_bBroadcast) {
+    _sendMsg(_obj);
+  } else {
+    // get the destination nodeId
+    uint32_t _destNodeId = ControlerBoxes[_obj["lb"].as<int8_t>()].nodeId;
+    _sendMsg(_obj, _destNodeId);
+  }
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9

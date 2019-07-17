@@ -135,11 +135,9 @@ void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) 
 
 // CHANGEBOX REQUEST (received by the laser boxes only)
 void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
-  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   // if this is a change active state request
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   if (_obj["key"] == "boxState") {
     // Serial.println("------------------------------ THIS IS A CHANGE BOXSTATE REQUEST ---------------------------");
     _updateMyValFromWeb(_obj);
@@ -147,6 +145,7 @@ void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject&
   }
 
   // if this is a change master box request
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   if (_obj["key"] == "masterbox") {
     // Serial.println("------------------------------ THIS IS A CHANGE MASTERBOX REQUEST ---------------------------");
     _updateMyMasterBoxName(_obj);
@@ -154,19 +153,32 @@ void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject&
   }
 
   // if this is a change default state request
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   if (_obj["key"] == "boxDefstate") {
     // Serial.println("------------------------------ THIS IS A CHANGE DEFSTATE REQUEST ---------------------------");
     _updateMyDefaultState(_obj);
     return;
   }
 
-  // if this is a reboot request
+  // if this is a reboot  request
+  // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 0, st: 1} // reboot without saving
+  // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 1, st: 1} // reboot and save
   if (_obj["key"] == "reboot") {
     Serial.println("------------------------------ THIS IS A REBOOT REQUEST ---------------------------");
     _rebootEsp(_obj);
     return;
   }
+
+  // if this is a save request
+  // _obj = {action: "changeBox"; key: "save"; lb: 1, val: "all"} // save all the values
+  if (_obj["key"] == "save") {
+    Serial.println("------------------------------ THIS IS A SAVE REQUEST ---------------------------");
+    _save(_obj);
+    return;
+  }
 }
+
+
 
 
 
@@ -277,10 +289,16 @@ void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
 
 
 
-void myMeshController::_rebootEsp(JsonObject&_obj) {
-  // _obj = {action: "changeBox"; key: "reboot"; lb: 1, st: 1} // boxDefstate // ancient 9
+void myMeshController::_rebootEsp(JsonObject& _obj) {
+  // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 0, st: 1} // reboot without saving
+  // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 1, st: 1} // reboot and save
   if (MY_DG_MESH) {
     Serial.printf("myMeshController::_rebootEsp: about to reboot\n");
+  }
+
+  // save if necessary
+  if (_obj["save"] == 1) {
+    _save(_obj);
   }
 
   // send confirmation message
@@ -289,7 +307,17 @@ void myMeshController::_rebootEsp(JsonObject&_obj) {
 
   // reboot
   Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
-  ESP.restart();
+  ControlerBox::tReboot.enableDelayed();
+}
+
+
+void myMeshController::_save(JsonObject& _obj) {
+  // save preferences
+  mySavedPrefs::savePreferences();
+
+  // send confirmation message
+  Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");
+  _changeBoxSendConfirmationMsg(_obj);
 }
 
 // PROTOTYPE FOR A MORE ABSTRACT CHANGE PROPERTY HANDLER

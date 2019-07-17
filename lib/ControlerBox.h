@@ -46,6 +46,9 @@ class ControlerBox
 
     static void deleteBox(uint32_t nodeId);
 
+    static Task tReboot;
+    static void _reboot();
+
   private:
     static IPAddress _parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/);
     static void _parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);

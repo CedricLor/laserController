@@ -38,15 +38,16 @@ void mySavedPrefs::savePreferences() {
   // Open namespace "savedSettingsNS" in read-write
   preferences.begin("savedSettingsNS", /*read only = */false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
 
-  // Immediately add a "savedSettings" key:value pair
-  // (incrementing a counter of the number of time save
-  // operations have taken place)
-  preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
-
   // Prepare some debug constant in PROGMEM
   const PROGMEM char _debugMsgStart[] = "PREFERENCES: savePreferences(): the value of";
   const PROGMEM char _debugMsgEndSuccess[] = "has been saved to \"savedSettingsNS\":";
   const PROGMEM char _debugMsgEndFail[] = "could not be saved to \"savedSettingsNS\":";
+
+  // Immediately add a "savedSettings" key:value pair
+  // (incrementing a counter of the number of time save
+  // operations have taken place)
+  size_t _sSavedSettingsRet = preferences.putShort("savedSettings", preferences.getShort("savedSettings", 0) + 1);
+  Serial.printf("%s savedSettings == %u %s\"savedSettings\"\n", _debugMsgStart, preferences.getShort("savedSettings"), (_sSavedSettingsRet)?(_debugMsgEndSuccess):(_debugMsgEndFail));
 
   // save value of iInterfaceNodeId
   size_t _iInterfaceNodeIdRet = preferences.putUInt("iIFNodId", iInterfaceNodeId);

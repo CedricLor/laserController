@@ -105,59 +105,35 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
-  // 4 for change boxState
-  if ((_obj["action"] == "changeBox") && (_obj["key"] == "boxState")) {
-    // send a mesh request to the relevant laser box
-    // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-    _requestBoxChange(_obj);
-    // ancient: _obj = {action: 4; lb: 1; "boxState": 3}
-    // ancient: _requestBoxChange(_obj, (const char&)"boxState", __i8MessageActionType);
-    // ancient: _requestActiveStateChange(_obj);
-    return;
-  }
-
-  // 8 for change master
-  if ((_obj["action"] == "changeBox") && (_obj["key"] == "masterbox")) {
-    // send a mesh request to the relevant laser box
-    // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-    _requestBoxChange(_obj);
-    // ancient: _obj = {action: 8, lb: 1, "masterbox": 4}
-    // ancient: _requestBoxChange(_obj, (const char&)"masterbox", __i8MessageActionType);
-    // ancient: _requestMasterChange(__i8MessageActionType, _obj);
-    return;
-  }
-
-  // 9 for change default state
-  if ((_obj["action"] == "changeBox") && (_obj["key"] == "boxDefstate")) {
-    // send a mesh request to the relevant laser box
-    // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-    _requestBoxChange(_obj);
-    return;
-  }
-
-  // reboot the IF
+  // reboot and/or save the IF
   if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot") && (_obj["lb"] == 0)) {
-    // _obj = {action: "changeBox"; key: "reboot"; lb: 0}
+    // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
+    // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
+    // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
     _rebootIF(_obj);
     return;
   }
 
-  // reboot box
-  if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot")) {
+  // Former 4 (change boxState), 8 (change master) and 9 (change default state)
+  // added also key "reboot" and "save"
+  if (_obj["action"] == "changeBox") {
     // send a mesh request to the relevant laser box
-    // _obj = {action: "changeBox"; key: "reboot"; lb: 1}
+    // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+    // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+    // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+    // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 0} // reboot without saving
+    // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 1} // reboot and save
+    // _obj = {action: "changeBox"; key: "save"; lb: 1, val: "all"} // save all the values
     _requestBoxChange(_obj);
     return;
   }
 
-  // reboot all the laser boxes
-  if ((_obj["action"] == "changeNet")  && (_obj["key"] == "reboot")) {
-    // send a mesh request to all the existing laser boxes
-    // _obj = {action: "changeNet"; key: "reboot"; lb: "All" OR "LBs"} // boxDefstate // ancient 9
+  // reboot all or part of the laser boxes
+  if ((_obj["action"] == "changeNet") && (_obj["key"] == "reboot")) {
+    // send a mesh request to the existing laser boxes
+    // _obj = {action: "changeNet", key: "reboot", save:0, val: "all"}
+    // _obj = {action: "changeNet", key: "reboot", save: 0, val: "LBs"}
     _rebootNet(_obj);
-    // ancient: _obj = {action: 9; lb: 1; "boxDefstate": 3}
-    // ancient: _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
-    // ancient: _requestDefaultStateChange(_obj);
     return;
   }
 
@@ -367,7 +343,7 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
 
 
 
-void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
+void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
@@ -376,7 +352,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
 
   // instantiate a mesh view to send a message to the relevant box
   myMeshViews __myMeshViews;
-  __myMeshViews.changeBoxRequest(_obj);
+  __myMeshViews.changeBoxRequest(_obj, _bBroadcast);
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
@@ -389,7 +365,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
 
 void myWSReceiver::_rebootIF(JsonObject& _obj) {
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
-  ESP.restart();
+  ControlerBox::tReboot.enableDelayed();
 }
 
 
@@ -399,25 +375,19 @@ void myWSReceiver::_rebootIF(JsonObject& _obj) {
 void myWSReceiver::_rebootNet(JsonObject& _obj) {
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootNet(): Starting.\n"); }
 
-  bool __rebootIF = false;
-
-  if (_obj["val"] == "All") {
-    __rebootIF = true;
-  }
-
-  _obj.remove("val");
-
-  for (short _i = 1; _i < sBoxesCount; _i++) {
-    if (ControlerBoxes[_i].nodeId != 0) {
-      _obj["action"] = "changeBox";
-      _obj["lb"] = _i;
-      _requestBoxChange(_obj);
-    }
-  }
-
-  if (__rebootIF == true) {
+  // If reboot "all", IF shall be rebooted
+  if (_obj["val"] == "all") {
     _rebootIF(_obj);
   }
+
+  // remove the "val" which is of no use
+  _obj.remove("val");
+
+  // remove the "val" which is of no use
+  _obj["action"] = "changeBox";
+
+  // broadcast the _obj (including with its "reboot" key)
+  _requestBoxChange(_obj, true /*_bBroadcast*/);
 
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootNet(): Ending.\n"); }
 }

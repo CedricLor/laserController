@@ -125,52 +125,89 @@ function onclickRebootBoxButton(e) {
   ws.send(JSON.stringify({
     action: "changeBox",
     key: "reboot",
+    save: 0, // reboot without saving
     lb: _laserBoxNumber
   }));
-  // {action:"reboot", lb:1}
+  // {action:"changeBox", key:"reboot", save: 0, lb:1}
   console.log("onclickRebootBoxButton: ending");
 };
 
 
 
+function onclickRebootAndSaveBoxButton(e) {
+  console.log("onclickRebootAndSaveBoxButton starting");
+  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "reboot",
+    save: 1, // save and reboot
+    lb: _laserBoxNumber
+  }));
+  // {action:"changeBox", key:"reboot", save: 1, lb:1}
+  console.log("onclickRebootAndSaveBoxButton: ending");
+};
+
+
+
+function onclickSavePrefsBoxButton(e) {
+  console.log("onclickSavePrefsBoxButton starting");
+  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "save",
+    val: "all", // save all the values for the box and the net
+    lb: _laserBoxNumber
+  }));
+  // {action:"changeBox", key:"save", val: "all", lb:1}
+  console.log("onclickSavePrefsBoxButton: ending");
+};
+
+
+
+
 function onclickRebootLBsButton(e) {
-  console.log("onclickRebootBoxButton starting");
+  console.log("onclickRebootLBsButton starting");
 
   ws.send(JSON.stringify({
     action: "changeNet",
     key: "reboot",
+    save: 0, // reboot without saving
     val: "LBs"
   }));
-  // {action:"reboot", lb:1}
-  console.log("onclickRebootBoxButton: ending");
+  // {action: "changeNet", key: "reboot", save: 0, val: "LBs"}
+  console.log("onclickRebootLBsButton: ending");
 };
 
 
 
 function onclickRebootIFButton(e) {
-  console.log("onclickRebootBoxButton starting");
+  console.log("onclickRebootIFButton starting");
 
   ws.send(JSON.stringify({
     action: "changeBox",
     key: "reboot",
+    save: 0,
     lb: 0
   }));
-  // {action:"reboot", lb:1}
-  console.log("onclickRebootBoxButton: ending");
+  // {action:"changeBox", key:"reboot", save: 0, lb:0}
+  console.log("onclickRebootIFButton: ending");
 };
 
 
 
 function onclickRebootAllButton(e) {
-  console.log("onclickRebootBoxButton starting");
+  console.log("onclickRebootAllButton starting");
 
   ws.send(JSON.stringify({
     action: "changeNet",
     key: "reboot",
-    val: "All"
+    save: 0,
+    val: "all"
   }));
-  // {action:"reboot", lb:1}
-  console.log("onclickRebootBoxButton: ending");
+  // {action: "changeNet", key: "reboot", save: 0, val: "all"}
+  console.log("onclickRebootAllButton: ending");
 };
 
 
@@ -451,9 +488,14 @@ function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
   _dupRow.classList.remove('hidden');
   console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (_laserBoxIndexNumber + 200));
   _dupRow.querySelector("span.box_num").textContent = _laserBoxIndexNumber + 200;
-  console.log("_newBoxRowSetProperties: _dupRow: setting the reboot button for this box");
+
+  console.log("_newBoxRowSetProperties: _dupRow: setting the reboot and save buttons for this box");
   _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
   _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', onclickRebootAndSaveBoxButton, false);
+  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
+  _dupRow.querySelector("#savePrefsBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 

@@ -58,7 +58,7 @@ class myWSReceiver
     void _checkBoxStateConsistancy(JsonPair& _p);
     void _lookForDOMMissingRows(JsonObject& _joBoxState);
 
-    void _requestBoxChange(JsonObject& _obj);
+    void _requestBoxChange(JsonObject& _obj, bool _bBroadcast=false);
     void _rebootIF(JsonObject& _obj);
     void _rebootNet(JsonObject& _obj);
 
