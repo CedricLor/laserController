@@ -67,13 +67,15 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
     Serial.print("myWSReceiver::myWSReceiver(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
   }
 
-  // read the action type of message (0 for handshake, 3 for confirmation that change IP adress has been received, 4 for change boxState)
-  const int8_t __i8MessageActionType = _obj["action"]; // correspondings to root[action] in meshController
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::myWSReceiver(): The message __i8MessageActionType is %i \n", __i8MessageActionType); }
+  // read the action type of message
+  // NEW: _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+  // ancient: _obj["action"] = 0 (handshake), 3 (received IP), 4 (change active state), 9 (change default state), 8 ()
+  // const int8_t __i8MessageActionType = _obj["action"]; // correspondings to root[action] in meshController
+  // if (MY_DG_WS) { Serial.printf("myWSReceiver::myWSReceiver(): The message __i8MessageActionType is %i \n", __i8MessageActionType); }
 
 
   // choose the type of reaction depending on the message action type
-  _actionSwitch(__i8MessageActionType, _obj);
+  _actionSwitch(_obj);
 }
 
 
@@ -81,21 +83,22 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 
 
-void myWSReceiver::_actionSwitch(const int8_t __i8MessageActionType, JsonObject& _obj) {
+void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
   // Received JSON: {action:0, message:{1:4;2:3}}
-  if (__i8MessageActionType == 0) {           // 0 for hand shake message
+  if (_obj["action"] == "handshake") {           // 0 for hand shake message
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::myWSReceiver(): __i8MessageActionType = %i - new WS: going to check whether the DOM needs to be updated. \n", __i8MessageActionType);
+      Serial.printf("myWSReceiver::myWSReceiver(): new WS: checking whether the DOM needs update. \n");
     }
-    _onHandshakeCheckWhetherDOMNeedsUpdate(__i8MessageActionType, _obj); // _obj = {action:0, message:{1:4;2:3}}
+    _onHandshakeCheckWhetherDOMNeedsUpdate(_obj); // _obj = {action:0, message:{1:4;2:3}}
     return;
   }
 
   // 3 for confirmation that change IP adress has been received
-  if (__i8MessageActionType == 3) {
+  // disable the task sending the IP by WS to the browser
+  if (_obj["action"] == "ReceivedIP") {
     if (MY_DG_WS) {
-      Serial.println("myWSReceiver::myWSReceiver. Ending on __i8MessageActionType == 3 (received confirmation that new station IP has been received).");
+      Serial.println("myWSReceiver::myWSReceiver. Ending on received confirmation that new station IP has been received).");
     }
     // disable the task sending the station IP
     myWSSender::tSendWSDataIfChangeStationIp.disable();
@@ -103,28 +106,35 @@ void myWSReceiver::_actionSwitch(const int8_t __i8MessageActionType, JsonObject&
   }
 
   // 4 for change boxState
-  if (__i8MessageActionType == 4) {
-    // _obj = {action: 4; lb: 1; "boxState": 3}
-    _requestBoxChange(_obj, (const char&)"boxState", __i8MessageActionType);
-    // _requestActiveStateChange(_obj);
+  if ((_obj["action"] == "changeBox") && (_obj["key"] == "boxState")) {
+    // send a mesh request to the relevant laser box
+    // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+    _requestBoxChange(_obj);
+    // ancient: _obj = {action: 4; lb: 1; "boxState": 3}
+    // ancient: _requestBoxChange(_obj, (const char&)"boxState", __i8MessageActionType);
+    // ancient: _requestActiveStateChange(_obj);
     return;
   }
 
   // 8 for change master
-  if (__i8MessageActionType == 8) {
+  if ((_obj["action"] == "changeBox") && (_obj["key"] == "masterbox")) {
     // send a mesh request to the relevant laser box
-    // _obj = {action: 8, lb: 1, "masterbox": 4}
-    _requestBoxChange(_obj, (const char&)"masterbox", __i8MessageActionType);
-    // _requestMasterChange(__i8MessageActionType, _obj);
+    // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+    _requestBoxChange(_obj);
+    // ancient: _obj = {action: 8, lb: 1, "masterbox": 4}
+    // ancient: _requestBoxChange(_obj, (const char&)"masterbox", __i8MessageActionType);
+    // ancient: _requestMasterChange(__i8MessageActionType, _obj);
     return;
   }
 
   // 9 for change default state
-  if (__i8MessageActionType == 9) {
+  if ((_obj["action"] == "changeBox") && (_obj["key"] == "boxDefstate")) {
     // send a mesh request to the relevant laser box
-    // _obj = {action: 9; lb: 1; "boxDefstate": 3}
-    _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
-    // _requestDefaultStateChange(_obj);
+    // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+    _requestBoxChange(_obj);
+    // ancient: _obj = {action: 9; lb: 1; "boxDefstate": 3}
+    // ancient: _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
+    // ancient: _requestDefaultStateChange(_obj);
     return;
   }
 }
@@ -134,12 +144,11 @@ void myWSReceiver::_actionSwitch(const int8_t __i8MessageActionType, JsonObject&
 
 
 
-void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8MessageActionType, JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/) {
+void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/) {
 
-  // Declare and define a JSONObject to read
+  // Declare and define a JSONObject to read the box numbers and box states from the nested JSON object
   JsonObject __joBoxesStatesInDOM = _obj["boxesStatesInDOM"].as<JsonObject>(); // __joBoxesStatesInDOM = {1:4;2:3}
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageActionType = %i - JSON Object _obj available containing the boxState of each boxRow in the DOM \n", _i8MessageActionType); }
-
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object _obj available containing the boxState of each boxRow in the DOM \n"); }
 
 
   if (__joBoxesStatesInDOM.size() == 0) {
@@ -147,16 +156,16 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8Messag
     if (ControlerBox::connectedBoxesCount == 1) {
       // there are no boxes connected to the mesh (and no boxes in the DOM), just return
       // if (MY_DG_WS) {
-      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageActionType = %i, JSON Object __joBoxesStatesInDOM.size: %i. There are currently no boxRow in the DOM.\n", _i8MessageActionType, (__joBoxesStatesInDOM.size() == 0));
-      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): _i8MessageActionType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", _i8MessageActionType, (ControlerBox::connectedBoxesCount == 1));
-      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending on message action type [%i], because there are no boxRow, nor connectedBoxes.\n", _i8MessageActionType);
+      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object __joBoxesStatesInDOM.size: %i. There are currently no boxRow in the DOM.\n", (__joBoxesStatesInDOM.size() == 0));
+      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently no boxes connected to the mesh.\n", (ControlerBox::connectedBoxesCount == 1));
+      //   Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending action type "handshake", because there are no boxRow, nor connectedBoxes.\n");
       // }
       return;
     }
     else // re. if (ControlerBox::connectedBoxesCount == 1)
     // there are boxes connected to the mesh (and no boxes in the DOM), look for the missing boxes
     {
-      _lookForDOMMissingRows(_i8MessageActionType, __joBoxesStatesInDOM);
+      _lookForDOMMissingRows(__joBoxesStatesInDOM);
       return;
     }
   }
@@ -167,16 +176,19 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8Messag
     if (ControlerBox::connectedBoxesCount == 1) {
       // there are no connected boxes (and boxes in the DOM):
       // -> send instruction to delete all the boxRows from the DOM
-      __joBoxesStatesInDOM["lb"] = "a"; // "a" means delete all the boxes
+      _obj.clear();
+      _obj["action"] = "deleteBox";
+      _obj["lb"] = "a";
       myWSSender _myWSSender;
-      _myWSSender.prepareWSData(7, __joBoxesStatesInDOM);
+      _myWSSender.sendWSData(_obj);
+      // _obj = {action: "deleteBox"; lb: "a"}
       return;
     }
     else // re. if (ControlerBox::connectedBoxesCount == 1)
     // there are boxes connected to the mesh (and boxes in the DOM):
     // -> check consistency between the DOM and ControlerBoxes[]
     {
-      _checkConsistancyDOMDB(_i8MessageActionType, __joBoxesStatesInDOM);
+      _checkConsistancyDOMDB(__joBoxesStatesInDOM);
     } // end else
   } // end if (__joBoxesStatesInDOM.size() != 0)
 
@@ -186,33 +198,33 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8Messag
 
 
 
-void myWSReceiver::_checkConsistancyDOMDB(const int8_t _i8MessageActionType, JsonObject& _joBoxState) {
+void myWSReceiver::_checkConsistancyDOMDB(JsonObject& _joBoxState) {
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _i8MessageActionType = %i, JSON Object _joBoxState.size: %i. There are currently boxRow(s) in the DOM.\n", _i8MessageActionType, _joBoxState.size());
-    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _i8MessageActionType = %i, JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", _i8MessageActionType, ControlerBox::connectedBoxesCount);
-    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _i8MessageActionType = %i, about to iterate over the boxRows, looking for the existing boxRow and boxState in DOM\n", _i8MessageActionType);
+    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object _joBoxState.size: %i. There are currently boxRow(s) in the DOM.\n", _joBoxState.size());
+    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", ControlerBox::connectedBoxesCount);
+    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): about to iterate over the boxRows, looking for the existing boxRow and boxState in DOM\n");
   }
 
   for (JsonPair _p : _joBoxState) { // for each pair boxIndex:boxState in the DOM,
     // {1:4;2:3;etc.}
 
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _i8MessageActionType = %i, new iteration.\n", _i8MessageActionType);
-      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _i8MessageActionType = %i, about to use the key of the current pair of the JSON object to check whether the ControlerBox corresponding to the boxRow in the DOM really exists in ControlerBoxes.\n", _i8MessageActionType);
-      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): _i8MessageActionType = %i, testing p.key().c_str(): %s\n", _i8MessageActionType, _p.key().c_str());
+      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): new iteration.\n");
+      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): about to use the key of the current pair of the JSON object to check whether the ControlerBox corresponding to the boxRow in the DOM really exists in ControlerBoxes.\n");
+      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): testing p.key().c_str(): %s\n", _p.key().c_str());
     }
 
     // DISCONNECTED BOXES CHECKER
-    _lookForDisconnectedBoxes(_i8MessageActionType, _p);
+    _lookForDisconnectedBoxes(_p);
 
     // BOXSTATE CHECKER
-    _checkBoxStateConsistancy(_i8MessageActionType, _p);
+    _checkBoxStateConsistancy(_p);
 
   } // end for (JsonPair _p : _joBoxState)
 
   // MISSING BOXES CHECKER
   // look for missing boxes in the DOM and ask for an update
-  _lookForDOMMissingRows(_i8MessageActionType, _joBoxState);
+  _lookForDOMMissingRows(_joBoxState);
 
   if (MY_DG_WS) {
     Serial.println("myWSReceiver::_checkConsistancyDOMDB. Ending on action type 0 (received handshake message with list of boxRows in DOM).");
@@ -224,26 +236,26 @@ void myWSReceiver::_checkConsistancyDOMDB(const int8_t _i8MessageActionType, Jso
 
 
 
-void myWSReceiver::_lookForDisconnectedBoxes(const int8_t _i8MessageActionType, JsonPair& _p) {
+void myWSReceiver::_lookForDisconnectedBoxes(JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
 
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _i8MessageActionType = %i, using this value to select a ControlerBoxes[]\n", _i8MessageActionType);
-    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _i8MessageActionType = %i, ControlerBoxes[_iBoxIndex].nodeId == 0 is equal to %i\n", _i8MessageActionType, (ControlerBoxes[_iBoxIndex].nodeId == 0));
+    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): using this value to select a ControlerBoxes[]\n");
+    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): ControlerBoxes[_iBoxIndex].nodeId == 0 is equal to %i\n", (ControlerBoxes[_iBoxIndex].nodeId == 0));
   }
 
   // check if it still is connected; if not, request an update of the DOM
   if (ControlerBoxes[_iBoxIndex].nodeId == 0) {
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _i8MessageActionType = %i, the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", _i8MessageActionType, ControlerBoxes[_iBoxIndex].nodeId);
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _i8MessageActionType = %i, about to turn [boxDeletionHasBeenSignaled] of ControlerBoxes[%i] to false.\n", _i8MessageActionType, _iBoxIndex);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", ControlerBoxes[_iBoxIndex].nodeId);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): about to turn [boxDeletionHasBeenSignaled] of ControlerBoxes[%i] to false.\n", _iBoxIndex);
     }
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
     ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled = false;
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _i8MessageActionType = %i, ControlerBoxes[%i].boxDeletionHasBeenSignaled turned to %i.\n", _i8MessageActionType, _iBoxIndex, ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled);
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): _i8MessageActionType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _i8MessageActionType);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): ControlerBoxes[%i].boxDeletionHasBeenSignaled turned to %i.\n", _iBoxIndex, ControlerBoxes[_iBoxIndex].boxDeletionHasBeenSignaled);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): this shall be caught by the task _tSendWSDataIfChangeBoxState at next pass.\n");
     }
   } // if
 }
@@ -253,22 +265,22 @@ void myWSReceiver::_lookForDisconnectedBoxes(const int8_t _i8MessageActionType, 
 
 
 
-void myWSReceiver::_checkBoxStateConsistancy(const int8_t _i8MessageActionType, JsonPair& _p) {
+void myWSReceiver::_checkBoxStateConsistancy(JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageActionType = %i, ControlerBoxes[_iBoxIndex].boxActiveState = %i\n", _i8MessageActionType, ControlerBoxes[_iBoxIndex].boxActiveState);
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageActionType = %i, (int)(_p.value().as<char*>()) = %i\n.", _i8MessageActionType, (int)(_p.value().as<char*>()));
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageActionType = %i, comparison between the two: %i\n.", _i8MessageActionType, (ControlerBoxes[_iBoxIndex].boxActiveState == (int)(_p.value().as<char*>())));
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): ControlerBoxes[_iBoxIndex].boxActiveState = %i\n", ControlerBoxes[_iBoxIndex].boxActiveState);
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): (int)(_p.value().as<char*>()) = %i\n.", (int)(_p.value().as<char*>()));
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): comparison between the two: %i\n.", (ControlerBoxes[_iBoxIndex].boxActiveState == (int)(_p.value().as<char*>())));
   }
   // check if it has the correct boxState; if not, ask for an update
   if (ControlerBoxes[_iBoxIndex].boxActiveState != (int)(_p.value().as<char*>())) {
-    if (MY_DG_WS) { Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageActionType = %i, the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n", _i8MessageActionType);}
+    if (MY_DG_WS) { Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n");}
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
     ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = false;
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageActionType = %i, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = %i.\n", _i8MessageActionType, ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled);
-      Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): _i8MessageActionType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _i8MessageActionType);
+      Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = %i.\n", ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled);
+      Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n");
     }
   } // end if
 }
@@ -277,23 +289,25 @@ void myWSReceiver::_checkBoxStateConsistancy(const int8_t _i8MessageActionType, 
 
 
 
-void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageActionType, JsonObject& _joBoxState) {
+void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageActionType = %i, about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n", _i8MessageActionType);
+    Serial.printf("myWSReceiver::_lookForDOMMissingRows(): about to iterate over the ControlerBoxes to look if any is missing from the JSON object containing the boxRows from the DOM.\n");
   }
 
+  // iterate over all the potentially existing laser boxes (note that it starts at 1)
   for (short _i = 1; _i < sBoxesCount; _i++) {
-    char _c[3];
-    itoa(_i, _c, 10);
-    const char* _keyInJson = _joBoxState[_c];
+    char _c[3];  // declare an array of char of 3 characters ("   ")
+    itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
+    const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
     if ((ControlerBoxes[_i].nodeId != 0) && _keyInJson == nullptr) {
-      if (MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageActionType = %i, there is a missing box in the DOM. Add it.\n", _i8MessageActionType);}
+      // if the ControlerBoxes[_i] has a nodeID and the corresponding _joBoxState[_c] is a nullprt
+      // there is a missing box in the DOM
+      if (MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): ControlerBoxes[%i] is missing box in the DOM. Add it.\n", _i);}
       // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
       ControlerBoxes[_i].isNewBoxHasBeenSignaled = false;
-
       if (MY_DG_WS) {
-        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageActionType = %i, ControlerBoxes[_i].isNewBoxHasBeenSignaled = %i\n", _i8MessageActionType, ControlerBoxes[_i].isNewBoxHasBeenSignaled);
-        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): _i8MessageActionType = %i, this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n", _i8MessageActionType);
+        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): ControlerBoxes[%i].isNewBoxHasBeenSignaled = %i\n", _i, ControlerBoxes[_i].isNewBoxHasBeenSignaled);
+        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n");
       }
     } // if
   } // for
@@ -302,10 +316,9 @@ void myWSReceiver::_lookForDOMMissingRows(const int8_t _i8MessageActionType, Jso
 
 
 
+void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
 
 
-void myWSReceiver::_requestBoxChange(JsonObject& _obj, const char& _cChangeKey, const int8_t _i8MessageActionType) {
-  // _obj = {action: 4; lb: 1; "boxState": 3}
   // _obj = {action: 8, lb: 1, "masterbox": 4}
   // _obj = {action: 9; lb: 1; "boxDefstate": 3}
   // (const char&)"boxState"
@@ -313,9 +326,6 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, const char& _cChangeKey, 
   // (const char&)"boxDefstate"
 
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_requestBoxChange(): Starting with _cChangeKey = %s, _i8MessageActionType = %i \n", &_cChangeKey, _i8MessageActionType);
-  }
-
   // get destination box number
   const int8_t __i8BoxIndexInCB = _obj["lb"];
   if (MY_DG_WS) {
