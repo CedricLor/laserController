@@ -31,8 +31,8 @@ function connect() {
     console.log( "WS Received Message: " + received_msg);
     var _data = JSON.parse(e.data);
     if (_data.action === 3) {
-      updateStationIp(_data.message);
       // console.log("WS JSON message: " + _data.ServerIP);
+      updateStationIp(_data.serverIP);
       ws.send(JSON.stringify({
         action: "ReceivedIP"
       }));
