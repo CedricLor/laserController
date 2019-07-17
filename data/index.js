@@ -63,9 +63,11 @@ function connect() {
       }
       return;
     }
-    if (_data.action === 8) { // a box has changed master
-      updateMasterBoxNumber(_data.message);
-    }
+    if (_data.action === "changeBox" && _data.key === "masterbox") { // 8. a box has changed master
+      // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+      // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
+      updateMasterBoxNumber(_data);
+      return;
     }
     if (_data.action === "changeBox" && _data.key === "boxDefstate") { // 9. User request to change default boxState of a given box has been received and is being processed
                                                                                          // 10. the default state of a given box has changed
@@ -412,18 +414,17 @@ function _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroup
 
 
 
-
-function _indicateMasterBoxNumber(data, _dupRow) {
+function _indicateMasterBoxNumber(_masterBoxIndexNumber, _dupRow) {
   console.log("_indicateMasterBoxNumber: starting. About to write masterbox number");
 
   // Write box number in box number span
-  var _span = selectMasterBoxNumberSpan(_dupRow, data);
-  writeMasterBoxNumberInBoxNumberSpan(_span, data);
+  var _span = selectMasterBoxNumberSpan(_dupRow);
+  writeMasterBoxNumberInBoxNumberSpan(_span, _masterBoxIndexNumber);
 
   // Select corresponding option in masterBoxSelect
   var _select = _selectMasterSelectInRow(_dupRow);
   console.log("_indicateMasterBoxNumber: About to select correct option in master select");
-  _select.value=parseInt(data.ms, 10);
+  _select.value = parseInt(_masterBoxIndexNumber, 10);
   console.log("_indicateMasterBoxNumber: ending. About to return _dupRow.");
 
   return _dupRow;
@@ -485,6 +486,7 @@ function _deleteFromMaps(boxNumber) {
 
 
 function addNewRowForNewBox(data) {
+  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
   if (boxRowTemplate) {
     // clone the template
@@ -597,6 +599,7 @@ function deleteBoxRow(data) {
 
 
 
+function selectMasterBoxNumberSpan(_dupRow) {
   console.log("selectMasterBoxNumberSpan: starting.");
   var _masterBoxNumberSelector = "span.master_box_number";
   console.log("selectMasterBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
@@ -607,32 +610,36 @@ function deleteBoxRow(data) {
 
 
 
-function writeMasterBoxNumberInBoxNumberSpan(_span, data) {
+function writeMasterBoxNumberInBoxNumberSpan(_span, _masterBoxIndexNumber) {
   console.log("writeMasterBoxNumberInBoxNumberSpan: starting.");
-  _span.textContent = data.ms + 200;
+  _span.textContent = _masterBoxIndexNumber + 200;
   // _row.children[1].children[0].textContent = data.ms + 200;
-  console.log("writeMasterBoxNumberInBoxNumberSpan: masterbox span updated: " + (data.ms + 200));
+  console.log("writeMasterBoxNumberInBoxNumberSpan: masterbox span updated: " + (_masterBoxIndexNumber + 200));
   console.log("writeMasterBoxNumberInBoxNumberSpan: ending.");
 }
 
 
 
 
-function updateMasterBoxNumber(data) {
+function updateMasterBoxNumber(_data) {
+  // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+  // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
   console.log("updateMasterBoxNumber starting.");
 
   // select the relevant row
-  var _row = boxesRows.get(data.lb);
-  console.log("updateMasterBoxNumber: selected row: " + data.lb);
+  var _row = boxesRows.get(_data.lb);
+  console.log("updateMasterBoxNumber: selected row: " + _data.lb);
 
   // write box number in box number span
-  var _span = selectMasterBoxNumberSpan(_row, data);
-  writeMasterBoxNumberInBoxNumberSpan(_span, data);
+  var _span = selectMasterBoxNumberSpan(_row);
+  writeMasterBoxNumberInBoxNumberSpan(_span, _data.val);
 
-  if (data.st === 1) {
+  if (_data.st === 1) {
     _span.classList.add("change_ms_received");
     console.log("updateMasterBoxNumber: added class change_ms_received to masterbox span");
-  } else if (data.st === 2) {
+    return;
+  }
+  if (_data.st === 2) {
     // update the number mentionned in html
     _span.classList.remove("change_ms_received");
     console.log("updateMasterBoxNumber: removed class change_ms_received to masterbox span");
@@ -642,10 +649,8 @@ function updateMasterBoxNumber(data) {
     // update the select by choosing the correct option
     var _select = _selectMasterSelectInRow(_row);
     console.log("updateMasterBoxNumber: About to select correct option in master select");
-    _select.value=parseInt(data.ms, 10);
+    _select.value = parseInt(_data.val, 10);
   }
-
-  console.log("updateMasterBoxNumber ending.");
 }
 
 
