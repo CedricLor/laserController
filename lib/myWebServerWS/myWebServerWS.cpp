@@ -64,7 +64,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
         ws_client_id = client->id();
         if (MY_DG_WS) {
           Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; server->url(): [%s], client->id(): [%i] connect\n", server->url(), client->id());
-          Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; About to call myWSSender::prepareWSData \n");
+          Serial.println("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; About to call myWSSender::prepareWSData");
         }
         myWSSender _myWSSender;
         _myWSSender.prepareWSData(0); // 0 for messageType "handshake"
@@ -98,7 +98,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
             if(info->opcode == WS_TEXT) {
 
                 myWSSender _myWSSender;
-                Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)");
+                Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)\n");
                 _myWSSender.prepareWSData(1); // text message confirmation
 
             }
@@ -168,7 +168,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
                   if(info->message_opcode == WS_TEXT) {
                     if (MY_DG_WS) {
                       Serial.printf("- myWebServerWS::onEvent: this is the final frames of a multiple frames text message\n");
-                      Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)");
+                      Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA (2nd): about to call prepareWSData(1)\n");
                     }
                       myWSSender _myWSSender;
                       _myWSSender.prepareWSData(1); // text message confirmation

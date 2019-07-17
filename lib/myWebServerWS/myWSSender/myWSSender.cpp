@@ -183,6 +183,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
 
 void myWSSender::prepareWSData(const int8_t _i8messageType) {
+  Serial.printf("- myWSSender::prepareWSData. Starting. Message type [%i]\n", _i8messageType);
   StaticJsonDocument<256> __doc;
   JsonObject __newObj = __doc.to<JsonObject>();
   __newObj["action"] = _i8messageType;
@@ -214,6 +215,10 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
   // message type 3: change in station IP
   if (_i8messageType == 3) {
+    if (MY_DG_WS) {
+      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
+      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP %s \n", _i8messageType, (laserControllerMesh.getStationIP()).toString());
+    }
     __newObj["serverIP"] = (laserControllerMesh.getStationIP()).toString();
     // if (MY_DG_WS) {
     //   const char* __serverIp = __newObj["serverIP"];
