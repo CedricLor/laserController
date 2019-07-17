@@ -39,12 +39,13 @@ function connect() {
       // {action:"ReceivedIP}
       return;
     }
-    if (_data.action === 4) { // User request to change boxState of a given box has been received and is being processed
-      updateClickedStateButton(_data.message.lb, "boxstate", _data.message.boxState)
+    if (_data.action === "changeBox" && _data.key === "boxState") { // 4. User request to change boxState of a given box has been received and is being processed
+                                                                    // 5. boxState of existing box has been updated
+      // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+      // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+      updateStateButton(_data);
       return;
     }
-    if (_data.action === 5) { // boxState of existing box has been updated
-      addOrUpdateNewRowForNewBox(_data.message);
       return;
     }
     if (_data.action === 6) { // a new box has connected to the mesh
@@ -64,11 +65,13 @@ function connect() {
     if (_data.action === 8) { // a box has changed master
       updateMasterBoxNumber(_data.message);
     }
-    if (_data.action === 9) { // User request to change default boxState of a given box has been received and is being processed
-      updateClickedStateButton(_data.message.lb, "boxDefstate", _data.message.boxDefstate)
     }
-    if (_data.action === 10) { // the default state of a given box has changed
-      updateDefaultStateButton(_data);
+    if (_data.action === "changeBox" && _data.key === "boxDefstate") { // 9. User request to change default boxState of a given box has been received and is being processed
+                                                                                         // 10. the default state of a given box has changed
+      // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+      // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+      updateStateButton(_data);
+      return;
     }
   };
 
@@ -199,15 +202,46 @@ function updateStationIp(_stationIp) {
 
 
 
-function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNumberSelector) {
-  console.log("updateClickedStateButton starting. _laserBoxNumber = " + _laserBoxNumber + "; _stateTypeSelector = " + _stateTypeSelector + "; _stateNumberSelector = " + _stateNumberSelector + ".");
-  var _boxRow = boxesRows.get(_laserBoxNumber);
-  console.log("updateClickedStateButton: _boxRow = ");console.log(_boxRow);
-  var _elt = _boxRow.querySelector("button[data-" +_stateTypeSelector + "='" + _stateNumberSelector + "']");
+function updateStateButton(_data) {
+  // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+  // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+  // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+  // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+  console.log("updateStateButton: laser box [" + _data.lb + "]; stateButton: " + _data.key + ".");
+  // select the correct row in the map
+  var _boxRow = boxesRows.get(_data.lb);
+  var _requestStatus = parseInt(_data.st, 10);
+
+  if (_requestStatus === 1) {
+    updateClickedStateButton(_boxRow, _data.key, _data.val);
+    return;
+  }
+  if (_requestStatus === 2) {
+    // 1. remove classes on all the others stateButtons of the same type of this boxRow
+    // 2. add button_active_state class to the relevant stateButton
+    // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
+    // _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.val);
+    updateCurrentStateButton(_boxRow, _data.key, _data.val);
+    return;
+  }
+
+  console.log("updateStateButton: ending after updating laser box [" + _data.lb + "]");
+}
 
 
 
 
+/*
+  This function adds a red border (by applying class button_change_received)
+  to any button that has been touched and for which the browser has received
+  by WS a response from the server saying that the corresponding request is
+  currently being processed.
+*/
+function updateClickedStateButton(_boxRow, _stateTypeSelector, _stateNumberSelector) {
+  // updateClickedStateButton(_boxRow, _data.key:"boxState", _data.val:3);
+  console.log("updateClickedStateButton starting. _stateTypeSelector = " + _stateTypeSelector + "; _stateNumberSelector = " + _stateNumberSelector + "; _boxRow: ");console.log(_boxRow);
+  // --> updateClickedStateButton starting. _stateTypeSelector = boxState; _stateNumberSelector = 3.;
+  var _elt = _boxRow.querySelector("button[data-" + _stateTypeSelector + "='" + _stateNumberSelector + "']");
   console.log(_elt);
   if (_elt) {
     _elt.classList.add('button_change_received');
@@ -218,18 +252,19 @@ function updateClickedStateButton(_laserBoxNumber, _stateTypeSelector, _stateNum
 
 
 
-function updateDefaultStateButton(data) {
-  console.log("updateDefaultStateButton: default state for laser box [" + data.message.lb + "] has changed.");
-  // select the correct row in the map
-  var _boxRow = boxesRows.get(data.message.lb);
-
-  // 1. remove classes on all the others default stateButtons of this boxRow
-  // 2. add button_active_state class to the relevant default stateButton
-  // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-  _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.message.boxDefstate);
-
-  console.log("updateDefaultStateButton: ending after updating laser box [" + data.message.lb + "]");
-}
+// function updateDefaultStateButton(data) {
+//   console.log("updateDefaultStateButton: default state for laser box [" + data.lb + "] has changed.");
+//   // select the correct row in the map
+//   var _boxRow = boxesRows.get(data.lb);
+//
+//   // 1. remove classes on all the others default stateButtons of this boxRow
+//   // 2. add button_active_state class to the relevant default stateButton
+//   // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
+//   // _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.val);
+//   _boxRow = updateCurrentStateButton(_boxRow, data.key, data.val);
+//
+//   console.log("updateDefaultStateButton: ending after updating laser box [" + data.lb + "]");
+// }
 
 
 
