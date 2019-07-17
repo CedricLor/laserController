@@ -50,16 +50,16 @@ class myWSReceiver
 
   private:
 
-    void _actionSwitch(const int8_t __i8MessageActionType, JsonObject& _obj);
+    void _actionSwitch(JsonObject& _obj);
 
-    void _onHandshakeCheckWhetherDOMNeedsUpdate(const int8_t _i8MessageActionType, JsonObject& _obj);
-    void _checkConsistancyDOMDB(const int8_t _i8MessageActionType, JsonObject& _joBoxState);
-    void _lookForDisconnectedBoxes(const int8_t _i8MessageActionType, JsonPair& _p);
-    void _checkBoxStateConsistancy(const int8_t _i8MessageActionType, JsonPair& _p);
-    void _lookForDOMMissingRows(const int8_t _i8MessageActionType, JsonObject& _joBoxState);
+    void _onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj);
+    void _checkConsistancyDOMDB(JsonObject& _joBoxState);
+    void _lookForDisconnectedBoxes(JsonPair& _p);
+    void _checkBoxStateConsistancy(JsonPair& _p);
+    void _lookForDOMMissingRows(JsonObject& _joBoxState);
 
-    void _requestBoxChange(JsonObject& _obj, const char& _cChangeKey, const int8_t _i8WebMessagCode);
-    void _requestActiveStateChange( JsonDocument& doc);
+    void _requestBoxChange(JsonObject& _obj);
+    void _requestActiveStateChange(JsonDocument& doc);
     void _requestMasterChange(const int8_t _i8MessageActionType, JsonDocument& doc);
     void _requestDefaultStateChange(JsonDocument& doc);
 };
