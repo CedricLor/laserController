@@ -52,6 +52,7 @@ class myMeshController
     void _updateMyValFromWeb(JsonObject& _obj);
     void _updateMyMasterBoxName(JsonObject& _obj);
     void _updateMyDefaultState(JsonObject& _obj);
+    void _rebootEsp(JsonObject&_obj);
     void _changeBoxSendConfirmationMsg(JsonObject& _obj);
 
     // helpers to _changedBoxConfirmation (on the interface and the other boxes)

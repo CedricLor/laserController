@@ -137,6 +137,18 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     // ancient: _requestDefaultStateChange(_obj);
     return;
   }
+
+  // 9 for change default state
+  if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot")) {
+    // send a mesh request to the relevant laser box
+    // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+    _requestBoxChange(_obj);
+    // ancient: _obj = {action: 9; lb: 1; "boxDefstate": 3}
+    // ancient: _requestBoxChange(_obj, (const char&)"boxDefstate", __i8MessageActionType);
+    // ancient: _requestDefaultStateChange(_obj);
+    return;
+  }
+
 }
 
 

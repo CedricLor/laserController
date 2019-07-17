@@ -121,7 +121,8 @@ function onclickRebootBoxButton(e) {
   var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
   ws.send(JSON.stringify({
-    action: "reboot",
+    action: "changeBox",
+    key: "reboot",
     lb: _laserBoxNumber
   }));
   // {action:"reboot", lb:1}

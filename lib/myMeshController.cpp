@@ -181,6 +181,13 @@ void myMeshController::_changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject&
     _updateMyDefaultState(_obj);
     return;
   }
+
+  // if this is a reboot request
+  if (_obj["key"] == "reboot") {
+    Serial.println("------------------------------ THIS IS A REBOOT REQUEST ---------------------------");
+    _rebootEsp(_obj);
+    return;
+  }
 }
 
 
@@ -290,6 +297,22 @@ void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
   ControlerBoxes[myIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
 }
 
+
+
+void myMeshController::_rebootEsp(JsonObject&_obj) {
+  // _obj = {action: "changeBox"; key: "reboot"; lb: 1, st: 1} // boxDefstate // ancient 9
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshController::_rebootEsp: about to reboot\n");
+  }
+
+  // send confirmation message
+  Serial.println("------------------------------ CONFIRMING REBOOT ---------------------------");
+  _changeBoxSendConfirmationMsg(_obj);
+
+  // reboot
+  Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
+  ESP.restart();
+}
 
 // PROTOTYPE FOR A MORE ABSTRACT CHANGE PROPERTY HANDLER
 // void myMeshController::_updateMyProperty(char& _cPropertyKey, JsonObject& _obj) {
