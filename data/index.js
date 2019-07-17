@@ -282,7 +282,7 @@ function updateBoxRow(_data) {
   updateCurrentStateButtons(_data, _boxRow);
 
   // update the master select
-  _indicateMasterBoxNumber(data.masterbox, _boxRow);
+  _indicateMasterBoxNumber(_data.masterbox, _boxRow);
 
   console.log("updateBoxRow: ending after updating laser box [" + _data.lb + "]");
 }
