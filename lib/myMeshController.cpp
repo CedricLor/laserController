@@ -60,24 +60,34 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
 
 
 
-  // CHANGEBOX REQUEST (received by the laser boxes only)
+  // CHANGEBOX REQUEST AND CONFIRMATION (received by the destination laser boxes only on request and by all on confirmation)
   const char* _actionChangeBox = "changeBox";
   if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
-
-    _changeBoxRequest(_ui32SenderNodeId, _obj);
+    // Serial.println("------------------------------ DETECTED A \"changeBox\" MESSAGE ---------------------------");
+    _changeBox(_ui32SenderNodeId, _obj);
     return;
   }
 
 
 
-
-  // CHANGED BOX CONFIRMATION (received by all the boxes)
-  const char* _actionChangedBx = "changedBx";
-  if (strcmp(_action, _actionChangedBx) == 0) {           // action 'changedBx' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
-
-    _changedBoxConfirmation(_ui32SenderNodeId, _obj);
-    return;
-  }
+  // // CHANGEBOX REQUEST (received by the destination laser boxes only)
+  // const char* _actionChangeBox = "changeBox";
+  // if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
+  //
+  //   _changeBoxRequest(_ui32SenderNodeId, _obj);
+  //   return;
+  // }
+  //
+  //
+  //
+  //
+  // // CHANGED BOX CONFIRMATION (received by all the boxes)
+  // const char* _actionChangedBx = "changedBx";
+  // if (strcmp(_action, _actionChangedBx) == 0) {           // action 'changedBx' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
+  //
+  //   _changedBoxConfirmation(_ui32SenderNodeId, _obj);
+  //   return;
+  // }
 
 
 
@@ -129,6 +139,39 @@ void myMeshController::_statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _o
   // update the box properties in my CB array
   ControlerBox::updateOtherBoxProperties(_ui32SenderNodeId, _obj);
 }
+
+
+
+
+
+// CHANGEBOX REQUEST AND CONFIRMATION
+// (received by the laser boxes only on request and by the interface and all the lbs on confirmation)
+void myMeshController::_changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+  // ON REQUEST:
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+  // ON CONFIRMATION:
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
+
+  // if this is a change request
+  if (_obj["st"].as<int8_t>() == 1) {
+      Serial.println("------------------------------ THIS IS A CHANGE REQUEST ---------------------------");
+      _changeBoxRequest(_ui32SenderNodeId, _obj);
+
+    return;
+  }
+
+  // if this is a change confirmation
+  if (_obj["st"].as<int8_t>() == 1) {
+      Serial.println("------------------------------ THIS IS A CHANGE CONFIRMATION ---------------------------");
+      _changedBoxConfirmation(_ui32SenderNodeId, _obj);
+
+    return;
+  }
+}
+
 
 
 
