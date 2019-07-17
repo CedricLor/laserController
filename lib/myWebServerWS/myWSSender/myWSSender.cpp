@@ -42,9 +42,6 @@
 #include "myWSSender.h"
 
 
-StaticJsonDocument<0> _empty_doc;
-JsonObject myWSSender::_empty_obj = _empty_doc.to<JsonObject>();
-
 
 myWSSender::myWSSender()
 {
@@ -181,77 +178,93 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
 
 
-void myWSSender::prepareWSData(const short int _iMessageType, JsonObject& _subdoc) {
+void myWSSender::prepareWSData(const int8_t _i8messageType) {
+  StaticJsonDocument<256> __doc;
+  JsonObject __newObj = __doc.to<JsonObject>();
+  __newObj["action"] = _i8messageType;
+
+  // message 0 on handshake: activate the exchange of station IP
+  if (_i8messageType == 0) {
     if (MY_DG_WS) {
-      Serial.printf("- myWSSender::_prepareWSData. Starting with message type [%i]\n", _iMessageType);
-      // Serial.printf("- myWSSender::_prepareWSData. Preparing JSON document\n");
+      Serial.printf("- myWSSender::prepareWSData. Message type [%i]\n", _i8messageType);
+      Serial.printf("- myWSSender::prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _i8messageType);
     }
-    // if (MY_DG_WS) {
-    //   Serial.printf("- myWSSender::_prepareWSData. Keys in _subdoc\n");
-    //   for(JsonPair kvp : _subdoc) {
-    //     Serial.println(kvp.key().c_str());
-    //   }
-    // }
-
-    StaticJsonDocument<256> doc;
-    doc["type"] = _iMessageType;
-
-    // if (MY_DG_WS) {
-    //   bool _test = (_iMessageType == 1);
-    //   Serial.printf("- myWSSender::_prepareWSData. (_iMessageType == 1) = %i\n", _test);
-    // }
-
-    if (_iMessageType == 3) { // message type 3: change in station IP
-      doc["message"] = (laserControllerMesh.getStationIP()).toString();
-      // if (MY_DG_WS) {
-      //   const char* __stationIp = doc["stationIp"];
-      //   Serial.print("- myWSSender::_prepareWSData. doc[\"stationIp\"] contains ");Serial.println(__stationIp);
-      // }
+    tSendWSDataIfChangeStationIp.enable();
+    if (MY_DG_WS) {
+      Serial.printf("- myWSSender::prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
     }
+    // expected JSON obj: {"action":0}
+  }
+
+  // small confirmation messages (type 0 to 2)
+  if (_i8messageType == 0 || _i8messageType == 1 || _i8messageType == 2) {
+    const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
+    __newObj["message"] = _messages_array[_i8messageType];
+    if (MY_DG_WS) {
+      Serial.printf("- myWSSender::prepareWSData. _messages_array[%i] = %s\n", _i8messageType, _messages_array[_i8messageType]);
+    }
+    // expected JSON obj: {"action":0;"message":"Hello WS Client"}
+    // expected JSON obj: {"action":1;"message":"I got your WS text message"}
+    // expected JSON obj: {"action":2;"message":"I got your WS binary message"}
+  }
+
+  // message type 3: change in station IP
+  if (_i8messageType == 3) {
+    __newObj["serverIP"] = (laserControllerMesh.getStationIP()).toString();
+    // if (MY_DG_WS) {
+    //   const char* __serverIp = __newObj["serverIP"];
+    //   Serial.print("- myWSSender::prepareWSData. __newObj[\"serverIP\"] contains ");Serial.println(__serverIp);
+    // }
+    // expected JSON obj:  {"action":3;"serverIP":"192.168.43.84"}
+  }
+
   sendWSData(__newObj);
 
-    // messages 4 to 8:
-    // (4): change boxState request being processed
-    // (5): change boxState executed
-    // (6): a new box has joined the mesh
-    // (7): a box has been deleted from the mesh
-    // (8): master for a given is being processed, then has been changed
-    // (9): change default boxState request being processed
-    // (10): change default boxState executed
-    else if (_iMessageType == 4 || _iMessageType == 5 || _iMessageType == 6 || _iMessageType == 7 || _iMessageType == 8 || _iMessageType == 9 || _iMessageType == 10) {
-      doc["message"] = _subdoc;
-    }
-
-    // message 0 on handshake: activate the exchange of station IP
-    else if (_iMessageType == 0) {
-      if (MY_DG_WS) {
-        Serial.printf("- myWSSender::_prepareWSData. Message type [%i] was none of 3 to 10\n", _iMessageType);
-        Serial.printf("- myWSSender::_prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _iMessageType);
-      }
-      tSendWSDataIfChangeStationIp.enable();
-      if (MY_DG_WS) {
-        Serial.printf("- myWSSender::_prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
-      }
-    }
-
-    // small confirmation messages (type 0 to 2)
-    else {
-      const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
-      doc["message"] = _messages_array[_iMessageType];
-      if (MY_DG_WS) {
-        Serial.printf("- myWSSender::_prepareWSData. _messages_array[%i] = %s\n", _iMessageType, (char*)_messages_array);
-      }
-    }
-
-    // message ready. sending it to the send function
-    if (MY_DG_WS) {
-      Serial.println("- myWSSender::_prepareWSData. About to send JSON to sender function.");
-    }
-    _sendWSData(doc);
-    if (MY_DG_WS) {
-      Serial.println("- myWSSender::_prepareWSData. Ending.");
-    }
+  if (MY_DG_WS) {
+    Serial.println("- myWSSender::prepareWSData. Ending.");
+  }
 }
+
+
+
+
+
+
+
+// void myWSSender::prepareWSData(JsonObject& _extObj) {
+//     if (MY_DG_WS) {
+//       Serial.printf("- myWSSender::prepareWSData. Starting with message type [%i]\n", _i8messageType);
+//       Serial.printf("- myWSSender::prepareWSData. Keys in _extObj\n");
+//       for(JsonPair kvp : _extObj) {
+//         Serial.print("- myWSSender::prepareWSData. Iterating over _extObj: current key = ");
+//         Serial.println(kvp.key().c_str());
+//       }
+//       Serial.printf("- myWSSender::prepareWSData. Preparing JSON document\n");
+//     }
+//
+//     // messages 4 to 10:
+//     // (4): change boxState request being processed
+//
+//     // (5): change boxState executed
+//     // (6): a new box has joined the mesh
+//     // (7): a box has been deleted from the mesh
+//
+//     // (8): master for a given is being processed, then has been changed
+//     // (9): change default boxState request being processed
+//     // (10): change default boxState executed
+//
+//     // else {
+//     // }
+//
+//     // message ready. sending it to the send function
+//     if (MY_DG_WS) {
+//       Serial.println("- myWSSender::prepareWSData. About to send JSON to sender function.");
+//     }
+//       sendWSData(_extObj);
+//     if (MY_DG_WS) {
+//       Serial.println("- myWSSender::prepareWSData. Ending.");
+//     }
+// }
 
 
 
