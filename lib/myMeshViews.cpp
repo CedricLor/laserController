@@ -169,8 +169,10 @@ void myMeshViews::changeBoxRequest(JsonObject& _obj) {
 
 
 
-
 void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
   }
@@ -181,6 +183,19 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
     Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
   }
 }
+
+
+// void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
+//   if (MY_DG_MESH) {
+//     Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
+//   }
+//
+//   _sendMsg(obj, ControlerBoxes[0].nodeId);
+//
+//   if (MY_DG_MESH) {
+//     Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+//   }
+// }
 
 
 
