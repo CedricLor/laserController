@@ -317,28 +317,24 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
 
 
 void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
 
 
-  // _obj = {action: 8, lb: 1, "masterbox": 4}
-  // _obj = {action: 9; lb: 1; "boxDefstate": 3}
-  // (const char&)"boxState"
-  // (const char&)"masterbox"
-  // (const char&)"boxDefstate"
 
   if (MY_DG_WS) {
-  // get destination box number
   const int8_t __i8BoxIndexInCB = _obj["lb"];
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxChange(): (from JSON) __i8BoxIndexInCB = %i \n", __i8BoxIndexInCB);
   }
 
-  // read target state
   const int8_t __i8RequestedChange = _obj[&_cChangeKey];
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxChange(): %s = %i \n", &_cChangeKey, __i8RequestedChange);
   }
 
-  // instantiate a mesh view
+  // instantiate a mesh view to send a message to the relevant box
   myMeshViews __myMeshViews;
   if (MY_DG_WS) {
     Serial.printf("myWSReceiver::_requestBoxChange(): about to call __myMeshViews.changeBoxRequest().\n");
@@ -346,19 +342,16 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj) {
   // __myMeshViews.changeBoxRequest(_obj);
   __myMeshViews.changeBoxRequest(__i8RequestedChange, _cChangeKey, __i8BoxIndexInCB);
 
-  // send a response telling the instruction is in course of being executed
   StaticJsonDocument<64> _sub_doc;
   JsonObject _sub_obj = _sub_doc.to<JsonObject>();
   _sub_obj["lb"] = __i8BoxIndexInCB;
   _sub_obj[&_cChangeKey] = __i8RequestedChange;
 
-  // // send a response telling the instruction is in course of being executed
   // StaticJsonDocument<64> _sub_doc;
   // JsonObject _sub_obj = _sub_doc.to<JsonObject>();
   // _sub_obj["lb"] = __i8BoxIndexInCB;
   // _sub_obj["boxState"] = __i8BoxTargetState;
 
-  // // send a response to the browser telling the instruction is in course of being executed
   // StaticJsonDocument<64> _sub_doc;
   // JsonObject _sub_obj = _sub_doc.to<JsonObject>();
   // _sub_obj["lb"] = __i8BoxIndexInCB;
