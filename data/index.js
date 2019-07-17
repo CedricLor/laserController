@@ -157,7 +157,7 @@ function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
   __toBeStringified["action"] = "changeBox";
   __toBeStringified["key"] = _clef;
   __toBeStringified["lb"] = _laserBoxNumber;
-  __toBeStringified["val"] = _datasetValue;
+  __toBeStringified["val"] = parseInt(_datasetValue, 10);
 
   var _json = JSON.stringify(__toBeStringified);
   // {action: 4; lb: 1; "boxState": 3}
