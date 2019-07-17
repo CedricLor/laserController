@@ -239,13 +239,24 @@ void myMeshController::_changedBoxConfirmation(uint32_t _ui32SenderNodeId, JsonO
 
 // helper functions to myMeshController::_changeBoxRequest
 void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
+// _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to %i", _obj["boxState"].as<int8_t>());
+    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to %i\n", (_obj["val"].as<int8_t>()));
   }
 
   // update the valFromWeb
-  ControlerBox::valFromWeb = _obj["boxState"].as<int8_t>();
+  ControlerBox::valFromWeb = _obj["val"].as<int8_t>();
 }
+
+
+// void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to %i\n", _obj["boxState"].as<int8_t>());
+//   }
+//
+//   // update the valFromWeb
+//   ControlerBox::valFromWeb = _obj["boxState"].as<int8_t>();
+// }
 
 
 
@@ -267,12 +278,13 @@ void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
 
 
 void myMeshController::_updateMyMasterBoxName(JsonObject& _obj) {
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i", _obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+    Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i\n", _obj["val"].as<int8_t>() + bControllerBoxPrefix);
   }
 
   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-  ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+  ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["val"].as<int8_t>() + bControllerBoxPrefix);
 
   // send confirmation message
   _changeBoxSendConfirmationMsg(_obj);
@@ -283,12 +295,30 @@ void myMeshController::_updateMyMasterBoxName(JsonObject& _obj) {
 
 
 
+// void myMeshController::_updateMyMasterBoxName(JsonObject& _obj) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i\n", _obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+//   }
+//
+//   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
+//   ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["masterbox"].as<int8_t>() + bControllerBoxPrefix);
+//
+//   // send confirmation message
+//   _changeBoxSendConfirmationMsg(_obj);
+//
+//   // mark the change as signaled
+//   ControlerBoxes[myIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+// }
+
+
+
 void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to %i", _obj["boxDefstate"].as<int8_t>());
+    Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to %i\n", _obj["val"].as<int8_t>());
   }
 
-  ControlerBoxes[myIndexInCBArray].sBoxDefaultState = _obj["boxDefstate"].as<int8_t>();
+  ControlerBoxes[myIndexInCBArray].sBoxDefaultState = _obj["val"].as<int8_t>();
 
   // send confirmation message
   _changeBoxSendConfirmationMsg(_obj);
@@ -299,17 +329,37 @@ void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
 
 
 
+// void myMeshController::_updateMyDefaultState(JsonObject& _obj) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to %i\n", _obj["boxDefstate"].as<int8_t>());
+//   }
+//
+//   ControlerBoxes[myIndexInCBArray].sBoxDefaultState = _obj["boxDefstate"].as<int8_t>();
+//
+//   // send confirmation message
+//   _changeBoxSendConfirmationMsg(_obj);
+//
+//   // mark the change as signaled
+//   ControlerBoxes[myIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
+// }
+
+
+
+
 void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
-  // send a message to the IF telling it that I have taken the change into account
+  // send a message to the IF telling it that I have executed its request
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
-  // change the "action" key of the received JSON object from "changeBox" to "changedBx"
-  _obj["action"] = "changedBx";
+  // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
+  _obj["st"] = 2;
   // if (MY_DG_MESH) {
-  //   Serial.printf("myMeshController::myMeshController: _obj[\"action\"] = %s\n", _obj["action"].as<const char*>());
-  //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
+  //   Serial.printf("myMeshController::myMeshController: _obj[\"st\"] = %i\n", _obj["st"].as<int8_t>());
   // }
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
 
-  // send the received JSON object with its amended "action" key
+  // send back the received JSON object with its amended "st" key
   myMeshViews __myMeshViews;
   __myMeshViews.changedBoxConfirmation(_obj);
   // if (MY_DG_MESH) {
@@ -318,6 +368,25 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
 }
 
 
+
+
+// void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj) {
+//   // send a message to the IF telling it that I have taken the change into account
+//
+//   // change the "action" key of the received JSON object from "changeBox" to "changedBx"
+//   _obj["action"] = "changedBx";
+//   // if (MY_DG_MESH) {
+//   //   Serial.printf("myMeshController::myMeshController: _obj[\"action\"] = %s\n", _obj["action"].as<const char*>());
+//   //   Serial.printf("myMeshController::myMeshController: _bHasChangedAction = %i\n", _bHasChangedAction);
+//   // }
+//
+//   // send the received JSON object with its amended "action" key
+//   myMeshViews __myMeshViews;
+//   __myMeshViews.changedBoxConfirmation(_obj);
+//   // if (MY_DG_MESH) {
+//   //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
+//   // }
+// }
 
 
 
