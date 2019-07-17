@@ -98,6 +98,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
             if(info->opcode == WS_TEXT) {
 
                 myWSSender _myWSSender;
+                Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)");
                 _myWSSender.prepareWSData(1); // text message confirmation
 
             }
@@ -167,6 +168,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
                   if(info->message_opcode == WS_TEXT) {
                     if (MY_DG_WS) {
                       Serial.printf("- myWebServerWS::onEvent: this is the final frames of a multiple frames text message\n");
+                      Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)");
                     }
                       myWSSender _myWSSender;
                       _myWSSender.prepareWSData(1); // text message confirmation

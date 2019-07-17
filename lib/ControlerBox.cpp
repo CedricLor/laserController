@@ -81,15 +81,18 @@ void ControlerBox::updateThisBoxProperties() {
   bNodeName = gbNodeName;
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
-  if (MY_DEBUG == true) {ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);};
+  if (MY_DEBUG == true) {
+    Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().");
+    ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);
+  };
 }
 
 
 
 void ControlerBox::printProperties(const byte bBoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].nodeId: %u\n", bBoxIndex, nodeId);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", bBoxIndex);Serial.println(APIP);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", bBoxIndex);Serial.println(stationIP);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].APIP:", bBoxIndex);Serial.println(APIP.toString());
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].stationIP:", bBoxIndex);Serial.println(stationIP.toString());
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].bNodeName: %i\n", bBoxIndex, this->bNodeName);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%i].boxActiveState: %i\n", bBoxIndex, boxActiveState);
@@ -163,7 +166,10 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   setBoxDefaultState(__bBoxIndex, __senderBoxDefaultState);
 
   // Print out the updated properties
-  if (MY_DEBUG == true) {ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);};
+  if (MY_DEBUG == true) {
+    Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %i. Calling printProperties().", __bBoxIndex);
+    ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);
+  }
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }
 

@@ -65,6 +65,9 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
     // Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
 
     myWSSender _myWSSender;
+    if (MY_DG_WS) {
+      Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
+    }
     _myWSSender.prepareWSData(3); // 3 for message sent in case of change in station IP
 
     ControlerBoxes[myIndexInCBArray].updateThisBoxProperties();
@@ -166,8 +169,9 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // in each of the above cases, send a message to the browser
     if (_obj["action"] != -1) {
-      if (MY_DG_WS) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call prepareWSData with message of type %i.\n", _obj["action"].as<int>());}
-
+      if (MY_DG_WS) {
+        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call prepareWSData with message of type %i.\n", _obj["action"].as<int>());
+      }
       _myWSSender.sendWSData(_obj);
     }
   }
@@ -314,7 +318,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) {
             if (MY_DG_WS) { Serial.printf("- myWSSender::sendWSData. About to send a WS message message to client [%i].\n", myWebServerWS::ws_client_id); }
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->text(_buffer);
-            if (MY_DG_WS) { Serial.println("- myWSSender::sendWSData. Message sent"); }
+            if (MY_DG_WS) { Serial.println("- myWSSender::sendWSData. Message sent\n"); }
           }  // end if (myWebServerWS::ws_client_id && ..
           else {
             // the ws_client_id you have does not match existing client
@@ -323,6 +327,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
               Serial.print("- myWSSender::sendWSData: myWebServerWS::count() = ");Serial.println(_client_count);
               Serial.print("- myWSSender::sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
               Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
+              // THERE IS A BUG SOMEWHERE HERE UPON REREFRESHING AFTER A DISCONNECT
               Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
               Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
               Serial.printf("- myWSSender::sendWSData. Client not found. About to send a WS message message to all.\n");
