@@ -90,23 +90,24 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
   myWSSender _myWSSender;
   for (short _sBoxIndex = 1; _sBoxIndex < sBoxesCount; _sBoxIndex++) {
     // prepare a JSON document
-    StaticJsonDocument<64> _doc;
+    StaticJsonDocument<256> _doc;
     JsonObject _obj = _doc.to<JsonObject>();
-    // holder for type of message
-    short _messageType = -1;
 
     // populate the JSON object
     _obj["lb"] = _sBoxIndex;
+    _obj["action"] = -1;
+    // expected _obj = {lb:1; action:-1}
 
     // if the box is an unsignaled new box
     if (ControlerBoxes[_sBoxIndex].isNewBoxHasBeenSignaled == false) {
       if (MY_DG_WS) {
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_sBoxIndex + bControllerBoxPrefix));
       }
-      _messageType = 6;
+      _obj["action"] = "addBox";
       _obj["boxState"] = ControlerBoxes[_sBoxIndex].boxActiveState;
-      _obj["ms"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
+      _obj["masterbox"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
       _obj["boxDefstate"] = ControlerBoxes[_sBoxIndex].sBoxDefaultState;
+      // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       // reset all the booleans to true
       _resetAllControlerBoxBoolsToTrue(_sBoxIndex);
     }
@@ -116,9 +117,12 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       if (MY_DG_WS) {
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. Default state of box [%i] has changed\n", (_sBoxIndex + bControllerBoxPrefix));
       }
-      _messageType = 10;
-      _obj["boxDefstate"] = ControlerBoxes[_sBoxIndex].sBoxDefaultState;
-      _obj["ms"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
+      // Ancient action = 10
+      _obj["action"] = "changeBox";
+      _obj["key"] = "boxDefstate";
+      _obj["val"] = ControlerBoxes[_sBoxIndex].sBoxDefaultState;
+      _obj["st"] = 2;
+      // expected _obj = {lb:1; action:"changeBox"; key: "boxDefstate"; val: 4; st: 2}
       ControlerBoxes[_sBoxIndex].sBoxDefaultStateChangeHasBeenSignaled = true;
     }
 
@@ -127,9 +131,12 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       if (MY_DG_WS) {
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_sBoxIndex + bControllerBoxPrefix));
       }
-      _messageType = 5;
-      _obj["boxState"] = ControlerBoxes[_sBoxIndex].boxActiveState;
-      _obj["ms"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
+      // Ancient action = 5
+      _obj["action"] = "changeBox";
+      _obj["key"] = "boxState";
+      _obj["val"] = ControlerBoxes[_sBoxIndex].boxActiveState;
+      _obj["st"] = 2;
+      // expected _obj = {lb:1; action:"changeBox"; key: "boxState"; val: 6; st: 2}
       ControlerBoxes[_sBoxIndex].boxActiveStateHasBeenSignaled = true;
     }
 
@@ -141,9 +148,12 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%i].bMasterBoxName) == %i\n", _sBoxIndex, (ControlerBoxes[_sBoxIndex].bMasterBoxName));
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. New master: %i\n", (int)(ControlerBoxes[_sBoxIndex].bMasterBoxName));
       }
-      _messageType = 8;
-      _obj["ms"] = (int)(ControlerBoxes[_sBoxIndex].bMasterBoxName);
+      // Ancient action = 8
+      _obj["action"] = "changeBox";
+      _obj["key"] = "masterbox";
+      _obj["val"] = (int)ControlerBoxes[_sBoxIndex].bMasterBoxName - bControllerBoxPrefix;
       _obj["st"] = 2; // "st" for status, 2 for executed
+      // expected _obj = {lb:1; action:"changeBox"; key: "masterbox"; val: 9; st: 2}
       ControlerBoxes[_sBoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
     }
 
@@ -152,15 +162,16 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       if (MY_DG_WS) {
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_sBoxIndex + bControllerBoxPrefix));
       }
-      _messageType = 7;
+      _obj["action"] = "deleteBox";
       _resetAllControlerBoxBoolsToTrue(_sBoxIndex);
+      // expected _obj = {lb:1; action:"deleteBox"}
     }
 
     // in each of the above cases, send a message to the browser
-    if (_messageType != -1) {
-      if (MY_DG_WS) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call _prepareWSData with message of type %i.\n", _messageType);}
+    if (_obj["action"] != -1) {
+      if (MY_DG_WS) {Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call prepareWSData with message of type %i.\n", _obj["action"].as<int>());}
 
-      _myWSSender.prepareWSData(_messageType, _obj);
+      _myWSSender.sendWSData(_obj);
     }
   }
 }
