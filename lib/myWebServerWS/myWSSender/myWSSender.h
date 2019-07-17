@@ -49,14 +49,13 @@ class myWSSender
   public:
     myWSSender();
 
-    void prepareWSData(const short int _iMessageType, JsonObject& _subdoc=_empty_obj);
+    void prepareWSData(const int8_t _i8messageType);
     void sendWSData(JsonObject& _joMsg);
 
     static Task tSendWSDataIfChangeStationIp;
     static Task tSendWSDataIfChangeBoxState;
 
   private:
-    static JsonObject _empty_obj;
 
     static void _tcbSendWSDataIfChangeStationIp();
 
