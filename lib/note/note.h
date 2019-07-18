@@ -28,6 +28,8 @@
 #define note_h
 
 #include "Arduino.h"
+#include "../tone/tone.h"
+#include "../tone/tone.cpp"
 
 class note
 {

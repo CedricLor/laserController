@@ -36,7 +36,8 @@
 #define sequence_h
 
 #include "Arduino.h"
-#include "global.h"
+#include "../bar/bar.h"
+#include "../bar/bar.cpp"
 
 class sequence
 {

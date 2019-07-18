@@ -36,7 +36,9 @@
 #define bar_h
 
 #include "Arduino.h"
-#include "global.h"
+#include "../global.h"
+#include "../note/note.h"
+#include "../note/note.cpp"
 
 class bar
 {
