@@ -12,9 +12,39 @@ class mySavedPrefs
 {
   public:
     mySavedPrefs();
-    static void savePreferences();
-    static void loadPreferences();
+
+    static void savePrefsWrapper();
+
+    static void loadPrefsWrapper();
+
+    static void saveIFPRefs();
+
   private:
+    static const PROGMEM char _debugSaveMsgStart[];
+    static const PROGMEM char _debugSaveMsgEndSuccess[];
+    static const PROGMEM char _debugSaveMsgEndFail[];
+    static const PROGMEM char _debugLoadMsgStart[];
+
+    // Save Prefs
+    static void _startSavePreferences(Preferences& _preferences);
+
+    static void _saveUselessPreferences(Preferences& _preferences);
+    static void _saveNetworkEssentialPreferences(Preferences& _preferences);
+
+    static void _saveBoxEssentialPreferences(Preferences& _preferences);
+    static void _saveBoxBehaviorPreferences(Preferences& _preferences);
+
+    // Load Prefs
+    static void _startLoadPreferences(Preferences& _preferences);
+
+    static void _loadUselessPreferences(Preferences& _preferences);
+    static void _loadNetworkEssentialPreferences(Preferences& _preferences);
+
+    static void _loadBoxEssentialPreferences(Preferences& _preferences);
+    static void _loadBoxBehaviorPreferences(Preferences& _preferences);
+
+    // Common
+    static void _endPreferences(Preferences& _preferences);
 };
 
 #endif

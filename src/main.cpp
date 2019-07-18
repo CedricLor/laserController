@@ -64,7 +64,7 @@ void enableTasks();
 void setup() {
   delay(2000);
   serialInit();
-  mySavedPrefs::loadPreferences();
+  mySavedPrefs::loadPrefsWrapper();
   if (isInterface == false) {
     LaserPinsArray::initLaserPins();
     pirController::initPir();

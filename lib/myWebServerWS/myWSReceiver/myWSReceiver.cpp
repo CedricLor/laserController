@@ -392,7 +392,7 @@ void myWSReceiver::_rebootIF(JsonObject& _obj) {
 void myWSReceiver::_saveIF(JsonObject& _obj) {
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
   // save preferences
-  mySavedPrefs::savePreferences();
+  mySavedPrefs::savePrefsWrapper();
 }
 
 

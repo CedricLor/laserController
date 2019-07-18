@@ -316,7 +316,7 @@ void myMeshController::_rebootEsp(JsonObject& _obj, uint32_t _ui32SenderNodeId) 
 
 void myMeshController::_save(JsonObject& _obj, uint32_t _ui32SenderNodeId) {
   // save preferences
-  mySavedPrefs::savePreferences();
+  mySavedPrefs::savePrefsWrapper();
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");
