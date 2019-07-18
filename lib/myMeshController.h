@@ -37,24 +37,24 @@ class myMeshController
 
     char _action;
 
-    void _statusMessage(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void _statusMessage(JsonObject& _obj, uint32_t _ui32SenderNodeId);
 
-    void _changeBox(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void _changeBox(JsonObject& _obj, uint32_t _ui32SenderNodeId);
 
-    void _changeBoxRequest(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void _changeBoxRequest(JsonObject& _obj, uint32_t _ui32SenderNodeId);
 
-    void _changedBoxConfirmation(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void _changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32SenderNodeId);
 
     // helpers to _statusMessage
     int8_t _getSenderBoxIndexNumber(JsonObject& _obj);
 
     // helpers to _changeBoxRequest
     void _updateMyValFromWeb(JsonObject& _obj);
-    void _updateMyMasterBoxName(JsonObject& _obj);
-    void _updateMyDefaultState(JsonObject& _obj);
-    void _rebootEsp(JsonObject&_obj);
-    void _save(JsonObject& _obj);
-    void _changeBoxSendConfirmationMsg(JsonObject& _obj);
+    void _updateMyMasterBoxName(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _updateMyDefaultState(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _rebootEsp(JsonObject&_obj, uint32_t _ui32SenderNodeId);
+    void _save(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t _ui32SenderNodeId=0);
 
     // helpers to _changedBoxConfirmation (on the interface and the other boxes)
     void _updateSenderMasterBox(int8_t _i8BoxIndex, JsonObject& _obj);

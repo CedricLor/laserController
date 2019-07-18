@@ -121,6 +121,15 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
 
 
 // Static Methods
+int8_t ControlerBox::findByNodeId(uint32_t _nodeId) {
+  for (int8_t _i = 0; _i < sBoxesCount; _i++) {
+    if (ControlerBoxes[_i].nodeId == _nodeId) {
+      return _i;
+    }
+  }
+  return 254;
+}
+
 
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
@@ -243,26 +252,24 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 void ControlerBox::deleteBox(uint32_t nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
-  short int __boxIndex;
   for (short int __it = 0; __it < sBoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == nodeId) {
-      __boxIndex = __it;
-      ControlerBoxes[__boxIndex].nodeId = 0;
-      ControlerBoxes[__boxIndex].APIP = {0,0,0,0};
-      ControlerBoxes[__boxIndex].stationIP = {0,0,0,0};
-      ControlerBoxes[__boxIndex].bNodeName = 0;
+      ControlerBoxes[__it].nodeId = 0;
+      ControlerBoxes[__it].APIP = {0,0,0,0};
+      ControlerBoxes[__it].stationIP = {0,0,0,0};
+      ControlerBoxes[__it].bNodeName = 0;
 
-      ControlerBoxes[__boxIndex].boxActiveState = -1;
-      ControlerBoxes[__boxIndex].uiBoxActiveStateStartTime = 0;
-      ControlerBoxes[__boxIndex].boxActiveStateHasBeenSignaled = true;
-      ControlerBoxes[__boxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+      ControlerBoxes[__it].boxActiveState = -1;
+      ControlerBoxes[__it].uiBoxActiveStateStartTime = 0;
+      ControlerBoxes[__it].boxActiveStateHasBeenSignaled = true;
+      ControlerBoxes[__it].boxActiveStateHasBeenTakenIntoAccount = true;
 
-      ControlerBoxes[__boxIndex].isNewBoxHasBeenSignaled = true;
-      ControlerBoxes[__boxIndex].boxDeletionHasBeenSignaled = false;
+      ControlerBoxes[__it].isNewBoxHasBeenSignaled = true;
+      ControlerBoxes[__it].boxDeletionHasBeenSignaled = false;
 
-      ControlerBoxes[__boxIndex].bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
-      ControlerBoxes[__boxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
-      ControlerBoxes[__boxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+      ControlerBoxes[__it].bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
+      ControlerBoxes[__it].bMasterBoxNameChangeHasBeenSignaled = true;
+      ControlerBoxes[__it].boxActiveStateHasBeenTakenIntoAccount = true;
 
       updateConnectedBoxCount(connectedBoxesCount - 1);
       break;

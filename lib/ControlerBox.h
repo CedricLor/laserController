@@ -36,6 +36,8 @@ class ControlerBox
     static uint32_t uiSettingTimeOfValFromPir;
     static short int valFromWeb;
 
+    static int8_t findByNodeId(uint32_t _nodeId);
+
     static void updateConnectedBoxCount(short int newConnectedBoxesCount);
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;

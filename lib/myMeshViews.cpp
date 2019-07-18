@@ -40,19 +40,19 @@
 
 
 // Tasks
-Task myMeshViews::tSendBoxStateToNewBox((myIndexInCBArray * 1000 + 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
-
-void myMeshViews::_odtcbSendBoxStateToNewBox() {
-  for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
-    if (ControlerBoxes[_boxIndex].nodeId != 0) {
-      if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
-        myMeshViews __myMeshViews;
-        __myMeshViews.statusMsg(ControlerBoxes[_boxIndex].nodeId);
-        ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
-      }
-    }
-  }
-}
+// Task myMeshViews::tSendBoxStateToNewBox((myIndexInCBArray * 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+//
+// void myMeshViews::_odtcbSendBoxStateToNewBox() {
+//   for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
+//     if (ControlerBoxes[_boxIndex].nodeId != 0) {
+//       if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
+//         myMeshViews __myMeshViews;
+//         __myMeshViews.statusMsg(ControlerBoxes[_boxIndex].nodeId);
+//         ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
+//       }
+//     }
+//   }
+// }
 
 
 
@@ -76,18 +76,18 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
-  const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<capacity> doc;
-  JsonObject msg = doc.to<JsonObject>();
+  const int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  StaticJsonDocument<_capacity> _jDoc;
+  JsonObject _joMsg = _jDoc.to<JsonObject>();
 
   // load the JSON document with values
-  msg["actSt"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
-  msg["actStStartT"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  msg["boxDefstate"] = ControlerBoxes[myIndexInCBArray].sBoxDefaultState;
-  msg["action"] = "s";
+  _joMsg["actSt"] = ControlerBoxes[myIndexInCBArray].boxActiveState;
+  _joMsg["actStStartT"] = ControlerBoxes[myIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  _joMsg["boxDefstate"] = ControlerBoxes[myIndexInCBArray].sBoxDefaultState;
+  _joMsg["action"] = "s";
 
   // send to the sender
-  _sendMsg(msg, destNodeId);
+  _sendMsg(_joMsg, destNodeId);
 
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
@@ -140,7 +140,8 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
     Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
   }
 
-  _sendMsg(obj, ControlerBoxes[0].nodeId);
+  // broadcast confirmation
+  _sendMsg(obj);
 
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");

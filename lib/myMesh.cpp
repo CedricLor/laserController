@@ -95,18 +95,11 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
 
 // This Task broadcasts all other boxes this boxState, when this box newly connects to the Mesh
 // after a delay of 4500 ms (before such delay, message are not send to the mesh)
-Task myMesh::_tSendStatusOnNewConnection(4500, 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
+Task myMesh::_tSendStatusOnNewConnection((100 + myIndexInCBArray * 250), 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
 
 void myMesh::_tcbSendStatusOnNewConnection() {
-  short int _tIter = _tSendStatusOnNewConnection.getRunCounter();
-  if (MY_DG_MESH) {
-    Serial.printf("_tcbSendStatusOnNewConnection: Starting. Iteration: %i\n", _tIter);
-  }
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg();
-  if (MY_DG_MESH) {
-    Serial.printf("_tcbSendStatusOnNewConnection: EndingIteration: %i\n", _tIter);
-  }
 }
 
 
@@ -119,16 +112,12 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
       Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
       Serial.println("myMesh::newConnectionCallback(): I am going to send them my data.");
     }
-    // following line commented out; a call to updateThisBoxProperties will be done in myMeshViews, before broadcasting
-    // ControlerBoxes[myIndexInCBArray].updateThisBoxProperties(); // does not update the boxState related fields (boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime)
-    // Only send immediately my boxState if I am newly connecting to the Mesh
-    // If I was already connected, I shall wait a little bit to avoid overflowing the Mesh
-    // (all the boxes would send a message at the same time...)
-    if (ControlerBox::connectedBoxesCount == 1) {
+    // if the new node is not in my ControlerBoxes array, send it my status
+    if (ControlerBox::findByNodeId(nodeId) != 254) {
       if (MY_DG_MESH) {
-        Serial.println("myMesh::newConnectionCallback(): Not alone anymore. About to send them my data.");
+        Serial.println("myMesh::newConnectionCallback(): About to send them my data.");
       }
-      _tSendStatusOnNewConnection.enableDelayed();
+      _tSendStatusOnNewConnection.restartDelayed();
       if (MY_DG_MESH) {
         Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
       }

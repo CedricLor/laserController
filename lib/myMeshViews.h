@@ -30,7 +30,7 @@
 class myMeshViews
 {
   public:
-    static Task tSendBoxStateToNewBox;
+    // static Task tSendBoxStateToNewBox;
 
     myMeshViews();
     // Views
@@ -56,7 +56,7 @@ class myMeshViews
     // static void dataRequestResponse();
 
   private:
-    static void _odtcbSendBoxStateToNewBox();
+    // static void _odtcbSendBoxStateToNewBox();
 
     // Helpers
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);
