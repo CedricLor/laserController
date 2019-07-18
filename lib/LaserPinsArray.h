@@ -7,6 +7,7 @@
 #define LaserPinsArray_h
 
 #include "Arduino.h"
+#include "LaserPin.cpp"
 
 class LaserPinsArray
 {

@@ -6,50 +6,24 @@
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
-#include "../lib/global.h"
 #include "../lib/global.cpp"
 
 #include "../lib/secret.h"
 
-// #include "../lib/Myota.h"
 // #include "../lib/Myota.cpp"
-// #include "../lib/ControlerBox.h"
+
 #include "../lib/ControlerBox.cpp"
-#include "../lib/mySavedPrefs.h"
+
 #include "../lib/mySavedPrefs.cpp"
 
-#include "../lib/MasterSlaveBox.h"
-#include "../lib/MasterSlaveBox.cpp"
-
-#include "../lib/myMeshViews.h"
-#include "../lib/myMeshViews.cpp"
-
-// #include "../lib/LaserGroupedUnit.h"
-// #include "../lib/LaserGroupedUnit.cpp"
-// #include "../lib/LaserGroupedUnitsArray.h"
-// #include "../lib/LaserGroupedUnitsArray.cpp"
-#include "../lib/LaserPinsArray.h"
 #include "../lib/LaserPinsArray.cpp"
-#include "../lib/LaserPin.cpp"
 
-#include "../lib/myMesh.h"
 #include "../lib/myMesh.cpp"
 
-// #include "../lib/tone.h"
-// #include "../lib/tone.cpp"
-// #include "../lib/note.h"
-// #include "../lib/note.cpp"
-// #include "../lib/bar.h"
-// #include "../lib/bar.cpp"
-// #include "../lib/sequence.h"
-// #include "../lib/sequence.cpp"
-#include "../lib/boxState.h"
 #include "../lib/boxState.cpp"
 
-#include "../lib/pirController.h"
 #include "../lib/pirController.cpp"
 
-#include "../lib/myWebServerBase.h"
 #include "../lib/myWebServerBase.cpp"
 
 
