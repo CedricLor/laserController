@@ -8,7 +8,7 @@
 
 #include "Arduino.h"
 #include "ControlerBox.h"
-#include "LaserPin.h"
+#include "./LaserPin/LaserPin.h"
 
 
 extern const short PIN_COUNT;                                                     // BOX BY BOX

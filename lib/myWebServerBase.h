@@ -31,8 +31,8 @@
 
 #include "Arduino.h"
 #include "AsyncTCP.h"
-#include "myWebServerViews.cpp"
-#include "myWebServerControler.cpp"
+#include "./myWebServerBase/myWebServerViews/myWebServerViews.cpp"
+#include "./myWebServerBase/myWebServerControler/myWebServerControler.cpp"
 #include "./myWebServerWS/myWebServerWS.h"
 #include "./myWebServerWS/myWebServerWS.cpp"
 

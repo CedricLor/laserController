@@ -26,8 +26,8 @@
 #define myMesh_h
 
 #include "Arduino.h"
-#include "myMeshViews.cpp"
-#include "myMeshController.cpp"
+#include "./myMesh/myMeshViews/myMeshViews.cpp"
+#include "./myMesh/myMeshController/myMeshController.cpp"
 
 class myMesh
 {
