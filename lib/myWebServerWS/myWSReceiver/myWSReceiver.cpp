@@ -84,6 +84,11 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 
 void myWSReceiver::_actionSwitch(JsonObject& _obj) {
+  if (_obj.containsKey("ping")) {
+    myWSSender _myWSSender;
+    _myWSSender.sendWSData(_obj);
+  }
+
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
   // Received JSON: {action:0, message:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message
@@ -109,15 +114,12 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot") && (_obj["lb"] == 0)) {
     // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
     // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
-    // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
     _rebootIF(_obj);
     return;
   }
 
   // save the IF
   if ((_obj["action"] == "changeBox")  && (_obj["key"] == "save") && (_obj["lb"] == 0)) {
-    // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
-    // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
     // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
     _saveIF(_obj);
     return;
@@ -376,12 +378,19 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
 
 
 void myWSReceiver::_rebootIF(JsonObject& _obj) {
+  // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
+  // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
-  ControlerBox::tReboot.enableDelayed();
+
+  // inform the browser and the other boxes that IF is going to reboot
+  _requestBoxChange(_obj, true /*_bBroadcast*/);
+
+  // reboot with a little delay
+  ControlerBox::tReboot.restartDelayed();
 }
 
 void myWSReceiver::_saveIF(JsonObject& _obj) {
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
   // save preferences
   mySavedPrefs::savePreferences();
 }
@@ -396,7 +405,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   if (_obj["key"] == "reboot") {
     // If reboot "all", IF shall be rebooted
     if (_obj["lb"] == "all") {
-      _rebootIF(_obj);
+      ControlerBox::tReboot.enableDelayed();
     }
   }
 

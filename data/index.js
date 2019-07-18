@@ -4,20 +4,28 @@ var ws = null;
 var controlerBoxes = new Map();
 var boxesRows = new Map();
 var boxRowTemplate = boxRowTemplateSelector();
-
-
-
-
+var checkWSinterval;
+var checkPing = 0;
+var connectRetryCount = 0;
+var pingCount = 1;
+var pingCountSentMark = 1;
+var pingCountReceivedMark = 1;
 
 
 // WEB SOCKET
 function connect() {
+  console.log("connect() starting.");
   ws = new WebSocket('ws://192.168.43.84/ws');
+  // console.log("connect(): ws defined. ws =");
+  // console.log(ws);
 
   // onopen websocket, send a message to the server with the list of controlerBoxes
   // currently in the DOM and their states
   ws.onopen = function() {
-    console.log("WS connection open. Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
+    console.log("connect(): WS connection open.");
+    connectRetryCount = 0;
+    console.log("connect(): connectRetryCount = " + connectRetryCount + ".");
+    console.log("Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
     ws.send(JSON.stringify({
       action: "handshake",
       boxesStatesInDOM: mapToObj(controlerBoxes)
@@ -27,9 +35,14 @@ function connect() {
 
   // on receive a message, decode its action type to dispatch it
   ws.onmessage = function(e) {
+    checkPing = 0;
     var received_msg = e.data;
     console.log( "WS Received Message: " + received_msg);
     var _data = JSON.parse(e.data);
+    if (_data.ping) {
+      pingCountReceivedMark = _data.ping;
+      return;
+    }
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
       updateStationIp(_data.serverIP);
@@ -76,11 +89,21 @@ function connect() {
       updateStateButton(_data);
       return;
     }
+    if (_data.action === "changeBox" && _data.key === "reboot" && (_data.lb === 0 || "all")) { // 9. User request to reboot the interface has been received and is being processed
+      // _data = {lb:1; action: "changeBox"; key: "reboot"; val: 0; lb: 0 st: 1}
+      ws.close();
+      return;
+    }
   };
 
-  // onclose, just inform the user that an attempt to reconnect will be made soon
+  // onclose, inform the user that an attempt to reconnect will be made soon
+  // and delete all the boxRows
   ws.onclose = function(e) {
-    console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds.', e.reason);
+    if (connectRetryCount != 10) {
+      console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e.reason);
+    }
+    console.log('Socket is closed. Reason: ', e.reason);
+    deleteAllBoxRows();
   };
 
   // onerror, inform the user that you are closing the socket
@@ -93,10 +116,65 @@ function connect() {
 
 // Check if WS server is still available (and reconnect as necessary)
 function check(){
+  // if connectRetryCount is equal to 10, just stop trying
+  console.log("check(): --- in check");
+  console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+  if (connectRetryCount === 10) {
+    console.log("check(): Tried to reconnect 10 times. Stopping. Please reload or check the server.");
+    clearInterval(checkWSinterval);
+    // TO DO: inform the user that he should try to reload
+    return;
+  }
+
+  // if the connection is inexistant or closed
   if(!ws || ws.readyState === WebSocket.CLOSED) {
-    console.log("!!! -- WE HAVE BEEN DISCONNECTED -- !!!");
-    console.log("!!! Trying to reconnect !!!");
+    console.log("check(): NO CONNECTION. TRYING TO RECONNECT");
+    console.log("check(): !!! Trying to reconnect on !ws or ws.CLOSED !!!");
+    // increment the connectRetryCount
+    console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+    connectRetryCount++;
+    console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+    // try to connect
     connect();
+    // return (the following lines are in the case the connection
+    // is still alive)
+    return;
+  }
+
+  // if the connection is open, every 4 iterations of check(),
+  // check that the server is still here
+  if(ws.readyState === WebSocket.OPEN) {
+
+    console.log("check(): pingCountSentMark === " + pingCountSentMark);
+    console.log("check(): pingCountReceivedMark === " + pingCountReceivedMark);
+    if (pingCountSentMark != pingCountReceivedMark) {
+      console.log("check(): not receiving server pongs");
+      ws.close();
+      pingCount = 1;
+      pingCountReceivedMark = 1;
+      pingCountSentMark = 1;
+      return;
+    }
+
+    console.log("check(): checkPing === " + checkPing + ".");
+    checkPing++;
+    console.log("check(): checkPing === " + checkPing + ".");
+    if (checkPing === 3) {
+      // reset checkPing to 0
+      checkPing = 0;
+      console.log("check(): checkPing === " + checkPing + ".");
+      console.log("check(): about to ping server.");
+
+      // try sending a numbered ping to the server
+      pingCount++;
+      if (pingCount === 9) {
+        pingCount = 1;
+      }
+      ws.send(JSON.stringify({
+        ping: pingCount
+      }));
+      pingCountSentMark = pingCount;
+    }
   }
 }
 // WEB SOCKET END
@@ -594,7 +672,7 @@ function _selectMasterSelectInRow(_dupRow) {
   var _select = _dupRow.querySelector(_masterSelectSelector);
   console.log("_selectMasterSelectInRow: master select selected: ");
   console.log(_select);
-  console.log("_selectMasterSelectInRow: ending returning _select:");
+  console.log("_selectMasterSelectInRow: ending returning _select");
   return _select;
 }
 
@@ -726,7 +804,7 @@ function deleteAllBoxRows() {
     boxesRows.clear();
   }
   // delete from DOM
-  var _boxRowsContainer = document.querySelector(".boxes_state_setter");
+  var _boxRowsContainer = document.querySelector("#boxesContainer");
   while (_boxRowsContainer.children[1]) {
     _boxRowsContainer.removeChild(_boxRowsContainer.firstChild);
   }
@@ -883,8 +961,9 @@ window.onload = function(e){
     console.log("window.onload");
     // Interval at which to check if WS server is still available
     // (and reconnect as necessary) setInterval(check, 5000);
-    setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+    checkWSinterval = setInterval(check, (getRandomArbitrary(10, 4) * 1000));
     setTimeout(setGroupEvents, 2000);
+    // checkWSStarter(check);
 }
 // END WINDOW LOAD
 
