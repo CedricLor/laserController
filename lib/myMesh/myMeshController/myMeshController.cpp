@@ -181,13 +181,13 @@ void myMeshController::_changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32S
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
 
   // get the index number of the sender
-  int8_t __i8BoxIndex = _obj["lb"];
+  uint8_t __ui8BoxIndex = _obj["lb"];
 
   // if this is a "change master box request" confirmation
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   if (_obj["key"] == "masterbox") {
     // Serial.println("----------------- THIS A MASTERBOX CONFIRMATION ---------------");
-    _updateSenderMasterBox(__i8BoxIndex, _obj);
+    _updateSenderMasterBox(__ui8BoxIndex, _obj);
     return;
   }
 
@@ -195,7 +195,7 @@ void myMeshController::_changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32S
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   if (_obj["key"] == "boxDefstate") {
     // Serial.println("----------------- THIS A DEFAULT STATE CONFIRMATION ---------------");
-    _updateSenderDefaultState(__i8BoxIndex, _obj);
+    _updateSenderDefaultState(__ui8BoxIndex, _obj);
     return;
   }
 
@@ -221,14 +221,14 @@ void myMeshController::_changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32S
 // _statusMessage HELPER FUNCTION
 int8_t myMeshController::_getSenderBoxIndexNumber(JsonObject& _obj) {
   // get the nodeName number of the sender
-  uint8_t __i8SenderNodeName = _obj["NNa"];
-  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
+  uint8_t __ui8SenderNodeName = _obj["NNa"];
+  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __ui8SenderNodeName = ");Serial.println(__ui8SenderNodeName);}
 
   // get index number of the sender
-  uint8_t __i8BoxIndex = __i8SenderNodeName - gui8ControllerBoxPrefix;
-  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
+  uint8_t __ui8BoxIndex = __ui8SenderNodeName - gui8ControllerBoxPrefix;
+  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __ui8BoxIndex = ");Serial.println(__ui8BoxIndex);}
 
-  return __i8BoxIndex;
+  return __ui8BoxIndex;
 }
 
 
@@ -336,12 +336,12 @@ void myMeshController::_save(JsonObject& _obj, uint32_t _ui32SenderNodeId) {
 //   _changeBoxSendConfirmationMsg(_obj);
 //
 //   // mark the change as signaled
-//   ControlerBoxes[_i8BoxIndex]._cPropertyKey = true;
+//   ControlerBoxes[_ui8BoxIndex]._cPropertyKey = true;
 // }
 
 
 // attempt to abstract even more the process
-// void myMeshController::_updatePropertyForBox(char& _cPropertyKey, int8_t _i8BoxIndex, JsonObject& _obj) {
+// void myMeshController::_updatePropertyForBox(char& _cPropertyKey, uint8_t _ui8BoxIndex, JsonObject& _obj) {
 //   // get the new property from the JSON
 //   int8_t __i8PropertyValue = _obj[_cPropertyKey].as<uint8_t>();
 //   if (MY_DG_MESH) {
@@ -353,13 +353,13 @@ void myMeshController::_save(JsonObject& _obj, uint32_t _ui32SenderNodeId) {
 //   // 2. set the bool announcing that the change has not been signaled,
 //   // to have it caught by the webServerTask (on the interface).
 //   // TODO:
-//   // a. ControlerBoxes[_i8BoxIndex].updateProperty needs to be drafted
-//   // b. in ControlerBoxes[_i8BoxIndex].updateProperty, if it is a master nodeName
+//   // a. ControlerBoxes[_ui8BoxIndex].updateProperty needs to be drafted
+//   // b. in ControlerBoxes[_ui8BoxIndex].updateProperty, if it is a master nodeName
 //   // change, add the gui8ControllerBoxPrefix.
-//   ControlerBoxes[_i8BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
+//   ControlerBoxes[_ui8BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
 //
 //   if (MY_DG_MESH) {
-//     Serial.printf("myMeshController::_updateSenderProperty: ControlerBoxes[%i], property %s has been updated to %i\n", _i8BoxIndex, _cPropertyKey, __i8PropertyValue);
+//     Serial.printf("myMeshController::_updateSenderProperty: ControlerBoxes[%i], property %s has been updated to %i\n", _ui8BoxIndex, _cPropertyKey, __i8PropertyValue);
 //   }
 // }
 
@@ -401,23 +401,23 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t 
 
 
 // _changedBoxConfirmation HELPER FUNCTIONS
-void myMeshController::_updateSenderMasterBox(int8_t _i8BoxIndex, JsonObject& _obj) {
+void myMeshController::_updateSenderMasterBox(uint8_t _ui8BoxIndex, JsonObject& _obj) {
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // get the new masterBoxName from the JSON
-  int8_t __i8MasterBoxName = _obj["val"];
-  __i8MasterBoxName = __i8MasterBoxName + gui8ControllerBoxPrefix;
+  uint8_t __ui8MasterBoxName = _obj["val"];
+  __ui8MasterBoxName = __ui8MasterBoxName + gui8ControllerBoxPrefix;
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderMasterBox: __i8MasterBoxName = %i\n",  __i8MasterBoxName);
+    Serial.printf("myMeshController::_updateSenderMasterBox: __ui8MasterBoxName = %i\n",  __ui8MasterBoxName);
   }
 
   // 1. set the new master box number of the relevant ControlerBox in the
   // ControlerBoxes array
   // 2. set the bool announcing that the change has not been signaled,
   // to have it caught by the webServerTask (on the interface)
-  ControlerBoxes[_i8BoxIndex].updateMasterBoxName(__i8MasterBoxName);
+  ControlerBoxes[_ui8BoxIndex].updateMasterBoxName(__ui8MasterBoxName);
 
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderMasterBox: ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", _i8BoxIndex, ControlerBoxes[_i8BoxIndex].bMasterBoxName);
+    Serial.printf("myMeshController::_updateSenderMasterBox: ControlerBoxes[%i].bMasterBoxName has been updated to %i\n", _ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].bMasterBoxName);
   }
 }
 
@@ -427,22 +427,22 @@ void myMeshController::_updateSenderMasterBox(int8_t _i8BoxIndex, JsonObject& _o
 
 
 
-void myMeshController::_updateSenderDefaultState(int8_t _i8BoxIndex, JsonObject& _obj) {
+void myMeshController::_updateSenderDefaultState(uint8_t _ui8BoxIndex, JsonObject& _obj) {
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   // get the new defaultState from the JSON
-  int8_t __i8DefaultState = _obj["val"];
+  uint8_t __ui8DefaultState = _obj["val"];
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderDefaultState: __i8DefaultState = %i\n", __i8DefaultState);
+    Serial.printf("myMeshController::_updateSenderDefaultState: __ui8DefaultState = %i\n", __ui8DefaultState);
   }
 
   // 1. set the new default state of the relevant ControlerBox in the
   // ControlerBoxes array
   // 2. set the bool announcing that the change has not been signaled,
   // to have it caught by the webServerTask (on the interface)
-  ControlerBox::setBoxDefaultState(_i8BoxIndex, __i8DefaultState);
+  ControlerBox::setBoxDefaultState(_ui8BoxIndex, __ui8DefaultState);
 
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderDefaultState: ControlerBoxes[%i].sBoxDefaultState has been updated to %i\n", _i8BoxIndex, ControlerBoxes[_i8BoxIndex].sBoxDefaultState);
+    Serial.printf("myMeshController::_updateSenderDefaultState: ControlerBoxes[%i].sBoxDefaultState has been updated to %i\n", _ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].sBoxDefaultState);
   }
 }
 
