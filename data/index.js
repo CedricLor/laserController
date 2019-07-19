@@ -622,9 +622,9 @@ function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
   _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
   _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
   _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', onclickRebootAndSaveBoxButton, false);
-  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
   _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
-  _dupRow.querySelector("#savePrefsBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 
