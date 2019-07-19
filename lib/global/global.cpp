@@ -67,7 +67,7 @@ uint8_t gui8MyIndexInCBArray = gui8NodeName - gui8ControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
-uint32_t iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
+uint32_t gui32InterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
 uint8_t gui8InterfaceNodeName = UI8_DEFAULT_INTERFACE_NODE_NAME;
 uint8_t gui8InterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
 

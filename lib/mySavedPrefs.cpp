@@ -11,7 +11,7 @@ mySavedPrefs::mySavedPrefs()
 }
 
   /* variables to be saved in NVS:
-  *  iInterfaceNodeId (e.g. 2760139053)
+  *  gui32InterfaceNodeId (e.g. 2760139053)
   *  gui8InterfaceNodeName (e.g. 201)
   *  gui8ControllerBoxPrefix
   *  gui8InterfaceIndexInCBArray -- not saved, calculated
@@ -199,8 +199,8 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // Interface only
   // -> reboot required
   // putShort(const char* key, int16_t value)
-  size_t _ui16GatewayPortRet = _preferences.putShort("gatePort", ui16GatewayPort);
-  Serial.printf("%s ui16GatewayPort == %i %s\"gatePort\"\n", _debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  size_t _ui16GatewayPortRet = _preferences.putUShort("gatePort", ui16GatewayPort);
+  Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", _debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of ui8WifiChannel
   // Interface only
@@ -238,18 +238,18 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
 
 
 /*
-  iInterfaceNodeId
+  gui32InterfaceNodeId
   gui8InterfaceNodeName
   gui8InterfaceIndexInCBArray
 */
 void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
   // USELESS PREFERENCES
-  // save value of iInterfaceNodeId
+  // save value of gui32InterfaceNodeId
   // Not a very usefull value: the interface nodeid is fixed at startup in global
   // It is never used thereafter (usually using ControlerBoxes[gui8InterfaceIndexInCBArray].nodeId or the senderID in the mesh)
   // Even a reboot would not suffice to have this param taken into account
-  size_t _iInterfaceNodeIdRet = _preferences.putUInt("iIFNodId", iInterfaceNodeId);
-  Serial.printf("%s iInterfaceNodeId == %u %s\"iIFNodId\"\n", _debugSaveMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  size_t _gui32InterfaceNodeIdRet = _preferences.putUInt("iIFNodId", gui32InterfaceNodeId);
+  Serial.printf("%s gui32InterfaceNodeId == %u %s\"iIFNodId\"\n", _debugSaveMsgStart, gui32InterfaceNodeId, (_gui32InterfaceNodeIdRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of gui8InterfaceNodeName
   // Not a very usefull value: the interface node name is fixed at startup based on the constant UI8_DEFAULT_INTERFACE_NODE_NAME
@@ -375,8 +375,8 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
 
   // get the value of ui16GatewayPort
   // getShort(const char* key, const int16_t defaultValue)
-  ui16GatewayPort = _preferences.getShort("gatePort", ui16GatewayPort);
-  Serial.printf("%s ui16GatewayPort set to: %i\n", _debugLoadMsgStart, ui16GatewayPort);
+  ui16GatewayPort = _preferences.getUShort("gatePort", ui16GatewayPort);
+  Serial.printf("%s ui16GatewayPort set to: %u\n", _debugLoadMsgStart, ui16GatewayPort);
 
   // get the value of ui8WifiChannel
   // getUChar(const char* key, const uint8_t defaultValue)
@@ -409,18 +409,18 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 
 
 /*
-  iInterfaceNodeId
+  gui32InterfaceNodeId
   gui8InterfaceNodeName
   gui8InterfaceIndexInCBArray
 */
 void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
-  // iInterfaceNodeId
-  // Serial.printf("%s TRACING I_DEFAULT_INTERFACE_NODE_ID AND iInterfaceNodeId\n", _debugLoadMsgStart);
+  // gui32InterfaceNodeId
+  // Serial.printf("%s TRACING I_DEFAULT_INTERFACE_NODE_ID AND gui32InterfaceNodeId\n", _debugLoadMsgStart);
   // Serial.print("I_DEFAULT_INTERFACE_NODE_ID = ");Serial.println(I_DEFAULT_INTERFACE_NODE_ID);
-  // Serial.print("iInterfaceNodeId = ");Serial.println(iInterfaceNodeId);
-  iInterfaceNodeId =_preferences.getUInt("iIFNodId", iInterfaceNodeId);
-  // Serial.print("iInterfaceNodeId = ");Serial.println(iInterfaceNodeId);
-  Serial.printf("%s iInterfaceNodeId set to: %u\n", _debugLoadMsgStart, iInterfaceNodeId);
+  // Serial.print("gui32InterfaceNodeId = ");Serial.println(gui32InterfaceNodeId);
+  gui32InterfaceNodeId =_preferences.getUInt("iIFNodId", gui32InterfaceNodeId);
+  // Serial.print("gui32InterfaceNodeId = ");Serial.println(gui32InterfaceNodeId);
+  Serial.printf("%s gui32InterfaceNodeId set to: %u\n", _debugLoadMsgStart, gui32InterfaceNodeId);
 
   // gui8InterfaceNodeName
   gui8InterfaceNodeName = _preferences.getUChar("iIFNodName", gui8InterfaceNodeName);

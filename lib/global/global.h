@@ -23,7 +23,7 @@ extern uint8_t gui8NodeName;
 extern bool isInterface;
 
 extern const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME;
-extern uint32_t iInterfaceNodeId;
+extern uint32_t gui32InterfaceNodeId;
 extern uint8_t gui8InterfaceIndexInCBArray;
 
 extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
