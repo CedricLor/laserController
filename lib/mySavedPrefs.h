@@ -28,17 +28,17 @@ class mySavedPrefs
     // Save Prefs
     static void _startSavePreferences(Preferences& _preferences);
 
-    static void _saveUselessPreferences(Preferences& _preferences);
+    static void _saveNetworkCredentials(Preferences& _preferences);
     static void _saveNetworkEssentialPreferences(Preferences& _preferences);
+    static void _saveUselessPreferences(Preferences& _preferences);
 
     static void _saveBoxEssentialPreferences(Preferences& _preferences);
     static void _saveBoxBehaviorPreferences(Preferences& _preferences);
 
     // Load Prefs
-    static void _startLoadPreferences(Preferences& _preferences);
-
-    static void _loadUselessPreferences(Preferences& _preferences);
+    static void _loadNetworkCredentials(Preferences& _preferences);
     static void _loadNetworkEssentialPreferences(Preferences& _preferences);
+    static void _loadUselessPreferences(Preferences& _preferences);
 
     static void _loadBoxEssentialPreferences(Preferences& _preferences);
     static void _loadBoxBehaviorPreferences(Preferences& _preferences);

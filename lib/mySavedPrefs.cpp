@@ -51,6 +51,7 @@ void mySavedPrefs::savePrefsWrapper() {
 
   _startSavePreferences(_preferences);
 
+  _saveNetworkCredentials(_preferences);
   _saveNetworkEssentialPreferences(_preferences);
   _saveUselessPreferences(_preferences);
 
@@ -82,8 +83,9 @@ void mySavedPrefs::loadPrefsWrapper() {
     if (_savedSettings > 0) {
       Serial.printf("%s NVS has saved settings. Loading values.\n", _debugLoadMsgStart);
 
-      _loadUselessPreferences(_preferences);
       _loadNetworkEssentialPreferences(_preferences);
+      _loadNetworkEssentialPreferences(_preferences);
+      _loadUselessPreferences(_preferences);
 
       _loadBoxEssentialPreferences(_preferences);
       _loadBoxBehaviorPreferences(_preferences);
@@ -165,20 +167,11 @@ void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
 
 
 
-
-
 /*
-  bControllerBoxPrefix
   ssid
   pass
-  sBoxesCount
 */
-void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
-  // save value of bControllerBoxPrefix
-  // -> no reboot but very messy if no reboot of the IF and the whole mesh
-  size_t _gbControllerBoxPrefixRet = _preferences.putShort("bContrBPref", (short)bControllerBoxPrefix);
-  Serial.printf("%s bControllerBoxPrefix == %i %s\"bContrBPref\"\n", _debugSaveMsgStart, bControllerBoxPrefix, (_gbControllerBoxPrefixRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
-
+void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // save value of ssid
   // Interface only
   // -> reboot required
@@ -190,7 +183,22 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
   // -> reboot required
   size_t _spassRet = _preferences.putString("pass", pass);
   Serial.printf("%s pass == %s %s\"pass\"\n", _debugSaveMsgStart, pass, (_spassRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+}
 
+
+
+
+
+
+/*
+  bControllerBoxPrefix
+  sBoxesCount
+*/
+void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
+  // save value of bControllerBoxPrefix
+  // -> no reboot but very messy if no reboot of the IF and the whole mesh
+  size_t _gbControllerBoxPrefixRet = _preferences.putShort("bContrBPref", (short)bControllerBoxPrefix);
+  Serial.printf("%s bControllerBoxPrefix == %i %s\"bContrBPref\"\n", _debugSaveMsgStart, bControllerBoxPrefix, (_gbControllerBoxPrefixRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of sBoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant BOXES_COUNT
@@ -304,16 +312,10 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
 // LOADERS
 ///////////////////////////////////////////////////
 /*
-  bControllerBoxPrefix
   ssid
   pass
-  sBoxesCount
 */
-void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
-  // bControllerBoxPrefix
-  bControllerBoxPrefix = (byte)_preferences.getShort("bContrBPref", (short)bControllerBoxPrefix);
-  Serial.printf("%s bControllerBoxPrefix set to: %i\n", _debugLoadMsgStart, bControllerBoxPrefix);
-
+void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   // ssid
   char _ssid[20];
   if (_preferences.getString("ssid", _ssid, 20)) {
@@ -327,6 +329,20 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
     strcpy(pass, (const char*)_pass);
     Serial.printf("%s pass set to: %s\n", _debugLoadMsgStart, pass);
   }
+}
+
+
+
+
+
+/*
+  bControllerBoxPrefix
+  sBoxesCount
+*/
+void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
+  // bControllerBoxPrefix
+  bControllerBoxPrefix = (byte)_preferences.getShort("bContrBPref", (short)bControllerBoxPrefix);
+  Serial.printf("%s bControllerBoxPrefix set to: %i\n", _debugLoadMsgStart, bControllerBoxPrefix);
 
   // sBoxesCount
   sBoxesCount =_preferences.getShort("sBoxesCount", sBoxesCount);
