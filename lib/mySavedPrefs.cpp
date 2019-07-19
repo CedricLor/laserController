@@ -42,7 +42,7 @@ const PROGMEM char mySavedPrefs::_debugLoadMsgStart[] = "SETUP: loadPreferences(
 
 
 
-
+// GLOBAL WRAPPERS
 void mySavedPrefs::savePrefsWrapper() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
 
@@ -101,11 +101,15 @@ void mySavedPrefs::loadPrefsWrapper() {
 
 
 
+void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
+  // Instantiate Preferences
+  Preferences _preferences;
 
-void mySavedPrefs::saveIFPRefs() {
-  Serial.print("PREFERENCES: saveIFPRefs(): starting\n");
+  _startSavePreferences(_preferences);
 
-  Serial.print("PREFERENCES: saveIFPRefs(): ending\n");
+  callBack(_preferences);
+
+  _endPreferences(_preferences);
 }
 
 
@@ -113,8 +117,40 @@ void mySavedPrefs::saveIFPRefs() {
 
 
 
+void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
+  // Instanciate preferences
+  Preferences _preferences;
+
+  if (_preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
+
+    // read the value of "savedSettingsNS":"savedSettings"
+    unsigned int _savedSettings =_preferences.getShort("savedSettings", 0);
+    Serial.printf("%s \"savedSettings\" = _savedSettings = %i \n", _debugLoadMsgStart, _savedSettings);
+
+    // if the value of _savedSettings > 0, this means that some settings have been saved in the past
+    if (_savedSettings > 0) {
+      Serial.printf("%s NVS has saved settings. Loading values.\n", _debugLoadMsgStart);
+
+      callBack(_preferences);
+
+    } else {
+      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, myIndexInCBArray, ControlerBoxes[myIndexInCBArray].bMasterBoxName, sBoxesCount);
+    }
+  }
+
+  _endPreferences(_preferences);
+}
+
+
+
+
+
+///////////////////////////////////////////////////
+// SAVERS
+///////////////////////////////////////////////////
 void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
+
 
   // Open namespace "savedSettingsNS" in read-write
   _preferences.begin("savedSettingsNS", /*read only = */false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
@@ -262,6 +298,11 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
 
 
 
+
+
+///////////////////////////////////////////////////
+// LOADERS
+///////////////////////////////////////////////////
 /*
   bControllerBoxPrefix
   ssid

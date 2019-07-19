@@ -14,10 +14,10 @@ class mySavedPrefs
     mySavedPrefs();
 
     static void savePrefsWrapper();
-
     static void loadPrefsWrapper();
 
-    static void saveIFPRefs();
+    static void saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
+    static void loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
 
   private:
     static const PROGMEM char _debugSaveMsgStart[];
