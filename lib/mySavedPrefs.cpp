@@ -83,7 +83,7 @@ void mySavedPrefs::loadPrefsWrapper() {
     if (_savedSettings > 0) {
       Serial.printf("%s NVS has saved settings. Loading values.\n", _debugLoadMsgStart);
 
-      _loadNetworkEssentialPreferences(_preferences);
+      _loadNetworkCredentials(_preferences);
       _loadNetworkEssentialPreferences(_preferences);
       _loadUselessPreferences(_preferences);
 
