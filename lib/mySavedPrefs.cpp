@@ -21,7 +21,7 @@ mySavedPrefs::mySavedPrefs()
   *  pass
 
   *  sBoxDefaultState
-  *  gbNodeName
+  *  gui8NodeName
   *  myIndexInCBArray -- not saved, calculated
   *  ControlerBoxes[myIndexInCBArray].bMasterBoxName;
   *  iSlaveOnOffReaction
@@ -207,7 +207,7 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // -> reboot required
   // putUChar(const char* key, uint8_t value)
   size_t _ui8WifiChannelRet = _preferences.putUChar("wifiChan", ui8WifiChannel);
-  Serial.printf("%s ui8WifiChannel == %i %s\"wifiChan\"\n", _debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", _debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 }
 
 
@@ -224,7 +224,7 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
   // -> no reboot but very messy if no reboot of the IF and the whole mesh
   // putUChar(const char* key, uint8_t value)
   size_t _gui8ControllerBoxPrefixRet = _preferences.putUChar("bContrBPref", ui8ControllerBoxPrefix);
-  Serial.printf("%s ui8ControllerBoxPrefix == %i %s\"bContrBPref\"\n", _debugSaveMsgStart, ui8ControllerBoxPrefix, (_gui8ControllerBoxPrefixRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s ui8ControllerBoxPrefix == %u %s\"bContrBPref\"\n", _debugSaveMsgStart, ui8ControllerBoxPrefix, (_gui8ControllerBoxPrefixRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of sBoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant BOXES_COUNT
@@ -271,28 +271,29 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
 
 
 /*
-  gbNodeName
+  gui8NodeName
   myIndexInCBArray
   isInterface
 */
 // Need a reboot
 void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
-  // save value of gbNodeName (global byte nodeName)
+  // save value of gui8NodeName (global byte nodeName)
   // Note to use Prefs without reboot:
   // -> would need a reboot
   // -> fix: call ControlerBox::updateThisBoxProperties
   // this value is then used in ControlerBox::updateThisBoxProperties
   // to set ControlerBoxes[myIndexInCBArray].bNodeName
-  size_t _gbNodeNameRet = _preferences.putShort("bNodeName", (short)gbNodeName);
-  Serial.printf("%s gbNodeName == %i %s\"bNodeName\"\n", _debugSaveMsgStart, gbNodeName, (_gbNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  // putUChar(const char* key, uint8_t value)
+  size_t _gui8NodeNameRet = _preferences.putUChar("bNodeName", gui8NodeName);
+  Serial.printf("%s gui8NodeName == %u %s\"bNodeName\"\n", _debugSaveMsgStart, gui8NodeName, (_gui8NodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
-  // recalculate myIndexInCBArray with the new values of gbNodeName and ui8ControllerBoxPrefix
+  // recalculate myIndexInCBArray with the new values of gui8NodeName and ui8ControllerBoxPrefix
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot required, but very messy without a reboot of the whole mesh
   // -> fix: complicated; would need each and everybox to update its ControlerBoxes array
   // this value is then used in ControlerBox::updateThisBoxProperties
   // to set ControlerBoxes[myIndexInCBArray].bNodeName
-  myIndexInCBArray = gbNodeName - ui8ControllerBoxPrefix;
+  myIndexInCBArray = gui8NodeName - ui8ControllerBoxPrefix;
   Serial.printf("%s myIndexInCBArray recalculated to: %i (not saved)\n", _debugSaveMsgStart, myIndexInCBArray);
 
   // save value of isInterface
@@ -437,17 +438,18 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
 
 
 /*
-  gbNodeName
+  gui8NodeName
   myIndexInCBArray
   isInterface
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
-  // gbNodeName
-  gbNodeName = (byte)_preferences.getShort("bNodeName", (short)gbNodeName);
-  Serial.printf("%s gbNodeName set to: %i\n", _debugLoadMsgStart, gbNodeName);
+  // gui8NodeName
+  // getUChar(const char* key, const uint8_t defaultValue)
+  gui8NodeName = _preferences.getUChar("bNodeName", gui8NodeName);
+  Serial.printf("%s gui8NodeName set to: %u\n", _debugLoadMsgStart, gui8NodeName);
 
-  // recalculate myIndexInCBArray with the new values of gbNodeName and ui8ControllerBoxPrefix
-  myIndexInCBArray = gbNodeName - ui8ControllerBoxPrefix;
+  // recalculate myIndexInCBArray with the new values of gui8NodeName and ui8ControllerBoxPrefix
+  myIndexInCBArray = gui8NodeName - ui8ControllerBoxPrefix;
   Serial.printf("%s myIndexInCBArray reset to: %i\n", _debugLoadMsgStart, myIndexInCBArray);
 
   // isInterface

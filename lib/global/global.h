@@ -19,7 +19,7 @@ extern const short VERSION;
 
 extern const byte B_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 
-extern byte gbNodeName;
+extern uint8_t gui8NodeName;
 extern bool isInterface;
 
 extern const byte B_DEFAULT_INTERFACE_NODE_NAME;

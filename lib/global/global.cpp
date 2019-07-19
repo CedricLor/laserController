@@ -31,7 +31,7 @@ const short VERSION = 0;
 // Otherwise, set to which ever value.
 // !! infinite loop potential:
 // !! do not set a box to be its own master!!
-// B_DEFAULT_MASTER_NODE_NAME shall never be equal to B_NODE_NAME
+// B_DEFAULT_MASTER_NODE_NAME shall never be equal to UI8_NODE_NAME
 // In principle, B_DEFAULT_MASTER_NODE_NAME shall not be changed (this is why it is a constant).
 // Todo: draft a security
 // To reset
@@ -39,19 +39,19 @@ const byte B_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 
 // CONTROLLER BOX 201
 // node id in the current configuration 764691274
-// const byte B_NODE_NAME = 201;                          // BOX BY BOX
+// const byte UI8_NODE_NAME = 201;                          // BOX BY BOX
 // const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
 
 // CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
 // node id in the current configuration 2760139053
-const byte B_NODE_NAME = 200;                          // BOX BY BOX
+const uint8_t UI8_NODE_NAME = 200;                          // BOX BY BOX
 const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or true
 
 // CONTROLLER BOX 202
-// const byte B_NODE_NAME = 202;                          // BOX BY BOX
+// const byte UI8_NODE_NAME = 202;                          // BOX BY BOX
 // const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
 
-byte gbNodeName = B_NODE_NAME;
+uint8_t gui8NodeName = UI8_NODE_NAME;
 bool isInterface = IS_INTERFACE;
 
 const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
@@ -63,7 +63,7 @@ const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 const uint8_t B_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
 const uint8_t UI8_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 uint8_t ui8ControllerBoxPrefix = UI8_CONTROLLER_BOX_PREFIX;
-byte myIndexInCBArray = gbNodeName - ui8ControllerBoxPrefix;
+byte myIndexInCBArray = gui8NodeName - ui8ControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 

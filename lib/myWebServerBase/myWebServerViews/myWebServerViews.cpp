@@ -77,8 +77,8 @@ myWebServerViews::myWebServerViews(AsyncWebServerRequest *request)
 // If it meets a placeholder, replace it with a given value
 String myWebServerViews::_processor(const String& var) {
 
-  if(var == "B_NODE_NAME") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"B_NODE_NAME\")\n");
+  if(var == "UI8_NODE_NAME") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"UI8_NODE_NAME\")\n");
     char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
     itoa(ControlerBoxes[myIndexInCBArray].bNodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);
@@ -156,7 +156,7 @@ String myWebServerViews::_processor(const String& var) {
 //   __myResponse += "<body>";
 //   __myResponse += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
 //   __myResponse += "<h1>";
-//   __myResponse += String(B_NODE_NAME); // B_NODE_NAME defined and declared in global
+//   __myResponse += String(UI8_NODE_NAME); // UI8_NODE_NAME defined and declared in global
 //   __myResponse += " - Station IP: ";
 //   __myResponse += (ControlerBoxes[myIndexInCBArray].stationIP).toString(); // dependancy
 //   __myResponse += " - AP IP: ";
@@ -255,7 +255,7 @@ String myWebServerViews::_processor(const String& var) {
 //     if (__i + I_MASTER_NODE_PREFIX == bMasterNodeName) { // I_MASTER_NODE_PREFIX and bMasterNodeName defined and declared in global
 //       __selected += "selected";
 //     };
-//     if (!(__i + I_MASTER_NODE_PREFIX == B_NODE_NAME)) { // I_MASTER_NODE_PREFIX and B_NODE_NAME defined and declared in global
+//     if (!(__i + I_MASTER_NODE_PREFIX == UI8_NODE_NAME)) { // I_MASTER_NODE_PREFIX and UI8_NODE_NAME defined and declared in global
 //       __masterSelect += _printOption(String(__i), String(__i), __selected);
 //     }
 //   }

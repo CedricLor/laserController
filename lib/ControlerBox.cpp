@@ -81,7 +81,7 @@ void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  bNodeName = gbNodeName;
+  bNodeName = gui8NodeName;
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {
