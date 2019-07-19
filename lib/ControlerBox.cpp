@@ -140,7 +140,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // extract the index of the relevant box from its senderNodeName in the JSON
   byte __bNodeName = _obj["NNa"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
-  byte __bBoxIndex = __bNodeName - ui8ControllerBoxPrefix; // 201 - 200 = 1
+  byte __bBoxIndex = __bNodeName - gui8ControllerBoxPrefix; // 201 - 200 = 1
 
   // set the nodeId
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);

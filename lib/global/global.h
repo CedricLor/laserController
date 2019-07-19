@@ -17,7 +17,7 @@ extern const bool MY_DG_LASER;
 
 extern const short VERSION;
 
-extern const byte UI8_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
+extern const uint8_t UI8_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 
 extern uint8_t gui8NodeName;
 extern bool isInterface;
@@ -30,8 +30,8 @@ extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my cu
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
-extern const byte UI8_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
-extern uint8_t ui8ControllerBoxPrefix;
+extern const uint8_t UI8_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
+extern uint8_t gui8ControllerBoxPrefix;
 extern uint8_t gui8MyIndexInCBArray;
 
 extern short iSlaveOnOffReaction;
