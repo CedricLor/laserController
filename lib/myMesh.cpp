@@ -52,13 +52,13 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, MESH_CHANNEL );
 
-  if ((isInterface == true)) {
+  if (isInterface == true) {
     // laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD, MESH_PORT, STATION_IP);  // this does not work. Unstable connection
     laserControllerMesh.stationManual(STATION_SSID, STATION_PASSWORD);
   }
 
   laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
-  if (isMeshRoot == true) {
+  if (isInterface == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
   }

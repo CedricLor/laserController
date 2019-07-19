@@ -25,7 +25,6 @@ mySavedPrefs::mySavedPrefs()
   *  myIndexInCBArray -- not saved, calculated
   *  ControlerBoxes[myIndexInCBArray].bMasterBoxName;
   *  iSlaveOnOffReaction
-  *  isMeshRoot
   *  isInterface
   */
 
@@ -204,7 +203,6 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
 /*
   gbNodeName
   myIndexInCBArray
-  isMeshRoot
   isInterface
 */
 // Need a reboot
@@ -226,13 +224,6 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // to set ControlerBoxes[myIndexInCBArray].bNodeName
   myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
   Serial.printf("%s myIndexInCBArray recalculated to: %i (not saved)\n", _debugSaveMsgStart, myIndexInCBArray);
-
-  // save value of isMeshRoot
-  // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot but quite messy (this would require a mesh reconfiguration)
-  // In addition, the root is supposed to be also box 200 and the interface
-  size_t _isMeshRootRet = _preferences.putBool("isMeshRoot", isMeshRoot);
-  Serial.printf("%s isMeshRoot == %i %s\"isMeshRoot\"\n", _debugSaveMsgStart, isMeshRoot, (_isMeshRootRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of isInterface
   // Note to use Prefs without reboot (would be updated without reboot):
@@ -338,7 +329,6 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
 /*
   gbNodeName
   myIndexInCBArray
-  isMeshRoot
   isInterface
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
@@ -353,10 +343,6 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // isInterface
   isInterface =_preferences.getBool("isIF", isInterface);
   Serial.printf("%s isInterface set to: %i\n", _debugLoadMsgStart, isInterface);
-
-  // isMeshRoot
-  isMeshRoot =_preferences.getBool("isMeshRoot", isMeshRoot);
-  Serial.printf("%s isMeshRoot set to: %i\n", _debugLoadMsgStart, isMeshRoot);
 }
 
 
