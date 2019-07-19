@@ -7,7 +7,6 @@
 #define global_h
 
 #include "Arduino.h"
-#include "ControlerBox.h"
 
 
 extern const short PIN_COUNT;                                                     // BOX BY BOX
@@ -43,7 +42,7 @@ extern byte bInterfaceNodeName;
 extern const char* slaveReactionHtml[4];
 
 extern const short BOXES_COUNT;                                                   // NETWORK BY NETWORK
-extern ControlerBox ControlerBoxes[];
+// extern ControlerBox ControlerBoxes[];
 extern short sBoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;

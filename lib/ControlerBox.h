@@ -56,4 +56,6 @@ class ControlerBox
     static void _parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base);
 };
 
+extern ControlerBox ControlerBoxes[];
+
 #endif

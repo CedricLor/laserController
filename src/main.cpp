@@ -27,13 +27,15 @@
 
 
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 void serialInit();
 void enableTasks();
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
+ControlerBox ControlerBoxes[BOXES_COUNT];
 
 
 
@@ -41,27 +43,28 @@ void enableTasks();
 void setup() {
   delay(2000);
   serialInit();
+  // create the ControlerBoxes array
+
   mySavedPrefs::loadPrefsWrapper();
-  if (isInterface == false) {
-    pirController::initPir();
-  }
+
   myMesh::meshSetup();
 
-  if (isInterface == true) {
-    myWebServerBase::startAsyncServer();
+  if (isInterface == false) {
+    pirController::initPir(); // depends on ControlerBox and Mesh classes
   }
-  // Myota::OTAConfig();
 
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
 
-  // commented out to check whether this has any impact
-  // ControlerBoxes[myIndexInCBArray].boxActiveState = 0;
+  if (isInterface == true) {
+    myWebServerBase::startAsyncServer();
+  }
+  // Myota::OTAConfig();
 
   if (isInterface == false) {
-    tone::initTones();
+    tone::initTones(); // inits also laserPin class; note does not need init
     bar::initBars();
     sequence::initSequences();
   }

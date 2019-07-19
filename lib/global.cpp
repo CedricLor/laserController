@@ -76,7 +76,7 @@ byte bInterfaceIndexInCBArray = bInterfaceNodeName - bControllerBoxPrefix;
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
 const short BOXES_COUNT = 10;
-ControlerBox ControlerBoxes[BOXES_COUNT];
+// ControlerBox ControlerBoxes[BOXES_COUNT];
 short sBoxesCount = BOXES_COUNT;                           // NETWORK BY NETWORK
 
 const short S_BOX_DEFAULT_STATE = 5;
