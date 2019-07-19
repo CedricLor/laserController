@@ -59,6 +59,10 @@ void tone::_initTone(const char cName[_char_count_in_name], const bool bLaserPin
 void tone::initTones() {
   Serial.println("----------- void tone::initTones(). Starting.");
 
+  // Initialize the pins
+  laserPin::initLaserPins();
+
+  // Initialize the tones
   const bool aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
   tones[0]._initTone("all off", aAllOff);
   Serial.print("----------- void tone::initTones(). tones[0]._bLaserPinStatus[0] = ");Serial.println(tones[0]._bLaserPinStatus[0]);
@@ -101,6 +105,7 @@ void tone::initTones() {
 
   Serial.println("----------- void tone::initTones(). Ending.");
 }
+
 
 
 /* playTone()

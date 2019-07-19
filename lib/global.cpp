@@ -83,11 +83,6 @@ const short BOXES_COUNT = 10;
 ControlerBox ControlerBoxes[BOXES_COUNT];
 short sBoxesCount = BOXES_COUNT;                           // NETWORK BY NETWORK
 
-LaserPin LaserPins[PIN_COUNT];
-// LaserGroupedUnit LaserGroupedUnits[PIN_COUNT];
-// PIN_COUNT? We define the array of LaserGroupUnits as large as the number of pins connected to the lasers.
-// Potentially, the LaserGroupedUnit can composed of a single laser. And in such a case, the LaserGroupedUnitsArray shall be able to contain them all.
-
 const short S_BOX_DEFAULT_STATE = 5;
 
 painlessMesh laserControllerMesh;

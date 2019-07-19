@@ -179,7 +179,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 
   // Print out the updated properties
   if (MY_DEBUG == true) {
-    Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %i. Calling printProperties().", __bBoxIndex);
+    Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %i. Calling printProperties().\n", __bBoxIndex);
     ControlerBoxes[__bBoxIndex].printProperties(__bBoxIndex);
   }
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");

@@ -10,13 +10,11 @@
 
 #include "../lib/secret.h"
 
-// #include "../lib/Myota.cpp"
+// #include "../lib/myOta/Myota.cpp"
 
 #include "../lib/ControlerBox.cpp"
 
 #include "../lib/mySavedPrefs.cpp"
-
-#include "../lib/LaserPinsArray.cpp"
 
 #include "../lib/myMesh.cpp"
 
@@ -39,7 +37,6 @@ void setup() {
   serialInit();
   mySavedPrefs::loadPrefsWrapper();
   if (isInterface == false) {
-    LaserPinsArray::initLaserPins();
     pirController::initPir();
   }
   myMesh::meshSetup();
