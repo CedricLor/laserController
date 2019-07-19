@@ -12,7 +12,7 @@ mySavedPrefs::mySavedPrefs()
 
   /* variables to be saved in NVS:
   *  iInterfaceNodeId (e.g. 2760139053)
-  *  bInterfaceNodeName (e.g. 201)
+  *  gui8InterfaceNodeName (e.g. 201)
   *  gui8ControllerBoxPrefix
   *  bInterfaceIndexInCBArray -- not saved, calculated
   *  sBoxesCount
@@ -239,7 +239,7 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
 
 /*
   iInterfaceNodeId
-  bInterfaceNodeName
+  gui8InterfaceNodeName
   bInterfaceIndexInCBArray
 */
 void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
@@ -251,17 +251,17 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
   size_t _iInterfaceNodeIdRet = _preferences.putUInt("iIFNodId", iInterfaceNodeId);
   Serial.printf("%s iInterfaceNodeId == %u %s\"iIFNodId\"\n", _debugSaveMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
-  // save value of bInterfaceNodeName
+  // save value of gui8InterfaceNodeName
   // Not a very usefull value: the interface node name is fixed at startup based on the constant B_DEFAULT_INTERFACE_NODE_NAME
   // It is never used thereafter (usually using ControlerBoxes[bInterfaceIndexInCBArray].nodeName)
   // Even a reboot would not suffice to have this param taken into account
-  size_t _bInterfaceNodeNameRet = _preferences.putShort("sIFNodNam", (short)bInterfaceNodeName);
-  Serial.printf("%s bInterfaceNodeName == %i %s\"sIFNodNam\"\n", _debugSaveMsgStart, bInterfaceNodeName, (_bInterfaceNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  size_t _gui8InterfaceNodeNameRet = _preferences.putUChar("sIFNodNam", gui8InterfaceNodeName);
+  Serial.printf("%s gui8InterfaceNodeName == %u %s\"sIFNodNam\"\n", _debugSaveMsgStart, gui8InterfaceNodeName, (_gui8InterfaceNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
-  // recalculate bInterfaceIndexInCBArray with the new values of bInterfaceNodeName and gui8ControllerBoxPrefix
+  // recalculate bInterfaceIndexInCBArray with the new values of gui8InterfaceNodeName and gui8ControllerBoxPrefix
   // It is never used thereafter (usually using ControlerBoxes[bInterfaceIndexInCBArray].nodeName)
   // -> no reboot but very messy if no reboot of the IF and the whole mesh
-  bInterfaceIndexInCBArray = bInterfaceNodeName - gui8ControllerBoxPrefix;
+  bInterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
   Serial.printf("%s bInterfaceIndexInCBArray recalculated to: %i (not saved)\n", _debugSaveMsgStart, bInterfaceIndexInCBArray);
 }
 
@@ -294,7 +294,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // this value is then used in ControlerBox::updateThisBoxProperties
   // to set ControlerBoxes[gui8MyIndexInCBArray].bNodeName
   gui8MyIndexInCBArray = gui8NodeName - gui8ControllerBoxPrefix;
-  Serial.printf("%s gui8MyIndexInCBArray recalculated to: %i (not saved)\n", _debugSaveMsgStart, gui8MyIndexInCBArray);
+  Serial.printf("%s gui8MyIndexInCBArray recalculated to: %u (not saved)\n", _debugSaveMsgStart, gui8MyIndexInCBArray);
 
   // save value of isInterface
   // Note to use Prefs without reboot (would be updated without reboot):
@@ -322,8 +322,8 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
   // save value of ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from ControlerBoxes[gui8MyIndexInCBArray])
-  size_t _masterNodeNameRet = _preferences.putShort("bMasterNName", (short)ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
-  Serial.printf("%s ControlerBoxes[%i].bMasterBoxName == %i %s\"bMasterNName\"\n", _debugSaveMsgStart, gui8MyIndexInCBArray, (short)ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, (_masterNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  size_t _masterNodeNameRet = _preferences.putUChar("bMasterNName", ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
+  Serial.printf("%s ControlerBoxes[%u].bMasterBoxName == %u %s\"bMasterNName\"\n", _debugSaveMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, (_masterNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of iSlaveOnOffReaction
   // _preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
@@ -396,7 +396,7 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
   // gui8ControllerBoxPrefix
   // getUChar(const char* key, const uint8_t defaultValue)
   gui8ControllerBoxPrefix = _preferences.getUChar("bContrBPref", gui8ControllerBoxPrefix);
-  Serial.printf("%s gui8ControllerBoxPrefix set to: %i\n", _debugLoadMsgStart, gui8ControllerBoxPrefix);
+  Serial.printf("%s gui8ControllerBoxPrefix set to: %u\n", _debugLoadMsgStart, gui8ControllerBoxPrefix);
 
   // sBoxesCount
   sBoxesCount =_preferences.getShort("sBoxesCount", sBoxesCount);
@@ -410,7 +410,7 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 
 /*
   iInterfaceNodeId
-  bInterfaceNodeName
+  gui8InterfaceNodeName
   bInterfaceIndexInCBArray
 */
 void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
@@ -422,12 +422,12 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
   // Serial.print("iInterfaceNodeId = ");Serial.println(iInterfaceNodeId);
   Serial.printf("%s iInterfaceNodeId set to: %u\n", _debugLoadMsgStart, iInterfaceNodeId);
 
-  // bInterfaceNodeName
-  bInterfaceNodeName = (byte)_preferences.getShort("iIFNodName", (short)bInterfaceNodeName);
-  Serial.printf("%s bInterfaceNodeName set to: %i\n", _debugLoadMsgStart, bInterfaceNodeName);
+  // gui8InterfaceNodeName
+  gui8InterfaceNodeName = _preferences.getUChar("iIFNodName", gui8InterfaceNodeName);
+  Serial.printf("%s gui8InterfaceNodeName set to: %u\n", _debugLoadMsgStart, gui8InterfaceNodeName);
 
-  // recalculate bInterfaceIndexInCBArray with the new values of bInterfaceNodeName and gui8ControllerBoxPrefix
-  bInterfaceIndexInCBArray = bInterfaceNodeName - gui8ControllerBoxPrefix;
+  // recalculate bInterfaceIndexInCBArray with the new values of gui8InterfaceNodeName and gui8ControllerBoxPrefix
+  bInterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
   Serial.printf("%s bInterfaceIndexInCBArray reset to: %i\n", _debugLoadMsgStart, bInterfaceIndexInCBArray);
 }
 
@@ -469,7 +469,7 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
 void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   // sBoxDefaultState
   ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState =_preferences.getShort("sBoxDefSta", ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState);
-  Serial.printf("%s sBoxDefaultState set to: %i\n", _debugLoadMsgStart, ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState);
+  Serial.printf("%s ControlerBoxes[%u].sBoxDefaultState set to: %i\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState);
 
   // ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
   // If there is a value saved for bMasterNName, reset
@@ -478,8 +478,8 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   // in the ControlerBox constructor. Else, the value of
   // ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
   // will stay unchanged.
-  ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName = (byte)_preferences.getShort("bMasterNName", (short)ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
-  Serial.printf("%s ControlerBoxes[%i].bMasterBoxName set to: %i\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
+  ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName = _preferences.getUChar("bMasterNName", ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
+  Serial.printf("%s ControlerBoxes[%u].bMasterBoxName set to: %u\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
 
   // iSlaveOnOffReaction
   // iSlaveOnOffReaction =_preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);

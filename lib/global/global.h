@@ -35,7 +35,7 @@ extern uint8_t gui8ControllerBoxPrefix;
 extern uint8_t gui8MyIndexInCBArray;
 
 extern short iSlaveOnOffReaction;
-extern byte bInterfaceNodeName;
+extern uint8_t gui8InterfaceNodeName;
 
 extern const char* slaveReactionHtml[4];
 
