@@ -81,5 +81,5 @@ short sBoxesCount = BOXES_COUNT;                           // NETWORK BY NETWORK
 
 const short S_BOX_DEFAULT_STATE = 5;
 
-painlessMesh laserControllerMesh;
-Scheduler    userScheduler;             // to control your personal task
+// painlessMesh laserControllerMesh;
+// Scheduler    userScheduler;             // to control your personal task

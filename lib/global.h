@@ -47,7 +47,7 @@ extern short sBoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;
 
-extern painlessMesh laserControllerMesh;
-extern Scheduler    userScheduler;             // to control your personal task
+// extern painlessMesh laserControllerMesh;
+// extern Scheduler    userScheduler;             // to control your personal task
 
 #endif

@@ -12,7 +12,12 @@
 
 // #include "../lib/myOta/Myota.cpp"
 
+painlessMesh laserControllerMesh;
+Scheduler    userScheduler;
+
 #include "../lib/ControlerBox.cpp"
+
+ControlerBox ControlerBoxes[BOXES_COUNT];
 
 #include "../lib/mySavedPrefs.cpp"
 
@@ -35,7 +40,6 @@ void enableTasks();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
-ControlerBox ControlerBoxes[BOXES_COUNT];
 
 
 
