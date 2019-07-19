@@ -18,7 +18,7 @@ Scheduler    userScheduler;
 
 #include "../lib/ControlerBox.cpp"
 
-ControlerBox ControlerBoxes[BOXES_COUNT];
+ControlerBox ControlerBoxes[UI8_BOXES_COUNT];
 
 #include "../lib/mySavedPrefs.cpp"
 

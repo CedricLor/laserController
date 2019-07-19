@@ -104,7 +104,7 @@ String myWebServerViews::_processor(const String& var) {
     return F(ControlerBoxes[gui8MyIndexInCBArray].APIP.toString().c_str());
   }
   if (MY_DG_WEB) {
-    Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");  
+    Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");
   }
   return String();
 }
@@ -115,7 +115,7 @@ String myWebServerViews::_processor(const String& var) {
 
 // void myWebServerViews::_loadBoxArray() {
 //   // Serial.print("myWebServerViews::loadBoxArray(): STARTING\n");
-//   for (short int __i = 1; __i < sBoxesCount; __i++) {
+//   for (uint8_t __i = 1; __i < gui8BoxesCount; __i++) {
 //     // Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP STARTING: iter %i\n", __i);
 //     strcat(cBoxArray, "<div>Laser Box ");
 //     char __cNodeName[4];         // the ASCII of the integer will be stored in this char array
@@ -173,7 +173,7 @@ String myWebServerViews::_processor(const String& var) {
 // String myWebServerViews::_printLinksToBoxes() {
 //   String __linksToBoxes = "<div class=\"box_links_wrapper\">";
 //   // IPAddress testIp(0,0,0,0);
-//   for (short i = 0; i < sBoxesCount; i++) {
+//   for (uint8_t i = 0; i < gui8BoxesCount; i++) {
 //     if (ControlerBoxes[i].bNodeName) {                          // dependancy
 //       __linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
 //       __linksToBoxes += String((ControlerBoxes[i].bNodeName));   // dependancy

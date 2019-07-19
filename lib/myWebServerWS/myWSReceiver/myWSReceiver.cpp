@@ -335,7 +335,7 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
   }
 
   // iterate over all the potentially existing laser boxes (note that it starts at 1)
-  for (short _i = 1; _i < sBoxesCount; _i++) {
+  for (uint8_t _i = 1; _i < gui8BoxesCount; _i++) {
     char _c[3];  // declare an array of char of 3 characters ("   ")
     itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
     const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]

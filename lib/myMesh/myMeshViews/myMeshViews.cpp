@@ -43,12 +43,12 @@
 // Task myMeshViews::tSendBoxStateToNewBox((gui8MyIndexInCBArray * 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 //
 // void myMeshViews::_odtcbSendBoxStateToNewBox() {
-//   for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
-//     if (ControlerBoxes[_boxIndex].nodeId != 0) {
-//       if (ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled == false) {
+//   for (uint8_t _ui8BoxIndex = 1; _ui8BoxIndex < gui8BoxesCount; _ui8BoxIndex++) {
+//     if (ControlerBoxes[_ui8BoxIndex].nodeId != 0) {
+//       if (ControlerBoxes[_ui8BoxIndex].isNewBoxHasBeenSignaled == false) {
 //         myMeshViews __myMeshViews;
-//         __myMeshViews.statusMsg(ControlerBoxes[_boxIndex].nodeId);
-//         ControlerBoxes[_boxIndex].isNewBoxHasBeenSignaled = true;
+//         __myMeshViews.statusMsg(ControlerBoxes[_ui8BoxIndex].nodeId);
+//         ControlerBoxes[_ui8BoxIndex].isNewBoxHasBeenSignaled = true;
 //       }
 //     }
 //   }

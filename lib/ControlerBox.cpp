@@ -122,7 +122,7 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
 
 // Static Methods
 int8_t ControlerBox::findByNodeId(uint32_t _nodeId) {
-  for (int8_t _i = 0; _i < sBoxesCount; _i++) {
+  for (uint8_t _i = 0; _i < gui8BoxesCount; _i++) {
     if (ControlerBoxes[_i].nodeId == _nodeId) {
       return _i;
     }
@@ -252,7 +252,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 void ControlerBox::deleteBox(uint32_t nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
-  for (uint8_t __it = 0; __it < sBoxesCount; __it++) {
+  for (uint8_t __it = 0; __it < gui8BoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == nodeId) {
       ControlerBoxes[__it].nodeId = 0;
       ControlerBoxes[__it].APIP = {0,0,0,0};

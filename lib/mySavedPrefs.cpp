@@ -15,7 +15,7 @@ mySavedPrefs::mySavedPrefs()
   *  gui8InterfaceNodeName (e.g. 201)
   *  gui8ControllerBoxPrefix
   *  gui8InterfaceIndexInCBArray -- not saved, calculated
-  *  sBoxesCount
+  *  gui8BoxesCount
   *  PIN_COUNT
   *  ssid
   *  pass
@@ -91,7 +91,7 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadBoxBehaviorPreferences(_preferences);
 
     } else {
-      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, sBoxesCount);
+      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and gui8BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, gui8BoxesCount);
     }
   }
 
@@ -136,7 +136,7 @@ void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
       callBack(_preferences);
 
     } else {
-      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and sBoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, sBoxesCount);
+      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and gui8BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, gui8BoxesCount);
     }
   }
 
@@ -217,7 +217,7 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
 
 /*
   gui8ControllerBoxPrefix
-  sBoxesCount
+  gui8BoxesCount
 */
 void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
   // save value of gui8ControllerBoxPrefix
@@ -226,11 +226,11 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
   size_t _ggui8ControllerBoxPrefixRet = _preferences.putUChar("bContrBPref", gui8ControllerBoxPrefix);
   Serial.printf("%s gui8ControllerBoxPrefix == %u %s\"bContrBPref\"\n", _debugSaveMsgStart, gui8ControllerBoxPrefix, (_ggui8ControllerBoxPrefixRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
-  // save value of sBoxesCount
-  // Not a very usefull value: the number of boxes created at startup is based on the constant BOXES_COUNT
+  // save value of gui8BoxesCount
+  // Not a very usefull value: the number of boxes created at startup is based on the constant UI8_BOXES_COUNT
   // Even a reboot would not suffice to have this param taken into account
-  size_t _sBoxesCountRet = _preferences.putShort("sBoxesCount", sBoxesCount);
-  Serial.printf("%s sBoxesCount == %i %s\"sBoxesCount\"\n", _debugSaveMsgStart, sBoxesCount, (_sBoxesCountRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  size_t _gui8BoxesCountRet = _preferences.putUChar("gui8BoxesCount", gui8BoxesCount);
+  Serial.printf("%s gui8BoxesCount == %u %s\"gui8BoxesCount\"\n", _debugSaveMsgStart, gui8BoxesCount, (_gui8BoxesCountRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 }
 
 
@@ -390,7 +390,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
 
 /*
   gui8ControllerBoxPrefix
-  sBoxesCount
+  gui8BoxesCount
 */
 void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
   // gui8ControllerBoxPrefix
@@ -398,9 +398,9 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
   gui8ControllerBoxPrefix = _preferences.getUChar("bContrBPref", gui8ControllerBoxPrefix);
   Serial.printf("%s gui8ControllerBoxPrefix set to: %u\n", _debugLoadMsgStart, gui8ControllerBoxPrefix);
 
-  // sBoxesCount
-  sBoxesCount =_preferences.getShort("sBoxesCount", sBoxesCount);
-  Serial.printf("%s sBoxesCount set to: %i\n", _debugLoadMsgStart, sBoxesCount);
+  // gui8BoxesCount
+  gui8BoxesCount =_preferences.getUChar("gui8BoxesCount", gui8BoxesCount);
+  Serial.printf("%s gui8BoxesCount set to: %u\n", _debugLoadMsgStart, gui8BoxesCount);
 }
 
 
