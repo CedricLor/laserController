@@ -51,8 +51,6 @@ const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or
 // const byte B_NODE_NAME = 202;                          // BOX BY BOX
 // const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
 
-const uint8_t MESH_CHANNEL = 6;
-
 byte gbNodeName = B_NODE_NAME;
 bool isInterface = IS_INTERFACE;
 

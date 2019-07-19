@@ -19,8 +19,6 @@ extern const short VERSION;
 
 extern const byte B_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 
-extern const uint8_t MESH_CHANNEL;
-
 extern byte gbNodeName;
 extern bool isInterface;
 

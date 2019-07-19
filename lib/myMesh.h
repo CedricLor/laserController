@@ -40,9 +40,7 @@ class myMesh
     static const char _PREFIX_AP_SSID[5];
     static char _myApSsidBuf[8];
 
-    static const char* STATION_SSID;
-    static const char* STATION_PASSWORD;
-    static const uint8_t* STATION_IP;
+    // static const uint8_t* STATION_IP;
 
     static void receivedCallback( uint32_t from, String &msg);
 
@@ -59,7 +57,7 @@ class myMesh
     static void _decodeRequest(uint32_t _ui32SenderNodeId, String &_msg);
 
     static char* _apSsidBuilder(char _apSsidBuf[8]);
-
+    static IPAddress _IpStringToIPAddress(const char* _cIpCharArray);
     // static short _jsonToInt(JsonDocument root, String rootKey);
 
     static void _updateConnectedBoxCount();

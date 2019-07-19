@@ -170,6 +170,9 @@ void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
 /*
   ssid
   pass
+  gatewayIP
+  ui16GatewayPort
+  ui8WifiChannel
 */
 void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // save value of ssid
@@ -183,6 +186,28 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // -> reboot required
   size_t _spassRet = _preferences.putString("pass", pass);
   Serial.printf("%s pass == %s %s\"pass\"\n", _debugSaveMsgStart, pass, (_spassRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+
+  // save value of gatewayIP
+  // Interface only
+  // -> reboot required
+  // putBytes(const char* key, const void* value, size_t len)
+  uint8_t _ui8GatewayIP[4] = {gatewayIP[0], gatewayIP[1], gatewayIP[2], gatewayIP[3]};
+  size_t _bsGatewayIPRet = _preferences.putBytes("gateIP", _ui8GatewayIP, 4);
+  Serial.printf("%s gatewayIP == %s %s\"gateIP\"\n", _debugSaveMsgStart, gatewayIP.toString().c_str(), (_bsGatewayIPRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+
+  // save value of ui16GatewayPort
+  // Interface only
+  // -> reboot required
+  // putShort(const char* key, int16_t value)
+  size_t _ui16GatewayPortRet = _preferences.putShort("gatePort", ui16GatewayPort);
+  Serial.printf("%s ui16GatewayPort == %i %s\"gatePort\"\n", _debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+
+  // save value of ui8WifiChannel
+  // Interface only
+  // -> reboot required
+  // putUChar(const char* key, uint8_t value)
+  size_t _ui8WifiChannelRet = _preferences.putUChar("wifiChan", ui8WifiChannel);
+  Serial.printf("%s ui8WifiChannel == %i %s\"wifiChan\"\n", _debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 }
 
 
@@ -329,6 +354,32 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
     strcpy(pass, (const char*)_pass);
     Serial.printf("%s pass set to: %s\n", _debugLoadMsgStart, pass);
   }
+
+  // get the value of gatewayIP
+  // Interface only
+  // -> reboot required
+  // getBytesLength(const char* key)
+  // getBytes(const char* key, void * buf, size_t maxLen)
+  if (_preferences.getBytesLength("gateIP")) {
+    char _gatewayIPBuffer[4];
+    _preferences.getBytes("gateIP", _gatewayIPBuffer, 4);
+    for (int __ipIt=0; __ipIt<4; __ipIt++) {
+      gatewayIP[__ipIt] = _gatewayIPBuffer[__ipIt];
+    }
+    Serial.printf("%s gatewayIP set to: %s\n", _debugLoadMsgStart, gatewayIP.toString().c_str());
+  } else {
+    Serial.printf("%s gatewayIP could not be retrieved.\n", _debugLoadMsgStart);
+  }
+
+  // get the value of ui16GatewayPort
+  // getShort(const char* key, const int16_t defaultValue)
+  ui16GatewayPort = _preferences.getShort("gatePort", ui16GatewayPort);
+  Serial.printf("%s ui16GatewayPort set to: %i\n", _debugLoadMsgStart, ui16GatewayPort);
+
+  // get the value of ui8WifiChannel
+  // getUChar(const char* key, const uint8_t defaultValue)
+  ui8WifiChannel = _preferences.getUChar("wifiChan", ui8WifiChannel);
+  Serial.printf("%s ui8WifiChannel set to: %i\n", _debugLoadMsgStart, ui8WifiChannel);
 }
 
 

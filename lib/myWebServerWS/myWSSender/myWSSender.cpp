@@ -188,7 +188,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
   JsonObject __newObj = __doc.to<JsonObject>();
   __newObj["action"] = _i8messageType;
 
-  // message 0 on handshake: activate the exchange of station IP
+  // message 0 on handshake: activate the exchange of station IP, ssid and pass
   if (_i8messageType == 0) {
     if (MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]\n", _i8messageType);
@@ -220,6 +220,11 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
     __newObj["serverIP"] = (laserControllerMesh.getStationIP()).toString();
+    __newObj["ssid"] = ssid;
+    __newObj["pass"] = pass;
+    __newObj["gatewayIP"] = gatewayIP;
+    __newObj["ui16GatewayPort"] = ui16GatewayPort;
+    __newObj["ui8WifiChannel"] = ui8WifiChannel;
     // if (MY_DG_WS) {
     //   const char* __serverIp = __newObj["serverIP"];
     //   Serial.print("- myWSSender::prepareWSData. __newObj[\"serverIP\"] contains ");Serial.println(__serverIp);
