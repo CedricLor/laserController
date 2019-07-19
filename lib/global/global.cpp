@@ -69,7 +69,7 @@ short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 uint32_t iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
 uint8_t gui8InterfaceNodeName = UI8_DEFAULT_INTERFACE_NODE_NAME;
-byte bInterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
+uint8_t gui8InterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
