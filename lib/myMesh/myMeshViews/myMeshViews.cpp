@@ -40,7 +40,7 @@
 
 
 // Tasks
-// Task myMeshViews::tSendBoxStateToNewBox((ui8MyIndexInCBArray * 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+// Task myMeshViews::tSendBoxStateToNewBox((gui8MyIndexInCBArray * 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 //
 // void myMeshViews::_odtcbSendBoxStateToNewBox() {
 //   for (short int _boxIndex = 1; _boxIndex < sBoxesCount; _boxIndex++) {
@@ -62,7 +62,7 @@
 // Constructor
 myMeshViews::myMeshViews()
 {
-  ControlerBoxes[ui8MyIndexInCBArray].updateThisBoxProperties();
+  ControlerBoxes[gui8MyIndexInCBArray].updateThisBoxProperties();
 }
 
 
@@ -81,9 +81,9 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   JsonObject _joMsg = _jDoc.to<JsonObject>();
 
   // load the JSON document with values
-  _joMsg["actSt"] = ControlerBoxes[ui8MyIndexInCBArray].boxActiveState;
-  _joMsg["actStStartT"] = ControlerBoxes[ui8MyIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
-  _joMsg["boxDefstate"] = ControlerBoxes[ui8MyIndexInCBArray].sBoxDefaultState;
+  _joMsg["actSt"] = ControlerBoxes[gui8MyIndexInCBArray].boxActiveState;
+  _joMsg["actStStartT"] = ControlerBoxes[gui8MyIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  _joMsg["boxDefstate"] = ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState;
   _joMsg["action"] = "s";
 
   // send to the sender
@@ -91,7 +91,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
-  ControlerBoxes[ui8MyIndexInCBArray].boxActiveStateHasBeenSignaled = true;
+  ControlerBoxes[gui8MyIndexInCBArray].boxActiveStateHasBeenSignaled = true;
 
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::statusMsg(): Ending.");
@@ -160,12 +160,12 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::_sendMsg(): Starting.");
-    // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[ui8MyIndexInCBArray].bNodeName to _joMsg[\"senderNodeName\"]");
+    // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[gui8MyIndexInCBArray].bNodeName to _joMsg[\"senderNodeName\"]");
   }
 
 
   // adding my nodeName to the JSON to be sent to other boxes
-  _joMsg["NNa"] = ControlerBoxes[ui8MyIndexInCBArray].bNodeName;
+  _joMsg["NNa"] = ControlerBoxes[gui8MyIndexInCBArray].bNodeName;
   // if (MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
   // }
@@ -174,15 +174,15 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   // adding the APIP and the StationIP to the JSON to be sent to other boxes
   if (_joMsg.containsKey("APIP") && _joMsg.containsKey("StIP")) {
     for (short _i = 0; _i < 4; _i++) {
-      _joMsg["APIP"][_i] = ControlerBoxes[ui8MyIndexInCBArray].APIP[_i];
-      _joMsg["StIP"][_i] = ControlerBoxes[ui8MyIndexInCBArray].stationIP[_i];
+      _joMsg["APIP"][_i] = ControlerBoxes[gui8MyIndexInCBArray].APIP[_i];
+      _joMsg["StIP"][_i] = ControlerBoxes[gui8MyIndexInCBArray].stationIP[_i];
     }
   } else {
     JsonArray _APIP = _joMsg.createNestedArray("APIP");
     JsonArray _StIP = _joMsg.createNestedArray("StIP");
     for (short _i = 0; _i < 4; _i++) {
-      _APIP.add(ControlerBoxes[ui8MyIndexInCBArray].APIP[_i]);
-      _StIP.add(ControlerBoxes[ui8MyIndexInCBArray].stationIP[_i]);
+      _APIP.add(ControlerBoxes[gui8MyIndexInCBArray].APIP[_i]);
+      _StIP.add(ControlerBoxes[gui8MyIndexInCBArray].stationIP[_i]);
     }
   }
   // if (MY_DG_MESH) {

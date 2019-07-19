@@ -32,7 +32,7 @@ extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern const byte B_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
 extern uint8_t ui8ControllerBoxPrefix;
-extern uint8_t ui8MyIndexInCBArray;
+extern uint8_t gui8MyIndexInCBArray;
 
 extern short iSlaveOnOffReaction;
 extern byte bInterfaceNodeName;

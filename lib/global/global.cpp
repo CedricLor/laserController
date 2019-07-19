@@ -63,7 +63,7 @@ const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 const uint8_t B_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
 const uint8_t UI8_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 uint8_t ui8ControllerBoxPrefix = UI8_CONTROLLER_BOX_PREFIX;
-byte ui8MyIndexInCBArray = gui8NodeName - ui8ControllerBoxPrefix;
+byte gui8MyIndexInCBArray = gui8NodeName - ui8ControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 

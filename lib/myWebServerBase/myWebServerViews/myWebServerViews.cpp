@@ -80,16 +80,16 @@ String myWebServerViews::_processor(const String& var) {
   if(var == "UI8_NODE_NAME") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"UI8_NODE_NAME\")\n");
     char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    itoa(ControlerBoxes[ui8MyIndexInCBArray].bNodeName,_cNodeName,10); //(integer, yourBuffer, base)
+    itoa(ControlerBoxes[gui8MyIndexInCBArray].bNodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);
   }
   if(var == "STATION_IP") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"STATION_IP\")\n");
-    return F(ControlerBoxes[ui8MyIndexInCBArray].stationIP.toString().c_str());
+    return F(ControlerBoxes[gui8MyIndexInCBArray].stationIP.toString().c_str());
   }
   if(var == "AP_IP") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"AP_IP\")\n");
-    return F(ControlerBoxes[ui8MyIndexInCBArray].APIP.toString().c_str());
+    return F(ControlerBoxes[gui8MyIndexInCBArray].APIP.toString().c_str());
   }
   // if(var == "BOX_SETTER") {
   //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
@@ -101,7 +101,7 @@ String myWebServerViews::_processor(const String& var) {
   // }
   if(var == "NETWORK_SETTER") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"NETWORK_SETTER\")\n");
-    return F(ControlerBoxes[ui8MyIndexInCBArray].APIP.toString().c_str());
+    return F(ControlerBoxes[gui8MyIndexInCBArray].APIP.toString().c_str());
   }
   if (MY_DG_WEB) {
     Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");  
@@ -158,9 +158,9 @@ String myWebServerViews::_processor(const String& var) {
 //   __myResponse += "<h1>";
 //   __myResponse += String(UI8_NODE_NAME); // UI8_NODE_NAME defined and declared in global
 //   __myResponse += " - Station IP: ";
-//   __myResponse += (ControlerBoxes[ui8MyIndexInCBArray].stationIP).toString(); // dependancy
+//   __myResponse += (ControlerBoxes[gui8MyIndexInCBArray].stationIP).toString(); // dependancy
 //   __myResponse += " - AP IP: ";
-//   __myResponse += (ControlerBoxes[ui8MyIndexInCBArray].APIP).toString();  // dependancy
+//   __myResponse += (ControlerBoxes[gui8MyIndexInCBArray].APIP).toString();  // dependancy
 //   __myResponse += "</h1>";
 //   __myResponse += _printAllLasersCntrl();
 //   __myResponse += _printIndivLaserCntrls();

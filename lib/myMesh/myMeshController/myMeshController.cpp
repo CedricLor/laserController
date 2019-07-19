@@ -260,13 +260,13 @@ void myMeshController::_updateMyMasterBoxName(JsonObject& _obj, uint32_t _ui32Se
   }
 
   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-  ControlerBoxes[ui8MyIndexInCBArray].updateMasterBoxName(_obj["val"].as<uint8_t>() + ui8ControllerBoxPrefix);
+  ControlerBoxes[gui8MyIndexInCBArray].updateMasterBoxName(_obj["val"].as<uint8_t>() + ui8ControllerBoxPrefix);
 
   // send confirmation message
   _changeBoxSendConfirmationMsg(_obj);
 
   // mark the change as signaled
-  ControlerBoxes[ui8MyIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+  ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
 }
 
 
@@ -277,13 +277,13 @@ void myMeshController::_updateMyDefaultState(JsonObject& _obj, uint32_t _ui32Sen
     Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to %i\n", _obj["val"].as<uint8_t>());
   }
 
-  ControlerBoxes[ui8MyIndexInCBArray].sBoxDefaultState = _obj["val"].as<uint8_t>();
+  ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState = _obj["val"].as<uint8_t>();
 
   // send confirmation message
   _changeBoxSendConfirmationMsg(_obj);
 
   // mark the change as signaled
-  ControlerBoxes[ui8MyIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
+  ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
 }
 
 
@@ -330,7 +330,7 @@ void myMeshController::_save(JsonObject& _obj, uint32_t _ui32SenderNodeId) {
 //   }
 //
 //   // update property and propertyChangeHasBeenSignaled for my box
-//   _updatePropertyForBox(_cPropertyKey, ui8MyIndexInCBArray, _obj)
+//   _updatePropertyForBox(_cPropertyKey, gui8MyIndexInCBArray, _obj)
 //
 //   // send confirmation message
 //   _changeBoxSendConfirmationMsg(_obj);
@@ -382,7 +382,7 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t 
   // replace it with thix box's index number so that the ControlerBoxes array
   // be properly updated in _changedBoxConfirmation
   if ((_obj["lb"] == "LBs") || (_obj["lb"] == "all")) {
-    _obj["lb"] = ui8MyIndexInCBArray;
+    _obj["lb"] = gui8MyIndexInCBArray;
   }
 
   // send back the received JSON object with its amended "st" key
