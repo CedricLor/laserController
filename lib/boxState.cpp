@@ -161,18 +161,18 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   }
 
   // 2. If the current boxState has both IR and mesh triggers, check both values
-  if (boxStates[ControlerBoxes[myIndexInCBArray].boxActiveState]._bIRTrigger == 1 && boxStates[ControlerBoxes[myIndexInCBArray].boxActiveState]._bMeshTrigger == 1) {
+  if (boxStates[ControlerBoxes[ui8MyIndexInCBArray].boxActiveState]._bIRTrigger == 1 && boxStates[ControlerBoxes[ui8MyIndexInCBArray].boxActiveState]._bMeshTrigger == 1) {
     // if both IR and mesh have sent a signal, compare the time at which each of
     // them came and give priority to the latest
     if (ControlerBox::valFromPir == HIGH &&
       // testing if IR has been set HIGH
-      ControlerBoxes[ControlerBoxes[(int)myIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveState != -1 &&
+      ControlerBoxes[ControlerBoxes[(int)ui8MyIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveState != -1 &&
       // testing if the state of the master boxActiveState has been set to something
-      ControlerBoxes[ControlerBoxes[(int)myIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
+      ControlerBoxes[ControlerBoxes[(int)ui8MyIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
       // testing if the state of the master boxActiveState has been taken into account
       ){
         // compare the times at which each signal catcher has been set
-        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)myIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].uiBoxActiveStateStartTime) {
+        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)ui8MyIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].uiBoxActiveStateStartTime) {
           _setBoxTargetState(3);
         } else {
           _setBoxTargetState(6);
@@ -183,7 +183,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 
   // 3. If the current boxState has IR trigger and the valueFromIR is HIGH,
   // change state and put it in IR high
-  if (boxStates[ControlerBoxes[myIndexInCBArray].boxActiveState]._bIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
+  if (boxStates[ControlerBoxes[ui8MyIndexInCBArray].boxActiveState]._bIRTrigger == 1 && ControlerBox::valFromPir == HIGH) {
     _setBoxTargetState(3);
     return;
   }
@@ -191,9 +191,9 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // 4. If the current boxState has Mesh trigger and
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
-  if (boxStates[ControlerBoxes[myIndexInCBArray].boxActiveState]._bMeshTrigger == 1 &&
-    ControlerBoxes[ControlerBoxes[(int)myIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveState != -1 &&
-    ControlerBoxes[ControlerBoxes[(int)myIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
+  if (boxStates[ControlerBoxes[ui8MyIndexInCBArray].boxActiveState]._bMeshTrigger == 1 &&
+    ControlerBoxes[ControlerBoxes[(int)ui8MyIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveState != -1 &&
+    ControlerBoxes[ControlerBoxes[(int)ui8MyIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
     ){
       _setBoxTargetState(6);
       return;
@@ -205,7 +205,7 @@ void boxState::_resetSignalCatchers() {
   // reset all the signals catchers to their initial values
   ControlerBox::valFromPir = LOW;
   ControlerBox::uiSettingTimeOfValFromPir = 0;
-  ControlerBoxes[ControlerBoxes[(int)myIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount = true;
+  ControlerBoxes[ControlerBoxes[(int)ui8MyIndexInCBArray].bMasterBoxName - (int)ui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount = true;
   ControlerBox::valFromWeb = -1;
 }
 
@@ -217,8 +217,8 @@ void boxState::_restart_tPlayBoxState() {
     _tPlayBoxState.setInterval(boxStates[_boxTargetState]._ulDuration);
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");
     // Serial.println(_tPlayBoxState.getInterval());
-    if (!(_boxTargetState == ControlerBoxes[myIndexInCBArray].boxActiveState)) {
-      ControlerBox::setBoxActiveState(myIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
+    if (!(_boxTargetState == ControlerBoxes[ui8MyIndexInCBArray].boxActiveState)) {
+      ControlerBox::setBoxActiveState(ui8MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
     }
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
     _tPlayBoxState.restartDelayed();
@@ -238,10 +238,10 @@ void boxState::_restart_tPlayBoxState() {
   _tPlayBoxState plays a boxState once (it iterates only once).
   It is enabled by tPlayBoxStates.
   Its main iteration is delayed until aInterval has expired. aInterval is set in its onEnable callback.
-  It is equal to the duration of the boxState selected by ControlerBoxes[myIndexInCBArray].boxActiveState.
+  It is equal to the duration of the boxState selected by ControlerBoxes[ui8MyIndexInCBArray].boxActiveState.
   Upon being enabled, its onEnable callback:
   1. sets the aInterval of _tPlayBoxState, based on the _ulDuration of the currently active boxState;
-  2. looks for the associated sequence using the ControlerBoxes[myIndexInCBArray].boxActiveState variable to select the relevant boxState in boxStates[];
+  2. looks for the associated sequence using the ControlerBoxes[ui8MyIndexInCBArray].boxActiveState variable to select the relevant boxState in boxStates[];
   3. sets the active sequence by a call to sequence::setActiveSequence();
   4. enables the task sequence::tPlaySequenceInLoop.
   Task sequence::tPlaySequenceInLoop is set to run indefinitely, for so long as it is not disabled.
@@ -255,9 +255,9 @@ Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxS
 
 bool boxState::_oetcbPlayBoxState(){
   Serial.println("bool boxState::_oetcbPlayBoxState(). Starting.");
-  Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(ControlerBoxes[myIndexInCBArray].boxActiveState);
+  Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(ControlerBoxes[ui8MyIndexInCBArray].boxActiveState);
   // Look for the sequence number to read when in this state
-  short int _activeSequence = boxStates[ControlerBoxes[myIndexInCBArray].boxActiveState]._bAssociatedSequence;
+  short int _activeSequence = boxStates[ControlerBoxes[ui8MyIndexInCBArray].boxActiveState]._bAssociatedSequence;
   Serial.print("bool boxState::_oetcbPlayBoxState() _activeSequence: ");
   Serial.println(_activeSequence);
   // set the active sequence
@@ -283,12 +283,12 @@ void boxState::_odtcbPlayBoxState(){
   // Serial.println(_tPlayBoxState.getInterval());
   // disable the associated sequence player
   sequence::tPlaySequenceInLoop.disable();
-  // Serial.println("void boxState::_odtcbPlayBoxState(): ControlerBoxes[myIndexInCBArray].boxActiveState");
-  // Serial.println(ControlerBoxes[myIndexInCBArray].boxActiveState);
+  // Serial.println("void boxState::_odtcbPlayBoxState(): ControlerBoxes[ui8MyIndexInCBArray].boxActiveState");
+  // Serial.println(ControlerBoxes[ui8MyIndexInCBArray].boxActiveState);
   // Serial.println("void boxState::_odtcbPlayBoxState(): _boxTargetState");
   // Serial.println(_boxTargetState);
-  if (!(ControlerBoxes[myIndexInCBArray].boxActiveState == ControlerBoxes[myIndexInCBArray].sBoxDefaultState)) {
-    _setBoxTargetState(ControlerBoxes[myIndexInCBArray].sBoxDefaultState);
+  if (!(ControlerBoxes[ui8MyIndexInCBArray].boxActiveState == ControlerBoxes[ui8MyIndexInCBArray].sBoxDefaultState)) {
+    _setBoxTargetState(ControlerBoxes[ui8MyIndexInCBArray].sBoxDefaultState);
   }
   Serial.println("void boxState::_odtcbPlayBoxState(). Ending.");
 }

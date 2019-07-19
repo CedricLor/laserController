@@ -86,7 +86,7 @@ void ControlerBox::updateThisBoxProperties() {
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {
     Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
-    ControlerBoxes[myIndexInCBArray].printProperties(myIndexInCBArray);
+    ControlerBoxes[ui8MyIndexInCBArray].printProperties(ui8MyIndexInCBArray);
   };
 }
 
@@ -252,7 +252,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 void ControlerBox::deleteBox(uint32_t nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
-  for (int8_t __it = 0; __it < sBoxesCount; __it++) {
+  for (uint8_t __it = 0; __it < sBoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == nodeId) {
       ControlerBoxes[__it].nodeId = 0;
       ControlerBoxes[__it].APIP = {0,0,0,0};
