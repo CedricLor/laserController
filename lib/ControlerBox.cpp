@@ -44,7 +44,7 @@ ControlerBox::ControlerBox()
 
   // this->bMasterBoxName
   // setters:
-  // - here; -> from the global.B_DEFAULT_MASTER_NODE_NAME
+  // - here; -> from the global.UI8_DEFAULT_MASTER_NODE_NAME
   // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
   //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
   //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
@@ -54,7 +54,7 @@ ControlerBox::ControlerBox()
   // - here (printProperties)
   // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
   // - in mySavedPrefs::savePreferences()
-  this->bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
+  this->bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
 
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
@@ -267,7 +267,7 @@ void ControlerBox::deleteBox(uint32_t nodeId) {
       ControlerBoxes[__it].isNewBoxHasBeenSignaled = true;
       ControlerBoxes[__it].boxDeletionHasBeenSignaled = false;
 
-      ControlerBoxes[__it].bMasterBoxName = B_DEFAULT_MASTER_NODE_NAME;
+      ControlerBoxes[__it].bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
       ControlerBoxes[__it].bMasterBoxNameChangeHasBeenSignaled = true;
       ControlerBoxes[__it].boxActiveStateHasBeenTakenIntoAccount = true;
 

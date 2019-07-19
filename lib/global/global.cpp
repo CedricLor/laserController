@@ -25,17 +25,17 @@ const bool MY_DG_MESH = true;
 
 const short VERSION = 0;
 
-// B_DEFAULT_MASTER_NODE_NAME is now common to all the ControlerBoxes().
+// UI8_DEFAULT_MASTER_NODE_NAME is now common to all the ControlerBoxes().
 // They are initiated with default master at 254.
 // 254 shall mean no master.
 // Otherwise, set to which ever value.
 // !! infinite loop potential:
 // !! do not set a box to be its own master!!
-// B_DEFAULT_MASTER_NODE_NAME shall never be equal to UI8_NODE_NAME
-// In principle, B_DEFAULT_MASTER_NODE_NAME shall not be changed (this is why it is a constant).
+// UI8_DEFAULT_MASTER_NODE_NAME shall never be equal to UI8_NODE_NAME
+// In principle, UI8_DEFAULT_MASTER_NODE_NAME shall not be changed (this is why it is a constant).
 // Todo: draft a security
 // To reset
-const byte B_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
+const uint8_t UI8_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 
 // CONTROLLER BOX 201
 // node id in the current configuration 764691274

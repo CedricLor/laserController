@@ -17,7 +17,7 @@ extern const bool MY_DG_LASER;
 
 extern const short VERSION;
 
-extern const byte B_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
+extern const byte UI8_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 
 extern uint8_t gui8NodeName;
 extern bool isInterface;

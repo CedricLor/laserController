@@ -474,7 +474,7 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   // ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
   // If there is a value saved for bMasterNName, reset
   // ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
-  // which is set by default to B_DEFAULT_MASTER_NODE_NAME
+  // which is set by default to UI8_DEFAULT_MASTER_NODE_NAME
   // in the ControlerBox constructor. Else, the value of
   // ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
   // will stay unchanged.
