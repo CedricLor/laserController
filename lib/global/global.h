@@ -22,7 +22,7 @@ extern const uint8_t UI8_DEFAULT_MASTER_NODE_NAME;                              
 extern uint8_t gui8NodeName;
 extern bool isInterface;
 
-extern const byte B_DEFAULT_INTERFACE_NODE_NAME;
+extern const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME;
 extern uint32_t iInterfaceNodeId;
 extern byte bInterfaceIndexInCBArray;
 

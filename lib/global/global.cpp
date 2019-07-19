@@ -54,7 +54,7 @@ const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or
 uint8_t gui8NodeName = UI8_NODE_NAME;
 bool isInterface = IS_INTERFACE;
 
-const byte B_DEFAULT_INTERFACE_NODE_NAME = 200;
+const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 const uint32_t I_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
@@ -68,7 +68,7 @@ uint8_t gui8MyIndexInCBArray = gui8NodeName - gui8ControllerBoxPrefix;
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 uint32_t iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
-uint8_t gui8InterfaceNodeName = B_DEFAULT_INTERFACE_NODE_NAME;
+uint8_t gui8InterfaceNodeName = UI8_DEFAULT_INTERFACE_NODE_NAME;
 byte bInterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};

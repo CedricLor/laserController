@@ -252,7 +252,7 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
   Serial.printf("%s iInterfaceNodeId == %u %s\"iIFNodId\"\n", _debugSaveMsgStart, iInterfaceNodeId, (_iInterfaceNodeIdRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 
   // save value of gui8InterfaceNodeName
-  // Not a very usefull value: the interface node name is fixed at startup based on the constant B_DEFAULT_INTERFACE_NODE_NAME
+  // Not a very usefull value: the interface node name is fixed at startup based on the constant UI8_DEFAULT_INTERFACE_NODE_NAME
   // It is never used thereafter (usually using ControlerBoxes[bInterfaceIndexInCBArray].nodeName)
   // Even a reboot would not suffice to have this param taken into account
   size_t _gui8InterfaceNodeNameRet = _preferences.putUChar("sIFNodNam", gui8InterfaceNodeName);
