@@ -41,7 +41,6 @@ reverse dependency graph
 #define boxState_h
 
 #include "Arduino.h"
-#include "global.h"
 #include "./sequence/sequence.h"
 #include "./sequence/sequence.cpp"
 

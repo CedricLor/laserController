@@ -6,7 +6,8 @@
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
-#include "../lib/global.cpp"
+#include <global.h>
+#include <global.cpp>
 
 #include "../lib/secret.h"
 
