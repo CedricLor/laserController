@@ -225,7 +225,7 @@ int8_t myMeshController::_getSenderBoxIndexNumber(JsonObject& _obj) {
   if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __i8SenderNodeName = ");Serial.println(__i8SenderNodeName);}
 
   // get index number of the sender
-  int8_t __i8BoxIndex = __i8SenderNodeName - bControllerBoxPrefix;
+  int8_t __i8BoxIndex = __i8SenderNodeName - ui8ControllerBoxPrefix;
   if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __i8BoxIndex = ");Serial.println(__i8BoxIndex);}
 
   return __i8BoxIndex;
@@ -256,11 +256,11 @@ void myMeshController::_updateMyValFromWeb(JsonObject& _obj) {
 void myMeshController::_updateMyMasterBoxName(JsonObject& _obj, uint32_t _ui32SenderNodeId) {
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i\n", _obj["val"].as<int8_t>() + bControllerBoxPrefix);
+    Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %i\n", _obj["val"].as<int8_t>() + ui8ControllerBoxPrefix);
   }
 
   // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-  ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["val"].as<int8_t>() + bControllerBoxPrefix);
+  ControlerBoxes[myIndexInCBArray].updateMasterBoxName(_obj["val"].as<int8_t>() + ui8ControllerBoxPrefix);
 
   // send confirmation message
   _changeBoxSendConfirmationMsg(_obj);
@@ -355,7 +355,7 @@ void myMeshController::_save(JsonObject& _obj, uint32_t _ui32SenderNodeId) {
 //   // TODO:
 //   // a. ControlerBoxes[_i8BoxIndex].updateProperty needs to be drafted
 //   // b. in ControlerBoxes[_i8BoxIndex].updateProperty, if it is a master nodeName
-//   // change, add the bControllerBoxPrefix.
+//   // change, add the ui8ControllerBoxPrefix.
 //   ControlerBoxes[_i8BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
 //
 //   if (MY_DG_MESH) {
@@ -405,7 +405,7 @@ void myMeshController::_updateSenderMasterBox(int8_t _i8BoxIndex, JsonObject& _o
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // get the new masterBoxName from the JSON
   int8_t __i8MasterBoxName = _obj["val"];
-  __i8MasterBoxName = __i8MasterBoxName + bControllerBoxPrefix;
+  __i8MasterBoxName = __i8MasterBoxName + ui8ControllerBoxPrefix;
   if (MY_DG_MESH) {
     Serial.printf("myMeshController::_updateSenderMasterBox: __i8MasterBoxName = %i\n",  __i8MasterBoxName);
   }

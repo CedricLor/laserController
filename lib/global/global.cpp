@@ -60,16 +60,16 @@ const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my cust
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
-const byte B_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
-const byte B_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
-byte bControllerBoxPrefix = B_CONTROLLER_BOX_PREFIX;
-byte myIndexInCBArray = gbNodeName - bControllerBoxPrefix;
+const uint8_t B_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
+const uint8_t UI8_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
+uint8_t ui8ControllerBoxPrefix = UI8_CONTROLLER_BOX_PREFIX;
+byte myIndexInCBArray = gbNodeName - ui8ControllerBoxPrefix;
 
 short iSlaveOnOffReaction = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 uint32_t iInterfaceNodeId = I_DEFAULT_INTERFACE_NODE_ID;
 byte bInterfaceNodeName = B_DEFAULT_INTERFACE_NODE_NAME;
-byte bInterfaceIndexInCBArray = bInterfaceNodeName - bControllerBoxPrefix;
+byte bInterfaceIndexInCBArray = bInterfaceNodeName - ui8ControllerBoxPrefix;
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 

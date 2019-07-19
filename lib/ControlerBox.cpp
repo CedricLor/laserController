@@ -140,7 +140,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // extract the index of the relevant box from its senderNodeName in the JSON
   byte __bNodeName = _obj["NNa"]; // ex. 201
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bNodeName = %i\n", __bNodeName);
-  byte __bBoxIndex = __bNodeName - bControllerBoxPrefix; // 201 - 200 = 1
+  byte __bBoxIndex = __bNodeName - ui8ControllerBoxPrefix; // 201 - 200 = 1
 
   // set the nodeId
   Serial.printf("ControlerBox::updateOtherBoxProperties(): __bBoxIndex = %i\n", __bBoxIndex);
@@ -252,7 +252,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 void ControlerBox::deleteBox(uint32_t nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
-  for (short int __it = 0; __it < sBoxesCount; __it++) {
+  for (int8_t __it = 0; __it < sBoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == nodeId) {
       ControlerBoxes[__it].nodeId = 0;
       ControlerBoxes[__it].APIP = {0,0,0,0};
