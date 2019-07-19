@@ -84,6 +84,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 
 void myWSReceiver::_actionSwitch(JsonObject& _obj) {
+  // PING PONG
   if (_obj.containsKey("ping")) {
     myWSSender _myWSSender;
     _myWSSender.sendWSData(_obj);
