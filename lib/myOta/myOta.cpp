@@ -12,8 +12,10 @@ Myota::Myota()
 
 void Myota::OTAConfig()
 {
+  delay(4000);
   Serial.print("\nSETUP: OTAConfig(): starting\n");
 
+  Serial.print("SETUP: OTAConfig(): about to connect to Wifi\n");
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -21,6 +23,16 @@ void Myota::OTAConfig()
     delay(5000);
     ESP.restart();
   }
+
+  ArduinoOTA.setPort(3232);
+  ArduinoOTA.setHostname("ESP32");
+
+  // No authentication by default
+  // ArduinoOTA.setPassword("admin");
+
+  // Password can be set with it's md5 value as well
+  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
+  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
 
   ArduinoOTA.onStart( startOTA ); //startOTA is a function created to simplify the code
   ArduinoOTA.onEnd( endOTA ); //endOTA is a function created to simplify the code
@@ -50,6 +62,9 @@ void Myota::startOTA()
 
 void Myota::endOTA()
 {
+  Serial.print("OTA Update End: switching i8RequestedOTAReboots to true and resetStartupTypePreferences\n");
+  i8RequestedOTAReboots = false;
+  mySavedPrefs::saveBoxSpecificPrefsWrapper(mySavedPrefs::saveBoxStartupTypePreferences);
   Serial.printf("\nOTA Update End\n");
 }
 

@@ -59,9 +59,9 @@ Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDa
 
 void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[gui8MyIndexInCBArray].stationIP)) {
-    if (MY_DG_WS) {
-      Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-    }
+    // if (MY_DG_WS) {
+    //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
+    // }
     // Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
 
     myWSSender _myWSSender;

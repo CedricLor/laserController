@@ -10,14 +10,14 @@
 
 #include "../lib/secret.h"
 
-#include "../lib/myOta/Myota.cpp"
-
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;
 
 #include "../lib/ControlerBox.cpp"
 
 #include "../lib/mySavedPrefs.cpp"
+
+#include "../lib/myOta/Myota.cpp"
 
 #include "../lib/myMesh.cpp"
 
@@ -49,7 +49,7 @@ void setup() {
   mySavedPrefs::loadPrefsWrapper();
 
   // The ESP was restarted with an OTA request saved in mySavedPrefs
-  if (gbSwitchToOTA) {
+  if (i8OTAReboot) {
     Myota::OTAConfig();
     return;
   }
@@ -99,7 +99,7 @@ void setup() {
 
 
 void loop() {
-  if (gbSwitchToOTA) {
+  if (i8OTAReboot) {
     ArduinoOTA.handle();
     return;
   }

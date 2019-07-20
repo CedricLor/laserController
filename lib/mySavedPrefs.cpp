@@ -55,7 +55,7 @@ void mySavedPrefs::savePrefsWrapper() {
   _saveNetworkEssentialPreferences(_preferences);
   _saveUselessPreferences(_preferences);
 
-  _saveBoxStartupTypePreferences(_preferences);
+  saveBoxStartupTypePreferences(_preferences);
   _saveBoxEssentialPreferences(_preferences);
   _saveBoxBehaviorPreferences(_preferences);
 
@@ -74,7 +74,7 @@ void mySavedPrefs::loadPrefsWrapper() {
   // Instanciate preferences
   Preferences _preferences;
 
-  if (_preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
+  if (_preferences.begin("savedSettingsNS", /*read only = */true)){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
 
     // read the value of "savedSettingsNS":"savedSettings"
     unsigned int _savedSettings =_preferences.getShort("savedSettings", 0);
@@ -98,6 +98,16 @@ void mySavedPrefs::loadPrefsWrapper() {
   }
 
   _endPreferences(_preferences);
+
+  // On reboot, if the number of requested OTA reboots is superior to 0,
+  // decrement it by 1 (and save it to NVS) until it reaches 0, where
+  // the ESP will reboot to its normal state
+  if (i8RequestedOTAReboots) {
+    i8OTAReboot = 1;
+    i8RequestedOTAReboots = i8RequestedOTAReboots - 1;
+    saveBoxSpecificPrefsWrapper(saveBoxStartupTypePreferences);
+  }
+
   Serial.print("\nSETUP: loadPrefsWrapper(): ending\n");
 }
 
@@ -122,10 +132,10 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   }
 
 
-  // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
-  if (_obj["val"] == "gbSwitchToOTA") {
-    gbSwitchToOTA = true;
-    saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
+  // {action: "changeBox", key: "save", val: "i8RequestedOTAReboots", lb: 0, reboots: 2}
+  if (_obj["val"] == "i8RequestedOTAReboots") {
+    i8RequestedOTAReboots = _obj["reboots"];
+    saveBoxSpecificPrefsWrapper(saveBoxStartupTypePreferences);
     return;
   }
 
@@ -307,18 +317,16 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
 
 
 /*
-  gbSwitchToOTA
+  i8RequestedOTAReboots
 */
-void mySavedPrefs::_saveBoxStartupTypePreferences(Preferences& _preferences) {
-  // save value of isInterface
+void mySavedPrefs::saveBoxStartupTypePreferences(Preferences& _preferences) {
+  // save value of i8RequestedOTAReboots
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot but quite messy (this would require a mesh reconfiguration)
   // In addition, the interface is supposed to be also box 200 and the root node
-  size_t _gbSwitchToOTARet = _preferences.putBool("OTAReq", gbSwitchToOTA);
-  Serial.printf("%s gbSwitchToOTA == %i %s\"OTAReq\"\n", _debugSaveMsgStart, gbSwitchToOTA, (_gbSwitchToOTARet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
-
+  size_t _i8RequestedOTARebootsRet = _preferences.putChar("OTARebReq", i8RequestedOTAReboots);
+  Serial.printf("%s i8RequestedOTAReboots == %i %s\"OTARebReq\"\n", _debugSaveMsgStart, i8RequestedOTAReboots, (_i8RequestedOTARebootsRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
 }
-
 
 
 
@@ -494,12 +502,12 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
 
 
 /*
-  gbSwitchToOTA
+  i8RequestedOTAReboots
 */
 void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
   // isInterface
-  gbSwitchToOTA =_preferences.getBool("OTAReq", gbSwitchToOTA);
-  Serial.printf("%s gbSwitchToOTA set to: %i\n", _debugLoadMsgStart, gbSwitchToOTA);
+  i8RequestedOTAReboots =_preferences.getChar("OTARebReq", i8RequestedOTAReboots);
+  Serial.printf("%s i8RequestedOTAReboots set to: %i\n", _debugLoadMsgStart, i8RequestedOTAReboots);
 }
 
 
@@ -565,5 +573,6 @@ void mySavedPrefs::_endPreferences(Preferences& _preferences) {
   Serial.printf("PREFERENCES: Remaining free entries in NVS: %i\n", _freeEntries);
 
   _preferences.end();
+
   Serial.print(F("PREFERENCES: done\n"));
 }

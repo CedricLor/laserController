@@ -386,18 +386,18 @@ function onclickSaveWifiSettingsAll(e) {
 
 
 
-function onclickgbSwitchToOTA(e) {
-  console.log("onclickgbSwitchToOTA starting");
+function onclicki8RequestedOTAReboots(e) {
+  console.log("onclicki8RequestedOTAReboots starting");
 
   ws.send(JSON.stringify({
     action: "changeBox",
     key: "save",
-    val: "gbSwitchToOTA",
-    lb: 0
+    val: "i8RequestedOTAReboots",
+    lb: 0,
+    reboots: parseInt(this.dataset.reboots, 10)
   }));
-
-  // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
-  console.log("onclickgbSwitchToOTA ending");
+  // {action: "changeBox", key: "save", val: "i8RequestedOTAReboots", lb: 0, reboots: 2}
+  console.log("onclicki8RequestedOTAReboots ending");
 }
 
 
@@ -485,6 +485,7 @@ function oninputMasterSelect(e) {
 
 // DOM MANIPULATION
 function updateGlobalInformation(_data) {
+  console.log("updateGlobalInformation() starting");
   // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
   document.getElementById('stationIp').innerHTML = _data.serverIP;
   document.getElementById('ssid').value = _data.ssid;
@@ -492,9 +493,14 @@ function updateGlobalInformation(_data) {
   document.getElementById('gatewayIP').value = _data.gatewayIP;
   document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
   document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
-  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);;
-  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);;
-  document.getElementById('gbSwitchToOTA').addEventListener('click', onclickgbSwitchToOTA, false);;
+  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);
+  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);
+  document.querySelectorAll('.i8RequestedOTAReboots').forEach(
+    function(_OTARebootButton){
+      _OTARebootButton.addEventListener('click', onclicki8RequestedOTAReboots, false);
+    }
+  );
+  console.log("updateGlobalInformation() ending");
 }
 
 

@@ -284,7 +284,7 @@ void ControlerBox::deleteBox(uint32_t nodeId) {
 Task ControlerBox::tReboot(3000, TASK_ONCE, NULL, &userScheduler, false, NULL, &_reboot);
 
 void ControlerBox::_reboot() {
-  if (MY_DG_WS) { Serial.printf("ControlerBox::_reboot(): About to reboot.\n"); }
+  if (MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
   ESP.restart();
 }
 
