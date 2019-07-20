@@ -386,6 +386,23 @@ function onclickSaveWifiSettingsAll(e) {
 
 
 
+function onclickgbSwitchToOTA(e) {
+  console.log("onclickgbSwitchToOTA starting");
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "save",
+    val: "gbSwitchToOTA",
+    lb: 0
+  }));
+
+  // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
+  console.log("onclickgbSwitchToOTA ending");
+}
+
+
+
+
 function onclickButton(e) {
   console.log("onclickButton starting");
   _onclickButtonWrapper(this, "button[data-boxstate]", this.dataset.boxstate, "boxState");
@@ -477,6 +494,7 @@ function updateGlobalInformation(_data) {
   document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
   document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);;
   document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);;
+  document.getElementById('gbSwitchToOTA').addEventListener('click', onclickgbSwitchToOTA, false);;
 }
 
 

@@ -63,6 +63,7 @@ class myWSReceiver
     void _rebootIF(JsonObject& _obj);
     void _saveIF(JsonObject& _obj);
     void _saveWifiIF(JsonObject& _obj);
+    void _savegbSwitchToOTA(JsonObject& _obj);
     void _requestNetChange(JsonObject& _obj);
 
 };

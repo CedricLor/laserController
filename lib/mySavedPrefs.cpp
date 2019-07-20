@@ -55,6 +55,7 @@ void mySavedPrefs::savePrefsWrapper() {
   _saveNetworkEssentialPreferences(_preferences);
   _saveUselessPreferences(_preferences);
 
+  _saveBoxStartupTypePreferences(_preferences);
   _saveBoxEssentialPreferences(_preferences);
   _saveBoxBehaviorPreferences(_preferences);
 
@@ -87,6 +88,7 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadNetworkEssentialPreferences(_preferences);
       _loadUselessPreferences(_preferences);
 
+      _loadBoxStartupTypePreferences(_preferences);
       _loadBoxEssentialPreferences(_preferences);
       _loadBoxBehaviorPreferences(_preferences);
 
@@ -115,15 +117,19 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     gatewayIP.fromString(_joDataset["gatewayIP"].as<const char*>());
     ui16GatewayPort = _joDataset["ui16GatewayPort"];
     ui8WifiChannel = _joDataset["ui8WifiChannel"];
-    // call the save function
     saveBoxSpecificPrefsWrapper(_saveNetworkCredentials);
+    return;
   }
 
 
-  Serial.println("mySavedPrefs::saveFromNetRequest: ending.");
+  // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
+  if (_obj["val"] == "gbSwitchToOTA") {
+    gbSwitchToOTA = true;
+    saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
+    return;
+  }
+
 }
-
-
 
 
 
@@ -298,6 +304,27 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
 
 
 
+
+
+/*
+  gbSwitchToOTA
+*/
+void mySavedPrefs::_saveBoxStartupTypePreferences(Preferences& _preferences) {
+  // save value of isInterface
+  // Note to use Prefs without reboot (would be updated without reboot):
+  // -> no reboot but quite messy (this would require a mesh reconfiguration)
+  // In addition, the interface is supposed to be also box 200 and the root node
+  size_t _gbSwitchToOTARet = _preferences.putBool("OTAReq", gbSwitchToOTA);
+  Serial.printf("%s gbSwitchToOTA == %i %s\"OTAReq\"\n", _debugSaveMsgStart, gbSwitchToOTA, (_gbSwitchToOTARet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+
+}
+
+
+
+
+
+
+
 /*
   gui8NodeName
   gui8MyIndexInCBArray
@@ -460,6 +487,20 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
 }
 
 
+
+
+
+
+
+
+/*
+  gbSwitchToOTA
+*/
+void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
+  // isInterface
+  gbSwitchToOTA =_preferences.getBool("OTAReq", gbSwitchToOTA);
+  Serial.printf("%s gbSwitchToOTA set to: %i\n", _debugLoadMsgStart, gbSwitchToOTA);
+}
 
 
 

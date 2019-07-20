@@ -90,6 +90,9 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
 
   // PING PONG
   if (_obj.containsKey("ping")) {
+    if (MY_DG_WS) {
+      Serial.printf("myWSReceiver::_actionSwitch(): This is a ping. \n");
+    }
     myWSSender _myWSSender;
     _myWSSender.sendWSData(_obj);
   }
@@ -184,6 +187,16 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     _saveWifiIF(_obj);
     return;
   }
+
+  // save gbSwitchToOTA for next reboot
+  if ((_obj["key"] == "save") && (_obj["val"] == "wifi")) {
+    if (MY_DG_WS) {
+      Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE gbSwitchToOTA message.");
+    }
+  }
+  // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
+  _savegbSwitchToOTA(_obj);
+  return;
 }
 
 
@@ -218,6 +231,18 @@ void myWSReceiver::_saveIF(JsonObject& _obj) {
 void myWSReceiver::_saveWifiIF(JsonObject& _obj) {
   // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveWifiIF(): About to save Wifi preferences on IF.\n"); }
+
+  // save preferences
+  mySavedPrefs::saveFromNetRequest(_obj);
+}
+
+
+
+
+
+void myWSReceiver::_savegbSwitchToOTA(JsonObject& _obj) {
+  // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_savegbSwitchToOTA(): About to save Wifi preferences on IF.\n"); }
 
   // save preferences
   mySavedPrefs::saveFromNetRequest(_obj);

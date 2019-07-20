@@ -17,7 +17,7 @@ class mySavedPrefs
     static void loadPrefsWrapper();
 
     static void saveFromNetRequest(JsonObject& _obj);
-    
+
     static void saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
     static void loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
 
@@ -34,6 +34,7 @@ class mySavedPrefs
     static void _saveNetworkEssentialPreferences(Preferences& _preferences);
     static void _saveUselessPreferences(Preferences& _preferences);
 
+    static void _saveBoxStartupTypePreferences(Preferences& _preferences);
     static void _saveBoxEssentialPreferences(Preferences& _preferences);
     static void _saveBoxBehaviorPreferences(Preferences& _preferences);
 
@@ -42,6 +43,7 @@ class mySavedPrefs
     static void _loadNetworkEssentialPreferences(Preferences& _preferences);
     static void _loadUselessPreferences(Preferences& _preferences);
 
+    static void _loadBoxStartupTypePreferences(Preferences& _preferences);
     static void _loadBoxEssentialPreferences(Preferences& _preferences);
     static void _loadBoxBehaviorPreferences(Preferences& _preferences);
 

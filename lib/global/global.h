@@ -40,12 +40,10 @@ extern uint8_t gui8InterfaceNodeName;
 extern const char* slaveReactionHtml[4];
 
 extern const uint8_t UI8_BOXES_COUNT;                                                   // NETWORK BY NETWORK
-// extern ControlerBox ControlerBoxes[];
 extern uint8_t gui8BoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;
 
-// extern painlessMesh laserControllerMesh;
-// extern Scheduler    userScheduler;             // to control your personal task
+extern bool gbSwitchToOTA;
 
 #endif

@@ -74,10 +74,8 @@ uint8_t gui8InterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxP
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
 const uint8_t UI8_BOXES_COUNT = 10;
-// ControlerBox ControlerBoxes[UI8_BOXES_COUNT];
 uint8_t gui8BoxesCount = UI8_BOXES_COUNT;                           // NETWORK BY NETWORK
 
 const short S_BOX_DEFAULT_STATE = 5;
 
-// painlessMesh laserControllerMesh;
-// Scheduler    userScheduler;             // to control your personal task
+bool gbSwitchToOTA = false;

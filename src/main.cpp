@@ -10,7 +10,7 @@
 
 #include "../lib/secret.h"
 
-// #include "../lib/myOta/Myota.cpp"
+#include "../lib/myOta/Myota.cpp"
 
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;
@@ -45,9 +45,16 @@ ControlerBox ControlerBoxes[UI8_BOXES_COUNT];
 void setup() {
   delay(2000);
   serialInit();
-  // create the ControlerBoxes array
 
   mySavedPrefs::loadPrefsWrapper();
+
+  // The ESP was restarted with an OTA request saved in mySavedPrefs
+  if (gbSwitchToOTA) {
+    Myota::OTAConfig();
+    return;
+  }
+
+  // The ESP was restarted normally
 
   myMesh::meshSetup();
 
@@ -60,10 +67,10 @@ void setup() {
     return;
   }
 
-  if (isInterface == true) {
+  if (isInterface) {
     myWebServerBase::startAsyncServer();
   }
-  // Myota::OTAConfig();
+
 
   if (isInterface == false) {
     tone::initTones(); // inits also laserPin class; note does not need init
@@ -82,6 +89,7 @@ void setup() {
   //    digitalWrite(relayPins[__thisPin], LOW);
   //    Serial.print("\n------ PIN number: ");Serial.print(relayPins[__thisPin]);Serial.print("\n");
   // }
+
 }
 
 
@@ -91,7 +99,10 @@ void setup() {
 
 
 void loop() {
-  ArduinoOTA.handle();
+  if (gbSwitchToOTA) {
+    ArduinoOTA.handle();
+    return;
+  }
   userScheduler.execute();   // it will run mesh scheduler as well
   laserControllerMesh.update();
   pirController::pirCntrl();
