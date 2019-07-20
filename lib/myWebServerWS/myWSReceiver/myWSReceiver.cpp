@@ -243,7 +243,7 @@ void myWSReceiver::_saveWifiIF(JsonObject& _obj) {
 
 void myWSReceiver::_savegbSwitchToOTA(JsonObject& _obj) {
   // {action: "changeBox", key: "save", val: "gbSwitchToOTA", lb: 0}
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_savegbSwitchToOTA(): About to save Wifi preferences on IF.\n"); }
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_savegbSwitchToOTA(): About to save gbSwitchToOTA in mySavedPrefs on IF.\n"); }
 
   // save preferences
   mySavedPrefs::saveFromNetRequest(_obj);
