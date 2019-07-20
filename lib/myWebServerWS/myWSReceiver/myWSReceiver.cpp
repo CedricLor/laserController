@@ -95,6 +95,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     }
     myWSSender _myWSSender;
     _myWSSender.sendWSData(_obj);
+    return;
   }
 
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes

@@ -95,7 +95,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // populate the JSON object
     _obj["lb"] = _ui8BoxIndex;
-    _obj["action"] = -1;
+    _obj["action"] = "-1";
     // expected _obj = {lb:1; action:-1}
 
     // if the box is an unsignaled new box
@@ -168,7 +168,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     }
 
     // in each of the above cases, send a message to the browser
-    if (_obj["action"] != -1) {
+    if (_obj["action"] != "-1") {
       if (MY_DG_WS) {
         Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
       }
