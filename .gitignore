@@ -1,9 +1,11 @@
 .DS_Store
 lib/.DS_Store
 src/.DS_Store
+data/.DS_Store
 .pioenvs
 .piolibdeps
 .clang_complete
 .gcc-flags.json
 lib/secret.h
 .pio
+crashes_and_spins
