@@ -329,3 +329,21 @@ void ControlerBox::_parseCharArrayToBytes(const char* str, char sep, byte* bytes
   }
   Serial.println("ControlerBox::_parseCharArrayToBytes: Ending");
 }
+
+
+IPAddress _IpStringToIPAddress(const char* _cIpCharArray) {
+  // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
+  /*  Call it this way:
+    _IpStringToIPAddress("192.168.25.34");
+   */
+  byte _ip[4];
+  for (int i = 0; i < 4; i++) {
+    _ip[i] = strtoul(_cIpCharArray, NULL, 10);  // Convert to byte
+    _cIpCharArray = strchr(_cIpCharArray, '.');             // Find next separator
+    if (_cIpCharArray == NULL || *_cIpCharArray == '\0') {
+        break;                            // No more separators, exit
+    }
+    _cIpCharArray++;                                // Point to next character after separator
+  }
+  return _ip;
+}

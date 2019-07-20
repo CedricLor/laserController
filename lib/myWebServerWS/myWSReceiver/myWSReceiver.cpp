@@ -84,6 +84,10 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 
 void myWSReceiver::_actionSwitch(JsonObject& _obj) {
+  if (MY_DG_WS) {
+    Serial.printf("myWSReceiver::_actionSwitch. Starting.\n");
+  }
+
   // PING PONG
   if (_obj.containsKey("ping")) {
     myWSSender _myWSSender;
@@ -94,7 +98,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   // Received JSON: {action:0, message:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message
     if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::myWSReceiver(): new WS: checking whether the DOM needs update. \n");
+      Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n");
     }
     _onHandshakeCheckWhetherDOMNeedsUpdate(_obj); // _obj = {action:0, message:{1:4;2:3}}
     return;
@@ -104,25 +108,18 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   // disable the task sending the IP by WS to the browser
   if (_obj["action"] == "ReceivedIP") {
     if (MY_DG_WS) {
-      Serial.println("myWSReceiver::myWSReceiver. Ending on received confirmation that new station IP has been received).");
+      Serial.println("myWSReceiver::_actionSwitch(): Ending on received confirmation that new station IP has been received).");
     }
     // disable the task sending the station IP
     myWSSender::tSendWSDataIfChangeStationIp.disable();
     return;
   }
 
-  // reboot and/or save the IF
-  if ((_obj["action"] == "changeBox")  && (_obj["key"] == "reboot") && (_obj["lb"] == 0)) {
-    // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
-    // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
-    _rebootIF(_obj);
-    return;
-  }
-
-  // save the IF
-  if ((_obj["action"] == "changeBox")  && (_obj["key"] == "save") && (_obj["lb"] == 0)) {
-    // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
-    _saveIF(_obj);
+  if ((_obj["action"] == "changeBox")  && (_obj["lb"] == 0)) {
+    if (MY_DG_WS) {
+      Serial.println("myWSReceiver::_actionSwitch(): Received a message for the IF.");
+    }
+    _requestIFChange(_obj);
     return;
   }
 
@@ -150,6 +147,136 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     _requestNetChange(_obj);
     return;
   }
+}
+
+
+
+
+
+void myWSReceiver::_requestIFChange(JsonObject& _obj) {
+  // reboot and/or save the IF
+  if (_obj["key"] == "reboot") {
+    if (MY_DG_WS) {
+      Serial.println("myWSReceiver::_requestIFChange(): This is a REBOOT message.");
+    }
+    // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
+    // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
+    _rebootIF(_obj);
+    return;
+  }
+
+  // save the IF
+  if ((_obj["key"] == "save") && (_obj["val"] == "all")) {
+    if (MY_DG_WS) {
+      Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE everything message.");
+    }
+    // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
+    _saveIF(_obj);
+    return;
+  }
+
+  // save the Wifi settings
+  if ((_obj["key"] == "save") && (_obj["val"] == "wifi")) {
+    if (MY_DG_WS) {
+      Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE WIFI settings message.");
+    }
+    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+    _saveWifiIF(_obj);
+    return;
+  }
+}
+
+
+
+
+void myWSReceiver::_rebootIF(JsonObject& _obj) {
+  // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
+  // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
+
+  // inform the browser and the other boxes that IF is going to reboot
+  _requestBoxChange(_obj, true /*_bBroadcast*/);
+
+  // reboot with a little delay
+  ControlerBox::tReboot.restartDelayed();
+}
+
+
+
+
+
+void myWSReceiver::_saveIF(JsonObject& _obj) {
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
+  // save preferences
+  mySavedPrefs::savePrefsWrapper();
+}
+
+
+
+
+
+void myWSReceiver::_saveWifiIF(JsonObject& _obj) {
+  // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveWifiIF(): About to save Wifi preferences on IF.\n"); }
+
+  // save preferences
+  mySavedPrefs::saveFromNetRequest(_obj);
+}
+
+
+
+
+
+void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+
+  _obj["st"] = 1; // add a "st" field, for "execution status" of the request. 1 is "forwarded to the box"; 2 is "executed"
+
+  // instantiate a mesh view to send a message to the relevant box
+  myMeshViews __myMeshViews;
+  __myMeshViews.changeBoxRequest(_obj, _bBroadcast);
+  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+
+  // send a response to the browser telling the instruction is in course of being executed
+  myWSSender _myWSSender;
+  _myWSSender.sendWSData(_obj);
+}
+
+
+
+
+
+void myWSReceiver::_requestNetChange(JsonObject& _obj) {
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Starting.\n"); }
+
+  // If this is a reboot message
+  if (_obj["key"] == "reboot") {
+    // If reboot "all", IF shall be rebooted
+    if (_obj["lb"] == "all") {
+      ControlerBox::tReboot.enableDelayed();
+    }
+  }
+
+  // If this is a save message
+  if (_obj["key"] == "save") {
+    // If save "all", IF shall be rebooted
+    if (_obj["lb"] == "all") {
+      _saveIF(_obj);
+    }
+  }
+
+  // change action to "changeBox", as this "changeNet" is being dispatched
+  // to each LBs
+  _obj["action"] = "changeBox";
+
+  // broadcast the _obj (including its "reboot" or "save" key)
+  _requestBoxChange(_obj, true /*_bBroadcast*/);
+
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Ending.\n"); }
 }
 
 
@@ -351,79 +478,4 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
       }
     } // if
   } // for
-}
-
-
-
-
-void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
-  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-
-  _obj["st"] = 1; // add a "st" field, for "execution status" of the request. 1 is "forwarded to the box"; 2 is "executed"
-
-  // instantiate a mesh view to send a message to the relevant box
-  myMeshViews __myMeshViews;
-  __myMeshViews.changeBoxRequest(_obj, _bBroadcast);
-  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-
-  // send a response to the browser telling the instruction is in course of being executed
-  myWSSender _myWSSender;
-  _myWSSender.sendWSData(_obj);
-}
-
-
-
-
-void myWSReceiver::_rebootIF(JsonObject& _obj) {
-  // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
-  // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
-
-  // inform the browser and the other boxes that IF is going to reboot
-  _requestBoxChange(_obj, true /*_bBroadcast*/);
-
-  // reboot with a little delay
-  ControlerBox::tReboot.restartDelayed();
-}
-
-void myWSReceiver::_saveIF(JsonObject& _obj) {
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
-  // save preferences
-  mySavedPrefs::savePrefsWrapper();
-}
-
-
-
-
-void myWSReceiver::_requestNetChange(JsonObject& _obj) {
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Starting.\n"); }
-
-  // If this is a reboot message
-  if (_obj["key"] == "reboot") {
-    // If reboot "all", IF shall be rebooted
-    if (_obj["lb"] == "all") {
-      ControlerBox::tReboot.enableDelayed();
-    }
-  }
-
-  // If this is a save message
-  if (_obj["key"] == "save") {
-    // If save "all", IF shall be rebooted
-    if (_obj["lb"] == "all") {
-      _saveIF(_obj);
-    }
-  }
-
-  // change action to "changeBox", as this "changeNet" is being dispatched
-  // to each LBs
-  _obj["action"] = "changeBox";
-
-  // broadcast the _obj (including its "reboot" or "save" key)
-  _requestBoxChange(_obj, true /*_bBroadcast*/);
-
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Ending.\n"); }
 }

@@ -50,8 +50,6 @@ void myMesh::meshSetup() {
 
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
 
-  // _IpStringToIPAddress(gatewayIP)
-
   if (isInterface == true) {
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
     // laserControllerMesh.stationManual(ssid, pass);
@@ -220,27 +218,6 @@ void myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper functions
-IPAddress myMesh::_IpStringToIPAddress(const char* _cIpCharArray) {
-  // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
-  /*  Call it this way:
-        const char* ipStr = "50.100.150.200";
-        byte ip[4];
-        _parseBytesToCharArray(ipStr, '.', ip, 4, 10);
-   */
-  byte _ip[4];
-  for (int i = 0; i < 4; i++) {
-    _ip[i] = strtoul(_cIpCharArray, NULL, 10);  // Convert to byte
-    _cIpCharArray = strchr(_cIpCharArray, '.');             // Find next separator
-    if (_cIpCharArray == NULL || *_cIpCharArray == '\0') {
-        break;                            // No more separators, exit
-    }
-    _cIpCharArray++;                                // Point to next character after separator
-  }
-  return _ip;
-}
-
-
-
 char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
   // strcat(destination, source); source is appended destination, replacing the null character of destination by the first character of source
   strcat(_apSsidBuf, _PREFIX_AP_SSID);

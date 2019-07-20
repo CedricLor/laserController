@@ -58,7 +58,6 @@ class myMesh
 
     static char* _apSsidBuilder(char _apSsidBuf[8]);
     static IPAddress _IpStringToIPAddress(const char* _cIpCharArray);
-    // static short _jsonToInt(JsonDocument root, String rootKey);
 
     static void _updateConnectedBoxCount();
 };

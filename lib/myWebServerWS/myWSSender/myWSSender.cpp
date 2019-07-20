@@ -170,7 +170,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // in each of the above cases, send a message to the browser
     if (_obj["action"] != -1) {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call prepareWSData with message of type %i.\n", _obj["action"].as<int>());
+        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
       }
       _myWSSender.sendWSData(_obj);
     }
@@ -222,7 +222,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __newObj["serverIP"] = (laserControllerMesh.getStationIP()).toString();
     __newObj["ssid"] = ssid;
     __newObj["pass"] = pass;
-    __newObj["gatewayIP"] = gatewayIP;
+    __newObj["gatewayIP"] = gatewayIP.toString();
     __newObj["ui16GatewayPort"] = ui16GatewayPort;
     __newObj["ui8WifiChannel"] = ui8WifiChannel;
     // if (MY_DG_WS) {

@@ -59,8 +59,10 @@ class myWSReceiver
     void _lookForDOMMissingRows(JsonObject& _joBoxState);
 
     void _requestBoxChange(JsonObject& _obj, bool _bBroadcast=false);
+    void _requestIFChange(JsonObject& _obj);
     void _rebootIF(JsonObject& _obj);
     void _saveIF(JsonObject& _obj);
+    void _saveWifiIF(JsonObject& _obj);
     void _requestNetChange(JsonObject& _obj);
 
 };

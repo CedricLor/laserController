@@ -16,6 +16,8 @@ class mySavedPrefs
     static void savePrefsWrapper();
     static void loadPrefsWrapper();
 
+    static void saveFromNetRequest(JsonObject& _obj);
+    
     static void saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
     static void loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
 

@@ -103,6 +103,34 @@ void mySavedPrefs::loadPrefsWrapper() {
 
 
 
+
+void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
+  Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
+  // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  if (_obj["val"] == "wifi") {
+    // load data from Json to memory
+    JsonObject _joDataset = _obj["dataset"];
+    strcpy(ssid, _joDataset["ssid"]);
+    strcpy(pass, _joDataset["pass"]);
+    gatewayIP.fromString(_joDataset["gatewayIP"].as<const char*>());
+    ui16GatewayPort = _joDataset["ui16GatewayPort"];
+    ui8WifiChannel = _joDataset["ui8WifiChannel"];
+    // call the save function
+    saveBoxSpecificPrefsWrapper(_saveNetworkCredentials);
+  }
+
+
+  Serial.println("mySavedPrefs::saveFromNetRequest: ending.");
+}
+
+
+
+
+
+
+
+
+
 void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
   // Instantiate Preferences
   Preferences _preferences;

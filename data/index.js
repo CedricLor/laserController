@@ -45,7 +45,7 @@ function connect() {
     }
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
-      updateStationIp(_data.serverIP);
+      updateGlobalInformation(_data);
       ws.send(JSON.stringify({
         action: "ReceivedIP"
       }));
@@ -117,8 +117,8 @@ function connect() {
 // Check if WS server is still available (and reconnect as necessary)
 function check(){
   // if connectRetryCount is equal to 10, just stop trying
-  console.log("check(): --- in check");
-  console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+  // console.log("check(): --- in check");
+  // console.log("check(): connectRetryCount === " + connectRetryCount + ".");
   if (connectRetryCount === 10) {
     console.log("check(): Tried to reconnect 10 times. Stopping. Please reload or check the server.");
     clearInterval(checkWSinterval);
@@ -131,9 +131,9 @@ function check(){
     console.log("check(): NO CONNECTION. TRYING TO RECONNECT");
     console.log("check(): !!! Trying to reconnect on !ws or ws.CLOSED !!!");
     // increment the connectRetryCount
-    console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+    // console.log("check(): connectRetryCount === " + connectRetryCount + ".");
     connectRetryCount++;
-    console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+    // console.log("check(): connectRetryCount === " + connectRetryCount + ".");
     // try to connect
     connect();
     // return (the following lines are in the case the connection
@@ -145,10 +145,11 @@ function check(){
   // check that the server is still here
   if(ws.readyState === WebSocket.OPEN) {
 
-    console.log("check(): pingCountSentMark === " + pingCountSentMark);
-    console.log("check(): pingCountReceivedMark === " + pingCountReceivedMark);
+    // console.log("check(): pingCountSentMark === " + pingCountSentMark);
+    // console.log("check(): pingCountReceivedMark === " + pingCountReceivedMark);
     if (pingCountSentMark != pingCountReceivedMark) {
       console.log("check(): not receiving server pongs");
+      console.log("check(): about to close connection");
       ws.close();
       pingCount = 1;
       pingCountReceivedMark = 1;
@@ -156,14 +157,14 @@ function check(){
       return;
     }
 
-    console.log("check(): checkPing === " + checkPing + ".");
+    // console.log("check(): checkPing === " + checkPing + ".");
     checkPing++;
-    console.log("check(): checkPing === " + checkPing + ".");
+    // console.log("check(): checkPing === " + checkPing + ".");
     if (checkPing === 3) {
       // reset checkPing to 0
       checkPing = 0;
-      console.log("check(): checkPing === " + checkPing + ".");
-      console.log("check(): about to ping server.");
+      // console.log("check(): checkPing === " + checkPing + ".");
+      // console.log("check(): about to ping server.");
 
       // try sending a numbered ping to the server
       pingCount++;
@@ -341,6 +342,50 @@ function onclickSaveAllButton(e) {
 
 
 
+
+
+function onclickSaveWifiSettingsIF(e) {
+  console.log("onclickSaveWifiSettingsIF starting");
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "save",
+    val: "wifi",
+    lb: 0,
+    dataset: {
+      ssid: document.getElementById('ssid').value,
+      pass: document.getElementById('pass').value,
+      gatewayIP: document.getElementById('gatewayIP').value,
+      ui16GatewayPort: parseInt(document.getElementById('ui16GatewayPort').value, 10),
+      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10)
+    }
+  }));
+  // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+
+  console.log("onclickSaveWifiSettingsIF ending");
+}
+
+
+
+
+
+function onclickSaveWifiSettingsAll(e) {
+  console.log("onclickSaveWifiSettingsAll starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "save",
+    val: "wifi",
+    lb: "all"
+  }));
+
+  // {action: "changeNet", key: "save", val: "wifi", lb: "all"}
+  console.log("onclickSaveWifiSettingsAll ending");
+}
+
+
+
+
 function onclickButton(e) {
   console.log("onclickButton starting");
   _onclickButtonWrapper(this, "button[data-boxstate]", this.dataset.boxstate, "boxState");
@@ -422,8 +467,16 @@ function oninputMasterSelect(e) {
 
 
 // DOM MANIPULATION
-function updateStationIp(_stationIp) {
-  document.getElementById('stationIp').innerHTML = _stationIp;
+function updateGlobalInformation(_data) {
+  // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
+  document.getElementById('stationIp').innerHTML = _data.serverIP;
+  document.getElementById('ssid').value = _data.ssid;
+  document.getElementById('pass').value = _data.pass;
+  document.getElementById('gatewayIP').value = _data.gatewayIP;
+  document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
+  document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
+  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);;
+  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);;
 }
 
 

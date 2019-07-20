@@ -270,14 +270,49 @@
       <li>gui8ControllerBoxPrefix: <span></span><input type='text' ></li>
       <li>gui8InterfaceIndexInCBArray: <span></span></li>
       <li>gui8BoxesCount: <span></span><input type='text' ></li>
-      <li>SSID: <span></span><input id='ssid' type='text' ></li>
-      <li>Pass: <span></span><input id='pass' type='text' ></li>
-      <li>Gateway IP: <span></span><input id='gatewayIP' type='text' ></li>
-      <li>Gateway Port: <span></span><input id='ui16GatewayPort' type='text' ></li>
-      <li>Wifi Channel: <span></span><input id='ui8WifiChannel' type='text' ></li>
     </ul>
   </div> <!-- network_state_setter -->
-
+  <div class='setters_gp_title'>Wifi Settings</div>
+  <div class='network_state_setter'>
+    <div>
+      <label class='wifi_labels' for='ssid'>
+        SSID:
+      </label>
+      <input id='ssid' type='text' >
+    </div>
+    <div>
+      <label class='wifi_labels' for='pass'>
+        Pass:
+      </label>
+      <input id='pass' type='text' >
+    </div>
+    <div>
+      <label class='wifi_labels' for='gatewayIP'>
+        Gateway IP:
+      </label>
+      <input id='gatewayIP' type='text' >
+    </div>
+    <div>
+      <label class='wifi_labels' for='ui16GatewayPort'>
+        Gateway Port:
+      </label>
+      <input id='ui16GatewayPort' type='text' >
+    </div>
+    <div>
+      <label class='wifi_labels' for='ui8WifiChannel'>
+        Wifi Channel:
+      </label>
+      <input id='ui8WifiChannel' type='text' >
+    </div>
+    <div>
+      <button id='saveWifiSettingsIF'>
+        Save WiFi Settings on IF
+      </button>
+      <button id='saveWifiSettingsAll'>
+        Save WiFi Settings on All
+      </button>
+    </div>
+  </div>
   <script src='index.js'></script>
 
   </body>
