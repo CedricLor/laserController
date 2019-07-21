@@ -30,11 +30,12 @@ void myOta::OTAConfig()
     ESP.restart();
   }
 
+  // Set the OTA port
   ArduinoOTA.setPort(3232);
   _i8OTASuccessErrorCode = 9;
-  char _cHostname[10] = "ESP32_";
-  strcat(_cHostname, (const char*)(uint32_t)gui8NodeName);
-  ArduinoOTA.setHostname(_cHostname);
+
+  // Set the hostname
+  ArduinoOTA.setHostname(strcat(gcHostnamePrefix, (const char*)(uint32_t)gui16NodeName));
   _i8OTASuccessErrorCode = 8;
 
   // No authentication by default
