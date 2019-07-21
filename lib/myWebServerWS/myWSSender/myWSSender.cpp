@@ -244,7 +244,6 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
 
 
-
 // void myWSSender::prepareWSData(JsonObject& _extObj) {
 //     if (MY_DG_WS) {
 //       Serial.printf("- myWSSender::prepareWSData. Starting with message type [%i]\n", _i8messageType);
@@ -338,8 +337,12 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
               Serial.print("- myWSSender::sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
               Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
               // THERE IS A BUG SOMEWHERE HERE UPON REREFRESHING AFTER A DISCONNECT
-              Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
-              Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
+              Serial.print("- myWSSender::sendWSData: -------------- BUG TRACKING -------------\n");
+              Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
+              Serial.print("WS_CONNECTED = ");Serial.println(WS_CONNECTED);
+              Serial.print("- myWSSender::sendWSData: myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");
+              Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
+              // Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
               Serial.printf("- myWSSender::sendWSData. Client not found. About to send a WS message message to all.\n");
             }
             myWebServerWS::ws.textAll(_buffer);
