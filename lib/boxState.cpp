@@ -160,19 +160,20 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     return;
   }
 
+  uint16_t _ui16masterBoxIndexInCB = ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName - gui8ControllerBoxPrefix;
   // 2. If the current boxState has both IR and mesh triggers, check both values
   if (boxStates[ControlerBoxes[gui8MyIndexInCBArray].boxActiveState]._bIRTrigger == 1 && boxStates[ControlerBoxes[gui8MyIndexInCBArray].boxActiveState]._bMeshTrigger == 1) {
     // if both IR and mesh have sent a signal, compare the time at which each of
     // them came and give priority to the latest
     if (ControlerBox::valFromPir == HIGH &&
       // testing if IR has been set HIGH
-      ControlerBoxes[ControlerBoxes[(int)gui8MyIndexInCBArray].bMasterBoxName - (int)gui8ControllerBoxPrefix].boxActiveState != -1 &&
+      ControlerBoxes[_ui16masterBoxIndexInCB].boxActiveState != -1 &&
       // testing if the state of the master boxActiveState has been set to something
-      ControlerBoxes[ControlerBoxes[(int)gui8MyIndexInCBArray].bMasterBoxName - (int)gui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
+      ControlerBoxes[_ui16masterBoxIndexInCB].boxActiveStateHasBeenTakenIntoAccount == false
       // testing if the state of the master boxActiveState has been taken into account
       ){
         // compare the times at which each signal catcher has been set
-        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[ControlerBoxes[(int)gui8MyIndexInCBArray].bMasterBoxName - (int)gui8ControllerBoxPrefix].uiBoxActiveStateStartTime) {
+        if (ControlerBox::uiSettingTimeOfValFromPir > ControlerBoxes[_ui16masterBoxIndexInCB].uiBoxActiveStateStartTime) {
           _setBoxTargetState(3);
         } else {
           _setBoxTargetState(6);
@@ -192,8 +193,8 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
   if (boxStates[ControlerBoxes[gui8MyIndexInCBArray].boxActiveState]._bMeshTrigger == 1 &&
-    ControlerBoxes[ControlerBoxes[(int)gui8MyIndexInCBArray].bMasterBoxName - (int)gui8ControllerBoxPrefix].boxActiveState != -1 &&
-    ControlerBoxes[ControlerBoxes[(int)gui8MyIndexInCBArray].bMasterBoxName - (int)gui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount == false
+    ControlerBoxes[_ui16masterBoxIndexInCB].boxActiveState != -1 &&
+    ControlerBoxes[_ui16masterBoxIndexInCB].boxActiveStateHasBeenTakenIntoAccount == false
     ){
       _setBoxTargetState(6);
       return;
@@ -205,7 +206,7 @@ void boxState::_resetSignalCatchers() {
   // reset all the signals catchers to their initial values
   ControlerBox::valFromPir = LOW;
   ControlerBox::uiSettingTimeOfValFromPir = 0;
-  ControlerBoxes[ControlerBoxes[(int)gui8MyIndexInCBArray].bMasterBoxName - (int)gui8ControllerBoxPrefix].boxActiveStateHasBeenTakenIntoAccount = true;
+  ControlerBoxes[_ui16masterBoxIndexInCB].boxActiveStateHasBeenTakenIntoAccount = true;
   ControlerBox::valFromWeb = -1;
 }
 
