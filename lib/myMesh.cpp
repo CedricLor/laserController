@@ -31,10 +31,6 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-// const uint8_t* myMesh::STATION_IP = station_ip;
-
-const char myMesh::_PREFIX_AP_SSID[5] = "box_";
-char myMesh::_myApSsidBuf[8];
 
 myMesh::myMesh()
 {
@@ -55,7 +51,7 @@ void myMesh::meshSetup() {
     // laserControllerMesh.stationManual(ssid, pass);
   }
 
-  laserControllerMesh.setHostname(_apSsidBuilder(_myApSsidBuf));
+  laserControllerMesh.setHostname(strcat(gcHostnamePrefix, (const char*)(uint32_t)gui16NodeName));
   if (isInterface == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
@@ -210,23 +206,4 @@ void myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
 
   // pass the deserialized doc and the _ui32SenderNodeId to the controller
   myMeshController myMeshController(_ui32SenderNodeId, _obj);
-}
-
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Helper functions
-char* myMesh::_apSsidBuilder(char _apSsidBuf[8]) {
-  // strcat(destination, source); source is appended destination, replacing the null character of destination by the first character of source
-  strcat(_apSsidBuf, _PREFIX_AP_SSID);
-  // after the preceeding line, _apSsidBuf shall be equal to "box_"
-  char _cNodeName[4];
-  itoa((int)gui8NodeName, _cNodeName, 10);
-  // itoa convert gui8NodeName (201, 202, etc.) into to char array, the resulting char array being stored into _cNodeName
-  strcat(_apSsidBuf, _cNodeName);
-  // strcat appends 201, 202, etc. to box_
-  // _apSsidBuf shall equal to something like box_201, box_202, etc.
-  return _apSsidBuf;
 }
