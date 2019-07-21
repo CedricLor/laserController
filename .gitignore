@@ -9,3 +9,4 @@ data/.DS_Store
 lib/secret.h
 .pio
 crashes_and_spins
+.vscode
