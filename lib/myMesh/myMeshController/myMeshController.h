@@ -46,7 +46,7 @@ class myMeshController
     void _changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32SenderNodeId);
 
     // helpers to _statusMessage
-    int8_t _getSenderBoxIndexNumber(JsonObject& _obj);
+    uint16_t _getSenderBoxIndexNumber(JsonObject& _obj);
 
     // helpers to _changeBoxRequest
     void _updateMyValFromWeb(JsonObject& _obj);
