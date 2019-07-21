@@ -35,7 +35,8 @@ void myOta::OTAConfig()
   _i8OTASuccessErrorCode = 9;
 
   // Set the hostname
-  ArduinoOTA.setHostname(strcat(gcHostnamePrefix, (const char*)(uint32_t)gui16NodeName));
+  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
+  ArduinoOTA.setHostname(gcHostnamePrefix);
   _i8OTASuccessErrorCode = 8;
 
   // No authentication by default
@@ -119,6 +120,7 @@ void myOta::_errorOTA(ota_error_t error)
   else
   if (error == OTA_END_ERROR)
     Serial.printf("End Failed\n");
+  ESP.restart();
 }
 
 
@@ -126,9 +128,10 @@ void myOta::_errorOTA(ota_error_t error)
 
 void myOta::_saveOTASuccess(Preferences& _preferences) {
   // choose the location where to save the error code for this OTA update
+  Serial.println("myOta::_saveOTASuccess: starting.");
   char __cOTASuccessErrorNVSKey[9] = "OTASucc";
-  strcat(__cOTASuccessErrorNVSKey, (char*)(gi8RequestedOTAReboots + 1));
+  snprintf(__cOTASuccessErrorNVSKey, 9, "%s%u", __cOTASuccessErrorNVSKey, (uint32_t)(gi8RequestedOTAReboots + 1));
   // save the success code in the relevant NVS location
-  size_t __i8OTASuccessErrorCodeRet = _preferences.putChar(__cOTASuccessErrorNVSKey, _i8OTASuccessErrorCode);
-  Serial.printf("%s OTA update numb. %i success code == %i %s\"%s\"\n", mySavedPrefs::debugSaveMsgStart, (gi8RequestedOTAReboots + 1), _i8OTASuccessErrorCode, (__i8OTASuccessErrorCodeRet)?(mySavedPrefs::debugSaveMsgEndSuccess):(mySavedPrefs::debugSaveMsgEndFail), __cOTASuccessErrorNVSKey);
+  size_t __i8OTASuccessErrorCodeRet = _preferences.putUChar(__cOTASuccessErrorNVSKey, _i8OTASuccessErrorCode);
+  Serial.printf("%s OTA update numb. %u success code == %i %s\"%s\"\n", mySavedPrefs::debugSaveMsgStart, (gi8RequestedOTAReboots + 1), _i8OTASuccessErrorCode, (__i8OTASuccessErrorCodeRet)?(mySavedPrefs::debugSaveMsgEndSuccess):(mySavedPrefs::debugSaveMsgEndFail), __cOTASuccessErrorNVSKey);
 }

@@ -120,6 +120,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
   // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
   if (_obj["val"] == "wifi") {
+    Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
     // load data from Json to memory
     JsonObject _joDataset = _obj["dataset"];
     strcpy(ssid, _joDataset["ssid"]);
@@ -134,6 +135,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
   if (_obj["val"] == "gi8RequestedOTAReboots") {
+    Serial.println("mySavedPrefs::saveFromNetRequest: going to save gi8RequestedOTAReboots preferences.");
     gi8RequestedOTAReboots = _obj["reboots"];
     saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
     saveBoxSpecificPrefsWrapper(_resetOTASuccess);
@@ -328,16 +330,16 @@ void mySavedPrefs::_saveBoxStartupTypePreferences(Preferences& _preferences) {
 }
 
 /*
-  gi8OTA1SuccessErrorCode
-  gi8OTA2SuccessErrorCode
+  ui8OTA1SuccessErrorCode
+  ui8OTA2SuccessErrorCode
 */
 void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
-  // resets the values of gi8OTA1SuccessErrorCode and gi8OTA2SuccessErrorCode when an OTA reboot is requested
+  // resets the values of ui8OTA1SuccessErrorCode and ui8OTA2SuccessErrorCode when an OTA reboot is requested
   // Note to use Prefs without reboot: no need for reboots; used to display data in console and webpage
-  size_t _gi8OTA1SuccessErrorCodeRet = _preferences.putChar("OTASucc1", 11);
-  Serial.printf("%s OTA update numb. 1 success code == %i %s\"OTASucc1\"\n", debugSaveMsgStart, gi8OTA1SuccessErrorCode, (_gi8OTA1SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-  size_t _gi8OTA2SuccessErrorCodeRet = _preferences.putChar("OTASucc2", 11);
-  Serial.printf("%s OTA update numb. 2 success code == %i %s\"OTASucc2\"\n", debugSaveMsgStart, gi8OTA2SuccessErrorCode, (_gi8OTA2SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _ui8OTA1SuccessErrorCodeRet = _preferences.putUChar("OTASucc1", 11);
+  Serial.printf("%s OTA update numb. 1 success code == %u %s\"OTASucc1\"\n", debugSaveMsgStart, 11, (_ui8OTA1SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _ui8OTA2SuccessErrorCodeRet = _preferences.putUChar("OTASucc2", 11);
+  Serial.printf("%s OTA update numb. 2 success code == %u %s\"OTASucc2\"\n", debugSaveMsgStart, 11, (_ui8OTA2SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -487,19 +489,19 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 
 
 /*
-  int8_t gi8OTA1SuccessErrorCode
-  int8_t gi8OTA2SuccessErrorCode
+  uint8_t ui8OTA1SuccessErrorCode
+  uint8_t ui8OTA2SuccessErrorCode
   uint8_t ui8RebootsSinceLastOTAReboot = 0;
 */
-int8_t mySavedPrefs::gi8OTA1SuccessErrorCode = 11;
-int8_t mySavedPrefs::gi8OTA2SuccessErrorCode = 11;
+uint8_t mySavedPrefs::ui8OTA1SuccessErrorCode = 11;
+uint8_t mySavedPrefs::ui8OTA2SuccessErrorCode = 11;
 
 void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
   // save the success code in the relevant NVS location
-  gi8OTA1SuccessErrorCode = _preferences.getChar("OTASucc1", gi8OTA1SuccessErrorCode);
-  Serial.printf("%s gi8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, gi8OTA1SuccessErrorCode);
-  gi8OTA2SuccessErrorCode = _preferences.getChar("OTASucc1", gi8OTA2SuccessErrorCode);
-  Serial.printf("%s gi8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, gi8OTA1SuccessErrorCode);
+  ui8OTA1SuccessErrorCode = _preferences.getUChar("OTASucc1", ui8OTA1SuccessErrorCode);
+  Serial.printf("%s ui8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, ui8OTA1SuccessErrorCode);
+  ui8OTA2SuccessErrorCode = _preferences.getUChar("OTASucc2", ui8OTA2SuccessErrorCode);
+  Serial.printf("%s ui8OTA2SuccessErrorCode set to: %u\n", _debugLoadMsgStart, ui8OTA2SuccessErrorCode);
 }
 
 

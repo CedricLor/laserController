@@ -51,7 +51,8 @@ void myMesh::meshSetup() {
     // laserControllerMesh.stationManual(ssid, pass);
   }
 
-  laserControllerMesh.setHostname(strcat(gcHostnamePrefix, (const char*)(uint32_t)gui16NodeName));
+  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
+  laserControllerMesh.setHostname(gcHostnamePrefix);
   if (isInterface == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
