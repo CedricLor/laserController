@@ -44,9 +44,9 @@ extern uint8_t gui8BoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;
 
-extern int8_t i8OTAReboot;
-extern int8_t i8RequestedOTAReboots;
-extern int8_t i8OTA1Success;
-extern int8_t i8OTA2Success;
+extern int8_t gi8OTAReboot;
+extern int8_t gi8RequestedOTAReboots;
+extern int8_t gi8OTA1Success;
+extern int8_t gi8OTA2Success;
 
 #endif

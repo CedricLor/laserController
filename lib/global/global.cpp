@@ -78,5 +78,5 @@ uint8_t gui8BoxesCount = UI8_BOXES_COUNT;                           // NETWORK B
 
 const short S_BOX_DEFAULT_STATE = 5;
 
-int8_t i8OTAReboot = 0;
-int8_t i8RequestedOTAReboots = 0;
+int8_t gi8OTAReboot = 0;
+int8_t gi8RequestedOTAReboots = 0;

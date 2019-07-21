@@ -16,14 +16,15 @@ class myOta
   public:
     myOta();
     static void OTAConfig();
-    static int8_t OTASuccessErrorCode;
 
   private:
-    static void saveOTASuccess(Preferences& _preferences);
-    static void startOTA();
-    static void endOTA();
-    static void progressOTA(unsigned int progress, unsigned int total);
-    static void errorOTA(ota_error_t error);
+    static int8_t _i8OTASuccessErrorCode;
+
+    static void _saveOTASuccess(Preferences& _preferences);
+    static void _startOTA();
+    static void _endOTA();
+    static void _progressOTA(unsigned int progress, unsigned int total);
+    static void _errorOTA(ota_error_t error);
 };
 
 #endif

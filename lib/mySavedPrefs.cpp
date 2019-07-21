@@ -102,9 +102,9 @@ void mySavedPrefs::loadPrefsWrapper() {
   // On reboot, if the number of requested OTA reboots is superior to 0,
   // decrement it by 1 (and save it to NVS) until it reaches 0, where
   // the ESP will reboot to its normal state
-  if (i8RequestedOTAReboots) {
-    i8OTAReboot = 1;
-    i8RequestedOTAReboots = i8RequestedOTAReboots - 1;
+  if (gi8RequestedOTAReboots) {
+    gi8OTAReboot = 1;
+    gi8RequestedOTAReboots = gi8RequestedOTAReboots - 1;
     saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
   }
 
@@ -132,9 +132,9 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   }
 
 
-  // {action: "changeBox", key: "save", val: "i8RequestedOTAReboots", lb: 0, reboots: 2}
-  if (_obj["val"] == "i8RequestedOTAReboots") {
-    i8RequestedOTAReboots = _obj["reboots"];
+  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
+  if (_obj["val"] == "gi8RequestedOTAReboots") {
+    gi8RequestedOTAReboots = _obj["reboots"];
     saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
     saveBoxSpecificPrefsWrapper(_resetOTASuccess);
     return;
@@ -318,26 +318,26 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
 
 
 /*
-  i8RequestedOTAReboots
+  gi8RequestedOTAReboots
 */
 void mySavedPrefs::_saveBoxStartupTypePreferences(Preferences& _preferences) {
-  // save value of i8RequestedOTAReboots
+  // save value of gi8RequestedOTAReboots
   // Note to use Prefs without reboot: needs a reboot to be effective
-  size_t _i8RequestedOTARebootsRet = _preferences.putChar("OTARebReq", i8RequestedOTAReboots);
-  Serial.printf("%s i8RequestedOTAReboots == %i %s\"OTARebReq\"\n", debugSaveMsgStart, i8RequestedOTAReboots, (_i8RequestedOTARebootsRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _gi8RequestedOTARebootsRet = _preferences.putChar("OTARebReq", gi8RequestedOTAReboots);
+  Serial.printf("%s gi8RequestedOTAReboots == %i %s\"OTARebReq\"\n", debugSaveMsgStart, gi8RequestedOTAReboots, (_gi8RequestedOTARebootsRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 /*
-  i8OTA1SuccessErrorCode
-  i8OTA2SuccessErrorCode
+  gi8OTA1SuccessErrorCode
+  gi8OTA2SuccessErrorCode
 */
 void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
-  // resets the values of i8OTA1SuccessErrorCode and i8OTA2SuccessErrorCode when an OTA reboot is requested
+  // resets the values of gi8OTA1SuccessErrorCode and gi8OTA2SuccessErrorCode when an OTA reboot is requested
   // Note to use Prefs without reboot: no need for reboots; used to display data in console and webpage
-  size_t _i8OTA1SuccessErrorCodeRet = _preferences.putChar("OTASucc1", 11);
-  Serial.printf("%s OTA update numb. 1 success code == %i %s\"OTASucc1\"\n", debugSaveMsgStart, i8OTA1SuccessErrorCode, (_i8OTA1SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-  size_t _i8OTA2SuccessErrorCodeRet = _preferences.putChar("OTASucc2", 11);
-  Serial.printf("%s OTA update numb. 2 success code == %i %s\"OTASucc2\"\n", debugSaveMsgStart, i8OTA2SuccessErrorCode, (_i8OTA2SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _gi8OTA1SuccessErrorCodeRet = _preferences.putChar("OTASucc1", 11);
+  Serial.printf("%s OTA update numb. 1 success code == %i %s\"OTASucc1\"\n", debugSaveMsgStart, gi8OTA1SuccessErrorCode, (_gi8OTA1SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _gi8OTA2SuccessErrorCodeRet = _preferences.putChar("OTASucc2", 11);
+  Serial.printf("%s OTA update numb. 2 success code == %i %s\"OTASucc2\"\n", debugSaveMsgStart, gi8OTA2SuccessErrorCode, (_gi8OTA2SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -487,19 +487,19 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 
 
 /*
-  int8_t i8OTA1SuccessErrorCode
-  int8_t i8OTA2SuccessErrorCode
+  int8_t gi8OTA1SuccessErrorCode
+  int8_t gi8OTA2SuccessErrorCode
   uint8_t ui8RebootsSinceLastOTAReboot = 0;
 */
-int8_t mySavedPrefs::i8OTA1SuccessErrorCode = 11;
-int8_t mySavedPrefs::i8OTA2SuccessErrorCode = 11;
+int8_t mySavedPrefs::gi8OTA1SuccessErrorCode = 11;
+int8_t mySavedPrefs::gi8OTA2SuccessErrorCode = 11;
 
 void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
   // save the success code in the relevant NVS location
-  i8OTA1SuccessErrorCode = _preferences.getChar("OTASucc1", i8OTA1SuccessErrorCode);
-  Serial.printf("%s i8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, i8OTA1SuccessErrorCode);
-  i8OTA2SuccessErrorCode = _preferences.getChar("OTASucc1", i8OTA2SuccessErrorCode);
-  Serial.printf("%s i8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, i8OTA1SuccessErrorCode);
+  gi8OTA1SuccessErrorCode = _preferences.getChar("OTASucc1", gi8OTA1SuccessErrorCode);
+  Serial.printf("%s gi8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, gi8OTA1SuccessErrorCode);
+  gi8OTA2SuccessErrorCode = _preferences.getChar("OTASucc1", gi8OTA2SuccessErrorCode);
+  Serial.printf("%s gi8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, gi8OTA1SuccessErrorCode);
 }
 
 
@@ -538,12 +538,12 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
 
 
 /*
-  i8RequestedOTAReboots
+  gi8RequestedOTAReboots
 */
 void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
   // isInterface
-  i8RequestedOTAReboots =_preferences.getChar("OTARebReq", i8RequestedOTAReboots);
-  Serial.printf("%s i8RequestedOTAReboots set to: %i\n", _debugLoadMsgStart, i8RequestedOTAReboots);
+  gi8RequestedOTAReboots =_preferences.getChar("OTARebReq", gi8RequestedOTAReboots);
+  Serial.printf("%s gi8RequestedOTAReboots set to: %i\n", _debugLoadMsgStart, gi8RequestedOTAReboots);
 }
 
 

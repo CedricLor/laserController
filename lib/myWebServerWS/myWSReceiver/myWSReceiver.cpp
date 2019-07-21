@@ -189,14 +189,14 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     return;
   }
 
-  // save i8RequestedOTAReboots for next reboot
+  // save gi8RequestedOTAReboots for next reboot
   if ((_obj["key"] == "save") && (_obj["val"] == "wifi")) {
     if (MY_DG_WS) {
-      Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE i8RequestedOTAReboots message.");
+      Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE gi8RequestedOTAReboots message.");
     }
   }
-  // {action: "changeBox", key: "save", val: "i8RequestedOTAReboots", lb: 0}
-  _savei8RequestedOTAReboots(_obj);
+  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
+  _savegi8RequestedOTAReboots(_obj);
   return;
 }
 
@@ -241,9 +241,9 @@ void myWSReceiver::_saveWifiIF(JsonObject& _obj) {
 
 
 
-void myWSReceiver::_savei8RequestedOTAReboots(JsonObject& _obj) {
-  // {action: "changeBox", key: "save", val: "i8RequestedOTAReboots", lb: 0}
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_savei8RequestedOTAReboots(): About to save i8RequestedOTAReboots in mySavedPrefs on IF.\n"); }
+void myWSReceiver::_savegi8RequestedOTAReboots(JsonObject& _obj) {
+  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_savegi8RequestedOTAReboots(): About to save gi8RequestedOTAReboots in mySavedPrefs on IF.\n"); }
 
   // save preferences
   mySavedPrefs::saveFromNetRequest(_obj);

@@ -17,8 +17,8 @@ class mySavedPrefs
     static void loadPrefsWrapper();
 
     static void saveFromNetRequest(JsonObject& _obj);
-    static int8_t i8OTA1SuccessErrorCode;
-    static int8_t i8OTA2SuccessErrorCode;
+    static int8_t gi8OTA1SuccessErrorCode;
+    static int8_t gi8OTA2SuccessErrorCode;
     static void loadOTASuccess(Preferences& _preferences);
 
     static void saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
