@@ -49,4 +49,6 @@ extern int8_t gi8RequestedOTAReboots;
 extern int8_t gi8OTA1Success;
 extern int8_t gi8OTA2Success;
 
+extern char gcHostnamePrefix[];
+
 #endif

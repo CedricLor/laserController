@@ -80,3 +80,5 @@ const short S_BOX_DEFAULT_STATE = 5;
 
 int8_t gi8OTAReboot = 0;
 int8_t gi8RequestedOTAReboots = 0;
+
+char gcHostnamePrefix[10] = "ESP32_";
