@@ -88,16 +88,6 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     Serial.printf("myWSReceiver::_actionSwitch. Starting.\n");
   }
 
-  // PING PONG
-  if (_obj.containsKey("ping")) {
-    if (MY_DG_WS) {
-      Serial.printf("myWSReceiver::_actionSwitch(): This is a ping. \n");
-    }
-    myWSSender _myWSSender;
-    _myWSSender.sendWSData(_obj);
-    return;
-  }
-
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
   // Received JSON: {action:0, message:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message

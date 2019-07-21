@@ -202,7 +202,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
   }
 
   // small confirmation messages (type 0 to 2)
-  if (_i8messageType == 0 || _i8messageType == 1 || _i8messageType == 2) {
+  if (_i8messageType == 0 /*|| _i8messageType == 1*/ || _i8messageType == 2) {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     __newObj["message"] = _messages_array[_i8messageType];
     if (MY_DG_WS) {

@@ -57,6 +57,7 @@ myWebServerWS::myWebServerWS()
 
 
 // Callback on websocket events
+// void _handleEvent(AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
@@ -97,9 +98,9 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
             }
             if(info->opcode == WS_TEXT) {
 
-                myWSSender _myWSSender;
-                Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)\n");
-                _myWSSender.prepareWSData(1); // text message confirmation
+                // myWSSender _myWSSender;
+                // Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)\n");
+                // _myWSSender.prepareWSData(1); // text message confirmation
 
             }
             else {
@@ -108,14 +109,20 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
             if(info->opcode == WS_TEXT){
               // message is a text message
                 data[len] = 0;
+                // Serial.println("----------------------- TEXT ------------------");
                 // Serial.printf("%s\n", (char*)data);
-
+                // Serial.println(len);
+                if (len == 1) { // this is a ping
+                  client->text((char*)data);
+                  return;
+                }
                 myWSReceiver _myWSReceiver(data);
 
             } else {
               // message is a binary message
               if (MY_DG_WS) {
-                  Serial.printf("- myWebServerWS::onEvent: this is a binary message (single frame)\n");
+                  // Serial.println("----------------------- BINARY ------------------");
+                  // Serial.printf("- myWebServerWS::onEvent: this is a binary message (single frame)\n");
                 for(size_t i=0; i < info->len; i++){
                   Serial.printf("%02x ", data[i]);
                 }

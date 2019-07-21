@@ -35,14 +35,15 @@ function connect() {
 
   // on receive a message, decode its action type to dispatch it
   ws.onmessage = function(e) {
+    // ping pong manager
     checkPing = 0;
-    var received_msg = e.data;
-    console.log( "WS Received Message: " + received_msg);
-    var _data = JSON.parse(e.data);
-    if (_data.ping) {
-      pingCountReceivedMark = _data.ping;
+    if ((e.data > 0) && (e.data < 10)) {
+      pingCountReceivedMark = e.data;
       return;
     }
+    // other messages
+    console.log( "WS Received Message: " + e.data);
+    var _data = JSON.parse(e.data);
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
       updateGlobalInformation(_data);
@@ -171,9 +172,7 @@ function check(){
       if (pingCount === 9) {
         pingCount = 1;
       }
-      ws.send(JSON.stringify({
-        ping: pingCount
-      }));
+      ws.send(pingCount);
       pingCountSentMark = pingCount;
     }
   }
