@@ -46,5 +46,7 @@ extern const short S_BOX_DEFAULT_STATE;
 
 extern int8_t i8OTAReboot;
 extern int8_t i8RequestedOTAReboots;
+extern int8_t i8OTA1Success;
+extern int8_t i8OTA2Success;
 
 #endif

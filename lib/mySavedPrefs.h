@@ -17,16 +17,19 @@ class mySavedPrefs
     static void loadPrefsWrapper();
 
     static void saveFromNetRequest(JsonObject& _obj);
-
-    static void saveBoxStartupTypePreferences(Preferences& _preferences);
+    static int8_t i8OTA1SuccessErrorCode;
+    static int8_t i8OTA2SuccessErrorCode;
+    static void loadOTASuccess(Preferences& _preferences);
 
     static void saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
     static void loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
 
+    static const PROGMEM char debugSaveMsgStart[];
+    static const PROGMEM char debugSaveMsgEndSuccess[];
+    static const PROGMEM char debugSaveMsgEndFail[];
+
   private:
-    static const PROGMEM char _debugSaveMsgStart[];
-    static const PROGMEM char _debugSaveMsgEndSuccess[];
-    static const PROGMEM char _debugSaveMsgEndFail[];
+
     static const PROGMEM char _debugLoadMsgStart[];
 
     // Save Prefs
@@ -36,6 +39,8 @@ class mySavedPrefs
     static void _saveNetworkEssentialPreferences(Preferences& _preferences);
     static void _saveUselessPreferences(Preferences& _preferences);
 
+    static void _saveBoxStartupTypePreferences(Preferences& _preferences);
+    static void _resetOTASuccess(Preferences& _preferences);
     static void _saveBoxEssentialPreferences(Preferences& _preferences);
     static void _saveBoxBehaviorPreferences(Preferences& _preferences);
 

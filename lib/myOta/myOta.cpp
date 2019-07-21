@@ -1,16 +1,22 @@
 /*
-  Myota.cpp - Library to handle ArduinoOTA library.
+  myOta.cpp - Library to handle ArduinoOTA library.
   Created by Cedric Lor, January 2, 2019.
 */
 
 #include "Arduino.h"
-#include "Myota.h"
+#include "myota.h"
 
-Myota::Myota()
+
+int8_t myOta::OTASuccessErrorCode = 10; // undefined
+
+
+myOta::myOta()
 {
 }
 
-void Myota::OTAConfig()
+
+
+void myOta::OTAConfig()
 {
   delay(4000);
   Serial.print("\nSETUP: OTAConfig(): starting\n");
@@ -25,7 +31,9 @@ void Myota::OTAConfig()
   }
 
   ArduinoOTA.setPort(3232);
+  OTASuccessErrorCode = 9;
   ArduinoOTA.setHostname("ESP32");
+  OTASuccessErrorCode = 8;
 
   // No authentication by default
   // ArduinoOTA.setPassword("admin");
@@ -47,8 +55,11 @@ void Myota::OTAConfig()
   Serial.print("SETUP: OTAConfig(): IP address: ");Serial.println(WiFi.localIP());
 }
 
-void Myota::startOTA()
+
+
+void myOta::startOTA()
 {
+  OTASuccessErrorCode = 7;
   String type;
   if (ArduinoOTA.getCommand() == U_FLASH) {
     type = "sketch";
@@ -60,21 +71,34 @@ void Myota::startOTA()
   Serial.println("OTA Start updating " + type);
 }
 
-void Myota::endOTA()
+
+
+void myOta::endOTA()
 {
   Serial.print("OTA Update End: switching i8RequestedOTAReboots to true and resetStartupTypePreferences\n");
-  i8RequestedOTAReboots = false;
-  mySavedPrefs::saveBoxSpecificPrefsWrapper(mySavedPrefs::saveBoxStartupTypePreferences);
+  // if 1, this means that there will be another OTA reboot after this one
+  // else, it is 0, this means that there will be not be another OTA reboot after this one
+  OTASuccessErrorCode = 6;
+  mySavedPrefs::saveBoxSpecificPrefsWrapper(saveOTASuccess);
   Serial.printf("\nOTA Update End\n");
 }
 
-void Myota::progressOTA(unsigned int progress, unsigned int total)
+
+
+void myOta::progressOTA(unsigned int progress, unsigned int total)
 {
   Serial.printf("Progress: %u%%\n", (progress / (total / 100)));
 }
 
-void Myota::errorOTA(ota_error_t error)
+
+
+
+void myOta::errorOTA(ota_error_t error)
 {
+  // if 1, this means that there will be another OTA reboot after this one
+  // else, it is 0, this means that there will be not be another OTA reboot after this one
+  OTASuccessErrorCode = error;
+  mySavedPrefs::saveBoxSpecificPrefsWrapper(saveOTASuccess);
   Serial.printf("Error[%u]: \n", error);
   if (error == OTA_AUTH_ERROR)
     Serial.printf("Auth Failed\n");
@@ -90,4 +114,16 @@ void Myota::errorOTA(ota_error_t error)
   else
   if (error == OTA_END_ERROR)
     Serial.printf("End Failed\n");
+}
+
+
+
+
+void myOta::saveOTASuccess(Preferences& _preferences) {
+  // choose the location where to save the error code for this OTA update
+  char __cOTASuccessErrorNVSKey[9] = "OTASucc";
+  strcat(__cOTASuccessErrorNVSKey, (char*)(i8RequestedOTAReboots + 1));
+  // save the success code in the relevant NVS location
+  size_t _OTASuccessErrorCodeRet = _preferences.putChar(__cOTASuccessErrorNVSKey, OTASuccessErrorCode);
+  Serial.printf("%s OTA update numb. %i success code == %i %s\"%s\"\n", mySavedPrefs::debugSaveMsgStart, (i8RequestedOTAReboots + 1), OTASuccessErrorCode, (_OTASuccessErrorCodeRet)?(mySavedPrefs::debugSaveMsgEndSuccess):(mySavedPrefs::debugSaveMsgEndFail), __cOTASuccessErrorNVSKey);
 }

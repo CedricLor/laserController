@@ -34,9 +34,9 @@ mySavedPrefs::mySavedPrefs()
 
 
 // Prepare some debug constant in PROGMEM
-const PROGMEM char mySavedPrefs::_debugSaveMsgStart[] = "PREFERENCES: savePreferences(): the value of";
-const PROGMEM char mySavedPrefs::_debugSaveMsgEndSuccess[] = "has been saved to \"savedSettingsNS\":";
-const PROGMEM char mySavedPrefs::_debugSaveMsgEndFail[] = "could not be saved to \"savedSettingsNS\":";
+const PROGMEM char mySavedPrefs::debugSaveMsgStart[] = "PREFERENCES: savePreferences(): the value of";
+const PROGMEM char mySavedPrefs::debugSaveMsgEndSuccess[] = "has been saved to \"savedSettingsNS\":";
+const PROGMEM char mySavedPrefs::debugSaveMsgEndFail[] = "could not be saved to \"savedSettingsNS\":";
 const PROGMEM char mySavedPrefs::_debugLoadMsgStart[] = "SETUP: loadPreferences():";
 
 
@@ -55,7 +55,6 @@ void mySavedPrefs::savePrefsWrapper() {
   _saveNetworkEssentialPreferences(_preferences);
   _saveUselessPreferences(_preferences);
 
-  saveBoxStartupTypePreferences(_preferences);
   _saveBoxEssentialPreferences(_preferences);
   _saveBoxBehaviorPreferences(_preferences);
 
@@ -88,6 +87,7 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadNetworkEssentialPreferences(_preferences);
       _loadUselessPreferences(_preferences);
 
+      loadOTASuccess(_preferences);
       _loadBoxStartupTypePreferences(_preferences);
       _loadBoxEssentialPreferences(_preferences);
       _loadBoxBehaviorPreferences(_preferences);
@@ -105,7 +105,7 @@ void mySavedPrefs::loadPrefsWrapper() {
   if (i8RequestedOTAReboots) {
     i8OTAReboot = 1;
     i8RequestedOTAReboots = i8RequestedOTAReboots - 1;
-    saveBoxSpecificPrefsWrapper(saveBoxStartupTypePreferences);
+    saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
   }
 
   Serial.print("\nSETUP: loadPrefsWrapper(): ending\n");
@@ -135,7 +135,8 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   // {action: "changeBox", key: "save", val: "i8RequestedOTAReboots", lb: 0, reboots: 2}
   if (_obj["val"] == "i8RequestedOTAReboots") {
     i8RequestedOTAReboots = _obj["reboots"];
-    saveBoxSpecificPrefsWrapper(saveBoxStartupTypePreferences);
+    saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
+    saveBoxSpecificPrefsWrapper(_resetOTASuccess);
     return;
   }
 
@@ -205,7 +206,7 @@ void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
   // // (incrementing a counter of the number of time save
   // // operations have taken place)
   // // size_t _sSavedSettingsRet =_preferences.putShort("savedSettings",_preferences.getShort("savedSettings", 0) + 1);
-  // // Serial.printf("%s savedSettings == %u %s\"savedSettings\"\n", _debugSaveMsgStart, _preferences.getShort("savedSettings"), (_sSavedSettingsRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  // // Serial.printf("%s savedSettings == %u %s\"savedSettings\"\n", debugSaveMsgStart, _preferences.getShort("savedSettings"), (_sSavedSettingsRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -223,13 +224,13 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // Interface only
   // -> reboot required
   size_t _sssidRet = _preferences.putString("ssid", ssid);
-  Serial.printf("%s ssid == %s %s\"ssid\"\n", _debugSaveMsgStart, ssid, (_sssidRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s ssid == %s %s\"ssid\"\n", debugSaveMsgStart, ssid, (_sssidRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of pass
   // Interface only
   // -> reboot required
   size_t _spassRet = _preferences.putString("pass", pass);
-  Serial.printf("%s pass == %s %s\"pass\"\n", _debugSaveMsgStart, pass, (_spassRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s pass == %s %s\"pass\"\n", debugSaveMsgStart, pass, (_spassRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of gatewayIP
   // Interface only
@@ -237,21 +238,21 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // putBytes(const char* key, const void* value, size_t len)
   uint8_t _ui8GatewayIP[4] = {gatewayIP[0], gatewayIP[1], gatewayIP[2], gatewayIP[3]};
   size_t _bsGatewayIPRet = _preferences.putBytes("gateIP", _ui8GatewayIP, 4);
-  Serial.printf("%s gatewayIP == %s %s\"gateIP\"\n", _debugSaveMsgStart, gatewayIP.toString().c_str(), (_bsGatewayIPRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s gatewayIP == %s %s\"gateIP\"\n", debugSaveMsgStart, gatewayIP.toString().c_str(), (_bsGatewayIPRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of ui16GatewayPort
   // Interface only
   // -> reboot required
   // putShort(const char* key, int16_t value)
   size_t _ui16GatewayPortRet = _preferences.putUShort("gatePort", ui16GatewayPort);
-  Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", _debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of ui8WifiChannel
   // Interface only
   // -> reboot required
   // putUChar(const char* key, uint8_t value)
   size_t _ui8WifiChannelRet = _preferences.putUChar("wifiChan", ui8WifiChannel);
-  Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", _debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -268,13 +269,13 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
   // -> no reboot but very messy if no reboot of the IF and the whole mesh
   // putUChar(const char* key, uint8_t value)
   size_t _ggui8ControllerBoxPrefixRet = _preferences.putUChar("bContrBPref", gui8ControllerBoxPrefix);
-  Serial.printf("%s gui8ControllerBoxPrefix == %u %s\"bContrBPref\"\n", _debugSaveMsgStart, gui8ControllerBoxPrefix, (_ggui8ControllerBoxPrefixRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s gui8ControllerBoxPrefix == %u %s\"bContrBPref\"\n", debugSaveMsgStart, gui8ControllerBoxPrefix, (_ggui8ControllerBoxPrefixRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of gui8BoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant UI8_BOXES_COUNT
   // Even a reboot would not suffice to have this param taken into account
   size_t _gui8BoxesCountRet = _preferences.putUChar("gui8BoxesCount", gui8BoxesCount);
-  Serial.printf("%s gui8BoxesCount == %u %s\"gui8BoxesCount\"\n", _debugSaveMsgStart, gui8BoxesCount, (_gui8BoxesCountRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s gui8BoxesCount == %u %s\"gui8BoxesCount\"\n", debugSaveMsgStart, gui8BoxesCount, (_gui8BoxesCountRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -293,20 +294,20 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
   // It is never used thereafter (usually using ControlerBoxes[gui8InterfaceIndexInCBArray].nodeId or the senderID in the mesh)
   // Even a reboot would not suffice to have this param taken into account
   size_t _gui32InterfaceNodeIdRet = _preferences.putUInt("iIFNodId", gui32InterfaceNodeId);
-  Serial.printf("%s gui32InterfaceNodeId == %u %s\"iIFNodId\"\n", _debugSaveMsgStart, gui32InterfaceNodeId, (_gui32InterfaceNodeIdRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s gui32InterfaceNodeId == %u %s\"iIFNodId\"\n", debugSaveMsgStart, gui32InterfaceNodeId, (_gui32InterfaceNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of gui8InterfaceNodeName
   // Not a very usefull value: the interface node name is fixed at startup based on the constant UI8_DEFAULT_INTERFACE_NODE_NAME
   // It is never used thereafter (usually using ControlerBoxes[gui8InterfaceIndexInCBArray].nodeName)
   // Even a reboot would not suffice to have this param taken into account
   size_t _gui8InterfaceNodeNameRet = _preferences.putUChar("sIFNodNam", gui8InterfaceNodeName);
-  Serial.printf("%s gui8InterfaceNodeName == %u %s\"sIFNodNam\"\n", _debugSaveMsgStart, gui8InterfaceNodeName, (_gui8InterfaceNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s gui8InterfaceNodeName == %u %s\"sIFNodNam\"\n", debugSaveMsgStart, gui8InterfaceNodeName, (_gui8InterfaceNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // recalculate gui8InterfaceIndexInCBArray with the new values of gui8InterfaceNodeName and gui8ControllerBoxPrefix
   // It is never used thereafter (usually using ControlerBoxes[gui8InterfaceIndexInCBArray].nodeName)
   // -> no reboot but very messy if no reboot of the IF and the whole mesh
   gui8InterfaceIndexInCBArray = gui8InterfaceNodeName - gui8ControllerBoxPrefix;
-  Serial.printf("%s gui8InterfaceIndexInCBArray recalculated to: %u (not saved)\n", _debugSaveMsgStart, gui8InterfaceIndexInCBArray);
+  Serial.printf("%s gui8InterfaceIndexInCBArray recalculated to: %u (not saved)\n", debugSaveMsgStart, gui8InterfaceIndexInCBArray);
 }
 
 
@@ -319,14 +320,26 @@ void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
 /*
   i8RequestedOTAReboots
 */
-void mySavedPrefs::saveBoxStartupTypePreferences(Preferences& _preferences) {
+void mySavedPrefs::_saveBoxStartupTypePreferences(Preferences& _preferences) {
   // save value of i8RequestedOTAReboots
-  // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot but quite messy (this would require a mesh reconfiguration)
-  // In addition, the interface is supposed to be also box 200 and the root node
+  // Note to use Prefs without reboot: needs a reboot to be effective
   size_t _i8RequestedOTARebootsRet = _preferences.putChar("OTARebReq", i8RequestedOTAReboots);
-  Serial.printf("%s i8RequestedOTAReboots == %i %s\"OTARebReq\"\n", _debugSaveMsgStart, i8RequestedOTAReboots, (_i8RequestedOTARebootsRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s i8RequestedOTAReboots == %i %s\"OTARebReq\"\n", debugSaveMsgStart, i8RequestedOTAReboots, (_i8RequestedOTARebootsRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
+
+/*
+  i8OTA1SuccessErrorCode
+  i8OTA2SuccessErrorCode
+*/
+void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
+  // resets the values of i8OTA1SuccessErrorCode and i8OTA2SuccessErrorCode when an OTA reboot is requested
+  // Note to use Prefs without reboot: no need for reboots; used to display data in console and webpage
+  size_t _i8OTA1SuccessErrorCodeRet = _preferences.putChar("OTASucc1", 11);
+  Serial.printf("%s OTA update numb. 1 success code == %i %s\"OTASucc1\"\n", debugSaveMsgStart, i8OTA1SuccessErrorCode, (_i8OTA1SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _i8OTA2SuccessErrorCodeRet = _preferences.putChar("OTASucc2", 11);
+  Serial.printf("%s OTA update numb. 2 success code == %i %s\"OTASucc2\"\n", debugSaveMsgStart, i8OTA2SuccessErrorCode, (_i8OTA2SuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+}
+
 
 
 
@@ -348,7 +361,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // to set ControlerBoxes[gui8MyIndexInCBArray].bNodeName
   // putUChar(const char* key, uint8_t value)
   size_t _gui8NodeNameRet = _preferences.putUChar("bNodeName", gui8NodeName);
-  Serial.printf("%s gui8NodeName == %u %s\"bNodeName\"\n", _debugSaveMsgStart, gui8NodeName, (_gui8NodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s gui8NodeName == %u %s\"bNodeName\"\n", debugSaveMsgStart, gui8NodeName, (_gui8NodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // recalculate gui8MyIndexInCBArray with the new values of gui8NodeName and gui8ControllerBoxPrefix
   // Note to use Prefs without reboot (would be updated without reboot):
@@ -357,14 +370,14 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // this value is then used in ControlerBox::updateThisBoxProperties
   // to set ControlerBoxes[gui8MyIndexInCBArray].bNodeName
   gui8MyIndexInCBArray = gui8NodeName - gui8ControllerBoxPrefix;
-  Serial.printf("%s gui8MyIndexInCBArray recalculated to: %u (not saved)\n", _debugSaveMsgStart, gui8MyIndexInCBArray);
+  Serial.printf("%s gui8MyIndexInCBArray recalculated to: %u (not saved)\n", debugSaveMsgStart, gui8MyIndexInCBArray);
 
   // save value of isInterface
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot but quite messy (this would require a mesh reconfiguration)
   // In addition, the interface is supposed to be also box 200 and the root node
   size_t _isInterfaceRet = _preferences.putBool("isIF", isInterface);
-  Serial.printf("%s isInterface == %i %s\"isIF\"\n", _debugSaveMsgStart, isInterface, (_isInterfaceRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s isInterface == %i %s\"isIF\"\n", debugSaveMsgStart, isInterface, (_isInterfaceRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -380,13 +393,13 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from ControlerBoxes[gui8MyIndexInCBArray])
   size_t _sBoxDefaultStateRet = _preferences.putShort("sBoxDefSta", ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState);
-  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", _debugSaveMsgStart, ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState, (_sBoxDefaultStateRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", debugSaveMsgStart, ControlerBoxes[gui8MyIndexInCBArray].sBoxDefaultState, (_sBoxDefaultStateRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from ControlerBoxes[gui8MyIndexInCBArray])
   size_t _masterNodeNameRet = _preferences.putUChar("bMasterNName", ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName);
-  Serial.printf("%s ControlerBoxes[%u].bMasterBoxName == %u %s\"bMasterNName\"\n", _debugSaveMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, (_masterNodeNameRet)?(_debugSaveMsgEndSuccess):(_debugSaveMsgEndFail));
+  Serial.printf("%s ControlerBoxes[%u].bMasterBoxName == %u %s\"bMasterNName\"\n", debugSaveMsgStart, gui8MyIndexInCBArray, ControlerBoxes[gui8MyIndexInCBArray].bMasterBoxName, (_masterNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of iSlaveOnOffReaction
   // _preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
@@ -464,6 +477,29 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
   // gui8BoxesCount
   gui8BoxesCount =_preferences.getUChar("gui8BoxesCount", gui8BoxesCount);
   Serial.printf("%s gui8BoxesCount set to: %u\n", _debugLoadMsgStart, gui8BoxesCount);
+}
+
+
+
+
+
+
+
+
+/*
+  int8_t i8OTA1SuccessErrorCode
+  int8_t i8OTA2SuccessErrorCode
+  uint8_t ui8RebootsSinceLastOTAReboot = 0;
+*/
+int8_t mySavedPrefs::i8OTA1SuccessErrorCode = 11;
+int8_t mySavedPrefs::i8OTA2SuccessErrorCode = 11;
+
+void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
+  // save the success code in the relevant NVS location
+  i8OTA1SuccessErrorCode = _preferences.getChar("OTASucc1", i8OTA1SuccessErrorCode);
+  Serial.printf("%s i8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, i8OTA1SuccessErrorCode);
+  i8OTA2SuccessErrorCode = _preferences.getChar("OTASucc1", i8OTA2SuccessErrorCode);
+  Serial.printf("%s i8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, i8OTA1SuccessErrorCode);
 }
 
 

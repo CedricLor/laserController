@@ -1,22 +1,25 @@
 /*
-  Myota.h - Library to handle ArduinoOTA library.
+  myOta.h - Library to handle ArduinoOTA library.
   Created by Cedric Lor, January 2, 2019.
 */
 
-#ifndef Myota_h
-#define Myota_h
+#ifndef myOta_h
+#define myOta_h
 
 #include "Arduino.h"
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-class Myota
+class myOta
 {
   public:
-    Myota();
+    myOta();
     static void OTAConfig();
+    static int8_t OTASuccessErrorCode;
+
   private:
+    static void saveOTASuccess(Preferences& _preferences);
     static void startOTA();
     static void endOTA();
     static void progressOTA(unsigned int progress, unsigned int total);

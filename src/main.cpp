@@ -17,7 +17,8 @@ Scheduler    userScheduler;
 
 #include "../lib/mySavedPrefs.cpp"
 
-#include "../lib/myOta/Myota.cpp"
+#include <../lib/myOta/myota.cpp>
+// #include <myota.cpp>
 
 #include "../lib/myMesh.cpp"
 
@@ -50,7 +51,7 @@ void setup() {
 
   // The ESP was restarted with an OTA request saved in mySavedPrefs
   if (i8OTAReboot) {
-    Myota::OTAConfig();
+    myOta::OTAConfig();
     return;
   }
 
