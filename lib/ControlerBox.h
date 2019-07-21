@@ -36,9 +36,9 @@ class ControlerBox
     static uint32_t uiSettingTimeOfValFromPir;
     static short int valFromWeb;
 
-    static int8_t findByNodeId(uint32_t _nodeId);
+    static int8_t findByNodeId(uint32_t _ui32nodeId);
 
-    static void updateConnectedBoxCount(short int newConnectedBoxesCount);
+    static void updateConnectedBoxCount(short int _newConnectedBoxesCount);
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;
 
@@ -46,7 +46,7 @@ class ControlerBox
     static void setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime);
     static void setBoxDefaultState(const uint8_t _ui8BoxIndex, const short _sBoxDefaultState);
 
-    static void deleteBox(uint32_t nodeId);
+    static void deleteBox(uint32_t _ui32nodeId);
 
     static Task tReboot;
     static void _reboot();
