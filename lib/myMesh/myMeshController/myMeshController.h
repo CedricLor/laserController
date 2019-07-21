@@ -57,8 +57,8 @@ class myMeshController
     void _changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t _ui32SenderNodeId=0);
 
     // helpers to _changedBoxConfirmation (on the interface and the other boxes)
-    void _updateSenderMasterBox(uint8_t _ui8BoxIndex, JsonObject& _obj);
-    void _updateSenderDefaultState(uint8_t _ui8BoxIndex, JsonObject& _obj);
+    void _updateSenderMasterBox(uint16_t _ui16BoxIndex, JsonObject& _obj);
+    void _updateSenderDefaultState(uint16_t _ui16BoxIndex, JsonObject& _obj);
 
     // void _manualSwitch(JsonDocument& root);
     // void _changeInclusionIR(JsonDocument& root);

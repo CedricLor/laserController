@@ -81,36 +81,36 @@ void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  bNodeName = gui8NodeName;
+  bNodeName = gui16NodeName;
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {
     Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
-    ControlerBoxes[gui8MyIndexInCBArray].printProperties(gui8MyIndexInCBArray);
+    ControlerBoxes[gui16MyIndexInCBArray].printProperties(gui16MyIndexInCBArray);
   };
 }
 
 
 
-void ControlerBox::printProperties(const uint8_t _ui8BoxIndex) {
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].nodeId: %u\n", _ui8BoxIndex, nodeId);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].APIP:", _ui8BoxIndex);Serial.println(APIP.toString());
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].stationIP:", _ui8BoxIndex);Serial.println(stationIP.toString());
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bNodeName: %u\n", _ui8BoxIndex, this->bNodeName);
+void ControlerBox::printProperties(const uint8_t __ui16BoxIndex) {
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].nodeId: %u\n", __ui16BoxIndex, nodeId);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].APIP:", __ui16BoxIndex);Serial.println(APIP.toString());
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].stationIP:", __ui16BoxIndex);Serial.println(stationIP.toString());
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bNodeName: %u\n", __ui16BoxIndex, this->bNodeName);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveState: %u\n", _ui8BoxIndex, boxActiveState);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].uiBoxActiveStateStartTime: %u\n", _ui8BoxIndex, uiBoxActiveStateStartTime);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", _ui8BoxIndex, boxActiveStateHasBeenSignaled);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", _ui8BoxIndex, boxActiveStateHasBeenTakenIntoAccount);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveState: %u\n", __ui16BoxIndex, boxActiveState);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].uiBoxActiveStateStartTime: %u\n", __ui16BoxIndex, uiBoxActiveStateStartTime);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, boxActiveStateHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, boxActiveStateHasBeenTakenIntoAccount);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", _ui8BoxIndex, isNewBoxHasBeenSignaled);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", _ui8BoxIndex, boxDeletionHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxName: %u\n", _ui8BoxIndex, bMasterBoxName);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxNameChangeHasBeenSignaled: %i\n", _ui8BoxIndex, bMasterBoxNameChangeHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxName: %u\n", __ui16BoxIndex, bMasterBoxName);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxNameChangeHasBeenSignaled: %i\n", __ui16BoxIndex, bMasterBoxNameChangeHasBeenSignaled);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultState: %u\n", _ui8BoxIndex, sBoxDefaultState);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", _ui8BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultState: %u\n", __ui16BoxIndex, sBoxDefaultState);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
 void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
@@ -122,7 +122,7 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
 
 // Static Methods
 int8_t ControlerBox::findByNodeId(uint32_t _ui32nodeId) {
-  for (uint8_t _i = 0; _i < gui8BoxesCount; _i++) {
+  for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
       return _i;
     }
@@ -138,29 +138,29 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 
   // Setting nodeName, nodeId and IP properties
   // extract the index of the relevant box from its senderNodeName in the JSON
-  uint8_t __ui8NodeName = _obj["NNa"]; // ex. 201
-  Serial.printf("ControlerBox::updateOtherBoxProperties(): __ui8NodeName = %u\n", __ui8NodeName);
-  uint8_t __ui8BoxIndex = __ui8NodeName - gui8ControllerBoxPrefix; // 201 - 200 = 1
+  uint16_t __ui16NodeName = _obj["NNa"]; // ex. 201
+  Serial.printf("ControlerBox::updateOtherBoxProperties(): __ui16NodeName = %u\n", __ui16NodeName);
+  uint16_t __ui16BoxIndex = __ui16NodeName - gui16ControllerBoxPrefix; // 201 - 200 = 1
 
   // set the nodeId
-  Serial.printf("ControlerBox::updateOtherBoxProperties(): __ui8BoxIndex = %u\n", __ui8BoxIndex);
-  if (ControlerBoxes[__ui8BoxIndex].nodeId == 0) {
+  Serial.printf("ControlerBox::updateOtherBoxProperties(): __ui16BoxIndex = %u\n", __ui16BoxIndex);
+  if (ControlerBoxes[__ui16BoxIndex].nodeId == 0) {
     updateConnectedBoxCount(connectedBoxesCount + 1);
-    ControlerBoxes[__ui8BoxIndex].isNewBoxHasBeenSignaled = false;
-    Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__ui8BoxIndex].isNewBoxHasBeenSignaled = %i\n", ControlerBoxes[__ui8BoxIndex].isNewBoxHasBeenSignaled);
+    ControlerBoxes[__ui16BoxIndex].isNewBoxHasBeenSignaled = false;
+    Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__ui16BoxIndex].isNewBoxHasBeenSignaled = %i\n", ControlerBoxes[__ui16BoxIndex].isNewBoxHasBeenSignaled);
   }
-  ControlerBoxes[__ui8BoxIndex].nodeId = _ui32SenderNodeId;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__ui8BoxIndex].nodeId = %u\n", ControlerBoxes[__ui8BoxIndex]._ui32SenderNodeId);
+  ControlerBoxes[__ui16BoxIndex].nodeId = _ui32SenderNodeId;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__ui16BoxIndex].nodeId = %u\n", ControlerBoxes[__ui16BoxIndex]._ui32SenderNodeId);
 
   // set the IPs
-  ControlerBoxes[__ui8BoxIndex].APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].APIP = ", __ui8BoxIndex);Serial.println(ControlerBoxes[__ui8BoxIndex].APIP);
-  ControlerBoxes[__ui8BoxIndex].stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
-  // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].stationIP = ", __ui8BoxIndex);Serial.println(ControlerBoxes[__ui8BoxIndex].stationIP);
+  ControlerBoxes[__ui16BoxIndex].APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
+  ControlerBoxes[__ui16BoxIndex].stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
+  // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
 
   // set the bNodeName
-  ControlerBoxes[__ui8BoxIndex].bNodeName = __ui8NodeName;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].bNodeName = %u\n", __ui8BoxIndex, ControlerBoxes[__ui8BoxIndex].bNodeName);
+  ControlerBoxes[__ui16BoxIndex].bNodeName = __ui16NodeName;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].bNodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].bNodeName);
 
   // Setting activeState stack
   // need to send via myMeshViews and add to ControlerBox the time
@@ -168,19 +168,19 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // extract the __senderBoxActiveState from the JSON
   const short int __senderBoxActiveState = _obj["actSt"];
   const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
-  setBoxActiveState(__ui8BoxIndex, __senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
+  setBoxActiveState(__ui16BoxIndex, __senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
 
   // Setting defaultState stack
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
   const short int __senderBoxDefaultState = _obj["boxDefstate"];
-  setBoxDefaultState(__ui8BoxIndex, __senderBoxDefaultState);
+  setBoxDefaultState(__ui16BoxIndex, __senderBoxDefaultState);
 
   // Print out the updated properties
   if (MY_DEBUG == true) {
-    Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %u. Calling printProperties().\n", __ui8BoxIndex);
-    ControlerBoxes[__ui8BoxIndex].printProperties(__ui8BoxIndex);
+    Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %u. Calling printProperties().\n", __ui16BoxIndex);
+    ControlerBoxes[__ui16BoxIndex].printProperties(__ui16BoxIndex);
   }
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }
@@ -191,14 +191,14 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 // Setter for the activeState and associated variables
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
-void ControlerBox::setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime) {
+void ControlerBox::setBoxActiveState(const uint8_t __ui16BoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime) {
   Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
-  ControlerBoxes[_ui8BoxIndex].boxActiveState = _sBoxActiveState;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveState: %u\n", _ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].boxActiveState);
+  ControlerBoxes[__ui16BoxIndex].boxActiveState = _sBoxActiveState;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveState);
 
-  ControlerBoxes[_ui8BoxIndex].boxActiveStateHasBeenSignaled = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", _ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].boxActiveStateHasBeenSignaled);
+  ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
   // setters:
   // - by default to true upon init (controlerBox constructor);
   // - to false here (usefull for the IF, for the received states of other boxes);
@@ -206,11 +206,11 @@ void ControlerBox::setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sB
   // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
   // used by the interface mostly
 
-  ControlerBoxes[_ui8BoxIndex].uiBoxActiveStateStartTime = _uiBoxActiveStateStartTime;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].uiBoxActiveStateStartTime: %u\n", __ui8BoxIndex, ControlerBoxes[__ui8BoxIndex].uiBoxActiveStateStartTime);
+  ControlerBoxes[__ui16BoxIndex].uiBoxActiveStateStartTime = _uiBoxActiveStateStartTime;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].uiBoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].uiBoxActiveStateStartTime);
 
-  ControlerBoxes[_ui8BoxIndex].boxActiveStateHasBeenTakenIntoAccount = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].boxActiveStateHasBeenTakenIntoAccount);
+  ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount);
   // setters:
   // - by default at true upon init (controlerBox constructor);
   // - to false here (useful so that the boxState can check if a boxState change request has come);
@@ -227,14 +227,14 @@ void ControlerBox::setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sB
 
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
-void ControlerBox::setBoxDefaultState(const uint8_t _ui8BoxIndex, const short _sBoxDefaultState) {
+void ControlerBox::setBoxDefaultState(const uint8_t __ui16BoxIndex, const short _sBoxDefaultState) {
   Serial.println("ControlerBox::setBoxDefaultState(): Starting");
 
-  ControlerBoxes[_ui8BoxIndex].sBoxDefaultState = _sBoxDefaultState;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveState: %u\n", _ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].boxActiveState);
+  ControlerBoxes[__ui16BoxIndex].sBoxDefaultState = _sBoxDefaultState;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveState);
 
-  ControlerBoxes[_ui8BoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", _ui8BoxIndex, ControlerBoxes[_ui8BoxIndex].boxActiveStateHasBeenSignaled);
+  ControlerBoxes[__ui16BoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
 
   Serial.println("ControlerBox::setBoxDefaultState(): Ending");
 }
@@ -252,7 +252,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 void ControlerBox::deleteBox(uint32_t _ui32nodeId) {
   Serial.println("ControlerBox::deleteBox(): Starting");
-  for (uint8_t __it = 0; __it < gui8BoxesCount; __it++) {
+  for (uint16_t __it = 0; __it < gui16BoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == _ui32nodeId) {
       ControlerBoxes[__it].nodeId = 0;
       ControlerBoxes[__it].APIP = {0,0,0,0};

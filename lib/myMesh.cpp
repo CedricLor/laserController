@@ -60,7 +60,7 @@ void myMesh::meshSetup() {
   laserControllerMesh.setContainsRoot(true);
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
-  ControlerBoxes[gui8MyIndexInCBArray].updateThisBoxProperties();
+  ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
 
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
@@ -82,14 +82,14 @@ void myMesh::receivedCallback( uint32_t from, String &msg ) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
-  ControlerBoxes[gui8MyIndexInCBArray].updateThisBoxProperties();
+  ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
   _decodeRequest(from, msg);
 }
 
 
 // This Task broadcasts all other boxes this boxState, when this box newly connects to the Mesh
 // after a delay of 4500 ms (before such delay, message are not send to the mesh)
-Task myMesh::_tSendStatusOnNewConnection((100 + gui8MyIndexInCBArray * 250), 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
+Task myMesh::_tSendStatusOnNewConnection((100 + gui16MyIndexInCBArray * 250), 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
 
 void myMesh::_tcbSendStatusOnNewConnection() {
   myMeshViews __myMeshViews;
@@ -119,7 +119,7 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     // else, we were already connected to the mesh: do nothing; we will send it a statusMsg when it will have identified itself
     // else {
     //   Serial.println("myMesh::newConnectionCallback(): A new box has joined the existing mesh. About to send it my data.");
-    //   _tSendStatusOnNewConnection.enableDelayed(gui8MyIndexInCBArray * 1000);
+    //   _tSendStatusOnNewConnection.enableDelayed(gui16MyIndexInCBArray * 1000);
     //   Serial.println("myMesh::newConnectionCallback(): Enabled task _tSendStatusOnNewConnection.");
     // }
 }
@@ -146,7 +146,7 @@ void myMesh::changedConnectionCallback() {
     Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
     Serial.println("--------------------- CHANGED CONNECTION --------------------------");
   }
-  // ControlerBoxes[gui8MyIndexInCBArray].updateThisBoxProperties();
+  // ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
 }
 
 

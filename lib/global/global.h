@@ -19,28 +19,26 @@ extern const short VERSION;
 
 extern const uint8_t UI8_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
 
-extern uint8_t gui8NodeName;
+extern uint16_t gui16NodeName;
 extern bool isInterface;
 
-extern const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME;
 extern uint32_t gui32InterfaceNodeId;
-extern uint8_t gui8InterfaceIndexInCBArray;
+extern uint16_t gui16InterfaceIndexInCBArray;
 
 extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
-extern const uint8_t UI8_MASTER_NODE_PREFIX;                                          // NETWORK BY NETWORK
-extern uint8_t gui8ControllerBoxPrefix;
-extern uint8_t gui8MyIndexInCBArray;
+extern uint16_t gui16ControllerBoxPrefix;
+extern uint16_t gui16MyIndexInCBArray;
 
 extern short iSlaveOnOffReaction;
-extern uint8_t gui8InterfaceNodeName;
+extern uint16_t gui16InterfaceNodeName;
 
 extern const char* slaveReactionHtml[4];
 
 extern const uint8_t UI8_BOXES_COUNT;                                                   // NETWORK BY NETWORK
-extern uint8_t gui8BoxesCount;                           // NETWORK BY NETWORK
+extern uint16_t gui16BoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;
 
