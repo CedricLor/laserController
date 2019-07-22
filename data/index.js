@@ -247,7 +247,8 @@ function onMessActionSwitch(_data) {
   }
 
 
-  if (_data.action === "addBox") { // 6. a new box has connected to the mesh
+  // 6. a new box has connected to the mesh
+  if (_data.action === "addBox") {
     console.log("---------------- addBox switch starting -----------------");
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     addOrUpdateNewRowForNewBox(_data);
@@ -256,10 +257,12 @@ function onMessActionSwitch(_data) {
   }
 
 
-  if (_data.action === "deleteBox") { // 7. an existing box has been disconnected from the mesh
+  // 7. an existing box has been disconnected from the mesh
+  // or the DOM contained boxRows corresponding to boxes that
+  // have been disconnected from the mesh
+  if (_data.action === "deleteBox") {
     console.log("---------------- delete switch starting -----------------");
-    // or the DOM contained boxRows corresponding to boxes that have been disconnected
-    // from the mesh
+    // delete all the boxes
     if (_data.lb === 'a') {
       // _data = {action: "deleteBox"; lb: "a"}
       deleteAllBoxRows();
@@ -331,8 +334,8 @@ function onMessActionSwitch(_data) {
   }
 
 
-
-  if (_data.action === "changeBox" && _data.key === "masterbox") { // 8. a box has changed master
+  // 8. a box has changed master
+  if (_data.action === "changeBox" && _data.key === "masterbox") {
     // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
     // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
     updateMasterBoxNumber(_data);
@@ -340,9 +343,10 @@ function onMessActionSwitch(_data) {
   }
 
 
-
-  if (_data.action === "changeBox" && _data.key === "boxDefstate") { // 9. User request to change default boxState of a given box has been received and is being processed
-                                                                                       // 10. the default state of a given box has changed
+  // 9. User request to change default boxState of a given box has been received
+  // and is being processed
+  // 10. the default state of a given box has changed
+  if (_data.action === "changeBox" && _data.key === "boxDefstate") {
     // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
     // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
     updateStateButton(_data);
@@ -416,6 +420,12 @@ function onMessActionSwitch(_data) {
 }
 
 // ON MESSAGE EVENT HANDLERS END
+
+
+
+
+
+
 
 
 // Check if WS server is still available (and reconnect as necessary)
