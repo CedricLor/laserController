@@ -226,7 +226,7 @@ function onLBsRebootInformUserOnAddBox(_data) {
 
 
 
-onLBsRebootInformUserOnDeleteBox() {
+function onLBsRebootInformUserOnDeleteBox(_data) {
   if (areLBsrebooting === true) {
     // store the number in a form accessible for the maps
     let _laserBoxIndexNumber = parseInt(_data.lb, 10);
@@ -290,7 +290,55 @@ onLBsRebootInformUserOnDeleteBox() {
 
 
 
+function onLBsRebootInformUserOnRebootStartConfirmation(_data) {
+  // change the button color
+  let _rebootLbsBtn = document.getElementById('rebootLBs');
+  _rebootLbsBtn.className += ' button_change_received';
 
+  // save the fact that we are in rebooting
+  areLBsrebooting = true;
+
+  // select the infoBox
+  var _infoBox = document.querySelector('#infoBox');
+
+  // create a div to hold the infos
+  var _divLBsWaitingToRebootList = document.createElement("div");
+  _divLBsWaitingToRebootList.setAttribute("id", "divLBsWaitingToReboot");
+
+  // create a text node for the introduction text
+  var _infoText = document.createTextNode('Laser boxes waiting to reboot: ');
+  // append it to the div
+  _divLBsWaitingToRebootList.appendChild(_infoText);
+
+  // create a span to hold the numbers of the LBs waiting to reboot
+  var _spanLBsWaitingToRebootList = document.createElement("span");
+  _spanLBsWaitingToRebootList.setAttribute("id", "spanLBsWaitingToReboot");
+
+  // iterate over the boxesRows map, create textNodes for the span and
+  // store them in a map
+  var _i = 0;
+  var _mapSize = boxesRows.size;
+  boxesRows.forEach(function(val, key) {
+    _i++;
+    let _text;
+    if (_i === _mapSize) {
+      _text = (parseInt(key) + 200) + ".";
+    } else {
+      _text = (parseInt(key) + 200) + ", ";
+    }
+    // create a textNode to hold the box number and store it into a new map
+    let _boxNumbNode = document.createTextNode(_text);
+    LBsWaitingToReboot.set(key, _boxNumbNode);
+    // add the new textNode to the span
+    _spanLBsWaitingToRebootList.appendChild(LBsWaitingToReboot.get(key));
+  });
+
+  // append the span to the div
+  _divLBsWaitingToRebootList.appendChild(_spanLBsWaitingToRebootList);
+  // append the div to the DOM
+  _infoBox.appendChild(_divLBsWaitingToRebootList);
+  console.log("--------------- end reboot switch -----------------");
+}
 
 
 function onMessActionSwitch(_data) {
@@ -375,56 +423,8 @@ function onMessActionSwitch(_data) {
 
 
   if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { // User request to reboot the LBs has been received and is being processed
-    console.log("---------------- reboot switch starting -----------------");
-
-    // change the button color
-    let _rebootLbsBtn = document.getElementById('rebootLBs');
-    _rebootLbsBtn.className += ' button_change_received';
-
-    // save the fact that we are in rebooting
-    areLBsrebooting = true;
-
-    // select the infoBox
-    var _infoBox = document.querySelector('#infoBox');
-
-    // create a div to hold the infos
-    var _divLBsWaitingToRebootList = document.createElement("div");
-    _divLBsWaitingToRebootList.setAttribute("id", "divLBsWaitingToReboot");
-
-    // create a text node for the introduction text
-    var _infoText = document.createTextNode('Laser boxes waiting to reboot: ');
-    // append it to the div
-    _divLBsWaitingToRebootList.appendChild(_infoText);
-
-    // create a span to hold the numbers of the LBs waiting to reboot
-    var _spanLBsWaitingToRebootList = document.createElement("span");
-    _spanLBsWaitingToRebootList.setAttribute("id", "spanLBsWaitingToReboot");
-
-    // iterate over the boxesRows map, create textNodes for the span and
-    // store them in a map
-    var _i = 0;
-    var _mapSize = boxesRows.size;
-    boxesRows.forEach(function(val, key) {
-      _i++;
-      let _text;
-      if (_i === _mapSize) {
-        _text = (parseInt(key) + 200) + ".";
-      } else {
-        _text = (parseInt(key) + 200) + ", ";
-      }
-      // create a textNode to hold the box number and store it into a new map
-      let _boxNumbNode = document.createTextNode(_text);
-      LBsWaitingToReboot.set(key, _boxNumbNode);
-      // add the new textNode to the span
-      _spanLBsWaitingToRebootList.appendChild(LBsWaitingToReboot.get(key));
-    });
-
-    // append the span to the div
-    _divLBsWaitingToRebootList.appendChild(_spanLBsWaitingToRebootList);
-    // append the div to the DOM
-    _infoBox.appendChild(_divLBsWaitingToRebootList);
-    console.log("--------------- end reboot switch -----------------");
-
+    console.log("---------------- rebootStart switch starting -----------------");
+    onLBsRebootInformUserOnRebootStartConfirmation(_data);
     return;
   }
 }
@@ -588,7 +588,8 @@ function onclickRebootLBsButton(e) {
     }));
     // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
   } else {
-    document.querySelector('#infoBox').innerHTML('There are no laser box currently connected.');
+    var _infoBox = document.querySelector('#infoBox');
+    _infoBox.innerHTML = 'There are no laser box currently connected.';
   }
   console.log("onclickRebootLBsButton: ending");
 };
