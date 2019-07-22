@@ -470,18 +470,14 @@ function check(){
     console.log("check(): NO CONNECTION. TRYING TO RECONNECT");
     console.log("check(): !!! Trying to reconnect on !ws or ws.CLOSED !!!");
     // increment the checkConnect.retryCount
-    // console.log("check(): checkConnect.retryCount === " + checkConnect.retryCount + ".");
     checkConnect.retryCount++;
-    // console.log("check(): checkConnect.retryCount === " + checkConnect.retryCount + ".");
     // try to connect
     connect();
-    // return (the following lines are in the case the connection
-    // is still alive)
     return;
   }
 
-  // if the connection is open, every 4 iterations of check(),
-  // check that the server is still here
+  // if the connection is open,
+  // check that the server is still effectively here
   if(ws.readyState === WebSocket.OPEN) {
     ping.checkPingStatus();
   }
