@@ -151,6 +151,18 @@ var onLBsReboot = {
   },
 
 
+
+  onAdditionalBoxes: function(_laserBoxIndexNumber, _destinationSpanId /*'#spanRebootingLBs'*/, _destinationMapSet, _originMapSet) {
+    // select the infoBox
+    let _spanNewStateLBsList_spanNewStateLBsList = document.querySelector(_destinationSpanId);
+    // transfer the box from the waitingLBs map to the rebootingLBs map
+    _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
+    // insert the node in the DOM
+    _spanNewStateLBsList.appendChild(rebootingLBs.get(_laserBoxIndexNumber));
+  },
+
+
+
   onAddBox: function(_data) {
     if (areLBsrebooting === true) {
       // store the number in a form accessible for the maps
@@ -159,14 +171,7 @@ var onLBsReboot = {
       if (rebootedLBs.size === 0) {
         this.onFirstBox(_laserBoxIndexNumber, "divRebootedLBs", 'Laser boxes currently rebooted: ', "spanRebootedLBs", rebootingLBs, rebootedLBs);
       } else {
-        // select the infoBox
-        var _rebootedLBs = document.querySelector('#spanRebootedLBs');
-
-        // transfer the box from the waitingLBs map to the rebooting LBs map
-        rebootedLBs.set(_laserBoxIndexNumber, rebootingLBs.get(_laserBoxIndexNumber));
-
-        // insert the frag in the DOM
-        _rebootedLBs.appendChild(rebootedLBs.get(_laserBoxIndexNumber));
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', rebootingLBs, rebootedLBs);
       }
 
       rebootingLBs.delete(_laserBoxIndexNumber);
@@ -230,15 +235,12 @@ var onLBsReboot = {
         this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", LBsWaitingToReboot, rebootingLBs);
 
       } else {
-        // select the infoBox
-        let _rebootingLBs = document.querySelector('#spanRebootingLBs');
-        // transfer the box from the waitingLBs map to the rebootingLBs map
-        rebootingLBs.set(_laserBoxIndexNumber, LBsWaitingToReboot.get(_laserBoxIndexNumber));
-        // delete the box from the LBsWaitingToReboot map
-        LBsWaitingToReboot.delete(_laserBoxIndexNumber);
-        // insert the node in the DOM
-        _rebootingLBs.appendChild(rebootingLBs.get(_laserBoxIndexNumber));
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', rebootingLBs, rebootedLBs);
       }
+
+      // delete the box from the LBsWaitingToReboot map
+      LBsWaitingToReboot.delete(_laserBoxIndexNumber);
+
       if (boxesRows.size === 0) {
         // remove the div
         let _divLBsWaitingToReboot = document.querySelector('#divLBsWaitingToReboot');
@@ -558,6 +560,7 @@ function onclickRebootLBsButton(e) {
     // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
     return;
   }
+  // if no boxes are connected, inform the user that there are no boxes
   var _infoBox = document.querySelector('#infoBox');
   _infoBox.innerHTML = 'There are no laser box currently connected.';
   console.log("onclickRebootLBsButton: ending");
