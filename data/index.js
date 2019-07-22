@@ -20,10 +20,6 @@ var checkConnect = {
 }
 
 // rebooting boxes
-var areLBsrebooting = false;
-var LBsWaitingToReboot = new Map();
-var rebootingLBs = new Map();
-var rebootedLBs = new Map();
 
 
 
@@ -119,13 +115,17 @@ function sendReceivedIP() {
 // onLBsReboot Object
 //////////////////////////////////
 var onLBsReboot = {
+  active: false,
+  waitingLBs: new Map(),
+  rebootingLBs: new Map(),
+  rebootedLBs: new Map(),
+
   noConnectedBoxesSpan: false,
 
   deleteNoConnectedBoxesSpan: function() {
     if (this.noConnectedBoxesSpan) {
       this.noConnectedBoxesSpan = false;
-      var _infoBoxNoConnectedBoxes = document.querySelector('#infoNoBoxesConnected');
-      _infoBoxNoConnectedBoxes.parentNode.removeChild(_infoBoxNoConnectedBoxes);
+      removeDOMelement('#infoNoBoxesConnected');
     }
   },
 
@@ -142,7 +142,7 @@ var onLBsReboot = {
                         _msgDivId /*"divRebootedLBs"*/,
                         _msgIntro /*'Laser boxes currently rebooted: '*/,
                         _msgSpanId /*"spanRebootedLBs"*/,
-                        _originMapSet /*rebootingLBs*/,
+                        _originMapSet /*this.rebootingLBs*/,
                         _destinationMapSet /*rebootedLBs*/) {
     // select the infoBox
     let _infoBox = document.querySelector('#infoBox');
@@ -164,7 +164,7 @@ var onLBsReboot = {
     var _spanNewStateLBsList = document.createElement("span");
     _spanNewStateLBsList.setAttribute("id", _msgSpanId);
 
-    // transfer the box from the rebootingLBs map to the rebootedLBs map
+    // transfer the box from the this.rebootingLBs map to the rebootedLBs map
     _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
 
     // add the text node to the span
@@ -182,7 +182,7 @@ var onLBsReboot = {
   onAdditionalBoxes: function(_laserBoxIndexNumber, _destinationSpanId /*'#spanRebootingLBs'*/, _destinationMapSet, _originMapSet) {
     // select the infoBox
     let _spanNewStateLBsList = document.querySelector(_destinationSpanId);
-    // transfer the box from the waitingLBs map to the rebootingLBs map
+    // transfer the box from the waitingLBs map to the this.rebootingLBs map
     _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
     // insert the node in the DOM
     _spanNewStateLBsList.appendChild(_destinationMapSet.get(_laserBoxIndexNumber));
@@ -191,29 +191,27 @@ var onLBsReboot = {
 
 
   onAddBox: function(_data) {
-    if (areLBsrebooting === true) {
+    if (this.active === true) {
       // store the number in a form accessible for the maps
       let _laserBoxIndexNumber = parseInt(_data.lb, 10);
 
-      if (rebootedLBs.size === 0) {
-        this.onFirstBox(_laserBoxIndexNumber, "divRebootedLBs", 'Laser boxes currently rebooted: ', "spanRebootedLBs", rebootingLBs, rebootedLBs);
+      if (this.rebootedLBs.size === 0) {
+        this.onFirstBox(_laserBoxIndexNumber, "divRebootedLBs", 'Laser boxes currently rebooted: ', "spanRebootedLBs", this.rebootingLBs, this.rebootedLBs);
       } else {
-        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', rebootedLBs, rebootingLBs);
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', this.rebootedLBs, this.rebootingLBs);
       }
 
-      rebootingLBs.delete(_laserBoxIndexNumber);
+      this.rebootingLBs.delete(_laserBoxIndexNumber);
 
-      if (rebootingLBs.size === 0) {
+      if (this.rebootingLBs.size === 0) {
         // select the infoBox
         var _infoBox = document.querySelector('#infoBox');
 
         // delete the rebootingLBs div
-        var _divRebootingLBs = _infoBox.querySelector('#divRebootingLBs');
-        _infoBox.removeChild(_divRebootingLBs);
+        removeDOMelement('#divRebootingLBs');
 
         // delete the rebootedLBs div
-        var _divRebootedLBs = _infoBox.querySelector('#divRebootedLBs');
-        _infoBox.removeChild(_divRebootedLBs);
+        removeDOMelement('#divRebootedLBs');
 
         // change the button color
         let _rebootLbsBtn = document.getElementById('rebootLBs');
@@ -224,23 +222,20 @@ var onLBsReboot = {
         _spanLBsHaveRebooted.setAttribute("id", "LBsHaveRebooted");
         // create a text node for the introduction text
         var _infoText = document.createTextNode('All the laser boxes have rebooted.');
-        // insert the tetNode in the span
+        // insert the textNode in the span
         _spanLBsHaveRebooted.appendChild(_infoText);
         // insert the frag in the DOM
         _infoBox.appendChild(_spanLBsHaveRebooted);
         // set a timeout to delete the information for the info box
         window.setTimeout(function() {
-          var _infoBox = document.querySelector('#LBsHaveRebooted');
-          if (_infoBox !== null) {
-            _infoBox.parentNode.removeChild(_infoBox);
-          }
+          removeDOMelement('#LBsHaveRebooted');
         }, 15000);
 
         // empty the rebooted boxes maps
-        rebootedLBs.clear();
+        this.rebootedLBs.clear();
 
         // get out of the reboot process
-        areLBsrebooting = false;
+        this.active = false;
       }
     }
   },
@@ -248,31 +243,30 @@ var onLBsReboot = {
 
 
   onDeleteBox: function(_data) {
-    if (areLBsrebooting === true) {
+    if (this.active === true) {
       // store the number in a form accessible for the maps
       let _laserBoxIndexNumber = parseInt(_data.lb, 10);
 
-      if (rebootingLBs.size === 0) {
+      if (this.rebootingLBs.size === 0) {
         // change the button color
         let _rebootLbsBtn = document.getElementById('rebootLBs');
         _rebootLbsBtn.className += ' button_active_state';
         _rebootLbsBtn.classList.remove('button_clicked');
         _rebootLbsBtn.classList.remove('button_change_received');
 
-        this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", LBsWaitingToReboot, rebootingLBs);
+        this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", this.waitingLBs, this.rebootingLBs);
 
       } else {
         console.log("-----  onDeleteBox: about to call onAdditionalBoxes <------- ")
-        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', rebootingLBs, LBsWaitingToReboot);
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, this.waitingLBs);
       }
 
-      // delete the box from the LBsWaitingToReboot map
-      LBsWaitingToReboot.delete(_laserBoxIndexNumber);
+      // delete the box from the this.waitingLBs map
+      this.waitingLBs.delete(_laserBoxIndexNumber);
 
       if (boxesRows.size === 0) {
-        // remove the div
-        let _divLBsWaitingToReboot = document.querySelector('#divLBsWaitingToReboot');
-        _divLBsWaitingToReboot.parentNode.removeChild(_divLBsWaitingToReboot);
+        // remove the waiting LBs div
+        removeDOMelement('#divLBsWaitingToReboot');
         return;
       }
     }
@@ -286,7 +280,7 @@ var onLBsReboot = {
     _rebootLbsBtn.className += ' button_change_received';
 
     // save the fact that we are in rebooting
-    areLBsrebooting = true;
+    this.active = true;
 
     // select the infoBox
     var _infoBox = document.querySelector('#infoBox');
@@ -322,7 +316,7 @@ var onLBsReboot = {
       }
       // create a textNode to hold the box number and store it into a new map
       let _boxNumbNode = document.createTextNode(_text);
-      LBsWaitingToReboot.set(key, _boxNumbNode);
+      this.waitingLBs.set(key, _boxNumbNode);
       // add the new textNode to the span
       _spanLBsWaitingToRebootList.appendChild(LBsWaitingToReboot.get(key));
     });
@@ -390,10 +384,7 @@ function onMsgActionSwitch(_data) {
     }
     // if delete one box
     // _data = {lb:1; action:"deleteBox"}
-    if (boxesRows.size){
-      deleteBoxRow(_data);
-      onLBsReboot.onDeleteBox(_data);      
-    }
+    deleteBoxRow(_data);
     return;
   }
 
@@ -1230,20 +1221,25 @@ function deleteAllBoxRows() {
 
 
 
-function deleteBoxRow(data) {
+function deleteBoxRow(_data) {
   console.log("deleteBoxRow starting.");
-  var _boxRowToDelete = boxesRows.get(data.lb);
-  if (_boxRowToDelete === undefined) {
-    console.log("deleteBoxRow: There was no laser box [" + data.lb + "] in controlerBoxes map.");
-  } else {
-    console.log("deleteBoxRow: About to delete row corresponding to laser box [" + data.lb + "] in DOM and maps.");
+  if (boxesRows.size) {
+    var _boxRowToDelete = boxesRows.get(_data.lb);
+    if (_boxRowToDelete === undefined) {
+      console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in controlerBoxes map.");
+      return;
+    }
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
-    _deleteFromMaps(data.lb); // updating the controlesBoxes map
-    console.log("deleteBoxRow: deleted key [" + data.lb + "] in controlerBoxes and boxesRows maps.");
-    console.log(controlerBoxes);
+    _deleteFromMaps(_data.lb); // updating the controlesBoxes map
+    onLBsReboot.onDeleteBox(_data);
+    console.log("deleteBoxRow: deleted key [" + _data.lb + "] in controlerBoxes and boxesRows maps.");
+    console.log("deleteBoxRow ending.");
+    return true;
+  } else {
+    return false;
   }
-  console.log("deleteBoxRow ending.");
 }
+
 
 
 
@@ -1386,6 +1382,16 @@ window.onload = function(e){
 
 
 // HELPERS
+// Remove an element from the DOM
+function removeDOMelement(_selector) {
+  var _eltToRemove = document.querySelector(_selector);
+  if (_eltToRemove !== null) {
+    _eltToRemove.parentNode.removeChild(_eltToRemove);
+    return true;
+  }
+  return false;
+}
+
 // Returns a random number between min (inclusive) and max (exclusive)
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
