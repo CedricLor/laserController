@@ -6,18 +6,32 @@ var boxesRows = new Map();
 var boxRowTemplate = boxRowTemplateSelector();
 
 // ping and reconnect
-var checkWSinterval;
-var checkPing = 0;
-var connectRetryCount = 0;
-var pingCount = 1;
-var pingCountSentMark = 1;
-var pingCountReceivedMark = 1;
+var ping = {
+  count: 1,
+  sentMark: 1,
+  receivedMark: 1,
+  check: 0
+}
+
+var checkConnect = {
+  intervalCode: -1,
+  retryCount: 0
+}
 
 // rebooting boxes
 var areLBsrebooting = false;
 var LBsWaitingToReboot = new Map();
 var rebootingLBs = new Map();
 var rebootedLBs = new Map();
+
+
+function sendReceivedIP() {
+  ws.send(JSON.stringify({
+    action: "ReceivedIP"
+  }));
+  // {action:"ReceivedIP}
+}
+
 
 
 // WEB SOCKET
@@ -31,8 +45,8 @@ function connect() {
   // currently in the DOM and their states
   ws.onopen = function() {
     console.log("connect(): WS connection open.");
-    connectRetryCount = 0;
-    console.log("connect(): connectRetryCount = " + connectRetryCount + ".");
+    checkConnect.retryCount = 0;
+    console.log("connect(): checkConnect.retryCount = " + checkConnect.retryCount + ".");
     console.log("Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
     ws.send(JSON.stringify({
       action: "handshake",
@@ -44,24 +58,16 @@ function connect() {
   // on receive a message, decode its action type to dispatch it
   ws.onmessage = function(e) {
     // ping pong manager
-    checkPing = 0;
-    if ((e.data > 0) && (e.data < 10)) {
-      pingCountReceivedMark = e.data;
-      return;
-    }
+    if (onMessPing(e)) {return;}
+
     // other messages
     console.log( "WS Received Message: " + e.data);
     var _data = JSON.parse(e.data);
 
-
-
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
       updateGlobalInformation(_data);
-      ws.send(JSON.stringify({
-        action: "ReceivedIP"
-      }));
-      // {action:"ReceivedIP}
+      sendReceivedIP();
       return;
     }
 
@@ -336,7 +342,7 @@ function connect() {
   // onclose, inform the user that an attempt to reconnect will be made soon
   // and delete all the boxRows
   ws.onclose = function(e) {
-    if (connectRetryCount != 10) {
+    if (checkConnect.retryCount != 10) {
       console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e.reason);
     }
     console.log('Socket is closed. Reason: ', e.reason);
@@ -353,12 +359,12 @@ function connect() {
 
 // Check if WS server is still available (and reconnect as necessary)
 function check(){
-  // if connectRetryCount is equal to 10, just stop trying
+  // if checkConnect.retryCount is equal to 10, just stop trying
   // console.log("check(): --- in check");
-  // console.log("check(): connectRetryCount === " + connectRetryCount + ".");
-  if (connectRetryCount === 10) {
+  // console.log("check(): checkConnect.retryCount === " + checkConnect.retryCount + ".");
+  if (checkConnect.retryCount === 10) {
     console.log("check(): Tried to reconnect 10 times. Stopping. Please reload or check the server.");
-    clearInterval(checkWSinterval);
+    clearInterval(checkConnect.intervalCode);
     // TO DO: inform the user that he should try to reload
     return;
   }
@@ -367,10 +373,10 @@ function check(){
   if(!ws || ws.readyState === WebSocket.CLOSED) {
     console.log("check(): NO CONNECTION. TRYING TO RECONNECT");
     console.log("check(): !!! Trying to reconnect on !ws or ws.CLOSED !!!");
-    // increment the connectRetryCount
-    // console.log("check(): connectRetryCount === " + connectRetryCount + ".");
-    connectRetryCount++;
-    // console.log("check(): connectRetryCount === " + connectRetryCount + ".");
+    // increment the checkConnect.retryCount
+    // console.log("check(): checkConnect.retryCount === " + checkConnect.retryCount + ".");
+    checkConnect.retryCount++;
+    // console.log("check(): checkConnect.retryCount === " + checkConnect.retryCount + ".");
     // try to connect
     connect();
     // return (the following lines are in the case the connection
@@ -382,38 +388,53 @@ function check(){
   // check that the server is still here
   if(ws.readyState === WebSocket.OPEN) {
 
-    // console.log("check(): pingCountSentMark === " + pingCountSentMark);
-    // console.log("check(): pingCountReceivedMark === " + pingCountReceivedMark);
-    if (pingCountSentMark != pingCountReceivedMark) {
+    // console.log("check(): ping.sentMark === " + ping.sentMark);
+    // console.log("check(): ping.receivedMark === " + ping.receivedMark);
+    if (ping.sentMark != ping.receivedMark) {
       console.log("check(): not receiving server pongs");
       console.log("check(): about to close connection");
       ws.close();
-      pingCount = 1;
-      pingCountReceivedMark = 1;
-      pingCountSentMark = 1;
+      ping.count = 1;
+      ping.receivedMark = 1;
+      ping.sentMark = 1;
       return;
     }
 
-    // console.log("check(): checkPing === " + checkPing + ".");
-    checkPing++;
-    // console.log("check(): checkPing === " + checkPing + ".");
-    if (checkPing === 3) {
-      // reset checkPing to 0
-      checkPing = 0;
-      // console.log("check(): checkPing === " + checkPing + ".");
-      // console.log("check(): about to ping server.");
+    ping.check++;
+    if (ping.check === 3) {
+      ping.check = 0;
 
       // try sending a numbered ping to the server
-      pingCount++;
-      if (pingCount === 9) {
-        pingCount = 1;
+      ping.count++;
+      if (ping.count === 9) {
+        ping.count = 1;
       }
-      ws.send(pingCount);
-      pingCountSentMark = pingCount;
+      ws.send(ping.count);
+      ping.sentMark = ping.count;
     }
   }
 }
 // WEB SOCKET END
+
+
+// ON MESSAGE EVENT HANDLERS
+function onMessPing(e) {
+  ping.check = 0;
+  if ((e.data > 0) && (e.data < 10)) {
+    ping.receivedMark = e.data;
+    return true;
+  }
+  return false;
+}
+// ON MESSAGE EVENT HANDLERS END
+
+
+
+
+
+
+
+
 
 
 
@@ -1227,11 +1248,9 @@ function boxRowDOMSelector(laserBoxIndexNumber) {
 
 
 function boxRowTemplateSelector() {
-  console.log("boxRowTemplateSelector starting.");
   var _row = document.getElementById('boxTemplate');
   var _templateDup = _row.cloneNode(true);
 
-  console.log("boxRowTemplateSelector ending.");
   return _templateDup; // return the first (and unique) element of the list
 }
 
@@ -1282,7 +1301,7 @@ window.onload = function(e){
     console.log("window.onload");
     // Interval at which to check if WS server is still available
     // (and reconnect as necessary) setInterval(check, 5000);
-    checkWSinterval = setInterval(check, (getRandomArbitrary(10, 4) * 1000));
+    checkConnect.intervalCode = setInterval(check, (getRandomArbitrary(10, 4) * 1000));
     setTimeout(setGroupEvents, 2000);
     // checkWSStarter(check);
 }
