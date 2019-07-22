@@ -103,14 +103,14 @@ var onLBsReboot = {
     }
   },
 
+
   addNoConnectedBoxesSpan: function() {
-    let _infoBox = document.querySelector('#infoBox');
-    let _spanNoConnectedBoxes = document.createElement('span');
-    _spanNoConnectedBoxes.setAttribute("id", "infoNoBoxesConnected");
     let _infoText = document.createTextNode("There are no laser boxes currently connected.");
-    _infoBox.appendChild(_spanNoConnectedBoxes);
+    let _spanNoConnectedBoxes = this.createContainer("span", "infoNoBoxesConnected");
+    this.renderInDom(_spanNoConnectedBoxes, _infoText);
     onLBsReboot.noConnectedBoxesSpan = true;
   },
+
 
   onFirstBox: function( _laserBoxIndexNumber,
                         _msgDivId /*"divRebootedLBs"*/,
@@ -118,50 +118,26 @@ var onLBsReboot = {
                         _msgSpanId /*"spanRebootedLBs"*/,
                         _originMapSet /*this.rebootingLBs*/,
                         _destinationMapSet /*rebootedLBs*/) {
-    // select the infoBox
-    let _infoBox = document.querySelector('#infoBox');
-
-    // check whether there was a message saying there was no connected boxes
-    // and delete it if necessary
-    this.deleteNoConnectedBoxesSpan();
 
     // create a div to hold the infos
-    let _divNewStateLBs = document.createElement("div");
-    _divNewStateLBs.setAttribute("id", _msgDivId);
-
-    // create a text node for the introduction text
-    let _infoText = document.createTextNode(_msgIntro);
-    // append it to the div
-    _divNewStateLBs.appendChild(_infoText);
+    let _divNewStateLBs = this.createBoxListContainerDiv(_msgDivId, _msgIntro);
 
     // create a span to hold the numbers of the rebooted LBs
-    var _spanNewStateLBsList = document.createElement("span");
-    _spanNewStateLBsList.setAttribute("id", _msgSpanId);
+    let _spanNewStateLBsList = this.createContainer("span", _msgSpanId);
 
-    // transfer the box from the this.rebootingLBs map to the rebootedLBs map
-    _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
+    // add the box number to the span
+    _spanNewStateLBsList = this.mapToMapTransferAndInsertBoxList(_spanNewStateLBsList, _laserBoxIndexNumber, _msgSpanId, _destinationMapSet, _originMapSet);
 
-    // add the text node to the span
-    _spanNewStateLBsList.appendChild(_destinationMapSet.get(_laserBoxIndexNumber));
-
-    // add the text span to the div
-    _divNewStateLBs.appendChild(_spanNewStateLBsList);
-
-    // insert the div in the DOM
-    _infoBox.appendChild(_divNewStateLBs);
+    // append the span and the div to the DOM
+    this.renderInDom(_divNewStateLBs, _spanNewStateLBsList);
   },
-
 
 
   onAdditionalBoxes: function(_laserBoxIndexNumber, _destinationSpanId /*'#spanRebootingLBs'*/, _destinationMapSet, _originMapSet) {
     // select the infoBox
     let _spanNewStateLBsList = document.querySelector(_destinationSpanId);
-    // transfer the box from the waitingLBs map to the this.rebootingLBs map
-    _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
-    // insert the node in the DOM
-    _spanNewStateLBsList.appendChild(_destinationMapSet.get(_laserBoxIndexNumber));
+    this.mapToMapTransferAndInsertBoxList(_spanNewStateLBsList, _laserBoxIndexNumber, _destinationSpanId, _destinationMapSet, _originMapSet);
   },
-
 
 
   onAddBox: function(_data) {
@@ -178,29 +154,24 @@ var onLBsReboot = {
       this.rebootingLBs.delete(_laserBoxIndexNumber);
 
       if (this.rebootingLBs.size === 0) {
-        // select the infoBox
-        var _infoBox = document.querySelector('#infoBox');
-
-        // delete the rebootingLBs div
-        removeDOMelement('#divRebootingLBs');
-
-        // delete the rebootedLBs div
-        removeDOMelement('#divRebootedLBs');
-
         // change the button color
         let _rebootLbsBtn = document.getElementById('rebootLBs');
         _rebootLbsBtn.classList.remove('button_active_state');
 
+        // delete the rebootingLBs div
+        removeDOMelement('#divRebootingLBs');
+        // delete the rebootedLBs div
+        removeDOMelement('#divRebootedLBs');
+
         // create a span to hold the textnode informing that all the boxes have rebooted
-        var _spanLBsHaveRebooted = document.createElement("SPAN");
-        _spanLBsHaveRebooted.setAttribute("id", "LBsHaveRebooted");
+        let _spanLBsHaveRebooted = this.createContainer("span", "LBsHaveRebooted");
         // create a text node for the introduction text
         var _infoText = document.createTextNode('All the laser boxes have rebooted.');
-        // insert the textNode in the span
-        _spanLBsHaveRebooted.appendChild(_infoText);
-        // insert the frag in the DOM
-        _infoBox.appendChild(_spanLBsHaveRebooted);
-        // set a timeout to delete the information for the info box
+
+        // render in dom
+        this.renderInDom(_spanLBsHaveRebooted, _infoText);
+
+        // set a timeout to delete the info box after 15 seconds
         window.setTimeout(function() {
           removeDOMelement('#LBsHaveRebooted');
         }, 15000);
@@ -221,17 +192,18 @@ var onLBsReboot = {
       // store the number in a form accessible for the maps
       let _laserBoxIndexNumber = parseInt(_data.lb, 10);
 
+      // if this is the first box to disconnect
       if (this.rebootingLBs.size === 0) {
-        // change the button color
+        // change the button color to signal that it has started
         let _rebootLbsBtn = document.getElementById('rebootLBs');
-        _rebootLbsBtn.className += ' button_active_state';
+        _rebootLbsBtn.classList.add('button_active_state');
         _rebootLbsBtn.classList.remove('button_clicked');
         _rebootLbsBtn.classList.remove('button_change_received');
-
+        // create the info text and box
         this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", onLBsReboot.waitingLBs, this.rebootingLBs);
-
-      } else {
-        console.log("-----  onDeleteBox: about to call onAdditionalBoxes <------- ")
+      } // this is not the first box to be deleted
+      else {
+        // add its number to the info box
         this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, onLBsReboot.waitingLBs);
       }
 
@@ -241,7 +213,6 @@ var onLBsReboot = {
       if (boxesRows.size === 0) {
         // remove the waiting LBs div
         removeDOMelement('#divLBsWaitingToReboot');
-        return;
       }
     }
   },
@@ -256,26 +227,49 @@ var onLBsReboot = {
     // save the fact that we are in rebooting
     this.active = true;
 
-    // select the infoBox
-    var _infoBox = document.querySelector('#infoBox');
+    let _divLBsWaitingToRebootList = this.createBoxListContainerDiv("divLBsWaitingToReboot", 'Laser boxes waiting to reboot: ');
 
+    // create a span to hold the numbers of the LBs waiting to reboot
+    let _spanLBsWaitingToRebootList = this.createContainer("span", "spanLBsWaitingToReboot");
+
+    _spanLBsWaitingToRebootList = this.createBoxTextNodesFromBoxRows(_spanLBsWaitingToRebootList);
+
+    this.renderInDom(_divLBsWaitingToRebootList, _spanLBsWaitingToRebootList);
+    console.log("--------------- end reboot switch -----------------");
+  },
+
+
+  createBoxListContainerDiv: function(_containerId, _infoText) {
     // check whether there was a message saying there was no connected boxes
     // and delete it if necessary
     this.deleteNoConnectedBoxesSpan();
-
     // create a div to hold the infos
-    var _divLBsWaitingToRebootList = document.createElement("div");
-    _divLBsWaitingToRebootList.setAttribute("id", "divLBsWaitingToReboot");
-
+    let _containerDiv = this.createContainer("div", _containerId);
     // create a text node for the introduction text
-    var _infoText = document.createTextNode('Laser boxes waiting to reboot: ');
+    let _infoTextNode = document.createTextNode(_infoText);
     // append it to the div
-    _divLBsWaitingToRebootList.appendChild(_infoText);
+    _containerDiv.appendChild(_infoTextNode);
+    return _containerDiv;
+  },
 
-    // create a span to hold the numbers of the LBs waiting to reboot
-    var _spanLBsWaitingToRebootList = document.createElement("span");
-    _spanLBsWaitingToRebootList.setAttribute("id", "spanLBsWaitingToReboot");
 
+  createContainer: function(_type, _id) {
+    let _container = document.createElement(_type);
+    _container.setAttribute("id", _id);
+    return _container;
+  },
+
+
+  mapToMapTransferAndInsertBoxList: function(_spanNewStateLBsList, _laserBoxIndexNumber, _destinationSpanId, _destinationMapSet, _originMapSet){
+    // transfer the box from the waitingLBs map to the this.rebootingLBs map
+    _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
+    // add the text node to the span
+    _spanNewStateLBsList.appendChild(_destinationMapSet.get(_laserBoxIndexNumber));
+    return _spanNewStateLBsList;
+  },
+
+
+  createBoxTextNodesFromBoxRows: function(_spanLBsWaitingToRebootList) {
     // iterate over the boxesRows map, create textNodes for the span and
     // store them in a map
     var _i = 0;
@@ -294,12 +288,17 @@ var onLBsReboot = {
       // add the new textNode to the span
       _spanLBsWaitingToRebootList.appendChild(onLBsReboot.waitingLBs.get(key));
     });
+    return _spanLBsWaitingToRebootList;
+  },
 
+
+  renderInDom: function(_divNewStateLBs, _spanNewStateLBsList) {
+    // select the infoBox
+    var _infoBox = document.querySelector('#infoBox');
     // append the span to the div
-    _divLBsWaitingToRebootList.appendChild(_spanLBsWaitingToRebootList);
+    _divNewStateLBs.appendChild(_spanNewStateLBsList);
     // append the div to the DOM
-    _infoBox.appendChild(_divLBsWaitingToRebootList);
-    console.log("--------------- end reboot switch -----------------");
+    _infoBox.appendChild(_divNewStateLBs);
   }
 }
 
