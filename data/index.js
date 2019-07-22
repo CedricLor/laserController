@@ -36,10 +36,10 @@ var rebootedLBs = new Map();
 function connect() {
   console.log("connect() starting.");
   ws = new WebSocket('ws://192.168.43.84/ws');
-  // console.log("connect(): ws defined. ws =");
-  // console.log(ws);
 
-  // onopen websocket, send a message to the server with the list of controlerBoxes
+
+  // onopen websocket,
+  // send a message to the server with the list of controlerBoxes
   // currently in the DOM and their states
   ws.onopen = function() {
     console.log("connect(): WS connection open.");
@@ -53,25 +53,23 @@ function connect() {
     // {action:0, boxStateInDOM:{1:4;2:3}}
   };
 
-  // on receive a message, decode its action type to dispatch it
+
+  // on receive a message,
+  // decode its action type to dispatch it
   ws.onmessage = function(e) {
     ping.check = 0;
-
-    // ping pong manager
-    if (onMessPing(e)) {return;}
-
-    // other messages
+    // if ping pong message
+    if (onMsgPing(e)) {return;}
+    // if other messages, parse JSON
     console.log( "WS Received Message: " + e.data);
     var _data = JSON.parse(e.data);
-
     onMsgActionSwitch(_data);
-
   };
 
 
-
-  // onclose, inform the user that an attempt to reconnect will be made soon
-  // and delete all the boxRows
+  // onclose,
+  //  inform the user that an attempt to reconnect
+  // will be made soon and delete all the boxRows
   ws.onclose = function(e) {
     if (checkConnect.retryCount != 10) {
       console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e.reason);
@@ -80,7 +78,9 @@ function connect() {
     deleteAllBoxRows();
   };
 
-  // onerror, inform the user that you are closing the socket
+
+  // onerror,
+  // inform the user that you are closing the socket
   ws.onerror = function(err) {
     console.error('Socket encountered error: ', err.message, 'Closing socket');
     ws.close();
@@ -93,25 +93,9 @@ function connect() {
 
 
 
-/*
-|--oonMsgActionSwitch(_data)
-|  |
-|  |--updateGlobalInformation(_data)
-|  |--sendReceivedIP()
-|  |
-|  |--updateGlobalInformation(_data)
-|  |--sendReceivedIP()
-|  |
-|  |--updateStateButton(_data)
-|  |
-|  |--addOrUpdateNewRowForNewBox(_data)
-|  |--onLBsRebootInformUserOnAddBox(_data)
-|  |
 
-*/
-
-// ON MESSAGE EVENT HANDLERS
-function onMessPing(e) {
+// ON MESSAGES EVENT HANDLERS
+function onMsgPing(e) {
   ping.check = 0;
   if ((e.data > 0) && (e.data < 10)) {
     ping.receivedMark = e.data;
@@ -119,7 +103,6 @@ function onMessPing(e) {
   }
   return false;
 }
-
 
 
 
