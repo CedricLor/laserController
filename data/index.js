@@ -4,12 +4,20 @@ var ws = null;
 var controlerBoxes = new Map();
 var boxesRows = new Map();
 var boxRowTemplate = boxRowTemplateSelector();
+
+// ping and reconnect
 var checkWSinterval;
 var checkPing = 0;
 var connectRetryCount = 0;
 var pingCount = 1;
 var pingCountSentMark = 1;
 var pingCountReceivedMark = 1;
+
+// rebooting boxes
+var rebootStep = 0;
+var LBsWaitingToReboot = new Map();
+var rebootingLBs = new Map();
+var rebootedLBs = new Map();
 
 
 // WEB SOCKET
@@ -44,6 +52,9 @@ function connect() {
     // other messages
     console.log( "WS Received Message: " + e.data);
     var _data = JSON.parse(e.data);
+
+
+
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
       updateGlobalInformation(_data);
@@ -53,6 +64,9 @@ function connect() {
       // {action:"ReceivedIP}
       return;
     }
+
+
+
     if (_data.action === "changeBox" && _data.key === "boxState") { // 4. User request to change boxState of a given box has been received and is being processed
                                                                     // 5. boxState of existing box has been updated
       // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
@@ -60,11 +74,91 @@ function connect() {
       updateStateButton(_data);
       return;
     }
+
+
+
     if (_data.action === "addBox") { // 6. a new box has connected to the mesh
       // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       addOrUpdateNewRowForNewBox(_data);
+      if (rebooting === true) {
+        if (rebootedLBs.size === 0) {
+          // select the infoBox
+          var _infoBox = document.querySelector('#infoBox');
+
+          // create a div to hold the infos
+          var _divRebootedLBs = document.createElement("div");
+          _divRebootedLBs.setAttribute("id", "divRebootedLBs");
+
+          // create a text node for the introduction text
+          var _infoText = document.createTextNode('Laser boxes currently rebooted: ');
+          // append it to the div
+          _divRebootedLBs.appendChild(_infoText);
+
+          // create a span to hold the numbers of the rebooted LBs
+          var _spanRebootedLBsList = document.createElement("span");
+          _spanRebootedLBsList.setAttribute("id", "spanRebootedLBs");
+
+          // transfer the box from the waitingLBs map to the rebooting LBs map
+          rebootedLBs[_data.lb] = rebootingLBs[_data.lb];
+
+          // add the text node to the span
+          _spanRebootedLBsList.appendChild(rebootedLBs[_data.lb]);
+
+          // delete the box from the LBsWaitingToReboot map
+          rebootingLBs.delete(_data.lb);
+
+          // add the text span to the div
+          _divRebootedLBs.appendChild(_spanRebootedLBsList[_data.lb]);
+
+          // insert the div in the DOM
+          _infoBox.appendChild(_divRebootedLBs);
+          return;
+
+        } else {
+          // select the infoBox
+          var _rebootedLBs = document.querySelector('#spanRebootedLBs');
+          // transfer the box from the waitingLBs map to the rebooting LBs map
+          rebootedLBs[_data.lb] = rebootingLBs[_data.lb];
+          // delete the box from the LBsWaitingToReboot map
+          rebootingLBs.delete(_data.lb);
+          // insert the frag in the DOM
+          _rebootedLBs.appendChild(rebootedLBs[_data.lb]);
+        }
+        if (rebootingLBs.size === 0) {
+          // remove the div
+          var _divRebootedLBs = document.querySelector('#divRebootedLBs');
+          _divRebootedLBs.parentNode.removeChild(divRebootedLBs);
+          // select the infoBox
+          var _infoBox = document.querySelector('#infoBox');
+          // create a span to hold the textnode informing that all the boxes have rebooted
+          var _spanLBsHaveRebooted = document.createElement("span");
+          _spanLBsHaveRebooted.setAttribute("id", "LBsHaveRebooted");
+          // create a text node for the introduction text
+          var _infoText = document.createTextNode('All the laser boxes have rebooted.');
+          // insert the tetNode in the span
+          _spanLBsHaveRebooted.appendChild(_infoText);
+          // insert the frag in the DOM
+          _infoBox.appendChild(_spanLBsHaveRebooted);
+          // set a timeout to delete the information for the info box
+          window.setTimeout = function(function() {
+            var _infoBox = document.querySelector('#LBsHaveRebooted');
+            if (_infoBox !== null) {
+              _infoBox.parentNode.removeChild(_infoBox);
+            }
+          }, 15000);
+
+          // empty the rebooted boxes maps
+          rebootedLBs.clear();
+
+          // get out of the reboot process
+          rebootStep = 0;
+        }
+      }
+
       return;
     }
+
+
     if (_data.action === "deleteBox") { // 7. an existing box has been disconnected from the mesh
       // or the DOM contained boxRows corresponding to boxes that have been disconnected
       // from the mesh
@@ -74,15 +168,74 @@ function connect() {
       } else {
         // _data = {lb:1; action:"deleteBox"}
         deleteBoxRow(_data);
+
+        if (rebooting === true) {
+          if (rebootingLBs.size === 0) {
+            // select the infoBox
+            var _infoBox = document.querySelector('#infoBox');
+
+            // create a div to hold the infos
+            var _divRebootingLBs = document.createElement("div");
+            _divRebootingLBs.setAttribute("id", "divRebootingLBs");
+
+            // create a text node for the introduction text
+            var _infoText = document.createTextNode('Laser boxes currently rebooting: ');
+            // append it to the div
+            _divRebootingLBs.appendChild(_infoText);
+
+            // create a span to hold the numbers of the LBs waiting to reboot
+            var _spanRebootingLBsList = document.createElement("span");
+            _spanRebootingLBsList.setAttribute("id", "spanRebootingLBs");
+
+            // transfer the box from the waitingLBs map to the rebooting LBs map
+            rebootingLBs[_data.lb] = LBsWaitingToReboot[_data.lb];
+
+            // add the text node to the span
+            _spanRebootingLBsList.appendChild(rebootingLBs[_data.lb]);
+
+            // delete the box from the LBsWaitingToReboot map
+            LBsWaitingToReboot.delete(_data.lb);
+
+            // add the text span to the div
+            _divRebootingLBs.appendChild(_spanRebootingLBsList[_data.lb]);
+
+            // insert the frag in the DOM
+            _infoBox.appendChild(_divRebootingLBs);
+          } else {
+            // select the infoBox
+            var _rebootingLBs = document.querySelector('#spanRebootingLBs');
+            // transfer the box from the waitingLBs map to the rebooting LBs map
+            rebootingLBs[_data.lb] = LBsWaitingToReboot[_data.lb];
+            // delete the box from the LBsWaitingToReboot map
+            LBsWaitingToReboot.delete(_data.lb);
+            // insert the node in the DOM
+            _rebootingLBs.appendChild(rebootingLBs[_data.lb]);
+          }
+          if (boxesRows.size === 0) {
+            // increment the rebootStep
+            rebootStep = 3;
+            // remove the div
+            var _divLBsWaitingToReboot = document.querySelector('#divLBsWaitingToReboot');
+            _divLBsWaitingToReboot.parentNode.removeChild(_divLBsWaitingToReboot);
+            return;
+          }
+        }
+
       }
       return;
     }
+
+
+
     if (_data.action === "changeBox" && _data.key === "masterbox") { // 8. a box has changed master
       // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
       // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
       updateMasterBoxNumber(_data);
       return;
     }
+
+
+
     if (_data.action === "changeBox" && _data.key === "boxDefstate") { // 9. User request to change default boxState of a given box has been received and is being processed
                                                                                          // 10. the default state of a given box has changed
       // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
@@ -90,12 +243,69 @@ function connect() {
       updateStateButton(_data);
       return;
     }
-    if (_data.action === "changeBox" && _data.key === "reboot" && (_data.lb === 0 || "all")) { // 9. User request to reboot the interface has been received and is being processed
+
+
+
+    if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === (0 || "all")) { // 9. User request to reboot the interface or all the boxes has been received and is being processed
       // _data = {lb:1; action: "changeBox"; key: "reboot"; val: 0; lb: 0 st: 1}
       ws.close();
+      deleteAllBoxRows();
+      return;
+    }
+
+
+
+    if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { // User request to reboot the LBs has been received and is being processed
+
+      // change the button color
+      let _rebootLbsBtn = document.getElementById('rebootLBs');
+      _rebootLbsBtn.className += 'button_change_received';
+
+      // save the fact that we are in rebooting
+      rebooting = true;
+
+      // select the infoBox
+      var _infoBox = document.querySelector('#infoBox');
+
+      // create a div to hold the infos
+      var _divLBsWaitingToRebootList = document.createElement("div");
+      _divLBsWaitingToRebootList.setAttribute("id", "divLBsWaitingToReboot");
+
+      // create a text node for the introduction text
+      var _infoText = document.createTextNode('Laser boxes waiting to reboot: ');
+      // append it to the div
+      _divLBsWaitingToRebootList.appendChild(_infoText);
+
+      // create a span to hold the numbers of the LBs waiting to reboot
+      var _spanLBsWaitingToRebootList = document.createElement("span");
+      _spanLBsWaitingToRebootList.setAttribute("id", "spanLBsWaitingToReboot");
+
+      // iterate over the boxesRows map, create textNodes for the span and
+      // store them in a map
+      var _i = 0;
+      var _mapSize = boxesRows.size;
+      for (var key in boxesRows) {
+        let _text;
+        if (i ==== _mapSize) {
+          _text = boxesRows[key] + ", ";
+        } else {
+          _text = boxesRows[key] + ".";
+        }
+        // create a textNode to hold the box number and store it into a new map
+        LBsWaitingToReboot[i] = document.createTextNode(_text);
+        // add the new textNode to the span
+        _spanLBsWaitingToRebootList.appendChild(LBsWaitingToReboot[i]);
+      }
+      // append the span to the div
+      _divLBsWaitingToRebootList.appendChild(_spanLBsWaitingToRebootList);
+      // append the div to the DOM
+      _infoBox.appendChild(_divLBsWaitingToRebootList);
+
       return;
     }
   };
+
+
 
   // onclose, inform the user that an attempt to reconnect will be made soon
   // and delete all the boxRows
@@ -248,14 +458,23 @@ function onclickSavePrefsBoxButton(e) {
 
 function onclickRebootLBsButton(e) {
   console.log("onclickRebootLBsButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "reboot",
-    save: 0, // reboot without saving
-    lb: "LBs"
-  }));
-  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+  if (boxesRows.size) {
+    document.querySelectorAll('.net_command_gp > button').forEach(
+      function(_button){
+        _button.classList.remove('button_clicked');
+      }
+    );
+    e.target.className += 'button_clicked';
+    ws.send(JSON.stringify({
+      action: "changeNet",
+      key: "reboot",
+      save: 0, // reboot without saving
+      lb: "LBs"
+    }));
+    // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+  } else {
+    document.querySelector('#infoBox').innerHTML('There are no laser box currently connected.');
+  }
   console.log("onclickRebootLBsButton: ending");
 };
 
