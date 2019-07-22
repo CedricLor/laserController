@@ -64,7 +64,7 @@ function connect() {
     console.log( "WS Received Message: " + e.data);
     var _data = JSON.parse(e.data);
 
-    onMessActionSwitch(_data);
+    onMsgActionSwitch(_data);
 
   };
 
@@ -94,7 +94,7 @@ function connect() {
 
 
 /*
-|--oonMessActionSwitch(_data)
+|--oonMsgActionSwitch(_data)
 |  |
 |  |--updateGlobalInformation(_data)
 |  |--sendReceivedIP()
@@ -341,7 +341,10 @@ function onLBsRebootInformUserOnRebootStartConfirmation(_data) {
 }
 
 
-function onMessActionSwitch(_data) {
+
+
+
+function onMsgActionSwitch(_data) {
   // Received IP and other global data (wifi settings)
   if (_data.action === 3) {
     // console.log("WS JSON message: " + _data.ServerIP);
@@ -587,10 +590,10 @@ function onclickRebootLBsButton(e) {
       lb: "LBs"
     }));
     // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
-  } else {
-    var _infoBox = document.querySelector('#infoBox');
-    _infoBox.innerHTML = 'There are no laser box currently connected.';
+    return;
   }
+  var _infoBox = document.querySelector('#infoBox');
+  _infoBox.innerHTML = 'There are no laser box currently connected.';
   console.log("onclickRebootLBsButton: ending");
 };
 
