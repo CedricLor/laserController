@@ -556,28 +556,35 @@ function onclickSavePrefsBoxButton(e) {
 };
 
 
+var _onClickGroupReboot = {
+  wrapper: function(e, _scope, _lbs, _save) {
+    if (boxesRows.size) {
+      document.querySelectorAll('.net_command_gp > button').forEach(
+        function(_button){
+          _button.classList.remove('button_clicked');
+        }
+      );
+      e.target.className += ' button_clicked';
+      ws.send(JSON.stringify({
+        action: _scope,
+        key: "reboot",
+        save: _save, // reboot without saving
+        lb: _lbs
+      }));
+      // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+      return;
+    }
+    // if no boxes are connected, inform the user that there are no boxes
+    onLBsReboot.addNoConnectedBoxesSpan();
+  }
+}
+
 
 
 function onclickRebootLBsButton(e) {
   console.log("onclickRebootLBsButton starting");
-  if (boxesRows.size) {
-    document.querySelectorAll('.net_command_gp > button').forEach(
-      function(_button){
-        _button.classList.remove('button_clicked');
-      }
-    );
-    e.target.className += ' button_clicked';
-    ws.send(JSON.stringify({
-      action: "changeNet",
-      key: "reboot",
-      save: 0, // reboot without saving
-      lb: "LBs"
-    }));
-    // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
-    return;
-  }
-  // if no boxes are connected, inform the user that there are no boxes
-  onLBsReboot.addNoConnectedBoxesSpan();
+  _onClickGroupReboot.wrapper(e, "changeNet", "LBs", 0);
+  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
   console.log("onclickRebootLBsButton: ending");
 };
 
