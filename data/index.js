@@ -13,6 +13,7 @@ var ping = {
   check: 0
 }
 
+// check connection and reconnect variables
 var checkConnect = {
   intervalCode: -1,
   retryCount: 0
@@ -25,6 +26,103 @@ var rebootingLBs = new Map();
 var rebootedLBs = new Map();
 
 
+
+
+
+
+
+
+// WEB SOCKET
+function connect() {
+  console.log("connect() starting.");
+  ws = new WebSocket('ws://192.168.43.84/ws');
+  // console.log("connect(): ws defined. ws =");
+  // console.log(ws);
+
+  // onopen websocket, send a message to the server with the list of controlerBoxes
+  // currently in the DOM and their states
+  ws.onopen = function() {
+    console.log("connect(): WS connection open.");
+    checkConnect.retryCount = 0;
+    console.log("connect(): checkConnect.retryCount = " + checkConnect.retryCount + ".");
+    console.log("Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
+    ws.send(JSON.stringify({
+      action: "handshake",
+      boxesStatesInDOM: mapToObj(controlerBoxes)
+    }));
+    // {action:0, boxStateInDOM:{1:4;2:3}}
+  };
+
+  // on receive a message, decode its action type to dispatch it
+  ws.onmessage = function(e) {
+    ping.check = 0;
+
+    // ping pong manager
+    if (onMessPing(e)) {return;}
+
+    // other messages
+    console.log( "WS Received Message: " + e.data);
+    var _data = JSON.parse(e.data);
+
+    onMessActionSwitch(_data);
+
+  };
+
+
+
+  // onclose, inform the user that an attempt to reconnect will be made soon
+  // and delete all the boxRows
+  ws.onclose = function(e) {
+    if (checkConnect.retryCount != 10) {
+      console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e.reason);
+    }
+    console.log('Socket is closed. Reason: ', e.reason);
+    deleteAllBoxRows();
+  };
+
+  // onerror, inform the user that you are closing the socket
+  ws.onerror = function(err) {
+    console.error('Socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
+}
+// WEB SOCKET END
+
+
+
+
+
+
+/*
+|--oonMessActionSwitch(_data)
+|  |
+|  |--updateGlobalInformation(_data)
+|  |--sendReceivedIP()
+|  |
+|  |--updateGlobalInformation(_data)
+|  |--sendReceivedIP()
+|  |
+|  |--updateStateButton(_data)
+|  |
+|  |--addOrUpdateNewRowForNewBox(_data)
+|  |--onLBsRebootInformUserOnAddBox(_data)
+|  |
+
+*/
+
+// ON MESSAGE EVENT HANDLERS
+function onMessPing(e) {
+  ping.check = 0;
+  if ((e.data > 0) && (e.data < 10)) {
+    ping.receivedMark = e.data;
+    return true;
+  }
+  return false;
+}
+
+
+
+
 function sendReceivedIP() {
   ws.send(JSON.stringify({
     action: "ReceivedIP"
@@ -33,17 +131,115 @@ function sendReceivedIP() {
 }
 
 
+
+
+function onLBsRebootInformUserOnAddBox(_data) {
+  if (areLBsrebooting === true) {
+    // store the number in a form accessible for the maps
+    let _laserBoxIndexNumber = parseInt(_data.lb, 10);
+
+    if (rebootedLBs.size === 0) {
+      // select the infoBox
+      var _infoBox = document.querySelector('#infoBox');
+
+      // create a div to hold the infos
+      var _divRebootedLBs = document.createElement("div");
+      _divRebootedLBs.setAttribute("id", "divRebootedLBs");
+
+      // create a text node for the introduction text
+      var _infoText = document.createTextNode('Laser boxes currently rebooted: ');
+      // append it to the div
+      _divRebootedLBs.appendChild(_infoText);
+
+      // create a span to hold the numbers of the rebooted LBs
+      var _spanRebootedLBsList = document.createElement("span");
+      _spanRebootedLBsList.setAttribute("id", "spanRebootedLBs");
+
+      // transfer the box from the rebootingLBs map to the rebootedLBs map
+      rebootedLBs.set(_laserBoxIndexNumber, rebootingLBs.get(_laserBoxIndexNumber));
+
+      // add the text node to the span
+      _spanRebootedLBsList.appendChild(rebootedLBs.get(_laserBoxIndexNumber));
+
+      // add the text span to the div
+      _divRebootedLBs.appendChild(_spanRebootedLBsList);
+
+      // insert the div in the DOM
+      _infoBox.appendChild(_divRebootedLBs);
+
+    } else {
+      // select the infoBox
+      var _rebootedLBs = document.querySelector('#spanRebootedLBs');
+
+      // transfer the box from the waitingLBs map to the rebooting LBs map
+      rebootedLBs.set(_laserBoxIndexNumber, rebootingLBs.get(_laserBoxIndexNumber));
+
+      // insert the frag in the DOM
+      _rebootedLBs.appendChild(rebootedLBs.get(_laserBoxIndexNumber));
+    }
+
+    rebootingLBs.delete(_laserBoxIndexNumber);
+
+    if (rebootingLBs.size === 0) {
+      // select the infoBox
+      var _infoBox = document.querySelector('#infoBox');
+
+      // delete the rebootingLBs div
+      var _divRebootingLBs = _infoBox.querySelector('#divRebootingLBs');
+      _infoBox.removeChild(_divRebootingLBs);
+
+      // delete the rebootedLBs div
+      var _divRebootedLBs = _infoBox.querySelector('#divRebootedLBs');
+      _infoBox.removeChild(_divRebootedLBs);
+
+      // change the button color
+      let _rebootLbsBtn = document.getElementById('rebootLBs');
+      _rebootLbsBtn.classList.remove('button_active_state');
+
+      // create a span to hold the textnode informing that all the boxes have rebooted
+      var _spanLBsHaveRebooted = document.createElement("SPAN");
+      _spanLBsHaveRebooted.setAttribute("id", "LBsHaveRebooted");
+      // create a text node for the introduction text
+      var _infoText = document.createTextNode('All the laser boxes have rebooted.');
+      // insert the tetNode in the span
+      _spanLBsHaveRebooted.appendChild(_infoText);
+      // insert the frag in the DOM
+      _infoBox.appendChild(_spanLBsHaveRebooted);
+      // set a timeout to delete the information for the info box
+      window.setTimeout(function() {
+        var _infoBox = document.querySelector('#LBsHaveRebooted');
+        if (_infoBox !== null) {
+          _infoBox.parentNode.removeChild(_infoBox);
+        }
+      }, 15000);
+
+      // empty the rebooted boxes maps
+      rebootedLBs.clear();
+
+      // get out of the reboot process
+      areLBsrebooting = false;
+    }
+  }
+}
+
+
+
+
 function onMessActionSwitch(_data) {
+  // Received IP and other global data (wifi settings)
   if (_data.action === 3) {
     // console.log("WS JSON message: " + _data.ServerIP);
+    // Fill in the data in the DOM and add some eventHandlers
     updateGlobalInformation(_data);
     sendReceivedIP();
     return;
   }
 
 
-  if (_data.action === "changeBox" && _data.key === "boxState") { // 4. User request to change boxState of a given box has been received and is being processed
-                                                                  // 5. boxState of existing box has been updated
+  // 4. User request to change boxState of a given box has been received
+  // and is being processed
+  // 5. boxState of existing box has been updated
+  if (_data.action === "changeBox" && _data.key === "boxState") {
     // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
     // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
     updateStateButton(_data);
@@ -55,93 +251,7 @@ function onMessActionSwitch(_data) {
     console.log("---------------- addBox switch starting -----------------");
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     addOrUpdateNewRowForNewBox(_data);
-    if (areLBsrebooting === true) {
-      // store the number in a form accessible for the maps
-      let _laserBoxIndexNumber = parseInt(_data.lb, 10);
-
-      if (rebootedLBs.size === 0) {
-        // select the infoBox
-        var _infoBox = document.querySelector('#infoBox');
-
-        // create a div to hold the infos
-        var _divRebootedLBs = document.createElement("div");
-        _divRebootedLBs.setAttribute("id", "divRebootedLBs");
-
-        // create a text node for the introduction text
-        var _infoText = document.createTextNode('Laser boxes currently rebooted: ');
-        // append it to the div
-        _divRebootedLBs.appendChild(_infoText);
-
-        // create a span to hold the numbers of the rebooted LBs
-        var _spanRebootedLBsList = document.createElement("span");
-        _spanRebootedLBsList.setAttribute("id", "spanRebootedLBs");
-
-        // transfer the box from the rebootingLBs map to the rebootedLBs map
-        rebootedLBs.set(_laserBoxIndexNumber, rebootingLBs.get(_laserBoxIndexNumber));
-
-        // add the text node to the span
-        _spanRebootedLBsList.appendChild(rebootedLBs.get(_laserBoxIndexNumber));
-
-        // add the text span to the div
-        _divRebootedLBs.appendChild(_spanRebootedLBsList);
-
-        // insert the div in the DOM
-        _infoBox.appendChild(_divRebootedLBs);
-
-      } else {
-        // select the infoBox
-        var _rebootedLBs = document.querySelector('#spanRebootedLBs');
-
-        // transfer the box from the waitingLBs map to the rebooting LBs map
-        rebootedLBs.set(_laserBoxIndexNumber, rebootingLBs.get(_laserBoxIndexNumber));
-
-        // insert the frag in the DOM
-        _rebootedLBs.appendChild(rebootedLBs.get(_laserBoxIndexNumber));
-      }
-
-      rebootingLBs.delete(_laserBoxIndexNumber);
-
-      if (rebootingLBs.size === 0) {
-        // select the infoBox
-        var _infoBox = document.querySelector('#infoBox');
-
-        // delete the rebootingLBs div
-        var _divRebootingLBs = _infoBox.querySelector('#divRebootingLBs');
-        _infoBox.removeChild(_divRebootingLBs);
-
-        // delete the rebootedLBs div
-        var _divRebootedLBs = _infoBox.querySelector('#divRebootedLBs');
-        _infoBox.removeChild(_divRebootedLBs);
-
-        // change the button color
-        let _rebootLbsBtn = document.getElementById('rebootLBs');
-        _rebootLbsBtn.classList.remove('button_active_state');
-
-        // create a span to hold the textnode informing that all the boxes have rebooted
-        var _spanLBsHaveRebooted = document.createElement("SPAN");
-        _spanLBsHaveRebooted.setAttribute("id", "LBsHaveRebooted");
-        // create a text node for the introduction text
-        var _infoText = document.createTextNode('All the laser boxes have rebooted.');
-        // insert the tetNode in the span
-        _spanLBsHaveRebooted.appendChild(_infoText);
-        // insert the frag in the DOM
-        _infoBox.appendChild(_spanLBsHaveRebooted);
-        // set a timeout to delete the information for the info box
-        window.setTimeout(function() {
-          var _infoBox = document.querySelector('#LBsHaveRebooted');
-          if (_infoBox !== null) {
-            _infoBox.parentNode.removeChild(_infoBox);
-          }
-        }, 15000);
-
-        // empty the rebooted boxes maps
-        rebootedLBs.clear();
-
-        // get out of the reboot process
-        areLBsrebooting = false;
-      }
-    }
-
+    onLBsRebootInformUserOnAddBox(_data);
     return;
   }
 
@@ -305,60 +415,7 @@ function onMessActionSwitch(_data) {
   }
 }
 
-// WEB SOCKET
-function connect() {
-  console.log("connect() starting.");
-  ws = new WebSocket('ws://192.168.43.84/ws');
-  // console.log("connect(): ws defined. ws =");
-  // console.log(ws);
-
-  // onopen websocket, send a message to the server with the list of controlerBoxes
-  // currently in the DOM and their states
-  ws.onopen = function() {
-    console.log("connect(): WS connection open.");
-    checkConnect.retryCount = 0;
-    console.log("connect(): checkConnect.retryCount = " + checkConnect.retryCount + ".");
-    console.log("Sending the server the list of controlerBoxes I have in the DOM (and their current state)");
-    ws.send(JSON.stringify({
-      action: "handshake",
-      boxesStatesInDOM: mapToObj(controlerBoxes)
-    }));
-    // {action:0, boxStateInDOM:{1:4;2:3}}
-  };
-
-  // on receive a message, decode its action type to dispatch it
-  ws.onmessage = function(e) {
-    ping.check = 0;
-
-    // ping pong manager
-    if (onMessPing(e)) {return;}
-
-    // other messages
-    console.log( "WS Received Message: " + e.data);
-    var _data = JSON.parse(e.data);
-
-    onMessActionSwitch(_data);
-
-  };
-
-
-
-  // onclose, inform the user that an attempt to reconnect will be made soon
-  // and delete all the boxRows
-  ws.onclose = function(e) {
-    if (checkConnect.retryCount != 10) {
-      console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e.reason);
-    }
-    console.log('Socket is closed. Reason: ', e.reason);
-    deleteAllBoxRows();
-  };
-
-  // onerror, inform the user that you are closing the socket
-  ws.onerror = function(err) {
-    console.error('Socket encountered error: ', err.message, 'Closing socket');
-    ws.close();
-  };
-}
+// ON MESSAGE EVENT HANDLERS END
 
 
 // Check if WS server is still available (and reconnect as necessary)
@@ -418,19 +475,6 @@ function check(){
     }
   }
 }
-// WEB SOCKET END
-
-
-// ON MESSAGE EVENT HANDLERS
-function onMessPing(e) {
-  ping.check = 0;
-  if ((e.data > 0) && (e.data < 10)) {
-    ping.receivedMark = e.data;
-    return true;
-  }
-  return false;
-}
-// ON MESSAGE EVENT HANDLERS END
 
 
 
