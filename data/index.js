@@ -57,6 +57,8 @@ function connect() {
 
   // on receive a message, decode its action type to dispatch it
   ws.onmessage = function(e) {
+    ping.check = 0;
+    
     // ping pong manager
     if (onMessPing(e)) {return;}
 
