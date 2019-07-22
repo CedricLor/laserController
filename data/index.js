@@ -157,36 +157,7 @@ var onLBsReboot = {
       let _laserBoxIndexNumber = parseInt(_data.lb, 10);
 
       if (rebootedLBs.size === 0) {
-        console.log(this);
         this.onFirstBox(_laserBoxIndexNumber, "divRebootedLBs", 'Laser boxes currently rebooted: ', "spanRebootedLBs", rebootingLBs, rebootedLBs);
-        // // select the infoBox
-        // var _infoBox = document.querySelector('#infoBox');
-        //
-        // // create a div to hold the infos
-        // var _divRebootedLBs = document.createElement("div");
-        // _divRebootedLBs.setAttribute("id", "divRebootedLBs");
-        //
-        // // create a text node for the introduction text
-        // var _infoText = document.createTextNode('Laser boxes currently rebooted: ');
-        // // append it to the div
-        // _divRebootedLBs.appendChild(_infoText);
-        //
-        // // create a span to hold the numbers of the rebooted LBs
-        // var _spanRebootedLBsList = document.createElement("span");
-        // _spanRebootedLBsList.setAttribute("id", "spanRebootedLBs");
-        //
-        // // transfer the box from the rebootingLBs map to the rebootedLBs map
-        // rebootedLBs.set(_laserBoxIndexNumber, rebootingLBs.get(_laserBoxIndexNumber));
-        //
-        // // add the text node to the span
-        // _spanRebootedLBsList.appendChild(rebootedLBs.get(_laserBoxIndexNumber));
-        //
-        // // add the text span to the div
-        // _divRebootedLBs.appendChild(_spanRebootedLBsList);
-        //
-        // // insert the div in the DOM
-        // _infoBox.appendChild(_divRebootedLBs);
-
       } else {
         // select the infoBox
         var _rebootedLBs = document.querySelector('#spanRebootedLBs');
@@ -256,36 +227,8 @@ var onLBsReboot = {
         _rebootLbsBtn.classList.remove('button_clicked');
         _rebootLbsBtn.classList.remove('button_change_received');
 
-        // select the infoBox
-        let _infoBox = document.querySelector('#infoBox');
+        this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", LBsWaitingToReboot, rebootingLBs);
 
-        // create a div to hold the infos
-        let _divRebootingLBs = document.createElement("div");
-        _divRebootingLBs.setAttribute("id", "divRebootingLBs");
-
-        // create a text node for the introduction text
-        let _infoText = document.createTextNode('Laser boxes currently rebooting: ');
-        // append it to the div
-        _divRebootingLBs.appendChild(_infoText);
-
-        // create a span to hold the numbers of the LBs waiting to reboot
-        let _spanRebootingLBsList = document.createElement("span");
-        _spanRebootingLBsList.setAttribute("id", "spanRebootingLBs");
-
-        // transfer the box from the waitingLBs map to the rebootingLBs map
-        rebootingLBs.set(_laserBoxIndexNumber, LBsWaitingToReboot.get(_laserBoxIndexNumber));
-
-        // add the text node to the span
-        _spanRebootingLBsList.appendChild(rebootingLBs.get(_laserBoxIndexNumber));
-
-        // delete the box from the LBsWaitingToReboot map
-        LBsWaitingToReboot.delete(_laserBoxIndexNumber);
-
-        // add the text span to the div
-        _divRebootingLBs.appendChild(_spanRebootingLBsList);
-
-        // insert the frag in the DOM
-        _infoBox.appendChild(_divRebootingLBs);
       } else {
         // select the infoBox
         let _rebootingLBs = document.querySelector('#spanRebootingLBs');
