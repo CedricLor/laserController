@@ -5,22 +5,6 @@ var controlerBoxes = new Map();
 var boxesRows = new Map();
 var boxRowTemplate = boxRowTemplateSelector();
 
-// ping and reconnect
-var ping = {
-  count: 1,
-  sentMark: 1,
-  receivedMark: 1,
-  check: 0
-}
-
-// check connection and reconnect variables
-var checkConnect = {
-  intervalCode: -1,
-  retryCount: 0
-}
-
-// rebooting boxes
-
 
 
 
@@ -55,7 +39,7 @@ function connect() {
   ws.onmessage = function(e) {
     ping.check = 0;
     // if ping pong message
-    if (onMsgPing(e)) {return;}
+    if (ping.onPingMsg(e)) {return;}
     // if other messages, parse JSON
     console.log( "WS Received Message: " + e.data);
     var _data = JSON.parse(e.data);
@@ -91,17 +75,6 @@ function connect() {
 
 
 // ON MESSAGES EVENT HANDLERS
-function onMsgPing(e) {
-  ping.check = 0;
-  if ((e.data > 0) && (e.data < 10)) {
-    ping.receivedMark = e.data;
-    return true;
-  }
-  return false;
-}
-
-
-
 function sendReceivedIP() {
   ws.send(JSON.stringify({
     action: "ReceivedIP"
@@ -116,11 +89,12 @@ function sendReceivedIP() {
 //////////////////////////////////
 var onLBsReboot = {
   active: false,
+
+  noConnectedBoxesSpan: false,
+
   waitingLBs: new Map(),
   rebootingLBs: new Map(),
   rebootedLBs: new Map(),
-
-  noConnectedBoxesSpan: false,
 
   deleteNoConnectedBoxesSpan: function() {
     if (this.noConnectedBoxesSpan) {
@@ -254,15 +228,15 @@ var onLBsReboot = {
         _rebootLbsBtn.classList.remove('button_clicked');
         _rebootLbsBtn.classList.remove('button_change_received');
 
-        this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", this.waitingLBs, this.rebootingLBs);
+        this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", onLBsReboot.waitingLBs, this.rebootingLBs);
 
       } else {
         console.log("-----  onDeleteBox: about to call onAdditionalBoxes <------- ")
-        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, this.waitingLBs);
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, onLBsReboot.waitingLBs);
       }
 
-      // delete the box from the this.waitingLBs map
-      this.waitingLBs.delete(_laserBoxIndexNumber);
+      // delete the box from the waitingLBs map
+      onLBsReboot.waitingLBs.delete(_laserBoxIndexNumber);
 
       if (boxesRows.size === 0) {
         // remove the waiting LBs div
@@ -316,9 +290,9 @@ var onLBsReboot = {
       }
       // create a textNode to hold the box number and store it into a new map
       let _boxNumbNode = document.createTextNode(_text);
-      this.waitingLBs.set(key, _boxNumbNode);
+      onLBsReboot.waitingLBs.set(key, _boxNumbNode);
       // add the new textNode to the span
-      _spanLBsWaitingToRebootList.appendChild(LBsWaitingToReboot.get(key));
+      _spanLBsWaitingToRebootList.appendChild(onLBsReboot.waitingLBs.get(key));
     });
 
     // append the span to the div
@@ -328,8 +302,6 @@ var onLBsReboot = {
     console.log("--------------- end reboot switch -----------------");
   }
 }
-
-
 
 
 
@@ -431,8 +403,55 @@ function onMsgActionSwitch(_data) {
 
 
 
+// ping and reconnect
+var ping = {
+  count: 1,
+  sentMark: 1,
+  receivedMark: 1,
+  check: 0,
 
+  onPingMsg: function(e) {
+    ping.check = 0;
+    if ((e.data > 0) && (e.data < 10)) {
+      ping.receivedMark = e.data;
+      return true;
+    }
+    return false;
+  },
 
+  checkPingStatus: function(){
+    // console.log("check(): ping.sentMark === " + ping.sentMark);
+    // console.log("check(): ping.receivedMark === " + ping.receivedMark);
+    if (ping.sentMark != ping.receivedMark) {
+      console.log("check(): not receiving server pongs");
+      console.log("check(): about to close connection");
+      ws.close();
+      ping.count = 1;
+      ping.receivedMark = 1;
+      ping.sentMark = 1;
+      return;
+    }
+
+    ping.check++;
+    if (ping.check === 3) {
+      ping.check = 0;
+
+      // try sending a numbered ping to the server
+      ping.count++;
+      if (ping.count === 9) {
+        ping.count = 1;
+      }
+      ws.send(ping.count);
+      ping.sentMark = ping.count;
+    }
+  }
+}
+
+// check connection and reconnect variables
+var checkConnect = {
+  intervalCode: -1,
+  retryCount: 0
+}
 
 
 // Check if WS server is still available (and reconnect as necessary)
@@ -465,31 +484,7 @@ function check(){
   // if the connection is open, every 4 iterations of check(),
   // check that the server is still here
   if(ws.readyState === WebSocket.OPEN) {
-
-    // console.log("check(): ping.sentMark === " + ping.sentMark);
-    // console.log("check(): ping.receivedMark === " + ping.receivedMark);
-    if (ping.sentMark != ping.receivedMark) {
-      console.log("check(): not receiving server pongs");
-      console.log("check(): about to close connection");
-      ws.close();
-      ping.count = 1;
-      ping.receivedMark = 1;
-      ping.sentMark = 1;
-      return;
-    }
-
-    ping.check++;
-    if (ping.check === 3) {
-      ping.check = 0;
-
-      // try sending a numbered ping to the server
-      ping.count++;
-      if (ping.count === 9) {
-        ping.count = 1;
-      }
-      ws.send(ping.count);
-      ping.sentMark = ping.count;
-    }
+    ping.checkPingStatus();
   }
 }
 
@@ -757,6 +752,7 @@ function _onclickButtonWrapper(clickedTarget, buttonSelector, _datasetValue, _cl
   _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef);
 }
 
+
 function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
   var _boxRow = boxesRows.get(_laserBoxNumber);
   var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
@@ -769,6 +765,7 @@ function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumbe
 
   return _laserBoxNumber;
 }
+
 
 function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
   var __toBeStringified = {};
@@ -787,6 +784,8 @@ function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
   ws.send(_json);
   console.log("_onclickButtonWSSender: JSON sent.");
 }
+
+
 
 function oninputMasterSelect(e) {
   console.log("oninputMasterSelect: starting");
