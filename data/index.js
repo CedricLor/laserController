@@ -114,7 +114,30 @@ function sendReceivedIP() {
 }
 
 
+
+//////////////////////////////////
+// onLBsReboot Object
+//////////////////////////////////
 var onLBsReboot = {
+  noConnectedBoxesSpan: false,
+
+  deleteNoConnectedBoxesSpan: function() {
+    if (this.noConnectedBoxesSpan) {
+      this.noConnectedBoxesSpan = false;
+      var _infoBoxNoConnectedBoxes = document.querySelector('#infoNoBoxesConnected');
+      _infoBoxNoConnectedBoxes.parentNode.removeChild(_infoBoxNoConnectedBoxes);
+    }
+  },
+
+  addNoConnectedBoxesSpan: function() {
+    let _infoBox = document.querySelector('#infoBox');
+    let _spanNoConnectedBoxes = document.createElement('span');
+    _spanNoConnectedBoxes.setAttribute("id", "infoNoBoxesConnected");
+    let _infoText = document.createTextNode("There are no laser boxes currently connected.");
+    _infoBox.appendChild(_spanNoConnectedBoxes);
+    onLBsReboot.noConnectedBoxesSpan = true;
+  },
+
   onFirstBox: function( _laserBoxIndexNumber,
                         _msgDivId /*"divRebootedLBs"*/,
                         _msgIntro /*'Laser boxes currently rebooted: '*/,
@@ -123,6 +146,10 @@ var onLBsReboot = {
                         _destinationMapSet /*rebootedLBs*/) {
     // select the infoBox
     let _infoBox = document.querySelector('#infoBox');
+
+    // check whether there was a message saying there was no connected boxes
+    // and delete it if necessary
+    this.deleteNoConnectedBoxesSpan();
 
     // create a div to hold the infos
     let _divNewStateLBs = document.createElement("div");
@@ -154,11 +181,11 @@ var onLBsReboot = {
 
   onAdditionalBoxes: function(_laserBoxIndexNumber, _destinationSpanId /*'#spanRebootingLBs'*/, _destinationMapSet, _originMapSet) {
     // select the infoBox
-    let _spanNewStateLBsList_spanNewStateLBsList = document.querySelector(_destinationSpanId);
+    let _spanNewStateLBsList = document.querySelector(_destinationSpanId);
     // transfer the box from the waitingLBs map to the rebootingLBs map
     _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
     // insert the node in the DOM
-    _spanNewStateLBsList.appendChild(rebootingLBs.get(_laserBoxIndexNumber));
+    _spanNewStateLBsList.appendChild(_destinationMapSet.get(_laserBoxIndexNumber));
   },
 
 
@@ -171,7 +198,7 @@ var onLBsReboot = {
       if (rebootedLBs.size === 0) {
         this.onFirstBox(_laserBoxIndexNumber, "divRebootedLBs", 'Laser boxes currently rebooted: ', "spanRebootedLBs", rebootingLBs, rebootedLBs);
       } else {
-        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', rebootingLBs, rebootedLBs);
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', rebootedLBs, rebootingLBs);
       }
 
       rebootingLBs.delete(_laserBoxIndexNumber);
@@ -235,7 +262,8 @@ var onLBsReboot = {
         this.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", LBsWaitingToReboot, rebootingLBs);
 
       } else {
-        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', rebootingLBs, rebootedLBs);
+        console.log("-----  onDeleteBox: about to call onAdditionalBoxes <------- ")
+        this.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', rebootingLBs, LBsWaitingToReboot);
       }
 
       // delete the box from the LBsWaitingToReboot map
@@ -262,6 +290,10 @@ var onLBsReboot = {
 
     // select the infoBox
     var _infoBox = document.querySelector('#infoBox');
+
+    // check whether there was a message saying there was no connected boxes
+    // and delete it if necessary
+    this.deleteNoConnectedBoxesSpan();
 
     // create a div to hold the infos
     var _divLBsWaitingToRebootList = document.createElement("div");
@@ -338,6 +370,7 @@ function onMsgActionSwitch(_data) {
   if (_data.action === "addBox") {
     console.log("---------------- addBox switch starting -----------------");
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+    onLBsReboot.deleteNoConnectedBoxesSpan();
     addOrUpdateNewRowForNewBox(_data);
     onLBsReboot.onAddBox(_data);
     return;
@@ -357,8 +390,10 @@ function onMsgActionSwitch(_data) {
     }
     // if delete one box
     // _data = {lb:1; action:"deleteBox"}
-    deleteBoxRow(_data);
-    onLBsReboot.onDeleteBox(_data);
+    if (boxesRows.size){
+      deleteBoxRow(_data);
+      onLBsReboot.onDeleteBox(_data);      
+    }
     return;
   }
 
@@ -561,8 +596,7 @@ function onclickRebootLBsButton(e) {
     return;
   }
   // if no boxes are connected, inform the user that there are no boxes
-  var _infoBox = document.querySelector('#infoBox');
-  _infoBox.innerHTML = 'There are no laser box currently connected.';
+  onLBsReboot.addNoConnectedBoxesSpan();
   console.log("onclickRebootLBsButton: ending");
 };
 
