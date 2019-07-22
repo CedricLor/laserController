@@ -14,7 +14,7 @@ var pingCountSentMark = 1;
 var pingCountReceivedMark = 1;
 
 // rebooting boxes
-var rebootStep = 0;
+var rebooting = false;
 var LBsWaitingToReboot = new Map();
 var rebootingLBs = new Map();
 var rebootedLBs = new Map();
@@ -98,13 +98,13 @@ function connect() {
           var _spanRebootedLBsList = document.createElement("span");
           _spanRebootedLBsList.setAttribute("id", "spanRebootedLBs");
 
-          // transfer the box from the waitingLBs map to the rebooting LBs map
+          // transfer the box from the rebootingLBs map to the rebootedLBs map
           rebootedLBs[_data.lb] = rebootingLBs[_data.lb];
 
           // add the text node to the span
           _spanRebootedLBsList.appendChild(rebootedLBs[_data.lb]);
 
-          // delete the box from the LBsWaitingToReboot map
+          // delete the box from the rebootingLBs map
           rebootingLBs.delete(_data.lb);
 
           // add the text span to the div
@@ -119,7 +119,7 @@ function connect() {
           var _rebootedLBs = document.querySelector('#spanRebootedLBs');
           // transfer the box from the waitingLBs map to the rebooting LBs map
           rebootedLBs[_data.lb] = rebootingLBs[_data.lb];
-          // delete the box from the LBsWaitingToReboot map
+          // delete the box from the rebootingLBs map
           rebootingLBs.delete(_data.lb);
           // insert the frag in the DOM
           _rebootedLBs.appendChild(rebootedLBs[_data.lb]);
@@ -131,7 +131,7 @@ function connect() {
           // select the infoBox
           var _infoBox = document.querySelector('#infoBox');
           // create a span to hold the textnode informing that all the boxes have rebooted
-          var _spanLBsHaveRebooted = document.createElement("span");
+          var _spanLBsHaveRebooted = document.createElement("SPAN");
           _spanLBsHaveRebooted.setAttribute("id", "LBsHaveRebooted");
           // create a text node for the introduction text
           var _infoText = document.createTextNode('All the laser boxes have rebooted.');
@@ -140,7 +140,7 @@ function connect() {
           // insert the frag in the DOM
           _infoBox.appendChild(_spanLBsHaveRebooted);
           // set a timeout to delete the information for the info box
-          window.setTimeout = function(function() {
+          window.setTimeout(function() {
             var _infoBox = document.querySelector('#LBsHaveRebooted');
             if (_infoBox !== null) {
               _infoBox.parentNode.removeChild(_infoBox);
@@ -151,7 +151,7 @@ function connect() {
           rebootedLBs.clear();
 
           // get out of the reboot process
-          rebootStep = 0;
+          rebooting = false;
         }
       }
 
@@ -187,7 +187,7 @@ function connect() {
             var _spanRebootingLBsList = document.createElement("span");
             _spanRebootingLBsList.setAttribute("id", "spanRebootingLBs");
 
-            // transfer the box from the waitingLBs map to the rebooting LBs map
+            // transfer the box from the waitingLBs map to the rebootingLBs map
             rebootingLBs[_data.lb] = LBsWaitingToReboot[_data.lb];
 
             // add the text node to the span
@@ -213,7 +213,7 @@ function connect() {
           }
           if (boxesRows.size === 0) {
             // increment the rebootStep
-            rebootStep = 3;
+            rebooting = true;
             // remove the div
             var _divLBsWaitingToReboot = document.querySelector('#divLBsWaitingToReboot');
             _divLBsWaitingToReboot.parentNode.removeChild(_divLBsWaitingToReboot);
@@ -259,7 +259,7 @@ function connect() {
 
       // change the button color
       let _rebootLbsBtn = document.getElementById('rebootLBs');
-      _rebootLbsBtn.className += 'button_change_received';
+      _rebootLbsBtn.className += ' button_change_received';
 
       // save the fact that we are in rebooting
       rebooting = true;
@@ -286,7 +286,7 @@ function connect() {
       var _mapSize = boxesRows.size;
       for (var key in boxesRows) {
         let _text;
-        if (i ==== _mapSize) {
+        if (i === _mapSize) {
           _text = boxesRows[key] + ", ";
         } else {
           _text = boxesRows[key] + ".";
@@ -464,7 +464,7 @@ function onclickRebootLBsButton(e) {
         _button.classList.remove('button_clicked');
       }
     );
-    e.target.className += 'button_clicked';
+    e.target.className += ' button_clicked';
     ws.send(JSON.stringify({
       action: "changeNet",
       key: "reboot",
