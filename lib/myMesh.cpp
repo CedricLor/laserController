@@ -51,8 +51,28 @@ void myMesh::meshSetup() {
     // laserControllerMesh.stationManual(ssid, pass);
   }
 
+
+
   snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
-  laserControllerMesh.setHostname(gcHostnamePrefix);
+  // laserControllerMesh.setHostname(gcHostnamePrefix);
+  // Set up mDNS responder:
+  // - first argument is the domain name, in this example
+  //   the fully-qualified domain name is "ESP32_200.local"
+  // - second argument is the IP address to advertise
+  //   we send our IP address on the WiFi network
+  if (!MDNS.begin(gcHostnamePrefix)) {
+      Serial.println("Error setting up MDNS responder!");
+      while(1) {
+          delay(1000);
+      }
+  }
+  Serial.println("mDNS responder started");
+
+  // Add service to MDNS-SD
+  MDNS.addService("http", "tcp", 80);
+
+
+
   if (isInterface == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
     laserControllerMesh.setRoot(true);
