@@ -78,7 +78,11 @@ boxState boxState::boxStates[BOX_STATES_COUNT];
 boxState::boxState() {
 }
 
-
+// Initialize a Box with custom dimensions
+// boxState::boxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte __bIRTrigger, const byte __bMeshTrigger, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire)
+//     : ulDuration(_ulDuration), ui16AssociatedSequence(_ui16AssociatedSequence), _bIRTrigger(__bIRTrigger), _bMeshTrigger(__bMeshTrigger), ui16onIRTrigger(_ui16onIRTrigger), ui16onMeshTrigger(_ui16onMeshTrigger), ui16onExpire(_ui16onExpire)
+// {
+// }
 
 
 

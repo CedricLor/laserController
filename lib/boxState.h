@@ -48,6 +48,7 @@ class boxState
 {
   public:
     boxState(); // default constructor
+    // boxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte __bIRTrigger, const byte __bMeshTrigger, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 
     static void initBoxStates(); // initializer of the array of boxState
 
