@@ -234,11 +234,13 @@ void boxState::_restart_tPlayBoxState() {
     _tPlayBoxState.setInterval(boxStates[_boxTargetState]._ulDuration);
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
-    // 3. If the boxActiveState property of this box is not equal to the
-    // _boxTargetState, set the boxActiveState to the _boxTargetState
-    if (ControlerBoxes[gui16MyIndexInCBArray].boxActiveState != _boxTargetState ) {
-      ControlerBox::setBoxActiveState(gui16MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
-    }
+    // 3. Set the boxActiveState to the _boxTargetState
+    // Removed the test -> this is a restart of the same boxState -> it shall
+    // update the activeState in ControlerBox (via setBoxActiveState), because
+    // the setBoxActiveState() method updates also the timestamp of the boxState
+    // if (ControlerBoxes[gui16MyIndexInCBArray].boxActiveState != _boxTargetState ) {
+    ControlerBox::setBoxActiveState(gui16MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
+    // }
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
 
     // 4. Restart/enable _tPlayBoxState
