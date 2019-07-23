@@ -70,8 +70,7 @@ void myMesh::meshSetup() {
 
   // Add service to MDNS-SD
   MDNS.addService("http", "tcp", 80);
-
-
+  MDNS.addService("arduino", "tcp", 3232);
 
   if (isInterface == true) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
