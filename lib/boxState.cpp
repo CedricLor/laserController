@@ -91,7 +91,7 @@ void boxState::initBoxStates() {
   boxStates[10]._initBoxState("mesh High both interrupt", "mhb", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
   boxStates[11]._initBoxState("mesh High ir interrupt", "mhi", 120000, 0, 1, 0); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
   boxStates[12]._initBoxState("mesh High mesh interrupt", "mhm", 120000, 0, 0, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
-  boxStates[13]._initBoxState("pir High no interrupt", "mhn", 120000, 0, 0, 0); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
+  boxStates[13]._initBoxState("mesh High no interrupt", "mhn", 120000, 0, 0, 0); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
 
   Serial.println("void boxState::_initBoxStates(). Ending.");
 }
@@ -110,15 +110,15 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, fal
 
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
-  following values have changed:
+  following values have changed (the catchers):
   - ControlerBox::valFromPir (when the current boxState is set to react to signals from the PIR);
   - ControlerBoxes[PARENT].boxActiveState (when the current boxState is set to react to signals from the mesh);
   - _boxActiveStateHasBeenReset;
   - _boxTargetState;
   Depending on the changes, it will:
   - either start a new boxState or extend the duration of the current boxState; or
-  - reset the values to their origin value.
-  Otherwise, nothing happens.
+  - reset the catchers' values to their origin value.
+  If the catchers have not changed, nothing happens.
 */
 
 void boxState::_tcbPlayBoxStates() {
