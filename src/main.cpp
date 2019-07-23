@@ -13,7 +13,7 @@
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;
 
-#include "../lib/ControlerBox.cpp"
+#include <../lib/ControlerBox.cpp>
 
 #include "../lib/mySavedPrefs.cpp"
 
@@ -23,6 +23,9 @@ Scheduler    userScheduler;
 #include "../lib/myMesh.cpp"
 
 #include "../lib/boxState.cpp"
+
+#include <step.h>
+// #include "../lib/step/step.cpp"
 
 #include "../lib/pirController.cpp"
 
