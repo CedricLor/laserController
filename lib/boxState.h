@@ -56,8 +56,6 @@ class boxState
 
     static boxState boxStates[];
 
-    char cName[25];  // array of character to hold the name of each boxState
-
     unsigned long ulDuration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
     uint16_t ui16onIRTrigger;
@@ -66,7 +64,6 @@ class boxState
 
   private:
 
-    static const short int _NAME_CHAR_COUNT;
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
 
@@ -87,7 +84,7 @@ class boxState
     byte _bIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
     byte _bMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
-    void _initBoxState(const char _cpName[], const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte _bIRTrigger, const byte _bMeshTrigger);
+    void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte _bIRTrigger, const byte _bMeshTrigger);
 };
 
 #endif

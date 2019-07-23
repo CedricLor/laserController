@@ -69,7 +69,6 @@ short int boxState::_boxTargetState = 0;
 bool boxState::_boxActiveStateHasBeenReset = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
-const short int boxState::_NAME_CHAR_COUNT = 25;
 
 
 
@@ -85,9 +84,8 @@ boxState::boxState() {
 
 
 // Initialisers
-void boxState::_initBoxState(const char _cpName[_NAME_CHAR_COUNT], const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte __bIRTrigger, const byte __bMeshTrigger){
+void boxState::_initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte __bIRTrigger, const byte __bMeshTrigger){
   // Serial.println("void boxState::_initBoxState(). Starting.");
-  strcpy(cName, _cpName);
   ulDuration = _ulDuration;
   ui16AssociatedSequence = _ui16AssociatedSequence;
   _bIRTrigger = __bIRTrigger;
@@ -97,24 +95,38 @@ void boxState::_initBoxState(const char _cpName[_NAME_CHAR_COUNT], const unsigne
 
 void boxState::initBoxStates() {
   Serial.println("void boxState::_initBoxStates(). Starting.");
-  boxStates[0]._initBoxState("manual / off", 1000000, 5, 0, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  // manual / off
+  boxStates[0]._initBoxState(1000000, 5, 0, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
   // Serial.println("void boxState::_initBoxStates(). boxStates[0].cName: ");
   // Serial.println(boxStates[0].cName);
   // Serial.println("void boxState::_initBoxStates(). boxStates[0].ulDuration");
   // Serial.println(boxStates[0].ulDuration);
-  boxStates[1]._initBoxState("align lasers", 1000000, 1, 0, 0); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
-  boxStates[2]._initBoxState("pir Startup", 60000, 1, 0, 1); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
-  boxStates[3]._initBoxState("waiting both", 1000000, 5, 1, 1); // sequence "all of" for indefinite time until trigger from either IR or mesh
-  boxStates[4]._initBoxState("waiting ir", 1000000, 5, 1, 0); // sequence "all of" for indefinite time until trigger from IR
-  boxStates[5]._initBoxState("waiting mesh",  1000000, 5, 0, 1); // sequence "all of" for indefinite time until trigger from mesh
-  boxStates[6]._initBoxState("pir High both interrupt", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
-  boxStates[7]._initBoxState("pir High ir interrupt", 120000, 0, 1, 0); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
-  boxStates[8]._initBoxState("pir High mesh interrupt", 120000, 0, 0, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
-  boxStates[9]._initBoxState("pir High no interrupt", 120000, 0, 0, 0); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
-  boxStates[10]._initBoxState("mesh High both interrupt", 120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
-  boxStates[11]._initBoxState("mesh High ir interrupt", 120000, 0, 1, 0); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
-  boxStates[12]._initBoxState("mesh High mesh interrupt", 120000, 0, 0, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
-  boxStates[13]._initBoxState("mesh High no interrupt", 120000, 0, 0, 0); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
+  // align lasers
+  boxStates[1]._initBoxState(1000000, 1, 0, 0); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  // pir startup
+  boxStates[2]._initBoxState(60000, 1, 0, 1); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
+  // waiting both
+  boxStates[3]._initBoxState(1000000, 5, 1, 1); // sequence "all of" for indefinite time until trigger from either IR or mesh
+  // waiting ir
+  boxStates[4]._initBoxState(1000000, 5, 1, 0); // sequence "all of" for indefinite time until trigger from IR
+  // waiting mesh
+  boxStates[5]._initBoxState(1000000, 5, 0, 1); // sequence "all of" for indefinite time until trigger from mesh
+  // pir High both interrupt
+  boxStates[6]._initBoxState(120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
+  // pir High ir interrupt
+  boxStates[7]._initBoxState(120000, 0, 1, 0); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
+  // pir High mesh interrupt
+  boxStates[8]._initBoxState(120000, 0, 0, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
+  // pir High no interrupt
+  boxStates[9]._initBoxState(120000, 0, 0, 0); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
+  // mesh High both interrupt
+  boxStates[10]._initBoxState(120000, 0, 1, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
+  // mesh High ir interrupt
+  boxStates[11]._initBoxState(120000, 0, 1, 0); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
+  // mesh High mesh interrupt
+  boxStates[12]._initBoxState(120000, 0, 0, 1); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
+  // mesh High no interrupt
+  boxStates[13]._initBoxState(120000, 0, 0, 0); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
 
   Serial.println("void boxState::_initBoxStates(). Ending.");
 }
