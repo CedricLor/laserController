@@ -86,9 +86,9 @@ function sendReceivedIP() {
 
 
 //////////////////////////////////
-// onLBsReboot Object
+// onRebootLBs Object
 //////////////////////////////////
-var onLBsReboot = {
+var onRebootLBs = {
   active: false,
   rebootBtnId: 'rebootAll',
 
@@ -107,15 +107,15 @@ var onLBsReboot = {
         // change the button color to signal that it has started
         _onRebootCommon.turnBtnRed('rebootLBs');
         // create the info text and box
-        _onRebootCommon.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", onLBsReboot.waitingLBs, this.rebootingLBs);
+        _onRebootCommon.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", onRebootLBs.waitingLBs, this.rebootingLBs);
       } // this is not the first box to be deleted
       else {
         // add its number to the info box
-        _onRebootCommon.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, onLBsReboot.waitingLBs);
+        _onRebootCommon.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, onRebootLBs.waitingLBs);
       }
 
       // delete the box from the waitingLBs map
-      onLBsReboot.waitingLBs.delete(_laserBoxIndexNumber);
+      onRebootLBs.waitingLBs.delete(_laserBoxIndexNumber);
 
       if (boxesRows.size === 0) {
         // remove the waiting LBs div
@@ -133,7 +133,7 @@ var onLBsReboot = {
     let _rebootBtn = document.getElementById('rebootLBs');
     _rebootBtn.className += ' button_change_received';
 
-    _onRebootCommon.startConfirm("divLBsWaitingToReboot", 'Boxes waiting to reboot: ', "spanLBsWaitingToReboot", onLBsReboot.waitingLBs);
+    _onRebootCommon.startConfirm("divLBsWaitingToReboot", 'Boxes waiting to reboot: ', "spanLBsWaitingToReboot", onRebootLBs.waitingLBs);
 
     console.log("--------------- end LBs reboot switch -----------------");
   }
@@ -165,12 +165,12 @@ var onRebootAll = {
     // delete all the boxes
     deleteAllBoxRows();
 
-    // shut down any eventual onLBsReboot active status
-    onLBsReboot.active = false;
-    // clear all the eventual remaining values in the onLBsReboot maps
-    onLBsReboot.waitingLBs.clear();
-    onLBsReboot.rebootingLBs.clear();
-    onLBsReboot.rebootedLBs.clear();
+    // shut down any eventual onRebootLBs active status
+    onRebootLBs.active = false;
+    // clear all the eventual remaining values in the onRebootLBs maps
+    onRebootLBs.waitingLBs.clear();
+    onRebootLBs.rebootingLBs.clear();
+    onRebootLBs.rebootedLBs.clear();
 
     console.log("--------------- end reboot all switch -----------------");
   }
@@ -319,7 +319,7 @@ var _onRebootCommon = {
       // store it into a map
       _mapRebootingBoxes.set(key, _boxNumbNode);
       // add the new textNode to the span
-      // _spanLBsRebooting.appendChild(onLBsReboot.waitingLBs.get(key));
+      // _spanLBsRebooting.appendChild(onRebootLBs.waitingLBs.get(key));
       _spanLBsRebooting.appendChild(_mapRebootingBoxes.get(key));
     });
     return _spanLBsRebooting;
@@ -437,7 +437,7 @@ function onMsgActionSwitch(_data) {
 
   if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { // User request to reboot the LBs has been received and is being processed
     console.log("---------------- rebootStart switch starting -----------------");
-    onLBsReboot.startConfirm();
+    onRebootLBs.startConfirm();
     return;
   }
 }
@@ -1328,7 +1328,7 @@ function deleteBoxRow(_data) {
     }
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
     _deleteFromMaps(_data.lb); // updating the controlesBoxes map
-    onLBsReboot.onDeleteBox(_data);
+    onRebootLBs.onDeleteBox(_data);
     console.log("deleteBoxRow: deleted key [" + _data.lb + "] in controlerBoxes and boxesRows maps.");
     console.log("deleteBoxRow ending.");
     return true;
