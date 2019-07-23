@@ -37,6 +37,31 @@ reverse dependency graph
 
 */
 
+/*
+- _tPlayBoxStates detects boxState change request coming from the outside, depending
+on the settings (IR Trigger, Mesh Trigger) of the currently active boxState.
+- _setBoxTargetState stores the change requests from _tPlayBoxStates.
+- _tPlayBoxState starts and stops the boxState and underlying sequence, depending
+on the settings (duration, associated sequence number) of the currently active
+boxState, and upon request from its parent Task _tPlayBoxStates.
+
+What needs to be changed:
+1. _odtcbPlayBoxState(), step 2: reset to default upon expiration of a boxState
+-> maybe shall be able to choose to play something else.
+2. _tcbPlayBoxStates() -> _setBoxTargetStateFromSignalCatchers: currently goes to
+hard coded boxStates. Shall go to parameterized boxStates.
+3. add (i) onExpire, (ii) onIR and (iii) onMesh properties to boxStates
+4. create setters for:
+(i) onExpire,
+(ii) onIR,
+(iii) onMesh,
+(iv) ulDuration
+(v) associatedSequence
+5. create an interface class to set the boxState at each step of a session
+6. create an interface class to set the sessions
+*/
+
+
 #include "Arduino.h"
 #include "boxState.h"
 
@@ -339,30 +364,6 @@ void boxState::_odtcbPlayBoxState(){
 }
 
 
-
-/*
-- _tPlayBoxStates detects boxState change request coming from the outside, depending
-on the settings (IR Trigger, Mesh Trigger) of the currently active boxState.
-- _setBoxTargetState stores the change requests from _tPlayBoxStates.
-- _tPlayBoxState starts and stops the boxState and underlying sequence, depending
-on the settings (duration, associated sequence number) of the currently active
-boxState, and upon request from its parent Task _tPlayBoxStates.
-
-What needs to be changed:
-1. _odtcbPlayBoxState(), step 2: reset to default upon expiration of a boxState
--> maybe shall be able to choose to play something else.
-2. _tcbPlayBoxStates() -> _setBoxTargetStateFromSignalCatchers: currently goes to
-hard coded boxStates. Shall go to parameterized boxStates.
-3. add (i) onExpire, (ii) onIR and (iii) onMesh properties to boxStates
-4. create setters for:
-(i) onExpire,
-(ii) onIR,
-(iii) onMesh,
-(iv) ulDuration
-(v) associatedSequence
-5. create an interface class to set the boxState at each step of a session
-6. create an interface class to set the sessions
-*/
 
 
 
