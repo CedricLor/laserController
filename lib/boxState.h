@@ -57,12 +57,16 @@ class boxState
     static boxState boxStates[];
 
     char cName[25];  // array of character to hold the name of each boxState
-    char cHtmlTag[4];  // array of character to hold the html tag of each boxState
+
+    unsigned long ulDuration; // duration for which the status shall stay active before automatically returning to default
+    uint16_t ui16AssociatedSequence;  // sequence associated to a given state
+    uint16_t ui16onIRTrigger;
+    uint16_t ui16onMeshTrigger;
+    uint16_t ui16onExpire;
 
   private:
 
     static const short int _NAME_CHAR_COUNT;
-    static const short int _HTML_TAG_CHAR_COUNT;
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
 
@@ -80,12 +84,10 @@ class boxState
 
     static void _setBoxTargetState(const short int targetBoxState);
 
-    unsigned long _ulDuration; // duration for which the status shall stay active before automatically returning to default
-    byte _bAssociatedSequence;  // sequence associated to a given state
     byte _bIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
     byte _bMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
 
-    void _initBoxState(const char cpName[], const char cpHtmlTag[], const unsigned long ulDuration, const byte bAssociatedSequence, const byte bIRTrigger, const byte bMeshTrigger);
+    void _initBoxState(const char _cpName[], const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte _bIRTrigger, const byte _bMeshTrigger);
 };
 
 #endif
