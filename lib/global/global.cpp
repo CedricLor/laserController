@@ -38,7 +38,6 @@ const short VERSION = 0;
 const uint8_t UI8_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 
 // CONTROLLER BOX 201
-// node id in the current configuration 764691274
 // const uint8_t UI8_NODE_NAME = 201;                          // BOX BY BOX
 // const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
 
