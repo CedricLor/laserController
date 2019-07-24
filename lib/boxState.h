@@ -48,7 +48,7 @@ class boxState
 {
   public:
     boxState(); // default constructor
-    // boxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte __bIRTrigger, const byte __bMeshTrigger, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
+    // boxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 
     static void initBoxStates(); // initializer of the array of boxState
 
@@ -82,10 +82,7 @@ class boxState
 
     static void _setBoxTargetState(const short int targetBoxState);
 
-    byte _bIRTrigger; // in this state, does signals from IR trigger a restart or interrupt
-    byte _bMeshTrigger; // in this state, does signals from IR trigger a restart or interrupt
-
-    void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const byte _bIRTrigger, const byte _bMeshTrigger);
+    void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 };
 
 #endif
