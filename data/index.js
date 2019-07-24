@@ -243,6 +243,8 @@ var _onRebootCommon = {
       _onRebootTypeObj = onRebootAll;
     } else if (onRebootLBs.active) {
       _onRebootTypeObj = onRebootLBs;
+    } else {
+      return;
     }
 
     if (_onRebootTypeObj.active) {
@@ -383,7 +385,6 @@ function onMsgActionSwitch(_data) {
     console.log("---------------- addBox switch starting -----------------");
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     addOrUpdateNewRowForNewBox(_data);
-    _onRebootCommon.onAddBox(_data);
     return;
   }
 
@@ -1295,6 +1296,8 @@ function addOrUpdateNewRowForNewBox(data) {
     // let's update it instead
     updateBoxRow(data);
   }
+  // handles the case where this is a reboot
+  _onRebootCommon.onAddBox(_data);
 }
 
 
