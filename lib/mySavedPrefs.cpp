@@ -79,10 +79,6 @@ void mySavedPrefs::loadPrefsWrapper() {
     unsigned int _savedSettings =_preferences.getShort("savedSettings", 0);
     Serial.printf("%s \"savedSettings\" = _savedSettings = %i \n", _debugLoadMsgStart, _savedSettings);
 
-    // if the value of _savedSettings > 0, this means that some settings have been saved in the past
-    if (_savedSettings > 0) {
-      Serial.printf("%s NVS has saved settings. Loading values.\n", _debugLoadMsgStart);
-
       _loadNetworkCredentials(_preferences);
       _loadNetworkEssentialPreferences(_preferences);
       _loadUselessPreferences(_preferences);
@@ -95,7 +91,6 @@ void mySavedPrefs::loadPrefsWrapper() {
     } else {
       Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].bMasterBoxName (%i) and gui16BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].bMasterBoxName, gui16BoxesCount);
     }
-  }
 
   _endPreferences(_preferences);
 
