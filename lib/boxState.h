@@ -57,6 +57,10 @@ class boxState
 
     static boxState boxStates[];
 
+    static const ControlerBox& thisBox;
+    static ControlerBox& masterBox;
+    static const boxState& myActiveState;
+
     unsigned long ulDuration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
     uint16_t ui16onIRTrigger;
@@ -76,8 +80,8 @@ class boxState
     static void _odtcbPlayBoxState();
 
     // _tcbPlayBoxStates() sub functions
-    static void _setBoxTargetStateFromSignalCatchers(uint16_t _ui16masterBoxIndexInCB);
-    static void _resetSignalCatchers(uint16_t _ui16masterBoxIndexInCB);
+    static void _setBoxTargetStateFromSignalCatchers();
+    static void _resetSignalCatchers();
     static void _restart_tPlayBoxState();
 
     static void _setBoxTargetState(const short int targetBoxState);
