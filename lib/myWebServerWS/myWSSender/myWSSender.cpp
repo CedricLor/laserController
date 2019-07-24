@@ -337,11 +337,29 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
               Serial.print("- myWSSender::sendWSData: myWebServerWS::ws_client_id = ");Serial.println(myWebServerWS::ws_client_id);
               Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
               // THERE IS A BUG SOMEWHERE HERE UPON REREFRESHING AFTER A DISCONNECT
-              Serial.print("- myWSSender::sendWSData: -------------- BUG TRACKING -------------\n");
               Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id) == nullptr) = ");Serial.println((myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr));
-              Serial.print("WS_CONNECTED = ");Serial.println(WS_CONNECTED);
-              Serial.print("- myWSSender::sendWSData: myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = ");
-              Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
+              Serial.printf("WS_CONNECTED = %u", WS_CONNECTED);
+              Serial.printf("WS_CONNECTED = %i", WS_CONNECTED);
+              Serial.print("- myWSSender::sendWSData: myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()) = \n");
+              Serial.print("- myWSSender::sendWSData: -------------- BUG TRACKING -------------\n");
+              Serial.print("TESTING ACCESS TO myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()\n");
+              myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status();
+              Serial.print("TESTING SAVING IN ANOTHER VARIABLE myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()\n");
+              int _status = myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status();
+              Serial.print("TESTING PRINTING NEW VARIABLE status WITH printf\n");
+              Serial.printf("%i", _status);
+              Serial.print("TESTING COMPARING NEW VARIABLE status WITH WS_CONNECTED\n");
+              (_status == WS_CONNECTED);
+              Serial.print("TESTING SAVING COMPARISON NEW VARIABLE WITH WS_CONNECTED IN A BOOL\n");
+              bool _test = (_status == WS_CONNECTED);
+              Serial.print("ABOUT TO PRINT bool _test\n");
+              Serial.println(_test);
+              Serial.print("TESTING DIRECT COMPARISON\n");
+              (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
+              Serial.print("TESTING DIRECT COMPARISON IN printf\n");
+              Serial.printf("%i", (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED));
+              Serial.print("TESTING printf of myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status()\n");
+              Serial.printf("%i", myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status());
               // Serial.print("- myWSSender::sendWSData: (myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) = ");Serial.println(myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED);
               Serial.printf("- myWSSender::sendWSData. Client not found. About to send a WS message message to all.\n");
             }
