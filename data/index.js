@@ -1,3 +1,13 @@
+/* TODO URGENTLY
+- OTA update for the laser boxes
+- indicate the name of the master on loading a new box
+- feedback on save and reboot individual boxes
+- force reboot button
+- when a box disconnects and it is on a second layer, the intereface does not detect it
+  -> check what is happening in the callbacks
+- I guess the problem is the same when a box connects (if it connect to a box other
+  than the IF, the IF does not detect it).
+*/
 
 // Global variables
 var ws = null;
@@ -1272,12 +1282,12 @@ function addNewRowForNewBox(data) {
 
 
 
-function addOrUpdateNewRowForNewBox(data) {
+function addOrUpdateNewRowForNewBox(_data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addOrUpdateNewRowForNewBox starting.");
 
   // Check whether the boxRow has not already been created
-  var _controlerBoxEntry = controlerBoxes.get(data.lb);
+  var _controlerBoxEntry = controlerBoxes.get(_data.lb);
   console.log("addOrUpdateNewRowForNewBox: looking if an entry exists in the map for this box");
   console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
   console.log("addOrUpdateNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
@@ -1286,7 +1296,7 @@ function addOrUpdateNewRowForNewBox(data) {
   if (_controlerBoxEntry === undefined) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
-    addNewRowForNewBox(data);
+    addNewRowForNewBox(_data);
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   }
 
@@ -1294,7 +1304,7 @@ function addOrUpdateNewRowForNewBox(data) {
   else {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
-    updateBoxRow(data);
+    updateBoxRow(_data);
   }
   // handles the case where this is a reboot
   _onRebootCommon.onAddBox(_data);
