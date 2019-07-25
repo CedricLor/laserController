@@ -57,15 +57,15 @@ class boxState
 
     static boxState boxStates[];
 
-    static const ControlerBox& thisBox;
-    static ControlerBox& masterBox;
-    static const boxState& myActiveState;
+    // static ControlerBox* thisBox;
+    // static ControlerBox* masterBox;
+    // static boxState* myActiveState;
 
     unsigned long ulDuration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
-    uint16_t ui16onIRTrigger;
-    uint16_t ui16onMeshTrigger;
-    uint16_t ui16onExpire;
+    int16_t i16onIRTrigger;
+    int16_t i16onMeshTrigger;
+    int16_t i16onExpire;
 
   private:
 
@@ -80,13 +80,13 @@ class boxState
     static void _odtcbPlayBoxState();
 
     // _tcbPlayBoxStates() sub functions
-    static void _setBoxTargetStateFromSignalCatchers();
-    static void _resetSignalCatchers();
-    static void _restart_tPlayBoxState();
+    static void _setBoxTargetStateFromSignalCatchers(ControlerBox& _masterBox, ControlerBox& _thisBox);
+    static void _resetSignalCatchers(ControlerBox& _masterBox);
+    static void _restart_tPlayBoxState(ControlerBox& _thisBox);
 
     static void _setBoxTargetState(const short int targetBoxState);
 
-    void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
+    void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
 };
 
 #endif
