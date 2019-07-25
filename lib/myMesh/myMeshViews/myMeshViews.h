@@ -36,6 +36,8 @@ class myMeshViews
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
+    void droppedNodeNotif(int16_t _droppedNodeName);
+
     void changeBoxRequest(JsonObject& _obj, bool _bBroadcast=false);
     // void changeBoxRequest(const int8_t __i8RequestedChange, const char& _cChangeKey, const int8_t __i8BoxIndexInCB);
 

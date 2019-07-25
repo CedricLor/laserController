@@ -49,4 +49,6 @@ extern int8_t gi8OTA2Success;
 
 extern char gcHostnamePrefix[];
 
+extern uint16_t uiMeshSize;
+
 #endif

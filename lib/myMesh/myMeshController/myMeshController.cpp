@@ -29,7 +29,6 @@ Created by Cedric Lor, January 22, 2019.
 
 
 
-
 myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
 {
   if (MY_DG_MESH) {
@@ -67,7 +66,6 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj)
     _changeBox(_obj, _ui32SenderNodeId);
     return;
   }
-
 }
 
 
@@ -201,14 +199,20 @@ void myMeshController::_changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32S
 
   // if this is a "reboot" confirmation
   // _obj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
-  if (_obj["key"] == "reboot") {
+  if ((_obj["key"] == "reboot") || (_obj["key"] == "dropped")) {
     // Serial.println("----------------- THIS A REBOOT CONFIRMATION ---------------");
-    ControlerBox::deleteBox(_ui32SenderNodeId);
+    ControlerBox::deleteBox(__ui16BoxIndex);
+    // only decrease the MeshSize by one if it is a dropped connection message
+    // note: dropped connection message are sent by the box which first detected
+    // the dropped box. Such box has already updated its uiMeshSize in the
+    // dropped connection callback, in myMesh class
+    if (_obj["key"] == "dropped"){
+      uiMeshSize = uiMeshSize - 1;
+    }
     return;
   }
 
 }
-
 
 
 
@@ -491,7 +495,6 @@ void myMeshController::_updateSenderDefaultState(uint16_t _ui16BoxIndex, JsonObj
   // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
 // }
 
-const bool myMeshController::_B_SLAVE_ON_OFF_REACTIONS[4][2] = {{HIGH, LOW}, {LOW, HIGH}, {HIGH, HIGH}, {LOW, LOW}};
 // const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 // const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
 

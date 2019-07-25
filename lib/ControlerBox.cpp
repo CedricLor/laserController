@@ -250,32 +250,43 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 
 
-void ControlerBox::deleteBox(uint32_t _ui32nodeId) {
-  Serial.println("ControlerBox::deleteBox(): Starting");
+
+
+void ControlerBox::deleteBox(uint16_t _ui16BoxIndex) {
+  ControlerBoxes[_ui16BoxIndex].nodeId = 0;
+  ControlerBoxes[_ui16BoxIndex].APIP = {0,0,0,0};
+  ControlerBoxes[_ui16BoxIndex].stationIP = {0,0,0,0};
+  ControlerBoxes[_ui16BoxIndex].bNodeName = 0;
+
+  ControlerBoxes[_ui16BoxIndex].boxActiveState = -1;
+  ControlerBoxes[_ui16BoxIndex].uiBoxActiveStateStartTime = 0;
+  ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenSignaled = true;
+  ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+
+  ControlerBoxes[_ui16BoxIndex].isNewBoxHasBeenSignaled = true;
+  ControlerBoxes[_ui16BoxIndex].boxDeletionHasBeenSignaled = false;
+
+  ControlerBoxes[_ui16BoxIndex].bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
+  ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
+  ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+
+  updateConnectedBoxCount(connectedBoxesCount - 1);
+}
+
+
+
+
+
+
+void ControlerBox::deleteBoxByNodeId(uint32_t _ui32nodeId) {
+  Serial.println("ControlerBox::deleteBoxByNodeId(): Starting");
   for (uint16_t __it = 0; __it < gui16BoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == _ui32nodeId) {
-      ControlerBoxes[__it].nodeId = 0;
-      ControlerBoxes[__it].APIP = {0,0,0,0};
-      ControlerBoxes[__it].stationIP = {0,0,0,0};
-      ControlerBoxes[__it].bNodeName = 0;
-
-      ControlerBoxes[__it].boxActiveState = -1;
-      ControlerBoxes[__it].uiBoxActiveStateStartTime = 0;
-      ControlerBoxes[__it].boxActiveStateHasBeenSignaled = true;
-      ControlerBoxes[__it].boxActiveStateHasBeenTakenIntoAccount = true;
-
-      ControlerBoxes[__it].isNewBoxHasBeenSignaled = true;
-      ControlerBoxes[__it].boxDeletionHasBeenSignaled = false;
-
-      ControlerBoxes[__it].bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
-      ControlerBoxes[__it].bMasterBoxNameChangeHasBeenSignaled = true;
-      ControlerBoxes[__it].boxActiveStateHasBeenTakenIntoAccount = true;
-
-      updateConnectedBoxCount(connectedBoxesCount - 1);
+      deleteBox(__it);
       break;
     }
   }
-  Serial.println("ControlerBox::deleteBox(): Ending");
+  Serial.println("ControlerBox::deleteBoxByNodeId(): Ending");
 }
 
 

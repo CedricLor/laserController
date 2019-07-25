@@ -46,7 +46,8 @@ class ControlerBox
     static void setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime);
     static void setBoxDefaultState(const uint8_t _ui8BoxIndex, const short _sBoxDefaultState);
 
-    static void deleteBox(uint32_t _ui32nodeId);
+    static void deleteBox(uint16_t _ui16BoxIndex);
+    static void deleteBoxByNodeId(uint32_t _ui32nodeId);
 
     static Task tReboot;
     static void _reboot();

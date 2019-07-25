@@ -33,8 +33,6 @@ class myMeshController
     myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 
   private:
-    static const bool _B_SLAVE_ON_OFF_REACTIONS[4][2];
-
     char _action;
 
     void _statusMessage(JsonObject& _obj, uint32_t _ui32SenderNodeId);
