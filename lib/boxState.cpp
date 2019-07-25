@@ -147,13 +147,23 @@ void boxState::initBoxStates() {
 
 
 
+//////////////////////////////////////////////
+// Task _tPlayBoxStates and its callbacks
+//////////////////////////////////////////////
 
-// boxState player wrapper
-// tPlayBoxStates starts the execution of the various boxStates.
-// It is enabled at the end of the setup.
-// It then iterates indefinitely every seconds.
-// onEnable, it puts the box into IR Startup boxState (which is set to last for 1 minute)
-// then
+/* Task _tPlayBoxStates:
+    tPlayBoxStates starts at the end of the setup and
+    iterates indefinitely.
+    Every second:
+    1. it checks whether some events may trigger a boxState change
+    and if so, requests such boxState changes;
+    2. it then resets the event catchers to their default values;
+    3. finally, if a boxState change has been requested (by itself or
+    by _tPlayBoxState), it restarts _tPlayBoxState.
+
+    onEnable, it puts the box into IR Startup boxState (which is
+    set to last for 1 minute).
+*/
 Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, false, &_oetcbPlayBoxStates);
 
 /*
@@ -173,19 +183,16 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.println("void boxState::_tcbPlayBoxStates(). Starting.");
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
-  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
-
 
   // A. Analyse the signal catchers and set the box target state accordingly
-  _setBoxTargetStateFromSignalCatchers(_masterBox, _thisBox);
+  _setBoxTargetStateFromSignalCatchers();
 
   // B. Once read, reset all the signal catchers
-  _resetSignalCatchers(_masterBox);
+  _resetSignalCatchers();
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
-  _restart_tPlayBoxState(_thisBox);
+  _restart_tPlayBoxState();
   // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
 };
 
@@ -200,11 +207,21 @@ bool boxState::_oetcbPlayBoxStates() {
 }
 
 
+
+
+
 //////////////////////////////////////////////
 // _tcbPlayBoxStates() sub functions
-void boxState::_setBoxTargetStateFromSignalCatchers(ControlerBox& _masterBox, ControlerBox& _thisBox) {
+//////////////////////////////////////////////
+
+/*
+    _setBoxTargetStateFromSignalCatchers:
+    1. reads whether the web, the IR or the mesh have been modified in a way
+    that could require a change of boxState;
+    2. if so, requests a boxState change by calling _setBoxTargetState()
+*/
+void boxState::_setBoxTargetStateFromSignalCatchers() {
   // Read the signal catchers and change the targetState accordingly
-  boxState& _currentBoxState = boxStates[_thisBox.boxActiveState];
 
   // 1. Check the web signal catcher. If it has changed, set the new targetState
   // and return
@@ -214,36 +231,26 @@ void boxState::_setBoxTargetStateFromSignalCatchers(ControlerBox& _masterBox, Co
     return;
   }
 
-  // 2. If the current boxState has both IR and mesh triggers, check both values
-  if (_currentBoxState.i16onIRTrigger != -1
-    && _currentBoxState.i16onMeshTrigger != -1) {
-    // if both IR and mesh have sent a signal, compare the time at which each of
-    // them came and give priority to the latest
-    if (ControlerBox::valFromPir == HIGH &&
-      // PIR: testing if IR has been set HIGH
-      _masterBox.boxActiveState != -1 &&
-      // Mesh: testing if the state of the master boxActiveState has been set to something
-      _masterBox.boxActiveStateHasBeenTakenIntoAccount == false
-      // Mesh: testing if the state of the master boxActiveState has been taken into account
-      ){
-        Serial.println("--------------------- double trigger ----------");
-        // compare the times at which each signal catcher has been set
-        // and give priority to the most recent one
-        if (ControlerBox::uiSettingTimeOfValFromPir > _masterBox.uiBoxActiveStateStartTime) {
-          _setBoxTargetState(_currentBoxState.i16onIRTrigger);
-        } else {
-          _setBoxTargetState(_currentBoxState.i16onMeshTrigger);
-        }
-      }
-    return;
+  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
+  boxState& _currentBoxState = boxStates[_thisBox.boxActiveState];
+  // 2. Check whether the current state has both IR and mesh triggers
+  if (_currentBoxState._hasBothTriggers()) {
+    // check whether both have been triggered
+    if (ControlerBox::valFromPir == HIGH && _currentBoxState._meshHasBeenTriggered(_thisBox)) {
+      // if so, resolve the conflict and return
+      _currentBoxState._resolveTriggersConflict(_thisBox);
+      return;
+    }
+    /*
+        if it has both triggers but none or only has been triggered,
+        keep going (maybe, the IR has been trigger or the mesh has been
+        triggered)
+    */
   }
 
-  // 3. If the current boxState has IR trigger and the valueFromIR is HIGH,
-  // change state and put it in IR high
-  if (_currentBoxState.i16onIRTrigger != -1
-    && ControlerBox::valFromPir == HIGH) {
-      Serial.println("--------------------- IR trigger ----------");
-    _setBoxTargetState(_currentBoxState.i16onIRTrigger);
+  // 3. If the current boxState has IR trigger
+  if (_currentBoxState.i16onIRTrigger != -1){
+    _currentBoxState._checkIRTriggerAndAct();
     return;
   }
 
@@ -251,37 +258,44 @@ void boxState::_setBoxTargetStateFromSignalCatchers(ControlerBox& _masterBox, Co
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
   if (_currentBoxState.i16onMeshTrigger != -1){
-    if (_masterBox.boxActiveState != -1 &&
-    _masterBox.boxActiveStateHasBeenTakenIntoAccount == false){
-      Serial.println("--------------------- Mesh trigger ----------");
-      _setBoxTargetState(_currentBoxState.i16onIRTrigger);
-      return;
-    }
+    _currentBoxState._checkMeshTriggerAndAct(_thisBox);
   }
 }
 
 
-void boxState::_resetSignalCatchers(ControlerBox& _masterBox) {
-  // once the new _boxTargetState has been set, in accordance with the signal
-  // catchers, reset all the signals catchers to their initial values
+
+/*
+  _resetSignalCatchers resets all the signals catchers
+  to their initial values, once the new _boxTargetState
+  has been set by _setBoxTargetStateFromSignalCatchers
+*/
+void boxState::_resetSignalCatchers() {
+  ControlerBox::valFromWeb = -1;
   ControlerBox::valFromPir = LOW;
   ControlerBox::uiSettingTimeOfValFromPir = 0;
-  _masterBox.boxActiveStateHasBeenTakenIntoAccount = true;
-  ControlerBox::valFromWeb = -1;
+  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
+  if (_thisBox.bMasterBoxName != 254) {
+    ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
+    _masterBox.boxActiveStateHasBeenTakenIntoAccount = true;
+  }
 }
 
 
-// _restart_tPlayBoxState() starts a new boxState, if the _boxActiveStateHasBeenReset
-// has somehow been reset.
-//
-// If the _boxActiveStateHasBeenReset:
-// 1. reset the witness _boxActiveStateHasBeenReset to 0;
-// 2. reset the boxActiveState property of this box;
-// 3. set the duration to stay in the new boxState (by setting the
-// aInterval of the "children" Task _tPlayBoxState; _tPlayBoxState.setInterval), to
-// the ulDuration of the target boxState (boxStates[_boxTargetState].ulDuration);
-// 4. restart/enable the "children" Task _tPlayBoxState.
-void boxState::_restart_tPlayBoxState(ControlerBox& _thisBox) {
+
+/*
+    _restart_tPlayBoxState() starts a new boxState, if
+    the _boxActiveStateHasBeenReset has somehow been reset, and
+    accomplishes a couple of other technical tasks.
+
+    If the _boxActiveStateHasBeenReset, it will:
+      1. reset the witness _boxActiveStateHasBeenReset to 0;
+      2. set the duration to stay in the new boxState (by setting the
+      aInterval of the "children" Task _tPlayBoxState; _tPlayBoxState.setInterval), to
+      the ulDuration of the target boxState (boxStates[_boxTargetState].ulDuration);
+      3. set the boxActiveState property (and related properties) of this box;
+      4. restart/enable the "children" Task _tPlayBoxState.
+*/
+void boxState::_restart_tPlayBoxState() {
   // if the _boxActiveStateHasBeenReset,
   if (_boxActiveStateHasBeenReset == 1) {
     // 1. Resets the witness to 0 (false)
@@ -293,21 +307,7 @@ void boxState::_restart_tPlayBoxState(ControlerBox& _thisBox) {
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
     // 3. Set the boxActiveState to the _boxTargetState
-    // Removed the test -> this is a restart of the same boxState -> it shall
-    // update the activeState in ControlerBox (via setBoxActiveState), because
-    // setBoxActiveState() updates also the timestamp of the boxState
-    // if (_thisBox.boxActiveState != _boxTargetState ) {
-    Serial.println("-------------------- GOING TO SET BOX ACTIVE STATE ------------------");
-    Serial.println(gui16MyIndexInCBArray);
-    Serial.println(_boxTargetState);
-    Serial.println(laserControllerMesh.getNodeTime());
-    Serial.println(_thisBox.boxActiveState);
     ControlerBox::setBoxActiveState(gui16MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
-    Serial.println(gui16MyIndexInCBArray);
-    Serial.println(_boxTargetState);
-    Serial.println(laserControllerMesh.getNodeTime());
-    Serial.println(_thisBox.boxActiveState);
-    // }
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
 
     // 4. Restart/enable _tPlayBoxState
@@ -317,6 +317,74 @@ void boxState::_restart_tPlayBoxState(ControlerBox& _thisBox) {
     // Serial.println("*********************************************************");
   }
 }
+
+
+
+/*
+    The following subs are helpers for _setBoxTargetStateFromSignalCatchers
+*/
+bool boxState::_hasBothTriggers() {
+  return (i16onIRTrigger != -1
+    && i16onMeshTrigger != -1);
+}
+
+
+
+void boxState::_checkIRTriggerAndAct() {
+  // check whether IR has been triggered;
+  // if so, set the boxTarget state accordingly
+  if (ControlerBox::valFromPir == HIGH) {
+    Serial.println("--------------------- IR triggered ----------");
+    _setBoxTargetState(i16onIRTrigger);
+  }
+}
+
+
+
+void boxState::_checkMeshTriggerAndAct(ControlerBox& _thisBox) {
+  if (_meshHasBeenTriggered(_thisBox)) {
+    Serial.println("--------------------- Mesh triggered ----------");
+    _setBoxTargetState(i16onIRTrigger);
+  }
+}
+
+
+
+bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
+  // check whether masterBox has been set (the masterBox
+  // could have been disconnected, or forgotten to be set)
+  if (_thisBox.bMasterBoxName == 254) {
+    return false;
+  }
+  ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
+  // if masterBox has been set, check whether it has a set state
+  if (_masterBox.boxActiveState == -1) {
+    return false;
+  }
+  // if masterBox activeState has been set, check whether this state
+  // has been taken into account
+  if (_masterBox.boxActiveStateHasBeenTakenIntoAccount){
+    return false;
+  }
+  // else, we have a mesh trigger!
+  return true;
+}
+
+
+
+void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
+  // check whether both IR and Mesh have been triggered
+  Serial.println("--------------------- double trigger ----------");
+  // if so, compare the times at which each signal catcher has been set
+  // and give priority to the most recent one
+  ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
+  if (ControlerBox::uiSettingTimeOfValFromPir > _masterBox.uiBoxActiveStateStartTime) {
+    _setBoxTargetState(i16onIRTrigger);
+  } else {
+    _setBoxTargetState(i16onMeshTrigger);
+  }
+}
+
 
 
 
@@ -358,8 +426,7 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.println("bool boxState::_oetcbPlayBoxState(). Starting.");
   // Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.boxActiveState);
 
-  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  boxState& _currentBoxState = boxStates[_thisBox.boxActiveState];
+  boxState& _currentBoxState = boxStates[ControlerBoxes[gui16MyIndexInCBArray].boxActiveState];
 
   // 1. Look for the sequence number to read when in this state
   short int _activeSequence = _currentBoxState.ui16AssociatedSequence;

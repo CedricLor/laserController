@@ -68,7 +68,6 @@ class boxState
     int16_t i16onExpire;
 
   private:
-
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
 
@@ -80,13 +79,18 @@ class boxState
     static void _odtcbPlayBoxState();
 
     // _tcbPlayBoxStates() sub functions
-    static void _setBoxTargetStateFromSignalCatchers(ControlerBox& _masterBox, ControlerBox& _thisBox);
-    static void _resetSignalCatchers(ControlerBox& _masterBox);
-    static void _restart_tPlayBoxState(ControlerBox& _thisBox);
+    static void _setBoxTargetStateFromSignalCatchers();
+    static void _resetSignalCatchers();
+    static void _restart_tPlayBoxState();
 
     static void _setBoxTargetState(const short int targetBoxState);
 
     void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
+    bool _hasBothTriggers();
+    void _checkIRTriggerAndAct();
+    void _checkMeshTriggerAndAct(ControlerBox& _thisBox);
+    bool _meshHasBeenTriggered(ControlerBox& _thisBox);
+    void _resolveTriggersConflict(ControlerBox& _thisBox);
 };
 
 #endif
