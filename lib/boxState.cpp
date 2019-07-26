@@ -38,32 +38,134 @@ reverse dependency graph
 */
 
 /*
-- _tPlayBoxStates detects boxState change request coming from the outside, depending
-on the settings (IR Trigger, Mesh Trigger) of the currently active boxState.
-- _setBoxTargetState stores the change requests from _tPlayBoxStates.
-- _tPlayBoxState starts and stops the boxState and underlying sequence, depending
-on the settings (duration, associated sequence number) of the currently active
-boxState, and upon request from its parent Task _tPlayBoxStates.
-
-What needs to be changed:
-1. _odtcbPlayBoxState(), step 2: reset to default upon expiration of a boxState
--> maybe shall be able to choose to play something else.
-2. _tcbPlayBoxStates() -> _setBoxTargetStateFromSignalCatchers: currently goes to
-hard coded boxStates. Shall go to parameterized boxStates.
-3. add (i) onExpire, (ii) onIR and (iii) onMesh properties to boxStates
-4. create setters for:
-(i) onExpire,
-(ii) onIR,
-(iii) onMesh,
-(iv) ulDuration
-(v) ui16AssociatedSequence
-5. create an interface class to set the boxState at each step of a session
-6. create an interface class to set the sessions
+  Brief:
+  - _tPlayBoxStates detects boxState change request coming from the outside, depending
+  on the settings (IR Trigger, Mesh Trigger) of the currently active boxState.
+  - _setBoxTargetState stores the change requests from _tPlayBoxStates.
+  - _tPlayBoxState starts and stops the boxState and underlying sequence, depending
+  on the settings (duration, associated sequence number) of the currently active
+  boxState, and upon request from its parent Task _tPlayBoxStates.
+*/
+/*
+  What needs to be changed:
+  2. _tcbPlayBoxStates() -> _setBoxTargetStateFromSignalCatchers: currently goes to
+  hard coded boxStates. Shall go to parameterized boxStates.
+  4. create setters for:
+  (i) onExpire,
+  (ii) onIR,
+  (iii) onMesh,
+  (iv) i16Duration
+  (v) ui16AssociatedSequence
+  5. create an interface class to set the boxState at each step of a session
+  6. create an interface class to set the sessions
 */
 
 
 #include "Arduino.h"
 #include "boxState.h"
+
+step step::steps[7];
+
+step::step() {
+
+}
+
+step::step(int16_t __i16stepBoxStateNb,
+  int16_t __i16StateDuration,
+  uint16_t __ui16AssociatedSequence,
+  int16_t __i16onIRTrigger,
+  int16_t __i16onMeshTrigger,
+  int16_t __i16onExpire,
+  int16_t __i16stepMasterBoxName
+)
+    : _i16stepBoxStateNb(__i16stepBoxStateNb),
+    _i16StateDuration(__i16StateDuration),
+    _ui16AssociatedSequence(__ui16AssociatedSequence),
+    _i16onIRTrigger(__i16onIRTrigger),
+    _i16onMeshTrigger(__i16onMeshTrigger),
+    _i16onExpire(__i16onExpire),
+    _i16stepMasterBoxName(__i16stepMasterBoxName)
+{
+}
+
+void step::applyStep() {
+  // apply to the relevant boxState
+  // get handy access to boxState for this step
+  boxState &_thisStepBoxState = boxState::boxStates[_i16stepBoxStateNb];
+  // set the duration of the boxState for this step
+  _thisStepBoxState.i16Duration = _i16StateDuration;
+  // set the associated sequence of the boxState for this step
+  _thisStepBoxState.ui16AssociatedSequence = _ui16AssociatedSequence;
+  // set the onIRTrigger resulting state for this boxState
+  _thisStepBoxState.i16onIRTrigger = _i16onIRTrigger;
+  // set the onMeshTrigger resulting state for this boxState
+  _thisStepBoxState.i16onMeshTrigger = _i16onMeshTrigger;
+  // set the onExpireTrigger resulting state for this boxState
+  _thisStepBoxState.i16onExpire = _i16onExpire;
+
+  // apply to this ControlerBox
+  // get a handy acces to this box
+  ControlerBox &_thisBox = ControlerBoxes[gui16MyIndexInCBArray];
+  _thisBox.bMasterBoxName = _i16stepMasterBoxName;
+}
+
+void step::initSteps() {
+  /* step 0: waiting IR, all Off
+  - no passenger */
+  steps[0] = {4, -1, 5, 6, -1, 4, 254};
+  /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
+    onIRTrigger: apply state 6, onMeshTrigger: -1 (no mesh trigger),
+    onExpire: 4 (no expiration, repeat), _i16stepMasterBoxName: 254 */
+
+  /* step 1: PIR High, waiting both, relays
+  - passenger at box 1 (this box) */
+  steps[1] = {6, 60, 0, 4, 12, 6/*repeat once*/, 202 /*and 203*/};
+  /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, sequence: 0 - relays,
+    onIRTrigger: apply state 4 (repeat), onMeshTrigger: 12 (Mesh High, waiting mesh),
+    onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], _i16stepMasterBoxName: 202 [-- TO BE IMPROVED: and 203] */
+
+  /* step 2: Mesh High, waiting mesh, all Off
+  - passenger at boxes 2 or 3, going to boxes 5 or 6 */
+  steps[2] = {12, 60, 5, -1, 12, 12, 205 /*and 206*/};
+  /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, sequence: 5 - all Off,
+    onIRTrigger: -1, onMeshTrigger: 12 (repeat Mesh High, waiting mesh),
+    onExpire: 12 (repeat), _i16stepMasterBoxName: 205 [-- TO BE IMPROVED: and 203] */
+
+  /* step 3: Mesh High, waiting mesh, relays
+  - passenger at boxes 5 or 6, going between boxes 5 and 6 */
+  steps[3] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
+  /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+    onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
+    onExpire: 11 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
+
+  /* step 4: Mesh High, waiting mesh, relays
+  - passenger at boxes 5 or 6, going to box 4 */
+  steps[4] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
+  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+    onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
+    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
+
+  /* step 5: Mesh High, waiting mesh, relays
+  - passenger at box 4, going to box 2 or 3 */
+  steps[5] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
+  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+    onIRTrigger: -1, onMeshTrigger: 12 (mesh high, waiting IR),
+    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203]  */
+
+  /* step 6: Mesh High, IR interrupt, relays
+  - passenger at boxes 2 or 3, going to box 1 */
+  steps[6] = {11, -1, 0, 9, -1, 11, 254};
+  /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+    onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: -1 (none),
+    onExpire: 11 (repeat once), _i16stepMasterBoxName: 202 [and 203] */
+
+    /* step 7: IR High, no interrupt, relays
+    - passenger at boxes 2 or 3, going to box 1 */
+    steps[7] = {9, -1, 0, -1, -1, 11, 254};
+    /* boxState: 11 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
+      onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
+      onExpire: 11 (repeat once), _i16stepMasterBoxName: 202 [and 203] */
+}
 
 short int boxState::_boxTargetState = 0;
 bool boxState::_boxActiveStateHasBeenReset = 0;
@@ -77,9 +179,9 @@ boxState boxState::boxStates[BOX_STATES_COUNT];
 boxState::boxState() {
 }
 
-// Initialize a Box with custom dimensions
-// boxState::boxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire)
-//     : ulDuration(_ulDuration), ui16AssociatedSequence(_ui16AssociatedSequence), i16onIRTrigger(_i16onIRTrigger), i16onMeshTrigger(_i16onMeshTrigger), i16onExpire(_i16onExpire)
+
+// boxState::boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire)
+//     : i16Duration(_i16Duration), ui16AssociatedSequence(_ui16AssociatedSequence), i16onIRTrigger(_i16onIRTrigger), i16onMeshTrigger(_i16onMeshTrigger), i16onExpire(_i16onExpire)
 // {
 // }
 
@@ -87,9 +189,9 @@ boxState::boxState() {
 
 
 // Initialisers
-void boxState::_initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire){
+void boxState::_initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire){
   // Serial.println("void boxState::_initBoxState(). Starting.");
-  ulDuration = _ulDuration;
+  i16Duration = _i16Duration;
   ui16AssociatedSequence = _ui16AssociatedSequence;
   i16onIRTrigger = _i16onIRTrigger;
   i16onMeshTrigger = _i16onMeshTrigger;
@@ -102,47 +204,52 @@ void boxState::initBoxStates() {
   Serial.println("void boxState::_initBoxStates(). Starting.");
 
   // manual / off
-  boxStates[0]._initBoxState(1000000, 5, -1, -1, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  boxStates[0]._initBoxState(1000, 5, -1, -1, 0); // sequence "all of" for indefinite time, without "interrupt/restart" triggers from mesh or IR
   // Serial.println("void boxState::_initBoxStates(). boxStates[0].cName: ");
   // Serial.println(boxStates[0].cName);
-  // Serial.println("void boxState::_initBoxStates(). boxStates[0].ulDuration");
-  // Serial.println(boxStates[0].ulDuration);
+  // Serial.println("void boxState::_initBoxStates(). boxStates[0].i16Duration");
+  // Serial.println(boxStates[0].i16Duration);
 
-  // const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence
+  // const uint16_t _i16Duration, const uint16_t _ui16AssociatedSequence
   // const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire
 
   // align lasers
-  boxStates[1]._initBoxState(1000000, 1, -1, -1, 1); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
+  boxStates[1]._initBoxState(1000, 1, -1, -1, 1); // sequence "twins" for indefinite time, without "interrupt/restart" triggers from mesh or IR
   // pir startup waiting mesh
-  boxStates[2]._initBoxState(60000, 1, -1, 8/*0-1 8-9 with restriction*/, 3); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
+  boxStates[2]._initBoxState(60, 1, -1, 8/*0-1 8-9 with restriction*/, 3); // sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh
 
   // waiting both
-  boxStates[3]._initBoxState(1000000, 5, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/); // sequence "all of" for indefinite time until trigger from either IR or mesh
+  boxStates[3]._initBoxState(1000, 5, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/); // sequence "all of" for indefinite time until trigger from either IR or mesh
   // waiting ir
-  boxStates[4]._initBoxState(1000000, 5, 6/*6-9*/, -1, 4/*0 3-13*/); // sequence "all of" for indefinite time until trigger from IR
+  boxStates[4]._initBoxState(1000, 5, 6/*6-9*/, -1, 4/*0 3-13*/); // sequence "all of" for indefinite time until trigger from IR
   // waiting mesh
-  boxStates[5]._initBoxState(1000000, 5, -1, 10/*10-13*/, 5/*0 3-13*/); // sequence "all of" for indefinite time until trigger from mesh
+  boxStates[5]._initBoxState(1000, 5, -1, 10/*10-13*/, 5/*0 3-13*/); // sequence "all of" for indefinite time until trigger from mesh
 
   // pir High both interrupt
-  boxStates[6]._initBoxState(120000, 0, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
+  boxStates[6]._initBoxState(120, 0, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
   // pir High ir interrupt
-  boxStates[7]._initBoxState(120000, 0, 6/*6-9*/, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
+  boxStates[7]._initBoxState(120, 0, 6/*6-9*/, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
   // pir High mesh interrupt
-  boxStates[8]._initBoxState(120000, 0, -1, 10/*10-13*/, 5/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
+  boxStates[8]._initBoxState(120, 0, -1, 10/*10-13*/, 5/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
   // pir High no interrupt
-  boxStates[9]._initBoxState(120000, 0, -1, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
+  boxStates[9]._initBoxState(120, 0, -1, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
 
   // mesh High both interrupt
-  boxStates[10]._initBoxState(120000, 0, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
+  boxStates[10]._initBoxState(120, 0, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from both IR and mesh
   // mesh High ir interrupt
-  boxStates[11]._initBoxState(120000, 0, 6/*6-9*/, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
+  boxStates[11]._initBoxState(120, 0, 6/*6-9*/, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from IR only
   // mesh High mesh interrupt
-  boxStates[12]._initBoxState(120000, 0, -1, 10/*10-13*/, 5/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
+  boxStates[12]._initBoxState(120, 0, -1, 10/*10-13*/, 5/*0 3-13*/); // sequence "relays" for 2 minutes with "interrupt/restart" triggers from mesh only
   // mesh High no interrupt
-  boxStates[13]._initBoxState(120000, 0, -1, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
+  boxStates[13]._initBoxState(120, 0, -1, -1, 4/*0 3-13*/); // sequence "relays" for 2 minutes with no "interrupt/restart" triggers from IR or mesh
 
   Serial.println("void boxState::_initBoxStates(). Ending.");
 }
+
+
+
+
+Task boxState::tGetStepParam(1000L, -1, &_tcbtGetStepParam, &userScheduler, false, &_oetcbPlayBoxStates, &_odtcbPlayBoxStates);
 
 
 
@@ -291,7 +398,7 @@ void boxState::_resetSignalCatchers() {
       1. reset the witness _boxActiveStateHasBeenReset to 0;
       2. set the duration to stay in the new boxState (by setting the
       aInterval of the "children" Task _tPlayBoxState; _tPlayBoxState.setInterval), to
-      the ulDuration of the target boxState (boxStates[_boxTargetState].ulDuration);
+      the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
       3. set the boxActiveState property (and related properties) of this box;
       4. restart/enable the "children" Task _tPlayBoxState.
 */
@@ -302,8 +409,8 @@ void boxState::_restart_tPlayBoxState() {
     _boxActiveStateHasBeenReset = 0;
 
     // 2. Set the duration of Task _tPlayBoxState
-    // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].ulDuration: "); Serial.println(boxStates[_boxTargetState].ulDuration);
-    _tPlayBoxState.setInterval(boxStates[_boxTargetState].ulDuration);
+    // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
+    _tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
     // 3. Set the boxActiveState to the _boxTargetState
@@ -495,3 +602,20 @@ void boxState::_setBoxTargetState(const short __boxTargetState) {
   // Serial.print("void boxState::_setBoxTargetState(). _boxTargetState: "); Serial.println(_boxTargetState);
   Serial.println("void boxState::_setBoxTargetState(). Ending.");
 };
+
+
+
+//////////////////////////////
+// helpers
+//////////////////////////////
+unsigned long boxState::_ulCalcInterval(int16_t _i16IntervalInS) {
+  if (boxStates[_boxTargetState].i16Duration == -1) {
+    return 4294967290;
+  }
+  return boxStates[_boxTargetState].i16Duration * 1000;
+}
+
+uint16_t boxState::ui16mToS(uint16_t _minutes) {
+  uint16_t _ui16seconds = _minutes * 10;
+  return _ui16seconds;
+}

@@ -44,11 +44,50 @@ reverse dependency graph
 #include "./sequence/sequence.h"
 #include "./sequence/sequence.cpp"
 
+class step
+{
+  public:
+    static step steps[];
+
+    step();
+    step(int16_t __i16stepBoxStateNb,
+      int16_t __i16StateDuration,
+      uint16_t __ui16AssociatedSequence,
+      int16_t __i16onIRTrigger,
+      int16_t __i16onMeshTrigger,
+      int16_t __i16onExpire,
+      int16_t __i16stepMasterBoxNb
+    );
+
+    // boxState variable setter
+    int16_t _i16stepBoxStateNb;
+    int16_t _i16StateDuration;
+    uint16_t _ui16AssociatedSequence;
+    int16_t _i16onIRTrigger;
+    // int16_t _i16onIRTriggerNewMaster;
+    int16_t _i16onMeshTrigger;
+    // int16_t i16onMeshTriggerNewMaster;
+    int16_t _i16onExpire;
+    // int16_t i16onExpireNewMaster;
+
+    // ControlerBox variables setter
+    int16_t _i16stepMasterBoxName;
+
+    int16_t masterStatesToWatch[];
+
+    void applyStep();
+    void initSteps();
+  private:
+
+};
+
+
+
 class boxState
 {
   public:
     boxState(); // default constructor
-    // boxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
+    // boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 
     static void initBoxStates(); // initializer of the array of boxState
 
@@ -61,7 +100,7 @@ class boxState
     // static ControlerBox* masterBox;
     // static boxState* myActiveState;
 
-    unsigned long ulDuration; // duration for which the status shall stay active before automatically returning to default
+    int16_t i16Duration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
@@ -85,12 +124,18 @@ class boxState
 
     static void _setBoxTargetState(const short int targetBoxState);
 
-    void _initBoxState(const unsigned long _ulDuration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
+    static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
+    static uint16_t ui16mToS(uint16_t _minutes);
+
+    void _initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     bool _hasBothTriggers();
     void _checkIRTriggerAndAct();
     void _checkMeshTriggerAndAct(ControlerBox& _thisBox);
     bool _meshHasBeenTriggered(ControlerBox& _thisBox);
     void _resolveTriggersConflict(ControlerBox& _thisBox);
+
+    void _changeBoxState(const int16_t _i16StepIxNb, const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
+
 };
 
 #endif
