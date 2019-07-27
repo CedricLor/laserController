@@ -45,7 +45,7 @@ void myMesh::meshSetup() {
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE);
   }
 
-  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
+  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
 
   if (isInterface == true) {
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
