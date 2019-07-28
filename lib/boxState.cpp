@@ -133,9 +133,8 @@ void step::applyStep() {
   // set the boxState in which to go upon expiration of the boxState
   // (timer interrupt)
   _thisStepBoxState.i16onExpire = _i16onExpire;
-  ControlerBox &_thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  _thisBox.bMasterBoxName = _i16stepMasterBoxName;
   // set the masterBoxName which state changes shall be watched over
+  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const byte)_i16stepMasterBoxName);
   // _thisStepBoxState._i16stepMasterBoxName = _i16stepMasterBoxName;
   _tPreloadNextStep.enable();
 }
@@ -302,7 +301,6 @@ void boxState::initBoxStates() {
 
 
 
-Task boxState::tGetStepParam(1000L, -1, &_tcbtGetStepParam, &userScheduler, false, &_oetcbPlayBoxStates, &_odtcbPlayBoxStates);
 
 
 //////////////////////////////////////////////
@@ -597,7 +595,7 @@ bool boxState::_oetcbPlayBoxState(){
   boxState& _currentBoxState = boxStates[ControlerBoxes[gui16MyIndexInCBArray].boxActiveState];
 
   // 2. Set the active sequence
-  sequence::setActiveSequence(_activeSequence);
+  sequence::setActiveSequence(_currentBoxState.ui16AssociatedSequence);
 
   // 3. Enable the sequence player, to play the sequence in loop
   // until _tPlayBoxState expires, for the duration mentionned in the activeState
