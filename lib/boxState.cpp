@@ -476,11 +476,10 @@ void boxState::_restart_tPlayBoxState() {
     // 1. Resets the witness to 0 (false)
     _boxActiveStateHasBeenReset = 0;
 
-    // 2. Configure the params of the new boxState if we are in step
-    // controlled mode (mode 1)
+    // 2. If we are in step controlled mode (mode 1),
+    // configure the params of the new boxState.
     if (ui16Mode == 1) {
       step::steps[ui16stepCounter].applyStep();
-      ui16stepCounter = ui16stepCounter + 1;
     }
 
     // 3. Set the duration of Task _tPlayBoxState
@@ -624,6 +623,14 @@ bool boxState::_oetcbPlayBoxState(){
   // 4. Signal the change of state to the mesh
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg();
+
+  // 5. If we are in step controlled mode (mode 1):
+  // - increment the step counter; and
+  // - enable the Task that will read the params for the next step
+  if (ui16Mode == 1) {
+    ui16stepCounter = ui16stepCounter + 1;
+    _tPreloadNextStep.restart();
+  }
 
   Serial.println("bool boxState::_oetcbPlayBoxState(). Ending.");
   return true;
