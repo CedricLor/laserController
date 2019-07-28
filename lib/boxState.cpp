@@ -159,7 +159,7 @@ void step::applyStep() {
   // set the masterBoxName which state changes shall be watched over
   ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const byte)_i16stepMasterBoxName);
   // _thisStepBoxState._i16stepMasterBoxName = _i16stepMasterBoxName;
-  _tPreloadNextStep.enable();
+  step::_tPreloadNextStep.enable();
 }
 
 void step::initSteps() {
@@ -633,7 +633,7 @@ bool boxState::_oetcbPlayBoxState(){
   // - enable the Task that will read the params for the next step
   if (ui16Mode == 1) {
     ui16stepCounter = ui16stepCounter + 1;
-    _tPreloadNextStep.restart();
+    step::_tPreloadNextStep.restart();
   }
 
   Serial.println("bool boxState::_oetcbPlayBoxState(). Ending.");
