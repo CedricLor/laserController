@@ -50,25 +50,52 @@ reverse dependency graph
   What needs to be changed:
   2. _tcbPlayBoxStates() -> _setBoxTargetStateFromSignalCatchers: currently goes to
   hard coded boxStates. Shall go to parameterized boxStates.
-  4. create setters for:
+  - en cours -> 4. create setters for:
   (i) onExpire,
   (ii) onIR,
   (iii) onMesh,
   (iv) i16Duration
   (v) ui16AssociatedSequence
-  5. create an interface class to set the boxState at each step of a session
+  - en cours -> 5. create an interface class to set the boxState at each step of a session
   6. create an interface class to set the sessions
 */
 
+/* A faire pour implémenter les steps:
+!!!! ui16Mode need to be set somewhere to 1: either from global, NVS or Web
+
+I. Dans step, definir la fonction correspondante, appelée par le onEnable callback
+de tplayBoxState qui:
+1. donne aux variables de boxState les valeurs requise pour le nouveau step à
+partir de données en mémoire (-->attention: onEnable tplayBoxStateS: charger
+les donnés du step[0] depuis le SPIFFS);
+2. enables une Task qui:
+  a. va lire les données du step suivant (nouveau step + 1) dans le SPIFFS;
+  b. sauvegarde ces données dans la mémoire de step, en préparation du prochain
+  appel à la fonction par le onEnable callback.
+*/
 
 #include "Arduino.h"
 #include "boxState.h"
 
+
+
+
+
+
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+// STEP class
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
 step step::steps[7];
+
 
 step::step() {
 
 }
+
 
 step::step(int16_t __i16stepBoxStateNb,
   int16_t __i16StateDuration,
@@ -102,9 +129,6 @@ void step::applyStep() {
   _thisStepBoxState.i16onMeshTrigger = _i16onMeshTrigger;
   // set the onExpireTrigger resulting state for this boxState
   _thisStepBoxState.i16onExpire = _i16onExpire;
-
-  // apply to this ControlerBox
-  // get a handy acces to this box
   ControlerBox &_thisBox = ControlerBoxes[gui16MyIndexInCBArray];
   _thisBox.bMasterBoxName = _i16stepMasterBoxName;
 }
@@ -167,6 +191,18 @@ void step::initSteps() {
       onExpire: 11 (repeat once), _i16stepMasterBoxName: 202 [and 203] */
 }
 
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+// boxState class
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 short int boxState::_boxTargetState = 0;
 bool boxState::_boxActiveStateHasBeenReset = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
@@ -544,12 +580,12 @@ bool boxState::_oetcbPlayBoxState(){
   // Serial.println("bool boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
 
-  // 3. Enable the sequence player, to play the sequence in loop until _tPlayBoxState
-  // expires, for the duration mentionned in the activeState
+  // 3. Enable the sequence player, to play the sequence in loop
+  // until _tPlayBoxState expires, for the duration mentionned in the activeState
   // Serial.println("bool boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
 
-  // Signal the change of state to the mesh
+  // 4. Signal the change of state to the mesh
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg();
 

@@ -9,18 +9,23 @@
   |  |  |--ControlerBox.cpp (called to read and set some values, in particular on this box)
   |  |  |  |--ControlerBox.h
   |  |  |
+  |  |  |--myMeshViews.cpp
+  |  |  |  |--myMeshViews.h
+  |  |  |
   |  |  |--sequence.cpp
   |  |  |  |--sequence.h
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
   |  |  |  |  |--global.h
   |  |  |  |
-  |  |  |  |--note.cpp (called to play some member functions)
-  |  |  |  |  |--note.h
-  |  |  |  |  |--global.cpp (called to retrieve some values)
-  |  |  |  |  |  |--global.h
-  |  |  |  |
-  |  |  |--myMeshViews.cpp
-  |  |  |  |--myMeshViews.h
+  |  |  |  |--bar.cpp (an array of bars (micro-sequences of notes, each with a tempo in ms)
+  |  |  |  |  |--bar.h
+  |  |  |  |  |--note.cpp (a static class playing a note for a maximum 30 seconds)
+  |  |  |  |  |  |--note.h
+  |  |  |  |  |  |--tone.cpp (an array of tones, containing all the possible lasers on/off configurations)
+  |  |  |  |  |  |  |--tone.h
+  |  |  |  |  |  |  |--global.cpp (called to retrieve some values)
+  |  |  |  |  |  |  |  |--global.h
+
 
 */
 
@@ -28,7 +33,11 @@
 #include "note.h"
 
 
-short int note::activeTone = 0; // the active tone is initially set at 0 (all off)
+/*
+  The active tone is initially set at 0 (all off).
+  It is then set in the bar class, upon reading the bars.
+*/
+short int note::activeTone = 0; //
 
 // constructor
 note::note() {
@@ -36,11 +45,12 @@ note::note() {
 
 /*
   task tPlayNote is enabled upon instanciating a note in the bar class.
-  It is disabled by the expiration of the interval set in the classs constructor.
+  It is disabled by the expiration of the interval set in the class constructor.
   It does not need any mainCallback, as it does not iterate.
 
-  task tPlaynote plays a given tone (set in note::activeTone) for a given note type
-  --> full, half, ... at a given beat rate
+  task tPlaynote plays a given tone (set in note::activeTone)
+  for a given note type (--> full, half, ...) at a given
+  beat rate.
 */
 Task note::tPlayNote(30000, 1, NULL, &userScheduler, false, &_oetcbPlayNote, &_odtcbPlayNote);
 

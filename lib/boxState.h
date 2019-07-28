@@ -56,10 +56,10 @@ class step
       int16_t __i16onIRTrigger,
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
-      int16_t __i16stepMasterBoxNb
+      int16_t __i16stepMasterBoxNb // we are in step class
     );
 
-    // boxState variable setter
+    // boxState criteria (variables) setter
     int16_t _i16stepBoxStateNb;
     int16_t _i16StateDuration;
     uint16_t _ui16AssociatedSequence;
@@ -69,8 +69,6 @@ class step
     // int16_t i16onMeshTriggerNewMaster;
     int16_t _i16onExpire;
     // int16_t i16onExpireNewMaster;
-
-    // ControlerBox variables setter
     int16_t _i16stepMasterBoxName;
 
     int16_t masterStatesToWatch[];
@@ -96,9 +94,6 @@ class boxState
 
     static boxState boxStates[];
 
-    // static ControlerBox* thisBox;
-    // static ControlerBox* masterBox;
-    // static boxState* myActiveState;
 
     int16_t i16Duration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state

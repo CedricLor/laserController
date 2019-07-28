@@ -9,6 +9,9 @@
   |  |  |--ControlerBox.cpp (called to read and set some values, in particular on this box)
   |  |  |  |--ControlerBox.h
   |  |  |
+  |  |  |--myMeshViews.cpp
+  |  |  |  |--myMeshViews.h
+  |  |  |
   |  |  |--sequence.cpp
   |  |  |  |--sequence.h
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
@@ -20,14 +23,9 @@
   |  |  |  |  |  |--note.h
   |  |  |  |  |  |--tone.cpp (an array of tones, containing all the possible lasers on/off configurations)
   |  |  |  |  |  |  |--tone.h
-  |  |  |  |
-  |  |  |  |--tone.cpp
-  |  |  |  |  |--tone.h
-  |  |  |  |  |--global.cpp (called to retrieve some values)
-  |  |  |  |  |  |--global.h
-  |  |  |  |
-  |  |  |--myMeshViews.cpp
-  |  |  |  |--myMeshViews.h
+  |  |  |  |  |  |  |--global.cpp (called to retrieve some values)
+  |  |  |  |  |  |  |  |--global.h
+
 
 
 */

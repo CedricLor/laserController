@@ -9,6 +9,9 @@
   |  |  |--ControlerBox.cpp (called to read and set some values, in particular on this box)
   |  |  |  |--ControlerBox.h
   |  |  |
+  |  |  |--myMeshViews.cpp
+  |  |  |  |--myMeshViews.h
+  |  |  |
   |  |  |--sequence.cpp
   |  |  |  |--sequence.h
   |  |  |  |--global.cpp (called to start some tasks and play some functions)
@@ -20,14 +23,8 @@
   |  |  |  |  |  |--note.h
   |  |  |  |  |  |--tone.cpp (an array of tones, containing all the possible lasers on/off configurations)
   |  |  |  |  |  |  |--tone.h
-  |  |  |  |
-  |  |  |  |--tone.cpp
-  |  |  |  |  |--tone.h
-  |  |  |  |  |--global.cpp (called to retrieve some values)
-  |  |  |  |  |  |--global.h
-  |  |  |  |
-  |  |  |--myMeshViews.cpp
-  |  |  |  |--myMeshViews.h
+  |  |  |  |  |  |  |--global.cpp (called to retrieve some values)
+  |  |  |  |  |  |  |  |--global.h
 
 
 Traductions en anglais:
@@ -96,9 +93,12 @@ void sequence::initSequences() {
 
 
   _barCountForThisSequence = 1;
-  // for the moment, all the arrays that should contain series of
-  // bars ONLY contain one single sequence. Accordingly, don't miss
-  // that the following variable is an ARRAY of int.
+  /*
+    For the moment, all the arrays ONLY contain one single bar.
+    In principle, sequence are supposed to contain several bars.
+    Accordingly, the array should contain more than one single bar.
+    This will be one of the artistic parts.
+  */
   const short int aTwins[_barCountForThisSequence] = {1}; // this is a ref to the
                                                           // number of the single
                                                           // bar associated with

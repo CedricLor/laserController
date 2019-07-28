@@ -85,7 +85,8 @@ void bar::initBars() {
   // c. which one is the base note for each beat (full, half, quarter, etc.)
   // d. how many base notes does the bar count
   // e. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
-  // e. the array of references to the notes and the tones to be played in the bar
+  // e. the array of references to the notes (i.e. relative duration of each
+  // note) and the tones to be played in the bar {relDuration, tone}
   bars[0]._initBar("relays", 30000, 1, 2, _noteCountForThisBar, aRelays);
   // Serial.println("void bar::_initBars(). bars[0].ulBaseBeatInMs: ");
   // Serial.println(bars[0].ulBaseBeatInMs);
