@@ -13,12 +13,13 @@
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;
 
+#include <../lib/mySpiffs/mySpiffs.cpp>
+
 #include <../lib/ControlerBox.cpp>
 
 #include "../lib/mySavedPrefs.cpp"
 
 #include <../lib/myOta/myota.cpp>
-// #include <myota.cpp>
 
 #include "../lib/myMesh.cpp"
 
