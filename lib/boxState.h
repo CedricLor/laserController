@@ -70,8 +70,7 @@ class step
     int16_t _i16onExpire;
     // int16_t i16onExpireNewMaster;
     int16_t _i16stepMasterBoxName;
-
-    int16_t masterStatesToWatch[];
+    // int16_t masterStatesToWatch[];
 
     void applyStep();
 
@@ -106,6 +105,7 @@ class boxState
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;
+    // std::map stdMapMy;
 
   private:
     static short int _boxTargetState;

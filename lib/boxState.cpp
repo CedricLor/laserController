@@ -72,6 +72,10 @@ les donnés du step[0] depuis le SPIFFS);
   a. va lire les données du step suivant (nouveau step + 1) dans le SPIFFS;
   b. sauvegarde ces données dans la mémoire de step, en préparation du prochain
   appel à la fonction par le onEnable callback.
+
+II. dans step and boxState:
+- handle the problem of IRStartUp mode... which shall always be called
+if the box is restarted
 */
 
 #include "Arduino.h"
