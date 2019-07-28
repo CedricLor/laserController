@@ -461,6 +461,10 @@ void boxState::_restart_tPlayBoxState() {
 
     // 2. Configure the params of the new boxState if we are in step
     // controlled mode (mode 1)
+    if (ui16Mode == 1) {
+      step::steps[ui16stepCounter].applyStep();
+      ui16stepCounter = ui16stepCounter + 1;
+    }
 
     // 3. Set the duration of Task _tPlayBoxState
     // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
