@@ -208,6 +208,16 @@ bool boxState::_boxActiveStateHasBeenReset = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 
+// ui16stepCounter starts at 0; will be used to set
+// the params of the first step to be activated (after IR startup)
+// step[0] in _tPlayBoxStates main callback (_tcbPlayBoxStates)
+// in its sub _restart_tPlayBoxState
+uint16_t boxState::ui16stepCounter = 0;
+
+// ui16Mode = 0 => mode automatic, boxStates use their default settings
+// ui16Mode = 1 => step controlled, boxStates use the settings corresponding
+// to the step they are embedded in
+uint16_t boxState::ui16Mode = 0;
 
 
 

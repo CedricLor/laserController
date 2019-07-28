@@ -94,6 +94,8 @@ class boxState
 
     static boxState boxStates[];
 
+    static uint16_t ui16stepCounter;
+    static uint16_t ui16Mode;
 
     int16_t i16Duration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
