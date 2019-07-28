@@ -121,16 +121,23 @@ void step::applyStep() {
   boxState &_thisStepBoxState = boxState::boxStates[_i16stepBoxStateNb];
   // set the duration of the boxState for this step
   _thisStepBoxState.i16Duration = _i16StateDuration;
-  // set the associated sequence of the boxState for this step
+  // set the sequence to play at this boxState
   _thisStepBoxState.ui16AssociatedSequence = _ui16AssociatedSequence;
-  // set the onIRTrigger resulting state for this boxState
+  // set the boxState in which to go upon IR getting high
+  // (IR interrupt)
   _thisStepBoxState.i16onIRTrigger = _i16onIRTrigger;
-  // set the onMeshTrigger resulting state for this boxState
+  // set the boxState in which to go upon detected a mesh relevant change
+  // (i.e. a change of the masterBox states)
+  // (mesh interrupt)
   _thisStepBoxState.i16onMeshTrigger = _i16onMeshTrigger;
-  // set the onExpireTrigger resulting state for this boxState
+  // set the boxState in which to go upon expiration of the boxState
+  // (timer interrupt)
   _thisStepBoxState.i16onExpire = _i16onExpire;
   ControlerBox &_thisBox = ControlerBoxes[gui16MyIndexInCBArray];
   _thisBox.bMasterBoxName = _i16stepMasterBoxName;
+  // set the masterBoxName which state changes shall be watched over
+  // _thisStepBoxState._i16stepMasterBoxName = _i16stepMasterBoxName;
+  _tPreloadNextStep.enable();
 }
 
 void step::initSteps() {
@@ -298,8 +305,6 @@ void boxState::initBoxStates() {
 Task boxState::tGetStepParam(1000L, -1, &_tcbtGetStepParam, &userScheduler, false, &_oetcbPlayBoxStates, &_odtcbPlayBoxStates);
 
 
-
-
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
@@ -454,16 +459,19 @@ void boxState::_restart_tPlayBoxState() {
     // 1. Resets the witness to 0 (false)
     _boxActiveStateHasBeenReset = 0;
 
-    // 2. Set the duration of Task _tPlayBoxState
+    // 2. Configure the params of the new boxState if we are in step
+    // controlled mode (mode 1)
+
+    // 3. Set the duration of Task _tPlayBoxState
     // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
     _tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
-    // 3. Set the boxActiveState to the _boxTargetState
+    // 4. Set the boxActiveState to the _boxTargetState
     ControlerBox::setBoxActiveState(gui16MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
 
-    // 4. Restart/enable _tPlayBoxState
+    // 5. Restart/enable _tPlayBoxState
     _tPlayBoxState.restartDelayed();
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState enabled");
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");Serial.println(_tPlayBoxState.getInterval());
@@ -552,11 +560,13 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   equal to the duration of the new boxState.
 
   Upon being enabled, its onEnable callback:
-  1. looks for the new boxState number, in myActiveState;
-  Using the activeState number, it reads the associated sequence number in the
-  properties of the corresponding boxState in the boxStates array;
-  2. sets the new sequence to be played (by calling sequence::setActiveSequence());
-  3. starts playing the sequence (by enabling the task sequence::tPlaySequenceInLoop.
+  1. looks for the new boxState number, stored in this ControlerBox's
+  boxActiveState property and set in the main callback of _tPlayBoxStates,
+  sub: _restart_tPlayBoxState.
+  Using this number, its selects the currently active boxState
+  2. in the currently active boxState, it reads the associated sequence number in its properties;
+  3. sets the new sequence to be played (by calling sequence::setActiveSequence());
+  4. starts playing the sequence (by enabling the task sequence::tPlaySequenceInLoop.
 
   It iterates only once and does not have a main callback.
 
@@ -579,15 +589,10 @@ bool boxState::_oetcbPlayBoxState(){
   Serial.println("bool boxState::_oetcbPlayBoxState(). Starting.");
   // Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.boxActiveState);
 
+  // 1. select the currently active state
   boxState& _currentBoxState = boxStates[ControlerBoxes[gui16MyIndexInCBArray].boxActiveState];
 
-  // 1. Look for the sequence number to read when in this state
-  short int _activeSequence = _currentBoxState.ui16AssociatedSequence;
-  // Serial.print("bool boxState::_oetcbPlayBoxState() _activeSequence: ");
-  // Serial.println(_activeSequence);
-
   // 2. Set the active sequence
-  // Serial.println("bool boxState::_oetcbPlayBoxState() calling sequence::setActiveSequence(_activeSequence)");
   sequence::setActiveSequence(_activeSequence);
 
   // 3. Enable the sequence player, to play the sequence in loop
