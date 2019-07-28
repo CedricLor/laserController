@@ -74,6 +74,10 @@ class step
     int16_t masterStatesToWatch[];
 
     void applyStep();
+
+    static Task _tPreloadNextStep;
+    static void _tcbPreloadNextStep();
+
     void initSteps();
   private:
 

@@ -115,6 +115,25 @@ step::step(int16_t __i16stepBoxStateNb,
 {
 }
 
+
+Task step::_tPreloadNextStep(0, 1, &_tcbPreloadNextStep, &userScheduler, false);
+
+void step::_tcbPreloadNextStep() {
+  // read next step values from the file system
+
+  // load the values in memory as variables into the next step
+  // steps[boxState::ui16stepCounter] = {
+  //   /*set _i16stepBoxStateNb*/,
+  //   /*set _i16StateDuration*/,
+  //   /*_ui16AssociatedSequence*/,
+  //   /*_i16onIRTrigger*/,
+  //   /*_i16onMeshTrigger*/,
+  //   /*_i16onExpire*/,
+  //   /*_i16stepMasterBoxName*/
+  // };
+}
+
+
 void step::applyStep() {
   // apply to the relevant boxState
   // get handy access to boxState for this step
