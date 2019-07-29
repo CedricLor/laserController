@@ -123,6 +123,8 @@ step::step(int16_t __i16stepBoxStateNb,
 Task step::_tPreloadNextStep(0, 1, &_tcbPreloadNextStep, &userScheduler, false);
 
 void step::_tcbPreloadNextStep() {
+  mySpiffs _mySpiffs;
+  _mySpiffs.readJSONObjLineInFile("/sessions.json", step::_preloadNextStepFromJSON, boxState::ui16stepCounter);
   // read next step values from the file system
 
   // load the values in memory as variables into the next step
