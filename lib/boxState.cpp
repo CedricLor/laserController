@@ -151,10 +151,17 @@ void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
 }
 
 void step::applyStep() {
+  Serial.println("step::applyStep(). starting");
   // apply to the relevant boxState
   // get handy access to boxState for this step
+  // Serial.print("step::applyStep(). debug _i16stepBoxStateNb = ");
+  // Serial.println(_i16stepBoxStateNb);
   boxState &_thisStepBoxState = boxState::boxStates[_i16stepBoxStateNb];
   // set the duration of the boxState for this step
+  // Serial.print("step::applyStep(). debug _thisStepBoxState.i16Duration = ");
+  // Serial.println(_thisStepBoxState.i16Duration);
+  // Serial.print("step::applyStep(). debug _i16StateDuration = ");
+  // Serial.println(_i16StateDuration);
   _thisStepBoxState.i16Duration = _i16StateDuration;
   // set the sequence to play at this boxState
   _thisStepBoxState.ui16AssociatedSequence = _ui16AssociatedSequence;
@@ -169,15 +176,24 @@ void step::applyStep() {
   // (timer interrupt)
   _thisStepBoxState.i16onExpire = _i16onExpire;
   // set the masterBoxName which state changes shall be watched over
+  // Serial.println("step::applyStep(). debug master box name setter");
+  // Serial.println(_i16stepMasterBoxName);
+  // Serial.println((const byte)_i16stepMasterBoxName);
   ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const byte)_i16stepMasterBoxName);
   // _thisStepBoxState._i16stepMasterBoxName = _i16stepMasterBoxName;
   step::_tPreloadNextStep.enable();
+  Serial.println("step::applyStep(). ending");
 }
 
+
+
 void step::initSteps() {
+  Serial.println("step::initSteps(): starting");
   /* step 0: waiting IR, all Off
   - no passenger */
   steps[0] = {4, -1, 5, 6, -1, 4, 254};
+  // Serial.println("step::initSteps():");
+  // Serial.println(steps[0]._i16stepMasterBoxName);
   /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
     onIRTrigger: apply state 6, onMeshTrigger: -1 (no mesh trigger),
     onExpire: 4 (no expiration, repeat), _i16stepMasterBoxName: 254 */
@@ -230,6 +246,7 @@ void step::initSteps() {
   /* boxState: 11 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
     onExpire: 11 (repeat once), _i16stepMasterBoxName: 254 */
+  Serial.println("step::initSteps(): starting");
 }
 
 
@@ -550,10 +567,19 @@ void boxState::_checkMeshTriggerAndAct(ControlerBox& _thisBox) {
 bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
   // check whether masterBox has been set (the masterBox
   // could have been disconnected, or forgotten to be set)
+  // Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.bMasterBoxName = %u\n", _thisBox.bMasterBoxName);
+  // Serial.println(_thisBox.bMasterBoxName);
+  // Serial.println(_thisBox.bMasterBoxName == 254);
+  // Serial.println(_thisBox.bMasterBoxName == 0);
   if (_thisBox.bMasterBoxName == 254) {
     return false;
   }
+  Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.bMasterBoxName - gui16ControllerBoxPrefix = %i\n", _thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
+  Serial.println(_thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
   ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
+  Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveState %u\n", _masterBox.boxActiveState);
+  Serial.println(_masterBox.boxActiveState);
+  Serial.println(_masterBox.boxActiveState  == -1);
   // if masterBox has been set, check whether it has a set state
   if (_masterBox.boxActiveState == -1) {
     return false;
