@@ -435,8 +435,10 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     return;
   }
 
+  // give handy access to _thisBox and the _currentBoxState
   ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
   boxState& _currentBoxState = boxStates[_thisBox.boxActiveState];
+
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
     // check whether both have been triggered
