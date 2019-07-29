@@ -85,7 +85,7 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
     Serial.printf("mySpiffs::readFile: Reading file: %s\r\n", path);
 
     // File file = fs.open(path);
-    File file = SPIFFS.open(path, "r");
+    File file = SPIFFS.open(path, FILE_READ);
     if(!file || file.isDirectory()){
         Serial.println("mySpiffs::readFile: - failed to open file for reading");
         return;
