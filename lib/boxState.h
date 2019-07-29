@@ -43,6 +43,7 @@ reverse dependency graph
 #include "Arduino.h"
 #include "./sequence/sequence.h"
 #include "./sequence/sequence.cpp"
+#include "./mySpiffs/mySpiffs.cpp"
 
 class step
 {
