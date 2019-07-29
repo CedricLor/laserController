@@ -101,6 +101,45 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
         Serial.println(err.c_str());
     }
 
+
+
+void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep) {
+  int16_t _i16Index = 0;
+  char _endLineMarker = '\n';
+  char _cReadChar;
+  boolean _bNewData = false;
+  uint16_t _ui16InternalStepsCounter = 0;
+  // const byte numChars = 32;
+
+  while (file.available() > 0 && _bNewData == false) {
+    if ((_ui16InternalStepsCounter < _ui16stepCounter) && (file.read() != _endLineMarker)) {
+      _ui16InternalStepsCounter++;
+    }
+    if (_ui16InternalStepsCounter == _ui16stepCounter) {
+      strcpy(_cStep, file.readStringUntil('\n').c_str());
+
+      // _cReadChar = file.read();
+      // if (_cReadChar != _endLineMarker) {
+      //     _cStep[_i16Index] = _cReadChar;
+      //     _i16Index++;
+      //     // if (ndx >= numChars) {
+      //     //     ndx = numChars - 1;
+      //     // }
+      //   }
+        // else {
+        //     _cStep[_i16Index] = '\0'; // terminate the string
+        //     _i16Index = 0;
+        //     _bNewData = true;
+        //     _ui16InternalStepsCounter++;
+        //     break;
+        // }
+    }
+    if (_ui16InternalStepsCounter > _ui16stepCounter){
+      break;
+    }
+  }
+}
+
     // // system exemple from SPIFFS esp32-arduino exemple
     Serial.println("- read from file:");
     while(file.available()){
