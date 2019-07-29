@@ -572,12 +572,12 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
   if (_thisBox.bMasterBoxName == 254) {
     return false;
   }
-  Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.bMasterBoxName - gui16ControllerBoxPrefix = %i\n", _thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
-  Serial.println(_thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
+  // Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.bMasterBoxName - gui16ControllerBoxPrefix = %i\n", _thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
+  // Serial.println(_thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
   ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
-  Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveState %u\n", _masterBox.boxActiveState);
-  Serial.println(_masterBox.boxActiveState);
-  Serial.println(_masterBox.boxActiveState  == -1);
+  // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveState %u\n", _masterBox.boxActiveState);
+  // Serial.println(_masterBox.boxActiveState);
+  // Serial.println(_masterBox.boxActiveState  == -1);
   // if masterBox has been set, check whether it has a set state
   if (_masterBox.boxActiveState == -1) {
     return false;
