@@ -60,22 +60,15 @@ reverse dependency graph
   6. create an interface class to set the sessions
 */
 
-/* A faire pour implémenter les steps:
-!!!! ui16Mode need to be set somewhere to 1: either from global, NVS or Web
 
-I. Dans step, definir la fonction correspondante, appelée par le onEnable callback
-de tplayBoxState qui:
-1. donne aux variables de boxState les valeurs requise pour le nouveau step à
-partir de données en mémoire (-->attention: onEnable tplayBoxStateS: charger
-les donnés du step[0] depuis le SPIFFS);
-2. enables une Task qui:
-  a. va lire les données du step suivant (nouveau step + 1) dans le SPIFFS;
-  b. sauvegarde ces données dans la mémoire de step, en préparation du prochain
-  appel à la fonction par le onEnable callback.
-
-II. dans step and boxState:
-- handle the problem of IRStartUp mode... which shall always be called
-if the box is restarted
+/*
+  DEBUG PROBLEMS:
+  - IRStartuUp -> review
+  - casting bMasterNodeName
+  - calculations of bMasterNodeName index which result in negative numbers
+  - initial setting of ControlerBox.bMAsterNodeName
+  - empty class constructor for steps and boxStates -> should initialize each parameters to avoid
+  leaving dump values
 */
 
 #include "Arduino.h"
@@ -275,7 +268,7 @@ uint16_t boxState::ui16stepCounter = 0;
 // ui16Mode = 0 => mode automatic, boxStates use their default settings
 // ui16Mode = 1 => step controlled, boxStates use the settings corresponding
 // to the step they are embedded in
-uint16_t boxState::ui16Mode = 0;
+uint16_t boxState::ui16Mode = 1;
 
 
 
@@ -408,6 +401,9 @@ void boxState::_tcbPlayBoxStates() {
 // Upon tPlayBoxStates being enabled (at startup), the _boxTargetState is being
 // changed to 2 (pir Startup).
 bool boxState::_oetcbPlayBoxStates() {
+  if (ui16Mode != 0) {
+    step::initSteps();
+  }
   // Serial.println("void boxState::_oetcbPlayBoxStates(). Starting.");
   _setBoxTargetState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
   // Serial.println("void boxState::_oetcbPlayBoxStates(). Ending.");

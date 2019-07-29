@@ -79,7 +79,7 @@ class step
     static void _tcbPreloadNextStep();
     static void _preloadNextStepFromJSON(JsonObject& _joStep);
 
-    void initSteps();
+    static void initSteps();
   private:
 
 };
