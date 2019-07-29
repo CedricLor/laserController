@@ -12,6 +12,11 @@ mySpiffs::mySpiffs() {
 
 }
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Directories
+//////////////////////////////////////////////////////////////////////////////////////////////////
 // List directories
 void mySpiffs::listDir(fs::FS &fs, const char * dirname, uint8_t levels){
     Serial.printf("Listing directory: %s\r\n", dirname);
@@ -45,6 +50,7 @@ void mySpiffs::listDir(fs::FS &fs, const char * dirname, uint8_t levels){
 }
 
 
+
 // create a directory
 void mySpiffs::createDir(fs::FS &fs, const char * path){
     Serial.printf("Creating Dir: %s\n", path);
@@ -54,6 +60,7 @@ void mySpiffs::createDir(fs::FS &fs, const char * path){
         Serial.println("mkdir failed");
     }
 }
+
 
 
 // delete a directory
@@ -67,6 +74,12 @@ void mySpiffs::removeDir(fs::FS &fs, const char * path){
 }
 
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Files
+//////////////////////////////////////////////////////////////////////////////////////////////////
 // read a file
 void mySpiffs::readFile(fs::FS &fs, const char * path){
     Serial.printf("mySpiffs::readFile: Reading file: %s\r\n", path);
