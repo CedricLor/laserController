@@ -137,6 +137,16 @@ void step::_tcbPreloadNextStep() {
   // };
 }
 
+void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
+  step &_nextStep = step::steps[boxState::ui16stepCounter];
+  _nextStep._i16stepBoxStateNb = _joStep["_i16stepBoxStateNb"];
+  _nextStep._i16StateDuration = _joStep["_i16StateDuration"];
+  _nextStep._ui16AssociatedSequence = _joStep["_ui16AssociatedSequence"];
+  _nextStep._i16onIRTrigger = _joStep["_i16onIRTrigger"];
+  _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
+  _nextStep._i16onExpire = _joStep["_i16onExpire"];
+  _nextStep._i16stepMasterBoxName = _joStep["_i16stepMasterBoxName"];
+}
 
 void step::applyStep() {
   // apply to the relevant boxState
