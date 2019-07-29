@@ -92,7 +92,8 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
     }
 
     // reading JSON stuffs (from https://byfeel.info/eeprom-ou-spiffs/)
-    const size_t jsonStepsCapacity = JSON_ARRAY_SIZE(2) + JSON_ARRAY_SIZE(8) + 2*JSON_OBJECT_SIZE(1) + 8*JSON_OBJECT_SIZE(15) + 3280;
+    // capacity = 577 for one step with comments
+    const size_t jsonStepsCapacity = 577;
     StaticJsonDocument<jsonStepsCapacity> jdSteps;
     DeserializationError err = deserializeJson(jdSteps, file);
     if (err) {
