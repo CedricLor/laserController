@@ -92,8 +92,9 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
     }
 
     // reading JSON stuffs
-    // capacity = 577 for one step with comments
-    const size_t jsonStepsCapacity = 577;
+    // capacity = 900 for one step with comments
+    // !! will be too small to read the whole file
+    const size_t jsonStepsCapacity = 900;
     StaticJsonDocument<jsonStepsCapacity> jdSteps;
     DeserializationError err = deserializeJson(jdSteps, file);
     if (err) {
