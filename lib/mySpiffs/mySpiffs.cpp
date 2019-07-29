@@ -91,7 +91,7 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
         return;
     }
 
-    // reading JSON stuffs (from https://byfeel.info/eeprom-ou-spiffs/)
+    // reading JSON stuffs
     // capacity = 577 for one step with comments
     const size_t jsonStepsCapacity = 577;
     StaticJsonDocument<jsonStepsCapacity> jdSteps;
@@ -101,6 +101,15 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
         Serial.println(err.c_str());
     }
 
+    // // reading what is in the file and printing it
+    // // system exemple from SPIFFS esp32-arduino exemple
+    // Serial.println("- read from file:");
+    // while(file.available()){
+    //     Serial.write(file.read());
+    // }
+
+    file.close();
+}
 
 
 void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep) {
@@ -140,21 +149,37 @@ void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep) {
   }
 }
 
-    // // system exemple from SPIFFS esp32-arduino exemple
-    Serial.println("- read from file:");
-    while(file.available()){
-        Serial.write(file.read());
+void mySpiffs::readJSONObjLineInFile(const char * path, void (&callBack)(JsonObject&), uint16_t _ui16stepCounter){
+    Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
+
+    File file = SPIFFS.open(path, FILE_READ);
+    if(!file || file.isDirectory()){
+        Serial.println("mySpiffs::readJSONObjLineInFile: - failed to open file for reading");
+        return;
     }
 
-    // alloting values (from https://byfeel.info/eeprom-ou-spiffs/)
-    // affectation des valeurs , si existe pas on place une valeur par defaut
-    // strlcpy(config.nom,docConfig["nom"] | "byfeel",sizeof(config.nom));
-    // config.NumeroPIN = jdSteps["pin"] | 10;
-    // config.defaut = jdSteps["defaut"] | true;
-    // fermeture fichier
+    char _cStep[900];
+    mySpiffs::readLine(file, _ui16stepCounter, _cStep);
+
+    // reading JSON stuffs
+    // capacity = 905 for one step with comments,
+    // a little bit larger than what the size of _cStep
+    const size_t jsonStepCapacity = 905;
+    StaticJsonDocument<jsonStepCapacity> _jdStep;
+    DeserializationError err = deserializeJson(_jdStep, _cStep);
+    if (err) {
+        Serial.print(F("mySpiffs::readJSONObjLineInFile: deserializeJson() failed: "));
+        Serial.println(err.c_str());
+    }
+
+    // Get a reference to the root object
+    JsonObject _joStep = _jdStep.as<JsonObject>();
+
+    callBack(_joStep);
 
     file.close();
 }
+
 
 
 // write a new file

@@ -26,6 +26,8 @@ class mySpiffs
 
     void readFile(fs::FS &fs, const char * path);
     // readFile(SPIFFS, "/hello.txt")
+    void readJSONObjLineInFile(const char * path, void (&callBack)(JsonObject&), uint16_t _ui16stepCounter);
+
     void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep);
 
     void writeFile(fs::FS &fs, const char * path, const char * message);
