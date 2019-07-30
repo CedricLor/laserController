@@ -11,7 +11,7 @@ class ControlerBox
 {
   public:
     ControlerBox();
-    uint32_t nodeId; // calculated by painlessMesh from th mac address
+    uint32_t nodeId; // calculated by painlessMesh from the mac address
     bool isNewBoxHasBeenSignaled;   // when it is a new box, mark it so that the interface can send a WS message
     IPAddress stationIP; // set by painlessMesh or, for the interface, by the AP to which it is connected
     IPAddress APIP; // set by painlessMesh

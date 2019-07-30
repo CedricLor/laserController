@@ -46,29 +46,43 @@ reverse dependency graph
   on the settings (duration, associated sequence number) of the currently active
   boxState, and upon request from its parent Task _tPlayBoxStates.
 */
-/*
-  What needs to be changed:
-  2. _tcbPlayBoxStates() -> _setBoxTargetStateFromSignalCatchers: currently goes to
-  hard coded boxStates. Shall go to parameterized boxStates.
-  - en cours -> 4. create setters for:
-  (i) onExpire,
-  (ii) onIR,
-  (iii) onMesh,
-  (iv) i16Duration
-  (v) ui16AssociatedSequence
-  - en cours -> 5. create an interface class to set the boxState at each step of a session
-  6. create an interface class to set the sessions
-*/
 
 
 /*
   DEBUG PROBLEMS:
-  - IRStartuUp -> review
-  - casting bMasterNodeName
-  - calculations of bMasterNodeName index which result in negative numbers
-  - initial setting of ControlerBox.bMAsterNodeName
-  - empty class constructor for steps and boxStates -> should initialize each parameters to avoid
-  leaving dump values
+  I. Global
+    - setting and use of gui16MyIndexInCBArray // gui16ControllerBoxPrefix
+    -> make them two different values and adapt the whole code
+    -> this is a very long shot:
+      - gui16MyIndexInCBArray: 94 results in 13 files
+      - gui16ControllerBoxPrefix: 47 results in 8 files
+  II. BoxState and Steps
+    A. bMasterBoxName
+      - casting bMasterBoxName
+      - calculations of bMasterBoxName index which result in negative numbers
+      - initial setting of ControlerBox.bMasterBoxName
+      - empty class constructor for steps and boxStates -> should initialize
+      each parameter to avoid leaving dump values
+    B. Implement array of masterBoxes
+    C. Implement various reactions to various state of master
+    D. Implement locking IRStartup mode to other IRless modes only
+    E. Create mesh and web stack for steps
+    F. Create mesh and web stack for stepSwitch
+  IV. mySpiffs and steps and sequences:
+    - Read file in manual JSON and parse them to real JSON files
+    - Split sessions.config which would contain all the steps for all the boxes
+    into box specific files
+  IV. WSSender: add a queue in the looped task
+  V. WSSender: by pass ControlerBox storage when receiving data from the boxes
+  VI. mySpiffs: refacto
+  VII. mySavedPrefs: refacto -> mySavedPrefs shall be loaded before ControlerBox
+  VIII. Make the whole thing more flexible to be reused for:
+    1. nodes in the mesh that would only serve as relays
+    2. nodes in the mesh that would serve as relays and be connected to IR or
+    ultrasonic sensors providing data to the whole system
+  IX. Hardware interrupt on the IR Pin
+  X. Deep sleep
+  XI. Create mesh and web stack for sequences and notes/tones
 */
 
 #include "Arduino.h"
@@ -117,8 +131,8 @@ Task step::_tPreloadNextStep(0, 1, &_tcbPreloadNextStep, &userScheduler, false);
 
 void step::_tcbPreloadNextStep() {
   mySpiffs _mySpiffs;
-  _mySpiffs.readJSONObjLineInFile("/sessions.json", step::_preloadNextStepFromJSON, boxState::ui16stepCounter);
   // read next step values from the file system
+  _mySpiffs.readJSONObjLineInFile("/sessions.json", step::_preloadNextStepFromJSON, boxState::ui16stepCounter);
 
   // load the values in memory as variables into the next step
   // steps[boxState::ui16stepCounter] = {
