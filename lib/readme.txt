@@ -181,11 +181,23 @@ TO DO:
 - find a way to decrease ControlerBox::connectedBoxesCount when a box gets disconnected
 - add a little static array to ControlerBox to store the index numbers of ControlerBoxes of the box that are connected
 
-Notes on Task Scheduler
-When calling setInterval() within the onEnable callback of the Task, the main callback is called within the ancient delay.
+
+
+
+
+///////////////////////////////////////////////
+// Notes on Task Scheduler
+///////////////////////////////////////////////
+When calling setInterval() within the onEnable callback of the Task,
+the main callback is called within the ancient delay.
 The following iteration on the main callback will take place after the new delay
 
-Notes on painlessMesh
+
+
+
+///////////////////////////////////////////////
+// Notes on painlessMesh
+///////////////////////////////////////////////
 I. Connection and Disconnection: on the node that stays connected
   A. when disconnecting a member from the Mesh, on the node that stays connected,
   changedConnectionCallback() is triggered: laserControllerMesh.subConnectionJson() = {"nodeId":2760139053,"root":true}
@@ -216,138 +228,65 @@ C. Mesh Protocol: message types
   type: 8: Mesh broadcast
   type: 9: Single addressed message
 
-- DISCONNECTING TRACE:
-CONNECTION: onDisconnect():
-GENERAL: getNodeTime(): time=609264646
-CONNECTION: onDisconnect(): dropping 764691274 now= 609264646
-CONNECTION: MeshConnection::close().
-CONNECTION: mesh->_scheduler.addTask():
-CONNECTION: mesh->droppedConnectionTask.enable():
-CONNECTION: before if (client->connected()):
-CONNECTION: after if (client->connected()):
-CONNECTION: after if station && WiFi.status() == WL_CONNECTED):
-CONNECTION: eraseClosedConnections():
-CONNECTION: ~MeshConnection():
-CONNECTION: MeshConnection::close() Done.
-CONNECTION: closingTask():
-GENERAL: getNodeTime(): time=609300964
 
-CONNECTION: closingTask(): dropping 764691274 now= 609300964
-myMesh::changedConnectionCallback(): Changed connections {"nodeId":2760139053,"root":t
-rue}
---------------------- CHANGED CONNECTION --------------------------
+  API:
+  - void painlessMesh::stop()
+  Stop the node. This will cause the node to disconnect from all other nodes and stop/sending messages.
 
-- CONNECTING TRACE:
-- CHANGED CONNECTION STACK:
-CONNECTION: New AP connection incoming
-CONNECTION: meshConnectedCb(): we are AP
-GENERAL: MeshConnection(): leaving
-COMMUNICATION: meshRecvCb(): fromId=0
-GENERAL: getNodeTime(): time=93680589
-COMMUNICATION: meshRecvCb(): Recvd from 0-->{"nodeId":764691274,"type":5,"dest":0,"fro
-m":764691274}<--
-SYNC: handleNodeSync(): with 0
-myMesh::changedConnectionCallback(): Changed connections {"nodeId":2760139053,"root":t
-rue,"subs":[{"nodeId":764691274}]}
---------------------- CHANGED CONNECTION --------------------------
-SYNC: syncSubConnections(): changedId = 764691274
-SYNC: syncSubConnections(): in for loop
-SYNC: syncSubConnections(): out of for loop
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239884
 
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":0,"from
-":764691274}
+  - void painlessMesh::onNewConnection( &newConnectionCallback )
+  This fires every time the local node makes a new connection.   The callback has the following structure.
+  void newConnectionCallback( uint32_t nodeId )
+  nodeId is new connected node ID in the mesh.
 
-- CONNECTING TRACE:
-- NEW CONNECTION STACK:
-CONNECTION: newConnectionTask():
-GENERAL: getNodeTime(): time=93781626
-CONNECTION: newConnectionTask(): adding 764691274 now= 93781626
-myMesh::newConnectionCallback(): New Connection, nodeId = 764691274
-++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++
-GENERAL: sentBufferTask()
-GENERAL: sentBufferTask()
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=94026507
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"type":4,"dest":2760139053,"from"
-:764691274,"msg":{"type":1,"t0":8852804}}<--
-GENERAL: getNodeTime(): time=94033827
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239656
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"type":4,"dest":2760139053,"from":76469127
-4,"msg":{"type":1,"t0":8852804}}
-GENERAL: sentBufferTask()
-GENERAL: sentBufferTask()
-COMMUNICATION: meshRecvCb(): fromId=764691274
 
-GENERAL: getNodeTime(): time=94281507
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"type":4,"dest":2760139053,"from"
-:764691274,"msg":{"type":1,"t0":94271188}}<--
-GENERAL: getNodeTime(): time=94288970
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239660
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"type":4,"dest":2760139053,"from":76469127
-4,"msg":{"type":1,"t0":94271188}}
+  - void painlessMesh::onChangedConnections( &changedConnectionsCallback )
+  This fires every time there is a change in mesh topology. Callback has the following structure.
+  void onChangedConnections()
+  There are no parameters passed. This is a signal only.
 
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=101171102
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
-":2760139053,"from":764691274}<--
-SYNC: handleNodeSync(): with 764691274
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
-053,"from":764691274}
 
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=108715089
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
-":2760139053,"from":764691274}<--
-SYNC: handleNodeSync(): with 764691274
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
-GENERAL: sentBufferTask()
+  - bool painlessMesh::isConnected( nodeId )
+  Returns if a given node is currently connected to the mesh.
+  nodeId is node ID that the request refers to.
 
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
-053,"from":764691274}
 
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=116253675
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
-":2760139053,"from":764691274}<--
-SYNC: handleNodeSync(): with 764691274
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139053,"from":764691274}
+  - String painlessMesh::subConnectionJson()
+  Returns mesh topology in JSON format.
 
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=123790550
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
-":2760139053,"from":764691274}<--
-SYNC: handleNodeSync(): with 764691274
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
-GENERAL: sentBufferTask()
 
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
-053,"from":764691274}
+  - std::list<uint32_t> painlessMesh::getNodeList()
+  Get a list of all known nodes. This includes nodes that are both directly and indirectly connected to the current node.
 
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=131333920
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
-":2760139053,"from":764691274}<--
-SYNC: handleNodeSync(): with 764691274
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
 
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
-053,"from":764691274}
 
-COMMUNICATION: meshRecvCb(): fromId=764691274
-GENERAL: getNodeTime(): time=138873884
-COMMUNICATION: meshRecvCb(): Recvd from 764691274-->{"nodeId":764691274,"type":5,"dest
-":2760139053,"from":764691274}<--
-SYNC: handleNodeSync(): with 764691274
-COMMUNICATION: addMessage(): Package sent to queue beginning -> 1 , FreeMem: 239828
-GENERAL: sentBufferTask()
-COMMUNICATION: writeNext(): Package sent = {"nodeId":764691274,"type":5,"dest":2760139
-053,"from":764691274}
+///////////////////////////////////////////////
+// Notes on std:: lib
+///////////////////////////////////////////////
+  ArduinoJson
+    std::string
+    std::ostream
+    std::istream
+    std::streamsize
+
+  ESPAsyncTCP
+    std::vector
+    std::function
+
+  painlessMesh
+    std::function
+    std::map
+    std::list
+    std::cout
+    std::endl
+    std::min
+    std::shared_ptr
+    std::move
+    std::make_shared
+    std::swap
+    std::map
+    std::enable_shared_from_this
+    std::stringstream
+    std::size_t
+    std::vector
+    std::pair
