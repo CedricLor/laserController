@@ -355,17 +355,17 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // -> would need a reboot
   // -> fix: call ControlerBox::updateThisBoxProperties
   // this value is then used in ControlerBox::updateThisBoxProperties
-  // to set ControlerBoxes[gui16MyIndexInCBArray].bNodeName
+  // to set ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName
   // putUChar(const char* key, uint8_t value)
-  size_t _gui16NodeNameRet = _preferences.putUChar("bNodeName", (uint8_t)(gui16NodeName));
-  Serial.printf("%s gui16NodeName == %u %s\"bNodeName\"\n", debugSaveMsgStart, gui16NodeName, (_gui16NodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _gui16NodeNameRet = _preferences.putUChar("ui8NdeName", (uint8_t)(gui16NodeName));
+  Serial.printf("%s gui16NodeName == %u %s\"ui8NdeName\"\n", debugSaveMsgStart, gui16NodeName, (_gui16NodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // recalculate gui16MyIndexInCBArray with the new values of gui16NodeName and gui16ControllerBoxPrefix
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot required, but very messy without a reboot of the whole mesh
   // -> fix: complicated; would need each and everybox to update its ControlerBoxes array
   // this value is then used in ControlerBox::updateThisBoxProperties
-  // to set ControlerBoxes[gui16MyIndexInCBArray].bNodeName
+  // to set ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName
   gui16MyIndexInCBArray = gui16NodeName - gui16ControllerBoxPrefix;
   Serial.printf("%s gui16MyIndexInCBArray recalculated to: %u (not saved)\n", debugSaveMsgStart, gui16MyIndexInCBArray);
 
@@ -555,7 +555,7 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // gui16NodeName
   // getUChar(const char* key, const uint8_t defaultValue)
-  gui16NodeName = (uint16_t)(_preferences.getUChar("bNodeName", gui16NodeName));
+  gui16NodeName = (uint16_t)(_preferences.getUChar("ui8NdeName", gui16NodeName));
   Serial.printf("%s gui16NodeName set to: %i\n", _debugLoadMsgStart, gui16NodeName);
 
   // recalculate gui16MyIndexInCBArray with the new values of gui16NodeName and gui16ControllerBoxPrefix

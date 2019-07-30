@@ -178,12 +178,12 @@ void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
 void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   if (MY_DG_MESH) {
     Serial.println("myMeshViews::_sendMsg(): Starting.");
-    // Serial.println("myMeshViews::_sendMsg(): about to allocate ControlerBoxes[gui16MyIndexInCBArray].bNodeName to _joMsg[\"senderNodeName\"]");
+    // Serial.println("myMeshViews::_sendMsg(): about to allote ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName to _joMsg[\"senderNodeName\"]");
   }
 
 
   // adding my nodeName to the JSON to be sent to other boxes
-  _joMsg["NNa"] = ControlerBoxes[gui16MyIndexInCBArray].bNodeName;
+  _joMsg["NNa"] = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
   // if (MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
   // }

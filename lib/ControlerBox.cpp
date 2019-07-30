@@ -32,7 +32,7 @@ ControlerBox::ControlerBox()
   nodeId = 0;
   APIP = {0,0,0,0};
   stationIP = {0,0,0,0};
-  this->bNodeName = 0;
+  ui16NodeName = 0;
 
   boxActiveState = -1;
   uiBoxActiveStateStartTime = 0;
@@ -81,7 +81,7 @@ void ControlerBox::updateThisBoxProperties() {
   nodeId = laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   APIP = laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   stationIP = laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  bNodeName = gui16NodeName;
+  ui16NodeName = gui16NodeName;
   // For this box, boxActiveState, boxActiveStateHasBeenSignaled and uiBoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {
@@ -96,7 +96,7 @@ void ControlerBox::printProperties(const uint8_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].nodeId: %u\n", __ui16BoxIndex, nodeId);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].APIP:", __ui16BoxIndex);Serial.println(APIP.toString());
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].stationIP:", __ui16BoxIndex);Serial.println(stationIP.toString());
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bNodeName: %u\n", __ui16BoxIndex, this->bNodeName);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16NodeName: %u\n", __ui16BoxIndex, ui16NodeName);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveState: %u\n", __ui16BoxIndex, boxActiveState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].uiBoxActiveStateStartTime: %u\n", __ui16BoxIndex, uiBoxActiveStateStartTime);
@@ -158,9 +158,9 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   ControlerBoxes[__ui16BoxIndex].stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
 
-  // set the bNodeName
-  ControlerBoxes[__ui16BoxIndex].bNodeName = __ui16NodeName;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].bNodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].bNodeName);
+  // set the ui16NodeName
+  ControlerBoxes[__ui16BoxIndex].ui16NodeName = __ui16NodeName;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui16NodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui16NodeName);
 
   // Setting activeState stack
   // need to send via myMeshViews and add to ControlerBox the time
@@ -256,7 +256,7 @@ void ControlerBox::deleteBox(uint16_t _ui16BoxIndex) {
   ControlerBoxes[_ui16BoxIndex].nodeId = 0;
   ControlerBoxes[_ui16BoxIndex].APIP = {0,0,0,0};
   ControlerBoxes[_ui16BoxIndex].stationIP = {0,0,0,0};
-  ControlerBoxes[_ui16BoxIndex].bNodeName = 0;
+  ControlerBoxes[_ui16BoxIndex].ui16NodeName = 0;
 
   ControlerBoxes[_ui16BoxIndex].boxActiveState = -1;
   ControlerBoxes[_ui16BoxIndex].uiBoxActiveStateStartTime = 0;

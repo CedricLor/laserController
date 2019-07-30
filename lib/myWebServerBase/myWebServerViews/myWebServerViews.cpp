@@ -80,7 +80,7 @@ String myWebServerViews::_processor(const String& var) {
   if(var == "UI8_NODE_NAME") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"UI8_NODE_NAME\")\n");
     char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    itoa(ControlerBoxes[gui16MyIndexInCBArray].bNodeName,_cNodeName,10); //(integer, yourBuffer, base)
+    itoa(ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);
   }
   if(var == "STATION_IP") {
@@ -120,7 +120,7 @@ String myWebServerViews::_processor(const String& var) {
 //     strcat(cBoxArray, "<div>Laser Box ");
 //     char __cNodeName[4];         // the ASCII of the integer will be stored in this char array
 //     //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before itoa %i\n", __i);
-//     itoa(ControlerBoxes[__i].bNodeName, __cNodeName, 10); //(integer, yourBuffer, base)
+//     itoa(ControlerBoxes[__i].ui16NodeName, __cNodeName, 10); //(integer, yourBuffer, base)
 //     strcat(cBoxArray, __cNodeName);
 //     strcat(cBoxArray, " - Station IP: ");
 //     //   Serial.printf("myWebServerViews::loadBoxArray(): BOX LOOP: before stationIp %i\n", __i);
@@ -174,9 +174,9 @@ String myWebServerViews::_processor(const String& var) {
 //   String __linksToBoxes = "<div class=\"box_links_wrapper\">";
 //   // IPAddress testIp(0,0,0,0);
 //   for (uint8_t i = 0; i < gui16BoxesCount; i++) {
-//     if (ControlerBoxes[i].bNodeName) {                          // dependancy
+//     if (ControlerBoxes[i].ui16NodeName) {                          // dependancy
 //       __linksToBoxes += "<div class=\"box_link_wrapper\">Box Number: ";
-//       __linksToBoxes += String((ControlerBoxes[i].bNodeName));   // dependancy
+//       __linksToBoxes += String((ControlerBoxes[i].ui16NodeName));   // dependancy
 //       __linksToBoxes += " - Station IP: ";
 //       __linksToBoxes += "<a href=\"http://";
 //       __linksToBoxes += (ControlerBoxes[i].stationIP).toString();   // dependancy
