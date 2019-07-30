@@ -235,10 +235,10 @@ void step::initSteps() {
 
   /* step 3: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going between boxes 5 and 6 */
-  steps[3] = {11, -1, 0, -1, 11, 11, 202 /* and 203*/};
-  /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+  steps[3] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
+  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 11 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
+    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
 
   /* step 4: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going to box 4 */
@@ -252,21 +252,21 @@ void step::initSteps() {
   steps[5] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203]  */
+    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
 
   /* step 6: Mesh High, IR interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
-  steps[6] = {11, -1, 0, 9, -1, 11, 254};
+  steps[6] = {11, -1, 0, 9, 11, 11, 254};
   /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
-    onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: -1 (none),
+    onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: 11 (repeat),
     onExpire: 11 (repeat once), _i16stepMasterBoxName: 202 [and 203] */
 
   /* step 7: IR High, no interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
-  steps[7] = {9, -1, 0, -1, -1, 11, 254};
-  /* boxState: 11 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
+  steps[7] = {9, -1, 0, -1, -1, 9, 254};
+  /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
-    onExpire: 11 (repeat once), _i16stepMasterBoxName: 254 */
+    onExpire: 9 (repeat once), _i16stepMasterBoxName: 254 */
   Serial.println("step::initSteps(): starting");
 }
 
