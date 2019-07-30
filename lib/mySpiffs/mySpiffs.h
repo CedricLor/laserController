@@ -17,29 +17,31 @@ class mySpiffs
   public:
     mySpiffs();
 
-    void listDir(fs::FS &fs, const char * dirname, uint8_t levels);
-    // listDir(SPIFFS, "/", 0);
-    void createDir(fs::FS &fs, const char * path);
-    // void createDir(SPIFFS, "/mydir");
-    void removeDir(fs::FS &fs, const char * path);
-    // void removeDir(SPIFFS, "/mydir");
-
-    void readFile(fs::FS &fs, const char * path);
-    // readFile(SPIFFS, "/hello.txt")
     void readJSONObjLineInFile(const char * path, void (&callBack)(JsonObject&), uint16_t _ui16stepCounter);
 
     void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep);
+    void listDir(const char * dirname, uint8_t levels);
+    // listDir("/", 0);
+    void createDir(const char * path);
+    // void createDir("/mydir");
+    void removeDir(const char * path);
+    // void removeDir("/mydir");
 
-    void writeFile(fs::FS &fs, const char * path, const char * message);
-    // writeFile(SPIFFS, "/hello.txt", "Hello ");
-    void appendFile(fs::FS &fs, const char * path, const char * message);
-    // appendFile(SPIFFS, "/hello.txt", "World!\n");
-    void renameFile(fs::FS &fs, const char * path1, const char * path2);
-    // renameFile(SPIFFS, "/hello.txt", "/world.txt");
-    void deleteFile(fs::FS &fs, const char * path);
-    // deleteFile(SPIFFS, "/hello.txt");
-    void testFileIO(fs::FS &fs, const char * path);
-    // testFileIO(SPIFFS, "/hello.txt");
+    void readFile(const char * path);
+    // readFile("/hello.txt")
+    void readJSONFile(const char * path);
+
+
+    void writeFile(const char * path, const char * message);
+    // writeFile("/hello.txt", "Hello ");
+    void appendToFile(const char * path, const char * message);
+    // appendFile("/hello.txt", "World!\n");
+    void renameFile(const char * path1, const char * path2);
+    // renameFile("/hello.txt", "/world.txt");
+    void deleteFile(const char * path);
+    // deleteFile("/hello.txt");
+    void testFileIO(const char * path);
+    // testFileIO("/hello.txt");
 
     void getSpiffsInfo();
     // getSpiffsInfo();

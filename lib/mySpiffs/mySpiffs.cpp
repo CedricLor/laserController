@@ -18,16 +18,16 @@ mySpiffs::mySpiffs() {
 // Directories
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // List directories
-void mySpiffs::listDir(fs::FS &fs, const char * dirname, uint8_t levels){
-    Serial.printf("Listing directory: %s\r\n", dirname);
+void mySpiffs::listDir(const char * dirname, uint8_t levels){
+    Serial.printf("mySpiffs::listDir(): Listing directory: %s\r\n", dirname);
 
-    File root = fs.open(dirname);
+    File root = SPIFFS.open(dirname);
     if(!root){
-        Serial.println("- failed to open directory");
+        Serial.println("mySpiffs::listDir(): - failed to open directory");
         return;
     }
     if(!root.isDirectory()){
-        Serial.println(" - not a directory");
+        Serial.println("mySpiffs::listDir(): - not a directory");
         return;
     }
 
@@ -37,7 +37,7 @@ void mySpiffs::listDir(fs::FS &fs, const char * dirname, uint8_t levels){
             Serial.print("  DIR : ");
             Serial.println(file.name());
             if(levels){
-                listDir(fs, file.name(), levels -1);
+                listDir(file.name(), levels -1);
             }
         } else {
             Serial.print("  FILE: ");
@@ -52,27 +52,51 @@ void mySpiffs::listDir(fs::FS &fs, const char * dirname, uint8_t levels){
 
 
 // create a directory
-void mySpiffs::createDir(fs::FS &fs, const char * path){
-    Serial.printf("Creating Dir: %s\n", path);
-    if(fs.mkdir(path)){
-        Serial.println("Dir created");
+void mySpiffs::createDir(const char * path){
+    Serial.printf("mySpiffs::createDir(): Creating Dir: %s\n", path);
+    if(SPIFFS.mkdir(path)){
+        Serial.println("mySpiffs::createDir(): Dir created");
     } else {
-        Serial.println("mkdir failed");
+        Serial.println("mySpiffs::createDir(): mkdir failed");
     }
 }
+
 
 
 
 // delete a directory
-void mySpiffs::removeDir(fs::FS &fs, const char * path){
-    Serial.printf("Removing Dir: %s\n", path);
-    if(fs.rmdir(path)){
-        Serial.println("Dir removed");
-    } else {
-        Serial.println("rmdir failed");
-    }
-}
+void mySpiffs::removeDir(const char * path){
+    Serial.printf("mySpiffs::removeDir(): Removing Dir: %s\n", path);
 
+    File root = SPIFFS.open(path);
+    if(!root){
+        Serial.println("mySpiffs::removeDir(): - failed to open directory");
+        return;
+    }
+    if(!root.isDirectory()){
+        Serial.println("mySpiffs::removeDir(): - not a directory");
+        return;
+    }
+
+    // Serial.println("mySpiffs::removeDir(): - opened directory");
+    File file = root.openNextFile();
+    // Serial.println("mySpiffs::removeDir(): - opened next file");
+    // char _extPath[20];
+    // strcat(_extPath, path);
+    // Serial.println("mySpiffs::removeDir(): - stored path in _exPath");
+    // strcat(_extPath, "/");
+    // Serial.println("mySpiffs::removeDir(): - added slash to _exPath");
+
+    Serial.println("mySpiffs::removeDir(): - iterating over subfiles");
+    while(file){
+      // if (strstr(_extPath, file.name()) == (file.name())) {
+      deleteFile(file.name());
+      Serial.printf("mySpiffs::removeDir(): deleted file %s\n", file.name());
+      // }
+      file = root.openNextFile();
+    }
+    Serial.println("mySpiffs::removeDir(): dir is empty");
+}
 
 
 
@@ -81,13 +105,32 @@ void mySpiffs::removeDir(fs::FS &fs, const char * path){
 // Files
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // read a file
-void mySpiffs::readFile(fs::FS &fs, const char * path){
+void mySpiffs::readFile(const char * path){
     Serial.printf("mySpiffs::readFile: Reading file: %s\r\n", path);
 
-    // File file = fs.open(path);
     File file = SPIFFS.open(path, FILE_READ);
     if(!file || file.isDirectory()){
         Serial.println("mySpiffs::readFile: - failed to open file for reading");
+        return;
+    }
+
+    // reading what is in the file and printing it
+    Serial.println("mySpiffs::readFile: - read from file:");
+    while(file.available()){
+        Serial.write(file.read());
+    }
+
+    file.close();
+}
+
+
+
+void mySpiffs::readJSONFile(const char * path){
+    Serial.printf("mySpiffs::readJSONFile(): Reading file: %s\r\n", path);
+
+    File file = SPIFFS.open(path, FILE_READ);
+    if(!file || file.isDirectory()){
+        Serial.println("mySpiffs::readJSONFile(): - failed to open file for reading");
         return;
     }
 
@@ -98,13 +141,12 @@ void mySpiffs::readFile(fs::FS &fs, const char * path){
     StaticJsonDocument<jsonStepsCapacity> jdSteps;
     DeserializationError err = deserializeJson(jdSteps, file);
     if (err) {
-        Serial.print(F("mySpiffs::readFile: deserializeJson() failed: "));
+        Serial.print(F("mySpiffs::readJSONFile: deserializeJson() failed: "));
         Serial.println(err.c_str());
     }
 
-    // // reading what is in the file and printing it
-    // // system exemple from SPIFFS esp32-arduino exemple
-    // Serial.println("- read from file:");
+    // reading what is in the file and printing it
+    // Serial.println("mySpiffs::readJSONFile(): - read from file:");
     // while(file.available()){
     //     Serial.write(file.read());
     // }
@@ -183,19 +225,19 @@ void mySpiffs::readJSONObjLineInFile(const char * path, void (&callBack)(JsonObj
 
 
 
-// write a new file
-void mySpiffs::writeFile(fs::FS &fs, const char * path, const char * message){
-    Serial.printf("Writing file: %s\r\n", path);
+// write a new file // overwrites an existing file
+void mySpiffs::writeFile(const char * path, const char * message){
+    Serial.printf("mySpiffs::writeFile(): Writing file: %s\r\n", path);
 
-    File file = fs.open(path, FILE_WRITE);
+    File file = SPIFFS.open(path, FILE_WRITE);
     if(!file){
-        Serial.println("- failed to open file for writing");
+        Serial.println("mySpiffs::writeFile(): - failed to open file for writing");
         return;
     }
     if(file.print(message)){
-        Serial.println("- file written");
+        Serial.println("mySpiffs::writeFile(): - file written");
     } else {
-        Serial.println("- frite failed");
+        Serial.println("mySpiffs::writeFile(): - write failed");
     }
     file.close();
 }
@@ -203,18 +245,18 @@ void mySpiffs::writeFile(fs::FS &fs, const char * path, const char * message){
 
 
 // append to an existing file
-void mySpiffs::appendFile(fs::FS &fs, const char * path, const char * message){
-    Serial.printf("Appending to file: %s\r\n", path);
+void mySpiffs::appendToFile(const char * path, const char * message){
+    Serial.printf("mySpiffs::appendToFile(): Appending to file: %s\r\n", path);
 
-    File file = fs.open(path, FILE_APPEND);
+    File file = SPIFFS.open(path, FILE_APPEND);
     if(!file){
-        Serial.println("- failed to open file for appending");
+        Serial.println("mySpiffs::appendToFile(): - failed to open file for appending");
         return;
     }
     if(file.print(message)){
-        Serial.println("- message appended");
+        Serial.println("mySpiffs::appendToFile(): - message appended");
     } else {
-        Serial.println("- append failed");
+        Serial.println("mySpiffs::appendToFile(): - append failed");
     }
     file.close();
 }
@@ -222,42 +264,42 @@ void mySpiffs::appendFile(fs::FS &fs, const char * path, const char * message){
 
 
 // rename an existing file
-void mySpiffs::renameFile(fs::FS &fs, const char * path1, const char * path2){
-    Serial.printf("Renaming file %s to %s\r\n", path1, path2);
-    if (fs.rename(path1, path2)) {
-        Serial.println("- file renamed");
+void mySpiffs::renameFile(const char * path1, const char * path2){
+    Serial.printf("mySpiffs::renameFile(): Renaming file %s to %s\r\n", path1, path2);
+    if (SPIFFS.rename(path1, path2)) {
+        Serial.println("mySpiffs::renameFile(): - file renamed");
     } else {
-        Serial.println("- rename failed");
+        Serial.println("mySpiffs::renameFile(): - rename failed");
     }
 }
 
 
 
 // delete a file
-void mySpiffs::deleteFile(fs::FS &fs, const char * path){
-    Serial.printf("Deleting file: %s\r\n", path);
-    if(fs.remove(path)){
-        Serial.println("- file deleted");
+void mySpiffs::deleteFile(const char * path){
+    Serial.printf("mySpiffs::deleteFile(): Deleting file: %s\r\n", path);
+    if(SPIFFS.remove(path)){
+        Serial.println("mySpiffs::deleteFile(): - file deleted");
     } else {
-        Serial.println("- delete failed");
+        Serial.println("mySpiffs::deleteFile(): - delete failed");
     }
 }
 
 
 // // test file IO
-void mySpiffs::testFileIO(fs::FS &fs, const char * path){
-    Serial.printf("Testing file I/O with %s\r\n", path);
+void mySpiffs::testFileIO(const char * path){
+    Serial.printf("mySpiffs::testFileIO(): Testing file I/O with %s\r\n", path);
 
     static uint8_t buf[512];
     size_t len = 0;
-    File file = fs.open(path, FILE_WRITE);
+    File file = SPIFFS.open(path, FILE_WRITE);
     if(!file){
-        Serial.println("- failed to open file for writing");
+        Serial.println("mySpiffs::testFileIO(): - failed to open file for writing");
         return;
     }
 
     size_t i;
-    Serial.print("- writing" );
+    Serial.print("mySpiffs::testFileIO(): - writing" );
     uint32_t start = millis();
     for(i=0; i<2048; i++){
         if ((i & 0x001F) == 0x001F){
@@ -265,12 +307,11 @@ void mySpiffs::testFileIO(fs::FS &fs, const char * path){
         }
         file.write(buf, 512);
     }
-    Serial.println("");
     uint32_t end = millis() - start;
-    Serial.printf(" - %u bytes written in %u ms\r\n", 2048 * 512, end);
+    Serial.printf("\nmySpiffs::testFileIO():  - %u bytes written in %u ms\r\n", 2048 * 512, end);
     file.close();
 
-    file = fs.open(path);
+    file = SPIFFS.open(path);
     start = millis();
     end = start;
     i = 0;
@@ -278,7 +319,7 @@ void mySpiffs::testFileIO(fs::FS &fs, const char * path){
         len = file.size();
         size_t flen = len;
         start = millis();
-        Serial.print("- reading" );
+        Serial.print("mySpiffs::testFileIO():  - reading" );
         while(len){
             size_t toRead = len;
             if(toRead > 512){
@@ -290,12 +331,11 @@ void mySpiffs::testFileIO(fs::FS &fs, const char * path){
             }
             len -= toRead;
         }
-        Serial.println("");
         end = millis() - start;
-        Serial.printf("- %u bytes read in %u ms\r\n", flen, end);
+        Serial.printf("\nmySpiffs::testFileIO(): - %u bytes read in %u ms\r\n", flen, end);
         file.close();
     } else {
-        Serial.println("- failed to open file for reading");
+        Serial.println("mySpiffs::testFileIO(): - failed to open file for reading");
     }
 }
 
