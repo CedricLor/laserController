@@ -143,38 +143,52 @@ void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
   _nextStep._i16stepMasterBoxName = _joStep["_i16stepMasterBoxName"];
 }
 
+
+
+
+
+
 void step::applyStep() {
   Serial.println("step::applyStep(). starting");
   // apply to the relevant boxState
   // get handy access to boxState for this step
-  // Serial.print("step::applyStep(). debug _i16stepBoxStateNb = ");
-  // Serial.println(_i16stepBoxStateNb);
+    // Serial.print("step::applyStep(). debug _i16stepBoxStateNb = ");
+    // Serial.println(_i16stepBoxStateNb);
   boxState &_thisStepBoxState = boxState::boxStates[_i16stepBoxStateNb];
+
   // set the duration of the boxState for this step
-  // Serial.print("step::applyStep(). debug _thisStepBoxState.i16Duration = ");
-  // Serial.println(_thisStepBoxState.i16Duration);
-  // Serial.print("step::applyStep(). debug _i16StateDuration = ");
-  // Serial.println(_i16StateDuration);
+    // Serial.print("step::applyStep(). debug _thisStepBoxState.i16Duration = ");
+    // Serial.println(_thisStepBoxState.i16Duration);
+    // Serial.print("step::applyStep(). debug _i16StateDuration = ");
+    // Serial.println(_i16StateDuration);
   _thisStepBoxState.i16Duration = _i16StateDuration;
+
   // set the sequence to play at this boxState
   _thisStepBoxState.ui16AssociatedSequence = _ui16AssociatedSequence;
+
   // set the boxState in which to go upon IR getting high
   // (IR interrupt)
   _thisStepBoxState.i16onIRTrigger = _i16onIRTrigger;
+
   // set the boxState in which to go upon detected a mesh relevant change
   // (i.e. a change of the masterBox states)
   // (mesh interrupt)
   _thisStepBoxState.i16onMeshTrigger = _i16onMeshTrigger;
+
   // set the boxState in which to go upon expiration of the boxState
   // (timer interrupt)
   _thisStepBoxState.i16onExpire = _i16onExpire;
+
   // set the masterBoxName which state changes shall be watched over
   // Serial.println("step::applyStep(). debug master box name setter");
   // Serial.println(_i16stepMasterBoxName);
   // Serial.println((const byte)_i16stepMasterBoxName);
   ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const byte)_i16stepMasterBoxName);
   // _thisStepBoxState._i16stepMasterBoxName = _i16stepMasterBoxName;
+
+  // preload the next step from memory
   step::_tPreloadNextStep.enable();
+
   Serial.println("step::applyStep(). ending");
 }
 
@@ -285,6 +299,7 @@ boxState::boxState() {
 
 
 
+
 // Initialisers
 void boxState::_initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire){
   // Serial.println("void boxState::_initBoxState(). Starting.");
@@ -295,6 +310,7 @@ void boxState::_initBoxState(const int16_t _i16Duration, const uint16_t _ui16Ass
   i16onExpire = _i16onExpire;
   // Serial.println("void boxState::_initBoxState(). Ending.");
 };
+
 
 
 void boxState::initBoxStates() {
@@ -418,6 +434,9 @@ bool boxState::_oetcbPlayBoxStates() {
 // _tcbPlayBoxStates() sub functions
 //////////////////////////////////////////////
 
+
+
+
 /*
     _setBoxTargetStateFromSignalCatchers:
     1. reads whether the web, the IR or the mesh have been modified in a way
@@ -470,6 +489,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 
 
 
+
 /*
   _resetSignalCatchers resets all the signals catchers
   to their initial values, once the new _boxTargetState
@@ -485,6 +505,7 @@ void boxState::_resetSignalCatchers() {
     _masterBox.boxActiveStateHasBeenTakenIntoAccount = true;
   }
 }
+
 
 
 
