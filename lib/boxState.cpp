@@ -282,7 +282,7 @@ uint16_t boxState::ui16stepCounter = 0;
 // ui16Mode = 0 => mode automatic, boxStates use their default settings
 // ui16Mode = 1 => step controlled, boxStates use the settings corresponding
 // to the step they are embedded in
-uint16_t boxState::ui16Mode = 1;
+uint16_t boxState::ui16Mode = 0;
 
 
 
@@ -363,6 +363,16 @@ void boxState::initBoxStates() {
 
 
 
+//////////////////////////////////////////////
+// Switch to Step Controlled Mode
+//////////////////////////////////////////////
+void boxState::switchToStepControlled() {
+  ui16Mode = 1;
+  ui16stepCounter = 0;
+  step::initSteps();
+}
+
+
 
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
@@ -417,9 +427,6 @@ void boxState::_tcbPlayBoxStates() {
 // Upon tPlayBoxStates being enabled (at startup), the _boxTargetState is being
 // changed to 2 (pir Startup).
 bool boxState::_oetcbPlayBoxStates() {
-  if (ui16Mode != 0) {
-    step::initSteps();
-  }
   // Serial.println("void boxState::_oetcbPlayBoxStates(). Starting.");
   _setBoxTargetState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
   // Serial.println("void boxState::_oetcbPlayBoxStates(). Ending.");

@@ -94,13 +94,14 @@ class boxState
 
     static void initBoxStates(); // initializer of the array of boxState
 
+    static void switchToStepControlled();
+    static uint16_t ui16stepCounter;
+    static uint16_t ui16Mode;
+
     static Task tPlayBoxStates;
     static const short int BOX_STATES_COUNT;
 
     static boxState boxStates[];
-
-    static uint16_t ui16stepCounter;
-    static uint16_t ui16Mode;
 
     int16_t i16Duration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
