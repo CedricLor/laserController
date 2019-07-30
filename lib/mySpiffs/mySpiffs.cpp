@@ -216,7 +216,7 @@ void mySpiffs::readJSONObjLineInFile(const char * path, void (&callBack)(JsonObj
     }
 
     char _cStep[900];
-    mySpiffs::readLine(file, _ui16stepCounter, _cStep, _cNodeName);
+    readLine(file, _ui16stepCounter, _cStep, _cNodeName);
 
     // reading JSON stuffs
     // capacity = 905 for one step with comments,

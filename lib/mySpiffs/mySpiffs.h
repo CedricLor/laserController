@@ -28,9 +28,9 @@ class mySpiffs
     // readFile("/hello.txt")
     void readJSONFile(const char * path);
 
-    void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, const char * _cNodeName);
 
-    void readJSONObjLineInFile(const char * path/*, void (&callBack)(JsonObject&)*/, uint16_t _ui16stepCounter);
+    void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, const char * _cNodeName);
+    void readJSONObjLineInFile(const char * path, void (&callBack)(JsonObject&), uint16_t _ui16stepCounter, const char * _cNodeName);
 
     void writeFile(const char * path, const char * message);
     // writeFile("/hello.txt", "Hello ");
