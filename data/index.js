@@ -557,7 +557,7 @@ function check(){
 
 
 
-
+// EVENT HANDLER HELPER FUNCTIONS
 function findUpLaserBoxNumber(el) {
     while (el.parentNode) {
         el = el.parentNode;
@@ -575,12 +575,23 @@ function _btnSend(_obj) {
   ));
 }
 
+
+function _updateButtons(e, _selector, _element) {
+  _element.querySelectorAll(_selector).forEach(
+    function(_button){
+      _button.classList.remove('button_clicked');
+    }
+  );
+  e.target.className += ' button_clicked';
+}
+
+
 // EVENTS HANDLER
 // _onClickBoxConfig Helper Object
 var _onClickBoxConfig = {
   wrapper: function(e, _obj) {
     // update the buttons
-    this.updateButtons(e, 'button'); // parent node is <div class='setters_group command_gp'>
+    _updateButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
     // if the connection is closed, inform the user
     if (!ws || ws.readyState === WebSocket.CLOSED) {
       checkConnect.addNotConnectedMsg();
@@ -596,18 +607,7 @@ var _onClickBoxConfig = {
     // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
     // {action:"changeBox", key:"save", val: "all", lb:1}
   },
-
-  updateButtons: function(e, _selector) {
-    e.target.parentNode.querySelectorAll(_selector).forEach(
-      function(_button){
-        _button.classList.remove('button_clicked');
-      }
-    );
-    e.target.className += ' button_clicked';
-  }
 }
-
-
 
 
 function onclickRebootBoxButton(e) {
@@ -673,7 +673,7 @@ var _onClickGroupReboot = {
     }
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxesRows.size) {
-      this.updateButtons(e);
+      _updateButtons(e, '.net_command_gp > button', document);
       let obj = {
         action: (_lbs === ("LBs" || "all") ? "changeNet" : "changeBox"),
         key: "reboot",
@@ -686,16 +686,6 @@ var _onClickGroupReboot = {
     }
     // if there are no boxes in the boxes map, inform the user that there are no boxes
     _onRebootCommon.addNoConnectedBoxesSpan();
-  },
-
-  updateButtons: function(e) {
-    document.querySelectorAll('.net_command_gp > button').forEach(
-      function(_button){
-        _button.classList.remove('button_clicked');
-      }
-    );
-    e.target.className += ' button_clicked';
-  }
   }
 }
 
