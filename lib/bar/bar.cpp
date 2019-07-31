@@ -138,10 +138,7 @@ void bar::initBars() {
 
 
 
-
-
-
-Task bar::_tPlayBar(0, 1, &_tcbPlayBar, &userScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, &userScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
 
 
 
@@ -152,23 +149,23 @@ bool bar::_oetcbPlayBar(){
   // if (MY_DG_LASER) {
   //   Serial.println("void bar::_oetcbPlayBar(). Before setting the iterations for this bar: *!*!*!*!*!");
   //   Serial.println("void bar::_oetcbPlayBar(). _tPlaySequence execution parameters:");
-  //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
+  //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
+  //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
+  //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
+  //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
   //   Serial.print("void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("void bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
 
-  _tPlayBar.setIterations(bars[_activeBar].ui16NotesCountInBar);
+  tPlayBar.setIterations(bars[_activeBar].ui16NotesCountInBar);
 
   // if (MY_DG_LASER) {
   //   Serial.println("void bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
-  //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
+  //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
   //   Serial.print("void bar::_oetcbPlayBar(). bars[_activeBar].ui16NotesCountInBar = ");Serial.println(bars[_activeBar].ui16NotesCountInBar);
-  //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));
+  //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
+  //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
+  //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
   //   Serial.print("void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("void bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }

@@ -349,6 +349,8 @@ void sequence::_tcbPlaySequence(){
   short int _activeBar = sequences[_activeSequence]._iAssociatedBars[_iter];
 
   // 3. Play the corresponding bar
+  bar::setActiveBar(_activeBar);
+  bar::tPlayBar.enable();
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };

@@ -56,12 +56,13 @@ class bar
     uint16_t ui16BaseNotesCountInBar;
     uint16_t ui16NotesCountInBar; // number of actual notes in the bar
 
+    static Task tPlayBar;
+
   private:
     static const short int _bar_count;
     static short int _activeBar;
     static const short int _char_count_in_name;
 
-    static Task _tPlayBar;
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
     static void _odtcbPlayBar();
