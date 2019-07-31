@@ -569,6 +569,11 @@ function findUpLaserBoxNumber(el) {
 }
 
 
+function _btnSend(_obj) {
+  ws.send(JSON.stringify(
+    _obj
+  ));
+}
 
 // EVENTS HANDLER
 // _onClickBoxConfig Helper Object
@@ -585,7 +590,11 @@ var _onClickBoxConfig = {
     _obj["lb"] = findUpLaserBoxNumber(e.target.parentNode);
     _obj["action"] = "changeBox";
     // and send the message
-    this.send(_obj);
+    _btnSend(_obj);
+    // {action:"changeBox", key:"reboot", save: 0, lb:1}
+    // {action:"changeBox", key:"reboot", save: 1, lb:1}
+    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+    // {action:"changeBox", key:"save", val: "all", lb:1}
   },
 
   updateButtons: function(e, _selector) {
@@ -595,16 +604,8 @@ var _onClickBoxConfig = {
       }
     );
     e.target.className += ' button_clicked';
-  },
-
-  send: function(_obj) {
-    ws.send(JSON.stringify(
-      _obj
-    ));
-    // {action:"changeBox", key:"reboot", save: 0, lb:1}
   }
 }
-
 
 
 
@@ -621,8 +622,6 @@ function onclickRebootBoxButton(e) {
 };
 
 
-
-
 function onclickRebootAndSaveBoxButton(e) {
   console.log("onclickRebootAndSaveBoxButton starting");
 
@@ -635,8 +634,6 @@ function onclickRebootAndSaveBoxButton(e) {
 };
 
 
-
-
 function onclickgOTARebootsBoxBtn(e) {
   console.log("onclickgOTARebootsBoxBtn starting");
 
@@ -645,16 +642,9 @@ function onclickgOTARebootsBoxBtn(e) {
     val: "gi8RequestedOTAReboots",
     reboots: parseInt(this.dataset.reboots, 10),
   });
-
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
   console.log("onclickgi8RequestedOTAReboots ending");
 }
-
-
-
-
-
-
 
 
 function onclickSavePrefsBoxButton(e) {
@@ -672,6 +662,7 @@ function onclickSavePrefsBoxButton(e) {
 
 
 
+
 // _onClickGroupReboot Helper Object
 var _onClickGroupReboot = {
   wrapper: function(e, _lbs, _save) {
@@ -683,7 +674,14 @@ var _onClickGroupReboot = {
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxesRows.size) {
       this.updateButtons(e);
-      this.send((_lbs === ("LBs" || "all") ? "changeNet" : "changeBox"), _save, _lbs);
+      let obj = {
+        action: (_lbs === ("LBs" || "all") ? "changeNet" : "changeBox"),
+        key: "reboot",
+        save: _save,
+        lb: _lbs
+      };
+      _btnSend(_obj);
+      // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
       return;
     }
     // if there are no boxes in the boxes map, inform the user that there are no boxes
@@ -697,16 +695,7 @@ var _onClickGroupReboot = {
       }
     );
     e.target.className += ' button_clicked';
-  },
-
-  send: function(_action, _save, _lbs) {
-    ws.send(JSON.stringify({
-      action: action,
-      key: "reboot",
-      save: _save,
-      lb: _lbs
-    }));
-    // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+  }
   }
 }
 
