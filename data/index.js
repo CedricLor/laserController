@@ -641,13 +641,12 @@ function onclickgi8RequestedOTAReboots(e) {
 
 function onclickRebootAndSaveBoxButton(e) {
   console.log("onclickRebootAndSaveBoxButton starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
   ws.send(JSON.stringify({
     action: "changeBox",
     key: "reboot",
     save: 1, // save and reboot
-    lb: _laserBoxNumber
+    lb: findUpLaserBoxNumber(this.parentNode)
   }));
   // {action:"changeBox", key:"reboot", save: 1, lb:1}
   console.log("onclickRebootAndSaveBoxButton: ending");
