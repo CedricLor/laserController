@@ -38,10 +38,10 @@
             <button id='savePrefsBox' class='button'>
               Save
             </button>&nbsp;
-            <button id='1OTAreboot' class='button'>
+            <button id='2OTAreboot' class='button gi8RequestedOTAReboots' data-reboots='1' >
               Save
             </button>&nbsp;
-            <button id='2OTAreboot' class='button'>
+            <button id='2OTAreboot' class='button gi8RequestedOTAReboots' data-reboots='1'>
               Save
             </button>&nbsp;
           </div> <!-- special_gp -->
@@ -312,21 +312,21 @@
       <input id='ui8WifiChannel' type='text' >
     </div>
     <div>
-      <button id='saveWifiSettingsIF'>
-        Save WiFi Settings on IF
+      <button id='saveWifiSettingsIF' class='button'>
+        Save WiFi / IF
       </button>
-      <button id='saveWifiSettingsAll'>
-        Save WiFi Settings on All
+      <button id='saveWifiSettingsAll' class='button'>
+        Save WiFi / All
       </button>
     </div>
   </div>
   <div class='setters_gp_title'>OTA Reboots</div>
   <div class='network_state_setter'>
     <div>
-      <button class='gi8RequestedOTAReboots' data-reboots='1'>
+      <button class='gi8RequestedOTAReboots button' data-reboots='1'>
         Switch to OTA (1 reboot)
       </button>
-      <button class='gi8RequestedOTAReboots' data-reboots='2'>
+      <button class='gi8RequestedOTAReboots button' data-reboots='2'>
         Switch to OTA (2 reboots)
       </button>
     </div>
