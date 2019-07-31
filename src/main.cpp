@@ -71,7 +71,7 @@ void setup() {
   }
 
   mySpiffs _mySpiffs;
-  _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", "201");
+  _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName);
 
   if (isInterface) {
     myWebServerBase::startAsyncServer();
