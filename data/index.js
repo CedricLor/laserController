@@ -100,7 +100,7 @@ function sendReceivedIP() {
 //////////////////////////////////
 var onRebootLBs = {
   active: false,
-  rebootBtnId: 'rebootAll',
+  rebootBtnId: 'rebootLBs',
 
   waitingLBs: new Map(),
   rebootingLBs: new Map(),
@@ -1141,6 +1141,10 @@ function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
   _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
   _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
   _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#1OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
+  _dupRow.querySelector("#1OTAreboot").id = "1OTAreboot" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#2OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
+  _dupRow.querySelector("#2OTAreboot").id = "2OTAreboot" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 
