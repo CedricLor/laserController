@@ -67,7 +67,6 @@ void bar::_initBar(const char __cName[_char_count_in_name], const uint16_t __ui1
   // Serial.println("void bar::initBar(). Starting.");
   strcpy(_cName, __cName);  // give its name to the bar
 
-  // Ces trois valeurs devraient lues depuis sequence.
   ui16BaseBeatInBpm = __ui16BaseBeatInBpm; // give its base beat to the bar (1000ms would be 60 beats per minutes)
   ui16BaseNoteForBeat = _ui16BaseNoteForBeat; // give its base note to the bar (the 4 in 2/4, for instance)
   ui16BaseNotesCountInBar = _ui16BaseNotesCountInBar; // give the count of base notes in the bar (the 2 in 2/4, for instance)
@@ -248,6 +247,9 @@ unsigned long bar::getNoteDuration(const short int _iter){
   // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar].ui16BaseBeatInBpm = ");Serial.println(bars[_activeBar].ui16BaseBeatInBpm);
   unsigned long __ulDurationInMs = (bars[_activeBar].ui16BaseNoteForBeat / bars[_activeBar]._note[_iter][0])
                                   *(60 / bars[_activeBar].ui16BaseBeatInBpm * 1000);
+  if (__ulDurationInMs > 30000) {
+    __ulDurationInMs = 30000;
+  }
   // Serial.print("unsigned long bar::getNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   Serial.println("unsigned long bar::getNoteDuration(). Ending.");
   return __ulDurationInMs;

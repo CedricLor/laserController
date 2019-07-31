@@ -360,6 +360,9 @@ void sequence::_tcbPlaySequence(){
   short int _activeBar = sequences[_activeSequence]._iAssociatedBars[_iter];
 
   // 3. Configure the bar
+  bar::bars[_activeBar].ui16BaseBeatInBpm = sequences[_activeSequence].ui16BaseBeatInBpm; // tempo in beats per minute
+  bar::bars[_activeBar].ui16BaseNoteForBeat = sequences[_activeSequence].ui16BaseNoteForBeat; // the 4 in 2/4, for instance
+  bar::bars[_activeBar].ui16BaseNotesCountInBar = sequences[_activeSequence].ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
 
   // 4. Play the corresponding bar
   bar::setActiveBar(_activeBar);
