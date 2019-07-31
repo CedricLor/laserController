@@ -172,8 +172,8 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
   const char _arrayStarter[_arrayStarterSize] = "\"steps\": [";
   bool _arrayStarterMarkerFound = false;
   bool _arrayEndMarkerFound = false;
-  byte _startPos;
-  uint16_t _endPos;
+  uint32_t _ui32StartPos;
+  uint32_t _ui32EndPos;
 
   char _jObjStartMarker = '{';
   char _jObjEndMarker = '}';
@@ -210,7 +210,7 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
       if (prettyFile.find(_arrayStarter, _arrayStarterSize - 1)) {
         // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _arrayStarter);
         _arrayStarterMarkerFound = true;
-        _startPos = prettyFile.position();
+        _ui32StartPos = prettyFile.position();
         // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
         continue;
       }
@@ -228,16 +228,16 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
       if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
         // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _prettyBoxMarker);
         _arrayEndMarkerFound = true;
-        _endPos = (uint16_t)(prettyFile.position());
+        _ui32EndPos = (uint16_t)(prettyFile.position());
         // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
-        prettyFile.seek(_startPos, SeekSet);
+        prettyFile.seek(_ui32StartPos, SeekSet);
         // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
         continue;
       }
       // else this is the last box in the file
       prettyFile.seek(0, SeekEnd);
-      _endPos = (uint16_t)(prettyFile.position());
-      prettyFile.seek(_startPos, SeekSet);
+      _ui32EndPos = (uint16_t)(prettyFile.position());
+      prettyFile.seek(_ui32StartPos, SeekSet);
       continue;
     }
 
@@ -249,7 +249,7 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
       // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
       snprintf(_cStep, _cStepBuffSize, "{%s}", prettyFile.readStringUntil(_jObjEndMarker).c_str());
       // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
-      if ((uint16_t)(prettyFile.position()) > _endPos) {
+      if (prettyFile.position() > _ui32EndPos) {
         // Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): about to return");
         return;
       }
