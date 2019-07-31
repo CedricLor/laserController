@@ -55,11 +55,12 @@ class sequence
     static long int _ulSequenceDuration(const short int __activeSequence);
     static long int _ulBarDuration(const short int _activeBar);
 
-    void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
+    void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
 
     char _cName[7];  // array of character to hold the name of each sequences
     unsigned long _ulTempo; // tempo at which the task executing the sequence will change bar, in milliseconds
     uint16_t ui16BaseBeatInBpm; // tempo in beats per minute
+    uint16_t ui16BaseNoteForBeat; // the 4 in 2/4, for instance
     short int _barCountInSequence; // number of tempos required to execute one full sequence
     short int _iAssociatedBarsSequence[4];  // array containing the state of each laser at each tempo
 
