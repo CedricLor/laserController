@@ -234,15 +234,14 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // }
 
 
-  /* 1. Calculate the interval at which each iteration shall occur (each iteration
-        will restart the Task _tPlaySequence, so this interval shall be equal to the
-        duration of the sequence).  */
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");}
   unsigned long _duration = _ulSequenceDuration(_activeSequence);
-  // if (MY_DG_LASER) {Serial.print("sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);}
+  // if (MY_DG_LASER) {Serial.printf("sequence::_oetcbPlaySequenceInLoop(). _ulSequenceDuration(_activeSequence): %u \n", _ulSequenceDuration(_activeSequence));}
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
-  /* 2. set the interval between each iteration of tPlaySequenceInLoop */
+  /* Set the interval between each iteration of tPlaySequenceInLoop
+      (each iteration will restart the Task _tPlaySequence, so this interval
+      shall be equal to the duration of the sequence). */
   tPlaySequenceInLoop.setInterval(_ulSequenceDuration(_activeSequence));
 
   // if (MY_DG_LASER) {
@@ -346,7 +345,7 @@ void sequence::_playSequence(){
       1. sets the interval of the _tPlaySequence task
   */
   // _tPlaySequence.setInterval(sequences[_activeSequence].ui16BaseBeatInBpm);
-  // Serial.print("void sequence::_playSequence(). Tempo of the sequence: ");Serial.println(sequences[_activeSequence].ui16BaseBeatInBpm);
+  // Serial.print("void sequence::_playSequence(). Tempo of the sequence -> duration of a bar: %u ms.\n", _ulBarDuration(_activeSequence));
 
 
   /*
@@ -435,19 +434,6 @@ void sequence::_tcbPlaySequence(){
   //   Serial.println("void sequence::_tcbPlaySequence(). coming back from bar::bars[_activeBar].playBar(_activeBar)");
   // }
 
-  // The next iteration shall occur when..? Easy, the bar wins!!!
-  // If the bar has a shorter or longer beatbase, the bar value shall win over
-  // the sequence tempo.
-  // Reset the interval value of this task to give the bar that is going to be played time
-  // to play at its own slower time or avoid blank spots if it plays at a faster rate.
-
-  // if (MY_DG_LASER) {
-  //   Serial.println("void sequence::_tcbPlaySequence(). About to calculate the _activeBar duration in ms");
-  // }
-  unsigned long __ulBarDuration = _ulBarDuration(_activeBar);
-  // if (MY_DG_LASER) {
-  //   Serial.print("void sequence::_tcbPlaySequence(). __ulBarDuration = ");Serial.println(__ulBarDuration);
-  // }
 
   _tPlaySequence.setInterval(__ulBarDuration);
 
