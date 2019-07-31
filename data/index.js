@@ -571,6 +571,42 @@ function findUpLaserBoxNumber(el) {
 
 
 // EVENTS HANDLER
+// _onClickBoxConfig Helper Object
+var _onClickBoxConfig = {
+  wrapper: function(e, _obj) {
+    // update the buttons
+    this.updateButtons(e, 'button'); // parent node is <div class='setters_group command_gp'>
+    // if the connection is closed, inform the user
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      checkConnect.addNotConnectedMsg();
+      return;
+    }
+    // else, send the message
+    _obj["lb"] = findUpLaserBoxNumber(e.target.parentNode);
+    this.send(_obj);
+  },
+
+  updateButtons: function(e, _selector) {
+    e.target.parentNode.querySelectorAll(_selector).forEach(
+      function(_button){
+        _button.classList.remove('button_clicked');
+      }
+    );
+    e.target.className += ' button_clicked';
+  },
+
+  send: function(_obj) {
+    ws.send(JSON.stringify(
+      _obj
+    ));
+    // {action:"changeBox", key:"reboot", save: 0, lb:1}
+  }
+}
+
+
+
+
+
 function onclickRebootBoxButton(e) {
   console.log("onclickRebootBoxButton starting");
   var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
@@ -642,18 +678,18 @@ function onclickSavePrefsBoxButton(e) {
 // _onClickGroupReboot Helper Object
 var _onClickGroupReboot = {
   wrapper: function(e, _lbs, _save) {
-    // if there are boxes, we are probably connected, so reboot
-    if (boxesRows.size) {
-      this.updateButtons(e);
-      this.send(_lbs, _save);
-      return;
-    }
     // if the connection is closed, inform the user
     if (!ws || ws.readyState === WebSocket.CLOSED) {
       checkConnect.addNotConnectedMsg();
       return;
     }
-    // if no boxes are connected, inform the user that there are no boxes
+    // if there are boxes in the boxes map, we are probably connected, so reboot
+    if (boxesRows.size) {
+      this.updateButtons(e);
+      this.send((_lbs === ("LBs" || "all") ? "changeNet" : "changeBox"), _save, _lbs);
+      return;
+    }
+    // if there are no boxes in the boxes map, inform the user that there are no boxes
     _onRebootCommon.addNoConnectedBoxesSpan();
   },
 
@@ -666,11 +702,11 @@ var _onClickGroupReboot = {
     e.target.className += ' button_clicked';
   },
 
-  send: function(_lbs, _save) {
+  send: function(_action, _save, _lbs) {
     ws.send(JSON.stringify({
-      action: _lbs === ("LBs" || "all") ? "changeNet" : "changeBox",
+      action: action,
       key: "reboot",
-      save: _save, // reboot without saving
+      save: _save,
       lb: _lbs
     }));
     // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
