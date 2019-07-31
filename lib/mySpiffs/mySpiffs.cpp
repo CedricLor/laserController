@@ -160,30 +160,38 @@ void mySpiffs::readJSONFile(const char * path){
 void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName) {
   Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): starting.");
 
+
+  // 1. We are looking for the JSON object in the file that corresponds to this box.
+  // This line is marked in the pretty JSON document as follows: ""boxNumber": 201,"
+  // It will be rewritten as  $[BOX: 201]$ in the ugly JSON.
+
+  // Building the sought for string  --> "boxNumber": 201,
   const char _prettyThisBoxMarkerSize = 18; // --> "boxNumber": 201,
   char _prettyThisBoxMarker[_prettyThisBoxMarkerSize];
   snprintf(_prettyThisBoxMarker, _prettyThisBoxMarkerSize, "\"boxNumber\": %u,", _ui16NodeName);
 
-  size_t _uglyBoxMarkerSize = 15;
-  char _uglyBoxMarker[_uglyBoxMarkerSize];
-
-  // 1. We are looking for the JSON object in the file that corresponds to this box.
-  // This line is marked as follows: "boxNumber": 201,
-  // that follows the line $[BOX: 201).
-  // if we find the box marker:
+  // Looking for the string
   if (prettyFile.find(_prettyThisBoxMarker, _prettyThisBoxMarkerSize - 1)) {
     // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found box %u\n", _ui16NodeName);
-    snprintf(_uglyBoxMarker, _uglyBoxMarkerSize, "$[BOX: %u]$", _ui16NodeName);
+
+    // Building the box marker to be inserted n the ugly file
+    size_t _uglyBoxMarkerSize = 15;
+    char _uglyBoxMarker[_uglyBoxMarkerSize];
+    snprintf(_uglyBoxMarker, _uglyBoxMarkerSize, "$[BOX: %u]$", _ui16NodeName); // --> $[BOX: 201]$
     // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): built name %s\n", _uglyBoxMarker);
     // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): about to append it to %s\n", _uglyFileName);
+
+    // Appending it to the ugly file
     appendToFile(_uglyFileName, _uglyBoxMarker);
     appendToFile(_uglyFileName, "\n");
   }
-  // else the box was not found, return
+  // Else the string was not found, return
   else {
     // Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): box not found");
     return;
   }
+
+
 
   const char _prettyBoxMarkerSize = 14;
   const char _prettyBoxMarker[_prettyBoxMarkerSize] = "\"boxNumber\": ";
