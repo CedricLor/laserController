@@ -173,35 +173,54 @@ void sequence::initSequences() {
 // Loop Player
 ///////////////////////////////////
 /*
-  _tPlayBoxState plays once (unless restarted by tPlayBoxStates)
-    - _tPlayBoxState -> onEnable: enables tPlaySequenceInLoop
-    - _tPlayBoxState -> onDisable: disables tPlaySequenceInLoop
-  tPlaySequenceInLoop plays forever (until interrupt by _tPlayBoxState):
-    - tPlaySequenceInLoop -> onEnable: calculates the sequence duration and
-          sets the interval for tPlaySequenceInLoop
-    - tPlaySequenceInLoop -> main callback: starts playing the active sequence
-    - tPlaySequenceInLoop -> onDisable: plays sequence 5 (all off)
-
+    _tPlayBoxState plays once (unless restarted by tPlayBoxStates)
+      - _tPlayBoxState -> onEnable: enables tPlaySequenceInLoop
+      - _tPlayBoxState -> onDisable: disables tPlaySequenceInLoop
+    tPlaySequenceInLoop plays forever (until interrupt by _tPlayBoxState):
+      - tPlaySequenceInLoop -> onEnable: calculates the sequence duration and
+            sets the interval for tPlaySequenceInLoop
+      - tPlaySequenceInLoop -> main callback: starts playing the active sequence
+      - tPlaySequenceInLoop -> onDisable: plays sequence 5 (all off)
 */
 
+/*
+    tPlaySequenceInLoop
 
-// Loop Player
-// tPlaySequenceInLoop plays a sequence in loop, for an unlimited number
-// of iterations, until it is disabled by _tPlayBoxState.
-// tPlaySequenceInLoop is enabled and disabled by the stateBox class.
-// Upon entering a new boxState (startup, IR signal received, etc.),
-// the boxState::_tPlayBoxState task sets sequence::_activeSequence to the
-// sequence index number associated with this boxState.
-// Then the Task tPlaySequenceInLoop is enabled, until being disabled by the
-// boxState::_tPlayBoxState task.
+    tPlaySequenceInLoop plays a sequence in loop, for an unlimited number
+    of iterations, until it is disabled by _tPlayBoxState.
 
+    tPlaySequenceInLoop is enabled and disabled by the onEnable and onDisable
+    callbacks of _tPlayBoxState.
 
+    Upon entering a new boxState (startup, IR signal received, etc.),
+    the onEnable callback of _tPlayBoxState task sets sequence::_activeSequence
+    to the sequence index number associated with this boxState.
+
+    Then the Task tPlaySequenceInLoop is enabled, until being disabled by the
+    boxState::_tPlayBoxState onDisable callback.
+*/
 Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
 
 
-// Upon enabling the tPlaySequenceInLoop task, the _activeSequence is played a
-// first time and the _duration of the sequence is calculated in order to
-// set the interval between each iterations of the tPlaySequenceInLoop task
+
+/*
+    _oetcbPlaySequenceInLoop()
+
+    Upon enabling the tPlaySequenceInLoop task, _oetcbPlaySequenceInLoop():
+    1. calculates the interval at which the task tPlaySequenceInLoop
+    shall iterate (and restart the sequence);
+    2. sets such interval (which will only be taken into account after the
+    main callback has been called ==> the forenext iteration).
+
+    This calculation is made based on the base beat in bpm, the base note,
+    the number of base notes per bars and the number of basrs in the sequence.
+
+    _oetcbPlaySequenceInLoop() does not start playing the sequence. This is
+    done in the main callback of tPlaySequenceInLoop. The first iteration of
+    the Task occurs immediately after the onEnable callback, at the initial
+    interval for this Task (before being reset in this onEnable callback) is
+    equal to 0.
+*/
 bool sequence::_oetcbPlaySequenceInLoop() {
   Serial.println("sequence::_oetcbPlaySequenceInLoop(). Starting. *****");
 
@@ -214,38 +233,16 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). _activeSequence: ");Serial.println(_activeSequence);
   // }
 
-  // Why do not start playing immediately? Why are these lines commented out?
-  // Because we are setting the interval for tPlaySequenceInLoop in its own onEnable callback.
-  // As such, the next iteration of tPlaySequenceInLoop will take place immediatelly after
-  // this _oetcbPlaySequenceInLoop onEnable callback ends.
-  // And the main callback will be calling sequences[_activeSequence]._playSequence().
-  //
-  // Start immediately playing the sequence on enable
-  // Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence().");
-  // sequences[_activeSequence]._playSequence();
-  // Serial.println("sequence::_oetcbPlaySequenceInLoop(). returning from sequences[_activeSequence]._playSequence().");
 
-  // Calculate the interval at which each iteration occur
+  /* 1. Calculate the interval at which each iteration shall occur (each iteration
+        will restart the Task _tPlaySequence, so this interval shall be equal to the
+        duration of the sequence).  */
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");}
   unsigned long _duration = _ulSequenceDuration(_activeSequence);
-  // sequences[_activeSequence].ui16BaseBeatInBpm
-  //  * sequences[_activeSequence]._barCountInSequence;
   // if (MY_DG_LASER) {Serial.print("sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);}
-
-  // // Set the interval at which each iteration occur.
-  // // Before doing, check if _duration == 0.
-  // // If _duration == 0, this actually means infinite,
-  // // which means that we are trying to play the sequence "all lasers off"
-  // // Instead of starting an infinite loop, turning all lasers off,
-  // // let's just disable tPlaySequenceInLoop
-  // if (_duration == 0) {
-  //   Serial.println("sequence::_oetcbPlaySequenceInLoop(). _duration == 0");
-  //   Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to return from onEnable callback with a FALSE.");
-  //   return false;
-  // }
-
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
+  /* 2. set the interval between each iteration of tPlaySequenceInLoop */
   tPlaySequenceInLoop.setInterval(_ulSequenceDuration(_activeSequence));
 
   // if (MY_DG_LASER) {
@@ -313,6 +310,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
 
 
 
+// Helper function to _oetcbPlaySequenceInLoop
 // Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
 long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   Serial.println("long int sequence::_ulSequenceDuration(). Starting.");
