@@ -194,9 +194,9 @@ void sequence::initSequences() {
 // sequence index number associated with this boxState.
 // Then the Task tPlaySequenceInLoop is enabled, until being disabled by the
 // boxState::_tPlayBoxState task.
+
+
 Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
-
-
 
 
 // Upon enabling the tPlaySequenceInLoop task, the _activeSequence is played a
@@ -246,7 +246,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
 
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
-  tPlaySequenceInLoop.setInterval(_duration);
+  tPlaySequenceInLoop.setInterval(_ulSequenceDuration(_activeSequence));
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
@@ -316,17 +316,15 @@ void sequence::_odtcbPlaySequenceInLoop() {
 // Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
 long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   Serial.println("long int sequence::_ulSequenceDuration(). Starting.");
-  unsigned long __ulDurationInMs = 0;
-  //
-  // __ulDurationInMs = sequences[__activeSequence]._barCountInSequence *
-  //                    sequences[__activeSequence].iNotesCountInBar *
-  //                    sequences[__activeSequence].ui16BaseNoteForBeat *
-  //                    sequences[__activeSequence].ui16BaseBeatInBpm;
-  // get the index number of each bar in the sequence and add up their durations
-  for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
-    short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
-    __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__activeBarIndexNumber);
-  }
+  unsigned long __ulDurationInMs = sequences[__activeSequence]._barCountInSequence *
+                     sequences[__activeSequence].ui16BaseNotesCountPerBar *
+                     sequences[__activeSequence].ui16BaseNoteForBeat *
+                     (60 / sequences[__activeSequence].ui16BaseBeatInBpm * 1000);
+  // iterate over each bar pertaining to this sequence and add up their durations
+  // for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
+  //   short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
+  //   __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__activeBarIndexNumber);
+  // }
   Serial.println("long int sequence::_ulSequenceDuration(). Ending.");
   return __ulDurationInMs;
 }

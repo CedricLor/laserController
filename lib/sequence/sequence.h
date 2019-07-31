@@ -58,7 +58,6 @@ class sequence
     void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
 
     char _cName[7];  // array of character to hold the name of each sequences
-    unsigned long _ulTempo; // tempo at which the task executing the sequence will change bar, in milliseconds
     uint16_t ui16BaseBeatInBpm; // tempo in beats per minute
     uint16_t ui16BaseNoteForBeat; // the 4 in 2/4, for instance
     uint16_t ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
