@@ -754,27 +754,13 @@ function onclickRebootLBsButton(e) {
 
 
 
-function onclickRebootIFButton(e) {
-  console.log("onclickRebootIFButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeBox",
-    key: "reboot",
-    save: 0,
-    lb: 0
-  }));
-  // {action:"changeBox", key:"reboot", save: 0, lb:0}
-  console.log("onclickRebootIFButton: ending");
-};
-
-
-
 function onclickRebootAllButton(e) {
   console.log("onclickRebootAllButton starting");
   _onClickGroupReboot.wrapper(e, "all", 0);
   // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
   console.log("onclickRebootAllButton: ending");
 };
+
 
 
 
@@ -803,10 +789,17 @@ function onclickSaveIFButton(e) {
     action: "changeBox",
     key: "save",
     val: "all",
+function onclickRebootIFButton(e) {
+  console.log("onclickRebootIFButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeBox",
+    key: "reboot",
+    save: 0,
     lb: 0
   }));
-  // {action: "changeBox", key: "save", val: "all", lb: 0}
-  console.log("onclickSaveIFButton: ending");
+  // {action:"changeBox", key:"reboot", save: 0, lb:0}
+  console.log("onclickRebootIFButton: ending");
 };
 
 
