@@ -63,14 +63,18 @@ bar::bar() {
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void bar::_initBar(const char __cName[_char_count_in_name], const unsigned long __ulBaseBeatInMs, const short __iBaseNoteForBeat, const short int __iBaseNotesCountInBar, const short int __iNotesCountInBar, const short int __iNoteTone[4][2]){
+void bar::_initBar(const char __cName[_char_count_in_name], const unsigned long __ulBaseBeatInMs, const short __iBaseNoteForBeat, const uint16_t __ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int __iNoteTone[4][2]){
   // Serial.println("void bar::initBar(). Starting.");
   strcpy(_cName, __cName);  // give its name to the bar
+
+  // Ces trois valeurs devraient lues depuis sequence.
   ulBaseBeatInMs = __ulBaseBeatInMs; // give its base beat to the bar (1000ms would be 60 beats per minutes)
   _iBaseNoteForBeat = __iBaseNoteForBeat; // give its base note to the bar (the 4 in 2/4, for instance)
-  iNotesCountInBar = __iNotesCountInBar;  // give the count of base notes in the bar (the 2 in 2/4, for instance)
+  ui16BaseNotesCountInBar = __ui16BaseNotesCountInBar; // give the count of base notes in the bar (the 2 in 2/4, for instance)
+
+  ui16NotesCountInBar = __ui16NotesCountInBar;
   // fill the bar with the actual notes
-  for (short __thisNote = 0; __thisNote < __iNotesCountInBar; __thisNote++) {
+  for (short __thisNote = 0; __thisNote < __ui16NotesCountInBar; __thisNote++) {
     _note[__thisNote][0] = __iNoteTone[__thisNote][0]; // the note duration (in base note)
     _note[__thisNote][1] = __iNoteTone[__thisNote][1]; // the tone (the height of the note)
   }
@@ -90,9 +94,9 @@ void bar::initBars() {
   // c. which one is the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance)
   // d. how many base notes does the bar count (the 2 in 2/4, for instance)
   // e. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
-  // e. the array of references to the notes (i.e. duration of each
+  // f. the array of references to the notes (i.e. duration of each
   // note (in base note)) and the tones to be played in the bar {relDuration, tone}
-  bars[0]._initBar("relays", 30000, 1, 2, _noteCountForThisBar, aRelays);
+  bars[0]._initBar("relays" /*a.*/, 30000 /*b.*/, 1/*c.*/, 2/*d.*/, _noteCountForThisBar/*e.*/, aRelays/*f.*/);
   // Serial.println("void bar::_initBars(). bars[0].ulBaseBeatInMs: ");
   // Serial.println(bars[0].ulBaseBeatInMs);
   // Serial.println("void bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");
@@ -191,12 +195,12 @@ bool bar::_oetcbPlayBar(){
   //   Serial.println("void bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
 
-  _tPlayBar.setIterations(bars[_activeBar].iNotesCountInBar);
+  _tPlayBar.setIterations(bars[_activeBar].ui16NotesCountInBar);
 
   // if (MY_DG_LASER) {
   //   Serial.println("void bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
   //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  //   Serial.print("void bar::_oetcbPlayBar(). bars[_activeBar].iNotesCountInBar = ");Serial.println(bars[_activeBar].iNotesCountInBar);
+  //   Serial.print("void bar::_oetcbPlayBar(). bars[_activeBar].ui16NotesCountInBar = ");Serial.println(bars[_activeBar].ui16NotesCountInBar);
   //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
   //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
   //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlayBar));

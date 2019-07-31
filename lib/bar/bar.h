@@ -54,8 +54,8 @@ class bar
     void playBar(const short activeBar);
     unsigned long getSingleNoteInterval(const short int _iter);
     unsigned long  ulBaseBeatInMs; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
-    short int iNotesCountInBar; // number of basic time unit for the smallest note to be played in one bar
-    short int iBaseNotesCountInBar;
+    uint16_t ui16BaseNotesCountInBar;
+    uint16_t ui16NotesCountInBar; // number of actual notes in the bar
 
   private:
     static const short int _bar_count;
@@ -68,10 +68,10 @@ class bar
     static void _odtcbPlayBar();
 
     // non-static
-    void _initBar(const char cName[], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const short int __iBaseNotesCountInBar, const short int iNotesCountInBar, const short int iNoteTone[][2]);
+    void _initBar(const char cName[], const unsigned long ulBaseBeatInMs, const short iBaseNoteForBeat, const uint16_t __ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int iNoteTone[][2]);
 
     char _cName[7];  // array of character to hold the name of each bars
-    short int _iBaseNoteForBeat;
+    short int _iBaseNoteForBeat; // base note for the bar
     short int _note[16][2];  // array containing the state of each laser at each tempo
 };
 
