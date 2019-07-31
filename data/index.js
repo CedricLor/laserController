@@ -782,11 +782,8 @@ function onclickSaveLBsButton(e) {
 
 
 
-function onclickSaveIFButton(e) {
-  console.log("onclickSaveIFButton starting");
 
   ws.send(JSON.stringify({
-    action: "changeBox",
     key: "save",
     val: "all",
 function onclickRebootIFButton(e) {
@@ -809,15 +806,24 @@ function onclickRebootIFButton(e) {
 function onclickSaveAllButton(e) {
   console.log("onclickSaveAllButton starting");
 
+function onclickSaveIFButton(e) {
+  console.log("onclickSaveIFButton starting");
+
   ws.send(JSON.stringify({
-    action: "changeNet",
+    action: "changeBox",
     key: "save",
     val: "all",
-    lb: "all"
+    lb: 0
   }));
   // {action: "changeNet", key: "save", val: "all", lb: "all"}
   console.log("onclickSaveAllButton: ending");
+  // {action: "changeBox", key: "save", val: "all", lb: 0}
+  console.log("onclickSaveIFButton: ending");
 };
+
+
+
+
 
 
 
