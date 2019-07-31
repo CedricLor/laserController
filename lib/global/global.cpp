@@ -82,6 +82,6 @@ const short S_BOX_DEFAULT_STATE = 5;
 int8_t gi8OTAReboot = 0;
 int8_t gi8RequestedOTAReboots = 0;
 
-char gcHostnamePrefix[10] = "ESP32_";
+char gcHostnamePrefix[10] = "LaserBox_";
 
 uint16_t uiMeshSize = 0;
