@@ -700,6 +700,26 @@ var _onClickGroupReboot = {
 }
 
 
+function onclickRebootLBsButton(e) {
+  console.log("onclickRebootLBsButton starting");
+  _onClickGroupReboot.wrapper(e, "LBs", 0);
+  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+  console.log("onclickRebootLBsButton: ending");
+};
+
+
+
+function onclickRebootAllButton(e) {
+  console.log("onclickRebootAllButton starting");
+  _onClickGroupReboot.wrapper(e, "all", 0);
+  // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
+  console.log("onclickRebootAllButton: ending");
+};
+
+
+
+
+
 
 // Infobox Object
 var infoBox = {
@@ -732,26 +752,6 @@ var infoBox = {
     _infoBox.appendChild(_div);
   }
 }
-
-
-function onclickRebootLBsButton(e) {
-  console.log("onclickRebootLBsButton starting");
-  _onClickGroupReboot.wrapper(e, "LBs", 0);
-  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
-  console.log("onclickRebootLBsButton: ending");
-};
-
-
-
-function onclickRebootAllButton(e) {
-  console.log("onclickRebootAllButton starting");
-  _onClickGroupReboot.wrapper(e, "all", 0);
-  // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
-  console.log("onclickRebootAllButton: ending");
-};
-
-
-
 
 
 function onclickSaveLBsButton(e) {
