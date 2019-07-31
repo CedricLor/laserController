@@ -429,8 +429,7 @@ long unsigned int sequence::_ulBarDuration(const short int __activeSequence) {
   //   Serial.print("void sequence::_ulBarDuration(). _activeBar = ");Serial.println(_activeBar);
   // }
   unsigned long __ulDurationInMs = sequences[__activeSequence].ui16BaseNotesCountPerBar *
-                     sequences[__activeSequence].ui16BaseNoteForBeat *
-                     (60 / sequences[__activeSequence].ui16BaseBeatInBpm * 1000);
+                              (60 / sequences[__activeSequence].ui16BaseBeatInBpm * 1000);
 
   // iterate over each note in the sequence to get their interval in ms based on their tempo
   // if (MY_DG_LASER) {
