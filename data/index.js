@@ -566,31 +566,29 @@ function check(){
 
 
 // EVENT HANDLER HELPER FUNCTIONS
-function findUpLaserBoxNumber(el) {
-    while (el.parentNode) {
-        el = el.parentNode;
-        if (el.dataset.lb) {
-          return parseInt(el.dataset.lb, 10);
-        }
-    }
-    return null;
-}
+var _onClickHelpers = {
+  findUpLaserBoxNumber: function(el) {
+      while (el.parentNode) {
+          el = el.parentNode;
+          if (el.dataset.lb) {
+            return parseInt(el.dataset.lb, 10);
+          }
+      }
+      return null;
+  },
 
+  btnSend: function (_obj) {
+    ws.send(JSON.stringify(_obj));
+  },
 
-function _btnSend(_obj) {
-  ws.send(JSON.stringify(
-    _obj
-  ));
-}
-
-
-function _updateClickButtons(e, _selector, _element) {
-  _element.querySelectorAll(_selector).forEach(
-    function(_button){
-      _button.classList.remove('button_clicked');
-    }
-  );
-  e.target.className += ' button_clicked';
+  updateClickButtons: function(e, _selector, _element) {
+    _element.querySelectorAll(_selector).forEach(
+      function(_button){
+        _button.classList.remove('button_clicked');
+      }
+    );
+    e.target.className += ' button_clicked';
+  }
 }
 
 
@@ -600,14 +598,14 @@ function _updateClickButtons(e, _selector, _element) {
 var _onClickBoxConfig = {
   wrapper: function(e, _obj) {
     // update the buttons
-    _updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
     // if the connection is closed, inform the user
     if (checkConnect.closedVerb()) { return; }
     // else, complete the message
-    _obj["lb"] = findUpLaserBoxNumber(e.target.parentNode);
+    _obj["lb"] = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
     _obj["action"] = "changeBox";
     // and send the message
-    _btnSend(_obj);
+    _onClickHelpers.btnSend(_obj);
     // {action:"changeBox", key:"reboot", save: 0, lb:1}
     // {action:"changeBox", key:"reboot", save: 1, lb:1}
     // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
@@ -655,7 +653,7 @@ function onclickgOTARebootsBoxBtn(e) {
 
 function onclickSavePrefsBoxButton(e) {
   console.log("onclickSavePrefsBoxButton starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+  var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(this.parentNode);
 
   _onClickBoxConfig.wrapper(e, {
     key: "save",
@@ -686,10 +684,10 @@ var _onClickGroupReboot = {
     if (checkConnect.closedVerb()) { return; }
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxesRows.size) {
-      _updateClickButtons(e, '.net_command_gp > button', document);
+      _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
       // else, complete the message and send it
       _obj["action"] = "changeNet";
-      _btnSend(_obj);
+      _onClickHelpers.btnSend(_obj);
       // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
       return;
     }
@@ -849,8 +847,6 @@ function onclickSaveWifiSettingsAll(e) {
 }
 
 
-
-
 function onclickgi8RequestedOTAReboots(e) {
   console.log("onclickgi8RequestedOTAReboots starting");
 
@@ -873,10 +869,11 @@ function onclickgi8RequestedOTAReboots(e) {
 
 var _onClickStateBtns = {
   wrapper: function(e, buttonSelector, _datasetValue, _clef) {
-    var _laserBoxNumber = findUpLaserBoxNumber(e.target.parentNode);
-    _updateClickButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
+    var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+    _onClickHelpers.updateClickButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
     // if the connection is closed, inform the user
     if (checkConnect.closedVerb()) { return; }
+    _onClickHelpers.btnSend({
       "action": "changeBox",
       "key": _clef,
       "lb": _laserBoxNumber,
@@ -909,7 +906,7 @@ function onclickDefStateButton(e) {
 
 function oninputMasterSelect(e) {
   console.log("oninputMasterSelect: starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+  var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(this.parentNode);
   if ((_laserBoxNumber !== null )) {
     console.log("oninputMasterSelect: slave box: " + (_laserBoxNumber + 200));
     console.log("oninputMasterSelect: master box " + this.options[this.selectedIndex].value);
