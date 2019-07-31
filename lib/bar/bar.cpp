@@ -63,18 +63,18 @@ bar::bar() {
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void bar::_initBar(const char __cName[_char_count_in_name], const uint16_t __ui16BaseBeatInBpm, const short __iBaseNoteForBeat, const uint16_t __ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int __iNoteTone[4][2]){
+void bar::_initBar(const char __cName[_char_count_in_name], const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int __iNoteTone[4][2]){
   // Serial.println("void bar::initBar(). Starting.");
   strcpy(_cName, __cName);  // give its name to the bar
 
   // Ces trois valeurs devraient lues depuis sequence.
   ui16BaseBeatInBpm = __ui16BaseBeatInBpm; // give its base beat to the bar (1000ms would be 60 beats per minutes)
-  _iBaseNoteForBeat = __iBaseNoteForBeat; // give its base note to the bar (the 4 in 2/4, for instance)
-  ui16BaseNotesCountInBar = __ui16BaseNotesCountInBar; // give the count of base notes in the bar (the 2 in 2/4, for instance)
+  ui16BaseNoteForBeat = _ui16BaseNoteForBeat; // give its base note to the bar (the 4 in 2/4, for instance)
+  ui16BaseNotesCountInBar = _ui16BaseNotesCountInBar; // give the count of base notes in the bar (the 2 in 2/4, for instance)
 
   ui16NotesCountInBar = __ui16NotesCountInBar;
   // fill the bar with the actual notes
-  for (short __thisNote = 0; __thisNote < __ui16NotesCountInBar; __thisNote++) {
+  for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
     _note[__thisNote][0] = __iNoteTone[__thisNote][0]; // the note duration (in base note)
     _note[__thisNote][1] = __iNoteTone[__thisNote][1]; // the tone (the height of the note)
   }
@@ -242,12 +242,12 @@ void bar::_odtcbPlayBar(){
 unsigned long bar::getNoteDuration(const short int _iter){
   Serial.println("unsigned long bar::getNoteDuration(). Starting.");
   // Serial.print("unsigned long bar::getNoteDuration(). _activeBar = ");Serial.println(_activeBar);
-  // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
+  // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar].ui16BaseNoteForBeat = ");Serial.println(bars[_activeBar].ui16BaseNoteForBeat);
   // Serial.print("unsigned long bar::getNoteDuration(). _iter = ");Serial.println(_iter);
   // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
   // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar].ui16BaseBeatInBpm = ");Serial.println(bars[_activeBar].ui16BaseBeatInBpm);
-  unsigned long __ulDurationInMs = (bars[_activeBar]._iBaseNoteForBeat / bars[_activeBar]._note[_iter][0])
-                                  *(60 / bars[_activeBar].ui16BaseBeatInBpm * 1000) ;
+  unsigned long __ulDurationInMs = (bars[_activeBar].ui16BaseNoteForBeat / bars[_activeBar]._note[_iter][0])
+                                  *(60 / bars[_activeBar].ui16BaseBeatInBpm * 1000);
   // Serial.print("unsigned long bar::getNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   Serial.println("unsigned long bar::getNoteDuration(). Ending.");
   return __ulDurationInMs;
