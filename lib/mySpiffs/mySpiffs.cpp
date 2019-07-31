@@ -245,17 +245,20 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
     _ui32EndPos = prettyFile.position();
   }
 
-  // go back to the beginning of the array
+
+  // 4. go back to the beginning of the array (not the beginning of the file)
   prettyFile.seek(_ui32StartPos, SeekSet);
   // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
 
+
+  // 5. Iterate over the JSON objects nested in the array, copy them in memory,
+  // clean them up and save them into a new file, specific for this box
   char _jObjStartMarker = '{';
   char _jObjEndMarker = '}';
 
   const size_t _cStepBuffSize = 2000;
 
   while (prettyFile.available() > 0) {
-
     // Now that the steps array starter marker ('"steps": [') has been found,
     // let's read each step, deserialize it, reserialize it ugly and
     // append it to the ugly file.
@@ -280,8 +283,8 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
       char _rStep[_cStepBuffSize];
 
       serializeJson(_jdStep, _rStep);
-      Serial.print("mySpiffs::convertJsonStepsPrettyToUgly(): _rStep: ");
-      Serial.println(_rStep);
+      // Serial.print("mySpiffs::convertJsonStepsPrettyToUgly(): _rStep: ");
+      // Serial.println(_rStep);
 
       appendToFile(_uglyFileName, _rStep);
       appendToFile(_uglyFileName, "\n");
