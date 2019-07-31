@@ -480,7 +480,7 @@ long int sequence::_ulBarDuration(const short int _activeBar) {
   // if (MY_DG_LASER) {
   //   Serial.print("void sequence::_ulBarDuration(). bar::bars[_activeBar].iNotesCountInBar = ");Serial.println(bar::bars[_activeBar].iNotesCountInBar);
   // }
-  for(short int __thisNote = 0; __thisNote < bar::bars[_activeBar].iNotesCountInBar; __thisNote++){
+  for(short int __thisNote = 0; __thisNote < bar::bars[_activeBar].ui16NotesCountInBar; __thisNote++){
     __ulDurationInMs = __ulDurationInMs + bar::bars[_activeBar].getSingleNoteInterval(__thisNote);
   }
 
