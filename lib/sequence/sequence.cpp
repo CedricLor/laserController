@@ -232,10 +232,10 @@ bool sequence::_oetcbPlaySequenceInLoop() {
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
-  //   Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
-  //   Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
-  //   Serial.print("-- void sequence::_oetcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
-  //   Serial.println("-- void sequence::_oetcbPlaySequenceInLoop(). ******");
+  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
+  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  //   Serial.println("sequence::_oetcbPlaySequenceInLoop(). ******");
   // }
 
   Serial.println("sequence::_oetcbPlaySequenceInLoop(). Ending.");
@@ -246,19 +246,19 @@ bool sequence::_oetcbPlaySequenceInLoop() {
 
 
 void sequence::_tcbPlaySequenceInLoop() {
-  Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). Starting. ******");
+  Serial.println("sequence::_tcbPlaySequenceInLoop(). Starting. ******");
 
   // if (MY_DG_LASER) {
-  //   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
-  //   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
-  //   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
-  //   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
-  //   Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). ******");
-  //   Serial.print("-- void sequence::_tcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence() with _activeSequence = ");Serial.println(_activeSequence);
+  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
+  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
+  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  //   Serial.println("sequence::_tcbPlaySequenceInLoop(). ******");
+  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence() with _activeSequence = ");Serial.println(_activeSequence);
   // }
   _tPlaySequence.enable();
 
-  Serial.println("-- void sequence::_tcbPlaySequenceInLoop(). Ending.");
+  Serial.println("sequence::_tcbPlaySequenceInLoop(). Ending.");
 }
 
 
@@ -267,29 +267,29 @@ void sequence::_tcbPlaySequenceInLoop() {
 // On disable tPlaySequenceInLoop, turn off all the laser by playing
 // sequence 5 ("all off").
 void sequence::_odtcbPlaySequenceInLoop() {
-  Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). Starting. ******");
+  Serial.println("sequence::_odtcbPlaySequenceInLoop(). Starting. ******");
 
   // if (MY_DG_LASER) {
-  //   Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
-  //   Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). ******");
-  //   Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence == ");Serial.println(_activeSequence);
+  //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
+  //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). ******");
+  //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). _activeSequence == ");Serial.println(_activeSequence);
   // }
   //
   if (!(_activeSequence == 5)) {
     // if (MY_DG_LASER) {
-    //   Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence is != 5");
-    //   Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). _activeSequence is going to be set to 5");
-    //   Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call setActiveSequence(5)");
-    //   Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). (before calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
+    //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). _activeSequence is != 5");
+    //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). _activeSequence is going to be set to 5");
+    //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). about to call setActiveSequence(5)");
+    //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). (before calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
     // }
     setActiveSequence(5);
     // if (MY_DG_LASER) {
-    //   Serial.print("-- void sequence::_odtcbPlaySequenceInLoop(). (just after calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
-    //   Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence()");
+    //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). (just after calling setActiveSequence(5)) _activeSequence: ");Serial.println(_activeSequence);
+    //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence()");
     // }
   }
   _tPlaySequence.enable();
-  Serial.println("-- void sequence::_odtcbPlaySequenceInLoop(). Ending.");
+  Serial.println("sequence::_odtcbPlaySequenceInLoop(). Ending.");
 };
 
 
@@ -309,56 +309,44 @@ void sequence::_odtcbPlaySequenceInLoop() {
 Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
 
 
+// onEnable callback for _tPlaySequence
+// 1. sets the interval for each iterations to duration of the bars (each iteration is a bar)
+// 2. sets the number of iterations to the bar count in this sequence
 bool sequence::_oetcbPlaySequence(){
-  /*
-      1. sets the interval of the _tPlaySequence task
-  */
+  // Serial.println("----------------------------on enable _tPlaySequence ------------------------------");
+
+  // 1. sets the interval of the _tPlaySequence task
   _tPlaySequence.setInterval(_ulBarDuration(_activeSequence));
-  Serial.println("------------------------------ on enable _tPlaySequence ------------------------------");
   // Serial.printf("void sequence::_oetcbPlaySequence(). Set interval: %lu ms.\n", _ulBarDuration(_activeSequence));
   // Serial.printf("void sequence::_oetcbPlaySequence(). Get interval: %lu ms.\n", _tPlaySequence.getInterval());
 
-  /*
-      2. sets the number of iterations of the _tPlaySequence task from the
-        number of bars in the sequence
-  */
+  // 2. sets the number of iterations of the _tPlaySequence task from the
+  //    number of bars in the sequence
   // if (MY_DG_LASER) {
   //   Serial.println("void sequence::_playSequence(). _tPlaySequence.setIterations() about to be called");
   //   Serial.print("void sequence::_playSequence(). bars count in sequence: ");Serial.println(sequences[_activeSequence]._barCountInSequence);
+  //   Serial.print("void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
   // }
-  Serial.print("void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
   _tPlaySequence.setIterations(sequences[_activeSequence]._barCountInSequence);
   // if (MY_DG_LASER) {
-  Serial.print("void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
+  //   Serial.print("void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
   // }
 
   return true;
 }
 
 
+// Main callback for _tPlaySequence
+// 1. sets the interval for each iterations to duration of the bars (each iteration is a bar)
+// 2. sets the number of iterations to the bar count in this sequence
 void sequence::_tcbPlaySequence(){
   Serial.println("void sequence::_tcbPlaySequence(). Starting.");
 
-  // if (MY_DG_LASER) {
-  //   Serial.println("void sequence::_tcbPlaySequence(). _tPlaySequence execution parameters: *!*!*!*!*!");
-  //   Serial.print("void sequence::_tcbPlaySequence(). _tPlaySequence.isEnabled() = ");Serial.println(_tPlaySequence.isEnabled());
-  //   Serial.print("void sequence::_tcbPlaySequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
-  //   Serial.print("void sequence::_tcbPlaySequence(). _tPlaySequence.getInterval() = ");Serial.println(_tPlaySequence.getInterval());
-  //   Serial.print("void sequence::_tcbPlaySequence(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlaySequence));
-  //   Serial.print("void sequence::_tcbPlaySequence(). millis() = ");Serial.println(millis());
-  //   Serial.println("void sequence::_tcbPlaySequence(). *!*!*!*!*!");
-  // }
-
+  // 1. Get the number of iterations (each iteration corresponds to one bar)
   short _iter = _tPlaySequence.getRunCounter() - 1;
-  // if (MY_DG_LASER) {
-  //   Serial.print("void sequence::_tcbPlaySequence(). _iter: ");Serial.println(_iter);
-  // }
 
-  // Look for the bar number to read at this iteration
+  // 2. Select the bar number corresponding to this iteration
   short int _activeBar = sequences[_activeSequence]._iAssociatedBars[_iter];
-  // if (MY_DG_LASER) {
-  //   Serial.print("void sequence::_tcbPlaySequence(). after setting _activeBar = ");Serial.println(_activeBar);
-  // }
 
   // Play bars
   // if (MY_DG_LASER) {
@@ -368,17 +356,7 @@ void sequence::_tcbPlaySequence(){
   // if (MY_DG_LASER) {
   //   Serial.println("void sequence::_tcbPlaySequence(). coming back from bar::bars[_activeBar].playBar(_activeBar)");
   // }
-
-  // if (MY_DG_LASER) {
-  //   Serial.println("void sequence::_tcbPlaySequence(). _tPlaySequence just after calling _tPlaySequence.setInterval *!*!*!*!*!");
-  //   Serial.println("void sequence::_tcbPlaySequence(). _tPlaySequence execution parameters:");
-  //   Serial.print("void sequence::_tcbPlaySequence(). _tPlaySequence.isEnabled() = ");Serial.println(_tPlaySequence.isEnabled());
-  //   Serial.print("void sequence::_tcbPlaySequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
-  //   Serial.print("void sequence::_tcbPlaySequence(). _tPlaySequence.getInterval() = ");Serial.println(_tPlaySequence.getInterval());
-  //   Serial.print("void sequence::_tcbPlaySequence(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(_tPlaySequence));
-  //   Serial.print("void sequence::_tcbPlaySequence(). millis() = ");Serial.println(millis());
-  //   Serial.println("void sequence::_tcbPlaySequence(). *!*!*!*!*!");
-  // }
+  // 3. Play the corresponding bar
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };

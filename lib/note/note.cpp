@@ -45,33 +45,36 @@ note::note() {
 
 /*
   task tPlayNote is enabled upon instanciating a note in the bar class.
-  It is disabled by the expiration of the interval set in the class constructor.
+  It is disabled:
+  - by the expiration of the interval set in the Task declaration; or
+  - by _tcbPlayBar, the main callback of tPlayBar, when the note is supposed
+  to finish.
   It does not need any mainCallback, as it does not iterate.
 
   task tPlaynote plays a given tone (set in note::activeTone)
-  for a given note type (--> full, half, ...) at a given
+  for a given note type (--> full, half, ..., set in the bar) at a given
   beat rate.
 */
 Task note::tPlayNote(30000, 1, NULL, &userScheduler, false, &_oetcbPlayNote, &_odtcbPlayNote);
 
 // On enable Task _tNote, turn the lasers to a given tone
 bool note::_oetcbPlayNote() {
-  Serial.println("---------- bool note::_oetcbPlayNote(). Starting");
+  Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.print("---------- bool note::_oetcbPlayNote(). Going to play tone number ");Serial.println(activeTone);
+    Serial.print("note::_oetcbPlayNote(). Going to play tone number ");Serial.println(activeTone);
   }
   tone::tones[activeTone].playTone();
-  Serial.println("---------- bool note::_oetcbPlayNote(). Ending");
+  Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
 
 // On disable Task _tNote, turn off all the lasers
 void note::_odtcbPlayNote() {
-  Serial.println("-------- void note::_odtcbPlayNote(). Starting");
+  Serial.println("note::_odtcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.print("---------- bool note::_oetcbPlayNote(). Turning off all the lasers");
+    Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   activeTone = 0; // tones[0] means turn off all the lasers
   tone::tones[activeTone].playTone();
-  Serial.println("-------- void note::_odtcbPlayNote(). Ending");
+  Serial.println("note::_odtcbPlayNote(). Ending");
 }
