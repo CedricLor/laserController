@@ -133,42 +133,7 @@ void bar::initBars() {
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
-// Single bar player
-// Plays a given bar one single time.
-// It is called by _tcbPlaySequence, the main callback of of _tPlaySequence.
-// Its functions is to:
-// 1. sets the active bar
-// 2. enables the _tPlayBar Task
-void bar::playBar(const short activeBar){
-  Serial.println("void bar::_playBar(). Starting");
 
-  // 1. set the active bar for the callbacks of _tPlayBar Task
-  // if (MY_DG_LASER) {
-  //   Serial.print("void bar::_playBar(). activeBar: ");Serial.println(activeBar);
-  //   Serial.print("void bar::_playBar(). _activeBar: ");Serial.println(_activeBar);
-  //   Serial.println("void bar::_playBar(). about to call setActiveBar()");
-  // }
-  //
-  setActiveBar(activeBar);
-  // if (MY_DG_LASER) {
-  //   Serial.print("void bar::_playBar(). _activeBar set to ");Serial.println(_activeBar);
-  // }
-
-
-  // 2. Enable the _tPlayBar Task
-  // if (MY_DG_LASER) {
-  //   Serial.println("void bar::_playBar(). Just before enabling _tPlayBar");
-  //   Serial.print("void bar::_playBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
-  //   Serial.print("void bar::_playBar(). _tPlayBar.getIterations() = ");Serial.println(_tPlayBar.getIterations());
-  //   Serial.print("void bar::_playBar(). _tPlayBar.getInterval() = ");Serial.println(_tPlayBar.getInterval());
-  // }
-  _tPlayBar.enable();
-  // if (MY_DG_LASER) {
-  //   Serial.println("void bar::_playBar(). Task _tPlayBar enabled");
-  // }
-
-  Serial.println("void bar::_playBar(). Ending");
-};
 
 
 

@@ -51,7 +51,6 @@ class bar
     static void setActiveBar(const short int activeBar);
 
     // non-static
-    void playBar(const short activeBar);
     unsigned long getSingleNoteInterval(const short int _iter);
     uint16_t ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
     uint16_t ui16BaseNotesCountInBar;

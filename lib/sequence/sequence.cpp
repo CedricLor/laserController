@@ -348,14 +348,6 @@ void sequence::_tcbPlaySequence(){
   // 2. Select the bar number corresponding to this iteration
   short int _activeBar = sequences[_activeSequence]._iAssociatedBars[_iter];
 
-  // Play bars
-  // if (MY_DG_LASER) {
-  //   Serial.println("void sequence::_tcbPlaySequence(). about to call bar::bars[_activeBar].playBar(_activeBar)");
-  // }
-  bar::bars[_activeBar].playBar(_activeBar);
-  // if (MY_DG_LASER) {
-  //   Serial.println("void sequence::_tcbPlaySequence(). coming back from bar::bars[_activeBar].playBar(_activeBar)");
-  // }
   // 3. Play the corresponding bar
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
