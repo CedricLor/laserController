@@ -79,7 +79,7 @@ void sequence::initSequences() {
 
   // define the bar count for this sequence
   short _barCountForThisSequence = 1;
-  // define an array containing references to the bars to be played in the sequence
+  // define an array of references to the bars to be played in the sequence
   const short int aRelays[_barCountForThisSequence] = {0};
   // load values into sequences[0]:
   // a. the sequence's name
@@ -102,16 +102,7 @@ void sequence::initSequences() {
 
 
   _barCountForThisSequence = 1;
-  /*
-    For the moment, all the arrays ONLY contain one single bar.
-    In principle, sequence are supposed to contain several bars.
-    Accordingly, the array should contain more than one single bar.
-    This will be one of the artistic parts.
-  */
-  const short int aTwins[_barCountForThisSequence] = {1}; // this is a ref to the
-                                                          // number of the single
-                                                          // bar associated with
-                                                          // this sequence
+  const short int aTwins[_barCountForThisSequence] = {1};
   sequences[1]._initSequence("twins", 2, 1, 2, _barCountForThisSequence, aTwins);
   /*
     ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
@@ -120,10 +111,7 @@ void sequence::initSequences() {
   */
 
   _barCountForThisSequence = 1;
-  const short int aAll[_barCountForThisSequence] = {2};  // this is a ref to the
-                                                         // number of the single
-                                                         // bar associated with
-                                                         // this sequence
+  const short int aAll[_barCountForThisSequence] = {2};
   sequences[2]._initSequence("all", 2, 1, 2, _barCountForThisSequence, aAll);
   /*
     ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
@@ -207,10 +195,9 @@ Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &us
     _oetcbPlaySequenceInLoop()
 
     Upon enabling the tPlaySequenceInLoop task, _oetcbPlaySequenceInLoop():
-    1. calculates the interval at which the task tPlaySequenceInLoop
-    shall iterate (and restart the sequence);
-    2. sets such interval (which will only be taken into account after the
-    main callback has been called ==> the forenext iteration).
+    1. sets the interval at which the task tPlaySequenceInLoop shall iterate
+    (and restart the sequence). This interval will only be taken into account
+    after the main callback has been called ==> the forenext iteration).
 
     This calculation is made based on the base beat in bpm, the base note,
     the number of base notes per bars and the number of basrs in the sequence.
@@ -235,7 +222,6 @@ bool sequence::_oetcbPlaySequenceInLoop() {
 
 
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");}
-  unsigned long _duration = _ulSequenceDuration(_activeSequence);
   // if (MY_DG_LASER) {Serial.printf("sequence::_oetcbPlaySequenceInLoop(). _ulSequenceDuration(_activeSequence): %u \n", _ulSequenceDuration(_activeSequence));}
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
@@ -472,10 +458,7 @@ void sequence::_odtcbPlaySequence(){
 // Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
 long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   Serial.println("long int sequence::_ulSequenceDuration(). Starting.");
-  unsigned long __ulDurationInMs = sequences[__activeSequence]._barCountInSequence *
-                     sequences[__activeSequence].ui16BaseNotesCountPerBar *
-                     sequences[__activeSequence].ui16BaseNoteForBeat *
-                     (60 / sequences[__activeSequence].ui16BaseBeatInBpm * 1000);
+  unsigned long __ulDurationInMs = sequences[__activeSequence]._barCountInSequence * _ulBarDuration(__activeSequence);
   // iterate over each bar pertaining to this sequence and add up their durations
   // for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
   //   short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
