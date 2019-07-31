@@ -581,8 +581,10 @@ var _onClickBoxConfig = {
       checkConnect.addNotConnectedMsg();
       return;
     }
-    // else, send the message
+    // else, complete the message
     _obj["lb"] = findUpLaserBoxNumber(e.target.parentNode);
+    _obj["action"] = "changeBox";
+    // and send the message
     this.send(_obj);
   },
 
@@ -611,7 +613,6 @@ function onclickRebootBoxButton(e) {
   console.log("onclickRebootBoxButton starting");
 
   _onClickBoxConfig.wrapper(e, {
-    action: "changeBox",
     key: "reboot",
     save: 0, // reboot without saving
   });
@@ -626,7 +627,6 @@ function onclickRebootAndSaveBoxButton(e) {
   console.log("onclickRebootAndSaveBoxButton starting");
 
   _onClickBoxConfig.wrapper(e, {
-    action: "changeBox",
     key: "reboot",
     save: 1, // save and reboot
   });
@@ -641,7 +641,6 @@ function onclickgOTARebootsBoxBtn(e) {
   console.log("onclickgOTARebootsBoxBtn starting");
 
   _onClickBoxConfig.wrapper(e, {
-    action: "changeBox",
     key: "save",
     val: "gi8RequestedOTAReboots",
     reboots: parseInt(this.dataset.reboots, 10),
@@ -663,7 +662,6 @@ function onclickSavePrefsBoxButton(e) {
   var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
   _onClickBoxConfig.wrapper(e, {
-    action: "changeBox",
     key: "save",
     save: "all", // save and reboot
   });
