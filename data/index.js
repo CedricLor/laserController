@@ -698,7 +698,6 @@ function onclickRebootLBsButton(e) {
 };
 
 
-
 function onclickRebootAllButton(e) {
   console.log("onclickRebootAllButton starting");
   _onClickGroupReboot.wrapper(e, "all", 0);
@@ -706,6 +705,33 @@ function onclickRebootAllButton(e) {
   console.log("onclickRebootAllButton: ending");
 };
 
+
+function onclickSaveLBsButton(e) {
+  console.log("onclickSaveLBsButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "save",
+    val: "all",
+    lb: "LBs"
+  }));
+  // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
+  console.log("onclickSaveLBsButton: ending");
+};
+
+
+function onclickSaveAllButton(e) {
+  console.log("onclickSaveAllButton starting");
+
+  ws.send(JSON.stringify({
+    action: "changeNet",
+    key: "save",
+    val: "all",
+    lb: "all"
+  }));
+  // {action: "changeNet", key: "save", val: "all", lb: "all"}
+  console.log("onclickSaveAllButton: ending");
+};
 
 
 
@@ -744,36 +770,6 @@ var infoBox = {
 }
 
 
-function onclickSaveLBsButton(e) {
-  console.log("onclickSaveLBsButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "all",
-    lb: "LBs"
-  }));
-  // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
-  console.log("onclickSaveLBsButton: ending");
-};
-
-
-
-
-
-
-function onclickSaveAllButton(e) {
-  console.log("onclickSaveAllButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "all",
-    lb: "all"
-  }));
-  // {action: "changeNet", key: "save", val: "all", lb: "all"}
-  console.log("onclickSaveAllButton: ending");
-};
 
 
 
