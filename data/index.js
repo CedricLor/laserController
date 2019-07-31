@@ -622,6 +622,20 @@ function onclickRebootBoxButton(e) {
 
 
 
+function onclickRebootAndSaveBoxButton(e) {
+  console.log("onclickRebootAndSaveBoxButton starting");
+
+  _onClickBoxConfig.wrapper(e, {
+    action: "changeBox",
+    key: "reboot",
+    save: 1, // save and reboot
+  });
+  // {action:"changeBox", key:"reboot", save: 1, lb:1}
+  console.log("onclickRebootAndSaveBoxButton: ending");
+};
+
+
+
 
 function onclickgOTARebootsBoxBtn(e) {
   console.log("onclickgOTARebootsBoxBtn starting");
@@ -640,18 +654,6 @@ function onclickgOTARebootsBoxBtn(e) {
 
 
 
-
-function onclickRebootAndSaveBoxButton(e) {
-  console.log("onclickRebootAndSaveBoxButton starting");
-
-  _onClickBoxConfig.wrapper(e, {
-    action: "changeBox",
-    key: "reboot",
-    save: 1, // save and reboot
-  });
-  // {action:"changeBox", key:"reboot", save: 1, lb:1}
-  console.log("onclickRebootAndSaveBoxButton: ending");
-};
 
 
 
