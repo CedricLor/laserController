@@ -53,7 +53,7 @@ class sequence
     static const short int _char_count_in_name;
 
     static long int _ulSequenceDuration(const short int __activeSequence);
-    static long int _ulBarDuration(const short int _activeBar);
+    static long int _ulBarDuration(const short int __activeSequence);
 
     void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
 

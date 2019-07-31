@@ -344,7 +344,7 @@ void sequence::_playSequence(){
   /*
       1. sets the interval of the _tPlaySequence task
   */
-  // _tPlaySequence.setInterval(sequences[_activeSequence].ui16BaseBeatInBpm);
+  _tPlaySequence.setInterval(_ulBarDuration(_activeSequence));
   // Serial.print("void sequence::_playSequence(). Tempo of the sequence -> duration of a bar: %u ms.\n", _ulBarDuration(_activeSequence));
 
 
@@ -434,9 +434,6 @@ void sequence::_tcbPlaySequence(){
   //   Serial.println("void sequence::_tcbPlaySequence(). coming back from bar::bars[_activeBar].playBar(_activeBar)");
   // }
 
-
-  _tPlaySequence.setInterval(__ulBarDuration);
-
   // if (MY_DG_LASER) {
   //   Serial.println("void sequence::_tcbPlaySequence(). _tPlaySequence just after calling _tPlaySequence.setInterval *!*!*!*!*!");
   //   Serial.println("void sequence::_tcbPlaySequence(). _tPlaySequence execution parameters:");
@@ -492,7 +489,7 @@ long int sequence::_ulSequenceDuration(const short int __activeSequence) {
 
 // Helper function to _tPlaySequence
 // returns the current bar effective duration
-long int sequence::_ulBarDuration(const short int _activeBar) {
+long int sequence::_ulBarDuration(const short int __activeSequence) {
   Serial.println("void sequence::_ulBarDuration(). Starting.");
 
   // if (MY_DG_LASER) {
