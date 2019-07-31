@@ -336,9 +336,20 @@ bool sequence::_oetcbPlaySequence(){
 }
 
 
+
 // Main callback for _tPlaySequence
-// 1. sets the interval for each iterations to duration of the bars (each iteration is a bar)
-// 2. sets the number of iterations to the bar count in this sequence
+// Each iteration of _tPlaySequence corresponds to a bar. Accordingly, each iteration
+// runs for an identical a fixed time -> interval.
+// The iterations and the interval of the Task have been set in its onEnable
+// callback and do not change on iterations.
+// At each iteration of _tPlaySequence:
+// - we read in the sequence the number of the next bar <- from the iterator of the
+//   Task.
+// - we then apply the settings (tempo in BPM, base note for beats and the notes
+//   count in each bar) of this sequence to the bar, which might have other
+//   settings.
+// - we then inform the bar class of the active bar number, before enabling
+//   the Task tPlayBar in the bar class.
 void sequence::_tcbPlaySequence(){
   Serial.println("void sequence::_tcbPlaySequence(). Starting.");
 
@@ -348,12 +359,15 @@ void sequence::_tcbPlaySequence(){
   // 2. Select the bar number corresponding to this iteration
   short int _activeBar = sequences[_activeSequence]._iAssociatedBars[_iter];
 
-  // 3. Play the corresponding bar
+  // 3. Configure the bar
+
+  // 4. Play the corresponding bar
   bar::setActiveBar(_activeBar);
   bar::tPlayBar.enable();
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
+
 
 
 // tPlaySequence disable callback
