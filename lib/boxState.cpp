@@ -50,6 +50,23 @@ reverse dependency graph
 
 /*
   DEBUG PROBLEMS:
+  VERY HIGH:
+  I. Fix the bug in the sequences/bar/notes/tones
+  II. OTA for all
+  III. SPIFFS: make the call to split files in main.cpp smarter: detect
+  if there are any files to split (file which name would contain the special
+  '-' characteur).
+
+  MEDIUM:
+  I. Create mesh and web stack for:
+  - sequences
+  - notes/tones
+  - steps
+  II. mySpiffs and steps and sequences:
+  - generalize mySpiffs step logic to sequences and notes
+  - a lot of refactoring to do
+
+  LOW:
   I. Global
     - setting and use of gui16MyIndexInCBArray // gui16ControllerBoxPrefix
     -> make them two different values and adapt the whole code
@@ -68,21 +85,15 @@ reverse dependency graph
     D. Implement locking IRStartup mode to other IRless modes only
     E. Create mesh and web stack for steps
     F. Create mesh and web stack for stepSwitch
-  IV. mySpiffs and steps and sequences:
-    - Read file in manual JSON and parse them to real JSON files
-    - Split sessions.config which would contain all the steps for all the boxes
-    into box specific files
-  IV. WSSender: add a queue in the looped task
-  V. WSSender: by pass ControlerBox storage when receiving data from the boxes
-  VI. mySpiffs: refacto
-  VII. mySavedPrefs: refacto -> mySavedPrefs shall be loaded before ControlerBox
-  VIII. Make the whole thing more flexible to be reused for:
+  III. WSSender: add a queue in the looped task
+  IV. WSSender: by pass ControlerBox storage when receiving data from the boxes
+  V. Make the whole thing more flexible to be reused for:
     1. nodes in the mesh that would only serve as relays
     2. nodes in the mesh that would serve as relays and be connected to IR or
     ultrasonic sensors providing data to the whole system
-  IX. Hardware interrupt on the IR Pin
-  X. Deep sleep
-  XI. Create mesh and web stack for sequences and notes/tones
+  VI. Hardware interrupt on the IR Pin
+  VII. Deep sleep
+  VIII. mySavedPrefs: refacto -> mySavedPrefs shall be loaded before ControlerBox
 */
 
 #include "Arduino.h"
