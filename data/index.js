@@ -516,7 +516,7 @@ var checkConnect = {
 
   closedVerb: function() {
     if (!ws || ws.readyState === WebSocket.CLOSED) {
-      checkConnect.addNotConnectedMsg();
+      this.addNotConnectedMsg();
       return true;
     }
     return false;
