@@ -55,7 +55,7 @@ class sequence
     static long unsigned int _ulSequenceDuration(const short int __activeSequence);
     static long unsigned int _ulBarDuration(const short int __activeSequence);
 
-    void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int iNumberOfBeatsInSequence, const short int iAssociatedBarsSequence[]);
+    void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int iNumberOfBeatsInSequence, const short int _iAssociatedBars[]);
 
     char _cName[7];  // array of character to hold the name of each sequences
     uint16_t ui16BaseBeatInBpm; // tempo in beats per minute

@@ -59,15 +59,15 @@ sequence::sequence() {
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void sequence::_initSequence(const char cName[_char_count_in_name], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int barCountInSequence, const short int iAssociatedBarsSequence[4]){
+void sequence::_initSequence(const char cName[_char_count_in_name], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int __barCountInSequence, const short int __iAssociatedBars[4]){
   // Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
   ui16BaseBeatInBpm = _ui16BaseBeatInBpm;
   ui16BaseNoteForBeat = _ui16BaseNoteForBeat;
   ui16BaseNotesCountPerBar = _ui16BaseNotesCountPerBar;
-  _barCountInSequence = barCountInSequence;
-  for (short __thisBar = 0; __thisBar < barCountInSequence; __thisBar++) {
-    _iAssociatedBars[__thisBar] = iAssociatedBarsSequence[__thisBar];
+  _barCountInSequence = __barCountInSequence;
+  for (short __thisBar = 0; __thisBar < _barCountInSequence; __thisBar++) {
+    _iAssociatedBars[__thisBar] = __iAssociatedBars[__thisBar];
   }
   // Serial.println("void sequence::initSequence(). Ending.");
 };
@@ -359,7 +359,7 @@ void sequence::_tcbPlaySequence(){
 // tPlaySequence disable callback
 void sequence::_odtcbPlaySequence(){
   if (MY_DG_LASER) {
-    Serial.println("------------------------------ on disable _tPlaySequence ------------------------------");
+    // Serial.println("----------------------------on disable _tPlaySequence ------------------------------");
     Serial.print("void sequence::_odtcbPlaySequence(). millis() = ");Serial.println(millis());
     Serial.println("void sequence::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
   }
