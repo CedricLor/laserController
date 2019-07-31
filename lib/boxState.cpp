@@ -51,9 +51,8 @@ reverse dependency graph
 /*
   DEBUG PROBLEMS:
   VERY HIGH:
-  I. Fix the bug in the sequences/bar/notes/tones
-  II. OTA for all
-  III. SPIFFS: make the call to split files in main.cpp smarter: detect
+  I. OTA for all
+  II. SPIFFS: make the call to split files in main.cpp smarter: detect
   if there are any files to split (file which name would contain the special
   '-' characteur).
 
@@ -62,6 +61,7 @@ reverse dependency graph
   - sequences
   - notes/tones
   - steps
+  - steps mode switch
   II. mySpiffs and steps and sequences:
   - generalize mySpiffs step logic to sequences and notes
   - a lot of refactoring to do
@@ -83,8 +83,6 @@ reverse dependency graph
     B. Implement array of masterBoxes
     C. Implement various reactions to various state of master
     D. Implement locking IRStartup mode to other IRless modes only
-    E. Create mesh and web stack for steps
-    F. Create mesh and web stack for stepSwitch
   III. WSSender: add a queue in the looped task
   IV. WSSender: by pass ControlerBox storage when receiving data from the boxes
   V. Make the whole thing more flexible to be reused for:
