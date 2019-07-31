@@ -586,6 +586,20 @@ function _updateButtons(e, _selector, _element) {
 }
 
 
+function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
+  var _boxRow = boxesRows.get(_laserBoxNumber);
+  var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
+  // remove red on other buttons
+  for (var i = 0; i < _buttonList.length; i++) {
+    _buttonList[i].classList.remove('button_clicked');
+  }
+  // turn this button red
+  clickedTarget.classList.add('button_clicked');
+
+  return _laserBoxNumber;
+}
+
+
 // EVENTS HANDLER
 // _onClickBoxConfig Helper Object
 var _onClickBoxConfig = {
