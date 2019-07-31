@@ -644,12 +644,11 @@ function onclickgOTARebootsBoxBtn(e) {
 function onclickRebootAndSaveBoxButton(e) {
   console.log("onclickRebootAndSaveBoxButton starting");
 
-  ws.send(JSON.stringify({
+  _onClickBoxConfig.wrapper(e, {
     action: "changeBox",
     key: "reboot",
     save: 1, // save and reboot
-    lb: findUpLaserBoxNumber(this.parentNode)
-  }));
+  });
   // {action:"changeBox", key:"reboot", save: 1, lb:1}
   console.log("onclickRebootAndSaveBoxButton: ending");
 };
@@ -661,12 +660,11 @@ function onclickSavePrefsBoxButton(e) {
   console.log("onclickSavePrefsBoxButton starting");
   var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
-  ws.send(JSON.stringify({
+  _onClickBoxConfig.wrapper(e, {
     action: "changeBox",
     key: "save",
-    val: "all", // save all the values for the box and the net
-    lb: _laserBoxNumber
-  }));
+    save: "all", // save and reboot
+  });
   // {action:"changeBox", key:"save", val: "all", lb:1}
   console.log("onclickSavePrefsBoxButton: ending");
 };
