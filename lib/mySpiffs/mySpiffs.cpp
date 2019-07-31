@@ -157,6 +157,8 @@ void mySpiffs::readJSONFile(const char * path){
 
 
 
+
+
 void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName) {
   Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): starting.");
 
@@ -166,12 +168,12 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
   // It will be rewritten as  $[BOX: 201]$ in the ugly JSON.
 
   // Building the sought for string  --> "boxNumber": 201,
-  const char _prettyThisBoxMarkerSize = 18; // --> "boxNumber": 201,
-  char _prettyThisBoxMarker[_prettyThisBoxMarkerSize];
-  snprintf(_prettyThisBoxMarker, _prettyThisBoxMarkerSize, "\"boxNumber\": %u,", _ui16NodeName);
+  const char _prettyBoxMarkerSize = 18; // --> "boxNumber": 201,
+  char _prettyBoxMarker[_prettyBoxMarkerSize];
+  snprintf(_prettyBoxMarker, _prettyBoxMarkerSize, "\"boxNumber\": %u,", _ui16NodeName);
 
   // Looking for the string
-  if (prettyFile.find(_prettyThisBoxMarker, _prettyThisBoxMarkerSize - 1)) {
+  if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
     // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found box %u\n", _ui16NodeName);
 
     // Building the box marker to be inserted n the ugly file
@@ -198,8 +200,10 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
   // Building the sought for string  --> "steps": [
   const size_t _arrayStarterSize = 11;
   const char _arrayStarter[_arrayStarterSize] = "\"steps\": [";
+  // Creating a variable to store the starting position of the (steps) array for this box
   uint32_t _ui32StartPos;
 
+  // Looking for the string
   // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _arrayStarter %s\n", _arrayStarter);
   if (prettyFile.find(_arrayStarter, _arrayStarterSize - 1)) {
     // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _arrayStarter);
@@ -212,12 +216,38 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
     return;
   }
 
-  bool _arrayEndMarkerFound = false;
+
+  // 3. We have now found the relevant box and the steps array starter marker
+  // Let's look for the end of the array
+  // If there is a box with a name > to this box in the array, there should be a
+  // a substring of this form in the file: --> "boxNumber": 202,
+  // Let's try to find it, failing which we will just store the end of file position.
+
+  // Creating a variable to store the ending position of the (steps) array for this box
   uint32_t _ui32EndPos;
 
-  const char _prettyBoxMarkerSize = 14;
-  const char _prettyBoxMarker[_prettyBoxMarkerSize] = "\"boxNumber\": ";
+  // Building the sought for string  --> "boxNumber": 202,
+  snprintf(_prettyBoxMarker, _prettyBoxMarkerSize, "\"boxNumber\": %u,", _ui16NodeName + 1);
+  // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _prettyBoxMarker %s\n", _prettyBoxMarker);
 
+  // Looking for the string
+  // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _prettyBoxMarker %s\n", _prettyBoxMarker);
+  if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
+    // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _prettyBoxMarker);
+    // save the current position (with an offset the size of the sought for string)
+    _ui32EndPos = prettyFile.position() - _prettyBoxMarkerSize + 1;
+    // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
+  } else {
+    // else the string was not found => this is the last box
+    // go to the end of the file
+    prettyFile.seek(0, SeekEnd);
+    // save the position at the end of file
+    _ui32EndPos = prettyFile.position();
+  }
+
+  // go back to the beginning of the array
+  prettyFile.seek(_ui32StartPos, SeekSet);
+  // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
 
   char _jObjStartMarker = '{';
   char _jObjEndMarker = '}';
@@ -225,27 +255,6 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
   const size_t _cStepBuffSize = 2000;
 
   while (prettyFile.available() > 0) {
-
-
-    // We have now found the relevant box and the steps array starter marker
-    // Let's look for the end of the array
-    if (_arrayEndMarkerFound == false) {
-      // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _prettyBoxMarker %s\n", _prettyBoxMarker);
-      if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
-        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _prettyBoxMarker);
-        _arrayEndMarkerFound = true;
-        _ui32EndPos = (uint16_t)(prettyFile.position());
-        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
-        prettyFile.seek(_ui32StartPos, SeekSet);
-        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
-        continue;
-      }
-      // else this is the last box in the file
-      prettyFile.seek(0, SeekEnd);
-      _ui32EndPos = (uint16_t)(prettyFile.position());
-      prettyFile.seek(_ui32StartPos, SeekSet);
-      continue;
-    }
 
     // Now that the steps array starter marker ('"steps": [') has been found,
     // let's read each step, deserialize it, reserialize it ugly and
