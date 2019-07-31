@@ -197,15 +197,15 @@ void bar::_tcbPlayBar(){
   Serial.println("void bar::_tcbPlayBar(). Starting.");
 
   // 1. get the run counter
+  const short _iter = tPlayBar.getRunCounter() - 1;
 
   // 2. Disable the Task tPlayNote (just in case)
+  note::tPlayNote.disable();
 
-  short _iter = _tPlayBar.getRunCounter() - 1;
   // 3. Set the relevant note in the note class (note::activeTone)
   //    using the iterator
   note::activeTone = bars[_activeBar]._note[_iter][1];
 
-  bool _tPlayNoteWasEnabled = note::tPlayNote.disable();
   // 4. Reenable the tPlayNote Task
   /*
      On enabling the Task, the onEnable callback of tPlayNote will be
