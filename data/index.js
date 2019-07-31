@@ -806,26 +806,42 @@ function onclickSaveIFButton(e) {
 
 
 
-
-
-
-
-function onclickSaveWifiSettingsIF(e) {
-  console.log("onclickSaveWifiSettingsIF starting");
-
-  ws.send(JSON.stringify({
-    action: "changeBox",
+var _onClickSaveWifi = {
+  obj: {
     key: "save",
     val: "wifi",
-    lb: 0,
     dataset: {
       ssid: document.getElementById('ssid').value,
       pass: document.getElementById('pass').value,
       gatewayIP: document.getElementById('gatewayIP').value,
       ui16GatewayPort: parseInt(document.getElementById('ui16GatewayPort').value, 10),
-      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10)
+      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10),
     }
-  }));
+  },
+  buildObj: function(_passedObj) {
+    return Object.assign(this.obj, _passedObj);
+  },
+  wrapper: function(e, _obj) {
+    // update the buttons
+    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+    // if the connection is closed, inform the user
+    if (checkConnect.closedVerb()) { return; }
+    // else, complete the message
+    _obj = this.buildObj(_obj);
+    // and send the message
+    _onClickHelpers.btnSend(_obj);
+    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  },
+}
+
+
+function onclickSaveWifiSettingsIF(e) {
+  console.log("onclickSaveWifiSettingsIF starting");
+
+  _onClickSaveWifi.wrapper(e, {
+      action: "changeBox",
+      lb: 0,
+    });
   // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
 
   console.log("onclickSaveWifiSettingsIF ending");
@@ -835,16 +851,17 @@ function onclickSaveWifiSettingsIF(e) {
 function onclickSaveWifiSettingsAll(e) {
   console.log("onclickSaveWifiSettingsAll starting");
 
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "wifi",
-    lb: "all"
-  }));
+  _onClickSaveWifi.wrapper(e, {
+      action: "changeNet",
+      lb: "all",
+    });
+  // {action: "changeNet", key: "save", val: "wifi", lb: "all", dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
 
-  // {action: "changeNet", key: "save", val: "wifi", lb: "all"}
   console.log("onclickSaveWifiSettingsAll ending");
 }
+
+
+
 
 
 function onclickgi8RequestedOTAReboots(e) {
