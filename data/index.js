@@ -586,19 +586,6 @@ function _updateButtons(e, _selector, _element) {
 }
 
 
-function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
-  var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
-  // remove red on other buttons
-  for (var i = 0; i < _buttonList.length; i++) {
-    _buttonList[i].classList.remove('button_clicked');
-  }
-  // turn this button red
-  clickedTarget.classList.add('button_clicked');
-
-  return _laserBoxNumber;
-}
-
 
 // EVENTS HANDLER
 // _onClickBoxConfig Helper Object
@@ -845,9 +832,6 @@ function onclickSaveWifiSettingsIF(e) {
 }
 
 
-
-
-
 function onclickSaveWifiSettingsAll(e) {
   console.log("onclickSaveWifiSettingsAll starting");
 
@@ -882,61 +866,46 @@ function onclickgi8RequestedOTAReboots(e) {
 
 
 
+
+
+
+var _onClickStateBtns = {
+  wrapper: function(e, buttonSelector, _datasetValue, _clef) {
+    var _laserBoxNumber = findUpLaserBoxNumber(e.target.parentNode);
+    _updateButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
+    // if the connection is closed, inform the user
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      checkConnect.addNotConnectedMsg();
+      return;
+    }
+    _btnSend({
+      "action": "changeBox",
+      "key": _clef,
+      "lb": _laserBoxNumber,
+      "val": parseInt(_datasetValue, 10)
+    });
+      // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+      // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+      // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+  }
+}
+
+
 function onclickButton(e) {
   console.log("onclickButton starting");
-  _onclickButtonWrapper(this, "button[data-boxstate]", this.dataset.boxstate, "boxState");
+  _onClickStateBtns.wrapper(e, "button[data-boxstate]", this.dataset.boxstate, "boxState");
   console.log("onclickButton: ending");
 };
 
 
 function onclickDefStateButton(e) {
   console.log("onclickDefStateButton starting");
-  _onclickButtonWrapper(this, "button[data-boxDefstate]", this.dataset.boxdefstate, "boxDefstate");
+  _onClickStateBtns.wrapper(e, "button[data-boxDefstate]", this.dataset.boxdefstate, "boxDefstate");
   console.log("onclickDefStateButton: ending");
 };
 
-//   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-//   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-//   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-
-function _onclickButtonWrapper(clickedTarget, buttonSelector, _datasetValue, _clef) {
-  var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
-  _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber);
-  _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef);
-}
 
 
-function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
-  var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
-  // remove red on other buttons
-  for (var i = 0; i < _buttonList.length; i++) {
-    _buttonList[i].classList.remove('button_clicked');
-  }
-  // turn this button red
-  clickedTarget.classList.add('button_clicked');
-
-  return _laserBoxNumber;
-}
-
-
-function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
-  var __toBeStringified = {};
-  __toBeStringified["action"] = "changeBox";
-  __toBeStringified["key"] = _clef;
-  __toBeStringified["lb"] = _laserBoxNumber;
-  __toBeStringified["val"] = parseInt(_datasetValue, 10);
-
-  var _json = JSON.stringify(__toBeStringified);
-  // {action: 4; lb: 1; "boxState": 3}
-  // {action: 9; lb: 1; "boxDefstate": 3}
-  //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-  //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-  //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-  console.log("_onclickButtonWSSender: about to send JSON via WS: " + _json);
-  ws.send(_json);
-  console.log("_onclickButtonWSSender: JSON sent.");
-}
 
 
 
