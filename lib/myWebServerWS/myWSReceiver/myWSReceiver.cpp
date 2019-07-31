@@ -180,7 +180,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
   }
 
   // save gi8RequestedOTAReboots for next reboot
-  if ((_obj["key"] == "save") && (_obj["val"] == "wifi")) {
+  if ((_obj["key"] == "save") && (_obj["val"] == "gi8RequestedOTAReboots")) {
     if (MY_DG_WS) {
       Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE gi8RequestedOTAReboots message.");
     }
