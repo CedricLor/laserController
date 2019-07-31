@@ -62,7 +62,7 @@ class sequence
     uint16_t ui16BaseNoteForBeat; // the 4 in 2/4, for instance
     uint16_t ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
     short int _barCountInSequence; // number of tempos required to execute one full sequence
-    short int _iAssociatedBarsSequence[4];  // array containing the state of each laser at each tempo
+    short int _iAssociatedBars[4];  // array containing the state of each laser at each tempo
 
 
     static void _tcbPlaySequenceInLoop();

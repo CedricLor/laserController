@@ -67,7 +67,7 @@ void sequence::_initSequence(const char cName[_char_count_in_name], const uint16
   ui16BaseNotesCountPerBar = _ui16BaseNotesCountPerBar;
   _barCountInSequence = barCountInSequence;
   for (short __thisBar = 0; __thisBar < barCountInSequence; __thisBar++) {
-    _iAssociatedBarsSequence[__thisBar] = iAssociatedBarsSequence[__thisBar];
+    _iAssociatedBars[__thisBar] = iAssociatedBarsSequence[__thisBar];
   }
   // Serial.println("void sequence::initSequence(). Ending.");
 };
@@ -97,8 +97,8 @@ void sequence::initSequences() {
   */
   // Serial.println("void sequence::_initSequences(). sequences[0].ui16BaseBeatInBpm: ");
   // Serial.println(sequences[0].ui16BaseBeatInBpm);
-  // Serial.println("void sequence::_initSequences(). sequences[0]._iAssociatedBarsSequence[0][1]");
-  // Serial.println(sequences[0]._iAssociatedBarsSequence[0][1]);
+  // Serial.println("void sequence::_initSequences(). sequences[0]._iAssociatedBars[0][1]");
+  // Serial.println(sequences[0]._iAssociatedBars[0][1]);
 
 
   _barCountForThisSequence = 1;
@@ -406,7 +406,7 @@ void sequence::_tcbPlaySequence(){
   // }
 
   // Look for the bar number to read at this iteration
-  short int _activeBar = sequences[_activeSequence]._iAssociatedBarsSequence[_iter];
+  short int _activeBar = sequences[_activeSequence]._iAssociatedBars[_iter];
   // if (MY_DG_LASER) {
   //   Serial.print("void sequence::_tcbPlaySequence(). after setting _activeBar = ");Serial.println(_activeBar);
   // }
@@ -461,7 +461,7 @@ long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   unsigned long __ulDurationInMs = sequences[__activeSequence]._barCountInSequence * _ulBarDuration(__activeSequence);
   // iterate over each bar pertaining to this sequence and add up their durations
   // for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
-  //   short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
+  //   short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBars[__thisBar];
   //   __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__activeBarIndexNumber);
   // }
   Serial.println("long int sequence::_ulSequenceDuration(). Ending.");
