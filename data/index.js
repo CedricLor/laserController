@@ -512,6 +512,14 @@ var checkConnect = {
 
   deleteNotConnectedMsg: function() {
     infoBox.deleteMsg('#infoNotConnected', this.notConnectedSpan);
+  },
+
+  closedVerb: function() {
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      checkConnect.addNotConnectedMsg();
+      return true;
+    }
+    return false;
   }
 }
 
@@ -594,10 +602,7 @@ var _onClickBoxConfig = {
     // update the buttons
     _updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
     // if the connection is closed, inform the user
-    if (!ws || ws.readyState === WebSocket.CLOSED) {
-      checkConnect.addNotConnectedMsg();
-      return;
-    }
+    if (checkConnect.closedVerb()) { return; }
     // else, complete the message
     _obj["lb"] = findUpLaserBoxNumber(e.target.parentNode);
     _obj["action"] = "changeBox";
@@ -678,10 +683,7 @@ var _onClickGroupReboot = {
 
   wrapper: function(e, _obj)/*_lbs, _save)*/ {
     // if the connection is closed, inform the user
-    if (!ws || ws.readyState === WebSocket.CLOSED) {
-      checkConnect.addNotConnectedMsg();
-      return;
-    }
+    if (checkConnect.closedVerb()) { return; }
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxesRows.size) {
       _updateClickButtons(e, '.net_command_gp > button', document);
@@ -874,11 +876,7 @@ var _onClickStateBtns = {
     var _laserBoxNumber = findUpLaserBoxNumber(e.target.parentNode);
     _updateClickButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
     // if the connection is closed, inform the user
-    if (!ws || ws.readyState === WebSocket.CLOSED) {
-      checkConnect.addNotConnectedMsg();
-      return;
-    }
-    _btnSend({
+    if (checkConnect.closedVerb()) { return; }
       "action": "changeBox",
       "key": _clef,
       "lb": _laserBoxNumber,
