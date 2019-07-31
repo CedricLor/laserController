@@ -621,17 +621,19 @@ function onclickRebootBoxButton(e) {
 
 
 
-function onclickgi8RequestedOTAReboots(e) {
-  console.log("onclickgi8RequestedOTAReboots starting");
 
-  ws.send(JSON.stringify({
+
+function onclickgOTARebootsBoxBtn(e) {
+  console.log("onclickgOTARebootsBoxBtn starting");
+
+  _onClickBoxConfig.wrapper(e, {
     action: "changeBox",
     key: "save",
     val: "gi8RequestedOTAReboots",
-    lb: 0,
-    reboots: parseInt(this.dataset.reboots, 10)
-  }));
-  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
+    reboots: parseInt(this.dataset.reboots, 10),
+  });
+
+  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
   console.log("onclickgi8RequestedOTAReboots ending");
 }
 
