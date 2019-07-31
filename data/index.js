@@ -698,8 +698,7 @@ var _onClickGroupReboot = {
 
 function onclickRebootLBsButton(e) {
   console.log("onclickRebootLBsButton starting");
-  let _obj = _onClickGroupReboot.rebootObj;
-  _obj["lb"] = "LBs";
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.rebootObj, {lb: "LBs"}));
   _onClickGroupReboot.wrapper(e, _obj);
   // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
   console.log("onclickRebootLBsButton: ending");
@@ -708,9 +707,7 @@ function onclickRebootLBsButton(e) {
 
 function onclickRebootAllButton(e) {
   console.log("onclickRebootAllButton starting");
-  let _obj = _onClickGroupReboot.rebootObj;
-  _obj["lb"] = "all";
-  _onClickGroupReboot.wrapper(e, _obj);
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.rebootObj, {lb: "all"}));
   // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
   console.log("onclickRebootAllButton: ending");
 };
@@ -718,9 +715,7 @@ function onclickRebootAllButton(e) {
 
 function onclickSaveLBsButton(e) {
   console.log("onclickSaveLBsButton starting");
-  let _obj = _onClickGroupReboot.saveObj;
-  _obj["lb"] = "LBs";
-  _onClickGroupReboot.wrapper(e, _obj);
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.saveObj, {lb: "LBs"}));
   // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
   console.log("onclickSaveLBsButton: ending");
 };
@@ -728,9 +723,7 @@ function onclickSaveLBsButton(e) {
 
 function onclickSaveAllButton(e) {
   console.log("onclickSaveAllButton starting");
-  let _obj = _onClickGroupReboot.saveObj;
-  _obj["lb"] = "all";
-  _onClickGroupReboot.wrapper(e, _obj);
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.saveObj, {lb: "all"}));
   // {action: "changeNet", key: "save", val: "all", lb: "all"}
   console.log("onclickSaveAllButton: ending");
 };
