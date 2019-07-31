@@ -576,7 +576,7 @@ function _btnSend(_obj) {
 }
 
 
-function _updateButtons(e, _selector, _element) {
+function _updateClickButtons(e, _selector, _element) {
   _element.querySelectorAll(_selector).forEach(
     function(_button){
       _button.classList.remove('button_clicked');
@@ -592,7 +592,7 @@ function _updateButtons(e, _selector, _element) {
 var _onClickBoxConfig = {
   wrapper: function(e, _obj) {
     // update the buttons
-    _updateButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+    _updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
     // if the connection is closed, inform the user
     if (!ws || ws.readyState === WebSocket.CLOSED) {
       checkConnect.addNotConnectedMsg();
@@ -684,7 +684,7 @@ var _onClickGroupReboot = {
     }
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxesRows.size) {
-      _updateButtons(e, '.net_command_gp > button', document);
+      _updateClickButtons(e, '.net_command_gp > button', document);
       // else, complete the message and send it
       _obj["action"] = "changeNet";
       _btnSend(_obj);
@@ -872,7 +872,7 @@ function onclickgi8RequestedOTAReboots(e) {
 var _onClickStateBtns = {
   wrapper: function(e, buttonSelector, _datasetValue, _clef) {
     var _laserBoxNumber = findUpLaserBoxNumber(e.target.parentNode);
-    _updateButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
+    _updateClickButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
     // if the connection is closed, inform the user
     if (!ws || ws.readyState === WebSocket.CLOSED) {
       checkConnect.addNotConnectedMsg();
