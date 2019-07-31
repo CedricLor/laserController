@@ -59,10 +59,10 @@ sequence::sequence() {
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void sequence::_initSequence(const char cName[_char_count_in_name], const unsigned long ulTempo, const short int barCountInSequence, const short int iAssociatedBarsSequence[4]){
+void sequence::_initSequence(const char cName[_char_count_in_name], const uint16_t _ui16BaseBeatInBpm, const short int barCountInSequence, const short int iAssociatedBarsSequence[4]){
   // Serial.println("void sequence::initSequence(). Starting.");
   strcpy(_cName, cName);
-  _ulTempo = ulTempo;
+  ui16BaseBeatInBpm = _ui16BaseBeatInBpm;
   _barCountInSequence = barCountInSequence;
   for (short __thisBar = 0; __thisBar < barCountInSequence; __thisBar++) {
     _iAssociatedBarsSequence[__thisBar] = iAssociatedBarsSequence[__thisBar];
@@ -86,8 +86,8 @@ void sequence::initSequences() {
   // c. the number of bars (or bars count) in the sequence
   // d. the array of references to the bars to be played in the sequence
   sequences[0]._initSequence("relays", 30000, _barCountForThisSequence, aRelays);
-  // Serial.println("void sequence::_initSequences(). sequences[0]._ulTempo: ");
-  // Serial.println(sequences[0]._ulTempo);
+  // Serial.println("void sequence::_initSequences(). sequences[0].ui16BaseBeatInBpm: ");
+  // Serial.println(sequences[0].ui16BaseBeatInBpm);
   // Serial.println("void sequence::_initSequences(). sequences[0]._iAssociatedBarsSequence[0][1]");
   // Serial.println(sequences[0]._iAssociatedBarsSequence[0][1]);
 
@@ -194,7 +194,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // Calculate the interval at which each iteration occur
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");}
   unsigned long _duration = _ulSequenceDuration(_activeSequence);
-  // sequences[_activeSequence]._ulTempo
+  // sequences[_activeSequence].ui16BaseBeatInBpm
   //  * sequences[_activeSequence]._barCountInSequence;
   // if (MY_DG_LASER) {Serial.print("sequence::_oetcbPlaySequenceInLoop(). _duration: ");Serial.println(_duration);}
 
@@ -283,6 +283,11 @@ void sequence::_odtcbPlaySequenceInLoop() {
 long int sequence::_ulSequenceDuration(const short int __activeSequence) {
   Serial.println("long int sequence::_ulSequenceDuration(). Starting.");
   unsigned long __ulDurationInMs = 0;
+  //
+  // __ulDurationInMs = sequences[__activeSequence]._barCountInSequence *
+  //                    sequences[__activeSequence]._iBaseNoteForBeat *
+  //                    sequences[__activeSequence].iNotesCountInBar *
+  //                    sequences[__activeSequence].ui16BaseBeatInBpm;
   // get the index number of each bar in the sequence and add up their durations
   for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
     short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBarsSequence[__thisBar];
@@ -331,8 +336,8 @@ void sequence::_playSequence(){
   /*
       1. sets the interval of the _tPlaySequence task
   */
-  // _tPlaySequence.setInterval(sequences[_activeSequence]._ulTempo);
-  // Serial.print("void sequence::_playSequence(). Tempo of the sequence: ");Serial.println(sequences[_activeSequence]._ulTempo);
+  // _tPlaySequence.setInterval(sequences[_activeSequence].ui16BaseBeatInBpm);
+  // Serial.print("void sequence::_playSequence(). Tempo of the sequence: ");Serial.println(sequences[_activeSequence].ui16BaseBeatInBpm);
 
 
   /*
