@@ -50,8 +50,6 @@ class bar
 
     static void setActiveBar(const short int activeBar);
 
-    // static Task tPlayBars;
-
     // non-static
     void playBar(const short activeBar);
     unsigned long getSingleNoteInterval(const short int _iter);
@@ -63,10 +61,6 @@ class bar
     static const short int _bar_count;
     static short int _activeBar;
     static const short int _char_count_in_name;
-
-    // static void _tcbPlayBars();
-    // static bool _oetcbPlayBars();
-    // static void _odtcbPlayBars();
 
     static Task _tPlayBar;
     static void _tcbPlayBar();

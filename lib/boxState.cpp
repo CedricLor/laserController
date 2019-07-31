@@ -550,11 +550,12 @@ void boxState::_resetSignalCatchers() {
 
     If the _boxActiveStateHasBeenReset, it will:
       1. reset the witness _boxActiveStateHasBeenReset to 0;
-      2. set the duration to stay in the new boxState (by setting the
+      2. get the params for the new state in case we are in step controlled mode;
+      3. set the duration to stay in the new boxState (by setting the
       aInterval of the "children" Task _tPlayBoxState; _tPlayBoxState.setInterval), to
       the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
-      3. set the boxActiveState property (and related properties) of this box;
-      4. restart/enable the "children" Task _tPlayBoxState.
+      4. set the boxActiveState property (and related properties) of this box;
+      5. restart/enable the "children" Task _tPlayBoxState.
 */
 void boxState::_restart_tPlayBoxState() {
   // if the _boxActiveStateHasBeenReset,
