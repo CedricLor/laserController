@@ -28,7 +28,7 @@ class mySpiffs
     // readFile("/hello.txt")
     void readJSONFile(const char * path);
 
-    void convertJsonStepsPrettyToUgly(File& prettyFile, File& uglyFile, const char * _cNodeName);
+    void convertJsonStepsPrettyToUgly(File& prettyFile, const char * _uglyFileName, const char * _cNodeName);
     void convertJsonFilePrettyToUgly(const char * path, const char * _cNodeName);
 
     void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, const char * _cNodeName);

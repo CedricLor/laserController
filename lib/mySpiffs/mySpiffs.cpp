@@ -157,23 +157,28 @@ void mySpiffs::readJSONFile(const char * path){
 
 
 
-void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, File& uglyFile, const char * _cNodeName) {
-  Serial.println("mySpiffs::readPrettyJson(): starting");
+void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _uglyFileName, const char * _cNodeName) {
+  Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): starting.");
 
-  char _boxMarker[15] = "\"boxNumber\": ";
-  strcat(_boxMarker, _cNodeName);
+  const char _prettyBoxMarkerSize = 14;
+  const char _prettyBoxMarker[_prettyBoxMarkerSize] = "\"boxNumber\": ";
+
+  size_t _boxMarkerSize = 15;
+  char _boxMarker[_boxMarkerSize];
+
   bool _boxFound = false;
 
-  char _stepsStarter[11] = "\"steps\": [";
-  bool _stepsStarterMarkerFound = false;
+  const size_t _arrayStarterSize = 11;
+  const char _arrayStarter[_arrayStarterSize] = "\"steps\": [";
+  bool _arrayStarterMarkerFound = false;
+  bool _arrayEndMarkerFound = false;
+  byte _startPos;
+  uint16_t _endPos;
 
-  char _jObjStartMarker[2] = "{";
+  char _jObjStartMarker = '{';
   char _jObjEndMarker = '}';
 
-  char _endLineMarker = '\n';
-
-  char _cStep[2000];
-
+  const size_t _cStepBuffSize = 2000;
 
   while (prettyFile.available() > 0) {
     // we are still looking for the relevant bloc in the file (the one
@@ -182,41 +187,89 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, File& uglyFile, co
     if (_boxFound == false) {
       // if we find the box marker: mark _boxFound to true
       if (prettyFile.find(_cNodeName, 3)) {
-        Serial.printf("mySpiffs::readLine(): found box %s\n", _cNodeName);
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found box %s\n", _cNodeName);
+        snprintf(_boxMarker, _boxMarkerSize, "$[BOX: %s]$", _cNodeName);
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): built name %s\n", _boxMarker);
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): about to append it to %s\n", _uglyFileName);
+        appendToFile(_uglyFileName, _boxMarker);
+        appendToFile(_uglyFileName, "\n");
         _boxFound = true;
         continue;
       }
       // else the box was not found, return
       else {
-        Serial.println("mySpiffs::readLine(): box not found");
+        // Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): box not found");
         return;
       }
     }
 
     // We have now found the relevant box
     // Let's look for the steps array starter marker
-    if (_stepsStarterMarkerFound == false) {
-      prettyFile.find(_stepsStarter);
-      _stepsStarterMarkerFound = true;
-      continue;
+    if (_arrayStarterMarkerFound == false) {
+      // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _arrayStarter %s\n", _arrayStarter);
+      if (prettyFile.find(_arrayStarter, _arrayStarterSize - 1)) {
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _arrayStarter);
+        _arrayStarterMarkerFound = true;
+        _startPos = prettyFile.position();
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
+        continue;
       }
       // else the pretty JSON document is malformed
       else {
-        Serial.printf("mySpiffs::readLine(): could not find the '%s' marker'\n", _stepsStarter);
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): could not find the '%s' marker'\n", _arrayStarter);
         return;
       }
+    }
+
+    // We have now found the relevant box and the steps array starter marker
+    // Let's look for the end of the array
+    if (_arrayEndMarkerFound == false) {
+      // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _prettyBoxMarker %s\n", _prettyBoxMarker);
+      if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): found the '%s' marker'\n", _prettyBoxMarker);
+        _arrayEndMarkerFound = true;
+        _endPos = (uint16_t)(prettyFile.position());
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
+        prettyFile.seek(_startPos, SeekSet);
+        // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
+        continue;
+      }
+      // else this is the last box in the file
+      prettyFile.seek(0, SeekEnd);
+      _endPos = (uint16_t)(prettyFile.position());
+      prettyFile.seek(_startPos, SeekSet);
+      continue;
+    }
 
     // Now that the steps array starter marker ('"steps": [') has been found,
     // let's read each step, deserialize it, reserialize it ugly and
     // append it to the ugly file.
     if (prettyFile.find(_jObjStartMarker)) {
-      strcpy(_cStep, prettyFile.readStringUntil(_jObjEndMarker).c_str());
+      char _cStep[_cStepBuffSize];
+      // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
+      snprintf(_cStep, _cStepBuffSize, "{%s}", prettyFile.readStringUntil(_jObjEndMarker).c_str());
+      // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): current position: %u\n", prettyFile.position());
+      if ((uint16_t)(prettyFile.position()) > _endPos) {
+        // Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): about to return");
+        return;
+      }
+      // Serial.printf("mySpiffs::convertJsonStepsPrettyToUgly(): _cStep: %s\n", _cStep);
+
       const size_t jsonStepCapacity = 905;
       StaticJsonDocument<jsonStepCapacity> _jdStep;
       deserializeJson(_jdStep, _cStep);
-      memset(_cStep, 0, 2000);
-      serializeJson(_jdStep, _cStep);
-      appendToFile(uglyFile.name(), _cStep);
+
+      // Serial.print("mySpiffs::convertJsonStepsPrettyToUgly(): _jdStep: ");
+      // serializeJson(_jdStep, Serial);
+      // Serial.println("\n---");
+      char _rStep[_cStepBuffSize];
+
+      serializeJson(_jdStep, _rStep);
+      // Serial.print("mySpiffs::convertJsonStepsPrettyToUgly(): _rStep: ");
+      // Serial.println(_rStep);
+
+      appendToFile(_uglyFileName, _rStep);
+      appendToFile(_uglyFileName, "\n");
     }
   }
 }
@@ -237,29 +290,45 @@ void mySpiffs::convertJsonFilePrettyToUgly(const char * path, const char * _cNod
   // create an ugly file
   char prettyFileName[30];
   strcpy(prettyFileName, prettyFile.name());
-  char * _uglyFileName;
-  _uglyFileName = strtok (prettyFileName,"-");
+  char _uglyFileName[30] = "/";
+  strtok(prettyFileName, "-");  // get rid of the beginning of the string
+  strcat(_uglyFileName, strtok(NULL, "-")); // add the end "sessions.json"
+  // Serial.printf("mySpiffs::convertJsonFilePrettyToUgly: Creating file %s\n", _uglyFileName);
+
+  deleteFile(_uglyFileName);
+
   File uglyFile;
   uglyFile = SPIFFS.open(_uglyFileName, FILE_WRITE);
   if(!uglyFile){
       Serial.println("mySpiffs::convertJsonFilePrettyToUgly(): - failed to open file for writing");
+      prettyFile.close();
       return;
   }
 
-  // reopen the ugly file for appending
-  uglyFile = SPIFFS.open(path, FILE_APPEND);
-  if(!uglyFile){
-      Serial.println("mySpiffs::convertJsonFilePrettyToUgly(): - failed to open file for appending");
-      return;
-  }
+  // Serial.printf("mySpiffs::convertJsonFilePrettyToUgly(): uglyFile.name(): %s\n", uglyFile.name());
+  uglyFile.close();
+
+  // // reopen the ugly file for appending
+  // uglyFile = SPIFFS.open(_uglyFileName, FILE_APPEND);
+  // if(!uglyFile){
+  //     Serial.println("mySpiffs::convertJsonFilePrettyToUgly(): - failed to open file for appending");
+  //     prettyFile.close();
+  //     return;
+  // }
 
   // pass everything to convertJsonStepsPrettyToUgly
   // which will read the pretty file and make it ugly
-  convertJsonStepsPrettyToUgly(prettyFile, uglyFile, _cNodeName);
+  convertJsonStepsPrettyToUgly(prettyFile, _uglyFileName, _cNodeName);
 
+  Serial.println("mySpiffs::convertJsonFilePrettyToUgly: closing files");
   // close all the files
   prettyFile.close();
-  uglyFile.close();
+  // uglyFile.close();
+
+  deleteFile(path);
+
+  // readFile(_uglyFileName);
+  Serial.println("mySpiffs::convertJsonFilePrettyToUgly: ending");
 }
 
 

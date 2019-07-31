@@ -70,6 +70,9 @@ void setup() {
     return;
   }
 
+  mySpiffs _mySpiffs;
+  _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", "201");
+
   if (isInterface) {
     myWebServerBase::startAsyncServer();
   }
