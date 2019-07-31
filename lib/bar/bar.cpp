@@ -245,13 +245,10 @@ void bar::_tcbPlayBar(){
 
 
   // _tPlayBar related stuffs
-  // At each pass, reset the interval before the next iteration of the Task bar::_tPlayBar
-  unsigned long __ulDurationInMs = bars[_activeBar].getSingleNoteInterval(_iter);
   // if (MY_DG_LASER) {
   //   Serial.println("void bar::_tcbPlayBar(). _tPlayBar.setInterval about to be called");
   //   Serial.print("void bar::_tcbPlayBar(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   // }
-  _tPlayBar.setInterval(__ulDurationInMs);
   // if (MY_DG_LASER) {
   //   Serial.println("void bar::_oetcbPlayBar(). Execution parameters after setInterval : *!*!*!*!*!");
   //   Serial.print("void bar::_oetcbPlayBar(). _tPlayBar.isEnabled() = ");Serial.println(_tPlayBar.isEnabled());
@@ -261,6 +258,7 @@ void bar::_tcbPlayBar(){
   //   Serial.print("void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("void bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
+  tPlayBar.setInterval(bars[_activeBar].getNoteDuration(_iter));
 
   Serial.println("void bar::_tcbPlayBar(). Ending.");
 };
@@ -279,17 +277,17 @@ void bar::_odtcbPlayBar(){
 
 
 
-unsigned long bar::getSingleNoteInterval(const short int _iter){
-  Serial.println("unsigned long bar::getSingleNoteInterval(). Starting.");
-  // Serial.print("unsigned long bar::getSingleNoteInterval(). _activeBar = ");Serial.println(_activeBar);
-  // Serial.print("unsigned long bar::getSingleNoteInterval(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
-  // Serial.print("unsigned long bar::getSingleNoteInterval(). _iter = ");Serial.println(_iter);
-  // Serial.print("unsigned long bar::getSingleNoteInterval(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
-  // Serial.print("unsigned long bar::getSingleNoteInterval(). bars[_activeBar].ui16BaseBeatInBpm = ");Serial.println(bars[_activeBar].ui16BaseBeatInBpm);
+unsigned long bar::getNoteDuration(const short int _iter){
+  Serial.println("unsigned long bar::getNoteDuration(). Starting.");
+  // Serial.print("unsigned long bar::getNoteDuration(). _activeBar = ");Serial.println(_activeBar);
+  // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar]._iBaseNoteForBeat = ");Serial.println(bars[_activeBar]._iBaseNoteForBeat);
+  // Serial.print("unsigned long bar::getNoteDuration(). _iter = ");Serial.println(_iter);
+  // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar]._note[_iter][0] = ");Serial.println(bars[_activeBar]._note[_iter][0]);
+  // Serial.print("unsigned long bar::getNoteDuration(). bars[_activeBar].ui16BaseBeatInBpm = ");Serial.println(bars[_activeBar].ui16BaseBeatInBpm);
   unsigned long __ulDurationInMs = (bars[_activeBar]._iBaseNoteForBeat / bars[_activeBar]._note[_iter][0])
                                   *(60 / bars[_activeBar].ui16BaseBeatInBpm * 1000) ;
-  // Serial.print("unsigned long bar::getSingleNoteInterval(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
-  Serial.println("unsigned long bar::getSingleNoteInterval(). Ending.");
+  // Serial.print("unsigned long bar::getNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  Serial.println("unsigned long bar::getNoteDuration(). Ending.");
   return __ulDurationInMs;
 }
 
