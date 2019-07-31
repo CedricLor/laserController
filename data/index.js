@@ -609,14 +609,12 @@ var _onClickBoxConfig = {
 
 function onclickRebootBoxButton(e) {
   console.log("onclickRebootBoxButton starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
-  ws.send(JSON.stringify({
+  _onClickBoxConfig.wrapper(e, {
     action: "changeBox",
     key: "reboot",
     save: 0, // reboot without saving
-    lb: _laserBoxNumber
-  }));
+  });
   // {action:"changeBox", key:"reboot", save: 0, lb:1}
   console.log("onclickRebootBoxButton: ending");
 };
