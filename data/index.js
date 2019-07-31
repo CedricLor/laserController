@@ -665,7 +665,17 @@ function onclickSavePrefsBoxButton(e) {
 
 // _onClickGroupReboot Helper Object
 var _onClickGroupReboot = {
-  wrapper: function(e, _lbs, _save) {
+  saveObj: {
+    key: "save",
+    val: "all",
+  },
+
+  rebootObj: {
+    key: "reboot",
+    save: 0,
+  },
+
+  wrapper: function(e, _obj)/*_lbs, _save)*/ {
     // if the connection is closed, inform the user
     if (!ws || ws.readyState === WebSocket.CLOSED) {
       checkConnect.addNotConnectedMsg();
@@ -674,12 +684,8 @@ var _onClickGroupReboot = {
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxesRows.size) {
       _updateButtons(e, '.net_command_gp > button', document);
-      let obj = {
-        action: (_lbs === ("LBs" || "all") ? "changeNet" : "changeBox"),
-        key: "reboot",
-        save: _save,
-        lb: _lbs
-      };
+      // else, complete the message and send it
+      _obj["action"] = "changeNet";
       _btnSend(_obj);
       // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
       return;
@@ -692,7 +698,9 @@ var _onClickGroupReboot = {
 
 function onclickRebootLBsButton(e) {
   console.log("onclickRebootLBsButton starting");
-  _onClickGroupReboot.wrapper(e, "LBs", 0);
+  let _obj = _onClickGroupReboot.rebootObj;
+  _obj["lb"] = "LBs";
+  _onClickGroupReboot.wrapper(e, _obj);
   // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
   console.log("onclickRebootLBsButton: ending");
 };
@@ -700,7 +708,9 @@ function onclickRebootLBsButton(e) {
 
 function onclickRebootAllButton(e) {
   console.log("onclickRebootAllButton starting");
-  _onClickGroupReboot.wrapper(e, "all", 0);
+  let _obj = _onClickGroupReboot.rebootObj;
+  _obj["lb"] = "all";
+  _onClickGroupReboot.wrapper(e, _obj);
   // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
   console.log("onclickRebootAllButton: ending");
 };
@@ -708,13 +718,9 @@ function onclickRebootAllButton(e) {
 
 function onclickSaveLBsButton(e) {
   console.log("onclickSaveLBsButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "all",
-    lb: "LBs"
-  }));
+  let _obj = _onClickGroupReboot.saveObj;
+  _obj["lb"] = "LBs";
+  _onClickGroupReboot.wrapper(e, _obj);
   // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
   console.log("onclickSaveLBsButton: ending");
 };
@@ -722,13 +728,9 @@ function onclickSaveLBsButton(e) {
 
 function onclickSaveAllButton(e) {
   console.log("onclickSaveAllButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "all",
-    lb: "all"
-  }));
+  let _obj = _onClickGroupReboot.saveObj;
+  _obj["lb"] = "all";
+  _onClickGroupReboot.wrapper(e, _obj);
   // {action: "changeNet", key: "save", val: "all", lb: "all"}
   console.log("onclickSaveAllButton: ending");
 };
