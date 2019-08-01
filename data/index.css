@@ -23,14 +23,14 @@ h1 {
 .button_active_state {
   background-color: red;
 }
+.bold {
+  font-weight: bold;
+}
 .pad_tb20 {
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.bold {
-  font-weight: bold;
-}
-.setters_gp_title {
+.pad_tb10 {
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -40,13 +40,13 @@ h1 {
 .marg_top{
   margin-top: 20px;
 }
-.hidden{
-  display: none;
-}
 .wifi_labels {
 	display: inline-block;
 	width: 100px;
 	margin-right: 20px;
 	vertical-align: top;
 	text-align: right;
+}
+.hidden{
+  display: none;
 }

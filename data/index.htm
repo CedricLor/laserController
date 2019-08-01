@@ -15,7 +15,7 @@
     </h1>
     <div id='infoBox' class='marg_top'></div>
     <div class='netwide_cmds marg_top'>
-      <div class='setters_gp_title'>Group Commands</div>
+      <div class='section_title bold  pad_tb10'>Group Commands</div>
       <div class='setters_group net_command_gp'>
         <button class='button' id='rebootLBs'>Reboot LBs</button><button class='button' id='rebootIF'>Reboot IF</button><button class='button' id='rebootAll'>Reboot All</button>
       </div>
@@ -26,8 +26,8 @@
     <div id='boxesContainer' class='marg_top'>
       <div id='boxTemplate' class='box_wrapper hidden' data-lb='0'>
 
-        <div class='box_state_setter pad_tb20'><span class='bold'>Laser Box <span class='box_num'>0</span></span>
-          <div class='setters_gp_title'>Commands</div>
+        <div class='box_state_setter pad_tb20'><div class='section_title bold pad_tb10'>Laser Box <span class='box_num'>0</span></div>
+          <div class='subsection_title pad_tb10'>Commands</div>
           <div class='setters_group command_gp'>
             <button id='rebootBox' class='button'>
               Reboot
@@ -45,7 +45,7 @@
               OTA 2
             </button>&nbsp;
           </div> <!-- special_gp -->
-          <div class='setters_gp_title'>Special</div>
+          <div class='subsection_title pad_tb10'>Special</div>
           <div class='setters_group special_gp'>
             <button class='button' data-boxstate='0'>
               Manual
@@ -57,7 +57,7 @@
               IRStUp
             </button>&nbsp;
           </div> <!-- special_gp -->
-          <div class='setters_gp_title'>Waiting</div>
+          <div class='subsection_title pad_tb10'>Waiting</div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxstate='3'>
               Both
@@ -72,7 +72,7 @@
               None
             </button>&nbsp;
           </div> <!-- waiting_gp -->
-          <div class='setters_gp_title'>IR High</div>
+          <div class='subsection_title pad_tb10'>IR High</div>
           <div class='setters_group pir_high_gp'>
             <button class='button' data-boxstate='6'>
               Both
@@ -87,7 +87,7 @@
               None
             </button>&nbsp;
           </div> <!-- pir_high_gp -->
-          <div class='setters_gp_title'>Mesh High</div>
+          <div class='subsection_title pad_tb10'>Mesh High</div>
           <div class='setters_group mesh_high_gp'>
             <button class='button' data-boxstate='10'>
               Both
@@ -104,8 +104,9 @@
           </div> <!-- mesh_high_gp -->
         </div> <!-- box_state_setter -->
 
-        <p>
-        <div class='slave_master_box_setter pad_tb20'>Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
+        <div class='slave_master_box_setter pad_tb10'>
+          <div class='subsection_title pad_tb10'>Master Boxes</div>
+          Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
           <select class='master_select'>
             <option value='1'>201</option>
             <option value='2'>202</option>
@@ -129,8 +130,11 @@
           </div>
         </div> <!-- slave_master_box_setter -->
 
-        <div class='box_def_state_setter pad_tb20'>Default State
-          <div class='setters_gp_title'>Waiting</div>
+        <div class='box_def_state_setter pad_tb10'>
+          <div class='subsection_title pad_tb10'>
+            <div>Default State</div>
+            <div>Waiting</div>
+          </div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxDefstate='3'>
               Both
@@ -147,8 +151,11 @@
           </div> <!-- waiting_gp -->
         </div> <!-- box_def_state_setter -->
 
-        <div class='box_next_state_setter pad_tb20'>Next State
-          <div class='setters_gp_title'>Waiting</div>
+        <div class='box_next_state_setter pad_tb10'>
+          <div class='subsection_title pad_tb10'>
+            <div>Next State</div>
+            <div>Waiting</div>
+          </div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxNextstate='3'>
               Both
@@ -165,7 +172,11 @@
           </div> <!-- waiting_gp -->
         </div> <!-- box_next_state_setter -->
 
-        <div class='default_box_param_setter pad_tb20'>Box Default Values:&nbsp;
+        <div class='default_box_param_setter pad_tb10'>
+            <div class='subsection_title pad_tb10'>
+                <div>Box Default Values:</div>
+                <div>Waiting</div>
+              </div>
           <div data-blurb='gui16NodeName'>Node Name:&nbsp;<span></span><input type='text' ></div>
           <div data-blurb='gui16MyIndexInCBArray'>gui16MyIndexInCBArray:&nbsp;(calculated)</div>
           <div data-blurb='isInterface'>isInterface:&nbsp;
@@ -180,7 +191,7 @@
     </div> <!-- boxesContainer -->
 
     <div class='mesh_glob_setters marg_top'>
-      <div class='setters_gp_title'>Mesh Global Settings</div>
+      <div class='section_title bold  pad_tb10'>Mesh Global Settings</div>
       <ul>
         <li>gui32InterfaceNodeId (e.g. 2760139053): <span></span><input type='text' ></li>
         <li>gui16InterfaceNodeName (e.g. 201): <span></span><input type='text' ></li>
@@ -190,7 +201,7 @@
       </ul>
     </div> <!-- mesh_glob_setters -->
     <div class='wifi_setters marg_top'>
-      <div class='setters_gp_title'>Wifi Settings</div>
+      <div class='section_title bold  pad_tb10'>Wifi Settings</div>
       <div>
         <label class='wifi_labels' for='ssid'>
           SSID:
@@ -221,7 +232,7 @@
         </label>
         <input id='ui8WifiChannel' type='text' >
       </div>
-      <div class='setters_gp_title'>Save wifi settings</div>
+      <div class='subsection_title pad_tb10'>Save wifi settings</div>
       <div>
         <button id='saveWifiSettingsIF' class='button'>
           on IF
@@ -232,7 +243,7 @@
       </div>
     </div> <!-- wifi_setters -->
     <div class='if_ota_cmds marg_top'>
-      <div class='setters_gp_title'>Interface OTA Reboots</div>
+      <div class='section_title bold  pad_tb10'>Interface OTA Reboots</div>
       <div>
         <button class='gi8RequestedOTAReboots button' data-reboots='1'>
           OTA 1 reboot
