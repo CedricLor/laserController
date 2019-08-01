@@ -126,97 +126,7 @@
               <option value='1'>Swipe Right</option>
               <option value='1'>Get Deeper</option>
             </select>
-
-            <div class='sm-rel-descr hidden'>
-              <ul class='sm-rel-title'>Safety Mode: Waiting Both Light On, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Quick Blinks
-                <li>Special States: Manual --> Manual</li>
-                <li>Special States: Align --> Manual</li>
-                <li>Special States: IR Startup --> Manual</li>
-                <li>
-                  <ul>
-                    <li>TO: All: Waiting Both (master: All), Light On</li>
-                    <li>T1: One or two or all: IR High IR, Light Off --> the others: Mesh High Both, Light On</li>
-                    <li>TEnd: Waiting Both, Light On</li>
-                  </ul>
-                </li>
-              </ul>
-              <p/>
-              <ul class='sm-rel-title'>Swipe Right: Waiting Both Light Off Random Blinks, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Swipe Right
-                <li>Special States: Manual --> Manual</li>
-                <li>Special States: Align --> Manual</li>
-                <li>Special States: IR Startup --> Manual</li>
-                <li>
-                  <ul>
-                    <li>T0: All: Waiting Both (master: All), Light Off, shortly blinking now and then</li>
-                    <li>T1: One or two or all: IR High IR, Light Off --> the others: Mesh High Both, Swipe Right</li>
-                    <li>TEnd: Waiting Both, Light Off</li>
-                  </ul>
-                </li>
-              </ul>
-              <p/>
-              <ul class='sm-rel-title'>Get Deeper: Waiting Both Light Off Random Blinks, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Swipe Right
-                <li>Special States: Manual --> Manual</li>
-                <li>Special States: Align --> Manual</li>
-                <li>Special States: IR Startup --> Manual</li>
-                <li>
-                  <ul>
-                    <li>T0: Event: no one is coming.
-                      <ul>
-                        <li>Master: Box 1: Waiting IR, Light On</li>
-                        <li>Slave: Box 2: Waiting Mesh(from Master), light Off, onMesh: Waiting IR, Light On, Becomes Master</li>
-                        <li>Slaves: Other Boxes: Waiting Mesh(from Master), light Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, etc.</li>
-                      </ul>
-                    </li>
-                    <li>T1: Event: someone has come into Box 1 IR
-                      <ul>
-                        <li>Master: Box 2. Mesh High IR, Swipe Right</li>
-                        <li>Slave: Box 1: IR High Both, Light Off, onIr: keep off, onMesh(from B2): Join the others</li>
-                        <li>Slaves: The Others: Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>T2: Event: someone has come into Box 2 IR
-                      <ul>
-                        <li>Master: Box 3. Mesh High IR, Swipe Right</li>
-                        <li>Slave: Box 2: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others (including B1): Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>T3: Event: someone has come into Box 3 IR
-                      <ul>
-                        <li>Master: Box 4. Mesh High IR, Swipe Right</li>
-                        <li>Slave: Box 3: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others (including B1 and B2): Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>...</li>
-                    <li>T Deepest: Event: someone has come into deepest Box X IR
-                      <ul>
-                        <li>Master: Box X - 1. Mesh High IR, Swipe Left</li>
-                        <li>Slave: Box X: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others: Mesh High Mesh(from new master), Swipe Left then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>T Deepest: Event: someone has come into Box X-1 IR
-                      <ul>
-                        <li>Master: Box X-2. Mesh High IR, Swipe Left</li>
-                        <li>Slave: Box X-1: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others: Mesh High Mesh(from new master), Swipe Left then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>...</li>
-                    <li>T End: no one is in the IR anymore.
-                      <ul>
-                        <li>Master: Box 1: Waiting IR, Light On</li>
-                        <li>Slave: Box 2: Waiting Mesh(from Master), light Off, onMesh: Waiting IR, Light On, Becomes Master</li>
-                        <li>Slaves: Other Boxes: Waiting Mesh(from Master), light Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, etc.</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
           </div>
-
         </div> <!-- slave_master_box_setter -->
 
         <div class='box_def_state_setter'>Default State
@@ -267,7 +177,7 @@
 
         </div> <!-- default_box_param_setter -->
     </div> <!-- box_wrapper -->
-  </div> <!-- boxes_state_setter -->
+    </div> <!-- boxes_state_setter -->
 
   <div class='network_state_setter'>Network State Setters
     %NETWORK_SETTER%
