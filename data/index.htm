@@ -9,13 +9,13 @@
     <link rel='stylesheet' type='text/css' href='index.css' />
     </head>
   </head>
-  <body>
+  <body class='center_al'>
     <h1>
       <span id='nodeName'>%UI8_NODE_NAME%</span> - Station IP: <span id='stationIp'>%STATION_IP%</span>
     </h1>
-    <div class='boxes_state_setter' id="infoBox"></div>
-    <div class='boxes_state_setter'>
-      <div class='setters_gp_title'>Net Commands</div>
+    <div id='infoBox' class='marg_top'></div>
+    <div class='netwide_cmds marg_top'>
+      <div class='setters_gp_title'>Group Commands</div>
       <div class='setters_group net_command_gp'>
         <button class='button' id='rebootLBs'>Reboot LBs</button><button class='button' id='rebootIF'>Reboot IF</button><button class='button' id='rebootAll'>Reboot All</button>
       </div>
@@ -23,10 +23,10 @@
         <button class='button' id='saveLBs'>Save LBs</button><button class='button' id='saveIF'>Save IF</button><button class='button' id='saveAll'>Save All</button>
       </div>
     </div>
-    <div id='boxesContainer' class='boxes_state_setter'>
+    <div id='boxesContainer' class='marg_top'>
       <div id='boxTemplate' class='box_wrapper hidden' data-lb='0'>
 
-        <div class='box_state_setter'><span class='box_num_title'>Laser Box <span class='box_num'>0</span></span>
+        <div class='box_state_setter pad_tb20'><span class='bold'>Laser Box <span class='box_num'>0</span></span>
           <div class='setters_gp_title'>Commands</div>
           <div class='setters_group command_gp'>
             <button id='rebootBox' class='button'>
@@ -39,10 +39,10 @@
               Save
             </button>&nbsp;
             <button id='OTA1reboot' class='button gi8RequestedOTAReboots' data-reboots='1' >
-              OTA 1 Reboot
+              OTA 1
             </button>&nbsp;
             <button id='OTA2reboots' class='button gi8RequestedOTAReboots' data-reboots='1'>
-              OTA 2 Reboots
+              OTA 2
             </button>&nbsp;
           </div> <!-- special_gp -->
           <div class='setters_gp_title'>Special</div>
@@ -105,7 +105,7 @@
         </div> <!-- box_state_setter -->
 
         <p>
-        <div class='slave_master_box_setter'>Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
+        <div class='slave_master_box_setter pad_tb20'>Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
           <select class='master_select'>
             <option value='1'>201</option>
             <option value='2'>202</option>
@@ -129,7 +129,7 @@
           </div>
         </div> <!-- slave_master_box_setter -->
 
-        <div class='box_def_state_setter'>Default State
+        <div class='box_def_state_setter pad_tb20'>Default State
           <div class='setters_gp_title'>Waiting</div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxDefstate='3'>
@@ -147,7 +147,7 @@
           </div> <!-- waiting_gp -->
         </div> <!-- box_def_state_setter -->
 
-        <div class='box_next_state_setter'>Next State
+        <div class='box_next_state_setter pad_tb20'>Next State
           <div class='setters_gp_title'>Waiting</div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxNextstate='3'>
@@ -165,7 +165,7 @@
           </div> <!-- waiting_gp -->
         </div> <!-- box_next_state_setter -->
 
-        <div class='default_box_param_setter'>Box Default Values:&nbsp;
+        <div class='default_box_param_setter pad_tb20'>Box Default Values:&nbsp;
           <div data-blurb='gui16NodeName'>Node Name:&nbsp;<span></span><input type='text' ></div>
           <div data-blurb='gui16MyIndexInCBArray'>gui16MyIndexInCBArray:&nbsp;(calculated)</div>
           <div data-blurb='isInterface'>isInterface:&nbsp;
@@ -176,72 +176,73 @@
           </div>
 
         </div> <!-- default_box_param_setter -->
-    </div> <!-- box_wrapper -->
-    </div> <!-- boxes_state_setter -->
+      </div> <!-- box_wrapper -->
+    </div> <!-- boxesContainer -->
 
-  <div class='network_state_setter'>Network State Setters
-    %NETWORK_SETTER%
-    <ul>
-      <li>gui32InterfaceNodeId (e.g. 2760139053): <span></span><input type='text' ></li>
-      <li>gui16InterfaceNodeName (e.g. 201): <span></span><input type='text' ></li>
-      <li>gui16ControllerBoxPrefix: <span></span><input type='text' ></li>
-      <li>gui16InterfaceIndexInCBArray: <span></span></li>
-      <li>gui16BoxesCount: <span></span><input type='text' ></li>
-    </ul>
-  </div> <!-- network_state_setter -->
-  <div class='setters_gp_title'>Wifi Settings</div>
-  <div class='network_state_setter'>
-    <div>
-      <label class='wifi_labels' for='ssid'>
-        SSID:
-      </label>
-      <input id='ssid' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='pass'>
-        Pass:
-      </label>
-      <input id='pass' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='gatewayIP'>
-        Gateway IP:
-      </label>
-      <input id='gatewayIP' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='ui16GatewayPort'>
-        Gateway Port:
-      </label>
-      <input id='ui16GatewayPort' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='ui8WifiChannel'>
-        Wifi Channel:
-      </label>
-      <input id='ui8WifiChannel' type='text' >
-    </div>
-    <div>
-      <button id='saveWifiSettingsIF' class='button'>
-        Save WiFi / IF
-      </button>
-      <button id='saveWifiSettingsAll' class='button'>
-        Save WiFi / All
-      </button>
-    </div>
-  </div>
-  <div class='setters_gp_title'>OTA Reboots</div>
-  <div class='network_state_setter'>
-    <div>
-      <button class='gi8RequestedOTAReboots button' data-reboots='1'>
-        OTA 1 reboot
-      </button>
-      <button class='gi8RequestedOTAReboots button' data-reboots='2'>
-        OTA 2 reboots
-      </button>
-    </div>
-  </div>
-  <script src='index.js'></script>
+    <div class='mesh_glob_setters marg_top'>
+      <div class='setters_gp_title'>Mesh Global Settings</div>
+      <ul>
+        <li>gui32InterfaceNodeId (e.g. 2760139053): <span></span><input type='text' ></li>
+        <li>gui16InterfaceNodeName (e.g. 201): <span></span><input type='text' ></li>
+        <li>gui16ControllerBoxPrefix: <span></span><input type='text' ></li>
+        <li>gui16InterfaceIndexInCBArray: <span></span></li>
+        <li>gui16BoxesCount: <span></span><input type='text' ></li>
+      </ul>
+    </div> <!-- mesh_glob_setters -->
+    <div class='wifi_setters marg_top'>
+      <div class='setters_gp_title'>Wifi Settings</div>
+      <div>
+        <label class='wifi_labels' for='ssid'>
+          SSID:
+        </label>
+        <input id='ssid' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='pass'>
+          Pass:
+        </label>
+        <input id='pass' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='gatewayIP'>
+          Gateway IP:
+        </label>
+        <input id='gatewayIP' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='ui16GatewayPort'>
+          Gateway Port:
+        </label>
+        <input id='ui16GatewayPort' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='ui8WifiChannel'>
+          Wifi Channel:
+        </label>
+        <input id='ui8WifiChannel' type='text' >
+      </div>
+      <div class='setters_gp_title'>Save wifi settings</div>
+      <div>
+        <button id='saveWifiSettingsIF' class='button'>
+          on IF
+        </button>
+        <button id='saveWifiSettingsAll' class='button'>
+          on All
+        </button>
+      </div>
+    </div> <!-- wifi_setters -->
+    <div class='if_ota_cmds marg_top'>
+      <div class='setters_gp_title'>Interface OTA Reboots</div>
+      <div>
+        <button class='gi8RequestedOTAReboots button' data-reboots='1'>
+          OTA 1 reboot
+        </button>
+        <button class='gi8RequestedOTAReboots button' data-reboots='2'>
+          OTA 2 reboots
+        </button>
+      </div>
+    </div> <!-- if_ota_cmds -->
+    <script src='index.js'></script>
 
   </body>
 </html>
