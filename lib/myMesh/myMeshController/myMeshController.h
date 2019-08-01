@@ -26,6 +26,7 @@
 #define myMeshController_h
 
 #include "Arduino.h"
+#include <mySavedPrefs.h>
 
 class myMeshController
 {

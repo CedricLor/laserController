@@ -1,25 +1,18 @@
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
 #include <ESPAsyncWebServer.h>
-#include <painlessMesh.h>
 #include <IPAddress.h>
-#include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
 #include <global.cpp>
-
-#include "../lib/secret.h"
-
-painlessMesh laserControllerMesh;
-Scheduler    userScheduler;
+#include <secret.h>
 
 #include <../lib/ControlerBox.cpp>
 
-#include "../lib/mySavedPrefs.cpp"
-
-#include <../lib/myOta/myota.cpp>
-
-#include "../lib/myMesh.cpp"
+#include <mySavedPrefs.h>
+#include <myOta.h>
+#include <myMesh.h>
+#include <../lib/myMesh/myMeshViews/myMeshViews.h>
 
 #include "../lib/boxState.cpp"
 

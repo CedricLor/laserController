@@ -26,8 +26,12 @@
 #define myMesh_h
 
 #include "Arduino.h"
-#include "./myMesh/myMeshViews/myMeshViews.cpp"
-#include "./myMesh/myMeshController/myMeshController.cpp"
+#include <ESPmDNS.h>
+#include <global.h>
+#include <secret.h>
+#include "../ControlerBox.h"
+#include "./myMeshViews/myMeshViews.h"
+#include "./myMeshController/myMeshController.h"
 
 class myMesh
 {

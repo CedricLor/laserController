@@ -7,6 +7,7 @@
 #define global_h
 
 #include "Arduino.h"
+#include <painlessMesh.h>
 
 
 extern const short PIN_COUNT;                                                     // BOX BY BOX
@@ -14,6 +15,9 @@ extern short relayPins[];  // an array of pin numbers to which relays are attach
 
 extern const bool MY_DEBUG;
 extern const bool MY_DG_LASER;
+extern const bool MY_DG_WS;
+extern const bool MY_DG_WEB;
+extern const bool MY_DG_MESH;
 
 extern const short VERSION;
 
@@ -51,4 +55,6 @@ extern char gcHostnamePrefix[];
 
 extern uint16_t uiMeshSize;
 
+extern painlessMesh laserControllerMesh;
+extern Scheduler    userScheduler;
 #endif

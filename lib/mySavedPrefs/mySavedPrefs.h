@@ -7,6 +7,10 @@
 #define mySavedPrefs_h
 
 #include "Arduino.h"
+#include <Preferences.h>      // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
+#include <global.h>
+#include <secret.h>
+#include "../ControlerBox.h"
 
 class mySavedPrefs
 {
