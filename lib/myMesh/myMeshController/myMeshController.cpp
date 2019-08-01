@@ -116,6 +116,7 @@ void myMeshController::_changeBox(JsonObject& _obj, uint32_t _ui32SenderNodeId) 
     return;
   }
 }
+// END OF THE CLASS CONSTRUCTOR
 
 
 
