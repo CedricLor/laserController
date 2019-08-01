@@ -109,6 +109,7 @@ void loop() {
     ArduinoOTA.handle();
     return;
   }
+  
   userScheduler.execute();   // it will run mesh scheduler as well
   laserControllerMesh.update();
   pirController::pirCntrl();
