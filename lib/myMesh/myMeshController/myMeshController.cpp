@@ -467,7 +467,7 @@ void myMeshController::_updateSenderDefaultState(uint16_t _ui16BoxIndex, JsonObj
 // HIGH, HIGH = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always off  (index 2): When the master box is on, turn me off AND when the master box is off, turn me off
 // LOW, LOW = reaction if master is on = HIGH; reaction if master is off = HIGH; // Always on  (index 3): When the master box is on, turn me off AND when the master box is off, turn me off
 // !!!!!! IMPORTANT: If changing the structure of B_SLAVE_ON_OFF_REACTIONS above, update _slaveReaction
-// in class myWebServerViews and slaveReactionHtml in global.cpp
+// in class myWebViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // void myMeshController::_manualSwitch(JsonDocument& _obj) {

@@ -1,5 +1,4 @@
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
-#include <ESPAsyncWebServer.h>
 #include <IPAddress.h>
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
@@ -18,7 +17,7 @@
 
 #include <pirController.h>
 
-#include "../lib/myWebServerBase.cpp"
+#include <myWebServerBase.h>
 
 
 

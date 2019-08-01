@@ -61,7 +61,7 @@ const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my cust
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
-const uint8_t UI8_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
+const uint8_t UI8_MASTER_NODE_PREFIX = 200;                 // Used in MaserSlaveBox class and myWebViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
 const uint8_t UI8_CONTROLLER_BOX_PREFIX = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 uint16_t gui16ControllerBoxPrefix = UI8_CONTROLLER_BOX_PREFIX;
 uint16_t gui16MyIndexInCBArray = gui16NodeName - gui16ControllerBoxPrefix;
