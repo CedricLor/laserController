@@ -19,7 +19,7 @@
 // #include <step.h>
 // #include "../lib/step/step.cpp"
 
-#include "../lib/pirController.cpp"
+#include <pirController.h>
 
 #include "../lib/myWebServerBase.cpp"
 
