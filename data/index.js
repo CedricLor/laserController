@@ -1442,10 +1442,10 @@ function setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber) {
   _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
   _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
   _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
-  // _dupRow.querySelector("#1OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
-  _dupRow.querySelector("#1OTAreboot").id = "1OTAreboot" + _laserBoxIndexNumber;     // set a unique id
-  // _dupRow.querySelector("#2OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
-  _dupRow.querySelector("#2OTAreboot").id = "2OTAreboot" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#OTA1reboot").addEventListener('click', onclickOTABoxButton, false);
+  _dupRow.querySelector("#OTA1reboot").id = "OTA1reboot" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#OTA2reboots").addEventListener('click', onclickOTABoxButton, false);
+  _dupRow.querySelector("#OTA2reboots").id = "OTA2reboots" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 
