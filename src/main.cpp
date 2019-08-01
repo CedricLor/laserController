@@ -6,12 +6,11 @@
 #include <global.h>
 #include <secret.h>
 
-#include <../lib/ControlerBox.cpp>
+#include <ControlerBox.h>
 
 #include <mySavedPrefs.h>
 #include <myOta.h>
 #include <myMesh.h>
-#include <../lib/myMesh/myMeshViews/myMeshViews.h>
 
 #include <boxState.h>
 
