@@ -957,16 +957,9 @@ function updateGlobalInformation(_data) {
   document.getElementById('gatewayIP').value = _data.gatewayIP;
   document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
   document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
-  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);
-  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);
-  document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
-    function(_OTARebootButton){
-      _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);
-    }
-  );
+  setGlobalInfoEventListener();
   console.log("updateGlobalInformation() ending");
 }
-
 
 
 
@@ -1158,34 +1151,13 @@ function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
   _dupRow.classList.remove('hidden');
   console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (_laserBoxIndexNumber + 200));
   _dupRow.querySelector("span.box_num").textContent = _laserBoxIndexNumber + 200;
-
+  _dupRow = setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber);
   console.log("_newBoxRowSetProperties: _dupRow: setting the reboot and save buttons for this box");
-  _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
-  _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
-  _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', onclickRebootAndSaveBoxButton, false);
-  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
-  _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
-  _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
-  // _dupRow.querySelector("#1OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
-  _dupRow.querySelector("#1OTAreboot").id = "1OTAreboot" + _laserBoxIndexNumber;     // set a unique id
-  // _dupRow.querySelector("#2OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
-  _dupRow.querySelector("#2OTAreboot").id = "2OTAreboot" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 
 
 
-
-function _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
-  console.log("_setEVentListenersOnGroupOfButtons: about to set event listeners on buttons");
-  console.log("_setEVentListenersOnGroupOfButtons: _buttonGroupSelector = " + _buttonGroupSelector);
-  var _buttonList = boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector);
-  console.log("_setEVentListenersOnGroupOfButtons: _buttonList selected");
-  console.log(_buttonList);
-  console.log("_setEVentListenersOnGroupOfButtons: about to call setButtonsGroupEvents");
-  setButtonsGroupEvents(_buttonList, _eventHandler);
-  return _dupRow;
-}
 
 
 
@@ -1279,8 +1251,8 @@ function addNewRowForNewBox(data) {
     _dupRow = _setCurrentStateButton(_dupRow, "boxstate", data.boxState);
 
     // set event listener on current state buttons
-    // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-    _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
+    // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+    _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
 
     // indicate masterbox number
     _dupRow = _indicateMasterBoxNumber(data.masterbox, _dupRow);
@@ -1294,8 +1266,8 @@ function addNewRowForNewBox(data) {
     _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
 
     // set event listener on default state buttons
-    // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-    _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
+    // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+    _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
 
     // render in DOM
     _dupRow = _renderRowInDom(_dupRow);
@@ -1481,6 +1453,26 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 // EVENT LISTENERS
+function setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber) {
+  _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
+  _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', onclickRebootAndSaveBoxButton, false);
+  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
+  _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#1OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
+  _dupRow.querySelector("#1OTAreboot").id = "1OTAreboot" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#2OTAreboot").addEventListener('click', onclick1OTABoxButton, false);
+  _dupRow.querySelector("#2OTAreboot").id = "2OTAreboot" + _laserBoxIndexNumber;     // set a unique id
+  return _dupRow;
+}
+
+function setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
+  console.log("setEVentListenersOnGroupOfButtons: starting");
+  setButtonsGroupEvents(boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector), _eventHandler);
+  return _dupRow;
+}
+
 function setButtonsGroupEvents(buttonList, eventHandler) {
   // iterate over each buttons and add an eventListener on click
   for (var i = 0; i < buttonList.length; i++) {
@@ -1499,7 +1491,15 @@ function setGroupEvents() {
   document.getElementById("saveLBs").addEventListener('click', onclickSaveLBsButton, false);
   document.getElementById("saveIF").addEventListener('click', onclickSaveIFButton, false);
   document.getElementById("saveAll").addEventListener('click', onclickSaveAllButton, false);
+  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);
+  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);
+  document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
+    function(_OTARebootButton){
+      _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);
+    }
+  );  
 }
+
 // END EVENT LISTENERS
 
 
