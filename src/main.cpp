@@ -4,7 +4,7 @@
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
-#include <global.cpp>
+#include <global.h>
 #include <secret.h>
 
 #include <../lib/ControlerBox.cpp>
@@ -14,10 +14,7 @@
 #include <myMesh.h>
 #include <../lib/myMesh/myMeshViews/myMeshViews.h>
 
-#include "../lib/boxState.cpp"
-
-// #include <step.h>
-// #include "../lib/step/step.cpp"
+#include <boxState.h>
 
 #include <pirController.h>
 
@@ -34,8 +31,8 @@ void enableTasks();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
-ControlerBox ControlerBoxes[UI8_BOXES_COUNT];
-
+// ControlerBox ControlerBoxes[UI8_BOXES_COUNT];
+ControlerBox ControlerBoxes[10];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {

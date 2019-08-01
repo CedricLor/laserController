@@ -53,7 +53,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
   // create a StaticJsonDocument entitled _doc
   const int _iCapacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<_iCapacity> _doc;
+  StaticJsonDocument<1000> _doc;
   if (MY_DG_WS) {
     Serial.print("myWSReceiver::myWSReceiver(): jsonDocument created\n");
   }

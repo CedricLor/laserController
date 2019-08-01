@@ -34,8 +34,8 @@
 #define tone_h
 
 #include "Arduino.h"
-#include "../laserPin/laserPin.h"
-#include "../laserPin/laserPin.cpp"
+#include <global.h>
+#include <laserPin.h>
 
 class tone
 {
@@ -51,7 +51,7 @@ class tone
     static const short int _tone_count;
     static const short int _char_count_in_name;
 
-    void _initTone(const char cName[], const bool iLaserPinsStatus[PIN_COUNT]);
+    void _initTone(const char cName[], const bool iLaserPinsStatus[]);
 
     char _cName[15];  // array of character to hold the name of each sequences
     bool _bLaserPinStatus[4];  // array containing the state of each laser at each tempo
