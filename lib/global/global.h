@@ -10,14 +10,17 @@
 #include <painlessMesh.h>
 
 
-extern const short PIN_COUNT;                                                     // BOX BY BOX
+extern const uint16_t PIN_COUNT;
 extern short relayPins[];  // an array of pin numbers to which relays are attached// BOX BY BOX
+extern const short BOXES_COUNT;
+extern const uint16_t MESH_REQUEST_CAPACITY;
 
-extern const bool MY_DEBUG;
-extern const bool MY_DG_LASER;
-extern const bool MY_DG_WS;
-extern const bool MY_DG_WEB;
-extern const bool MY_DG_MESH;
+
+extern  bool MY_DEBUG;
+extern  bool MY_DG_LASER;
+extern  bool MY_DG_WS;
+extern  bool MY_DG_WEB;
+extern  bool MY_DG_MESH;
 
 extern const short VERSION;
 
@@ -29,8 +32,6 @@ extern bool isInterface;
 extern uint32_t gui32InterfaceNodeId;
 extern uint16_t gui16InterfaceIndexInCBArray;
 
-extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
-
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern uint16_t gui16ControllerBoxPrefix;
@@ -41,7 +42,6 @@ extern uint16_t gui16InterfaceNodeName;
 
 extern const char* slaveReactionHtml[4];
 
-extern const uint8_t UI8_BOXES_COUNT;                                                   // NETWORK BY NETWORK
 extern uint16_t gui16BoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;

@@ -43,8 +43,7 @@ tone::tone() {
 
 }
 
-// void tone::_initTone(const char cName[_char_count_in_name], const bool bLaserPinsStatus[PIN_COUNT]){
-void tone::_initTone(const char cName[_char_count_in_name], const bool bLaserPinsStatus[4]){
+void tone::_initTone(const char cName[_char_count_in_name], const bool *bLaserPinsStatus){
   // Serial.println("void tone::initTone(). Starting.");
   strcpy(_cName, cName);
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
