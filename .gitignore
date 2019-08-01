@@ -12,3 +12,4 @@ lib/secret.h
 .pio
 crashes_and_spins
 .vscode
+node_modules
