@@ -31,7 +31,8 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-
+const char* myMesh::_ap_ssid     = "ESP32-Access-Point";
+const char* myMesh::_ap_password = "123456789";
 
 myMesh::myMesh()
 {
@@ -45,11 +46,36 @@ void myMesh::meshSetup() {
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE);
   }
 
-  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
+  if (interfaceInAP) {
+    laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
+  } else {
+    laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
+  }
 
   if (isInterface == true) {
-    laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
+  // Two scenarii:
+    if (interfaceInAP) {
+      // A. you can use the interface as STATION scanning of other 
+      // mesh nodes. Web users have to connect on the AP.
+      if(!WiFi.softAPConfig(IPAddress(192, 168, 5, 1), IPAddress(192, 168, 5, 1), IPAddress(255, 255, 255, 0))){
+        Serial.println("AP Config Failed");
+      }
+      if (WiFi.softAP(_ap_ssid, _ap_password, 
+                      ui8WifiChannel/*, false /* int ssid_hidden *\/,*/ 
+                      /*10 /* int max_connection */)){
+        Serial.println("");
+        IPAddress myIP = WiFi.softAPIP();
+        Serial.println("Network " + String(_ap_ssid) + " running");
+        Serial.print("AP IP address: ");Serial.println(myIP);
+      } else {
+        Serial.println("Starting AP failed.");
+      }
+    } else {
+      // B. you can use the interface as an AP for the other mesh nodes. 
+      // Web users have to connect on the STATION.
+      laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
     // laserControllerMesh.stationManual(ssid, pass);
+    }
   }
 
 
@@ -74,8 +100,12 @@ void myMesh::meshSetup() {
   MDNS.addService("arduino", "tcp", 3232);
 
   if (isInterface == true) {
-    // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
-    laserControllerMesh.setRoot(true);
+      if (interfaceInAP) {
+        laserControllerMesh.setRoot(false);
+      } else {
+        // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
+        laserControllerMesh.setRoot(true);
+      }
   }
   // This and all other mesh member should ideally know that the mesh contains a root
   laserControllerMesh.setContainsRoot(true);

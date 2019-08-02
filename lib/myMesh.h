@@ -26,6 +26,9 @@
 #define myMesh_h
 
 #include "Arduino.h"
+#include <ESPmDNS.h>
+#include <global.h>
+#include <secret.h>
 #include "./myMesh/myMeshViews/myMeshViews.cpp"
 #include "./myMesh/myMeshController/myMeshController.cpp"
 
@@ -37,6 +40,9 @@ class myMesh
     static void meshSetup();
 
   private:
+
+    static const char* _ap_ssid;
+    static const char* _ap_password;
 
     static void receivedCallback( uint32_t from, String &msg);
 
