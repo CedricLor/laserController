@@ -8,7 +8,7 @@
 
 #include <global.cpp>
 
-#include "../lib/secret.h"
+#include <secret.h>
 
 painlessMesh laserControllerMesh;
 Scheduler    userScheduler;
