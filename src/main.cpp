@@ -7,7 +7,6 @@
 #define FORMAT_SPIFFS_IF_FAILED true
 
 #include <global.cpp>
-
 #include <secret.h>
 
 painlessMesh laserControllerMesh;
@@ -15,16 +14,13 @@ Scheduler    userScheduler;
 
 #include <../lib/ControlerBox.cpp>
 
-#include "../lib/mySavedPrefs.cpp"
+#include "../lib/mySavedPrefs/mySavedPrefs.cpp"
 
 #include <../lib/myOta/myota.cpp>
 
 #include "../lib/myMesh.cpp"
 
 #include "../lib/boxState.cpp"
-
-// #include <step.h>
-// #include "../lib/step/step.cpp"
 
 #include "../lib/pirController.cpp"
 
