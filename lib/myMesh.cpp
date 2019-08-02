@@ -190,17 +190,26 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
 
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %u\n",nodeId);
+    Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %u\n", nodeId);
     Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection %s\n",laserControllerMesh.subConnectionJson().c_str());
     Serial.println("--------------------- DROPPED CONNECTION --------------------------");
   }
 
+  // check the mesh size
+  const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
+  // find the dropper in the ControlerBox
+  uint16_t _ui16droppedNodeName = ControlerBox::findByNodeId(nodeId);
+
   // if the dropped node is my ControlerBoxes array, send a notification to the mesh
   // and delete it from the box
-  uint16_t _ui16droppedNodeName = ControlerBox::findByNodeId(nodeId);
   if (_ui16droppedNodeName != 254) {
-    myMeshViews __myMeshViews;
-    __myMeshViews.droppedNodeNotif(_ui16droppedNodeName);
+    // 1. Send a notification to the mesh (if I am not alone)
+    if (_uiNewMeshSize > 0) {
+      myMeshViews __myMeshViews;
+      __myMeshViews.droppedNodeNotif(_ui16droppedNodeName);
+    }
+
+    // 2. Delete the dropper from the ControlerBoxes
     if (MY_DG_MESH) {
       Serial.printf("myMesh::droppedConnectionCallback(): Broadcasted a message: %s\n",laserControllerMesh.subConnectionJson().c_str());
       Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %i ControlerBoxes.\n", _ui16droppedNodeName);
@@ -210,10 +219,12 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
       Serial.println("myMesh::droppedConnectionCallback(): Dropper deleted.");
     }
   }
+
+
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::droppedConnectionCallback(): Saving the new mesh size: %u", laserControllerMesh.getNodeList().size());
+    Serial.printf("myMesh::droppedConnectionCallback(): New mesh size = %u. Saving it.\n", _uiNewMeshSize);
   }
-  uiMeshSize = laserControllerMesh.getNodeList().size();
+  uiMeshSize = _uiNewMeshSize;
   if (MY_DG_MESH) {
     Serial.println("myMesh::changedConnectionCallback(): Ending.");
   }
