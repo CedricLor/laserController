@@ -14,9 +14,9 @@ Scheduler    userScheduler;
 
 #include <../lib/ControlerBox.cpp>
 
-#include "../lib/mySavedPrefs/mySavedPrefs.cpp"
+#include <mySavedPrefs.cpp>
 
-#include <../lib/myOta/myota.cpp>
+#include <myOta.cpp>
 
 #include "../lib/myMesh.cpp"
 

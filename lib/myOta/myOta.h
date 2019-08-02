@@ -10,8 +10,11 @@
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
+#include <SPIFFS.h>
 #include <global.h>
 #include <secret.h>
+#include <mySavedPrefs.h>
 
 class myOta
 {
