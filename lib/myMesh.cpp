@@ -149,6 +149,9 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
     Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
+    const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
+    Serial.printf("myMesh::droppedConnectionCallback(): previous uiMeshSize %u\n", uiMeshSize);
+    Serial.printf("myMesh::droppedConnectionCallback(): new _uiNewMeshSize %u\n", _uiNewMeshSize);
   }
 }
 
@@ -198,25 +201,27 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   }
 
   // check the mesh size
+  Serial.printf("myMesh::droppedConnectionCallback(): previous uiMeshSize %u\n", uiMeshSize);
   const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
+  Serial.printf("myMesh::droppedConnectionCallback(): new _uiNewMeshSize %u\n", _uiNewMeshSize);
   // find the dropper in the ControlerBox
-  uint16_t _ui16droppedNodeName = ControlerBox::findByNodeId(nodeId);
+  uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(nodeId);
 
   // if the dropped node is my ControlerBoxes array, send a notification to the mesh
   // and delete it from the box
-  if (_ui16droppedNodeName != 254) {
+  if (_ui16droppedIndex != 0) {
     // 1. Send a notification to the mesh (if I am not alone)
     if (_uiNewMeshSize > 1) {
       myMeshViews __myMeshViews;
-      __myMeshViews.droppedNodeNotif(_ui16droppedNodeName);
+      __myMeshViews.droppedNodeNotif(_ui16droppedIndex);
     }
 
     // 2. Delete the dropper from the ControlerBoxes
     if (MY_DG_MESH) {
       Serial.printf("myMesh::droppedConnectionCallback(): Broadcasted a message: %s\n",laserControllerMesh.subConnectionJson().c_str());
-      Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %u from ControlerBoxes[].\n", _ui16droppedNodeName);
+      Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %u from ControlerBoxes[].\n", _ui16droppedIndex);
     }
-    ControlerBox::deleteBox(_ui16droppedNodeName - gui16ControllerBoxPrefix);
+    ControlerBox::deleteBox(_ui16droppedIndex);
     if (MY_DG_MESH) {
       Serial.println("myMesh::droppedConnectionCallback(): Dropper deleted.");
     }
@@ -272,7 +277,9 @@ void myMesh::changedConnectionCallback() {
   }
 
   const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
-  
+  Serial.printf("myMesh::droppedConnectionCallback(): previous uiMeshSize %u\n", uiMeshSize);
+  Serial.printf("myMesh::droppedConnectionCallback(): new _uiNewMeshSize %u\n", _uiNewMeshSize);
+
   if (_uiNewMeshSize > uiMeshSize && _uiNewMeshSize > 0) {    
     // if the new node is not in my ControlerBoxes array, send it my status
     // if (ControlerBox::findByNodeId(nodeId) != 254) {

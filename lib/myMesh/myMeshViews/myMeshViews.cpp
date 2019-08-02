@@ -102,7 +102,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
-void myMeshViews::droppedNodeNotif(int16_t _droppedNodeIndexInCB) {
+void myMeshViews::droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
   const int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<_capacity> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();
@@ -110,7 +110,7 @@ void myMeshViews::droppedNodeNotif(int16_t _droppedNodeIndexInCB) {
   // load the JSON document with values
   _joMsg["action"] = "changeBox";
   _joMsg["key"] = "dropped";
-  _joMsg["lb"] = _droppedNodeIndexInCB;
+  _joMsg["lb"] = _ui16droppedNodeIndexInCB;
   _joMsg["st"] = 2;
 
   _sendMsg(_joMsg);

@@ -253,26 +253,43 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 
 void ControlerBox::deleteBox(uint16_t _ui16BoxIndex) {
-  Serial.println("ControlerBox::setBoxDefaultState(): Starting");
+  Serial.println("ControlerBox::deleteBox(): Starting");
+  Serial.printf("ControlerBox::deleteBox(): Received _ui16BoxIndex %u\n", _ui16BoxIndex);
   ControlerBoxes[_ui16BoxIndex].nodeId = 0;
+  Serial.println("ControlerBox::deleteBox(): NodeId reset to 0");
   ControlerBoxes[_ui16BoxIndex].APIP = {0,0,0,0};
+  Serial.println("ControlerBox::deleteBox(): APIP reset to 0.0.0.0");
   ControlerBoxes[_ui16BoxIndex].stationIP = {0,0,0,0};
+  Serial.println("ControlerBox::deleteBox(): stationIP reset to 0.0.0.0");
+  ControlerBoxes[_ui16BoxIndex].ui16NodeName = 1;
+  Serial.println("ControlerBox::deleteBox(): ui16NodeName reset to 1");
   ControlerBoxes[_ui16BoxIndex].ui16NodeName = 0;
+  Serial.println("ControlerBox::deleteBox(): ui16NodeName reset to 0");
 
   ControlerBoxes[_ui16BoxIndex].boxActiveState = -1;
+  Serial.println("ControlerBox::deleteBox(): boxActiveState reset to -1");
   ControlerBoxes[_ui16BoxIndex].uiBoxActiveStateStartTime = 0;
+  Serial.println("ControlerBox::deleteBox(): uiBoxActiveStateStartTime reset to 0");
   ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenSignaled = true;
+  Serial.println("ControlerBox::deleteBox(): uiBoxActiveStateStartTime reset to true");
   ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+  Serial.println("ControlerBox::deleteBox(): boxActiveStateHasBeenTakenIntoAccount reset to true");
 
   ControlerBoxes[_ui16BoxIndex].isNewBoxHasBeenSignaled = true;
+  Serial.println("ControlerBox::deleteBox(): isNewBoxHasBeenSignaled reset to true");
   ControlerBoxes[_ui16BoxIndex].boxDeletionHasBeenSignaled = false;
+  Serial.println("ControlerBox::deleteBox(): boxDeletionHasBeenSignaled set to FALSE");
 
   ControlerBoxes[_ui16BoxIndex].bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
+  Serial.printf("ControlerBox::deleteBox(): bMasterBoxName set to %u\n", UI8_DEFAULT_MASTER_NODE_NAME);
   ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
+  Serial.printf("ControlerBox::deleteBox(): bMasterBoxNameChangeHasBeenSignaled set to true\n");
   ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+  Serial.printf("ControlerBox::deleteBox(): boxActiveStateHasBeenTakenIntoAccount set to true\n");
 
   updateConnectedBoxCount(connectedBoxesCount - 1);
-  Serial.println("ControlerBox::setBoxDefaultState(): Ending");
+  Serial.printf("ControlerBox::deleteBox(): boxActiveStateHasBeenTakenIntoAccount set to true\n");
+  Serial.println("ControlerBox::deleteBox(): Ending");
 }
 
 
