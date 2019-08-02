@@ -27,8 +27,10 @@
 
 #include "Arduino.h"
 #include <ESPmDNS.h>
+#include <painlessMesh.h>
 #include <global.h>
 #include <secret.h>
+#include <../ControlerBox.h>
 #include "./myMesh/myMeshViews/myMeshViews.cpp"
 #include "./myMesh/myMeshController/myMeshController.cpp"
 
