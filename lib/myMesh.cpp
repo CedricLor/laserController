@@ -204,7 +204,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   // and delete it from the box
   if (_ui16droppedNodeName != 254) {
     // 1. Send a notification to the mesh (if I am not alone)
-    if (_uiNewMeshSize > 0) {
+    if (_uiNewMeshSize > 1) {
       myMeshViews __myMeshViews;
       __myMeshViews.droppedNodeNotif(_ui16droppedNodeName);
     }
