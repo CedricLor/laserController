@@ -57,5 +57,5 @@ extern char gcHostnamePrefix[];
 extern uint16_t uiMeshSize;
 
 extern painlessMesh laserControllerMesh;
-extern Scheduler    userScheduler;
+extern Scheduler    myTaskScheduler;
 #endif

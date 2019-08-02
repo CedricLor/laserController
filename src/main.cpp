@@ -98,7 +98,10 @@ void loop() {
     return;
   }
   
-  userScheduler.execute();   // it will run mesh scheduler as well
+  bool taskExecuted = myTaskScheduler.execute();   // it will run mesh scheduler as well
+  if (taskExecuted == false) {
+    Serial.println("PROUT");
+  }
   laserControllerMesh.update();
   pirController::pirCntrl();
 }

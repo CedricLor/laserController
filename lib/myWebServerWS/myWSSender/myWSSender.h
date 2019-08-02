@@ -47,6 +47,8 @@
 #include <global.h>
 #include <secret.h>
 #include <ControlerBox.h>
+#include "myWebServerWS.h"
+
 
 class myWSSender
 {

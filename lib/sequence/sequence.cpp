@@ -187,7 +187,7 @@ void sequence::initSequences() {
     Then the Task tPlaySequenceInLoop is enabled, until being disabled by the
     boxState::_tPlayBoxState onDisable callback.
 */
-Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
+Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &myTaskScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
 
 
 
@@ -214,7 +214,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
-  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). myTaskScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(myTaskScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
   //   Serial.println("sequence::_oetcbPlaySequenceInLoop(). ******");
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). _activeSequence: ");Serial.println(_activeSequence);
@@ -233,7 +233,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
-  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). myTaskScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(myTaskScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
   //   Serial.println("sequence::_oetcbPlaySequenceInLoop(). ******");
   // }
@@ -251,7 +251,7 @@ void sequence::_tcbPlaySequenceInLoop() {
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getIterations() = ");Serial.println(tPlaySequenceInLoop.getIterations());
-  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
+  //   Serial.print("sequence::_tcbPlaySequenceInLoop(). myTaskScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(myTaskScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
   //   Serial.println("sequence::_tcbPlaySequenceInLoop(). ******");
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence() with _activeSequence = ");Serial.println(_activeSequence);
@@ -306,7 +306,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
   Task _tPlaySequence.
   It plays a given sequence once.
 */
-Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
+Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &myTaskScheduler, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
 
 
 // onEnable callback for _tPlaySequence

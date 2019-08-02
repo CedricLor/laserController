@@ -135,4 +135,4 @@ char gcHostnamePrefix[10] = "LaserBox_";
 uint16_t uiMeshSize = 0;
 
 painlessMesh laserControllerMesh;
-Scheduler    userScheduler;
+Scheduler    myTaskScheduler;

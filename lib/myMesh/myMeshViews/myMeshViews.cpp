@@ -41,7 +41,7 @@
 
 
 // Tasks
-// Task myMeshViews::tSendBoxStateToNewBox((gui16MyIndexInCBArray * 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+// Task myMeshViews::tSendBoxStateToNewBox((gui16MyIndexInCBArray * 1000), 1, NULL, &myTaskScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 //
 // void myMeshViews::_odtcbSendBoxStateToNewBox() {
 //   for (uint8_t _ui8BoxIndex = 1; _ui8BoxIndex < gui16BoxesCount; _ui8BoxIndex++) {

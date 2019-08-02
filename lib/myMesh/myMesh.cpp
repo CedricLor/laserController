@@ -177,8 +177,8 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 
 
 // This Task broadcasts all other boxes this boxState, when there is a
-// changedConnection
-Task myMesh::_tSendStatusOnChangeConnection((3000 + gui16MyIndexInCBArray * 250), 1, &_tcbSendStatusOnChangeConnection, &userScheduler, false);
+// changedConnection ( (3000 + gui16MyIndexInCBArray * 250) )
+Task myMesh::_tSendStatusOnChangeConnection(0, 1, &_tcbSendStatusOnChangeConnection, &myTaskScheduler, false, &_oetcbSendStatusOnChangeConnection, &_odtcbSendStatusOnChangeConnection );
 
 void myMesh::_tcbSendStatusOnChangeConnection() {
   if (MY_DG_MESH) {
@@ -195,7 +195,20 @@ void myMesh::_tcbSendStatusOnChangeConnection() {
 }
 
 
+bool myMesh::_oetcbSendStatusOnChangeConnection() {
+    Serial.println("--------------------- CHANGED CONNECTION TASK ENABLE --------------------------");
+    Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
+    Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
+    Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
+    Serial.print("myMesh::_oetcbSendStatusOnChangeConnection(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
+    Serial.print("myMesh::_oetcbSendStatusOnChangeConnection(): time until next iteration: ");Serial.println(myTaskScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
+    return true;
+}
 
+void myMesh::_odtcbSendStatusOnChangeConnection() {
+    Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
+    Serial.printf("myMesh::_odtcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
+}
 
 
 void myMesh::changedConnectionCallback() {
@@ -216,7 +229,11 @@ void myMesh::changedConnectionCallback() {
       }
       _tSendStatusOnChangeConnection.enableDelayed();
       if (MY_DG_MESH) {
-        Serial.println("myMesh::changedConnectionCallback(): Enabled task _tSendStatusOnChangeConnection.");
+        Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
+        Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
+        Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
+        Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
+        Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(myTaskScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
       }
     // }
   }
@@ -237,6 +254,14 @@ void myMesh::changedConnectionCallback() {
 void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(), offset);
+  }
+  if (MY_DG_MESH) {
+    Serial.printf("myMesh::changedConnectionCallback(): DEBUG ------------------------------- \n");
+    Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
+    Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
+    Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
+    Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
+    Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(myTaskScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
   }
 }
 
