@@ -214,9 +214,9 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
     // 2. Delete the dropper from the ControlerBoxes
     if (MY_DG_MESH) {
       Serial.printf("myMesh::droppedConnectionCallback(): Broadcasted a message: %s\n",laserControllerMesh.subConnectionJson().c_str());
-      Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %i ControlerBoxes.\n", _ui16droppedNodeName);
+      Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %u from ControlerBoxes[].\n", _ui16droppedNodeName);
     }
-    ControlerBox::deleteBox(_ui16droppedNodeName);
+    ControlerBox::deleteBox(_ui16droppedNodeName - gui16ControllerBoxPrefix);
     if (MY_DG_MESH) {
       Serial.println("myMesh::droppedConnectionCallback(): Dropper deleted.");
     }

@@ -253,6 +253,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 
 void ControlerBox::deleteBox(uint16_t _ui16BoxIndex) {
+  Serial.println("ControlerBox::setBoxDefaultState(): Starting");
   ControlerBoxes[_ui16BoxIndex].nodeId = 0;
   ControlerBoxes[_ui16BoxIndex].APIP = {0,0,0,0};
   ControlerBoxes[_ui16BoxIndex].stationIP = {0,0,0,0};
@@ -271,6 +272,7 @@ void ControlerBox::deleteBox(uint16_t _ui16BoxIndex) {
   ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
 
   updateConnectedBoxCount(connectedBoxesCount - 1);
+  Serial.println("ControlerBox::setBoxDefaultState(): Ending");
 }
 
 
