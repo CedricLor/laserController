@@ -52,6 +52,8 @@ class myMesh
 
     static Task _tSendStatusOnChangeConnection;
     static void _tcbSendStatusOnChangeConnection();
+    static void _odtcbSendStatusOnChangeConnection();
+    static bool _oetcbSendStatusOnChangeConnection();
     static void changedConnectionCallback();
 
     static void nodeTimeAdjustedCallback(int32_t offset);
