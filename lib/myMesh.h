@@ -48,6 +48,10 @@ class myMesh
 
     static void newConnectionCallback(uint32_t nodeId);
 
+    static Task _tSendNotifOnDroppedConnection;
+    static void _tcbSendNotifOnDroppedConnection();
+    static void _odtcbSendNotifOnDroppedConnection();
+    static bool _oetcbSendNotifOnDroppedConnection();
     static void droppedConnectionCallback(uint32_t nodeId);
 
     static Task _tSendStatusOnChangeConnection;
