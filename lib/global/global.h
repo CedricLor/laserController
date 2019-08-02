@@ -7,6 +7,7 @@
 #define global_h
 
 #include "Arduino.h"
+#include <painlessMesh.h>
 
 
 extern const short PIN_COUNT;                                                     // BOX BY BOX
@@ -55,4 +56,5 @@ extern char gcHostnamePrefix[];
 
 extern uint16_t uiMeshSize;
 
+extern painlessMesh laserControllerMesh;
 #endif

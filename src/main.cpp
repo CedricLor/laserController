@@ -9,7 +9,6 @@
 #include <global.cpp>
 #include <secret.h>
 
-painlessMesh laserControllerMesh;
 Scheduler    userScheduler;
 
 #include <../lib/ControlerBox.cpp>
