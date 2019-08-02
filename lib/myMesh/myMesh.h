@@ -42,6 +42,9 @@ class myMesh
 
   private:
 
+    static const char* _ap_ssid;
+    static const char* _ap_password;
+
     static void receivedCallback( uint32_t from, String &msg);
 
     static void newConnectionCallback(uint32_t nodeId);

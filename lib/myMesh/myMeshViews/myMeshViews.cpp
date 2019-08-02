@@ -220,16 +220,17 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   // if (MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
   // }
-
+  String str;
+  str = output;
 
   // 4. Diffusion
   // if (MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
   // }
   if (destNodeId) {
-    laserControllerMesh.sendSingle(destNodeId, String(output));
+    laserControllerMesh.sendSingle(destNodeId, str);
   } else {
-    laserControllerMesh.sendBroadcast(String(output));
+    laserControllerMesh.sendBroadcast(str);
   }
 
 

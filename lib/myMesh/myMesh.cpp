@@ -33,6 +33,8 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
+const char* myMesh::_ap_ssid     = "ESP32-Access-Point";
+const char* myMesh::_ap_password = "123456789";
 
 
 myMesh::myMesh()
@@ -47,13 +49,38 @@ void myMesh::meshSetup() {
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE);
   }
 
-  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
-
-  if (isInterface == true) {
-    laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
-    // laserControllerMesh.stationManual(ssid, pass);
+  if (interfaceInAP) {
+    laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
+  } else {
+    laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
   }
 
+
+  if (isInterface == true) {
+    // Two scenarii:
+    if (interfaceInAP) {
+      // A. you can use the interface as STATION scanning of other 
+      // mesh nodes. Web users have to connect on the AP.
+      if(!WiFi.softAPConfig(IPAddress(192, 168, 5, 1), IPAddress(192, 168, 5, 1), IPAddress(255, 255, 255, 0))){
+        Serial.println("AP Config Failed");
+      }
+      if (WiFi.softAP(_ap_ssid, _ap_password, 
+                      ui8WifiChannel/*, false /* int ssid_hidden *\/,*/ 
+                      /*10 /* int max_connection */)){
+        Serial.println("");
+        IPAddress myIP = WiFi.softAPIP();
+        Serial.println("Network " + String(_ap_ssid) + " running");
+        Serial.print("AP IP address: ");Serial.println(myIP);
+      } else {
+        Serial.println("Starting AP failed.");
+      }
+    } else {
+        // B. you can use the interface as an AP for the other mesh nodes. 
+        // Web users have to connect on the STATION.
+        laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
+        // laserControllerMesh.stationManual(ssid, pass);
+    }
+  }
 
 
   snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
@@ -76,8 +103,12 @@ void myMesh::meshSetup() {
   MDNS.addService("arduino", "tcp", 3232);
 
   if (isInterface == true) {
+    if (interfaceInAP) {
     // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
-    laserControllerMesh.setRoot(true);
+      laserControllerMesh.setRoot(true);
+    } else {
+      laserControllerMesh.setRoot(false);
+    }
   }
   // This and all other mesh member should ideally know that the mesh contains a root
   laserControllerMesh.setContainsRoot(true);
@@ -107,16 +138,6 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
   }
   ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
   _decodeRequest(from, msg);
-}
-
-
-// This Task broadcasts all other boxes this boxState, when there is a
-// changedConnection
-Task myMesh::_tSendStatusOnChangeConnection((3000 + gui16MyIndexInCBArray * 250), 1, &_tcbSendStatusOnChangeConnection, &userScheduler, false);
-
-void myMesh::_tcbSendStatusOnChangeConnection() {
-  myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg();
 }
 
 
@@ -155,6 +176,19 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 
 
 
+// This Task broadcasts all other boxes this boxState, when there is a
+// changedConnection
+Task myMesh::_tSendStatusOnChangeConnection((3000 + gui16MyIndexInCBArray * 250), 1, &_tcbSendStatusOnChangeConnection, &userScheduler, false);
+
+void myMesh::_tcbSendStatusOnChangeConnection() {
+  myMeshViews __myMeshViews;
+  __myMeshViews.statusMsg();
+}
+
+
+
+
+
 void myMesh::changedConnectionCallback() {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
@@ -170,6 +204,7 @@ void myMesh::changedConnectionCallback() {
       if (MY_DG_MESH) {
         Serial.println("myMesh::changedConnectionCallback(): New member has joined.");
         Serial.println("myMesh::changedConnectionCallback(): About to send them my data.");
+        Serial.println(millis());
       }
       _tSendStatusOnChangeConnection.restartDelayed();
       if (MY_DG_MESH) {
