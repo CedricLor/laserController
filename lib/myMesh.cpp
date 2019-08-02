@@ -139,6 +139,20 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
 
 
 
+bool myMesh::_oetcbSendStatusOnChangeConnection() {
+    Serial.println("--------------------- CHANGED CONNECTION TASK ENABLE --------------------------");
+    Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
+    Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
+    Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
+    Serial.print("myMesh::_oetcbSendStatusOnChangeConnection(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
+    Serial.print("myMesh::_oetcbSendStatusOnChangeConnection(): time until next iteration: ");Serial.println(myTaskScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
+    return true;
+}
+
+void myMesh::_odtcbSendStatusOnChangeConnection() {
+    Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
+    Serial.printf("myMesh::_odtcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
+}
 
 
 
