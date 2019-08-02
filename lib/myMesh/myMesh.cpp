@@ -181,8 +181,17 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 Task myMesh::_tSendStatusOnChangeConnection((3000 + gui16MyIndexInCBArray * 250), 1, &_tcbSendStatusOnChangeConnection, &userScheduler, false);
 
 void myMesh::_tcbSendStatusOnChangeConnection() {
+  if (MY_DG_MESH) {
+    Serial.println("--------------------- CHANGED CONNECTION TASK --------------------------");
+    Serial.printf("myMesh::_tcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
+  }
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg();
+  if (MY_DG_MESH) {
+    Serial.print("myMesh::_tcbSendStatusOnChangeConnection(): \n");
+    Serial.println("--------------------- CHANGED CONNECTION TASK --------------------------");
+    Serial.println("myMesh::_tcbSendStatusOnChangeConnection(): Checking whether new comer or dropper.");
+  }
 }
 
 
@@ -203,17 +212,22 @@ void myMesh::changedConnectionCallback() {
     // if (ControlerBox::findByNodeId(nodeId) != 254) {
       if (MY_DG_MESH) {
         Serial.println("myMesh::changedConnectionCallback(): New member has joined.");
-        Serial.println("myMesh::changedConnectionCallback(): About to send them my data.");
-        Serial.println(millis());
+        Serial.printf("myMesh::changedConnectionCallback(): -> _tSendStatusOnChangeConnection. Time: %lu\n", millis());
       }
-      _tSendStatusOnChangeConnection.restartDelayed();
+      _tSendStatusOnChangeConnection.enableDelayed();
       if (MY_DG_MESH) {
         Serial.println("myMesh::changedConnectionCallback(): Enabled task _tSendStatusOnChangeConnection.");
       }
     // }
   }
 
+  if (MY_DG_MESH) {
+    Serial.printf("myMesh::changedConnectionCallback(): Saving the new mesh size: %u\n", _uiNewMeshSize);
+  }
   uiMeshSize = _uiNewMeshSize;
+  if (MY_DG_MESH) {
+    Serial.println("myMesh::changedConnectionCallback(): Ending.");
+  }
 }
 
 
