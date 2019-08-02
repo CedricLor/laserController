@@ -9,6 +9,7 @@ data/.DS_Store
 .clang_complete
 .gcc-flags.json
 lib/secret.h
+lib/secret
 .pio
 crashes_and_spins
 .vscode

@@ -14,6 +14,9 @@ extern short relayPins[];  // an array of pin numbers to which relays are attach
 
 extern const bool MY_DEBUG;
 extern const bool MY_DG_LASER;
+extern const bool MY_DG_WS;
+extern const bool MY_DG_WEB;
+extern const bool MY_DG_MESH;
 
 extern const short VERSION;
 
