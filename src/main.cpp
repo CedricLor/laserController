@@ -9,8 +9,6 @@
 #include <global.cpp>
 #include <secret.h>
 
-Scheduler    userScheduler;
-
 #include <../lib/ControlerBox.cpp>
 
 #include <mySavedPrefs.cpp>
