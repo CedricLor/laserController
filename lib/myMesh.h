@@ -48,22 +48,25 @@ class myMesh
 
     static void receivedCallback( uint32_t from, String &msg);
 
+    static void _tcbSendStatusOnNewConnection();
+    static bool _oetcbSendStatusOnNewConnection();
     static void newConnectionCallback(uint32_t nodeId);
 
-    static Task _tSendNotifOnDroppedConnection;
-    static void _tcbSendNotifOnDroppedConnection();
-    static void _odtcbSendNotifOnDroppedConnection();
-    static bool _oetcbSendNotifOnDroppedConnection();
+    static void _tcbSendNotifOnDroppedConnection(uint16_t _ui16droppedIndex);
+    static bool _oetcbSendNotifOnDroppedConnection(uint32_t nodeId);
     static void droppedConnectionCallback(uint32_t nodeId);
 
-    static Task _tSendStatusOnChangeConnection;
-    static void _tcbSendStatusOnChangeConnection();
-    static void _odtcbSendStatusOnChangeConnection();
-    static bool _oetcbSendStatusOnChangeConnection();
+    static Task _tChangedConnection;
+    static void _odtcbChangedConnection();
     static void changedConnectionCallback();
+    static bool IamAlone();
 
     static void nodeTimeAdjustedCallback(int32_t offset);
     static void delayReceivedCallback(uint32_t from, int32_t delay);
+
+    static void _updateNodeListSizeAndPrintNodeList();
+    static void _updateNodeListSize();
+    static void _printNodeListAndTopology();
 
     static void _decodeRequest(uint32_t _ui32SenderNodeId, String &_msg);
 

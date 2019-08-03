@@ -78,8 +78,6 @@ void myMesh::meshSetup() {
     }
   }
 
-
-
   snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
   // laserControllerMesh.setHostname(gcHostnamePrefix);
   // Set up mDNS responder:
@@ -94,6 +92,7 @@ void myMesh::meshSetup() {
       }
   }
   Serial.println("mDNS responder started");
+
 
   // Add service to MDNS-SD
   MDNS.addService("http", "tcp", 80);
@@ -117,10 +116,34 @@ void myMesh::meshSetup() {
   laserControllerMesh.onNewConnection(&newConnectionCallback);
   laserControllerMesh.onChangedConnections(&changedConnectionCallback);
   laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);                                   // Might not be needed
-  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);                                   // Might not be needed
+  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
+  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
 }
 
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+void myMesh::_updateNodeListSize() {
+  Serial.printf("myMesh::_updateNodeListSize(): previous uiMeshSize %u\n", uiMeshSize);
+  uiMeshSize = laserControllerMesh.getNodeList().size();
+  Serial.printf("myMesh::_updateNodeListSize(): new uiMeshSize %u\n", uiMeshSize);
+  _printNodeListAndTopology();
+  Serial.printf("myMesh::_updateNodeListSize(): ending\n");
+}
+
+void myMesh::_printNodeListAndTopology() {
+  Serial.printf("myMesh::_printNodeListAndTopology(): mesh topology %s\n",laserControllerMesh.subConnectionJson().c_str());
+  Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", laserControllerMesh.getNodeList().size());
+  int16_t _i = 0;
+  for (int n : laserControllerMesh.getNodeList()) {
+    Serial.printf("myMesh::_printNodeListAndTopology(): node [%i] id: %u\n", _i++, n);
+  }
+  Serial.printf("myMesh::_printNodeListAndTopology(): ending -------\n");
+}
 
 
 
@@ -135,6 +158,8 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
   }
   ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
   _decodeRequest(from, msg);
+
+  Serial.printf("myMesh::receivedCallback(): ending\n");
 }
 
 
@@ -144,14 +169,32 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
 
 
 
+
+
+
+
+void myMesh::_tcbSendStatusOnNewConnection() {
+  Serial.printf("myMesh::_tcbSendStatusOnNewConnection(): starting\n");
+  myMeshViews __myMeshViews;
+  __myMeshViews.statusMsg();
+  Serial.printf("myMesh::_tcbSendStatusOnNewConnection(): ending\n");
+}
+
+bool myMesh::_oetcbSendStatusOnNewConnection() {
+    Serial.println("myMesh::_oetcbSendStatusOnNewConnection(): starting");
+    // Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): starting. Time: %lu\n", millis());
+    // Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): task enabled? %i\n", _tChangedConnection.isEnabled());
+    // Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): task interval: %lu\n", _tChangedConnection.getInterval());
+    // Serial.print("myMesh::_oetcbSendStatusOnNewConnection(): task iterations: ");Serial.println(_tChangedConnection.getIterations());
+    // Serial.print("myMesh::_oetcbSendStatusOnNewConnection(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tChangedConnection));
+    Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): ending\n");
+    return true;
+}
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
     Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
-    const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
-    Serial.printf("myMesh::droppedConnectionCallback(): previous uiMeshSize %u\n", uiMeshSize);
-    Serial.printf("myMesh::droppedConnectionCallback(): new _uiNewMeshSize %u\n", _uiNewMeshSize);
   }
 }
 
@@ -161,79 +204,76 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
 
 
 
-// Task myMesh::_tSendNotifOnDroppedConnection(0, 1, &_tcbSendNotifOnDroppedConnection, &userScheduler, false, &_oetcbSendNotifOnDroppedConnection, &_odtcbSendNotifOnDroppedConnection);
 
 
-// bool myMesh::_oetcbSendNotifOnDroppedConnection() {
-//   // const std::list<unsigned int> &_nodeList = laserControllerMesh.getNodeList();
-//   // for (auto it = _nodeList.cbegin(); it != _nodeList.cend(); it++) {
-//   // }
-//   uint16_t _ui16droppedNodeName = ControlerBox::findByNodeId(nodeId);
-//   if (_ui16droppedNodeName != 254) {
-//     return true;
-//   }
-//   return false;
-// };
 
+bool myMesh::_oetcbSendNotifOnDroppedConnection(uint32_t nodeId) {
+  // A. check if the box is listed in my ControlerBoxes[]
+  uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(nodeId);
+  // B. if the box index is different than 254, it exists
+  if (_ui16droppedIndex != 254) {
+    // a. set the main callback of the Task
+    _tChangedConnection.setCallback(
+      // pass a lambda as main callback for the Task _tChangedConnection and _ui16droppedIndex as contextual param
+      [_ui16droppedIndex]() {
+        droppedConnectionCallback(_ui16droppedIndex);
+      }
+    ); // end of setCallback(
+    // b. return true so that the main callback of Task _tSendNotifOnDroppedConnection
+    // be executed
+    return true;
+  } // end of (_ui16droppedIndex != 254)
+  // C. if the box index is 254, it does not exist -> disable the Task by returning false
+  return false;
+};
 
-// void myMesh::_tcbSendNotifOnDroppedConnection() {
-//     myMeshViews __myMeshViews;
-//     __myMeshViews.droppedNodeNotif(_ui16droppedNodeName);
-//     if (MY_DG_MESH) {
-//       Serial.printf("myMesh::droppedConnectionCallback(): Broadcasted a message: %s\n",laserControllerMesh.subConnectionJson().c_str());
-//       Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %i ControlerBoxes.\n", _ui16droppedNodeName);
-//     }
-//     ControlerBox::deleteBox(_ui16droppedNodeName);
-// };
-
-
-// void myMesh::_odtcbSendNotifOnDroppedConnection() {
-
-
-// };
-
+void myMesh::_tcbSendNotifOnDroppedConnection(uint16_t _ui16droppedIndex) {
+  // 1. send a dropped box notification
+  myMeshViews __myMeshViews;
+  __myMeshViews.droppedNodeNotif(_ui16droppedIndex);
+  // 2. delete the box from ControlerBox[]
+  ControlerBox::deleteBox(_ui16droppedIndex);
+};
 
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
+  _tChangedConnection.disable();
   if (MY_DG_MESH) {
     Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %u\n", nodeId);
-    Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection %s\n",laserControllerMesh.subConnectionJson().c_str());
+    Serial.printf("myMesh::droppedConnectionCallback(): printing the current nodeList (no update):\n");
+    _printNodeListAndTopology();
     Serial.println("--------------------- DROPPED CONNECTION --------------------------");
   }
 
-  // check the mesh size
-  Serial.printf("myMesh::droppedConnectionCallback(): previous uiMeshSize %u\n", uiMeshSize);
-  const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
-  Serial.printf("myMesh::droppedConnectionCallback(): new _uiNewMeshSize %u\n", _uiNewMeshSize);
-  // find the dropper in the ControlerBox
-  uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(nodeId);
+  // 1. disable Task _tChangedConnection (enabled in changedConnectionCallback)
+  // If the droppedConnectionCallback is triggered, the changedConnectionCallback has been triggered
+  // before. Upon a changedConnectionCallback event, Task _tChangedConnection is enabled
+  // with a delay.
+  // Obviously, if the dropped connection callback is triggered, it means that changedConnectionCallback
+  // was triggered by a dropped connection, not by a new connection.
 
-  // if the dropped node is my ControlerBoxes array, send a notification to the mesh
-  // and delete it from the box
-  if (_ui16droppedIndex != 0) {
-    // 1. Send a notification to the mesh (if I am not alone)
-    if (_uiNewMeshSize > 1) {
-      myMeshViews __myMeshViews;
-      __myMeshViews.droppedNodeNotif(_ui16droppedIndex);
-    }
-
-    // 2. Delete the dropper from the ControlerBoxes
-    if (MY_DG_MESH) {
-      Serial.printf("myMesh::droppedConnectionCallback(): Broadcasted a message: %s\n",laserControllerMesh.subConnectionJson().c_str());
-      Serial.printf("myMesh::droppedConnectionCallback(): Deleting the dropper %u from ControlerBoxes[].\n", _ui16droppedIndex);
-    }
-    ControlerBox::deleteBox(_ui16droppedIndex);
-    if (MY_DG_MESH) {
-      Serial.println("myMesh::droppedConnectionCallback(): Dropper deleted.");
-    }
+  // 2. If nodeId == 0, this is the case where a box a shortly has failed (power on reset or so) and 
+  // has rebooted and is trying to join the mesh as a station before its dropping has been detected
+  // In this case, do nothing, just return.
+  if (nodeId == 0) {
+    Serial.printf("myMesh::droppedConnectionCallback(): nodeId == 0. False signal. About to return.\n");
+    return;
   }
+  Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting _tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
 
+  // 3. set the Task _tChangedConnection to send notification to the
+  // mesh and delete the box from the ControlerBoxes[].
+  // Here, the nodeId != 0; we have dropped nodeId => this is a real dropped connection callback
+  _tChangedConnection.setOnEnable(
+    // pass a lambda as onOnEnable callback for the Task _tChangedConnection and nodeId as contextual param
+    [nodeId]() { return _oetcbSendNotifOnDroppedConnection(nodeId); } 
+  );
+
+  // 4. Enable the Task _tChangedConnection, for execution without delay
+  _tChangedConnection.setInterval(0);
+  _tChangedConnection.enable();
 
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::droppedConnectionCallback(): New mesh size = %u. Saving it.\n", _uiNewMeshSize);
-  }
-  uiMeshSize = _uiNewMeshSize;
-  if (MY_DG_MESH) {
-    Serial.println("myMesh::changedConnectionCallback(): Ending.");
+    Serial.println("myMesh::droppedConnectionCallback(): Ending.");
   }
 }
 
@@ -245,68 +285,49 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 
 
 
-// This Task broadcasts all other boxes this boxState, when there is a
-// changedConnection
-Task myMesh::_tSendStatusOnChangeConnection((3000 + gui16MyIndexInCBArray * 250), 1, &_tcbSendStatusOnChangeConnection, &userScheduler, false, &_oetcbSendStatusOnChangeConnection, &_odtcbSendStatusOnChangeConnection);
+// This Task broadcasts this box's boxState all the other boxes, when there is a
+// changedConnection. It is reset the onDroppedConnection callback to send a
+// dropped box notification instead, if the onDroppedConnection callback is called
+// immediately after the onChangedConnection callback.
+Task myMesh::_tChangedConnection(0, 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
 
-void myMesh::_tcbSendStatusOnChangeConnection() {
-  myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg();
-}
-
-bool myMesh::_oetcbSendStatusOnChangeConnection() {
-    Serial.println("myMesh::_oetcbSendStatusOnChangeConnection(): starting");
-    // Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
-    // Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
-    // Serial.printf("myMesh::_oetcbSendStatusOnChangeConnection(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
-    // Serial.print("myMesh::_oetcbSendStatusOnChangeConnection(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
-    // Serial.print("myMesh::_oetcbSendStatusOnChangeConnection(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
-    return true;
-}
-
-void myMesh::_odtcbSendStatusOnChangeConnection() {
+void myMesh::_odtcbChangedConnection() {
     Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
-    Serial.printf("myMesh::_odtcbSendStatusOnChangeConnection(): starting. Time: %lu\n", millis());
+    Serial.printf("myMesh::_odtcbSendStatusOnNewConnection(): starting. Time: %lu\n", millis());
 }
 
 void myMesh::changedConnectionCallback() {
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::changedConnectionCallback(): Changed connections %s\n",laserControllerMesh.subConnectionJson().c_str());
+    Serial.printf("myMesh::changedConnectionCallback(): printing the current nodeList (no update):\n");
+    _printNodeListAndTopology();
     Serial.println("--------------------- CHANGED CONNECTION --------------------------");
-    Serial.println("myMesh::changedConnectionCallback(): Checking whether new comer or dropper.");
   }
 
-  const uint16_t _uiNewMeshSize = laserControllerMesh.getNodeList().size();
-  Serial.printf("myMesh::droppedConnectionCallback(): previous uiMeshSize %u\n", uiMeshSize);
-  Serial.printf("myMesh::droppedConnectionCallback(): new _uiNewMeshSize %u\n", _uiNewMeshSize);
-
-  if (_uiNewMeshSize > uiMeshSize && _uiNewMeshSize > 0) {    
-    // if the new node is not in my ControlerBoxes array, send it my status
-    // if (ControlerBox::findByNodeId(nodeId) != 254) {
-      if (MY_DG_MESH) {
-        Serial.println("myMesh::changedConnectionCallback(): New member has joined.");
-        Serial.println("myMesh::changedConnectionCallback(): About to send them my data.");
-        // Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
-        // Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
-        // Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
-        // Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
-        // Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
-      }
-      _tSendStatusOnChangeConnection.restartDelayed();
-      if (MY_DG_MESH) {
-        Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
-        Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tSendStatusOnChangeConnection.isEnabled());
-        Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tSendStatusOnChangeConnection.getInterval());
-        Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tSendStatusOnChangeConnection.getIterations());
-        Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tSendStatusOnChangeConnection));
-      }
-    // }
+  if (IamAlone) {
+    Serial.printf("myMesh::changedConnectionCallback(): I am alone. Not sending any message.\n");
+    return;
   }
 
-  uiMeshSize = _uiNewMeshSize;
+  _tChangedConnection.setOnEnable(_oetcbSendStatusOnNewConnection);
+  _tChangedConnection.setInterval((3000 + gui16MyIndexInCBArray * 100));
+  _tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
+  _tChangedConnection.restartDelayed();
+
+  if (MY_DG_MESH) {
+    Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
+    Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tChangedConnection.isEnabled());
+    Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tChangedConnection.getInterval());
+    Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tChangedConnection.getIterations());
+    Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tChangedConnection));
+  }
 }
 
-
+bool myMesh::IamAlone() {
+  if ((laserControllerMesh.getNodeList()).size() < 2 && 0 == (*(laserControllerMesh.getNodeList()).end())--) {
+    return true;
+  }
+  return false;
+}
 
 
 
@@ -322,7 +343,7 @@ void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
 
 void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
   if (MY_DG_MESH) {
-    Serial.printf("Delay to node %u is %d us\n", from, delay);
+    Serial.printf("Delay to node %u is %d ms\n", from, delay);
   }
 }
 
