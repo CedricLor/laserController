@@ -196,7 +196,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
 void ControlerBox::setBoxActiveState(const uint8_t __ui16BoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime) {
-  Serial.println("ControlerBox::setBoxActiveState(): Starting");
+  // Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
   ControlerBoxes[__ui16BoxIndex].boxActiveState = _sBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveState);
@@ -222,7 +222,7 @@ void ControlerBox::setBoxActiveState(const uint8_t __ui16BoxIndex, const short _
   // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
   // It is used when the laserBox receives an order to change active state from the interface.
 
-  Serial.println("ControlerBox::setBoxActiveState(): Ending");
+  // Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
 
 
@@ -232,7 +232,7 @@ void ControlerBox::setBoxActiveState(const uint8_t __ui16BoxIndex, const short _
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
 void ControlerBox::setBoxDefaultState(const uint8_t __ui16BoxIndex, const short _sBoxDefaultState) {
-  Serial.println("ControlerBox::setBoxDefaultState(): Starting");
+  // Serial.println("ControlerBox::setBoxDefaultState(): Starting");
 
   ControlerBoxes[__ui16BoxIndex].sBoxDefaultState = _sBoxDefaultState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveState);
@@ -240,7 +240,7 @@ void ControlerBox::setBoxDefaultState(const uint8_t __ui16BoxIndex, const short 
   ControlerBoxes[__ui16BoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
 
-  Serial.println("ControlerBox::setBoxDefaultState(): Ending");
+  // Serial.println("ControlerBox::setBoxDefaultState(): Ending");
 }
 
 
