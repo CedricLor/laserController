@@ -43,7 +43,7 @@ myMesh::myMesh()
 void myMesh::meshSetup() {
   if ( MY_DEBUG == true ) {
     // laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
-    laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE);
+    laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
   }
 
   if (interfaceOnAP) {
@@ -136,7 +136,7 @@ void myMesh::_updateNodeListSize() {
 }
 
 void myMesh::_printNodeListAndTopology() {
-  Serial.printf("myMesh::_printNodeListAndTopology(): mesh topology %s\n",laserControllerMesh.subConnectionJson().c_str());
+  Serial.printf("myMesh::_printNodeListAndTopology(): mesh topology: %s\n", laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", laserControllerMesh.getNodeList().size());
   int16_t _i = 0;
   for (int n : laserControllerMesh.getNodeList()) {
@@ -159,7 +159,7 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
   ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
   _decodeRequest(from, msg);
 
-  Serial.printf("myMesh::receivedCallback(): ending\n");
+  Serial.println(F("myMesh::receivedCallback(): ending"));
 }
 
 
@@ -230,9 +230,9 @@ void myMesh::_tcbSendNotifOnDroppedConnection(uint32_t nodeId) {
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId: %u\n", nodeId);
-    Serial.printf("myMesh::droppedConnectionCallback(): printing the current nodeList (no update):\n");
+    Serial.println(F("myMesh::droppedConnectionCallback(): printing the current nodeList (no update):"));
     _printNodeListAndTopology();
-    Serial.println("--------------------- DROPPED CONNECTION --------------------------");
+    Serial.println(F("--------------------- DROPPED CONNECTION --------------------------"));
   }
 
   // 1. disable Task _tChangedConnection (enabled in changedConnectionCallback)
@@ -251,11 +251,11 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   _tChangedConnection.setInterval(0);
 
   // 4. Enable the Task _tChangedConnection, for execution without delay
-  Serial.println("myMesh::droppedConnectionCallback(): restarting _tChangedConnection.");
+  Serial.println(F("myMesh::droppedConnectionCallback(): restarting _tChangedConnection."));
   _tChangedConnection.restart();
 
   if (MY_DG_MESH) {
-    Serial.println("myMesh::droppedConnectionCallback(): Ending.");
+    Serial.println(F("myMesh::droppedConnectionCallback(): Ending."));
   }
 }
 
@@ -280,7 +280,7 @@ void myMesh::_odtcbChangedConnection() {
 
 void myMesh::changedConnectionCallback() {
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::changedConnectionCallback(): printing the current nodeList (no update):\n");
+    Serial.println("myMesh::changedConnectionCallback(): printing the current nodeList (no update):");
     _printNodeListAndTopology();
     Serial.println("--------------------- CHANGED CONNECTION --------------------------");
   }
