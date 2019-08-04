@@ -17,7 +17,7 @@ class ControlerBox
     IPAddress stationIP; // set by painlessMesh or, for the interface, by the AP to which it is connected
     IPAddress APIP; // set by painlessMesh
     uint16_t ui16NodeName; // set by me, in global (201, 202, etc.)
-    short int boxActiveState; // set by events or user
+    int16_t i16BoxActiveState; // set by events or user
     bool boxActiveStateHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a boxState change, the WebSocket can read this and send a message to the browser
     bool boxActiveStateHasBeenTakenIntoAccount; // set to false when updating another box value (not in use for self) and to true by boxState, once boxState has taken the new state into account
     uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event

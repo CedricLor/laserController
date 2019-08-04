@@ -104,7 +104,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
       }
       _obj["action"] = "addBox";
-      _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].boxActiveState;
+      _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
       _obj["masterbox"] = (int)ControlerBoxes[_ui16BoxIndex].bMasterBoxName - gui16ControllerBoxPrefix;
       _obj["boxDefstate"] = ControlerBoxes[_ui16BoxIndex].sBoxDefaultState;
       // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
@@ -132,7 +132,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "boxState";
-      _obj["val"] = ControlerBoxes[_ui16BoxIndex].boxActiveState;
+      _obj["val"] = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
       _obj["st"] = 2;
       // expected _obj = {lb:1; action:"changeBox"; key: "boxState"; val: 6; st: 2}
       ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenSignaled = true;

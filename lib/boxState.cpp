@@ -422,7 +422,7 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, fal
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed (the catchers):
   - ControlerBox::valFromPir (when the current boxState is set to react to signals from the PIR);
-  - ControlerBoxes[PARENT].boxActiveState (when the current boxState is set to react to signals from the mesh);
+  - ControlerBoxes[PARENT].i16BoxActiveState (when the current boxState is set to react to signals from the mesh);
   - _boxActiveStateHasBeenReset;
   - _boxTargetState;
   Depending on the changes, it will:
@@ -488,7 +488,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 
   // give handy access to _thisBox and the _currentBoxState
   ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  boxState& _currentBoxState = boxStates[_thisBox.boxActiveState];
+  boxState& _currentBoxState = boxStates[_thisBox.i16BoxActiveState];
 
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
@@ -552,7 +552,7 @@ void boxState::_resetSignalCatchers() {
       3. set the duration to stay in the new boxState (by setting the
       aInterval of the "children" Task _tPlayBoxState; _tPlayBoxState.setInterval), to
       the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
-      4. set the boxActiveState property (and related properties) of this box;
+      4. set the i16BoxActiveState property (and related properties) of this box;
       5. restart/enable the "children" Task _tPlayBoxState.
 */
 void boxState::_restart_tPlayBoxState() {
@@ -572,7 +572,7 @@ void boxState::_restart_tPlayBoxState() {
     _tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
-    // 4. Set the boxActiveState to the _boxTargetState
+    // 4. Set the i16BoxActiveState to the _boxTargetState
     ControlerBox::setBoxActiveState(gui16MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
 
@@ -633,7 +633,7 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
   // Serial.println(_masterBox.boxActiveState);
   // Serial.println(_masterBox.boxActiveState  == -1);
   // if masterBox has been set, check whether it has a set state
-  if (_masterBox.boxActiveState == -1) {
+  if (_masterBox.i16BoxActiveState == -1) {
     return false;
   }
   // if masterBox activeState has been set, check whether this state
@@ -675,7 +675,7 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
 
   Upon being enabled, its onEnable callback:
   1. looks for the new boxState number, stored in this ControlerBox's
-  boxActiveState property and set in the main callback of _tPlayBoxStates,
+  i16BoxActiveState property and set in the main callback of _tPlayBoxStates,
   sub: _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState
   2. in the currently active boxState, it reads the associated sequence number in its properties;
@@ -701,10 +701,10 @@ Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxS
 
 bool boxState::_oetcbPlayBoxState(){
   Serial.println("bool boxState::_oetcbPlayBoxState(). Starting.");
-  // Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.boxActiveState);
+  // Serial.print("bool boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.i16BoxActiveState);
 
   // 1. select the currently active state
-  boxState& _currentBoxState = boxStates[ControlerBoxes[gui16MyIndexInCBArray].boxActiveState];
+  boxState& _currentBoxState = boxStates[ControlerBoxes[gui16MyIndexInCBArray].i16BoxActiveState];
 
   // 2. Set the active sequence
   sequence::setActiveSequence(_currentBoxState.ui16AssociatedSequence);
@@ -742,12 +742,12 @@ void boxState::_odtcbPlayBoxState(){
   // Serial.println(_tPlayBoxState.getInterval());
 
   ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  boxState& _currentBoxState = boxStates[_thisBox.boxActiveState];
+  boxState& _currentBoxState = boxStates[_thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
   sequence::tPlaySequenceInLoop.disable();
-  // Serial.println("void boxState::_odtcbPlayBoxState(): thisBox boxActiveState number");
-  // Serial.println(_thisBox.boxActiveState);
+  // Serial.println("void boxState::_odtcbPlayBoxState(): thisBox i16BoxActiveState number");
+  // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("void boxState::_odtcbPlayBoxState(): _boxTargetState");
   // Serial.println(_boxTargetState);
 
