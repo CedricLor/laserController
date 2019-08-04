@@ -408,15 +408,9 @@ void sequence::_odtcbPlaySequence(){
 
 // Helper function to _oetcbPlaySequenceInLoop
 // Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
-long unsigned int sequence::_ulSequenceDuration(const short int __activeSequence) {
-  Serial.println("long int sequence::_ulSequenceDuration(). Starting.");
-  unsigned long __ulDurationInMs = sequences[__activeSequence]._barCountInSequence * _ulBarDuration(__activeSequence);
-  // iterate over each bar pertaining to this sequence and add up their durations
-  // for(short int __thisBar = 0; __thisBar < sequences[__activeSequence]._barCountInSequence; __thisBar++){
-  //   short int __activeBarIndexNumber = sequences[__activeSequence]._iAssociatedBars[__thisBar];
-  //   __ulDurationInMs = __ulDurationInMs + sequences[__activeSequence]._ulBarDuration(__activeBarIndexNumber);
-  // }
-  Serial.println("long int sequence::_ulSequenceDuration(). Ending.");
+long unsigned int sequence::_ulSequenceDuration(const int16_t __i16activeSequence) {
+  // Serial.printf("void sequence::_ulBarDuration(). __i16activeSequence = %u", __i16activeSequence);
+  unsigned long __ulDurationInMs = sequences[__i16activeSequence]._barCountInSequence * _ulBarDuration(__i16activeSequence);
   return __ulDurationInMs;
 }
 
@@ -424,23 +418,11 @@ long unsigned int sequence::_ulSequenceDuration(const short int __activeSequence
 
 // Helper function to _tPlaySequence
 // returns the current bar effective duration
-long unsigned int sequence::_ulBarDuration(const short int __activeSequence) {
+long unsigned int sequence::_ulBarDuration(const int16_t __i16activeSequence) {
   Serial.println(F("void sequence::_ulBarDuration(). Starting."));
-
-  // if (MY_DG_LASER) {
-  //   Serial.print("void sequence::_ulBarDuration(). _activeBar = ");Serial.println(_activeBar);
-  // }
-  unsigned long __ulDurationInMs = sequences[__activeSequence].ui16BaseNotesCountPerBar *
-                              (60 / sequences[__activeSequence].ui16BaseBeatInBpm * 1000);
-
-  // iterate over each note in the sequence to get their interval in ms based on their tempo
-  // if (MY_DG_LASER) {
-  //   Serial.print("void sequence::_ulBarDuration(). bar::bars[_activeBar].iNotesCountInBar = ");Serial.println(bar::bars[_activeBar].iNotesCountInBar);
-  // }
-  // for(short int __thisNote = 0; __thisNote < bar::bars[_activeBar].ui16NotesCountInBar; __thisNote++){
-  //   __ulDurationInMs = __ulDurationInMs + bar::bars[_activeBar].getSingleNoteInterval(__thisNote);
-  // }
-
+  // Serial.printf("void sequence::_ulBarDuration(). __activeSequence = %i", __i16activeSequence);
+  unsigned long __ulDurationInMs = sequences[__i16activeSequence].ui16BaseNotesCountPerBar *
+                              (60 / sequences[__i16activeSequence].ui16BaseBeatInBpm * 1000);
   Serial.println(F("void sequence::_ulBarDuration(). Ending."));
   return __ulDurationInMs;
 }
