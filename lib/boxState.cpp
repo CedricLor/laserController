@@ -634,9 +634,17 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", ((_masterBox.boxActiveStateHasBeenTakenIntoAccount || _masterBox.i16BoxActiveState == -1) ? "true" : "false"));
   // check whether the parent box active state
   // has been taken into account
-  if (_masterBox.boxActiveStateHasBeenTakenIntoAccount){
+  if (_masterBox.boxActiveStateHasBeenTakenIntoAccount || _masterBox.i16BoxActiveState == -1){
     return false;
   }
+  
+  // TO DO: check whether the parent box active state corresponds to one of
+  // the state to which this box shall react
+  // if (_masterBox.i16BoxActiveState == _monitoredMasterStates()) {
+  //   return true;
+  // }
+  // return false
+
   // else, we have a mesh trigger!
   return true;
 }
