@@ -610,7 +610,7 @@ void boxState::_checkIRTriggerAndAct() {
 void boxState::_checkMeshTriggerAndAct(ControlerBox& _thisBox) {
   if (_meshHasBeenTriggered(_thisBox)) {
     Serial.println("--------------------- Mesh triggered ----------");
-    _setBoxTargetState(i16onIRTrigger);
+    _setBoxTargetState(i16onMeshTrigger);
   }
 }
 
