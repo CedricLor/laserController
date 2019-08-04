@@ -42,6 +42,11 @@
 #define myWSSender_h
 
 #include "Arduino.h"
+#include <ESPAsyncWebServer.h>
+#include <painlessMesh.h>
+#include <global.h>
+#include <secret.h>
+#include <../ControlerBox.h>
 #include "../myWebServerWS.h"
 
 class myWSSender
