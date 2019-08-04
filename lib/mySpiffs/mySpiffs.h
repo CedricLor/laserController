@@ -47,7 +47,14 @@ class mySpiffs
 
     void getSpiffsInfo();
     // getSpiffsInfo();
+
+
   private:
+    bool _lookForMyBoxNumberInPrettyFile(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName, size_t _prettyBoxMarkerSize, char * _prettyBoxMarker);
+    uint32_t _lookForStepsStarterPosInPrettyFile(File& prettyFile, const uint16_t _ui16NodeName);
+    uint32_t _lookForStepsEndPosInPrettyFile(File& prettyFile, const uint16_t _ui16NodeName, size_t _prettyBoxMarkerSize, char * _prettyBoxMarker);
+    void _copyPrettyStepsToUgly(File& prettyFile, const char * _uglyFileName, uint32_t _ui32EndPos);
+    void _createUglyFile(File& prettyFile, char* _uglyFileName);
 };
 
 #endif
