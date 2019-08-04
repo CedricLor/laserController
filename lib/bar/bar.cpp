@@ -173,7 +173,7 @@ bool bar::_oetcbPlayBar(){
   //   Serial.println("bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
 
-  Serial.println("bar::_oetcbPlayBar(). Ending.");
+  // Serial.println("bar::_oetcbPlayBar(). Ending.");
 
   return true;
 }
@@ -191,7 +191,7 @@ bool bar::_oetcbPlayBar(){
 // - At the next iteration, which will occur after the interval corresponding
 // to duration of the current note, tPlayBar will disable tPlayNote.
 void bar::_tcbPlayBar(){
-  // Serial.println("bar::_tcbPlayBar(). Starting.");
+  Serial.println("bar::_tcbPlayBar(). Starting.");
 
   // 1. get the run counter
   const uint16_t _ui16_iter = tPlayBar.getRunCounter() - 1;
@@ -217,11 +217,11 @@ void bar::_tcbPlayBar(){
 
   // 5. Set the interval for next iteration
   // At each pass, reset the interval before the next iteration of the Task bar::tPlayBar
-  Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  Serial.printf("bar::_tcbPlayBar(). calling bars[%i].getNoteDuration(%i)\n", _ui16activeBar, _ui16_iter);
+  // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
+  // Serial.printf("bar::_tcbPlayBar(). calling bars[%i].getNoteDuration(%i)\n", _ui16activeBar, _ui16_iter);
   tPlayBar.setInterval(bars[_ui16activeBar].getNoteDuration(_ui16_iter));
 
-  // Serial.println(F("bar::_tcbPlayBar(). Ending."));
+  Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
 
 
@@ -243,9 +243,9 @@ unsigned long bar::getNoteDuration(const uint16_t _ui16_iter){
   // Serial.print("bar::getNoteDuration(). _ui16activeBar = ");Serial.println(_ui16activeBar);
   // Serial.print("bar::getNoteDuration(). bars[_ui16activeBar].ui16BaseNoteForBeat = ");Serial.println(bars[_ui16activeBar].ui16BaseNoteForBeat);
   // Serial.print("bar::getNoteDuration(). _ui16_iter = ");Serial.println(_ui16_iter);
-  Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  Serial.println("bar::getNoteDuration(). bars[" + String(_ui16activeBar) + "]._note[" + String(_ui16_iter) + "][0] = "+ String(bars[_ui16activeBar]._note[_ui16_iter][0]));
-  Serial.println("bar::getNoteDuration(). bars["+ String(_ui16activeBar) + "].ui16BaseBeatInBpm = "+ String(bars[_ui16activeBar].ui16BaseBeatInBpm));
+  // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
+  // Serial.println("bar::getNoteDuration(). bars[" + String(_ui16activeBar) + "]._note[" + String(_ui16_iter) + "][0] = "+ String(bars[_ui16activeBar]._note[_ui16_iter][0]));
+  // Serial.println("bar::getNoteDuration(). bars["+ String(_ui16activeBar) + "].ui16BaseBeatInBpm = "+ String(bars[_ui16activeBar].ui16BaseBeatInBpm));
   unsigned long __ulDurationInMs = (bars[_ui16activeBar].ui16BaseNoteForBeat / bars[_ui16activeBar]._note[_ui16_iter][0])
                                   *(60 / bars[_ui16activeBar].ui16BaseBeatInBpm * 1000);
   if (__ulDurationInMs > 30000) {
