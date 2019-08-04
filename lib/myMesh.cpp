@@ -46,7 +46,7 @@ void myMesh::meshSetup() {
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE);
   }
 
-  if (interfaceInAP) {
+  if (interfaceOnAP) {
     laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
   } else {
     laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
@@ -54,27 +54,27 @@ void myMesh::meshSetup() {
 
   if (isInterface == true) {
   // Two scenarii:
-    if (interfaceInAP) {
-      // A. you can use the interface as STATION scanning of other 
-      // mesh nodes. Web users have to connect on the AP.
+    if (interfaceOnAP) {
+      // A. If the interface is on the AP, web users have to connect on the AP.
+      // The mesh will use the interface as STATION, scanning for other mesh nodes.
       if(!WiFi.softAPConfig(IPAddress(192, 168, 5, 1), IPAddress(192, 168, 5, 1), IPAddress(255, 255, 255, 0))){
         Serial.println("AP Config Failed");
       }
       if (WiFi.softAP(_ap_ssid, _ap_password, 
-                      ui8WifiChannel/*, false /* int ssid_hidden *\/,*/ 
-                      /*10 /* int max_connection */)){
-        Serial.println("");
+                      ui8WifiChannel, 0 /* int ssid_hidden*/, 
+                      10 /*int max_connection */)){
         IPAddress myIP = WiFi.softAPIP();
         Serial.println("Network " + String(_ap_ssid) + " running");
-        Serial.print("AP IP address: ");Serial.println(myIP);
+        Serial.println("AP IP address:" + String(myIP) +"");
       } else {
         Serial.println("Starting AP failed.");
       }
     } else {
-      // B. you can use the interface as an AP for the other mesh nodes. 
-      // Web users have to connect on the STATION.
+      // B. If the interface is on the STATION, web users have to connect on the STATION. 
+      // Other mesh nodes will connect on the AP. (This is the recommended use case by the devs
+      // of painlessMesh.)
       laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
-    // laserControllerMesh.stationManual(ssid, pass);
+      // laserControllerMesh.stationManual(ssid, pass);
     }
   }
 
@@ -99,7 +99,7 @@ void myMesh::meshSetup() {
   MDNS.addService("arduino", "tcp", 3232);
 
   if (isInterface == true) {
-      if (interfaceInAP) {
+      if (interfaceOnAP) {
         laserControllerMesh.setRoot(false);
       } else {
         // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
@@ -115,8 +115,8 @@ void myMesh::meshSetup() {
   laserControllerMesh.onReceive(&receivedCallback);
   laserControllerMesh.onNewConnection(&newConnectionCallback);
   laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
+  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
   laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
 }
 
@@ -174,27 +174,20 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
 
 
 void myMesh::_tcbSendStatusOnNewConnection() {
-  Serial.printf("myMesh::_tcbSendStatusOnNewConnection(): starting\n");
+  Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): starting"));
+  if (IamAlone()) { 
+    return; 
+    Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): I am alone. ending."));
+  }
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg();
-  Serial.printf("myMesh::_tcbSendStatusOnNewConnection(): ending\n");
-}
-
-bool myMesh::_oetcbSendStatusOnNewConnection() {
-    Serial.println("myMesh::_oetcbSendStatusOnNewConnection(): starting");
-    // Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): starting. Time: %lu\n", millis());
-    // Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): task enabled? %i\n", _tChangedConnection.isEnabled());
-    // Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): task interval: %lu\n", _tChangedConnection.getInterval());
-    // Serial.print("myMesh::_oetcbSendStatusOnNewConnection(): task iterations: ");Serial.println(_tChangedConnection.getIterations());
-    // Serial.print("myMesh::_oetcbSendStatusOnNewConnection(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tChangedConnection));
-    Serial.printf("myMesh::_oetcbSendStatusOnNewConnection(): ending\n");
-    return true;
+  Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): sent status message. ending."));
 }
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
-    Serial.println("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++");
+    Serial.println(F("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++"));
   }
 }
 
@@ -207,70 +200,59 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
 
 
 
-bool myMesh::_oetcbSendNotifOnDroppedConnection(uint32_t nodeId) {
-  // A. check if the box is listed in my ControlerBoxes[]
-  uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(nodeId);
-  // B. if the box index is different than 254, it exists
-  if (_ui16droppedIndex != 254) {
-    // a. set the main callback of the Task
-    _tChangedConnection.setCallback(
-      // pass a lambda as main callback for the Task _tChangedConnection and _ui16droppedIndex as contextual param
-      [_ui16droppedIndex]() {
-        droppedConnectionCallback(_ui16droppedIndex);
-      }
-    ); // end of setCallback(
-    // b. return true so that the main callback of Task _tSendNotifOnDroppedConnection
-    // be executed
-    return true;
-  } // end of (_ui16droppedIndex != 254)
-  // C. if the box index is 254, it does not exist -> disable the Task by returning false
-  return false;
-};
 
-void myMesh::_tcbSendNotifOnDroppedConnection(uint16_t _ui16droppedIndex) {
-  // 1. send a dropped box notification
+void myMesh::_tcbSendNotifOnDroppedConnection(uint32_t nodeId) {
+  Serial.printf("myMesh::_tcbSendNotifOnDroppedConnection: starting. Dropper nodeID:%u \n", nodeId);
+
+  // 1. check if the box is listed in my ControlerBoxes[]
+  uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(nodeId);
+
+  // 2. if the box index is different than 254, it exists
+  if (_ui16droppedIndex == 254) {
+    Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): ending (box not found in ControlerBoxes[])."));
+    return;
+  }
+
+  // 3. delete the box from ControlerBox[]
+  ControlerBox::deleteBox(_ui16droppedIndex);
+
+  // 4. send a dropped box notification
+  if (IamAlone()) { 
+    Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): I am alone. ending."));
+    return; 
+  }
   myMeshViews __myMeshViews;
   __myMeshViews.droppedNodeNotif(_ui16droppedIndex);
-  // 2. delete the box from ControlerBox[]
-  ControlerBox::deleteBox(_ui16droppedIndex);
+  Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): sent message. ending."));
 };
 
+
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
-  _tChangedConnection.disable();
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId %u\n", nodeId);
+    Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId: %u\n", nodeId);
     Serial.printf("myMesh::droppedConnectionCallback(): printing the current nodeList (no update):\n");
     _printNodeListAndTopology();
     Serial.println("--------------------- DROPPED CONNECTION --------------------------");
   }
 
   // 1. disable Task _tChangedConnection (enabled in changedConnectionCallback)
-  // If the droppedConnectionCallback is triggered, the changedConnectionCallback has been triggered
-  // before. Upon a changedConnectionCallback event, Task _tChangedConnection is enabled
-  // with a delay.
-  // Obviously, if the dropped connection callback is triggered, it means that changedConnectionCallback
-  // was triggered by a dropped connection, not by a new connection.
+  _tChangedConnection.disable();
 
-  // 2. If nodeId == 0, this is the case where a box a shortly has failed (power on reset or so) and 
-  // has rebooted and is trying to join the mesh as a station before its dropping has been detected
-  // In this case, do nothing, just return.
-  if (nodeId == 0) {
-    Serial.printf("myMesh::droppedConnectionCallback(): nodeId == 0. False signal. About to return.\n");
+  // 2. If nodeId < UINT16_MAX, this is a false signal, just return.
+  if (nodeId < UINT16_MAX) {
+    Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. False signal. About to return.\n", nodeId);
     return;
   }
-  Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting _tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
 
-  // 3. set the Task _tChangedConnection to send notification to the
-  // mesh and delete the box from the ControlerBoxes[].
-  // Here, the nodeId != 0; we have dropped nodeId => this is a real dropped connection callback
-  _tChangedConnection.setOnEnable(
-    // pass a lambda as onOnEnable callback for the Task _tChangedConnection and nodeId as contextual param
-    [nodeId]() { return _oetcbSendNotifOnDroppedConnection(nodeId); } 
-  );
+  // 3. set Task _tChangedConnection's params
+  Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting _tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
+  _tChangedConnection.setCallback( [nodeId]() { _tcbSendNotifOnDroppedConnection(nodeId); } );
+  _tChangedConnection.setOnEnable(NULL);
+  _tChangedConnection.setInterval(0);
 
   // 4. Enable the Task _tChangedConnection, for execution without delay
-  _tChangedConnection.setInterval(0);
-  _tChangedConnection.enable();
+  Serial.println("myMesh::droppedConnectionCallback(): restarting _tChangedConnection.");
+  _tChangedConnection.restart();
 
   if (MY_DG_MESH) {
     Serial.println("myMesh::droppedConnectionCallback(): Ending.");
@@ -289,11 +271,11 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 // changedConnection. It is reset the onDroppedConnection callback to send a
 // dropped box notification instead, if the onDroppedConnection callback is called
 // immediately after the onChangedConnection callback.
-Task myMesh::_tChangedConnection(0, 1, &_tcbSendStatusOnNewConnection, &userScheduler, false);
+Task myMesh::_tChangedConnection(0, 1, NULL, &userScheduler, false, NULL, &_odtcbChangedConnection);
 
 void myMesh::_odtcbChangedConnection() {
     Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
-    Serial.printf("myMesh::_odtcbSendStatusOnNewConnection(): starting. Time: %lu\n", millis());
+    Serial.printf("myMesh::_odtcbSendStatusOnNewConnection(): Time: %lu\n", millis());
 }
 
 void myMesh::changedConnectionCallback() {
@@ -303,13 +285,14 @@ void myMesh::changedConnectionCallback() {
     Serial.println("--------------------- CHANGED CONNECTION --------------------------");
   }
 
-  if (IamAlone) {
+  if (IamAlone()) {
     Serial.printf("myMesh::changedConnectionCallback(): I am alone. Not sending any message.\n");
     return;
   }
 
-  _tChangedConnection.setOnEnable(_oetcbSendStatusOnNewConnection);
-  _tChangedConnection.setInterval((3000 + gui16MyIndexInCBArray * 100));
+  Serial.printf("myMesh::changedConnectionCallback(): I am not alone. Sending my status.\n");
+  _tChangedConnection.setOnEnable(NULL);
+  _tChangedConnection.setInterval((2900 + gui16MyIndexInCBArray * 100));
   _tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
   _tChangedConnection.restartDelayed();
 
@@ -323,29 +306,35 @@ void myMesh::changedConnectionCallback() {
 }
 
 bool myMesh::IamAlone() {
-  if ((laserControllerMesh.getNodeList()).size() < 2 && 0 == (*(laserControllerMesh.getNodeList()).end())--) {
+  Serial.printf("myMesh::IamAlone(): Starting\n");
+  if (
+    laserControllerMesh.getNodeList().size() < 2 && 
+    0 == *laserControllerMesh.getNodeList().rbegin()
+    ) {
+    Serial.printf("myMesh::IamAlone(): Yes\n");
     return true;
   }
+  Serial.printf("myMesh::IamAlone(): No\n");
   return false;
 }
 
 
 
-void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
-  if (MY_DG_MESH) {
-    Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(), offset);
-  }
-}
+// void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(), offset);
+//   }
+// }
 
 
 
 
 
-void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
-  if (MY_DG_MESH) {
-    Serial.printf("Delay to node %u is %d ms\n", from, delay);
-  }
-}
+// void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("Delay to node %u is %d ms\n", from, delay);
+//   }
+// }
 
 
 

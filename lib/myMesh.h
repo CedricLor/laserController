@@ -52,8 +52,8 @@ class myMesh
     static bool _oetcbSendStatusOnNewConnection();
     static void newConnectionCallback(uint32_t nodeId);
 
-    static void _tcbSendNotifOnDroppedConnection(uint16_t _ui16droppedIndex);
-    static bool _oetcbSendNotifOnDroppedConnection(uint32_t nodeId);
+    static void _tcbSendNotifOnDroppedConnection(uint32_t nodeId);
+    static void _enableTChangedConnectionIfBoxInControllerBoxes(uint32_t nodeId);
     static void droppedConnectionCallback(uint32_t nodeId);
 
     static Task _tChangedConnection;
@@ -61,8 +61,8 @@ class myMesh
     static void changedConnectionCallback();
     static bool IamAlone();
 
-    static void nodeTimeAdjustedCallback(int32_t offset);
-    static void delayReceivedCallback(uint32_t from, int32_t delay);
+    // static void nodeTimeAdjustedCallback(int32_t offset);
+    // static void delayReceivedCallback(uint32_t from, int32_t delay);
 
     static void _updateNodeListSizeAndPrintNodeList();
     static void _updateNodeListSize();

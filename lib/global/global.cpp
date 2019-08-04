@@ -68,7 +68,7 @@ const bool IS_INTERFACE = false;                        // BOX BY BOX -- false o
 
 uint16_t gui16NodeName = UI8_NODE_NAME;
 bool isInterface = IS_INTERFACE;
-bool interfaceInAP = false;
+bool interfaceOnAP = false;
 
 
 const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
