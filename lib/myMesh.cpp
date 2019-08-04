@@ -156,7 +156,6 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
-  ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
   _decodeRequest(from, msg);
 
   Serial.println(F("myMesh::receivedCallback(): ending"));
