@@ -101,7 +101,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box is an unsignaled new box
     if (ControlerBoxes[_ui16BoxIndex].isNewBoxHasBeenSignaled == false) {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%i] has joined.\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
       }
       _obj["action"] = "addBox";
       _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].boxActiveState;
@@ -115,7 +115,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box has an unsignaled change of default state
     if (ControlerBoxes[_ui16BoxIndex].sBoxDefaultStateChangeHasBeenSignaled == false) {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. Default state of box [%i] has changed\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Default state of box [%i] has changed\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
       }
       // Ancient action = 10
       _obj["action"] = "changeBox";
@@ -129,7 +129,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box has an unsignaled change of state
     if (ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenSignaled == false) {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. State of box [%i] has changed\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
       }
       // Ancient action = 5
       _obj["action"] = "changeBox";
@@ -143,10 +143,10 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box master has changed
     if (ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%u] has changed master\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. (int)(ControlerBoxes[%u].bMasterBoxName) == %u\n", _ui16BoxIndex, (uint16_t)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%i].bMasterBoxName) == %u\n", _ui16BoxIndex, (uint16_t)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. New master: %u\n", (int)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%u] has changed master\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. (int)(ControlerBoxes[%u].bMasterBoxName) == %u\n", _ui16BoxIndex, (uint16_t)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%i].bMasterBoxName) == %u\n", _ui16BoxIndex, (uint16_t)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. New master: %u\n", (int)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
       }
       // Ancient action = 8
       _obj["action"] = "changeBox";
@@ -160,7 +160,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box is an unsignaled deleted box
     if (ControlerBoxes[_ui16BoxIndex].boxDeletionHasBeenSignaled == false) {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", (_ui16BoxIndex + gui16ControllerBoxPrefix));
       }
       _obj["action"] = "deleteBox";
       _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
@@ -170,7 +170,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // in each of the above cases, send a message to the browser
     if (_obj["action"] != "-1") {
       if (MY_DG_WS) {
-        Serial.printf("_tcbSendWSDataIfChangeBoxState::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
       }
       _myWSSender.sendWSData(_obj);
     }
@@ -308,7 +308,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
 
     if (_buffer) {
         serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
-
+        
         // Before sending anything, check if you have any client
         if (size_t _client_count = myWebServerWS::ws.count()) {
           // if (MY_DG_WS) {
