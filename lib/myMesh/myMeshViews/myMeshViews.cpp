@@ -76,7 +76,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
-  const int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  constexpr int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<_capacity> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();
 
@@ -103,7 +103,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 void myMeshViews::droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
-  const int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+  constexpr int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<_capacity> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();
 

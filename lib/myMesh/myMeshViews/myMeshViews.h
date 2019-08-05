@@ -27,6 +27,7 @@
 
 #include "Arduino.h"
 #include <global.h>
+#include <../ControlerBox.h>
 
 class myMeshViews
 {
