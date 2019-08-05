@@ -42,6 +42,8 @@ const char* myMesh::_soft_ap_password = "123456789";
 IPAddress myMesh::_soft_ap_my_ip            = IPAddress(192, 168, 5, 1);
 IPAddress myMesh::_soft_ap_me_as_gateway_ip = IPAddress(192, 168, 5, 1);
 IPAddress myMesh::_soft_ap_netmask          = IPAddress(255, 255, 255, 0);
+IPAddress myMesh::_fixed_ip                 = IPAddress(192, 168, 43, 50);
+IPAddress myMesh::_fixed_netmask            = IPAddress(255, 255, 255, 0);
 
 
 myMesh::myMesh()
@@ -56,36 +58,35 @@ void myMesh::meshSetup() {
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
   }
 
-  if (interfaceOnAP) {
+  if (isInterface && interfaceOnAP) {
     laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
   } else {
     laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
   }
 
-  if (isInterface == true) {
-  // Two scenarii:
-    if (interfaceOnAP) {
-      // A. If the interface is on the AP, web users have to connect on the AP.
-      // The mesh will use the interface as STATION, scanning for other mesh nodes.
-      if(!WiFi.softAPConfig(_soft_ap_my_ip, _soft_ap_me_as_gateway_ip, _soft_ap_netmask)){
-        Serial.println("\nAP Config Failed\n");
-      }
-      if (WiFi.softAP(_soft_ap_ssid, _soft_ap_password, 
-                      ui8WifiChannel, 0 /* int ssid_hidden*/, 
-                      10 /*int max_connection */)){
-        IPAddress myIP = WiFi.softAPIP();
-        Serial.println("Network " + String(_soft_ap_ssid) + " running");
-        Serial.println("AP IP address:" + String(myIP) +"");
-      } else {
-        Serial.println("\nStarting AP failed.\n");
-      }
-    } else {
-      // B. If the interface is on the STATION, web users have to connect on the STATION. 
-      // Other mesh nodes will connect on the AP. (This is the recommended use case by the devs
-      // of painlessMesh.)
-      laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP);
-      // laserControllerMesh.stationManual(ssid, pass);
+  if (isInterface && interfaceOnAP) {
+    // A. If the interface is on the AP, web users have to connect on the AP.
+    // The mesh will use the interface as STATION, scanning for other mesh nodes.
+    if(!WiFi.softAPConfig(_soft_ap_my_ip, _soft_ap_me_as_gateway_ip, _soft_ap_netmask)){
+      Serial.println("\nAP Config Failed\n");
     }
+    if (WiFi.softAP(_soft_ap_ssid, _soft_ap_password, 
+                    ui8WifiChannel, 0 /* int ssid_hidden*/, 
+                    10 /*int max_connection */)){
+      IPAddress myIP = WiFi.softAPIP();
+      Serial.println("Network " + String(_soft_ap_ssid) + " running");
+      Serial.println("AP IP address:" + String(myIP) +"");
+    } else {
+      Serial.println("\nStarting AP failed.\n");
+    }
+  }
+
+  if (isInterface && !(interfaceOnAP)) {
+    // B. If the interface is on the STATION, web users have to connect on the STATION. 
+    // Other mesh nodes will connect on the AP. (This is the recommended use case by the devs
+    // of painlessMesh.)
+    laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, _fixed_ip, _fixed_netmask);
+    // laserControllerMesh.stationManual(ssid, pass);
   }
 
   snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
@@ -108,14 +109,10 @@ void myMesh::meshSetup() {
   MDNS.addService("http", "tcp", 80);
   MDNS.addService("arduino", "tcp", 3232);
 
-  if (isInterface == true) {
-      if (interfaceOnAP) {
-        laserControllerMesh.setRoot(false);
-      } else {
-        // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
-        laserControllerMesh.setRoot(true);
-      }
-  }
+  if ((isInterface && (!(interfaceOnAP))) || isRoot) {
+    laserControllerMesh.setRoot(true);
+  } 
+
   // This and all other mesh member should ideally know that the mesh contains a root
   laserControllerMesh.setContainsRoot(true);
 

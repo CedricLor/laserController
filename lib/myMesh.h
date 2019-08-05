@@ -49,6 +49,8 @@ class myMesh
     static IPAddress _soft_ap_my_ip;
     static IPAddress _soft_ap_me_as_gateway_ip;
     static IPAddress _soft_ap_netmask;
+    static IPAddress _fixed_ip;
+    static IPAddress _fixed_netmask;
 
     // painlessMesh callbacks
     static void receivedCallback( uint32_t from, String &msg);

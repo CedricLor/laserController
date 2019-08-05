@@ -56,21 +56,26 @@ const uint8_t UI8_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 // node id in the current configuration 2760608337
 // const uint8_t UI8_NODE_NAME = 201;                          // BOX BY BOX
 // const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
-
-// CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
-// node id in the current configuration 2760139053
-// const uint8_t UI8_NODE_NAME = 200;                          // BOX BY BOX
-// const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or true
+// const bool IS_ROOT = true;
 
 // CONTROLLER BOX 202
 // node id in the current configuration 2752898073
-const uint8_t UI8_NODE_NAME = 202;                          // BOX BY BOX
-const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
+// const uint8_t UI8_NODE_NAME = 202;                          // BOX BY BOX
+// const bool IS_INTERFACE = false;                        // BOX BY BOX -- false or true
+// const bool IS_ROOT = false;
+
+
+// CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
+// node id in the current configuration 2760139053
+const uint8_t UI8_NODE_NAME = 200;                          // BOX BY BOX
+const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or true
+const bool IS_ROOT = true;
+bool interfaceOnAP = false;
+
 
 uint16_t gui16NodeName = UI8_NODE_NAME;
 bool isInterface = IS_INTERFACE;
-bool interfaceOnAP = false;
-
+bool isRoot = IS_ROOT;
 
 const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
