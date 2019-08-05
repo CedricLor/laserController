@@ -69,6 +69,13 @@ class myMesh
     static Task _tPrintMeshTopo;
     static void _printNodeListAndTopology();
 
+    static Task _tUpdateCDOnDroppedConnections;
+    static std::map<uint32_t, uint16_t> _nodeMap;
+    static void _saveNodeMap();
+    static std::list<uint32_t> _savedNodeList;
+    static void _saveNodeList();
+    static void _tcbUpdateCBOnDroppedConnections();
+
     static Task _tDecodeRequest;
     static void _tcbDecodeRequest(uint32_t _ui32SenderNodeId, String& _msg);
     static Task _tPassRequestToMeshController;

@@ -142,7 +142,7 @@ bool myMesh::IamAlone() {
     Serial.printf("myMesh::IamAlone(): Yes\n");
     if ((!(isInterface)) && (!(_tIamAloneTimeOut.isEnabled()))) {
       Serial.println("myMesh::IamAlone(): Enabling _tIamAloneTimeOut.");
-}
+    }
     return true;
   }
   Serial.printf("myMesh::IamAlone(): No\n");
@@ -195,6 +195,96 @@ void myMesh::_printNodeListAndTopology() {
    Calls _printNodeListAndTopology() every 30 seconds.
 */
 Task myMesh::_tPrintMeshTopo(30*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, &userScheduler, false);
+
+
+
+
+
+
+/* 
+  In case a connection dropped, we need to update the DB. This is easy for the dropper,
+  as it is signaled.
+  However, the sub nodes which may be in the ControlerBoxes[] array are not signaled as dropped.
+  Each remaining node should know how to delete the subs.
+  Upon such events, this Task does the job after 10 seconds.
+*/
+Task myMesh::_tUpdateCDOnDroppedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnDroppedConnections, &userScheduler, false);
+
+std::list<uint32_t> myMesh::_savedNodeList = laserControllerMesh.getNodeList();
+
+void myMesh::_saveNodeList() {
+  _savedNodeList = laserControllerMesh.getNodeList();
+  _savedNodeList.remove(0);
+  _savedNodeList.sort();
+}
+
+std::map<uint32_t, uint16_t> myMesh::_nodeMap;
+
+void myMesh::_saveNodeMap() {
+  for (uint32_t _savedNode : _savedNodeList) {
+    _nodeMap.emplace(_savedNode, 1);
+  }
+}
+
+void myMesh::_tcbUpdateCBOnDroppedConnections() {
+// {"nodeId":2760139053,"root":true,"subs":[{"nodeId":2760608337,"subs":[{"nodeId":2752898073}]]}
+// {"nodeId":2760608337,"subs":[{"nodeId":2760139053,"root":true},{"nodeId":2752898073}]}
+
+  std::list<uint32_t> _newNodeList = laserControllerMesh.getNodeList();
+  _newNodeList.remove(0);
+  _newNodeList.sort();
+
+  // auto _newListNode = _newNodeList.begin();
+  
+  for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
+    _node.second = 0;
+  }
+
+  for (uint32_t _newNode : _newNodeList) {
+    std::map<uint32_t, uint16_t>::iterator _nodeInMap = _nodeMap.find(_newNode);
+    if (_nodeInMap != _nodeMap.end()) {
+      _nodeInMap->second = 1;
+      continue;
+    }
+    _nodeMap.emplace(_newNode, 2);
+  }
+
+  // for (uint32_t n : _savedNodeList) {
+  //   if (*_newListNode == n) {
+  //     // the node is still here
+  //     _nodeMap.emplace(n, 1);
+  //     _newListNode = std::next(_newListNode);
+  //     _newNodeList.remove(*(std::prev(_newListNode)));
+  //     continue;
+  //   }
+  //   if (*_newListNode > n) {
+  //     // the node has been disconnected
+  //     _nodeMap.emplace(n, 0);
+  //     continue;
+  //   }
+  //   while (*_newListNode < n) {
+  //     // this is a new node
+  //     _nodeMap.emplace(*_newListNode, 2);
+  //     _newListNode = std::next(_newListNode);
+  //     _newNodeList.remove(*(std::prev(_newListNode)));
+  //   }
+  // }
+
+  // if (_newNodeList.size() > 0) {
+  //   for (uint32_t _newNode : _newNodeList) {
+  //     _nodeMap.emplace(_newNode, 2);
+  //   }
+  // }
+
+  for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
+    if (_node.second == (uint16_t)0) {
+      uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(_node.first);
+      ControlerBox::deleteBox(_ui16droppedIndex);
+    }
+  }
+
+}
+
 
 
 
