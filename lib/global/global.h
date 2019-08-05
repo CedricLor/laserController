@@ -18,6 +18,7 @@ extern const bool MY_DG_LASER;
 extern const bool MY_DG_WS;
 extern const bool MY_DG_WEB;
 extern const bool MY_DG_MESH;
+extern const bool MY_DEEP_DG_MESH;
 
 extern const short VERSION;
 

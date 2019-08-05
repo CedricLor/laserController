@@ -42,16 +42,21 @@ class myMesh
     static void meshSetup();
 
   private:
+    // Variables for Interface on AP mode
+    static const char* _soft_ap_ssid;    
+    static const char* _soft_ap_password;
 
-    static const char* _ap_ssid;
-    static const char* _ap_password;
+    static IPAddress _soft_ap_my_ip;
+    static IPAddress _soft_ap_me_as_gateway_ip;
+    static IPAddress _soft_ap_netmask;
 
+    // painlessMesh callbacks
     static void receivedCallback( uint32_t from, String &msg);
 
-    static void _tcbSendStatusOnNewConnection();
+    static void _tcbSendStatusOnNewConnection();  // attaches to _tChangedConnection 
     static void newConnectionCallback(uint32_t nodeId);
 
-    static void _tcbSendNotifOnDroppedConnection(uint32_t nodeId);
+    static void _tcbSendNotifOnDroppedConnection(uint32_t nodeId);  // attaches to _tChangedConnection 
     static void droppedConnectionCallback(uint32_t nodeId);
 
     static Task _tChangedConnection;
@@ -61,27 +66,38 @@ class myMesh
     // static void nodeTimeAdjustedCallback(int32_t offset);
     // static void delayReceivedCallback(uint32_t from, int32_t delay);
 
-    static Task _tIamAloneTimeOut;
-    static void _tcbIamAloneTimeOut();
-    static bool IamAlone();
-    static bool _IamAlone;
-
-    static Task _tPrintMeshTopo;
-    static void _printNodeListAndTopology();
-
-    static Task _tUpdateCDOnDroppedConnections;
-    static std::map<uint32_t, uint16_t> _nodeMap;
-    static void _saveNodeMap();
-    static std::list<uint32_t> _savedNodeList;
-    static void _saveNodeList();
-    static void _tcbUpdateCBOnDroppedConnections();
-
+    // Helpers
+    // For receivedCallback (on receive messages from the mesh)
     static Task _tDecodeRequest;
     static void _tcbDecodeRequest(uint32_t _ui32SenderNodeId, String& _msg);
     static Task _tPassRequestToMeshController;
     static void _tcbPassRequestToMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 
-    static void _updateConnectedBoxCount();
+    // For the bug when the subnodes stop scanning after being disconnected
+    static Task _tIamAloneTimeOut;
+    static void _tcbIamAloneTimeOut();
+    static bool IamAlone();
+    static bool _IamAlone;
+
+    // For debug purposes
+    static Task _tPrintMeshTopo;
+    static void _printNodeListAndTopology();
+
+    // To update the ControlerBoxes array
+    static Task _tUpdateCDOnChangedConnections;
+    static bool _oetcbUpdateCBOnChangedConnections();
+    static void _tcbUpdateCBOnChangedConnections();
+    static void _odtcbUpdateCBOnChangedConnections();
+    static void _deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap);
+    static uint16_t _deleteBoxFromCBArray(uint32_t nodeId);
+
+    // To keep track of the mesh layout
+    static Task _tSaveNodeListAndMap;
+    static void _tcbSaveNodeListAndMap();
+    static std::map<uint32_t, uint16_t> _nodeMap;
+    static void _saveNodeMap();
+    static std::list<uint32_t> _savedNodeList;
+    static void _saveNodeList();
 };
 
 #endif
