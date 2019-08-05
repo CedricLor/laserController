@@ -118,6 +118,8 @@ void myMesh::meshSetup() {
   // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
   // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
   laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
+
+  _tPrintMeshTopo.enable();
 }
 
 
@@ -145,6 +147,7 @@ void myMesh::_printNodeListAndTopology() {
   Serial.printf("myMesh::_printNodeListAndTopology(): ending -------\n");
 }
 
+Task myMesh::_tPrintMeshTopo(30*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, &userScheduler, false);
 
 
 
@@ -312,10 +315,31 @@ bool myMesh::IamAlone() {
     0 == *laserControllerMesh.getNodeList().rbegin()
     ) {
     Serial.printf("myMesh::IamAlone(): Yes\n");
+    _IamAlone = true;
+    if (!(isInterface)) {
+      Serial.println("myMesh::IamAlone(): Enabling _tIamAloneTimeOut.");
+      _tIamAloneTimeOut.restartDelayed();
+    }
     return true;
   }
   Serial.printf("myMesh::IamAlone(): No\n");
+  _IamAlone = false;
+  Serial.println("myMesh::IamAlone(): Disabling _tIamAloneTimeOut.");
+  _tIamAloneTimeOut.disable();
   return false;
+}
+
+bool myMesh::_IamAlone = true;
+
+Task myMesh::_tIamAloneTimeOut(20000, 1, &_tcbIamAloneTimeOut, &userScheduler, false);
+
+void myMesh::_tcbIamAloneTimeOut() {
+  Serial.println("myMesh::_tcbIamAloneTimeOut(): Starting.");
+  if (_IamAlone) {
+    Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
+    laserControllerMesh.stop();
+    meshSetup();
+  }
 }
 
 
