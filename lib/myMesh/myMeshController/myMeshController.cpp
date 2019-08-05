@@ -389,9 +389,17 @@ void myMeshController::_changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t 
     _obj["lb"] = gui16MyIndexInCBArray;
   }
 
+  this->_tChangeBoxSendConfirmationMsg.setInterval(0);
+  this->_tChangeBoxSendConfirmationMsg.setCallback(
+    [&_obj]() {
+      myMeshViews __myMeshViews;
+      __myMeshViews.changedBoxConfirmation(_obj);
+    }
+  );
+  this->_tChangeBoxSendConfirmationMsg.setIterations(1);
+  userScheduler.addTask(this->_tChangeBoxSendConfirmationMsg);
+  this->_tChangeBoxSendConfirmationMsg.enable();
   // send back the received JSON object with its amended "st" key
-  myMeshViews __myMeshViews;
-  __myMeshViews.changedBoxConfirmation(_obj);
   // if (MY_DG_MESH) {
   //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
   // }

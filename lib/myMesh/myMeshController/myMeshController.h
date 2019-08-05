@@ -26,6 +26,7 @@
 #define myMeshController_h
 
 #include "Arduino.h"
+#include <./mySavedPrefs.h>
 
 class myMeshController
 {
@@ -52,6 +53,8 @@ class myMeshController
     void _updateMyDefaultState(JsonObject& _obj, uint32_t _ui32SenderNodeId);
     void _rebootEsp(JsonObject&_obj, uint32_t _ui32SenderNodeId);
     void _save(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    
+    Task _tChangeBoxSendConfirmationMsg;
     void _changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t _ui32SenderNodeId=0);
 
     // helpers to _changedBoxConfirmation (on the interface and the other boxes)
