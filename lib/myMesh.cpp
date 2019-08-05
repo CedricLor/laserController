@@ -156,7 +156,15 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
-  _decodeRequest(from, msg);
+
+  if (_tDecodeRequest.isEnabled()) {
+    Serial.println("myMesh::receivedCallback(): _tDecodeRequest is already enabled. Slow down!!!");
+    Serial.println("myMesh::receivedCallback(): message from " + String(from) + "was: " + msg);
+    Serial.println("myMesh::receivedCallback(): message has been discarded.");
+  } else {
+    _tDecodeRequest.setCallback( [from, &msg]() { _tcbDecodeRequest(from, msg);});
+    _tDecodeRequest.enable();
+  }
 
   Serial.println(F("myMesh::receivedCallback(): ending"));
 }
@@ -240,13 +248,14 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   // 2. If nodeId < UINT16_MAX, this is a false signal, just return.
   if (nodeId < UINT16_MAX) {
     Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. False signal. About to return.\n", nodeId);
+    _tChangedConnection.setCallback(NULL);
+    _tChangedConnection.setInterval(0);
     return;
   }
 
   // 3. set Task _tChangedConnection's params
   Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting _tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
   _tChangedConnection.setCallback( [nodeId]() { _tcbSendNotifOnDroppedConnection(nodeId); } );
-  _tChangedConnection.setOnEnable(NULL);
   _tChangedConnection.setInterval(0);
 
   // 4. Enable the Task _tChangedConnection, for execution without delay
@@ -290,7 +299,6 @@ void myMesh::changedConnectionCallback() {
   }
 
   Serial.printf("myMesh::changedConnectionCallback(): I am not alone. Sending my status.\n");
-  _tChangedConnection.setOnEnable(NULL);
   _tChangedConnection.setInterval((2900 + gui16MyIndexInCBArray * 100));
   _tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
   _tChangedConnection.restartDelayed();
@@ -339,7 +347,7 @@ bool myMesh::IamAlone() {
 
 
 
-
+Task myMesh::_tDecodeRequest(0, 1, NULL, &userScheduler, false);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Decode Request
 /* Mesh controller is a controller in the same meaning as in Model-View-Controller pattern in Ruby.
@@ -348,7 +356,7 @@ bool myMesh::IamAlone() {
     It determines whether the messages is sent by my Master Node or by the Interface Node.
     If so, it calls the meshController
 */
-void myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
+void myMesh::_tcbDecodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
   if (MY_DG_MESH) {
     Serial.printf("myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) starting. _ui32SenderNodeId == %u; &_msg == %s \n", _ui32SenderNodeId, _msg.c_str());
   }
@@ -370,6 +378,17 @@ void myMesh::_decodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
     Serial.print("myMesh::_decodeRequest(...): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
   }
 
+  _tPassRequestToMeshController.setCallback( [_ui32SenderNodeId, &_obj]() { 
+    _tcbPassRequestToMeshController(_ui32SenderNodeId, _obj);
+  });
+  _tPassRequestToMeshController.enable();
+}
+
+Task myMesh::_tPassRequestToMeshController(0, 1, NULL, &userScheduler, false);
+
+void myMesh::_tcbPassRequestToMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   // pass the deserialized doc and the _ui32SenderNodeId to the controller
   myMeshController myMeshController(_ui32SenderNodeId, _obj);
 }
+
+

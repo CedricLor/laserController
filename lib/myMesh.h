@@ -49,11 +49,9 @@ class myMesh
     static void receivedCallback( uint32_t from, String &msg);
 
     static void _tcbSendStatusOnNewConnection();
-    static bool _oetcbSendStatusOnNewConnection();
     static void newConnectionCallback(uint32_t nodeId);
 
     static void _tcbSendNotifOnDroppedConnection(uint32_t nodeId);
-    static void _enableTChangedConnectionIfBoxInControllerBoxes(uint32_t nodeId);
     static void droppedConnectionCallback(uint32_t nodeId);
 
     static Task _tChangedConnection;
@@ -68,7 +66,10 @@ class myMesh
     static void _updateNodeListSize();
     static void _printNodeListAndTopology();
 
-    static void _decodeRequest(uint32_t _ui32SenderNodeId, String &_msg);
+    static Task _tDecodeRequest;
+    static void _tcbDecodeRequest(uint32_t _ui32SenderNodeId, String& _msg);
+    static Task _tPassRequestToMeshController;
+    static void _tcbPassRequestToMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 
     static void _updateConnectedBoxCount();
 };
