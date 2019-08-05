@@ -129,14 +129,56 @@ void myMesh::meshSetup() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
-void myMesh::_updateNodeListSize() {
-  Serial.printf("myMesh::_updateNodeListSize(): previous uiMeshSize %u\n", uiMeshSize);
-  uiMeshSize = laserControllerMesh.getNodeList().size();
-  Serial.printf("myMesh::_updateNodeListSize(): new uiMeshSize %u\n", uiMeshSize);
-  _printNodeListAndTopology();
-  Serial.printf("myMesh::_updateNodeListSize(): ending\n");
+/* IamAlone
+   Checks whether the node is alone, upon mesh events or before sending
+   messages through the mesh.
+*/
+bool myMesh::IamAlone() {
+  Serial.printf("myMesh::IamAlone(): Starting\n");
+  if (
+    laserControllerMesh.getNodeList().size() < 2 && 
+    0 == *laserControllerMesh.getNodeList().rbegin()
+    ) {
+    Serial.printf("myMesh::IamAlone(): Yes\n");
+    if ((!(isInterface)) && (!(_tIamAloneTimeOut.isEnabled()))) {
+      Serial.println("myMesh::IamAlone(): Enabling _tIamAloneTimeOut.");
+}
+    return true;
+  }
+  Serial.printf("myMesh::IamAlone(): No\n");
+  Serial.println("myMesh::IamAlone(): Disabling _tIamAloneTimeOut.");
+  _tIamAloneTimeOut.disable();
+  return false;
 }
 
+/* _tIamAloneTimeOut
+   Task enabled when the node detects that it is alone.
+   If after 20 seconds, it is still alone, it will restart the mesh.
+*/
+Task myMesh::_tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, &userScheduler, false);
+
+/* _tcbIamAloneTimeOut()
+   Restarts the mesh if the node is no longer connected.
+*/
+void myMesh::_tcbIamAloneTimeOut() {
+  Serial.println("myMesh::_tcbIamAloneTimeOut(): Starting.");
+  if (IamAlone()) {
+    Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
+    laserControllerMesh.stop();
+    meshSetup();
+  }
+}
+
+
+
+
+
+
+/* _printNodeListAndTopology()
+   Used for debug purposes.
+   Prints the mesh topology as JSON and
+   iterates over the nodeList to print their values.
+*/
 void myMesh::_printNodeListAndTopology() {
   Serial.printf("myMesh::_printNodeListAndTopology(): mesh topology: %s\n", laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", laserControllerMesh.getNodeList().size());
@@ -147,6 +189,11 @@ void myMesh::_printNodeListAndTopology() {
   Serial.printf("myMesh::_printNodeListAndTopology(): ending -------\n");
 }
 
+
+/* _tPrintMeshTopo()
+   Used for debug purposes.
+   Calls _printNodeListAndTopology() every 30 seconds.
+*/
 Task myMesh::_tPrintMeshTopo(30*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, &userScheduler, false);
 
 
@@ -193,8 +240,6 @@ void myMesh::newConnectionCallback(uint32_t nodeId) {
     Serial.println(F("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++"));
   }
 }
-
-
 
 
 
@@ -308,39 +353,6 @@ void myMesh::changedConnectionCallback() {
   }
 }
 
-bool myMesh::IamAlone() {
-  Serial.printf("myMesh::IamAlone(): Starting\n");
-  if (
-    laserControllerMesh.getNodeList().size() < 2 && 
-    0 == *laserControllerMesh.getNodeList().rbegin()
-    ) {
-    Serial.printf("myMesh::IamAlone(): Yes\n");
-    _IamAlone = true;
-    if (!(isInterface)) {
-      Serial.println("myMesh::IamAlone(): Enabling _tIamAloneTimeOut.");
-      _tIamAloneTimeOut.restartDelayed();
-    }
-    return true;
-  }
-  Serial.printf("myMesh::IamAlone(): No\n");
-  _IamAlone = false;
-  Serial.println("myMesh::IamAlone(): Disabling _tIamAloneTimeOut.");
-  _tIamAloneTimeOut.disable();
-  return false;
-}
-
-bool myMesh::_IamAlone = true;
-
-Task myMesh::_tIamAloneTimeOut(20000, 1, &_tcbIamAloneTimeOut, &userScheduler, false);
-
-void myMesh::_tcbIamAloneTimeOut() {
-  Serial.println("myMesh::_tcbIamAloneTimeOut(): Starting.");
-  if (_IamAlone) {
-    Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
-    laserControllerMesh.stop();
-    meshSetup();
-  }
-}
 
 
 

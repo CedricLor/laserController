@@ -58,17 +58,14 @@ class myMesh
     static void _odtcbChangedConnection();
     static void changedConnectionCallback();
 
+    // static void nodeTimeAdjustedCallback(int32_t offset);
+    // static void delayReceivedCallback(uint32_t from, int32_t delay);
+
     static Task _tIamAloneTimeOut;
     static void _tcbIamAloneTimeOut();
     static bool IamAlone();
     static bool _IamAlone;
 
-
-    // static void nodeTimeAdjustedCallback(int32_t offset);
-    // static void delayReceivedCallback(uint32_t from, int32_t delay);
-
-    static void _updateNodeListSizeAndPrintNodeList();
-    static void _updateNodeListSize();
     static Task _tPrintMeshTopo;
     static void _printNodeListAndTopology();
 
