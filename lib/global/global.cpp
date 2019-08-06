@@ -62,16 +62,16 @@ const uint8_t UI8_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 
 // CONTROLLER BOX 202
 // node id in the current configuration 2752898073
-// const uint8_t UI8_NODE_NAME = 202;                          // BOX BY BOX
-// const bool IS_INTERFACE = false;                        // BOX BY BOX
-// const bool IS_ROOT = false;
+const uint8_t UI8_NODE_NAME = 202;                          // BOX BY BOX
+const bool IS_INTERFACE = false;                        // BOX BY BOX
+const bool IS_ROOT = false;
 
 
 // CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER
 // node id in the current configuration 2760139053
-const uint8_t UI8_NODE_NAME = 200;                          // BOX BY BOX
-const bool IS_INTERFACE = true;                        // BOX BY BOX
-const bool IS_ROOT = true;                             
+// const uint8_t UI8_NODE_NAME = 200;                          // BOX BY BOX
+// const bool IS_INTERFACE = true;                        // BOX BY BOX
+// const bool IS_ROOT = true;                             
 // IS_ROOT shall be set to true if interface shall be root and served from its STATION
 // IS_ROOT shall be set to false if interface shall be mobile and served from its AP
 
