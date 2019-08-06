@@ -36,7 +36,7 @@ myWebServerViews contains the webPage being displayed by the webServer.
 // const char* myWebServerViews::_slave_Reaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
 // const char* myWebServerViews::_pairing_Type[3] = {"unpaired", "twin", "cooperative"};
 
-myWebServerViews::myWebServerViews(AsyncWebServerRequest *request)
+myWebServerViews::myWebServerViews(AsyncWebServerRequest *request, const char* url)
 {
   // strcpy(cBoxArray, "");
   // _loadBoxArray();
@@ -67,7 +67,7 @@ myWebServerViews::myWebServerViews(AsyncWebServerRequest *request)
    //   } else send(404);
    // }
 
-   request->send(SPIFFS, "/index.htm", String(), false, _processor);
+  request->send(SPIFFS, url, String(), false, _processor);
 
 }
 
@@ -83,25 +83,13 @@ String myWebServerViews::_processor(const String& var) {
     itoa(ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName,_cNodeName,10); //(integer, yourBuffer, base)
     return F(_cNodeName);
   }
-  if(var == "STATION_IP") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"STATION_IP\")\n");
-    return F(ControlerBoxes[gui16MyIndexInCBArray].stationIP.toString().c_str());
-  }
-  if(var == "AP_IP") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"AP_IP\")\n");
-    return F(ControlerBoxes[gui16MyIndexInCBArray].APIP.toString().c_str());
-  }
-  // if(var == "BOX_SETTER") {
-  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
-  //   myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
-  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): Just after instantiating __myWebServerView\n");
-  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): __myWebServerView.cBoxArray  =");Serial.println(__myWebServerView.cBoxArray);
-  //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"):  Just after __myWebServerView.loadBoxArray()\n");
-  //   return F(__myWebServerView.cBoxArray);
-  // }
-  if(var == "NETWORK_SETTER") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"NETWORK_SETTER\")\n");
-    return F(ControlerBoxes[gui16MyIndexInCBArray].APIP.toString().c_str());
+  if(var == "SERVER_IP") {
+    // Serial.print("myWebServerBase::_processor(): if(var == \"SERVER_IP\")\n");
+    if (isRoot) {
+      return F(WiFi.localIP().toString().c_str());
+    } else {
+      return F(WiFi.softAPIP().toString().c_str());
+    }
   }
   if (MY_DG_WEB) {
     Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");

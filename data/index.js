@@ -25,7 +25,7 @@ var boxRowTemplate = boxRowTemplateSelector();
 // WEB SOCKET
 function connect() {
   console.log("connect() starting.");
-  ws = new WebSocket('ws://192.168.43.84/ws');
+  ws = new WebSocket('ws://'+ self.location.host +'/ws');
 
 
   // onopen websocket,
@@ -946,7 +946,7 @@ function oninputMasterSelect(_e) {
 function updateGlobalInformation(_data) {
   console.log("updateGlobalInformation() starting");
   // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
-  document.getElementById('stationIp').innerHTML = _data.serverIP;
+  document.getElementById('serverIp').innerHTML = _data.serverIP;
   document.getElementById('ssid').value = _data.ssid;
   document.getElementById('pass').value = _data.pass;
   document.getElementById('gatewayIP').value = _data.gatewayIP;

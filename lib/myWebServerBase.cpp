@@ -73,20 +73,8 @@ void myWebServerBase::startAsyncServer() {
 
   // respond to GET requests by sending index.htm to the browser
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      if (MY_DG_WEB) {
-        Serial.print("myWebServerBase::startAsyncServer():: In handler of \"/\" request -------\n");
-        // List all collected headers
-        _listAllCollectedHeaders(request);
-        // List all parameters
-        _listAllCollectedParams(request);
-      }
-
-      // Decode request and change behavior of this controller box
-      myWebServerControler __myWebServerControler;
-      __myWebServerControler.decodeRequest(request);   // Call to "child" class myWebServerControler
-
-      // Send a response (i.e. display a web page)
-       myWebServerViews __myWebServerView(request);
+    // Send a response (i.e. display a web page)
+    myWebServerViews __myWebServerView(request, "/index.htm");
 
   }); // end _asyncServer.on("/", ...)
 
@@ -97,6 +85,7 @@ void myWebServerBase::startAsyncServer() {
 
    // respond to GET requests requesting index.js by sending index.js to the browser
    _asyncServer.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
+      myWebServerViews __myWebServerView(request, "/index.htm");
       request->send(SPIFFS, "/index.js", "text/javascript");
     });
 
