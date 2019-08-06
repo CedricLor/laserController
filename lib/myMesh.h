@@ -107,8 +107,8 @@ class myMesh
     static void _tcbSaveNodeListAndMap();
     static std::map<uint32_t, uint16_t> _nodeMap;
     static void _saveNodeMap();
-    static std::list<uint32_t> _savedNodeList;
-    static void _saveNodeList();
+    // static std::list<uint32_t> _savedNodeList;
+    // static void _saveNodeList();
 };
 
 #endif

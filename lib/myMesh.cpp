@@ -514,9 +514,9 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
   _tSaveNodeListAndMap.disable();
 
   // 2. Create a _newNodeList containing the new mesh layout
-  std::list<uint32_t> _newNodeList = laserControllerMesh.getNodeList();
-  _newNodeList.remove(0);
-  _newNodeList.sort();
+  // std::list<uint32_t> _newNodeList = laserControllerMesh.getNodeList();
+  // _newNodeList.remove(0);
+  // _newNodeList.sort();
   // auto _newListNode = _newNodeList.begin();
 
   // 3. Set all the values of the _nodeMap to 0
@@ -533,13 +533,14 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
   //    The boxes which have not been set to 1 or 2 will remain 
   //    marked as 0 -> for deletion.
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Before iteration over the list. Time: " + String(millis()));
-  for (uint32_t _newNode : _newNodeList) {
+  for (uint32_t _newNode : laserControllerMesh.getNodeList()) {
+    if (_newNode == (uint32_t)0) continue;
     std::map<uint32_t, uint16_t>::iterator _nodeInMap = _nodeMap.find(_newNode);
     if (_nodeInMap != _nodeMap.end()) {
-      _nodeInMap->second = 1;
+      _nodeInMap->second = 1; // now existed and is still existing
       continue;
     }
-    _nodeMap.emplace(_newNode, 2);
+    _nodeMap.emplace(_newNode, 2); // new node
   }
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): After iteration over the list. Time: " + String(millis()));
 
@@ -580,7 +581,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
 
 void myMesh::_deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap) {
   for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
-    if (_node.second == (uint16_t)0) {
+    if (_node.second == (uint16_t)0) {  // node marked as 0: existed but does not exist anymore
       _deleteBoxFromCBArray(_node.first);
     }
   }
@@ -612,7 +613,7 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   This Task is called on various occasions, to keep an 
   up-to-date vision of the mesh layout.
 */
-Task myMesh::_tSaveNodeListAndMap(10 * TASK_SECOND, 3, &_tcbSaveNodeListAndMap, &userScheduler, false);
+Task myMesh::_tSaveNodeListAndMap(10 * TASK_SECOND, 2, &_tcbSaveNodeListAndMap, &userScheduler, false);
 
 void myMesh::_tcbSaveNodeListAndMap() {
   if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeListAndMap(): remaining iterations: " + String(_tSaveNodeListAndMap.getIterations()));
@@ -621,23 +622,23 @@ void myMesh::_tcbSaveNodeListAndMap() {
     _tSaveNodeListAndMap.setIterations(_tSaveNodeListAndMap.getIterations() + 1);
     return;
   }
-  _tSaveNodeListAndMap.setInterval(10 * TASK_SECOND + ((_tSaveNodeListAndMap.getRunCounter() - 1) / (_tSaveNodeListAndMap.getIterations() + 1)) * (20 / (_tSaveNodeListAndMap.getIterations() + 1)));
+  _tSaveNodeListAndMap.setInterval(20 * TASK_SECOND);
   if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeListAndMap(): _tUpdateCDOnChangedConnections is not enabled. Updating mesh topo list and map.");
-  _saveNodeList();
+  // _saveNodeList();
   _saveNodeMap();
 }
 
-std::list<uint32_t> myMesh::_savedNodeList = laserControllerMesh.getNodeList();
+// std::list<uint32_t> myMesh::_savedNodeList = laserControllerMesh.getNodeList();
 
-void myMesh::_saveNodeList() {
-  // Serial.println("myMesh::_saveNodeList(): Starting. Time: " + String(millis()));
-  _savedNodeList = laserControllerMesh.getNodeList();
-  // Serial.println("myMesh::_saveNodeList(): Before remove(0). Time: " + String(millis()));
-  _savedNodeList.remove(0);
-  // Serial.println("myMesh::_saveNodeList(): Before sort. Time: " + String(millis()));
-  _savedNodeList.sort();
-  // Serial.println("myMesh::_saveNodeList(): Ending. Time: " + String(millis()));
-}
+// void myMesh::_saveNodeList() {
+//   // Serial.println("myMesh::_saveNodeList(): Starting. Time: " + String(millis()));
+//   _savedNodeList = laserControllerMesh.getNodeList();
+//   // Serial.println("myMesh::_saveNodeList(): Before remove(0). Time: " + String(millis()));
+//   _savedNodeList.remove(0);
+//   // Serial.println("myMesh::_saveNodeList(): Before sort. Time: " + String(millis()));
+//   // _savedNodeList.sort();
+//   // Serial.println("myMesh::_saveNodeList(): Ending. Time: " + String(millis()));
+// }
 
 std::map<uint32_t, uint16_t> myMesh::_nodeMap;
 
@@ -645,8 +646,10 @@ void myMesh::_saveNodeMap() {
   // Serial.println("myMesh::_saveNodeMap(): Starting. Time: " + String(millis()));
   _nodeMap.clear();
   // Serial.println("myMesh::_saveNodeMap(): Before iteration. Time: " + String(millis()));
-  for (uint32_t _savedNode : _savedNodeList) {
-    _nodeMap.emplace(_savedNode, 1);
+  // for (uint32_t _savedNode : _savedNodeList) {
+  for (uint32_t _nodeFromList : laserControllerMesh.getNodeList()) {
+    if (_nodeFromList == (uint32_t)0) continue;
+    _nodeMap.emplace(_nodeFromList, 1);
   }
   // Serial.println("myMesh::_saveNodeMap(): Ending. Time: " + String(millis()));
 }
