@@ -275,21 +275,22 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 
   // 1. disable Task _tChangedConnection (enabled in changedConnectionCallback)
   _tChangedConnection.disable();
+  _tChangedConnection.setInterval(0);
 
   // 2. If nodeId < UINT16_MAX, this is a false signal, just return.
   if (nodeId < UINT16_MAX) {
     if (MY_DEEP_DG_MESH) Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. False signal. About to return.\n", nodeId);
     _tChangedConnection.setCallback(NULL);
-    _tChangedConnection.setInterval(0);
     return;
   }
 
-  // 3. set Task _tChangedConnection's params
+  // 3. Else, the previously detected changeConnection was indeed a dropper.
+  // Accordingly, reset Task _tChangedConnection to send a dropped notification
+  // to the other mesh nodes to which this node is connected.
   if (MY_DEEP_DG_MESH) Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting _tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
   _tChangedConnection.setCallback( [nodeId]() { _tcbSendNotifOnDroppedConnection(nodeId); } );
-  _tChangedConnection.setInterval(0);
 
-  // 4. Enable the Task _tChangedConnection, for execution without delay
+  // 4. Restart the Task _tChangedConnection, for execution without delay
   if (MY_DEEP_DG_MESH) Serial.println(F("myMesh::droppedConnectionCallback(): restarting _tChangedConnection."));
   _tChangedConnection.restart();
 
