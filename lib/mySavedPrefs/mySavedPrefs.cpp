@@ -347,6 +347,7 @@ void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
   gui16NodeName
   gui16MyIndexInCBArray
   isInterface
+  isRoot
 */
 // Need a reboot
 void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
@@ -369,12 +370,25 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   gui16MyIndexInCBArray = gui16NodeName - gui16ControllerBoxPrefix;
   Serial.printf("%s gui16MyIndexInCBArray recalculated to: %u (not saved)\n", debugSaveMsgStart, gui16MyIndexInCBArray);
 
-  // save value of isInterface
-  // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot but quite messy (this would require a mesh reconfiguration)
-  // In addition, the interface is supposed to be also box 200 and the root node
+  /*
+    Save value of isInterface
+    -> runtime change possible; would require a restart of painlessMesh
+    See below for possible implications with isRoot
+  */
   size_t _isInterfaceRet = _preferences.putBool("isIF", isInterface);
   Serial.printf("%s isInterface == %i %s\"isIF\"\n", debugSaveMsgStart, isInterface, (_isInterfaceRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+
+  /*
+    Save value of isRoot
+    -> runtime change possible, but 
+      - would require a restart of painlessMesh on this node
+      - would also require a symetric change to be done on another
+      node (ex. if this node was root and shall no longer be,
+      another node shall be assigned this role and painlessMesh shall 
+      also be restarted on the other node)
+  */
+  size_t _isRootRet = _preferences.putBool("isRoot", isRoot);
+  Serial.printf("%s isRoot == %i %s\"isRoot\"\n", debugSaveMsgStart, isRoot, (_isRootRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -538,7 +552,6 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
   gi8RequestedOTAReboots
 */
 void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
-  // isInterface
   gi8RequestedOTAReboots =_preferences.getChar("OTARebReq", gi8RequestedOTAReboots);
   Serial.printf("%s gi8RequestedOTAReboots set to: %i\n", _debugLoadMsgStart, gi8RequestedOTAReboots);
 }
@@ -551,6 +564,7 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
   gui16NodeName
   gui16MyIndexInCBArray
   isInterface
+  isRoot
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // gui16NodeName
@@ -563,8 +577,12 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   Serial.printf("%s gui16MyIndexInCBArray reset to: %i\n", _debugLoadMsgStart, gui16MyIndexInCBArray);
 
   // isInterface
-  isInterface =_preferences.getBool("isIF", isInterface);
+  isInterface = _preferences.getBool("isIF", isInterface);
   Serial.printf("%s isInterface set to: %i\n", _debugLoadMsgStart, isInterface);
+
+  // isRoot
+  isRoot = _preferences.getBool("isRoot", isRoot);
+  Serial.printf("%s isRoot set to: %i\n", _debugLoadMsgStart, isRoot);
 }
 
 
