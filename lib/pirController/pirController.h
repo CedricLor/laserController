@@ -7,8 +7,7 @@
 #define pirController_h
 
 #include "Arduino.h"
-#include <global.h>
-#include <ControlerBox.h>
+#include <../ControlerBox.h>
 
 class pirController
 {

@@ -37,7 +37,8 @@
 
 #include "Arduino.h"
 #include <global.h>
-#include <note.h>
+#include "../note/note.h"
+#include "../note/note.cpp"
 
 class bar
 {
@@ -48,10 +49,10 @@ class bar
     static bar bars[];
     static void initBars(); // initializer of the array of bas
 
-    static void setActiveBar(const short int activeBar);
+    static void setActiveBar(const uint16_t __ui16_active_bar);
 
     // non-static
-    unsigned long getNoteDuration(const short int _iter);
+    unsigned long getNoteDuration(const uint16_t _ui16_iter);
     uint16_t ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
     uint16_t ui16BaseNoteForBeat; // base note for the beat
     uint16_t ui16BaseNotesCountInBar;
@@ -60,9 +61,9 @@ class bar
     static Task tPlayBar;
 
   private:
-    static const short int _bar_count;
-    static short int _activeBar;
-    static const short int _char_count_in_name;
+    static const uint16_t _ui16bar_count;
+    static uint16_t _ui16activeBar;
+    static const uint16_t _ui16_char_count_in_name;
 
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
@@ -72,7 +73,7 @@ class bar
     void _initBar(const char __cName[], const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int iNoteTone[][2]);
 
     char _cName[7];  // array of character to hold the name of each bars
-    short int _note[16][2];  // array containing the state of each laser at each tempo
+    uint16_t _note[16][2];  // array containing the state of each laser at each tempo
 };
 
 #endif

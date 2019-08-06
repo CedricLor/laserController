@@ -105,7 +105,7 @@ More information about PlatformIO Library Dependency Finder
 // DONE AND TODO
 
 DONE:
-- rename ControlerBox::activeBoxState to ControlerBox::boxActiveState
+- rename ControlerBox::activeBoxState to ControlerBox::i16BoxActiveState
 - rename boxState::_targetActiveBoxState to boxState::_boxTargetState
 - rename boxState::_activeBoxStateHasBeenReset to boxState::_boxActiveStateHasBeenReset
 - rename boxState::_defaultBoxState to boxState::_boxDefaultState
@@ -173,7 +173,7 @@ TO DO:
 3. Low priority: small optimizations
   - ControlerBox class: UI8_NODE_NAME of interface box is currently set at 200; some code shall be added to avoid including the interface box into the ControlerBoxes array
   - move _processor and _SBoxArray to myWebServerViews
-  - find a better way to init ControlerBoxes[MY_INDEX_IN_CB_ARRAY].boxActiveState = 0 than in setup()
+  - find a better way to init ControlerBoxes[MY_INDEX_IN_CB_ARRAY].i16BoxActiveState = 0 than in setup()
   - refactor myMeshViews::statusMsg("on"); currently being called from boxState.cpp, upon enabling and disabling _tPlayBoxState
   - rewrite the Serial.print and Serial.println to Serial.printf; don't forget https://stackoverflow.com/questions/8986625/warning-format-c-expects-type-int-but-argument-2-has-type-char
 

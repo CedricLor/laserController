@@ -32,8 +32,11 @@
 #define sequence_h
 
 #include "Arduino.h"
+#include <painlessMesh.h>
 #include <global.h>
-#include <bar.h>
+#include <../ControlerBox.h>
+#include "../bar/bar.h"
+#include "../bar/bar.cpp"
 
 class sequence
 {
@@ -52,8 +55,8 @@ class sequence
     static short int _activeSequence;
     static const short int _char_count_in_name;
 
-    static long unsigned int _ulSequenceDuration(const short int __activeSequence);
-    static long unsigned int _ulBarDuration(const short int __activeSequence);
+    static long unsigned int _ulSequenceDuration(const int16_t __i16activeSequence);
+    static long unsigned int _ulBarDuration(const int16_t __i16activeSequence);
 
     void _initSequence(const char cName[], const uint16_t _ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountPerBar, const short int iNumberOfBeatsInSequence, const short int _iAssociatedBars[]);
 

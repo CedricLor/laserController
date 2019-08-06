@@ -455,12 +455,12 @@ void myWSReceiver::_checkBoxStateConsistancy(JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): ControlerBoxes[_iBoxIndex].boxActiveState = %i\n", ControlerBoxes[_iBoxIndex].boxActiveState);
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): ControlerBoxes[_iBoxIndex].i16BoxActiveState = %i\n", ControlerBoxes[_iBoxIndex].i16BoxActiveState);
     Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): (int)(_p.value().as<char*>()) = %i\n.", (int)(_p.value().as<char*>()));
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): comparison between the two: %i\n.", (ControlerBoxes[_iBoxIndex].boxActiveState == (int)(_p.value().as<char*>())));
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): comparison between the two: %i\n.", (ControlerBoxes[_iBoxIndex].i16BoxActiveState == (int)(_p.value().as<char*>())));
   }
   // check if it has the correct boxState; if not, ask for an update
-  if (ControlerBoxes[_iBoxIndex].boxActiveState != (int)(_p.value().as<char*>())) {
+  if (ControlerBoxes[_iBoxIndex].i16BoxActiveState != (int)(_p.value().as<char*>())) {
     if (MY_DG_WS) { Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n");}
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
     ControlerBoxes[_iBoxIndex].boxActiveStateHasBeenSignaled = false;

@@ -41,11 +41,13 @@ reverse dependency graph
 #define boxState_h
 
 #include "Arduino.h"
+#include <painlessMesh.h>
 #include <global.h>
-#include <ControlerBox.h>
-#include <sequence.h>
-#include <mySpiffs.h>
+#include "./mySpiffs/mySpiffs.cpp"
+#include <../ControlerBox.h>
 #include <../myMesh/myMeshViews/myMeshViews.h>
+#include <../sequence/sequence.h>
+#include <../sequence/sequence.cpp>
 
 class step
 {
@@ -92,7 +94,7 @@ class boxState
 {
   public:
     boxState(); // default constructor
-    // boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const uint16_t _ui16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
+    // boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 
     static void initBoxStates(); // initializer of the array of boxState
 

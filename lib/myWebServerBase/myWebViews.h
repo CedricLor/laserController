@@ -28,45 +28,22 @@ myWebServerViews contains the webPage being displayed by the webServer.
 
 */
 
-#ifndef myWebViews_h
-#define myWebViews_h
+#ifndef myWebServerViews_h
+#define myWebServerViews_h
 
 #include "Arduino.h"
-#include "AsyncTCP.h"
 #include <ESPAsyncWebServer.h>
 #include <global.h>
-#include <ControlerBox.h>
+#include <secret.h>
+#include <../ControlerBox.h>
 
-class myWebViews
+class myWebServerViews
 {
   public:
-    myWebViews(AsyncWebServerRequest *request);
-    // String returnTheResponse();
-    // char cBoxArray[13000];
+    myWebServerViews(AsyncWebServerRequest *request, const char* url);
 
   private:
     static String _processor(const String& var);
-    // void _loadBoxArray();
-    // static const char* _slave_Reaction[];
-    // static const char* _pairing_Type[];
-    //
-    // String _printLinksToBoxes();
-    // String _printAllLasersCntrl();
-    // String _printGlobalPinPairingWebCntrl();
-    // String _printGlobalPinPairingSelect();
-    // String _printMasterCntrl();
-    // String _printMasterSelect();
-    // String _printSlaveReactionSelect();
-    // String _printLabel(const String labelText, const String labelFor);
-    // String _printOption(const String optionValue, const String optionText, const String selected);
-    // String _printIndivLaserCntrls();
-    // String _printCurrentStatus(const short thisPin);
-    // String _printOnOffControl(const short thisPin);
-    // String _printPirStatusCntrl(const short thisPin);
-    // String _printBlinkingIntervalWebCntrl(const short thisPin);
-    // String _printPairingCntrl(const short thisPin);
-    // String _printIntervalSelect(const short thisPin);
-    // String _printHiddenLaserNumb(const short thisPin);
 };
 
 #endif

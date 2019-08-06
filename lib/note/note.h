@@ -33,7 +33,9 @@
 #define note_h
 
 #include "Arduino.h"
-#include <tone.h>
+#include <global.h>
+#include "../tone/tone.h"
+#include "../tone/tone.cpp"
 
 class note
 {
