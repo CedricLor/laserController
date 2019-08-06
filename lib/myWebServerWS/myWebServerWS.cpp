@@ -44,7 +44,7 @@
 #include "./myWSReceiver/myWSReceiver.cpp"
 
 
-AsyncWebSocket myWebServerWS::ws("/ws"); // access at ws://[esp ip]/ws
+AsyncWebSocket myWebServerWS::ws("/"); // access at ws://[esp ip]/
 uint32_t myWebServerWS::ws_client_id = 0;
 
 

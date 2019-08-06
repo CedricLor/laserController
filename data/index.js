@@ -25,7 +25,7 @@ var boxRowTemplate = boxRowTemplateSelector();
 // WEB SOCKET
 function connect() {
   console.log("connect() starting.");
-  ws = new WebSocket('ws://'+ self.location.host +'/ws');
+  ws = new WebSocket('ws://'+ self.location.host +'/');
 
 
   // onopen websocket,
