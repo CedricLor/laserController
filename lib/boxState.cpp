@@ -136,7 +136,7 @@ step::step(int16_t __i16stepBoxStateNb,
 }
 
 
-Task step::_tPreloadNextStep(0, 1, &_tcbPreloadNextStep, &myTaskScheduler, false);
+Task step::_tPreloadNextStep(0, 1, &_tcbPreloadNextStep, &userScheduler, false);
 
 void step::_tcbPreloadNextStep() {
   mySpiffs _mySpiffs;
@@ -416,7 +416,7 @@ void boxState::switchToStepControlled() {
     onEnable, it puts the box into IR Startup boxState (which is
     set to last for 1 minute).
 */
-Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &myTaskScheduler, false, &_oetcbPlayBoxStates);
+Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, false, &_oetcbPlayBoxStates);
 
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
@@ -700,7 +700,7 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   Task tBlink(5000, TASK_ONCE, NULL, &ts, false, &BlinkOnEnable, &BlinkOnDisable).
 
 */
-Task boxState::_tPlayBoxState(0, 1, NULL, &myTaskScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
+Task boxState::_tPlayBoxState(0, 1, NULL, &userScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
 
 bool boxState::_oetcbPlayBoxState(){

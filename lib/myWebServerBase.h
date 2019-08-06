@@ -30,8 +30,11 @@
 #define myWebServerBase_h
 
 #include "Arduino.h"
-#include <myWebViews.h>
-#include <myWebServerWS.h>
+#include "AsyncTCP.h"
+#include "./myWebServerBase/myWebServerViews/myWebServerViews.cpp"
+#include "./myWebServerBase/myWebServerControler/myWebServerControler.cpp"
+#include "./myWebServerWS/myWebServerWS.h"
+#include "./myWebServerWS/myWebServerWS.cpp"
 
 class myWebServerBase
 {
@@ -39,6 +42,7 @@ class myWebServerBase
     myWebServerBase();
 
     static void startAsyncServer();
+    static void sendWSData(JsonDocument& doc);
 
   private:
     static AsyncWebServer _asyncServer;

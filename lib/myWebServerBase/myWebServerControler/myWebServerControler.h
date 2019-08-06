@@ -1,14 +1,12 @@
 /*
-  myWebServerWS.h - Library web socket related functions.
-  Created by Cedric Lor, July 9, 2019.
+  myWebServerControler.h - Library web server controller related functions.
+  Created by Cedric Lor, January 2, 2019.
 
   |--main.cpp
   |  |
   |  |--myWebServerBase.cpp
   |  |  |--myWebServerBase.h
   |  |  |  |--AsyncTCP.h
-  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
-  |  |  |  |--ControlerBox.h
   |  |  |
   |  |  |--myWebServerControler.cpp ("private" class: called only from myWebServerBase.cpp)
   |  |  |  |--myWebServerControler.h
@@ -25,31 +23,24 @@
   |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
   |  |  |  |  |--global.h
   |  |  |  |--//LaserPin.cpp
-  |  |  |
-  |  |  |--myWebServerWS
-  |  |  |  |--myWebServerWS.cpp
-  |  |  |  |  |--myWebServerWS.h
 
 */
 
-#ifndef myWebServerWS_h
-#define myWebServerWS_h
+#ifndef myWebServerControler_h
+#define myWebServerControler_h
 
 #include "Arduino.h"
-#include "./myWSSender/myWSSender.h"
-#include "./myWSReceiver/myWSReceiver.h"
 
-class myWebServerWS
+class myWebServerControler
 {
   public:
-    myWebServerWS();
+    myWebServerControler();
+    void decodeRequest(AsyncWebServerRequest *request);
 
-    static AsyncWebSocket ws; // access at ws://[esp ip]/ws
-
-    static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
-
-    static uint32_t ws_client_id;
-
+  private:
+    // static void _webSwitchRelays(AsyncWebParameter* _p2, bool targetState);
+    // static void _webInclExclInPir(AsyncWebParameter* _p2, bool targetState);
+    // static void _webChangeBlinkingInterval(AsyncWebParameter* _p1, AsyncWebParameter* _p2);
 };
 
 #endif
