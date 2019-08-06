@@ -40,8 +40,7 @@ class myWebServerBase
     myWebServerBase();
 
   private:
-
-    void startAsyncServer(AsyncWebServer& _asyncServer);
+    static AsyncWebServer _asyncServer;
 
     void _onRequest(AsyncWebServerRequest *request);
     void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);

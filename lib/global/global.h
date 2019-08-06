@@ -10,7 +10,7 @@
 #include <painlessMesh.h>
 
 
-extern const short PIN_COUNT;                                                     // BOX BY BOX
+extern constexpr short PIN_COUNT = 4;                                                     // BOX BY BOX
 extern short relayPins[];  // an array of pin numbers to which relays are attached// BOX BY BOX
 
 extern const bool MY_DEBUG;
@@ -43,7 +43,7 @@ extern uint16_t gui16InterfaceNodeName;
 
 extern const char* slaveReactionHtml[4];
 
-extern const uint8_t UI8_BOXES_COUNT;                                                   // NETWORK BY NETWORK
+extern constexpr uint8_t UI8_BOXES_COUNT = 10;                                                   // NETWORK BY NETWORK
 extern uint16_t gui16BoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;

@@ -31,16 +31,10 @@
 #include "Arduino.h"
 #include "myWebServerBase.h"
 
-
+AsyncWebServer myWebServerBase::_asyncServer(80);
 
 myWebServerBase::myWebServerBase()
 {
-  AsyncWebServer _asyncServer(80);
-  startAsyncServer(_asyncServer);
-}
-
-
-void myWebServerBase::startAsyncServer(AsyncWebServer& _asyncServer) {
   // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
   // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
 
@@ -65,9 +59,10 @@ void myWebServerBase::startAsyncServer(AsyncWebServer& _asyncServer) {
       request->send(SPIFFS, "/index.js", "text/javascript");
     });
 
-  _asyncServer.onNotFound([this](AsyncWebServerRequest *request) {
+  _asyncServer.onNotFound([](AsyncWebServerRequest *request) {
     request->send(404);
   });
+
   _asyncServer.onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
     this->_onBody(request, data, len, index, total);
   });
@@ -79,11 +74,6 @@ void myWebServerBase::startAsyncServer(AsyncWebServer& _asyncServer) {
 
 
 
-// Call back on unknown request
-void myWebServerBase::_onRequest(AsyncWebServerRequest *request){
-  //Handle Unknown Request
-  request->send(404);
-}
 
 // Call back on body request
 void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){

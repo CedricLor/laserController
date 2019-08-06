@@ -15,7 +15,7 @@
 // const uint16_t PIN_COUNT
 // Define the number of pins connected to the lasers.
 // Is then used to create a pins array and to iterate over the pins
-const short PIN_COUNT = 4;
+// const short PIN_COUNT = 4;
 // const short PIN_COUNT = 8;
 
 
@@ -98,7 +98,7 @@ uint16_t gui16InterfaceIndexInCBArray = gui16InterfaceNodeName - gui16Controller
 
 const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
 
-const uint8_t UI8_BOXES_COUNT = 10;
+// const uint8_t UI8_BOXES_COUNT = 10;
 uint16_t gui16BoxesCount = UI8_BOXES_COUNT;                           // NETWORK BY NETWORK
 
 const short S_BOX_DEFAULT_STATE = 5;
