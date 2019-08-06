@@ -34,7 +34,6 @@ myWebServerViews contains the webPage being displayed by the webServer.
 #include "Arduino.h"
 #include <ESPAsyncWebServer.h>
 #include <global.h>
-#include <secret.h>
 #include <../ControlerBox.h>
 
 class myWebServerViews

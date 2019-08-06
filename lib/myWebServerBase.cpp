@@ -32,37 +32,15 @@
 #include "myWebServerBase.h"
 
 
-AsyncWebServer myWebServerBase::_asyncServer(80);
-
 
 myWebServerBase::myWebServerBase()
 {
+  AsyncWebServer _asyncServer(80);
+  startAsyncServer(_asyncServer);
 }
 
 
-void myWebServerBase::_listAllCollectedHeaders(AsyncWebServerRequest *request) {
-  int __headers = request->headers();
-  for(int __i=0;__i<__headers;__i++){
-    AsyncWebHeader* __h = request->getHeader(__i);
-    Serial.printf("HEADER[%s]: %s\n", __h->name().c_str(), __h->value().c_str());
-  }
-}
-
-void myWebServerBase::_listAllCollectedParams(AsyncWebServerRequest *request) {
-  int __params = request->params();
-  for(int __i=0;__i<__params;__i++){
-    AsyncWebParameter* __param = request->getParam(__i);
-    if(__param->isPost()){
-      Serial.printf("POST[%s]: %s\n", __param->name().c_str(), __param->value().c_str());
-    } else {
-      Serial.printf("GET[%s]: %s\n", __param->name().c_str(), __param->value().c_str());
-    }
-  }
-}
-
-
-
-void myWebServerBase::startAsyncServer() {
+void myWebServerBase::startAsyncServer(AsyncWebServer& _asyncServer) {
   // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
   // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
 
@@ -75,8 +53,7 @@ void myWebServerBase::startAsyncServer() {
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     // Send a response (i.e. display a web page)
     myWebServerViews __myWebServerView(request, "/index.htm");
-
-  }); // end _asyncServer.on("/", ...)
+  }); 
 
   // respond to GET requests requesting index.css by sending index.css to the browser
   _asyncServer.on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -85,12 +62,15 @@ void myWebServerBase::startAsyncServer() {
 
    // respond to GET requests requesting index.js by sending index.js to the browser
    _asyncServer.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
-      myWebServerViews __myWebServerView(request, "/index.htm");
       request->send(SPIFFS, "/index.js", "text/javascript");
     });
 
-  _asyncServer.onNotFound(&_onRequest);
-  _asyncServer.onRequestBody(&_onBody);
+  _asyncServer.onNotFound([this](AsyncWebServerRequest *request) {
+    request->send(404);
+  });
+  _asyncServer.onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+    this->_onBody(request, data, len, index, total);
+  });
 
   _asyncServer.begin();
 }

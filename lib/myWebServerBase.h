@@ -41,18 +41,12 @@ class myWebServerBase
   public:
     myWebServerBase();
 
-    static void startAsyncServer();
-    static void sendWSData(JsonDocument& doc);
-
   private:
-    static AsyncWebServer _asyncServer;
 
-    static void _listAllCollectedHeaders(AsyncWebServerRequest *request);
-    static void _listAllCollectedParams(AsyncWebServerRequest *request);
+    void startAsyncServer(AsyncWebServer& _asyncServer);
 
-    static void _onRequest(AsyncWebServerRequest *request);
-    static void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
-
+    void _onRequest(AsyncWebServerRequest *request);
+    void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 };
 
 #endif
