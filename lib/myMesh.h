@@ -52,6 +52,12 @@ class myMesh
     static IPAddress _fixed_ip;
     static IPAddress _fixed_netmask;
 
+    // setup subs
+    static void _initAndConfigureMesh();
+    static void _interfaceOnAPInit();
+    static void _setMeshCallbacks();
+    static void _setupMdns();
+
     // painlessMesh callbacks
     static void receivedCallback( uint32_t from, String &msg);
 

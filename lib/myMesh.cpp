@@ -58,44 +58,92 @@ void myMesh::meshSetup() {
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
   }
 
-  if (isInterface && interfaceOnAP) {
-    laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
+  _initAndConfigureMesh();
+
+  _tPrintMeshTopo.enable();
+  _tSaveNodeListAndMap.restart();
+
+  // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
+  ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
+
+  _setupMdns();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setup Helpers
+
+void myMesh::_initAndConfigureMesh() {
+  // 1. Init mesh
+  if (isInterface && !(isRoot)) {
+    // Special init for case of physically mobile interface (interface on AP)
+    _interfaceOnAPInit();
   } else {
+    // All the other mesh nodes  (whether root or non-root, interface on STATION,
+    // ControlerBoxes, relays, IR, etc. ) share the same init function. (no ad hoc 
+    // config of the Soft AP is required).
     laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
   }
 
-  if (isInterface && interfaceOnAP) {
-    // A. If the interface is on the AP, web users have to connect on the AP.
-    // The mesh will use the interface as STATION, scanning for other mesh nodes.
-    if(!WiFi.softAPConfig(_soft_ap_my_ip, _soft_ap_me_as_gateway_ip, _soft_ap_netmask)){
-      Serial.println("\nAP Config Failed\n");
-    }
-    if (WiFi.softAP(_soft_ap_ssid, _soft_ap_password, 
-                    ui8WifiChannel, 0 /* int ssid_hidden*/, 
-                    10 /*int max_connection */)){
-      IPAddress myIP = WiFi.softAPIP();
-      Serial.println("Network " + String(_soft_ap_ssid) + " running");
-      Serial.println("AP IP address:" + String(myIP) +"");
-    } else {
-      Serial.println("\nStarting AP failed.\n");
-    }
-  }
-
-  if (isInterface && !(interfaceOnAP)) {
-    // B. If the interface is on the STATION, web users have to connect on the STATION. 
-    // Other mesh nodes will connect on the AP. (This is the recommended use case by the devs
-    // of painlessMesh.)
+  // 2. Init station manual
+  if (isInterface && isRoot) {
+    // If the interface is on the STATION, web users will connect on the STATION. 
+    // Other mesh nodes will connect on the AP. (This is the recommended use case
+    // by the devs of painlessMesh.)
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, _fixed_ip, _fixed_netmask);
     // laserControllerMesh.stationManual(ssid, pass);
   }
 
+  // 3. Root the mesh
+  // One root node per mesh is recommanded. Once a node has been set as root,
+  // it and all other mesh member should know that the mesh contains a root.
+  if (isRoot) {
+    laserControllerMesh.setRoot(true);
+  }
+  laserControllerMesh.setContainsRoot(true);
+
+  // 4. Set the callbacks
+  _setMeshCallbacks();
+}
+
+
+/* _interfaceOnAPInit()
+   If the interface is on the AP, web users have to connect on the AP.
+   The mesh will use the interface as STATION, scanning for other mesh nodes.
+*/
+void myMesh::_interfaceOnAPInit() {
+  // 1. init the mesh in station only
+  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
+  // 2. configure the soft AP
+  if(!WiFi.softAPConfig(_soft_ap_my_ip, _soft_ap_me_as_gateway_ip, _soft_ap_netmask)){
+    Serial.println("\nAP Config Failed\n");
+  }
+  if (WiFi.softAP(_soft_ap_ssid, _soft_ap_password, 
+                  ui8WifiChannel, 0 /* int ssid_hidden*/, 
+                  10 /*int max_connection */)){
+    IPAddress myIP = WiFi.softAPIP();
+    Serial.println("Network " + String(_soft_ap_ssid) + " running");
+    Serial.println("AP IP address:" + String(myIP) +"");
+  } else {
+    Serial.println("\nStarting AP failed.\n");
+  }
+}
+
+
+void myMesh::_setMeshCallbacks() {
+  laserControllerMesh.onReceive(&receivedCallback);
+  laserControllerMesh.onNewConnection(&newConnectionCallback);
+  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
+  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
+}
+
+void myMesh::_setupMdns() {
   snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
   // laserControllerMesh.setHostname(gcHostnamePrefix);
-  // Set up mDNS responder:
-  // - first argument is the domain name, in this example
-  //   the fully-qualified domain name is "ESP32_200.local"
-  // - second argument is the IP address to advertise
-  //   we send our IP address on the WiFi network
+  // begin mDNS responder: argument is the name to broadcast. In this example
+  // "ESP32_200". It will be broadcasted as ESP32_200.local.
   if (!MDNS.begin(gcHostnamePrefix)) {
       Serial.println("Error setting up MDNS responder!");
       while(1) {
@@ -104,32 +152,13 @@ void myMesh::meshSetup() {
   }
   Serial.println("mDNS responder started");
 
-
-  // Add service to MDNS-SD
+  // Add service to MDNS
   MDNS.addService("http", "tcp", 80);
   MDNS.addService("arduino", "tcp", 3232);
-
-  if ((isInterface && (!(interfaceOnAP))) || isRoot) {
-    laserControllerMesh.setRoot(true);
-  } 
-
-  // This and all other mesh member should ideally know that the mesh contains a root
-  laserControllerMesh.setContainsRoot(true);
-
-
-  laserControllerMesh.onReceive(&receivedCallback);
-  laserControllerMesh.onNewConnection(&newConnectionCallback);
-  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
-  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
-
-  _tPrintMeshTopo.enable();
-  _tSaveNodeListAndMap.restart();
-
-  // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
-  ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
 }
+
+
+
 
 
 

@@ -70,7 +70,6 @@ const uint8_t UI8_DEFAULT_MASTER_NODE_NAME = 254; // 254 means no one
 const uint8_t UI8_NODE_NAME = 200;                          // BOX BY BOX
 const bool IS_INTERFACE = true;                        // BOX BY BOX -- false or true
 const bool IS_ROOT = true;
-bool interfaceOnAP = false;
 
 
 uint16_t gui16NodeName = UI8_NODE_NAME;

@@ -26,7 +26,6 @@ extern const uint8_t UI8_DEFAULT_MASTER_NODE_NAME;                              
 
 extern uint16_t gui16NodeName;
 extern bool isInterface;
-extern bool interfaceOnAP;
 extern bool isRoot;
 
 extern uint32_t gui32InterfaceNodeId;
