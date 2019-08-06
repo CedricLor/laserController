@@ -121,13 +121,6 @@
             <option value='54'>None</option>
             <option value='55'>All</option>
           </select>
-          <div class='slave_master_reaction_setter' data-defstate='iSlaveOnOffReaction'>Action onMesh():&nbsp;<span class='action_on_ms_change'></span>
-            <select id='groupSequenceSelect'>
-              <option value='0'>Untouchable</option>
-              <option value='1'>Swipe Right</option>
-              <option value='1'>Get Deeper</option>
-            </select>
-          </div>
         </div> <!-- slave_master_box_setter -->
 
         <div class='box_def_state_setter pad_tb10'>
@@ -175,16 +168,10 @@
         <div class='default_box_param_setter pad_tb10'>
             <div class='subsection_title pad_tb10'>
                 <div>Box Default Values:</div>
-                <div>Waiting</div>
               </div>
           <div data-blurb='gui16NodeName'>Node Name:&nbsp;<span></span><input type='text' ></div>
-          <div data-blurb='gui16MyIndexInCBArray'>gui16MyIndexInCBArray:&nbsp;(calculated)</div>
-          <div data-blurb='isInterface'>isInterface:&nbsp;
-            <select id='isIFSelect'>
-              <option value='0'>false</option>
-              <option value='1'>true</option>
-            </select>
-          </div>
+          <div data-blurb='gui16MyIndexInCBArray'>Index in CB Array:&nbsp;<span></span>&nbsp;(calculated)</div>
+          <div data-blurb='isInterface'>is interface:&nbsp;<span></span></div>
 
         </div> <!-- default_box_param_setter -->
       </div> <!-- box_wrapper -->
@@ -192,13 +179,78 @@
 
     <div class='mesh_glob_setters marg_top'>
       <div class='section_title bold  pad_tb10'>Mesh Global Settings</div>
-      <ul>
-        <li>gui32InterfaceNodeId (e.g. 2760139053): <span></span><input type='text' ></li>
-        <li>gui16InterfaceNodeName (e.g. 201): <span></span><input type='text' ></li>
-        <li>gui16ControllerBoxPrefix: <span></span><input type='text' ></li>
-        <li>gui16InterfaceIndexInCBArray: <span></span></li>
-        <li>gui16BoxesCount: <span></span><input type='text' ></li>
-      </ul>
+      <div>
+        <label class='wifi_labels' for='rootBox'>
+          Root Node Number:
+        </label>
+        <input id='rootBox' type='text' >
+      </div>
+      <div class='subsection_title pad_tb10'>Save Root Number</div>
+      <div>
+        <button id='saveRootNodeNumb' class='button'>
+          On All
+        </button>
+        <button id='applyRootNodeNumb' class='button'>
+          On All
+        </button>
+      </div>
+      <div>
+        <label class='wifi_labels' for='IFBox'>
+          Interface Node Number:
+        </label>
+        <input id='IFBox' type='text' >
+      </div>
+      <div class='subsection_title pad_tb10'>Save IF Number</div>
+      <div>
+        <button id='saveIFNodeNumb' class='button'>
+          On All
+        </button>
+        <button id='applyRootNodeNumb' class='button'>
+          On All
+        </button>
+      </div>
+      <div>
+        <label class='wifi_labels' for='_soft_ap_my_ip'>
+          Interface IP (in soft AP mode):
+        </label>
+        <input id='_soft_ap_my_ip' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='_soft_ap_ssid'>
+          Interface SSID (in soft AP mode):
+        </label>
+        <input id='_soft_ap_ssid' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='_soft_ap_password'>
+          Interface Password (in soft AP mode):
+        </label>
+        <input id='_soft_ap_password' type='text' >
+      </div>
+      <div class='subsection_title pad_tb10'>Save Soft AP Settings</div>
+      <div>
+        <button id='saveSoftAPSettings' class='button'>
+          On IF
+        </button>
+      </div>
+      <div>
+        <label class='wifi_labels' for='meshPrefix'>
+          Mesh Name Prefix:
+        </label>
+        <input id='meshPrefix' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='meshPassword'>
+          Mesh Password:
+        </label>
+        <input id='meshPassword' type='text' >
+      </div>
+      <div class='subsection_title pad_tb10'>Save Mesh Settings</div>
+      <div>
+        <button id='saveMeshSettings' class='button'>
+          On All
+        </button>
+      </div>
     </div> <!-- mesh_glob_setters -->
     <div class='wifi_setters marg_top'>
       <div class='section_title bold  pad_tb10'>Wifi Settings</div>
