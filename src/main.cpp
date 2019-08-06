@@ -1,34 +1,22 @@
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
-#include <ESPAsyncWebServer.h>
-#include <painlessMesh.h>
 #include <IPAddress.h>
-#include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
-#include <global.cpp>
+#include <global.h>
+#include <secret.h>
 
-#include "../lib/secret.h"
+#include <ControlerBox.h>
 
-painlessMesh laserControllerMesh;
-Scheduler    userScheduler;
+#include <mySavedPrefs.h>
+#include <myOta.h>
+#include <myMesh.h>
 
-#include <../lib/ControlerBox.cpp>
+#include <boxState.h>
 
-#include "../lib/mySavedPrefs.cpp"
+#include <pirController.h>
 
-#include <../lib/myOta/myota.cpp>
-
-#include "../lib/myMesh.cpp"
-
-#include "../lib/boxState.cpp"
-
-// #include <step.h>
-// #include "../lib/step/step.cpp"
-
-#include "../lib/pirController.cpp"
-
-#include "../lib/myWebServerBase.cpp"
+#include <myWebServerBase.h>
 
 
 
@@ -41,8 +29,8 @@ void enableTasks();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
-ControlerBox ControlerBoxes[UI8_BOXES_COUNT];
-
+// ControlerBox ControlerBoxes[BOXES_COUNT];
+ControlerBox ControlerBoxes[10];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
@@ -109,7 +97,11 @@ void loop() {
     ArduinoOTA.handle();
     return;
   }
-  userScheduler.execute();   // it will run mesh scheduler as well
+  
+  bool taskExecuted = myTaskScheduler.execute();   // it will run mesh scheduler as well
+  if (taskExecuted == false) {
+    Serial.println("PROUT");
+  }
   laserControllerMesh.update();
   pirController::pirCntrl();
 }

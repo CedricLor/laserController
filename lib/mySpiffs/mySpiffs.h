@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include <FS.h>
 #include <SPIFFS.h>
-#include <ArduinoJson.h>
+#include <global.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
 class mySpiffs

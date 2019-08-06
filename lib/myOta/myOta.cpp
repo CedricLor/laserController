@@ -6,7 +6,6 @@
 #include "Arduino.h"
 #include "myota.h"
 
-
 int8_t myOta::_i8OTASuccessErrorCode = 10; // undefined
 
 
@@ -23,6 +22,7 @@ void myOta::OTAConfig()
 
   Serial.print("SETUP: OTAConfig(): about to connect to Wifi\n");
   WiFi.mode(WIFI_STA);
+  WiFi.config(IPAddress(192, 168, 43, gui16NodeName),  IPAddress(192, 168, 43, 0), IPAddress(255, 255, 255, 0));
   WiFi.begin(ssid, pass);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("Connection Failed! Rebooting...");
@@ -35,7 +35,7 @@ void myOta::OTAConfig()
   _i8OTASuccessErrorCode = 9;
 
   // Set the hostname
-  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
+  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName); // LaserBox_201, etc.
   ArduinoOTA.setHostname(gcHostnamePrefix);
   _i8OTASuccessErrorCode = 8;
 

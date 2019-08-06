@@ -73,7 +73,7 @@ function connect() {
   // onerror,
   // inform the user that you are closing the socket
   ws.onerror = function(err) {
-    console.error('Socket encountered error: ', err.message, 'Closing socket');
+    console.error('Socket encountered error: ', err.target.readyState, 'Closing socket');
     ws.close();
   };
 }
@@ -100,7 +100,7 @@ function sendReceivedIP() {
 //////////////////////////////////
 var onRebootLBs = {
   active: false,
-  rebootBtnId: 'rebootAll',
+  rebootBtnId: 'rebootLBs',
 
   waitingLBs: new Map(),
   rebootingLBs: new Map(),
@@ -321,10 +321,7 @@ var _onRebootCommon = {
   createBoxTextNodesFromBoxRows: function(_spanLBsRebooting, _mapRebootingBoxes) {
     // iterate over the boxesRows map, create textNodes for the span and
     // store them in a map
-    var _i = 0;
-    var _mapSize = boxesRows.size;
     boxesRows.forEach(function(val, key) {
-      _i++;
       let _text = (parseInt(key) + 200) + ". ";
       // create a textNode to hold the box number
       let _boxNumbNode = document.createTextNode(_text);
@@ -512,6 +509,14 @@ var checkConnect = {
 
   deleteNotConnectedMsg: function() {
     infoBox.deleteMsg('#infoNotConnected', this.notConnectedSpan);
+  },
+
+  closedVerb: function() {
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      this.addNotConnectedMsg();
+      return true;
+    }
+    return false;
   }
 }
 
@@ -557,107 +562,169 @@ function check(){
 
 
 
+// EVENT HANDLER HELPER FUNCTIONS
+var _onClickHelpers = {
+  findUpLaserBoxNumber: function(el) {
+      while (el.parentNode) {
+          el = el.parentNode;
+          if (el.dataset.lb) {
+            return parseInt(el.dataset.lb, 10);
+          }
+      }
+      return null;
+  },
 
-function findUpLaserBoxNumber(el) {
-    while (el.parentNode) {
-        el = el.parentNode;
-        if (el.dataset.lb) {
-          return parseInt(el.dataset.lb, 10);
-        }
-    }
-    return null;
+  btnSend: function (_obj) {
+    ws.send(JSON.stringify(_obj));
+  },
+
+  updateClickButtons: function(e, _selector, _element) {
+    _element.querySelectorAll(_selector).forEach(
+      function(_button){
+        _button.classList.remove('button_clicked');
+      }
+    );
+    e.target.className += ' button_clicked';
+  }
 }
 
 
 
 // EVENTS HANDLER
+// _onClickBoxConfig Helper Object
+var _onClickBoxConfig = {
+  wrapper: function(e, _obj) {
+    // update the buttons
+    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+    // if the connection is closed, inform the user
+    if (checkConnect.closedVerb()) { return; }
+    // else, complete the message
+    _obj["lb"] = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+    _obj["action"] = "changeBox";
+    // and send the message
+    _onClickHelpers.btnSend(_obj);
+    // {action:"changeBox", key:"reboot", save: 0, lb:1}
+    // {action:"changeBox", key:"reboot", save: 1, lb:1}
+    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+    // {action:"changeBox", key:"save", val: "all", lb:1}
+  },
+}
+
+
 function onclickRebootBoxButton(e) {
   console.log("onclickRebootBoxButton starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
-  ws.send(JSON.stringify({
-    action: "changeBox",
+  _onClickBoxConfig.wrapper(e, {
     key: "reboot",
     save: 0, // reboot without saving
-    lb: _laserBoxNumber
-  }));
+  });
   // {action:"changeBox", key:"reboot", save: 0, lb:1}
   console.log("onclickRebootBoxButton: ending");
-};
-
+}
 
 
 function onclickRebootAndSaveBoxButton(e) {
   console.log("onclickRebootAndSaveBoxButton starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
-  ws.send(JSON.stringify({
-    action: "changeBox",
+  _onClickBoxConfig.wrapper(e, {
     key: "reboot",
     save: 1, // save and reboot
-    lb: _laserBoxNumber
-  }));
+  });
   // {action:"changeBox", key:"reboot", save: 1, lb:1}
   console.log("onclickRebootAndSaveBoxButton: ending");
-};
+}
 
 
+function onclickgOTARebootsBoxBtn(e) {
+  console.log("onclickgOTARebootsBoxBtn starting");
+
+  _onClickBoxConfig.wrapper(e, {
+    key: "save",
+    val: "gi8RequestedOTAReboots",
+    reboots: parseInt(this.dataset.reboots, 10),
+  });
+  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+  console.log("onclickgi8RequestedOTAReboots ending");
+}
 
 
 function onclickSavePrefsBoxButton(e) {
   console.log("onclickSavePrefsBoxButton starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
 
-  ws.send(JSON.stringify({
-    action: "changeBox",
+  _onClickBoxConfig.wrapper(e, {
     key: "save",
-    val: "all", // save all the values for the box and the net
-    lb: _laserBoxNumber
-  }));
+    save: "all", // save and reboot
+  });
   // {action:"changeBox", key:"save", val: "all", lb:1}
   console.log("onclickSavePrefsBoxButton: ending");
-};
+}
+
 
 
 
 
 // _onClickGroupReboot Helper Object
 var _onClickGroupReboot = {
-  wrapper: function(e, _lbs, _save) {
-    // if there are boxes, we are probably connected, so reboot
-    if (boxesRows.size) {
-      this.updateButtons(e);
-      this.send(_lbs, _save);
-      return;
-    }
+  saveObj: {
+    key: "save",
+    val: "all",
+  },
+
+  rebootObj: {
+    key: "reboot",
+    save: 0,
+  },
+
+  wrapper: function(e, _obj)/*_lbs, _save)*/ {
     // if the connection is closed, inform the user
-    if (!ws || ws.readyState === WebSocket.CLOSED) {
-      checkConnect.addNotConnectedMsg();
+    if (checkConnect.closedVerb()) { return; }
+    // if there are boxes in the boxes map, we are probably connected, so reboot
+    if (boxesRows.size) {
+      _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
+      // else, complete the message and send it
+      _obj["action"] = "changeNet";
+      _onClickHelpers.btnSend(_obj);
+      // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
       return;
     }
-    // if no boxes are connected, inform the user that there are no boxes
+    // if there are no boxes in the boxes map, inform the user that there are no boxes
     _onRebootCommon.addNoConnectedBoxesSpan();
-  },
-
-  updateButtons: function(e) {
-    document.querySelectorAll('.net_command_gp > button').forEach(
-      function(_button){
-        _button.classList.remove('button_clicked');
-      }
-    );
-    e.target.className += ' button_clicked';
-  },
-
-  send: function(_lbs, _save) {
-    ws.send(JSON.stringify({
-      action: _lbs === ("LBs" || "all") ? "changeNet" : "changeBox",
-      key: "reboot",
-      save: _save, // reboot without saving
-      lb: _lbs
-    }));
-    // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
   }
 }
+
+
+function onclickRebootLBsButton(e) {
+  console.log("onclickRebootLBsButton starting");
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.rebootObj, {lb: "LBs"}));
+  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
+  console.log("onclickRebootLBsButton: ending");
+}
+
+
+function onclickRebootAllButton(e) {
+  console.log("onclickRebootAllButton starting");
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.rebootObj, {lb: "all"}));
+  // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
+  console.log("onclickRebootAllButton: ending");
+}
+
+
+function onclickSaveLBsButton(e) {
+  console.log("onclickSaveLBsButton starting");
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.saveObj, {lb: "LBs"}));
+  // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
+  console.log("onclickSaveLBsButton: ending");
+}
+
+
+function onclickSaveAllButton(e) {
+  console.log("onclickSaveAllButton starting");
+  _onClickGroupReboot.wrapper(e, Object.assign(_onClickGroupReboot.saveObj, {lb: "all"}));
+  // {action: "changeNet", key: "save", val: "all", lb: "all"}
+  console.log("onclickSaveAllButton: ending");
+}
+
+
 
 
 
@@ -694,16 +761,12 @@ var infoBox = {
 }
 
 
-function onclickRebootLBsButton(e) {
-  console.log("onclickRebootLBsButton starting");
-  _onClickGroupReboot.wrapper(e, "LBs", 0);
-  // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
-  console.log("onclickRebootLBsButton: ending");
-};
 
 
 
-function onclickRebootIFButton(e) {
+
+
+function onclickRebootIFButton(_e) {
   console.log("onclickRebootIFButton starting");
 
   ws.send(JSON.stringify({
@@ -714,38 +777,14 @@ function onclickRebootIFButton(e) {
   }));
   // {action:"changeBox", key:"reboot", save: 0, lb:0}
   console.log("onclickRebootIFButton: ending");
-};
-
-
-
-function onclickRebootAllButton(e) {
-  console.log("onclickRebootAllButton starting");
-  _onClickGroupReboot.wrapper(e, "all", 0);
-  // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
-  console.log("onclickRebootAllButton: ending");
-};
-
-
-
-
-function onclickSaveLBsButton(e) {
-  console.log("onclickSaveLBsButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "all",
-    lb: "LBs"
-  }));
-  // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
-  console.log("onclickSaveLBsButton: ending");
-};
+}
 
 
 
 
 
-function onclickSaveIFButton(e) {
+
+function onclickSaveIFButton(_e) {
   console.log("onclickSaveIFButton starting");
 
   ws.send(JSON.stringify({
@@ -756,72 +795,71 @@ function onclickSaveIFButton(e) {
   }));
   // {action: "changeBox", key: "save", val: "all", lb: 0}
   console.log("onclickSaveIFButton: ending");
-};
+}
 
 
 
 
 
-function onclickSaveAllButton(e) {
-  console.log("onclickSaveAllButton starting");
-
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "all",
-    lb: "all"
-  }));
-  // {action: "changeNet", key: "save", val: "all", lb: "all"}
-  console.log("onclickSaveAllButton: ending");
-};
-
-
-
-
-
-function onclickSaveWifiSettingsIF(e) {
-  console.log("onclickSaveWifiSettingsIF starting");
-
-  ws.send(JSON.stringify({
-    action: "changeBox",
+var _onClickSaveWifi = {
+  obj: {
     key: "save",
     val: "wifi",
-    lb: 0,
     dataset: {
       ssid: document.getElementById('ssid').value,
       pass: document.getElementById('pass').value,
       gatewayIP: document.getElementById('gatewayIP').value,
       ui16GatewayPort: parseInt(document.getElementById('ui16GatewayPort').value, 10),
-      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10)
+      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10),
     }
-  }));
+  },
+  buildObj: function(_passedObj) {
+    return Object.assign(this.obj, _passedObj);
+  },
+  wrapper: function(e, _obj) {
+    // update the buttons
+    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+    // if the connection is closed, inform the user
+    if (checkConnect.closedVerb()) { return; }
+    // else, complete the message
+    _obj = this.buildObj(_obj);
+    // and send the message
+    _onClickHelpers.btnSend(_obj);
+    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  },
+}
+
+
+function onclickSaveWifiSettingsIF(e) {
+  console.log("onclickSaveWifiSettingsIF starting");
+
+  _onClickSaveWifi.wrapper(e, {
+      action: "changeBox",
+      lb: 0,
+    });
   // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
 
   console.log("onclickSaveWifiSettingsIF ending");
 }
 
 
-
-
-
 function onclickSaveWifiSettingsAll(e) {
   console.log("onclickSaveWifiSettingsAll starting");
 
-  ws.send(JSON.stringify({
-    action: "changeNet",
-    key: "save",
-    val: "wifi",
-    lb: "all"
-  }));
+  _onClickSaveWifi.wrapper(e, {
+      action: "changeNet",
+      lb: "all",
+    });
+  // {action: "changeNet", key: "save", val: "wifi", lb: "all", dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
 
-  // {action: "changeNet", key: "save", val: "wifi", lb: "all"}
   console.log("onclickSaveWifiSettingsAll ending");
 }
 
 
 
 
-function onclickgi8RequestedOTAReboots(e) {
+
+function onclickgi8RequestedOTAReboots(_e) {
   console.log("onclickgi8RequestedOTAReboots starting");
 
   ws.send(JSON.stringify({
@@ -838,67 +876,49 @@ function onclickgi8RequestedOTAReboots(e) {
 
 
 
+
+
+
+var _onClickStateBtns = {
+  wrapper: function(e, buttonSelector, _datasetValue, _clef) {
+    var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+    _onClickHelpers.updateClickButtons(e, buttonSelector, boxesRows.get(_laserBoxNumber));
+    // if the connection is closed, inform the user
+    if (checkConnect.closedVerb()) { return; }
+    _onClickHelpers.btnSend({
+      "action": "changeBox",
+      "key": _clef,
+      "lb": _laserBoxNumber,
+      "val": parseInt(_datasetValue, 10)
+    });
+      // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+      // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+      // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+  }
+}
+
+
 function onclickButton(e) {
   console.log("onclickButton starting");
-  _onclickButtonWrapper(this, "button[data-boxstate]", this.dataset.boxstate, "boxState");
+  _onClickStateBtns.wrapper(e, "button[data-boxstate]", this.dataset.boxstate, "boxState");
   console.log("onclickButton: ending");
-};
+}
 
 
 function onclickDefStateButton(e) {
   console.log("onclickDefStateButton starting");
-  _onclickButtonWrapper(this, "button[data-boxDefstate]", this.dataset.boxdefstate, "boxDefstate");
+  _onClickStateBtns.wrapper(e, "button[data-boxDefstate]", this.dataset.boxdefstate, "boxDefstate");
   console.log("onclickDefStateButton: ending");
-};
-
-//   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-//   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-//   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-
-function _onclickButtonWrapper(clickedTarget, buttonSelector, _datasetValue, _clef) {
-  var _laserBoxNumber = findUpLaserBoxNumber(clickedTarget.parentNode);
-  _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber);
-  _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef);
-}
-
-
-function _onclickButtonClassSetter(clickedTarget, buttonSelector, _laserBoxNumber) {
-  var _boxRow = boxesRows.get(_laserBoxNumber);
-  var _buttonList = boxRowEltsGroupSelector(_boxRow, buttonSelector);
-  // remove red on other buttons
-  for (var i = 0; i < _buttonList.length; i++) {
-    _buttonList[i].classList.remove('button_clicked');
-  }
-  // turn this button red
-  clickedTarget.classList.add('button_clicked');
-
-  return _laserBoxNumber;
-}
-
-
-function _onclickButtonWSSender(_laserBoxNumber, _datasetValue, _clef) {
-  var __toBeStringified = {};
-  __toBeStringified["action"] = "changeBox";
-  __toBeStringified["key"] = _clef;
-  __toBeStringified["lb"] = _laserBoxNumber;
-  __toBeStringified["val"] = parseInt(_datasetValue, 10);
-
-  var _json = JSON.stringify(__toBeStringified);
-  // {action: 4; lb: 1; "boxState": 3}
-  // {action: 9; lb: 1; "boxDefstate": 3}
-  //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-  //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-  //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-  console.log("_onclickButtonWSSender: about to send JSON via WS: " + _json);
-  ws.send(_json);
-  console.log("_onclickButtonWSSender: JSON sent.");
 }
 
 
 
-function oninputMasterSelect(e) {
+
+
+
+function oninputMasterSelect(_e) {
   console.log("oninputMasterSelect: starting");
-  var _laserBoxNumber = findUpLaserBoxNumber(this.parentNode);
+  var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(this.parentNode);
   if ((_laserBoxNumber !== null )) {
     console.log("oninputMasterSelect: slave box: " + (_laserBoxNumber + 200));
     console.log("oninputMasterSelect: master box " + this.options[this.selectedIndex].value);
@@ -932,16 +952,8 @@ function updateGlobalInformation(_data) {
   document.getElementById('gatewayIP').value = _data.gatewayIP;
   document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
   document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
-  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);
-  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);
-  document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
-    function(_OTARebootButton){
-      _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);
-    }
-  );
   console.log("updateGlobalInformation() ending");
 }
-
 
 
 
@@ -1044,7 +1056,7 @@ function updateCurrentStateButtons(_data, _boxRow) {
   // 1. remove classes on all the others default stateButtons of this boxRow
   // 2. add button_active_state class to the relevant default stateButton
   // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-  _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", _data.boxDefstate);
+  updateCurrentStateButton(_boxRow, "boxDefstate", _data.boxDefstate);
 
   console.log("updateCurrentStateButtons: ending after updating laser box [" + _data.lb + "]");
 }
@@ -1082,7 +1094,7 @@ function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
   console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_buttonList);
   if (_buttonList && _buttonList.length) {
     _buttonList.forEach(
-      function(currentValue, currentIndex, listObj) {
+      function(currentValue) {
         currentValue.classList.remove('button_active_state');
         currentValue.classList.remove('button_change_received');
         currentValue.classList.remove('button_clicked');
@@ -1133,30 +1145,13 @@ function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
   _dupRow.classList.remove('hidden');
   console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (_laserBoxIndexNumber + 200));
   _dupRow.querySelector("span.box_num").textContent = _laserBoxIndexNumber + 200;
-
+  _dupRow = setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber);
   console.log("_newBoxRowSetProperties: _dupRow: setting the reboot and save buttons for this box");
-  _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
-  _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
-  _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', onclickRebootAndSaveBoxButton, false);
-  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
-  _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
-  _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
   return _dupRow;
 }
 
 
 
-
-function _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
-  console.log("_setEVentListenersOnGroupOfButtons: about to set event listeners on buttons");
-  console.log("_setEVentListenersOnGroupOfButtons: _buttonGroupSelector = " + _buttonGroupSelector);
-  var _buttonList = boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector);
-  console.log("_setEVentListenersOnGroupOfButtons: _buttonList selected");
-  console.log(_buttonList);
-  console.log("_setEVentListenersOnGroupOfButtons: about to call setButtonsGroupEvents");
-  setButtonsGroupEvents(_buttonList, _eventHandler);
-  return _dupRow;
-}
 
 
 
@@ -1250,8 +1245,8 @@ function addNewRowForNewBox(data) {
     _dupRow = _setCurrentStateButton(_dupRow, "boxstate", data.boxState);
 
     // set event listener on current state buttons
-    // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-    _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
+    // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+    _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
 
     // indicate masterbox number
     _dupRow = _indicateMasterBoxNumber(data.masterbox, _dupRow);
@@ -1265,8 +1260,8 @@ function addNewRowForNewBox(data) {
     _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
 
     // set event listener on default state buttons
-    // _setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-    _dupRow = _setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
+    // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+    _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
 
     // render in DOM
     _dupRow = _renderRowInDom(_dupRow);
@@ -1412,18 +1407,6 @@ function updateMasterBoxNumber(_data) {
 
 
 
-function boxRowDOMSelector(laserBoxIndexNumber) {
-  console.log("boxRowDOMSelector starting.");
-  // div[data-lb='1'] button[data-boxstate='1'
-  // var _selector = "div[data-lb='"+ laserBoxIndexNumber + "']"; // selector for the whole div
-
-  // div.box_wrapper[data-lb=X] > div.box_state_setter > div.setters_group > button
-  var _selector = "div.box_wrapper[data-lb='" + laserBoxIndexNumber + "']";
-  console.log(_selector);
-  var _row = document.querySelector(_selector); // should be a list composed of one single element
-  console.log("boxRowDOMSelector ending.");
-  return _row; // return the first (and unique) element of the list
-}
 
 
 
@@ -1452,6 +1435,26 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 // EVENT LISTENERS
+function setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber) {
+  _dupRow.querySelector("#rebootBox").addEventListener('click', onclickRebootBoxButton, false);
+  _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', onclickRebootAndSaveBoxButton, false);
+  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
+  _dupRow.querySelector("#savePrefsBox").addEventListener('click', onclickSavePrefsBoxButton, false);
+  _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#OTA1reboot").addEventListener('click', onclickOTABoxButton, false);
+  _dupRow.querySelector("#OTA1reboot").id = "OTA1reboot" + _laserBoxIndexNumber;     // set a unique id
+  // _dupRow.querySelector("#OTA2reboots").addEventListener('click', onclickOTABoxButton, false);
+  _dupRow.querySelector("#OTA2reboots").id = "OTA2reboots" + _laserBoxIndexNumber;     // set a unique id
+  return _dupRow;
+}
+
+function setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
+  console.log("setEVentListenersOnGroupOfButtons: starting");
+  setButtonsGroupEvents(boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector), _eventHandler);
+  return _dupRow;
+}
+
 function setButtonsGroupEvents(buttonList, eventHandler) {
   // iterate over each buttons and add an eventListener on click
   for (var i = 0; i < buttonList.length; i++) {
@@ -1470,7 +1473,15 @@ function setGroupEvents() {
   document.getElementById("saveLBs").addEventListener('click', onclickSaveLBsButton, false);
   document.getElementById("saveIF").addEventListener('click', onclickSaveIFButton, false);
   document.getElementById("saveAll").addEventListener('click', onclickSaveAllButton, false);
+  document.getElementById('saveWifiSettingsIF').addEventListener('click', onclickSaveWifiSettingsIF, false);
+  document.getElementById('saveWifiSettingsAll').addEventListener('click', onclickSaveWifiSettingsAll, false);
+  document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
+    function(_OTARebootButton){
+      _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);
+    }
+  );  
 }
+
 // END EVENT LISTENERS
 
 
@@ -1478,7 +1489,7 @@ function setGroupEvents() {
 
 
 // WINDOW LOAD
-window.onload = function(e){
+window.onload = function(_e){
     console.log("window.onload");
     // Interval at which to check if WS server is still available
     // (and reconnect as necessary) setInterval(check, 5000);

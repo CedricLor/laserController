@@ -9,13 +9,13 @@
     <link rel='stylesheet' type='text/css' href='index.css' />
     </head>
   </head>
-  <body>
+  <body class='center_al'>
     <h1>
       <span id='nodeName'>%UI8_NODE_NAME%</span> - Station IP: <span id='stationIp'>%STATION_IP%</span>
     </h1>
-    <div class='boxes_state_setter' id="infoBox"></div>
-    <div class='boxes_state_setter'>
-      <div class='setters_gp_title'>Net Commands</div>
+    <div id='infoBox' class='marg_top'></div>
+    <div class='netwide_cmds marg_top'>
+      <div class='section_title bold  pad_tb10'>Group Commands</div>
       <div class='setters_group net_command_gp'>
         <button class='button' id='rebootLBs'>Reboot LBs</button><button class='button' id='rebootIF'>Reboot IF</button><button class='button' id='rebootAll'>Reboot All</button>
       </div>
@@ -23,11 +23,11 @@
         <button class='button' id='saveLBs'>Save LBs</button><button class='button' id='saveIF'>Save IF</button><button class='button' id='saveAll'>Save All</button>
       </div>
     </div>
-    <div id='boxesContainer' class='boxes_state_setter'>
+    <div id='boxesContainer' class='marg_top'>
       <div id='boxTemplate' class='box_wrapper hidden' data-lb='0'>
 
-        <div class='box_state_setter'><span class='box_num_title'>Laser Box <span class='box_num'>0</span></span>
-          <div class='setters_gp_title'>Commands</div>
+        <div class='box_state_setter pad_tb20'><div class='section_title bold pad_tb10'>Laser Box <span class='box_num'>0</span></div>
+          <div class='subsection_title pad_tb10'>Commands</div>
           <div class='setters_group command_gp'>
             <button id='rebootBox' class='button'>
               Reboot
@@ -38,8 +38,14 @@
             <button id='savePrefsBox' class='button'>
               Save
             </button>&nbsp;
+            <button id='OTA1reboot' class='button gi8RequestedOTAReboots' data-reboots='1' >
+              OTA 1
+            </button>&nbsp;
+            <button id='OTA2reboots' class='button gi8RequestedOTAReboots' data-reboots='1'>
+              OTA 2
+            </button>&nbsp;
           </div> <!-- special_gp -->
-          <div class='setters_gp_title'>Special</div>
+          <div class='subsection_title pad_tb10'>Special</div>
           <div class='setters_group special_gp'>
             <button class='button' data-boxstate='0'>
               Manual
@@ -51,7 +57,7 @@
               IRStUp
             </button>&nbsp;
           </div> <!-- special_gp -->
-          <div class='setters_gp_title'>Waiting</div>
+          <div class='subsection_title pad_tb10'>Waiting</div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxstate='3'>
               Both
@@ -66,7 +72,7 @@
               None
             </button>&nbsp;
           </div> <!-- waiting_gp -->
-          <div class='setters_gp_title'>IR High</div>
+          <div class='subsection_title pad_tb10'>IR High</div>
           <div class='setters_group pir_high_gp'>
             <button class='button' data-boxstate='6'>
               Both
@@ -81,7 +87,7 @@
               None
             </button>&nbsp;
           </div> <!-- pir_high_gp -->
-          <div class='setters_gp_title'>Mesh High</div>
+          <div class='subsection_title pad_tb10'>Mesh High</div>
           <div class='setters_group mesh_high_gp'>
             <button class='button' data-boxstate='10'>
               Both
@@ -98,8 +104,9 @@
           </div> <!-- mesh_high_gp -->
         </div> <!-- box_state_setter -->
 
-        <p>
-        <div class='slave_master_box_setter'>Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
+        <div class='slave_master_box_setter pad_tb10'>
+          <div class='subsection_title pad_tb10'>Master Boxes</div>
+          Slave to <span class='master_box_number'>none</span>&nbsp;--&nbsp;Change master:&nbsp;
           <select class='master_select'>
             <option value='1'>201</option>
             <option value='2'>202</option>
@@ -120,101 +127,14 @@
               <option value='1'>Swipe Right</option>
               <option value='1'>Get Deeper</option>
             </select>
-
-            <div class='sm-rel-descr hidden'>
-              <ul class='sm-rel-title'>Safety Mode: Waiting Both Light On, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Quick Blinks
-                <li>Special States: Manual --> Manual</li>
-                <li>Special States: Align --> Manual</li>
-                <li>Special States: IR Startup --> Manual</li>
-                <li>
-                  <ul>
-                    <li>TO: All: Waiting Both (master: All), Light On</li>
-                    <li>T1: One or two or all: IR High IR, Light Off --> the others: Mesh High Both, Light On</li>
-                    <li>TEnd: Waiting Both, Light On</li>
-                  </ul>
-                </li>
-              </ul>
-              <p/>
-              <ul class='sm-rel-title'>Swipe Right: Waiting Both Light Off Random Blinks, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Swipe Right
-                <li>Special States: Manual --> Manual</li>
-                <li>Special States: Align --> Manual</li>
-                <li>Special States: IR Startup --> Manual</li>
-                <li>
-                  <ul>
-                    <li>T0: All: Waiting Both (master: All), Light Off, shortly blinking now and then</li>
-                    <li>T1: One or two or all: IR High IR, Light Off --> the others: Mesh High Both, Swipe Right</li>
-                    <li>TEnd: Waiting Both, Light Off</li>
-                  </ul>
-                </li>
-              </ul>
-              <p/>
-              <ul class='sm-rel-title'>Get Deeper: Waiting Both Light Off Random Blinks, Master: broadcast; IR High Turn Light Off Send Broadcast; Mesh High Swipe Right
-                <li>Special States: Manual --> Manual</li>
-                <li>Special States: Align --> Manual</li>
-                <li>Special States: IR Startup --> Manual</li>
-                <li>
-                  <ul>
-                    <li>T0: Event: no one is coming.
-                      <ul>
-                        <li>Master: Box 1: Waiting IR, Light On</li>
-                        <li>Slave: Box 2: Waiting Mesh(from Master), light Off, onMesh: Waiting IR, Light On, Becomes Master</li>
-                        <li>Slaves: Other Boxes: Waiting Mesh(from Master), light Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, etc.</li>
-                      </ul>
-                    </li>
-                    <li>T1: Event: someone has come into Box 1 IR
-                      <ul>
-                        <li>Master: Box 2. Mesh High IR, Swipe Right</li>
-                        <li>Slave: Box 1: IR High Both, Light Off, onIr: keep off, onMesh(from B2): Join the others</li>
-                        <li>Slaves: The Others: Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>T2: Event: someone has come into Box 2 IR
-                      <ul>
-                        <li>Master: Box 3. Mesh High IR, Swipe Right</li>
-                        <li>Slave: Box 2: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others (including B1): Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>T3: Event: someone has come into Box 3 IR
-                      <ul>
-                        <li>Master: Box 4. Mesh High IR, Swipe Right</li>
-                        <li>Slave: Box 3: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others (including B1 and B2): Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>...</li>
-                    <li>T Deepest: Event: someone has come into deepest Box X IR
-                      <ul>
-                        <li>Master: Box X - 1. Mesh High IR, Swipe Left</li>
-                        <li>Slave: Box X: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others: Mesh High Mesh(from new master), Swipe Left then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>T Deepest: Event: someone has come into Box X-1 IR
-                      <ul>
-                        <li>Master: Box X-2. Mesh High IR, Swipe Left</li>
-                        <li>Slave: Box X-1: IR High Both, Light Off, onIr: keep off, onMesh(from B3): Join the others</li>
-                        <li>Slaves: The Others: Mesh High Mesh(from new master), Swipe Left then turn Off, onMesh (same as above).</li>
-                      </ul>
-                    </li>
-                    <li>...</li>
-                    <li>T End: no one is in the IR anymore.
-                      <ul>
-                        <li>Master: Box 1: Waiting IR, Light On</li>
-                        <li>Slave: Box 2: Waiting Mesh(from Master), light Off, onMesh: Waiting IR, Light On, Becomes Master</li>
-                        <li>Slaves: Other Boxes: Waiting Mesh(from Master), light Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, onMesh: Mesh High Mesh(from new master), Swipe Right then turn Off, etc.</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
           </div>
-
         </div> <!-- slave_master_box_setter -->
 
-        <div class='box_def_state_setter'>Default State
-          <div class='setters_gp_title'>Waiting</div>
+        <div class='box_def_state_setter pad_tb10'>
+          <div class='subsection_title pad_tb10'>
+            <div>Default State</div>
+            <div>Waiting</div>
+          </div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxDefstate='3'>
               Both
@@ -231,8 +151,11 @@
           </div> <!-- waiting_gp -->
         </div> <!-- box_def_state_setter -->
 
-        <div class='box_next_state_setter'>Next State
-          <div class='setters_gp_title'>Waiting</div>
+        <div class='box_next_state_setter pad_tb10'>
+          <div class='subsection_title pad_tb10'>
+            <div>Next State</div>
+            <div>Waiting</div>
+          </div>
           <div class='setters_group waiting_gp'>
             <button class='button' data-boxNextstate='3'>
               Both
@@ -249,7 +172,11 @@
           </div> <!-- waiting_gp -->
         </div> <!-- box_next_state_setter -->
 
-        <div class='default_box_param_setter'>Box Default Values:&nbsp;
+        <div class='default_box_param_setter pad_tb10'>
+            <div class='subsection_title pad_tb10'>
+                <div>Box Default Values:</div>
+                <div>Waiting</div>
+              </div>
           <div data-blurb='gui16NodeName'>Node Name:&nbsp;<span></span><input type='text' ></div>
           <div data-blurb='gui16MyIndexInCBArray'>gui16MyIndexInCBArray:&nbsp;(calculated)</div>
           <div data-blurb='isInterface'>isInterface:&nbsp;
@@ -260,72 +187,73 @@
           </div>
 
         </div> <!-- default_box_param_setter -->
-    </div> <!-- box_wrapper -->
-  </div> <!-- boxes_state_setter -->
+      </div> <!-- box_wrapper -->
+    </div> <!-- boxesContainer -->
 
-  <div class='network_state_setter'>Network State Setters
-    %NETWORK_SETTER%
-    <ul>
-      <li>gui32InterfaceNodeId (e.g. 2760139053): <span></span><input type='text' ></li>
-      <li>gui16InterfaceNodeName (e.g. 201): <span></span><input type='text' ></li>
-      <li>gui16ControllerBoxPrefix: <span></span><input type='text' ></li>
-      <li>gui16InterfaceIndexInCBArray: <span></span></li>
-      <li>gui16BoxesCount: <span></span><input type='text' ></li>
-    </ul>
-  </div> <!-- network_state_setter -->
-  <div class='setters_gp_title'>Wifi Settings</div>
-  <div class='network_state_setter'>
-    <div>
-      <label class='wifi_labels' for='ssid'>
-        SSID:
-      </label>
-      <input id='ssid' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='pass'>
-        Pass:
-      </label>
-      <input id='pass' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='gatewayIP'>
-        Gateway IP:
-      </label>
-      <input id='gatewayIP' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='ui16GatewayPort'>
-        Gateway Port:
-      </label>
-      <input id='ui16GatewayPort' type='text' >
-    </div>
-    <div>
-      <label class='wifi_labels' for='ui8WifiChannel'>
-        Wifi Channel:
-      </label>
-      <input id='ui8WifiChannel' type='text' >
-    </div>
-    <div>
-      <button id='saveWifiSettingsIF'>
-        Save WiFi Settings on IF
-      </button>
-      <button id='saveWifiSettingsAll'>
-        Save WiFi Settings on All
-      </button>
-    </div>
-  </div>
-  <div class='setters_gp_title'>OTA Reboots</div>
-  <div class='network_state_setter'>
-    <div>
-      <button class='gi8RequestedOTAReboots' data-reboots='1'>
-        Switch to OTA (1 reboot)
-      </button>
-      <button class='gi8RequestedOTAReboots' data-reboots='2'>
-        Switch to OTA (2 reboots)
-      </button>
-    </div>
-  </div>
-  <script src='index.js'></script>
+    <div class='mesh_glob_setters marg_top'>
+      <div class='section_title bold  pad_tb10'>Mesh Global Settings</div>
+      <ul>
+        <li>gui32InterfaceNodeId (e.g. 2760139053): <span></span><input type='text' ></li>
+        <li>gui16InterfaceNodeName (e.g. 201): <span></span><input type='text' ></li>
+        <li>gui16ControllerBoxPrefix: <span></span><input type='text' ></li>
+        <li>gui16InterfaceIndexInCBArray: <span></span></li>
+        <li>gui16BoxesCount: <span></span><input type='text' ></li>
+      </ul>
+    </div> <!-- mesh_glob_setters -->
+    <div class='wifi_setters marg_top'>
+      <div class='section_title bold  pad_tb10'>Wifi Settings</div>
+      <div>
+        <label class='wifi_labels' for='ssid'>
+          SSID:
+        </label>
+        <input id='ssid' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='pass'>
+          Pass:
+        </label>
+        <input id='pass' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='gatewayIP'>
+          Gateway IP:
+        </label>
+        <input id='gatewayIP' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='ui16GatewayPort'>
+          Gateway Port:
+        </label>
+        <input id='ui16GatewayPort' type='text' >
+      </div>
+      <div>
+        <label class='wifi_labels' for='ui8WifiChannel'>
+          Wifi Channel:
+        </label>
+        <input id='ui8WifiChannel' type='text' >
+      </div>
+      <div class='subsection_title pad_tb10'>Save wifi settings</div>
+      <div>
+        <button id='saveWifiSettingsIF' class='button'>
+          on IF
+        </button>
+        <button id='saveWifiSettingsAll' class='button'>
+          on All
+        </button>
+      </div>
+    </div> <!-- wifi_setters -->
+    <div class='if_ota_cmds marg_top'>
+      <div class='section_title bold  pad_tb10'>Interface OTA Reboots</div>
+      <div>
+        <button class='gi8RequestedOTAReboots button' data-reboots='1'>
+          OTA 1 reboot
+        </button>
+        <button class='gi8RequestedOTAReboots button' data-reboots='2'>
+          OTA 2 reboots
+        </button>
+      </div>
+    </div> <!-- if_ota_cmds -->
+    <script src='index.js'></script>
 
   </body>
 </html>

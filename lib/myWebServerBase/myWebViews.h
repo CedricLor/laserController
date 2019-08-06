@@ -28,15 +28,19 @@ myWebServerViews contains the webPage being displayed by the webServer.
 
 */
 
-#ifndef myWebServerViews_h
-#define myWebServerViews_h
+#ifndef myWebViews_h
+#define myWebViews_h
 
 #include "Arduino.h"
+#include "AsyncTCP.h"
+#include <ESPAsyncWebServer.h>
+#include <global.h>
+#include <ControlerBox.h>
 
-class myWebServerViews
+class myWebViews
 {
   public:
-    myWebServerViews(AsyncWebServerRequest *request);
+    myWebViews(AsyncWebServerRequest *request);
     // String returnTheResponse();
     // char cBoxArray[13000];
 

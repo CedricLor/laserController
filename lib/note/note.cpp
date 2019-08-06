@@ -55,7 +55,7 @@ note::note() {
   for a given note type (--> full, half, ..., set in the bar) at a given
   beat rate.
 */
-Task note::tPlayNote(30000, 1, NULL, &userScheduler, false, &_oetcbPlayNote, &_odtcbPlayNote);
+Task note::tPlayNote(30000, 1, NULL, &myTaskScheduler, false, &_oetcbPlayNote, &_odtcbPlayNote);
 
 // On enable Task _tNote, turn the lasers to a given tone
 bool note::_oetcbPlayNote() {

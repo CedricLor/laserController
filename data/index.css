@@ -23,31 +23,22 @@ h1 {
 .button_active_state {
   background-color: red;
 }
-.boxes_state_setter {
-  text-align: center;
+.bold {
+  font-weight: bold;
 }
-.box_state_setter {
-  text-align: center;
+.pad_tb20 {
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.box_num_title {
-  font-weight: bold;
-}
-.setters_gp_title {
-  text-align: center;
+.pad_tb10 {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-.sm-rel-descr {
-  text-align: left;
-}
-.network_state_setter{
-  margin-top: 20px;
+.center_al {
   text-align: center;
 }
-.hidden{
-  display: none;
+.marg_top{
+  margin-top: 20px;
 }
 .wifi_labels {
 	display: inline-block;
@@ -55,4 +46,7 @@ h1 {
 	margin-right: 20px;
 	vertical-align: top;
 	text-align: right;
+}
+.hidden{
+  display: none;
 }

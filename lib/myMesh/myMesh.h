@@ -26,8 +26,12 @@
 #define myMesh_h
 
 #include "Arduino.h"
-#include "./myMesh/myMeshViews/myMeshViews.cpp"
-#include "./myMesh/myMeshController/myMeshController.cpp"
+#include <ESPmDNS.h>
+#include <global.h>
+#include <secret.h>
+#include <ControlerBox.h>
+#include "./myMeshViews/myMeshViews.h"
+#include "./myMeshController/myMeshController.h"
 
 class myMesh
 {
@@ -38,6 +42,9 @@ class myMesh
 
   private:
 
+    static const char* _ap_ssid;
+    static const char* _ap_password;
+
     static void receivedCallback( uint32_t from, String &msg);
 
     static void newConnectionCallback(uint32_t nodeId);
@@ -46,6 +53,8 @@ class myMesh
 
     static Task _tSendStatusOnChangeConnection;
     static void _tcbSendStatusOnChangeConnection();
+    static void _odtcbSendStatusOnChangeConnection();
+    static bool _oetcbSendStatusOnChangeConnection();
     static void changedConnectionCallback();
 
     static void nodeTimeAdjustedCallback(int32_t offset);

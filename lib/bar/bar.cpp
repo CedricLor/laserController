@@ -143,7 +143,7 @@ void bar::initBars() {
 
 
 
-Task bar::tPlayBar(0, 1, &_tcbPlayBar, &userScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, &myTaskScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
 
 
 
@@ -157,7 +157,7 @@ bool bar::_oetcbPlayBar(){
   //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
   //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
-  //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
+  //   Serial.print("void bar::_oetcbPlayBar(). myTaskScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(myTaskScheduler.timeUntilNextIteration(tPlayBar));
   //   Serial.print("void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("void bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
@@ -170,7 +170,7 @@ bool bar::_oetcbPlayBar(){
   //   Serial.print("void bar::_oetcbPlayBar(). bars[_activeBar].ui16NotesCountInBar = ");Serial.println(bars[_activeBar].ui16NotesCountInBar);
   //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("void bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
-  //   Serial.print("void bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
+  //   Serial.print("void bar::_oetcbPlayBar(). myTaskScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(myTaskScheduler.timeUntilNextIteration(tPlayBar));
   //   Serial.print("void bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("void bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }

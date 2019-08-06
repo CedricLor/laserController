@@ -31,12 +31,12 @@ myWebServerViews contains the webPage being displayed by the webServer.
 */
 
 #include "Arduino.h"
-#include "myWebServerViews.h"
+#include "myWebViews.h"
 
 // const char* myWebServerViews::_slave_Reaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
 // const char* myWebServerViews::_pairing_Type[3] = {"unpaired", "twin", "cooperative"};
 
-myWebServerViews::myWebServerViews(AsyncWebServerRequest *request)
+myWebViews::myWebViews(AsyncWebServerRequest *request)
 {
   // strcpy(cBoxArray, "");
   // _loadBoxArray();
@@ -75,7 +75,7 @@ myWebServerViews::myWebServerViews(AsyncWebServerRequest *request)
 // Template processor
 // Looks for placeholders in template
 // If it meets a placeholder, replace it with a given value
-String myWebServerViews::_processor(const String& var) {
+String myWebViews::_processor(const String& var) {
 
   if(var == "UI8_NODE_NAME") {
     // Serial.print("myWebServerBase::_processor(): if(var == \"UI8_NODE_NAME\")\n");
@@ -93,7 +93,7 @@ String myWebServerViews::_processor(const String& var) {
   }
   // if(var == "BOX_SETTER") {
   //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\")\n");
-  //   myWebServerViews __myWebServerView;  // Call to "child" class myWebServerViews
+  //   myWebViews __myWebServerView;  // Call to "child" class myWebViews
   //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): Just after instantiating __myWebServerView\n");
   //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"): __myWebServerView.cBoxArray  =");Serial.println(__myWebServerView.cBoxArray);
   //   // Serial.print("myWebServerBase::_processor(): if(var == \"BOX_SETTER\"):  Just after __myWebServerView.loadBoxArray()\n");

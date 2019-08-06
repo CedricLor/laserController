@@ -41,9 +41,11 @@ reverse dependency graph
 #define boxState_h
 
 #include "Arduino.h"
-#include "./sequence/sequence.h"
-#include "./sequence/sequence.cpp"
-#include "./mySpiffs/mySpiffs.cpp"
+#include <global.h>
+#include <ControlerBox.h>
+#include <sequence.h>
+#include <mySpiffs.h>
+#include <../myMesh/myMeshViews/myMeshViews.h>
 
 class step
 {

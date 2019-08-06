@@ -10,6 +10,9 @@
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <global.h>
+#include <secret.h>
+#include <mySavedPrefs.h>
 
 class myOta
 {

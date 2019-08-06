@@ -9,7 +9,10 @@ data/.DS_Store
 .clang_complete
 .gcc-flags.json
 lib/secret
+lib/secret*
 .pio
 crashes_and_spins
 .vscode
 node_modules
+lib/.DS_Store
+lib/.DS_Store

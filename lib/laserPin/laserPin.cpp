@@ -8,7 +8,8 @@
 
 
 
-laserPin laserPin::laserPins[PIN_COUNT];
+laserPin laserPin::laserPins[4];
+// laserPin laserPin::laserPins[PIN_COUNT];
 
 
 

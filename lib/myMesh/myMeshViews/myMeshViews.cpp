@@ -39,8 +39,9 @@
 
 
 
+
 // Tasks
-// Task myMeshViews::tSendBoxStateToNewBox((gui16MyIndexInCBArray * 1000), 1, NULL, &userScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
+// Task myMeshViews::tSendBoxStateToNewBox((gui16MyIndexInCBArray * 1000), 1, NULL, &myTaskScheduler, false, NULL, _odtcbSendBoxStateToNewBox);
 //
 // void myMeshViews::_odtcbSendBoxStateToNewBox() {
 //   for (uint8_t _ui8BoxIndex = 1; _ui8BoxIndex < gui16BoxesCount; _ui8BoxIndex++) {
@@ -77,7 +78,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
   const int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<_capacity> _jDoc;
+  StaticJsonDocument<1000> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();
 
   // load the JSON document with values
@@ -104,7 +105,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 void myMeshViews::droppedNodeNotif(int16_t _droppedNodeIndexInCB) {
   const int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-  StaticJsonDocument<_capacity> _jDoc;
+  StaticJsonDocument<1000> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();
 
   // load the JSON document with values
@@ -182,14 +183,14 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   }
 
 
-  // adding my nodeName to the JSON to be sent to other boxes
+  // 1. adding my nodeName to the JSON to be sent to other boxes
   _joMsg["NNa"] = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
   // if (MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
   // }
 
 
-  // adding the APIP and the StationIP to the JSON to be sent to other boxes
+  // 2. adding the APIP and the StationIP to the JSON to be sent to other boxes
   if (_joMsg.containsKey("APIP") && _joMsg.containsKey("StIP")) {
     for (short _i = 0; _i < 4; _i++) {
       _joMsg["APIP"][_i] = ControlerBoxes[gui16MyIndexInCBArray].APIP[_i];
@@ -208,8 +209,8 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   // }
 
 
-  // JSON serialization
-  int size_buff = 254;
+  // 3. JSON serialization
+  const int size_buff = 254;
   char output[size_buff];
 
   // if (MY_DG_MESH) {
@@ -219,19 +220,13 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   // if (MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
   // }
-
-
-  // JSON conversion to String for painlessMesh
-  // if (MY_DG_MESH) {
-  //   Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
-  // }
   String str;
   str = output;
+
+  // 4. Diffusion
   // if (MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
   // }
-
-  // diffusion
   if (destNodeId) {
     laserControllerMesh.sendSingle(destNodeId, str);
   } else {
@@ -240,25 +235,7 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
 
 
   if (MY_DG_MESH) {
-    Serial.print("myMeshViews:_sendMsg(): done. Sent message: ");Serial.println(str);
+    Serial.printf("myMeshViews:_sendMsg(): done. Sent message: %s\n", output);
   }
 }
 
-
-
-
-
-
-
-
-
-
-// Helper functions
-// serialization of message to be sent
-// JsonObject myMeshViews::_createJsonobject() {
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//
-//   JsonObject msg = doc.to<JsonObject>();
-//   return msg;
-// }

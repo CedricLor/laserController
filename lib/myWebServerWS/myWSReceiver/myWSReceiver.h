@@ -42,6 +42,10 @@
 #define myWSReceiver_h
 
 #include "Arduino.h"
+#include <global.h>
+#include <mySavedPrefs.h>
+#include "../../myMesh/myMeshViews/myMeshViews.h"
+#include "../myWSSender/myWSSender.h"
 
 class myWSReceiver
 {
