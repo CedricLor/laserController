@@ -54,6 +54,9 @@ class myMesh
 
     // setup subs
     static void _initAndConfigureMesh();
+    static void _initMesh();
+    static void _initStationManual();
+    static void _rootTheMesh();
     static void _interfaceOnAPInit();
     static void _setMeshCallbacks();
     static void _setupMdns();

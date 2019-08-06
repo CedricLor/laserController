@@ -42,8 +42,16 @@ const char* myMesh::_soft_ap_password = "123456789";
 IPAddress myMesh::_soft_ap_my_ip            = IPAddress(192, 168, 5, 1);
 IPAddress myMesh::_soft_ap_me_as_gateway_ip = IPAddress(192, 168, 5, 1);
 IPAddress myMesh::_soft_ap_netmask          = IPAddress(255, 255, 255, 0);
+/*  
+    Variables for use case: stationManual / "Interface on STATION"
+    The following variables are used when providing the interface on the soft AP,
+    instead of the having the interface connecting to an external gateway. 
+    This is the use case recommended by the developpers of painlessMesh.
+    But this only works with my own refactored version of painlessMesh.
+ */
 IPAddress myMesh::_fixed_ip                 = IPAddress(192, 168, 43, 50);
 IPAddress myMesh::_fixed_netmask            = IPAddress(255, 255, 255, 0);
+
 
 
 myMesh::myMesh()
@@ -75,6 +83,22 @@ void myMesh::meshSetup() {
 
 void myMesh::_initAndConfigureMesh() {
   // 1. Init mesh
+  _initMesh();
+
+  // 2. Init station manual
+  _initStationManual();
+
+  // 3. Root the mesh
+  _rootTheMesh();
+
+  // 4. Set the callbacks
+  _setMeshCallbacks();
+}
+
+/* _initMesh()
+   Either init the mesh with interface/bridge on AP or interface on STATION
+*/
+void myMesh::_initMesh() {
   if (isInterface && !(isRoot)) {
     // Special init for case of physically mobile interface (interface on AP)
     _interfaceOnAPInit();
@@ -84,32 +108,39 @@ void myMesh::_initAndConfigureMesh() {
     // config of the Soft AP is required).
     laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
   }
+}
 
-  // 2. Init station manual
+/* _initStationManual()
+  If the mesh is interface and isRoot, the STATION shall try to connect to an external 
+  network and the web users will have access to the STATION through their browser. 
+  The other mesh nodes will connect on the AP. (This is the recommended use case
+  by the devs of painlessMesh.)
+*/
+void myMesh::_initStationManual() {
   if (isInterface && isRoot) {
-    // If the interface is on the STATION, web users will connect on the STATION. 
-    // Other mesh nodes will connect on the AP. (This is the recommended use case
-    // by the devs of painlessMesh.)
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, _fixed_ip, _fixed_netmask);
     // laserControllerMesh.stationManual(ssid, pass);
   }
+}
 
-  // 3. Root the mesh
-  // One root node per mesh is recommanded. Once a node has been set as root,
-  // it and all other mesh member should know that the mesh contains a root.
+/* _rootTheMesh()
+  One root node per mesh is recommanded. Once a node has been set as root,
+  it and all other mesh member should know that the mesh contains a root.
+*/
+void myMesh::_rootTheMesh() {
   if (isRoot) {
     laserControllerMesh.setRoot(true);
   }
   laserControllerMesh.setContainsRoot(true);
-
-  // 4. Set the callbacks
-  _setMeshCallbacks();
 }
 
-
 /* _interfaceOnAPInit()
-   If the interface is on the AP, web users have to connect on the AP.
-   The mesh will use the interface as STATION, scanning for other mesh nodes.
+   If the interface is on the AP, web users have access to it on the AP. They have to
+   connect just like on any ESP32 AP.  Accordingly, the AP shall be configured as any
+   AP on an ESP32.
+   This node will use its STATION to scanning for other mesh nodes and access to
+   the mesh (accordingly, scanStationManual shall not be called; scanning shall 
+   remain under the full control of painlessMesh).
 */
 void myMesh::_interfaceOnAPInit() {
   // 1. init the mesh in station only
