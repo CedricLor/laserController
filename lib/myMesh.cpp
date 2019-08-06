@@ -69,7 +69,7 @@ void myMesh::meshSetup() {
   _initAndConfigureMesh();
 
   _tPrintMeshTopo.enable();
-  _tSaveNodeListAndMap.restart();
+  _tSaveNodeMap.restart();
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
   ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
@@ -494,24 +494,24 @@ Task myMesh::_tUpdateCDOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnCh
 
 
 bool myMesh::_oetcbUpdateCBOnChangedConnections() {
-  // Disable the Task _tSaveNodeListAndMap (just in case)
-  if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_oetcbUpdateCBOnChangedConnections(): _tSaveNodeListAndMap disabled.\n");
-  _tSaveNodeListAndMap.disable();
+  // Disable the Task _tSaveNodeMap (just in case)
+  if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_oetcbUpdateCBOnChangedConnections(): _tSaveNodeMap disabled.\n");
+  _tSaveNodeMap.disable();
   return true;
 }
 
 
 void myMesh::_odtcbUpdateCBOnChangedConnections() {
-  // Enable the Task _tSaveNodeListAndMap
-  if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_odtcbUpdateCBOnChangedConnections(): _tSaveNodeListAndMap restarted.\n");
-  _tSaveNodeListAndMap.restart();
+  // Enable the Task _tSaveNodeMap
+  if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_odtcbUpdateCBOnChangedConnections(): _tSaveNodeMap restarted.\n");
+  _tSaveNodeMap.restart();
 }
 
 
 void myMesh::_tcbUpdateCBOnChangedConnections() {
   if (MY_DG_MESH) Serial.println("\nmyMesh::_tcbUpdateCBOnChangedConnections(): Starting. Time: " + String(millis()));
-  // 1. Disable the Task _tSaveNodeListAndMap (just in case)
-  _tSaveNodeListAndMap.disable();
+  // 1. Disable the Task _tSaveNodeMap (just in case)
+  _tSaveNodeMap.disable();
 
   // 2. Create a _newNodeList containing the new mesh layout
   // std::list<uint32_t> _newNodeList = laserControllerMesh.getNodeList();
@@ -542,6 +542,15 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
     }
     _nodeMap.emplace(_newNode, 2); // new node
   }
+  // if (MY_DEBUG) {
+  //   uint16_t _it = 0;
+  //   Serial.printf("\nmyMesh::_tcbUpdateCBOnChangedConnections(): Printing out the map:\n");
+  //   for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
+  //     Serial.printf("myMesh::_tcbUpdateCBOnChangedConnections(): node [%u]: %u\n", _it, _node.first);
+  //     _it++;
+  //   }
+  //   Serial.printf("myMesh::_tcbUpdateCBOnChangedConnections(): ---\n\n");
+  // }
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): After iteration over the list. Time: " + String(millis()));
 
   // 4. Delete the boxes marked as 0 from the ControlerBoxes[] array
@@ -609,36 +618,23 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
 
 
 
-/* _tSaveNodeListAndMap
+/* _tSaveNodeMap
   This Task is called on various occasions, to keep an 
   up-to-date vision of the mesh layout.
 */
-Task myMesh::_tSaveNodeListAndMap(10 * TASK_SECOND, 2, &_tcbSaveNodeListAndMap, &userScheduler, false);
+Task myMesh::_tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, &userScheduler, false);
 
-void myMesh::_tcbSaveNodeListAndMap() {
-  if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeListAndMap(): remaining iterations: " + String(_tSaveNodeListAndMap.getIterations()));
+void myMesh::_tcbSaveNodeMap() {
+  if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(_tSaveNodeMap.getIterations()));
   if (_tUpdateCDOnChangedConnections.isEnabled()) {
-    if (MY_DEEP_DG_MESH) Serial.println("myMesh::_tcbSaveNodeListAndMap(): _tUpdateCDOnChangedConnections is enabled. Passing this iteration.");
-    _tSaveNodeListAndMap.setIterations(_tSaveNodeListAndMap.getIterations() + 1);
+    if (MY_DEEP_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCDOnChangedConnections is enabled. Passing this iteration.");
+    _tSaveNodeMap.setIterations(_tSaveNodeMap.getIterations() + 1);
     return;
   }
-  _tSaveNodeListAndMap.setInterval(20 * TASK_SECOND);
-  if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeListAndMap(): _tUpdateCDOnChangedConnections is not enabled. Updating mesh topo list and map.");
-  // _saveNodeList();
+  _tSaveNodeMap.setInterval(20 * TASK_SECOND);
+  if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCDOnChangedConnections is not enabled. Updating mesh topo list and map.");
   _saveNodeMap();
 }
-
-// std::list<uint32_t> myMesh::_savedNodeList = laserControllerMesh.getNodeList();
-
-// void myMesh::_saveNodeList() {
-//   // Serial.println("myMesh::_saveNodeList(): Starting. Time: " + String(millis()));
-//   _savedNodeList = laserControllerMesh.getNodeList();
-//   // Serial.println("myMesh::_saveNodeList(): Before remove(0). Time: " + String(millis()));
-//   _savedNodeList.remove(0);
-//   // Serial.println("myMesh::_saveNodeList(): Before sort. Time: " + String(millis()));
-//   // _savedNodeList.sort();
-//   // Serial.println("myMesh::_saveNodeList(): Ending. Time: " + String(millis()));
-// }
 
 std::map<uint32_t, uint16_t> myMesh::_nodeMap;
 
@@ -651,6 +647,16 @@ void myMesh::_saveNodeMap() {
     if (_nodeFromList == (uint32_t)0) continue;
     _nodeMap.emplace(_nodeFromList, 1);
   }
+
+  // if (MY_DEBUG) {
+  //   uint16_t _it = 0;
+  //   Serial.printf("\nmyMesh::_saveNodeMap(): Printing out the map:\n");
+  //   for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
+  //     Serial.printf("myMesh::_saveNodeMap(): node [%u]: %u\n", _it, _node.first);
+  //     _it++;
+  //   }
+  //   Serial.printf("myMesh::_saveNodeMap(): ---\n\n");
+  // }
   // Serial.println("myMesh::_saveNodeMap(): Ending. Time: " + String(millis()));
 }
 

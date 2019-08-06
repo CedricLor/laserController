@@ -103,12 +103,10 @@ class myMesh
     static uint16_t _deleteBoxFromCBArray(uint32_t nodeId);
 
     // To keep track of the mesh layout
-    static Task _tSaveNodeListAndMap;
-    static void _tcbSaveNodeListAndMap();
+    static Task _tSaveNodeMap;
+    static void _tcbSaveNodeMap();
     static std::map<uint32_t, uint16_t> _nodeMap;
     static void _saveNodeMap();
-    // static std::list<uint32_t> _savedNodeList;
-    // static void _saveNodeList();
 };
 
 #endif
