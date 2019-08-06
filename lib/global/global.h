@@ -31,7 +31,7 @@ extern bool isRoot;
 extern uint32_t gui32InterfaceNodeId;
 extern uint16_t gui16InterfaceIndexInCBArray;
 
-extern const short MESH_REQUEST_CAPACITY;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
+extern constexpr short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 

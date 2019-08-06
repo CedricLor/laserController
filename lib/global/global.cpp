@@ -82,7 +82,6 @@ bool isRoot = IS_ROOT;
 
 const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
-const short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION = 0;
 
