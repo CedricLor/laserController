@@ -720,7 +720,7 @@ var _onClickHelpers = {
 
 /**
  *  _onClickBoxConfig:
- *  Holder of all the onClick on one of the box specific configuration
+ *  Holder of all the onClick events on the box level configuration
  *  button (reboot, save, reboot and save, OTA reboot) buttons. */
 var _onClickBoxConfig = {
   wrapper:        function(e, _obj) {
@@ -772,9 +772,9 @@ var _onClickBoxConfig = {
   OTAReboots:   function(e) {
     console.log("_onClickBoxConfig.OTAReboots starting");
     _onClickBoxConfig.wrapper(e, {
-      key:  "save",
-      val:  "gi8RequestedOTAReboots",
-      reboots: parseInt(this.dataset.reboots, 10),
+      key:      "save",
+      val:      "gi8RequestedOTAReboots",
+      reboots:  parseInt(this.dataset.reboots, 10),
     });
     // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
     console.log("_onClickBoxConfig.OTAReboots ending");
@@ -784,8 +784,8 @@ var _onClickBoxConfig = {
 function onclickgOTARebootsBoxBtn(e) {
   console.log("onclickgOTARebootsBoxBtn starting");
   _onClickBoxConfig.wrapper(e, {
-    key: "save",
-    val: "gi8RequestedOTAReboots",
+    key:     "save",
+    val:     "gi8RequestedOTAReboots",
     reboots: parseInt(this.dataset.reboots, 10),
   });
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
@@ -1027,9 +1027,9 @@ var _onClickStateBtns = {
     if (connectionObj.checkConnect.closedVerb()) { return; }
     _onClickHelpers.btnSend({
       "action": "changeBox",
-      "key": _clef,
-      "lb": _laserBoxNumber,
-      "val": parseInt(_datasetValue, 10)
+      "key":    _clef,
+      "lb":     _laserBoxNumber,
+      "val":    parseInt(_datasetValue, 10)
     });
       // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
       // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
