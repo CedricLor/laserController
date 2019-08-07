@@ -17,7 +17,7 @@
 
 #include <myMesh.cpp>
 
-#include "../lib/boxState.cpp"
+#include <boxState.cpp>
 
 #include "../lib/pirController.cpp"
 
