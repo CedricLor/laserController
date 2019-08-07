@@ -207,7 +207,8 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
     Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
 
-  myMeshController::_tcbDecodeRequest(from, msg);
+  myMeshController myMeshController(from, msg);
+  // myMeshController::_tcbDecodeRequest(from, msg);
 
   Serial.println(F("myMesh::receivedCallback(): ending"));
 }
@@ -610,7 +611,7 @@ void myMesh::_tcbSaveNodeMap() {
     return;
   }
   _tSaveNodeMap.setInterval(20 * TASK_SECOND);
-  if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCDOnChangedConnections is not enabled. Updating mesh topo list and map.");
+  if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCDOnChangedConnections is not enabled. Updating mesh topo map.");
   _saveNodeMap();
 }
 

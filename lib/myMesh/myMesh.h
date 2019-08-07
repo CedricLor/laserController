@@ -37,9 +37,7 @@
 class myMeshStarter
 {
   public:
-    myMeshStarter();
-    
-    // Variables for Interface on AP mode
+    myMeshStarter();    // Variables for Interface on AP mode
     static const char* _soft_ap_ssid;    
     static const char* _soft_ap_password;
 
