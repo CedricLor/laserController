@@ -31,37 +31,41 @@
 class myMeshController
 {
   public:
-    myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj);
-
-    static void _tcbDecodeRequest(uint32_t _ui32SenderNodeId, String &_msg);
+    myMeshController(uint32_t _ui32SenderNodeId, String &_msg);
 
   private:
+    static constexpr int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+    StaticJsonDocument<_capacity> _nsdoc;
+    JsonObject _nsobj;
+    uint32_t _ui32SenderNodeId;
+
+    void _main();
     char _action;
 
-    void _statusMessage(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _statusMessage();
 
-    void _changeBox(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _changeBox();
 
-    void _changeBoxRequest(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _changeBoxRequest();
 
-    void _changedBoxConfirmation(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _changedBoxConfirmation();
 
     // helpers to _statusMessage
-    uint16_t _getSenderBoxIndexNumber(JsonObject& _obj);
+    uint16_t _getSenderBoxIndexNumber();
 
     // helpers to _changeBoxRequest
-    void _updateMyValFromWeb(JsonObject& _obj);
-    void _updateMyMasterBoxName(JsonObject& _obj, uint32_t _ui32SenderNodeId);
-    void _updateMyDefaultState(JsonObject& _obj, uint32_t _ui32SenderNodeId);
-    void _rebootEsp(JsonObject&_obj, uint32_t _ui32SenderNodeId);
-    void _save(JsonObject& _obj, uint32_t _ui32SenderNodeId);
+    void _updateMyValFromWeb();
+    void _updateMyMasterBoxName();
+    void _updateMyDefaultState();
+    void _rebootEsp();
+    void _save();
     
     Task _tChangeBoxSendConfirmationMsg;
-    void _changeBoxSendConfirmationMsg(JsonObject& _obj, uint32_t _ui32SenderNodeId=0);
+    void _changeBoxSendConfirmationMsg(JsonObject &_obj);
 
     // helpers to _changedBoxConfirmation (on the interface and the other boxes)
-    void _updateSenderMasterBox(uint16_t _ui16BoxIndex, JsonObject& _obj);
-    void _updateSenderDefaultState(uint16_t _ui16BoxIndex, JsonObject& _obj);
+    void _updateSenderMasterBox(uint16_t _ui16BoxIndex);
+    void _updateSenderDefaultState(uint16_t _ui16BoxIndex);
 
     // void _manualSwitch(JsonDocument& root);
     // void _changeInclusionIR(JsonDocument& root);
