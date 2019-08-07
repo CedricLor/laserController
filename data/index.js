@@ -147,7 +147,7 @@ var onRebootLBs = {
 
     console.log("--------------- end LBs reboot switch -----------------");
   }
-}
+};
 
 
 
@@ -184,7 +184,7 @@ var onRebootAll = {
 
     console.log("--------------- end reboot all switch -----------------");
   }
-}
+};
 
 
 
@@ -360,7 +360,7 @@ var _onRebootCommon = {
     _spanNewStateLBsList.appendChild(_destinationMapSet.get(_laserBoxIndexNumber));
     return _spanNewStateLBsList;
   }
-}
+};
 
 
 
@@ -494,7 +494,7 @@ var ping = {
       ping.sentMark = ping.count;
     }
   }
-}
+};
 
 // check connection and reconnect variables
 var checkConnect = {
@@ -518,7 +518,7 @@ var checkConnect = {
     }
     return false;
   }
-}
+};
 
 
 // Check if WS server is still available (and reconnect as necessary)
@@ -586,7 +586,7 @@ var _onClickHelpers = {
     );
     e.target.className += ' button_clicked';
   }
-}
+};
 
 
 
@@ -599,8 +599,8 @@ var _onClickBoxConfig = {
     // if the connection is closed, inform the user
     if (checkConnect.closedVerb()) { return; }
     // else, complete the message
-    _obj["lb"] = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-    _obj["action"] = "changeBox";
+    _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+    _obj.action = 'changeBox';
     // and send the message
     _onClickHelpers.btnSend(_obj);
     // {action:"changeBox", key:"reboot", save: 0, lb:1}
@@ -608,7 +608,7 @@ var _onClickBoxConfig = {
     // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
     // {action:"changeBox", key:"save", val: "all", lb:1}
   },
-}
+};
 
 
 function onclickRebootBoxButton(e) {
@@ -682,7 +682,7 @@ var _onClickGroupReboot = {
     if (boxesRows.size) {
       _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
       // else, complete the message and send it
-      _obj["action"] = "changeNet";
+      _obj.action = 'changeNet';
       _onClickHelpers.btnSend(_obj);
       // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
       return;
@@ -690,7 +690,7 @@ var _onClickGroupReboot = {
     // if there are no boxes in the boxes map, inform the user that there are no boxes
     _onRebootCommon.addNoConnectedBoxesSpan();
   }
-}
+};
 
 
 function onclickRebootLBsButton(e) {
@@ -758,7 +758,7 @@ var infoBox = {
     // append the div to the DOM
     _infoBox.appendChild(_div);
   }
-}
+};
 
 
 
@@ -827,7 +827,7 @@ var _onClickSaveWifi = {
     _onClickHelpers.btnSend(_obj);
     // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
   },
-}
+};
 
 
 function onclickSaveWifiSettingsIF(e) {
@@ -895,7 +895,7 @@ var _onClickStateBtns = {
       // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
       // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
   }
-}
+};
 
 
 function onclickButton(e) {
@@ -1285,7 +1285,7 @@ function addOrUpdateNewRowForNewBox(_data) {
   var _controlerBoxEntry = controlerBoxes.get(_data.lb);
   console.log("addOrUpdateNewRowForNewBox: looking if an entry exists in the map for this box");
   console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
-  console.log("addOrUpdateNewRowForNewBox: testing if (!(_controlerBoxEntry === undefined)): " + (!(_controlerBoxEntry === undefined)));
+  console.log("addOrUpdateNewRowForNewBox: testing if _controlerBoxEntry is undefined: -> " + (_controlerBoxEntry === undefined));
 
   // Case where the box does not exist
   if (_controlerBoxEntry === undefined) {
@@ -1496,7 +1496,7 @@ window.onload = function(_e){
     checkConnect.intervalCode = setInterval(check, (getRandomArbitrary(10, 4) * 1000));
     setTimeout(setGroupEvents, 2000);
     // checkWSStarter(check);
-}
+};
 // END WINDOW LOAD
 
 
