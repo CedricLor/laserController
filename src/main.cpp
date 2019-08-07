@@ -51,8 +51,7 @@ void setup() {
   }
 
   
-  myMesh _myMesh;
-  _myMesh.meshSetup();
+  myMeshStarter _myMeshStarter();
 
   if (isInterface == false) {
     pirController::initPir(); // depends on ControlerBox and Mesh classes

@@ -34,14 +34,11 @@
 #include "./myMesh/myMeshViews/myMeshViews.cpp"
 #include "./myMesh/myMeshController/myMeshController.cpp"
 
-class myMesh
+class myMeshStarter
 {
   public:
-    myMesh();
+    myMeshStarter();
 
-    void meshSetup();
-
-  private:
     // Variables for Interface on AP mode
     static const char* _soft_ap_ssid;    
     static const char* _soft_ap_password;
@@ -52,6 +49,7 @@ class myMesh
     static IPAddress _fixed_ip;
     static IPAddress _fixed_netmask;
 
+  private:
     // setup subs
     void _initAndConfigureMesh();
     void _initMesh();
@@ -61,6 +59,15 @@ class myMesh
     void _setMeshCallbacks();
     void _setupMdns();
 
+};
+
+class myMesh
+{
+  public:
+    myMesh();
+
+  private:
+    friend class myMeshStarter;
     // painlessMesh callbacks
     static void receivedCallback( uint32_t from, String &msg);
 

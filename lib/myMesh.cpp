@@ -37,11 +37,11 @@
     instead of the having the interface connecting to an external gateway (as 
     recommended by the developpers of painlessMesh).
  */
-const char* myMesh::_soft_ap_ssid     = "ESP32-Access-Point";
-const char* myMesh::_soft_ap_password = "123456789";
-IPAddress myMesh::_soft_ap_my_ip            = IPAddress(192, 168, 5, 1);
-IPAddress myMesh::_soft_ap_me_as_gateway_ip = IPAddress(192, 168, 5, 1);
-IPAddress myMesh::_soft_ap_netmask          = IPAddress(255, 255, 255, 0);
+const char* myMeshStarter::_soft_ap_ssid     = "ESP32-Access-Point";
+const char* myMeshStarter::_soft_ap_password = "123456789";
+IPAddress myMeshStarter::_soft_ap_my_ip            = IPAddress(192, 168, 5, 1);
+IPAddress myMeshStarter::_soft_ap_me_as_gateway_ip = IPAddress(192, 168, 5, 1);
+IPAddress myMeshStarter::_soft_ap_netmask          = IPAddress(255, 255, 255, 0);
 /*  
     Variables for use case: stationManual / "Interface on STATION"
     The following variables are used when providing the interface on the soft AP,
@@ -49,18 +49,12 @@ IPAddress myMesh::_soft_ap_netmask          = IPAddress(255, 255, 255, 0);
     This is the use case recommended by the developpers of painlessMesh.
     But this only works with my own refactored version of painlessMesh.
  */
-IPAddress myMesh::_fixed_ip                 = IPAddress(192, 168, 43, 50);
-IPAddress myMesh::_fixed_netmask            = IPAddress(255, 255, 255, 0);
+IPAddress myMeshStarter::_fixed_ip                 = IPAddress(192, 168, 43, 50);
+IPAddress myMeshStarter::_fixed_netmask            = IPAddress(255, 255, 255, 0);
 
 
-
-myMesh::myMesh()
+myMeshStarter::myMeshStarter()
 {
-}
-
-
-
-void myMesh::meshSetup() {
   if ( MY_DEBUG == true ) {
     // laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
@@ -68,20 +62,22 @@ void myMesh::meshSetup() {
 
   _initAndConfigureMesh();
 
-  _tPrintMeshTopo.enable();
-  _tSaveNodeMap.restart();
+  myMesh::_tPrintMeshTopo.enable();
+  myMesh::_tSaveNodeMap.restart();
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
   ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
 
-  _setupMdns();
-}
+  _setupMdns();}
+
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup Helpers
 
-void myMesh::_initAndConfigureMesh() {
+void myMeshStarter::_initAndConfigureMesh() {
   // 1. Init mesh
   _initMesh();
 
@@ -98,7 +94,7 @@ void myMesh::_initAndConfigureMesh() {
 /* _initMesh()
    Either init the mesh with interface/bridge on AP or interface on STATION
 */
-void myMesh::_initMesh() {
+void myMeshStarter::_initMesh() {
   if (isInterface && !(isRoot)) {
     // Special init for case of physically mobile interface (interface on AP)
     _interfaceOnAPInit();
@@ -116,7 +112,7 @@ void myMesh::_initMesh() {
   The other mesh nodes will connect on the AP. (This is the recommended use case
   by the devs of painlessMesh.)
 */
-void myMesh::_initStationManual() {
+void myMeshStarter::_initStationManual() {
   if (isInterface && isRoot) {
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, _fixed_ip, _fixed_netmask);
     // laserControllerMesh.stationManual(ssid, pass);
@@ -127,7 +123,7 @@ void myMesh::_initStationManual() {
   One root node per mesh is recommanded. Once a node has been set as root,
   it and all other mesh member should know that the mesh contains a root.
 */
-void myMesh::_rootTheMesh() {
+void myMeshStarter::_rootTheMesh() {
   if (isRoot) {
     laserControllerMesh.setRoot(true);
   }
@@ -142,7 +138,7 @@ void myMesh::_rootTheMesh() {
    the mesh (accordingly, scanStationManual shall not be called; scanning shall 
    remain under the full control of painlessMesh).
 */
-void myMesh::_interfaceOnAPInit() {
+void myMeshStarter::_interfaceOnAPInit() {
   // 1. init the mesh in station only
   laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
   // 2. configure the soft AP
@@ -161,16 +157,16 @@ void myMesh::_interfaceOnAPInit() {
 }
 
 
-void myMesh::_setMeshCallbacks() {
-  laserControllerMesh.onReceive(&receivedCallback);
-  laserControllerMesh.onNewConnection(&newConnectionCallback);
-  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
-  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
+void myMeshStarter::_setMeshCallbacks() {
+  laserControllerMesh.onReceive(&myMesh::receivedCallback);
+  laserControllerMesh.onNewConnection(&myMesh::newConnectionCallback);
+  laserControllerMesh.onChangedConnections(&myMesh::changedConnectionCallback);
+  // laserControllerMesh.onNodeTimeAdjusted(&myMesh::nodeTimeAdjustedCallback);
+  // laserControllerMesh.onNodeDelayReceived(&myMesh::delayReceivedCallback);
+  laserControllerMesh.onDroppedConnection(&myMesh::droppedConnectionCallback);
 }
 
-void myMesh::_setupMdns() {
+void myMeshStarter::_setupMdns() {
   snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
   // laserControllerMesh.setHostname(gcHostnamePrefix);
   // begin mDNS responder: argument is the name to broadcast. In this example
@@ -198,7 +194,10 @@ void myMesh::_setupMdns() {
 
 
 
+myMesh::myMesh()
+{
 
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Network Callbacks
@@ -447,8 +446,7 @@ void myMesh::_tcbIamAloneTimeOut() {
   if (IamAlone()) {
     Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
     laserControllerMesh.stop();
-    myMesh _myMesh;
-    _myMesh.meshSetup();
+    myMeshStarter _myMeshStarter();
   }
 }
 
