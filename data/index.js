@@ -10,20 +10,45 @@
 */
 
 // Global variables
-var boxRowTemplate  = {
-  template: this.boxRowTemplateSelector(),
-  boxRowTemplateSelector: function() {
-    var _row          = document.getElementById('boxTemplate');
-    var _templateDup  = _row.cloneNode(true);
-    return _templateDup; // 
-  }  
+var boxRowManager  = {
+  virtualTemplate: undefined,
+  boxesContainer:  undefined,
+  init:            function() {
+    var _row                        = document.getElementById('boxTemplate');
+    boxRowManager.virtualTemplate   = _row.cloneNode(true);
+    boxRowManager.boxesContainer    = document.getElementById('boxesContainer');
+  },
+  
+  template: function() {
+    return (this.virtualTemplate.cloneNode(true));
+  },
+
+  insertInBoxesContainer: {
+    last:   function(_newRow){
+      boxRowManager.boxesContainer.appendChild(_newRow);
+    },
+    first:  function(_newRow){
+      if (boxRowManager.boxesContainer.hasChildNodes()) {
+        return (boxRowManager.boxesContainer.insertBefore(_newRow, boxRowManager.boxesContainer.firstChild));
+      } else {
+        return (boxRowManager.insertInBoxesContainer.last(_newRow));
+      }
+    }
+  }
 };
 
 
+class controlerBox {
+  constructor (props) {
+    this.lb = props.lb;
+    this.boxState = props.boxState;
+    this.boxDefstate = props.boxDefstate;
+    this.id = "toto";
+    this.clicked = props.clicked || false;
+  }
+}
 
-
-
-
+var myControlerBox = new controlerBox({lb: "1", boxState: "3", boxDefstate: "6" });
 
 
 
@@ -111,9 +136,9 @@ var connectionObj = {
 
   wsonclose:        function(e) {
       if (connectionObj.checkConnect.retryCount != 10) {
-        console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e.reason);
+        console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e);
       }
-      console.log('Socket is closed. Reason: ', e.reason);
+      console.log('Socket is closed. Reason: ', e);
       deleteAllBoxRows();
   },
 
@@ -241,7 +266,7 @@ var connectionObj = {
         if (connectionObj.ping.count === 9) {
           connectionObj.ping.count      = 1;
         }
-        connectionObj.send(connectionObj.ping.count);
+        connectionObj.ws.send(connectionObj.ping.count);
         connectionObj.ping.sentMark = connectionObj.ping.count;
       }
     }
@@ -1305,13 +1330,7 @@ function _selectMasterSelectInRow(_dupRow) {
 
 
 
-function _renderRowInDom(_dupRow) {
-  console.log("_renderRowInDom: about to insert the new box in the DOM");
-  _dupRow = document.getElementById('boxTemplate').parentNode.insertBefore(_dupRow, document.getElementById('boxTemplate'));
-  console.log("_renderRowInDom: inserted the new box in the in DOM:");
-  console.log(_dupRow);
-  return _dupRow;
-}
+
 
 
 
@@ -1319,44 +1338,41 @@ function _renderRowInDom(_dupRow) {
 function addNewRowForNewBox(data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
-  if (boxRowTemplate) {
-    // clone the template
-    console.log("addNewRowForNewBox: Hidden boxRow selected. About to clone it.");
-    var _dupRow = boxRowTemplate.cloneNode(true);  // duplicate the box
-    console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
+  // clone the template
+  var _dupRow = boxRowManager.template();  // get a duplicate of the box
+  console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
 
-    // set properties
-    _dupRow = _newBoxRowSetProperties(data.lb, _dupRow);
+  // set properties
+  _dupRow = _newBoxRowSetProperties(data.lb, _dupRow);
 
-    // set the activeState button
-    // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-    _dupRow = _setCurrentStateButton(_dupRow, "boxstate", data.boxState);
+  // set the activeState button
+  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+  _dupRow = _setCurrentStateButton(_dupRow, "boxstate", data.boxState);
 
-    // set event listener on current state buttons
-    // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-    _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
+  // set event listener on current state buttons
+  // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+  _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
 
-    // indicate masterbox number
-    _dupRow = _indicateMasterBoxNumber(data.masterbox, _dupRow);
+  // indicate masterbox number
+  _dupRow = _indicateMasterBoxNumber(data.masterbox, _dupRow);
 
-    // set event listener on master select
-    var _select = _selectMasterSelectInRow(_dupRow);
-    setSelectEvents(_select);
+  // set event listener on master select
+  var _select = _selectMasterSelectInRow(_dupRow);
+  setSelectEvents(_select);
 
-    // set boxDefaultState button
-    // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-    _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
+  // set boxDefaultState button
+  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
+  _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
 
-    // set event listener on default state buttons
-    // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-    _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
+  // set event listener on default state buttons
+  // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+  _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
 
-    // render in DOM
-    _dupRow = _renderRowInDom(_dupRow);
+  // render in DOM
+  _dupRow = boxRowManager.insertInBoxesContainer.first(_dupRow);
 
-    // add a key/entry pair to the controlerBoxes map and to the rowsMap map
-    boxMaps._add(data, _dupRow);
-  }
+  // add a key/entry pair to the controlerBoxes map and to the rowsMap map
+  boxMaps._add(data, _dupRow);
   console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
 }
 
@@ -1577,7 +1593,7 @@ window.onload = function(_e){
     // (and reconnect as necessary) setInterval(check, 5000);
     connectionObj.start();
     setTimeout(setGroupEvents, 2000);
-    // checkWSStarter(check);
+    boxRowManager.init();
 };
 // END WINDOW LOAD
 
