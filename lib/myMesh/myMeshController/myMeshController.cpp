@@ -288,7 +288,7 @@ void myMeshController::_updateMyMasterBoxName() {
   ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName(_nsobj["val"].as<uint16_t>() + gui16ControllerBoxPrefix);
 
   // send confirmation message
-  _changeBoxSendConfirmationMsg(_nsobj);
+  _changeBoxSendConfirmationMsg();
 
   // mark the change as signaled
   ControlerBoxes[gui16MyIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
@@ -305,7 +305,7 @@ void myMeshController::_updateMyDefaultState() {
   ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState = _nsobj["val"].as<uint16_t>();
 
   // send confirmation message
-  _changeBoxSendConfirmationMsg(_nsobj);
+  _changeBoxSendConfirmationMsg();
 
   // mark the change as signaled
   ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
@@ -325,10 +325,10 @@ void myMeshController::_rebootEsp() {
     _save();
   }
 
-  // broadcast confirmation message (_changeBoxSendConfirmationMsg(_nsobj)
+  // broadcast confirmation message (_changeBoxSendConfirmationMsg()
   // called without _ui32SenderNodeId param)
   Serial.println("------------------------------ CONFIRMING REBOOT ---------------------------");
-  _changeBoxSendConfirmationMsg(_nsobj);
+  _changeBoxSendConfirmationMsg();
 
   // reboot
   Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
@@ -345,82 +345,52 @@ void myMeshController::_save() {
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");
-  _changeBoxSendConfirmationMsg(_nsobj);
+  _changeBoxSendConfirmationMsg();
 }
 
-// PROTOTYPE FOR A MORE ABSTRACT CHANGE PROPERTY HANDLER
-// void myMeshController::_updateMyProperty(char& _cPropertyKey, JsonObject& _nsobj) {
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshController::_updateMyProperty: will change my property %s to %u\n", _nsobj[_cPropertyKey].as<uint8_t>());
-//   }
-//
-//   // update property and propertyChangeHasBeenSignaled for my box
-//   _updatePropertyForBox(_cPropertyKey, gui16MyIndexInCBArray, _nsobj)
-//
-//   // send confirmation message
-//   _changeBoxSendConfirmationMsg(_nsobj);
-//
-//   // mark the change as signaled
-//   ControlerBoxes[_ui16BoxIndex]._cPropertyKey = true;
-// }
 
+// Task myMeshController::_tChangeBoxSendConfirmationMsg;
 
-// attempt to abstract even more the process
-// void myMeshController::_updatePropertyForBox(char& _cPropertyKey, uint8_t _ui16BoxIndex, JsonObject& _nsobj) {
-//   // get the new property from the JSON
-//   int8_t __i8PropertyValue = _nsobj[_cPropertyKey].as<uint8_t>();
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshController::_updateSenderProperty: %s = %i\n", _cPropertyKey, __i8PropertyValue);
-//   }
-//
-//   // 1. set the new property of the relevant ControlerBox in the
-//   // ControlerBoxes array
-//   // 2. set the bool announcing that the change has not been signaled,
-//   // to have it caught by the webServerTask (on the interface).
-//   // TODO:
-//   // a. ControlerBoxes[_ui16BoxIndex].updateProperty needs to be drafted
-//   // b. in ControlerBoxes[_ui16BoxIndex].updateProperty, if it is a master nodeName
-//   // change, add the gui16ControllerBoxPrefix.
-//   ControlerBoxes[_ui16BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
-//
-//   if (MY_DG_MESH) {
-//     Serial.printf("myMeshController::_updateSenderProperty: ControlerBoxes[%u], property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
-//   }
-// }
-
-
-void myMeshController::_changeBoxSendConfirmationMsg(JsonObject &_obj) {
-  // send a message to the IF telling it that I have executed its request
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+// sends a message to the IF telling it that this box has executed its request
+void myMeshController::_changeBoxSendConfirmationMsg() {
+  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox 
+  // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate 
+  if (MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: Starting\n");
 
   // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
-  _obj["st"] = 2;
-  // if (MY_DG_MESH) {
-  //   Serial.printf("myMeshController::myMeshController: _nsobj[\"st\"] = %u\n", _nsobj["st"].as<uint8_t>());
-  // }
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
-  // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
+  _nsobj["st"] = 2;
+  if (MY_DG_MESH) {
+    Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: _obj[\"st\"] = %u\n", _nsobj["st"].as<uint16_t>());
+  }
 
   // if the message was a "changeNet" request, it was broadcasted and
   // its "lb" field was equal to either "LBs" or "all";
   // replace it with thix box's index number so that the ControlerBoxes array
   // be properly updated in _changedBoxConfirmation
-  if ((_obj["lb"] == "LBs") || (_obj["lb"] == "all")) {
-    _obj["lb"] = gui16MyIndexInCBArray;
+  if ((_nsobj["lb"] == "LBs") || (_nsobj["lb"] == "all")) {
+    _nsobj["lb"] = gui16MyIndexInCBArray;
   }
 
-  this->_tChangeBoxSendConfirmationMsg.setInterval(0);
-  this->_tChangeBoxSendConfirmationMsg.setCallback(
-    [this]() {
-      myMeshViews __myMeshViews;
-      __myMeshViews.changedBoxConfirmation(this->_nsobj);
-    }
-  );
-  this->_tChangeBoxSendConfirmationMsg.setIterations(1);
-  userScheduler.addTask(this->_tChangeBoxSendConfirmationMsg);
-  this->_tChangeBoxSendConfirmationMsg.enable();
+  myMeshViews __myMeshViews;
+  __myMeshViews.changedBoxConfirmation(_nsobj);
   // send back the received JSON object with its amended "st" key
+  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");
+  // _tChangeBoxSendConfirmationMsg.setInterval(0);
+  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the callback for _tChangeBoxSendConfirmationMsg \n");
+  // _tChangeBoxSendConfirmationMsg.setCallback(
+  //   [&_obj]() {
+  //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
+  //     myMeshViews __myMeshViews;
+  //     __myMeshViews.changedBoxConfirmation(_obj);
+  //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
+  //   }
+  // );
+  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Set the iterations\n");
+  // _tChangeBoxSendConfirmationMsg.setIterations(1);
+  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Adding the Task to the Scheduler\n");
+  // userScheduler.addTask(_tChangeBoxSendConfirmationMsg);
+  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Restarting the Task _tChangeBoxSendConfirmationMsg\n");
+  // _tChangeBoxSendConfirmationMsg.restart();
   // if (MY_DG_MESH) {
   //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
   // }
@@ -484,6 +454,54 @@ void myMeshController::_updateSenderDefaultState(uint16_t _ui16BoxIndex) {
 
 
 
+
+// PROTOTYPE FOR A MORE ABSTRACT CHANGE PROPERTY HANDLER
+// void myMeshController::_updateMyProperty(char& _cPropertyKey, JsonObject& _nsobj) {
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateMyProperty: will change my property %s to %u\n", _nsobj[_cPropertyKey].as<uint8_t>());
+//   }
+//
+//   // update property and propertyChangeHasBeenSignaled for my box
+//   _updatePropertyForBox(_cPropertyKey, gui16MyIndexInCBArray, _nsobj)
+//
+//   // send confirmation message
+//   _changeBoxSendConfirmationMsg();
+//
+//   // mark the change as signaled
+//   ControlerBoxes[_ui16BoxIndex]._cPropertyKey = true;
+// }
+
+
+// attempt to abstract even more the process
+// void myMeshController::_updatePropertyForBox(char& _cPropertyKey, uint8_t _ui16BoxIndex, JsonObject& _nsobj) {
+//   // get the new property from the JSON
+//   int8_t __i8PropertyValue = _nsobj[_cPropertyKey].as<uint8_t>();
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateSenderProperty: %s = %i\n", _cPropertyKey, __i8PropertyValue);
+//   }
+//
+//   // 1. set the new property of the relevant ControlerBox in the
+//   // ControlerBoxes array
+//   // 2. set the bool announcing that the change has not been signaled,
+//   // to have it caught by the webServerTask (on the interface).
+//   // TODO:
+//   // a. ControlerBoxes[_ui16BoxIndex].updateProperty needs to be drafted
+//   // b. in ControlerBoxes[_ui16BoxIndex].updateProperty, if it is a master nodeName
+//   // change, add the gui16ControllerBoxPrefix.
+//   ControlerBoxes[_ui16BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
+//
+//   if (MY_DG_MESH) {
+//     Serial.printf("myMeshController::_updateSenderProperty: ControlerBoxes[%u], property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
+//   }
+// }
+
+
+
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VARIABLES FOR REACTION TO NETWORK REQUESTS
 ///////////////////////////////
@@ -499,41 +517,6 @@ void myMeshController::_updateSenderDefaultState(uint16_t _ui16BoxIndex) {
 // in class myWebServerViews and slaveReactionHtml in global.cpp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// void myMeshController::_manualSwitch(JsonDocument& _nsobj) {
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"u";"ts":"0"}
-  // short _iTargetState;
-  // const char* _sTargetState = _nsobj["ts"];
-  // _iTargetState = atoi(_sTargetState);
-  // LaserGroupedUnitsArray::setTargetStateOfLaserGroupUnits(_iTargetState);
-  // LaserGroupedUnitsArray::setTargetState(4);      // 4 means turn the state of the LaserGroupedUnitsArray to manual
-// }
-
-// void myMeshController::_changeInclusionIR(JsonDocument& _nsobj) {
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"i";"ts":"0"}
-  // short _iTargetState;
-  // const char* _sTargetState = _nsobj["ts"];
-  // _iTargetState = atoi(_sTargetState);
-  // LaserGroupedUnitsArray::setTargetPirState(_iTargetState /*0 for false = out of IR control; 1 for true = under IR control */);
-// }
-
-// void myMeshController::_changeBlinkingInterval(JsonDocument& _nsobj) {
-  // expected JSON string: {"NNa":"001";"APIP":"...";"StIP":"...";"action":"b";"ti":"5000"}
-  // unsigned long _ulTargetBlinkingInterval;
-  // const char* _sTargetBlinkingInterval = _nsobj["ti"];
-  // _ulTargetBlinkingInterval = atoi(_sTargetBlinkingInterval);
-  // LaserGroupedUnitsArray::setTargetBlinkingInterval(_ulTargetBlinkingInterval);
-// }
-
-// const char* slaveReactionHtml[4] = {"syn", "opp", "aon", "aof"};
-// const char* _slaveReaction[4] = {"synchronous: on - on & off - off", "opposed: on - off & off - on", "always on: off - on & on - on", "always off: on - off & off - off"};
-
-// struct slaveReactionStruct {
-//   bool slaveReactionCore[2];
-//   char* slaveReactionJson;
-//   char* slaveReactionText;
-// };
-//
-// slaveReactionStruct slaveReactionStructsArray[4];
 
 // void myMeshController::_slaveBoxSwitch(JsonDocument& _nsobj) {
   // expected JSON string: {"NNa":"201";"APIP":"...";"StIP":"...";"action":"s";"senderBoxActiveState":"on"}

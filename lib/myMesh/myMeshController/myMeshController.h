@@ -27,6 +27,7 @@
 
 #include "Arduino.h"
 #include <./mySavedPrefs.h>
+#include <./myMeshViews/myMeshViews.h>
 
 class myMeshController
 {
@@ -60,8 +61,8 @@ class myMeshController
     void _rebootEsp();
     void _save();
     
-    Task _tChangeBoxSendConfirmationMsg;
-    void _changeBoxSendConfirmationMsg(JsonObject &_obj);
+    // static Task _tChangeBoxSendConfirmationMsg;
+    void _changeBoxSendConfirmationMsg();
 
     // helpers to _changedBoxConfirmation (on the interface and the other boxes)
     void _updateSenderMasterBox(uint16_t _ui16BoxIndex);

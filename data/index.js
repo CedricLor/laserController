@@ -250,7 +250,7 @@ var connectionObj = {
       if (connectionObj.ping.sentMark != connectionObj.ping.receivedMark) {
         console.log("check(): not receiving server pongs");
         console.log("check(): about to close connection");
-        connectionObj.close();
+        connectionObj.ws.close();
         connectionObj.ping.count        = 1;
         connectionObj.ping.receivedMark = 1;
         connectionObj.ping.sentMark     = 1;
@@ -304,7 +304,7 @@ var connectionObj = {
 
 /**
  * onReboot: Object holding all the stack to handle the process of informing the user
- * on rebooting the LBs or all the mesh nodes
+ * on rebooting the all the LBs or all the mesh nodes
  */
 var onReboot = {
   // I. Object handling the onReboot LBs stack
