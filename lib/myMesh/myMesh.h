@@ -31,8 +31,8 @@
 #include <global.h>
 #include <secret.h>
 #include <../ControlerBox.h>
-#include "./myMesh/myMeshViews/myMeshViews.cpp"
-#include "./myMesh/myMeshController/myMeshController.cpp"
+#include "./myMeshViews/myMeshViews.cpp"
+#include "./myMeshController/myMeshController.cpp"
 
 class myMeshStarter
 {

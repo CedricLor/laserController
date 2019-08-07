@@ -15,7 +15,7 @@
 
 #include <myOta.cpp>
 
-#include "../lib/myMesh.cpp"
+#include <myMesh.cpp>
 
 #include "../lib/boxState.cpp"
 
