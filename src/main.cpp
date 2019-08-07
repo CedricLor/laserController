@@ -50,9 +50,9 @@ void setup() {
     return;
   }
 
-  // The ESP was restarted normally
-
-  myMesh::meshSetup();
+  
+  myMesh _myMesh;
+  _myMesh.meshSetup();
 
   if (isInterface == false) {
     pirController::initPir(); // depends on ControlerBox and Mesh classes

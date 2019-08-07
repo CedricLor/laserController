@@ -39,7 +39,7 @@ class myMesh
   public:
     myMesh();
 
-    static void meshSetup();
+    void meshSetup();
 
   private:
     // Variables for Interface on AP mode
@@ -53,13 +53,13 @@ class myMesh
     static IPAddress _fixed_netmask;
 
     // setup subs
-    static void _initAndConfigureMesh();
-    static void _initMesh();
-    static void _initStationManual();
-    static void _rootTheMesh();
-    static void _interfaceOnAPInit();
-    static void _setMeshCallbacks();
-    static void _setupMdns();
+    void _initAndConfigureMesh();
+    void _initMesh();
+    void _initStationManual();
+    void _rootTheMesh();
+    void _interfaceOnAPInit();
+    void _setMeshCallbacks();
+    void _setupMdns();
 
     // painlessMesh callbacks
     static void receivedCallback( uint32_t from, String &msg);
@@ -110,3 +110,5 @@ class myMesh
 };
 
 #endif
+
+

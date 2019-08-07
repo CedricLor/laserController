@@ -447,7 +447,8 @@ void myMesh::_tcbIamAloneTimeOut() {
   if (IamAlone()) {
     Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
     laserControllerMesh.stop();
-    meshSetup();
+    myMesh _myMesh;
+    _myMesh.meshSetup();
   }
 }
 
