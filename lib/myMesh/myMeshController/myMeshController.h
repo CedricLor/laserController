@@ -33,6 +33,8 @@ class myMeshController
   public:
     myMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 
+    static void _tcbDecodeRequest(uint32_t _ui32SenderNodeId, String &_msg);
+
   private:
     char _action;
 

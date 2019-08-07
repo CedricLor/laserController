@@ -207,7 +207,7 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
     Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
 
-  _tcbDecodeRequest(from, msg);
+  myMeshController::_tcbDecodeRequest(from, msg);
 
   Serial.println(F("myMesh::receivedCallback(): ending"));
 }
@@ -379,30 +379,7 @@ void myMesh::changedConnectionCallback() {
 
 
 
-void myMesh::_tcbDecodeRequest(uint32_t _ui32SenderNodeId, String &_msg) {
-  if (MY_DG_MESH) {
-    Serial.printf("myMesh::_tcbDecodeRequest(): starting. _ui32SenderNodeId == %u; &_msg == %s \n", _ui32SenderNodeId, _msg.c_str());
-  }
-  constexpr int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
 
-  // create a StaticJsonDocument entitled doc
-  StaticJsonDocument<capacity> _doc;
-  // Convert the document to an object
-  JsonObject _obj = _doc.to<JsonObject>();
-
-  if (MY_DG_MESH) {
-    Serial.print("myMesh::_tcbDecodeRequest: empty jsonDocument created\n");
-  }
-
-  // deserialize the message _msg received from the mesh into the StaticJsonDocument doc
-  DeserializationError _err = deserializeJson(_doc, _msg);
-  if (MY_DG_MESH) {
-    Serial.print("myMesh::_tcbDecodeRequest: message _msg deserialized into JsonDocument doc\n");
-    Serial.print("myMesh::_tcbDecodeRequest: DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
-  }
-
-  myMeshController myMeshController(_ui32SenderNodeId, _obj);
-}
 
 
 

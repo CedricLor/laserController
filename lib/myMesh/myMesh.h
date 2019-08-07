@@ -87,12 +87,7 @@ class myMesh
     // static void delayReceivedCallback(uint32_t from, int32_t delay);
 
     // Helpers
-    // For receivedCallback (on receive messages from the mesh)
-    static Task _tDecodeRequest;
-    static void _tcbDecodeRequest(uint32_t _ui32SenderNodeId, String& _msg);
-    static Task _tPassRequestToMeshController;
-    static void _tcbPassRequestToMeshController(uint32_t _ui32SenderNodeId, JsonObject& _obj);
-
+    
     // For the bug when the subnodes stop scanning after being disconnected
     static Task _tIamAloneTimeOut;
     static void _tcbIamAloneTimeOut();
