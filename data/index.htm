@@ -179,130 +179,98 @@
 
     <div class='mesh_glob_setters marg_top'>
       <div class='section_title bold  pad_tb10'>Mesh Global Settings</div>
-      <div>
-        <label class='wifi_labels' for='rootBox'>
-          Root Node Number:
-        </label>
+      <div class='subsection_title pad_tb10'>Special Nodes Setters</div>
+      <!-- Root node setter -->
+      <div> <!-- root node number -->
+        <label class='wifi_labels' for='rootBox'>Root Node:</label>
         <input id='rootBox' type='text' >
       </div>
-      <div class='subsection_title pad_tb10'>Save Root Number</div>
-      <div>
-        <button id='saveRootNodeNumb' class='button'>
-          On All
-        </button>
-        <button id='applyRootNodeNumb' class='button'>
-          On All
-        </button>
+      <div class='pad_tb20'> <!-- buttons save IF Node settings -->
+        <button id='saveRootNodeNumb' class='button'>Save</button>&nbsp;
+        <button id='applyRootNodeNumb' class='button'>Apply</button>&nbsp;
       </div>
-      <div>
-        <label class='wifi_labels' for='IFBox'>
-          Interface Node Number:
-        </label>
+      <!-- IF node setter -->      
+      <div> <!-- IF node number -->
+        <label class='wifi_labels' for='IFBox'>Interface Node:</label>
         <input id='IFBox' type='text' >
       </div>
-      <div class='subsection_title pad_tb10'>Save IF Number</div>
-      <div>
-        <button id='saveIFNodeNumb' class='button'>
-          On All
-        </button>
-        <button id='applyRootNodeNumb' class='button'>
-          On All
-        </button>
+      <div class='pad_tb20'> <!-- buttons save IF Node settings -->
+        <button id='saveIFNodeNumb' class='button'>Save</button>&nbsp;
+        <button id='applyIFNodeNumb' class='button'>Apply</button>&nbsp;
       </div>
-      <div>
-        <label class='wifi_labels' for='_soft_ap_my_ip'>
-          Interface IP (in soft AP mode):
-        </label>
+      <!-- Soft AP settings setter -->
+      <div class='subsection_title pad_tb10'>Soft AP Settings</div>
+      <div> <!-- my soft AP IP -->
+        <label class='wifi_labels' for='_soft_ap_my_ip'>Interface IP:</label>
         <input id='_soft_ap_my_ip' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='_soft_ap_ssid'>
-          Interface SSID (in soft AP mode):
-        </label>
+      <div> <!-- soft AP SSID -->
+        <label class='wifi_labels' for='_soft_ap_ssid'>Interface SSID:</label>
         <input id='_soft_ap_ssid' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='_soft_ap_password'>
-          Interface Password (in soft AP mode):
-        </label>
+      <div> <!-- soft AP password -->
+        <label class='wifi_labels' for='_soft_ap_password'>Interface Password:</label>
         <input id='_soft_ap_password' type='text' >
       </div>
-      <div class='subsection_title pad_tb10'>Save Soft AP Settings</div>
-      <div>
-        <button id='saveSoftAPSettings' class='button'>
-          On IF
-        </button>
+      <div class='pad_tb10'> <!-- buttons save soft AP settings -->
+        <button id='saveSoftAPSettings' class='button'>Save</button>
+        <button id='applySoftAPSettings' class='button'>Apply</button>
       </div>
-      <div>
-        <label class='wifi_labels' for='meshPrefix'>
-          Mesh Name Prefix:
-        </label>
+      <!-- Mesh settings setter -->            
+      <div class='subsection_title pad_tb10'>Mesh Settings</div>
+      <div> <!-- mesh name-->
+        <label class='wifi_labels' for='meshPrefix'>Name:</label>
         <input id='meshPrefix' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='meshPassword'>
-          Mesh Password:
-        </label>
+      <div> <!-- mesh password -->
+        <label class='wifi_labels' for='meshPassword'>Password:</label>
         <input id='meshPassword' type='text' >
       </div>
-      <div class='subsection_title pad_tb10'>Save Mesh Settings</div>
-      <div>
-        <button id='saveMeshSettings' class='button'>
-          On All
-        </button>
+      <div> <!-- mesh channel -->
+        <label class='wifi_labels' for='meshChannel'>Channel:</label>
+        <input id='meshChannel' type='text' >
       </div>
-    </div> <!-- mesh_glob_setters -->
+      <div class='pad_tb10'> <!-- buttons save mesh settings -->
+        <button id='saveMeshSettings' class='button'>On All</button>
+      </div>
+    </div> <!-- end mesh_glob_setters -->
     <div class='wifi_setters marg_top'>
-      <div class='section_title bold  pad_tb10'>Wifi Settings</div>
-      <div>
-        <label class='wifi_labels' for='ssid'>
-          SSID:
-        </label>
+      <div class='section_title bold  pad_tb10'>External Wifi Settings</div>
+      <div> <!-- SSID -->
+        <label class='wifi_labels' for='ssid'>SSID:</label>
         <input id='ssid' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='pass'>
-          Pass:
-        </label>
+      <div> <!-- Pass -->
+        <label class='wifi_labels' for='pass'>Pass</label>
         <input id='pass' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='gatewayIP'>
-          Gateway IP:
-        </label>
+      <div> <!-- Gateway IP -->
+        <label class='wifi_labels' for='gatewayIP'>Gateway IP:</label>
         <input id='gatewayIP' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='ui16GatewayPort'>
-          Gateway Port:
-        </label>
+      <div> <!-- Gateway Port -->
+        <label class='wifi_labels' for='ui16GatewayPort'>Gateway Port:</label>
         <input id='ui16GatewayPort' type='text' >
       </div>
-      <div>
-        <label class='wifi_labels' for='ui8WifiChannel'>
-          Wifi Channel:
-        </label>
+      <div> <!-- IF IP on External Network -->
+        <label class='wifi_labels' for='wishedIp'>Wished IP:</label>
+        <input id='wishedIp' type='text' >
+      </div>
+      <div> <!-- External Network Channel -->
+        <label class='wifi_labels' for='ui8WifiChannel'>Wifi Channel:</label>
         <input id='ui8WifiChannel' type='text' >
       </div>
       <div class='subsection_title pad_tb10'>Save wifi settings</div>
-      <div>
-        <button id='saveWifiSettingsIF' class='button'>
-          on IF
-        </button>
-        <button id='saveWifiSettingsAll' class='button'>
-          on All
-        </button>
+      <div> <!-- buttons save external wifi settings -->
+        <button id='saveWifiSettingsIF' class='button'>on IF</button>
+        <button id='saveWifiSettingsAll' class='button'>on All</button>
       </div>
     </div> <!-- wifi_setters -->
     <div class='if_ota_cmds marg_top'>
       <div class='section_title bold  pad_tb10'>Interface OTA Reboots</div>
       <div>
-        <button class='gi8RequestedOTAReboots button' data-reboots='1'>
-          OTA 1 reboot
-        </button>
-        <button class='gi8RequestedOTAReboots button' data-reboots='2'>
-          OTA 2 reboots
-        </button>
+        <button class='gi8RequestedOTAReboots button' data-reboots='1'>1 reboot</button>
+        <button class='gi8RequestedOTAReboots button' data-reboots='2'>2 reboots</button>
       </div>
     </div> <!-- if_ota_cmds -->
     <script src='index.js'></script>
