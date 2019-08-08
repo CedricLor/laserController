@@ -23,7 +23,7 @@ var boxRowManager  = {
     return (this.virtualTemplate.cloneNode(true));
   },
 
-  insertInBoxesContainer: {
+  insertNewBoxInBoxesContainerInDOM: {
     last:   function(_newRow){
       boxRowManager.boxesContainer.appendChild(_newRow);
     },
@@ -31,7 +31,7 @@ var boxRowManager  = {
       if (boxRowManager.boxesContainer.hasChildNodes()) {
         return (boxRowManager.boxesContainer.insertBefore(_newRow, boxRowManager.boxesContainer.firstChild));
       } else {
-        return (boxRowManager.insertInBoxesContainer.last(_newRow));
+        return (boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow));
       }
     }
   }
@@ -307,34 +307,47 @@ var connectionObj = {
  * on rebooting the all the LBs or all the mesh nodes
  */
 var onReboot = {
-  // I. Object handling the onReboot LBs stack
+
+  /** 
+   * I. Object handling the onReboot LBs stack
+   * */
   LBs: {
-    active:         false,
+    // id of the button "reboots LBs"
     rebootBtnId:    'rebootLBs',
-  
+    // stores the numbers of the LBs which have been sent the order to reboot
     waitingLBs:     new Map(),
-    rebootingLBs:   new Map(),
-    rebootedLBs:    new Map(),
   
+    /** onDeleteBox
+     *  Gets called from deleteBoxRow(), itself upon receiving a message 
+     *  from the interface that a box has disconnected from the mesh.
+     *  Is going to keep track of the boxes which are effectively rebooting. */
     onDeleteBox:    function(_data) {
-      if (this.active === true) {
-        // store the number in a form accessible for the maps
-        let _laserBoxIndexNumber = parseInt(_data.lb, 10);
+      // First check that we are in the reBoot.LBs mode
+      if (onReboot.common.rebootType === 1) {
   
         // if this is the first box to disconnect
-        if (this.rebootingLBs.size === 0) {
+        if (onReboot.LBs.rebootingLBs.size === 0) {
           // change the button color to signal that it has started
-          onReboot.common.turnBtnRed('rebootLBs');
+          onReboot.common.turnBtnRed(this.rebootBtnId);
           // create the info text and box
-          onReboot.common.onFirstBox(_laserBoxIndexNumber, "divRebootingLBs", 'Laser boxes currently rebooting: ', "spanRebootingLBs", onReboot.LBs.waitingLBs, this.rebootingLBs);
-        } // this is not the first box to be deleted
+          onReboot.common.onFirstBox(parseInt(_data.lb, 10), 
+                                     "divRebootingLBs", 
+                                     'Laser boxes currently rebooting: ', 
+                                     "spanRebootingLBs", 
+                                     onReboot.LBs.waitingLBs, 
+                                     onReboot.common.rebootingLBs);
+        } 
+        // this is not the first box to be deleted
         else {
           // add its number to the info box
-          onReboot.common.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootingLBs', this.rebootingLBs, onReboot.LBs.waitingLBs);
+          onReboot.common.onAdditionalBoxes(parseInt(_data.lb, 10), 
+                                            '#spanRebootingLBs', 
+                                            onReboot.common.rebootingLBs, 
+                                            onReboot.LBs.waitingLBs);
         }
   
         // delete the box from the waitingLBs map
-        onReboot.LBs.waitingLBs.delete(_laserBoxIndexNumber);
+        onReboot.LBs.waitingLBs.delete(parseInt(_data.lb, 10));
   
         if (boxMaps.boxesRows.size === 0) {
           // remove the waiting LBs div
@@ -343,66 +356,80 @@ var onReboot = {
       }
     },
   
+    /** onReboot.LBs.startConfirm
+     *  gets called by the action switch, upon receiving confirmation that the 
+     *  reboot LBs has started. */
     startConfirm:     function() {
-      // save the fact that we are in rebooting
-      this.active = true;
-  
-      // change the button color
+      // 1. change the button color
       let _rebootBtn = document.getElementById('rebootLBs');
       _rebootBtn.className += ' button_change_received';
   
-      onReboot.common.startConfirm("divLBsWaitingToReboot", 'Boxes waiting to reboot: ', "spanLBsWaitingToReboot", onReboot.LBs.waitingLBs);
+      // 2. call the common startConfirm proc      
+      onReboot.common.startConfirm(1, "divLBsWaitingToReboot", 
+                                   'Boxes waiting to reboot: ', 
+                                   "spanLBsWaitingToReboot", 
+                                   onReboot.LBs.waitingLBs);
   
       console.log("--------------- end LBs reboot switch -----------------");
     }
   },
 
 
-  //  II. Object handling the process when clicking on the Reboot all button
+  /** 
+   * II. Object handling the process when clicking on the Reboot all button
+   * */
   all: {
-    active:         false,
+    // id of the button "reboots LBs"
     rebootBtnId:    'rebootAll',
-  
-    rebootingLBs:   new Map(),
-    rebootedLBs:    new Map(),
-  
-  
+    
+    /** onReboot.all.startConfirm
+     *  gets called by the action switch, upon receiving confirmation that the 
+     *  reboot All has started. */
     startConfirm:   function() {
-      // save the fact that we are in rebooting
-      this.active = true;
   
-      onReboot.common.turnBtnRed('rebootAll');
+      // 1. turn the rebooting all button red
+      onReboot.common.turnBtnRed(this.rebootBtnId);
   
-      onReboot.common.startConfirm("divRebootingLBs", 'Rebooting boxes: ', "spanRebootingLBs", onReboot.all.rebootingLBs);
+      // 2. call the common start config proc      
+      onReboot.common.startConfirm(2, "divRebootingLBs", 
+                                   'Rebooting boxes: ', 
+                                   "spanRebootingLBs", 
+                                   onReboot.common.rebootingLBs);
   
-      // specific to rebootAll
-      // close the connection
+      // 3. close the connection
       connectionObj.ws.close();
-      // delete all the boxes
+      // 5. delete all the boxes
       deleteAllBoxRows();
-  
-      // shut down any eventual onReboot.LBs active status
-      onReboot.LBs.active = false;
-      // clear all the eventual remaining values in the onReboot.LBs maps
-      onReboot.LBs.waitingLBs.clear();
-      onReboot.LBs.rebootingLBs.clear();
-      onReboot.LBs.rebootedLBs.clear();
   
       console.log("--------------- end reboot all switch -----------------");
     }
   },
 
 
-  //  III. Object wrapping functions common to the objects onReboot.all and onReboot.LBs
+  /** 
+   * III. Object wrapping various functions common to the objects onReboot.all and onReboot.LBs
+   * */
   common: {
+    // rebootType: keeps track of the reboot type (0: none; 1: LBs; 2: All)
+    rebootType:                 0,
+    // noConnectedBoxesSpan: keeps track whether the "no boxes currently connected" span is displayed or not
     noConnectedBoxesSpan:       false,
 
+    // stores the numbers of the LBs which are currently disconnected
+    rebootingLBs:   new Map(),
+    // stores the numbers of the LBs which have reconnected
+    rebootedLBs:    new Map(),
+
+    /** reBoot.common.deleteNoConnectedBoxesSpan:
+     *  Informs the user that no nodes are connected to the mesh, if he clicks on reboot
+     *  and no boxes are connected. */
     deleteNoConnectedBoxesSpan: function() {
       infoBox.deleteMsg('#infoNoBoxesConnected', onReboot.common.noConnectedBoxesSpan);
     },
   
-    // if no nodes are connected when clicking on reboot all or LBS,
-    // display a message to the user
+    /** reBoot.common.addNoConnectedBoxesSpan:
+     *  Informs the user that no nodes are connected to the mesh, if he clicks on reboot
+     *  and no boxes are connected. */
     addNoConnectedBoxesSpan:    function() {
       if (!onReboot.common.noConnectedBoxesSpan) {
         infoBox.addMsg("There are no laser boxes currently connected.", "infoNoBoxesConnected", "span");
@@ -410,125 +437,173 @@ var onReboot = {
       onReboot.common.noConnectedBoxesSpan = true;
     },
   
-    // when the first rebooting box connects back, creates a div to
-    // inform the user of the number of the box (and to receive
-    // the numbers of the others boxes that will come back)
+    /** reBoot.common.onFirstBox:
+     *  when the first rebooting box connects back: 
+     *  1. creates a div and a span to inform the user of the number of the incoming box
+     *  2. add the box number to the span and
+     *  3. transfer the box number from one map to the other. */
     onFirstBox:                 function( _laserBoxIndexNumber,
                                           _msgDivId /*"divRebootedLBs"*/,
                                           _msgIntro /*'Laser boxes currently rebooted: '*/,
                                           _msgSpanId /*"spanRebootedLBs"*/,
-                                          _originMapSet /* [all || LBs].rebootingLBs*/,
-                                          _destinationMapSet /* [all || LBs].rebootedLBs*/) {
+                                          _rebootingLBs /* [all || LBs].rebootingLBs*/,
+                                          _rebootedLBs /* [all || LBs].rebootedLBs*/) {
   
-      // check whether there was a message saying there was no connected boxes
+      // 1. check whether there was a message saying there was no connected boxes
       // and delete it if necessary
       onReboot.common.deleteNoConnectedBoxesSpan();
   
-      // create a div to hold the infos
+      // 2. create a div to hold the infos
       let _divNewStateLBs        = onReboot.common.createBoxListContainerDiv(_msgDivId, _msgIntro);
   
-      // create a span to hold the numbers of the rebooted LBs
+      // 3. create a span to hold the numbers of the rebooted LBs
       let _spanNewStateLBsList   = infoBox.createContainer("span", _msgSpanId);
       console.log("onFirstBox: _msgSpanId = " + _msgSpanId);
       console.log("onFirstBox: _spanNewStateLBsList = ");
       console.log(_spanNewStateLBsList);
   
-      // add the box number to the span
+      // 4. transfer the box number from one span to the other 
+      //    and add the box number to the span
       _spanNewStateLBsList       = onReboot.common.mapToMapTransferAndInsertBoxList(_spanNewStateLBsList, 
                                                                                     _laserBoxIndexNumber, 
                                                                                     _msgSpanId, 
-                                                                                    _destinationMapSet, 
-                                                                                    _originMapSet);
+                                                                                    _rebootedLBs, 
+                                                                                    _rebootingLBs);
   
-      // append the span and the div to the DOM
+      // 5. append the span and the div to the DOM
       infoBox.renderInDom(_divNewStateLBs, _spanNewStateLBsList);
     },
   
-    // when additional boxes connects back, inform the user of the 
-    // number of the new incoming box
-    onAdditionalBoxes:          function(_laserBoxIndexNumber, _destinationSpanId /*'#spanRebootingLBs'*/, _destinationMapSet, _originMapSet) {
-      // select the infoBox
+    /** reBoot.common.onAdditionalBoxes:
+     *  When additional boxes connect back, inform the user of the 
+     *  number of the new incoming box. */
+    onAdditionalBoxes:          function(_laserBoxIndexNumber, 
+                                         _destinationSpanId /*'#spanRebootingLBs'*/, 
+                                         _rebootedLBs, 
+                                         _rebootingLBs) {
+      // select the span in which the numbers of the newly connecting boxes
+      // is displayed.
       let _spanNewStateLBsList = document.querySelector(_destinationSpanId);
       console.log("onFirstBox: _msgSpanId = " + _destinationSpanId);
-      console.log("onFirstBox: _spanNewStateLBsList = ");
-      console.log(_spanNewStateLBsList);
-      this.mapToMapTransferAndInsertBoxList(_spanNewStateLBsList, _laserBoxIndexNumber, _destinationSpanId, _destinationMapSet, _originMapSet);
+      console.log("onFirstBox: _spanNewStateLBsList = ");console.log(_spanNewStateLBsList);
+      // 
+      this.mapToMapTransferAndInsertBoxList(_spanNewStateLBsList,
+                                            _laserBoxIndexNumber, 
+                                            _destinationSpanId, 
+                                            _rebootedLBs, 
+                                            _rebootingLBs);
     },
   
+    /** reBoot.common.onAddBox:
+     * This gets called by addOrUpdateNewRowForNewBox(), which itself gets called from
+     * the action switch, when a new box comes in. */
     onAddBox: function(_data){
-  
+
+      // 1. Identify which type of reboot cycle we are in (rebootAll or rebootLBs)
+      //    Select the corresponding object to handle the case.
       var _onRebootTypeObj;
-  
-      if (onReboot.all.active) {
+      if (onReboot.common.rebootType === 2) {
+        // select the onReboot.all object
         _onRebootTypeObj = onReboot.all;
-      } else if (onReboot.LBs.active) {
+      } else if (onReboot.common.rebootType === 1) {
+        // select the onReboot.LBs object
         _onRebootTypeObj = onReboot.LBs;
       } else {
+        // if none of them, just return
         return;
       }
   
-      if (_onRebootTypeObj.active) {
-        // store the number in a form accessible for the maps
-        let _laserBoxIndexNumber = parseInt(_data.lb, 10);
-  
-        if (_onRebootTypeObj.rebootedLBs.size === 0) {
-          onReboot.common.onFirstBox(_laserBoxIndexNumber, "divRebootedLBs", 'Laser boxes currently rebooted: ', "spanRebootedLBs", _onRebootTypeObj.rebootingLBs, _onRebootTypeObj.rebootedLBs);
-        } else {
-          onReboot.common.onAdditionalBoxes(_laserBoxIndexNumber, '#spanRebootedLBs', _onRebootTypeObj.rebootedLBs, _onRebootTypeObj.rebootingLBs);
-        }
-  
-        _onRebootTypeObj.rebootingLBs.delete(_laserBoxIndexNumber);
-  
-        if (_onRebootTypeObj.rebootingLBs.size === 0) {
-          // change the button color
-          let _rebootLbsBtn = document.getElementById(_onRebootTypeObj.rebootBtnId);
-          _rebootLbsBtn.classList.remove('button_active_state');
-  
-          // delete the rebootingLBs div
-          removeDOMelement('#divRebootingLBs');
-          // delete the rebootedLBs div
-          removeDOMelement('#divRebootedLBs');
-  
-          // create a span to hold the textnode informing that all the boxes have rebooted
-          let _spanLBsHaveRebooted = infoBox.createContainer("span", "LBsHaveRebooted");
-          // create a text node for the introduction text
-          var _infoText = document.createTextNode('All the laser boxes have rebooted.');
-  
-          // render in dom
-          infoBox.renderInDom(_spanLBsHaveRebooted, _infoText);
-  
-          // set a timeout to delete the info box after 15 seconds
-          window.setTimeout(function() {
-            removeDOMelement('#LBsHaveRebooted');
-          }, 15000);
-  
-          // empty the rebooted boxes maps
-          _onRebootTypeObj.rebootedLBs.clear();
-  
-          // get out of the reboot process
-          _onRebootTypeObj.active = false;
-        }
+      /** 2. if the size of the rebootedLBs is 0, it means that no
+       *  box has yet rejoined => this is the first box to reboot. */
+      if (onReboot.common.rebootedLBs.size === 0) {
+        onReboot.common.onFirstBox(parseInt(_data.lb, 10), 
+                                   "divRebootedLBs", 
+                                   'Laser boxes currently rebooted: ', 
+                                   "spanRebootedLBs", 
+                                   onReboot.common.rebootingLBs, 
+                                   onReboot.common.rebootedLBs);
+      } 
+      /** 3. If the size of the rebootedLBs is > 0, it means that 
+       *  it is not the first box to reconnect => it shall only
+       *  be a question of updating the displayed list. */
+      else {
+        onReboot.common.onAdditionalBoxes(parseInt(_data.lb, 10), 
+                                          '#spanRebootedLBs', 
+                                          onReboot.common.rebootedLBs, 
+                                          onReboot.common.rebootingLBs);
+      }
+
+      /** 4. In all the cases of incoming box:
+       *  delete the incoming box from the rebooting LBs map */
+      onReboot.common.rebootingLBs.delete(parseInt(_data.lb, 10));
+
+      /** 5. At the end of the reboot process:
+       *  the size of the rebootingLBs shall be 0.
+       *  All the boxes should be reconnected.*/
+      if (onReboot.common.rebootingLBs.size === 0) {
+        // a. change the color of the button
+        let _rebootLbsBtn = document.getElementById(_onRebootTypeObj.rebootBtnId);
+        _rebootLbsBtn.classList.remove('button_active_state');
+
+        // b. delete the rebootingLBs div
+        removeDOMelement('#divRebootingLBs');
+        // c. delete the rebootedLBs div
+        removeDOMelement('#divRebootedLBs');
+
+        // d. create a span to hold the textnode informing that all the boxes have rebooted
+        let _spanLBsHaveRebooted = infoBox.createContainer("span", "LBsHaveRebooted");
+        // e. create a text node for the introduction text
+        var _infoText = document.createTextNode('All the laser boxes have rebooted.');
+
+        // f. render in dom
+        infoBox.renderInDom(_spanLBsHaveRebooted, _infoText);
+
+        // g. set a timeout to delete the info box after 15 seconds
+        window.setTimeout(function() {
+          removeDOMelement('#LBsHaveRebooted');
+        }, 15000);
+
+        // h. empty the rebooted boxes maps
+        onReboot.common.rebootedLBs.clear();
+
+        // i. get out of the reboot process
+        onReboot.common.rebootType = 0;
       }
     },
   
-    startConfirm: function(_divRebootingBoxListId, _introMsg, _spanRebootingBoxListId, _mapRebootingBoxes) {
+    /** reBoot.common.startConfirm:
+     *  Called at the beginning of a reboot process
+     * */
+    startConfirm: function(_rebootType, _divRebootingBoxListId, _introMsg, 
+                           _spanRebootingBoxListId, _mapRebootingBoxes) {
+      // 1. save the fact that we are in one of the rebooting modes
+      onReboot.common.rebootType = _rebootType;
   
-      // check whether there was a message saying there was no connected boxes
+      // 2. clear all the eventual remaining values in the onReboot.LBs maps
+      onReboot.LBs.waitingLBs.clear();
+      onReboot.common.rebootingLBs.clear();
+      onReboot.common.rebootedLBs.clear();                            
+
+      // 3. check whether there was a message saying there was no connected boxes
       // and delete it if necessary
       this.deleteNoConnectedBoxesSpan();
   
+      // 4. create a div and a span to hold the number of the rebooting boxes
+      // and info text
       let _divRebootingBoxList = this.createBoxListContainerDiv(_divRebootingBoxListId, _introMsg);
-  
-      // create a span to hold the numbers of the LBs
       let _spanRebootingBoxList = infoBox.createContainer("span", _spanRebootingBoxListId);
   
+      // 5. Load the span with the values from the boxRows map
       _spanRebootingBoxList = this.createBoxTextNodesFromBoxRows(_spanRebootingBoxList, _mapRebootingBoxes);
   
-      // render the span in the infoBox
+      // 6. render the span in the infoBox
       infoBox.renderInDom(_divRebootingBoxList, _spanRebootingBoxList);
     },
   
-    createBoxTextNodesFromBoxRows: function(_spanLBsRebooting, _mapRebootingBoxes) {
+    /** reBoot.common.createBoxTextNodesFromBoxRows:
+     *  Called at the beginning of a reboot process
+     * */
+    createBoxTextNodesFromBoxRows: function(_spanLBsRebooting) {
       // iterate over the boxMaps.boxesRows map, create textNodes for the span and
       // store them in a map
       boxMaps.boxesRows.forEach(function(val, key) {
@@ -536,14 +611,18 @@ var onReboot = {
         // create a textNode to hold the box number
         let _boxNumbNode = document.createTextNode(_text);
         // store it into a map
-        _mapRebootingBoxes.set(key, _boxNumbNode);
+        onReboot.common.rebootingLBs.set(key, _boxNumbNode);
         // add the new textNode to the span
         // _spanLBsRebooting.appendChild(onRebootLBs.waitingLBs.get(key));
-        _spanLBsRebooting.appendChild(_mapRebootingBoxes.get(key));
+        _spanLBsRebooting.appendChild(onReboot.common.rebootingLBs.get(key));
       });
       return _spanLBsRebooting;
     },
   
+    /** reBoot.common.createBoxListContainerDiv:
+     *  Creates a div to receive the box numbers in process of 
+     *  rebooting.
+     * */
     createBoxListContainerDiv: function(_containerId, _infoText) {
       // create a div to hold the infos
       let _containerDiv = infoBox.createContainer("div", _containerId);
@@ -554,6 +633,10 @@ var onReboot = {
       return _containerDiv;
     },
   
+    /** reBoot.common.turnBtnRed:
+     *  Called at the beginning of a reboot process, upon receiving
+     *  confirmation from the server that the process has started.
+     * */
     turnBtnRed: function(_btnId) {
       // change the button color to signal that it has started
       let _rebootBtn = document.getElementById(_btnId);
@@ -561,7 +644,15 @@ var onReboot = {
       _rebootBtn.classList.remove('button_clicked', 'button_change_received');
     },
   
-    mapToMapTransferAndInsertBoxList: function(_spanNewStateLBsList, _laserBoxIndexNumber, _destinationSpanId, _destinationMapSet, _originMapSet){
+    /** reBoot.common.mapToMapTransferAndInsertBoxList:
+     *  Called at various steps in the process:
+     *  1. to transfer the box numbers from on map to the other (how ridiculous !!!);
+     *  2. to append a the box number to the span */
+    mapToMapTransferAndInsertBoxList: function(_spanNewStateLBsList, 
+                                               _laserBoxIndexNumber, 
+                                               _destinationSpanId, 
+                                               _destinationMapSet, 
+                                               _originMapSet){
       // transfer the box from the waitingLBs map to the this.rebootingLBs map
       _destinationMapSet.set(_laserBoxIndexNumber, _originMapSet.get(_laserBoxIndexNumber));
       // add the text node to the span
@@ -622,8 +713,8 @@ function onMsgActionSwitch(_data) {
 
 
   // 7. an existing box has been disconnected from the mesh
-  // or the DOM contained boxRows corresponding to boxes that
-  // have been disconnected from the mesh
+  // (or the DOM contained boxRows corresponding to boxes that
+  // have been disconnected from the mesh)
   if (_data.action === "deleteBox") {
     console.log("---------------- delete switch starting -----------------");
     // delete all the boxes
@@ -702,14 +793,29 @@ var _onClickHelpers = {
     connectionObj.ws.send(JSON.stringify(_obj));
   },
 
-  updateClickButtons: function(e, _selector, _element) {
-    _element.querySelectorAll(_selector).forEach(
-      function(_button){
-        _button.classList.remove('button_clicked');
+  /** updateClickButtons
+   *  Called by onClick event handlers on buttons.
+   *  Iterates over the group of buttons to which the clicked buttons pertains.
+   *  Removes any "button_clicked", "button_active_state" or
+   *  "button_change_received" class that they may retain.
+   *  Add a "button_clicked" class to the clicked button. */
+  updateClickButtons: (e, _selector, _buttonsParentElement) => {
+    _buttonsParentElement.querySelectorAll(_selector).forEach(
+      (_button) => {
+        _onClickHelpers.removeClassesOnNonClickedButton(_button);
       }
     );
     e.target.className += ' button_clicked';
-  }
+  },
+
+  /** removeClassesOnNonClickedButton
+   *   Removes any "button_clicked", "button_active_state" or
+   *  "button_change_received" class that a button may retain.  */
+  removeClassesOnNonClickedButton: (_button) => {
+    _button.classList.remove('button_clicked');
+    _button.classList.remove('button_active_state');
+    _button.classList.remove('button_change_received');
+  } 
 };
 
 
@@ -720,8 +826,8 @@ var _onClickHelpers = {
 
 /**
  *  _onClickBoxConfig:
- *  Holder of all the onClick events on the box level configuration
- *  button (reboot, save, reboot and save, OTA reboot) buttons. */
+ *  Holder of all the onClick events of the box level configuration
+ *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
 var _onClickBoxConfig = {
   wrapper:        function(e, _obj) {
       // update the buttons
@@ -815,6 +921,7 @@ var _onClickGroupReboot = {
     if (connectionObj.checkConnect.closedVerb()) { return; }
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxMaps.boxesRows.size) {
+      // 
       _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
       // else, complete the message and send it
       _obj.action = 'changeNet';
@@ -1234,10 +1341,8 @@ function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
   console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_buttonList);
   if (_buttonList && _buttonList.length) {
     _buttonList.forEach(
-      function(currentValue) {
-        currentValue.classList.remove('button_active_state');
-        currentValue.classList.remove('button_change_received');
-        currentValue.classList.remove('button_clicked');
+      function(_button) {
+        _onClickHelpers.removeClassesOnNonClickedButton(_button);
       }
     );
   }
@@ -1264,9 +1369,8 @@ function _setStateButtonAsActive(_selector, memRow) {
   console.log("_setStateButtonAsActive: button selected: ");console.log(_targetButton);
   if (_targetButton) {
     console.log("_setStateButtonAsActive: about to add the active class to selected button");
+    _onClickHelpers.removeClassesOnNonClickedButton(_targetButton);
     _targetButton.classList.add('button_active_state');
-    _targetButton.classList.remove('button_change_received');
-    _targetButton.classList.remove('button_clicked');
   }
   console.log("_setStateButtonAsActive: ending on returning row");
   return memRow;
@@ -1369,7 +1473,7 @@ function addNewRowForNewBox(data) {
   _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
-  _dupRow = boxRowManager.insertInBoxesContainer.first(_dupRow);
+  _dupRow = boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_dupRow);
 
   // add a key/entry pair to the controlerBoxes map and to the rowsMap map
   boxMaps._add(data, _dupRow);
@@ -1405,6 +1509,7 @@ function addOrUpdateNewRowForNewBox(_data) {
     // let's update it instead
     updateBoxRow(_data);
   }
+
   // handles the case where this is a reboot
   onReboot.common.onAddBox(_data);
 }
@@ -1429,23 +1534,33 @@ function deleteAllBoxRows() {
 
 
 
-
+/** deleteBoxRow
+ *  deletes one boxRow from the DOM.
+ *  gets called from the action switch upon receiving a delete message from
+ *  the server. */
 function deleteBoxRow(_data) {
   console.log("deleteBoxRow starting.");
+  // first check whether the boxMaps contain any boxRows. If not, just return.
   if (boxMaps.boxesRows.size) {
+    // if there are boxRows in the maps, try to find the corresponding box
     var _boxRowToDelete = boxMaps.boxesRows.get(_data.lb);
+    // if the corresponding box is not in the map, just return
     if (_boxRowToDelete === undefined) {
       console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in boxMaps.controlerBoxes map.");
       return;
     }
+
+    // else, the box exists: 
+    // 1. delete the box row and 
     _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
-    boxMaps._delete(_data.lb);          // updating the controlesBoxes map
+    // 2. update the controlesBoxes maps
+    boxMaps._delete(_data.lb);
+    // 3. check whether the box is not disconnecting as
+    //    a result of a reboot order and inform the user
     onReboot.LBs.onDeleteBox(_data);
     console.log("deleteBoxRow: deleted key [" + _data.lb + "] in controlerBoxes and boxesRows maps.");
     console.log("deleteBoxRow ending.");
     return true;
-  } else {
-    return false;
   }
 }
 
