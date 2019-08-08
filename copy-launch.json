@@ -1,0 +1,49 @@
+
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "/Users/cedriclor/Documents/PlatformIO/Projects/Laser Controller/.pio/build/esp32dev/firmware.elf",
+            "toolchainBinDir": "/Users/cedriclor/.platformio/packages/toolchain-xtensa32/bin",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug"
+            },
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "/Users/cedriclor/Documents/PlatformIO/Projects/Laser Controller/.pio/build/esp32dev/firmware.elf",
+            "toolchainBinDir": "/Users/cedriclor/.platformio/packages/toolchain-xtensa32/bin",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch localhost on Chrome from main project folder",
+            "url": "http://localhost/mypage.htm",
+            "webRoot": "${workspaceFolder}/data"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch localhost on Chrome from main JS data project folder",
+            "url": "http://localhost/mypage.htm",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome with url with files served from ./data",
+            "port": 9222,
+            "url": "http://localhost/mypage.htm",
+            "webRoot": "${workspaceFolder}/data"
+        }    
+    ]
+}
