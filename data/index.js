@@ -1523,40 +1523,46 @@ function _selectMasterSelectInRow(_dupRow) {
 
 
 
-
+/** addNewRowForNewBox(data)
+ *  Adds a new box when the WS gets informed by the server of 
+ *  the connection of a new laser controller to the mesh.
+ *  TO BE REFACTORED. NEED A BUTTON CLASS.
+ *  */
 function addNewRowForNewBox(data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
   var _ctrlerBx = boxMaps._create(data);
 
-  // set properties of the boxRow
-  _ctrlerBx.setHtmlProperties();
-
   // set the activeState button
   // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _dupRow = _setCurrentStateButton(_dupRow, "boxstate", data.boxState);
+  _ctrlerBx.virtualHtmlRowElt = _setCurrentStateButton(_ctrlerBx.virtualHtmlRowElt,
+                                                       "boxstate", data.boxState);
 
   // set event listener on current state buttons
   // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickButton, "button[data-boxstate]");
+  _ctrlerBx.virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(_ctrlerBx.virtualHtmlRowElt, 
+                                                                  onclickButton, "button[data-boxstate]");
 
   // indicate masterbox number
-  _dupRow = _indicateMasterBoxNumber(data.masterbox, _dupRow);
+  _ctrlerBx.virtualHtmlRowElt = _indicateMasterBoxNumber(data.masterbox, 
+                                                         _ctrlerBx.virtualHtmlRowElt);
 
   // set event listener on master select
-  var _select = _selectMasterSelectInRow(_dupRow);
+  var _select = _selectMasterSelectInRow(_ctrlerBx.virtualHtmlRowElt);
   setSelectEvents(_select);
 
   // set boxDefaultState button
   // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _dupRow = _setCurrentStateButton(_dupRow, "boxDefstate", data.boxDefstate);
+  _ctrlerBx.virtualHtmlRowElt = _setCurrentStateButton(_ctrlerBx.virtualHtmlRowElt, 
+                                                       "boxDefstate", data.boxDefstate);
 
   // set event listener on default state buttons
   // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  _dupRow = setEVentListenersOnGroupOfButtons(_dupRow, onclickDefStateButton, "button[data-boxDefstate]");
+  _ctrlerBx.virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(_ctrlerBx.virtualHtmlRowElt, 
+                                                                  onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
-  _dupRow = boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_dupRow);
+  _ctrlerBx.virtualHtmlRowElt = boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_ctrlerBx.virtualHtmlRowElt);
 
   console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
 }
