@@ -27,14 +27,14 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch localhost on Chrome from main project folder",
-            "url": "http://localhost/mypage.htm",
+            "url": "http://localhost/",
             "webRoot": "${workspaceFolder}/data"
         },
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch localhost on Chrome from main JS data project folder",
-            "url": "http://localhost/mypage.htm",
+            "url": "http://localhost/",
             "webRoot": "${workspaceFolder}"
         },
         {
