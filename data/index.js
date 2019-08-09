@@ -121,16 +121,20 @@ class controlerBox {
 
 
 
-
+/** boxMaps
+ *  Object playing the role of a static class, containing
+ *  a collection (as a map) of ctrlerBxes and providing 
+ *  collection level methods:
+ *  _create
+ *  _delete */
 // BOX ROWS MAPS
 var boxMaps = {
   controlerBoxes: new Map(),
   boxesRows:      new Map(),
-  ctrlerBxes:       new Map(),
+  ctrlerBxes:     new Map(),
 
   /** boxMaps._create(data)
-   *  Create a new entry in the ctrlerBxes map
-   */
+   *  Create a new entry in the ctrlerBxes map */
   _create: function(data) {
     var _newCtrlBx = new controlerBox({props: data});
     boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
