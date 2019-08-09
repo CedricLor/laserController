@@ -136,22 +136,6 @@ var boxMaps = {
     boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
   },
 
-  /** boxMaps._add() <-- TO BE DELETED AND REPLACED BY boxMaps._create()
-   *  adder to the boxesRows and controlerBoxes maps.
-   */
-  _add: function(data, _dupRow) {
-    console.log("boxMaps._add starting.");
-    boxMaps.controlerBoxes.set(data.lb, data.boxState);
-    // Map.prototype.set(key, value)
-    // {1:4;2:3;etc.}
-    console.log("boxMaps._add: boxMaps.controlerBoxes map: set key [" + data.lb + "] with value [" + data.boxState +  "] in boxMaps.controlerBoxes map.");
-    console.log(boxMaps.controlerBoxes);
-    boxMaps.boxesRows.set(data.lb, _dupRow);
-    console.log("boxMaps._add: boxMaps.boxesRows map: set key [" + data.lb + "] with value [" + _dupRow +  "] in boxesRows map.");
-    console.log(boxMaps.boxesRows);
-    console.log("boxMaps._add ending.");
-  },
-  
   _delete: function(boxNumber) {
     console.log("boxMaps._delete starting.");
     boxMaps.controlerBoxes.delete(boxNumber);
