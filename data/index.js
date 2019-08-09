@@ -10,23 +10,53 @@
 */
 
 // Global variables
+
+/** boxRowManager
+ * 
+ *  Object holding functions to create a new boxRow */
 var boxRowManager  = {
+  /** boxRowManager.virtualTemplate
+   * 
+   *  Will be a copy of the hidden div with id 'boxTemplate'.
+   *  Will be loaded once boxRowManager.init() has been called (onload). */
   virtualTemplate: undefined,
+  /** boxRowManager.boxesContainer
+   * 
+   *  Will be a copy of the div with id 'boxesContainer'.
+   *  Will be loaded once boxRowManager.init() has been called (onload).*/
   boxesContainer:  undefined,
+
+  /** boxRowManager.init()
+   * 
+   *  Loads copies of the divs with id 'boxesContainer' and 'boxTemplate'
+   *  into boxesContainer and virtualTemplate.*/
   init:            function() {
     var _row                        = document.getElementById('boxTemplate');
     boxRowManager.virtualTemplate   = _row.cloneNode(true);
     boxRowManager.boxesContainer    = document.getElementById('boxesContainer');
+    // _row.parentNode.removeChild(_row);
   },
   
+  /** boxRowManager.template()
+   * 
+   *  Returns a copy of the boxRow virtualTemplate.*/
   template: function() {
     return (this.virtualTemplate.cloneNode(true));
   },
 
+  /** boxRowManager.insertNewBoxInBoxesContainerInDOM
+   * 
+   *  Object containing function to insert the new box row in div#boxesContainer*/
   insertNewBoxInBoxesContainerInDOM: {
+    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow)
+     * 
+     *  Inserts the _newRow as last child in div#boxesContainer*/
     last:   function(_newRow){
-      boxRowManager.boxesContainer.appendChild(_newRow);
+      return (boxRowManager.boxesContainer.appendChild(_newRow));
     },
+    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow)
+     * 
+     *  Inserts the _newRow as first child in div#boxesContainer. Returns the _newRow to the user.*/
     first:  function(_newRow){
       if (boxRowManager.boxesContainer.hasChildNodes()) {
         return (boxRowManager.boxesContainer.insertBefore(_newRow, boxRowManager.boxesContainer.firstChild));
