@@ -106,7 +106,7 @@ class controlerBox {
     this.virtualHtmlRowElt.querySelector("#OTA1reboot").id = "OTA1reboot" + this.lb;     // set a unique id
     // this.virtualHtmlRowElt.querySelector("#OTA2reboots").addEventListener('click', onclickOTABoxButton, false);
     this.virtualHtmlRowElt.querySelector("#OTA2reboots").id = "OTA2reboots" + this.lbr;     // set a unique id
-}
+  }
 }
 
 
@@ -139,7 +139,7 @@ var boxMaps = {
     var _newCtrlBx = new controlerBox({props: data});
     boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
   },
-
+  
   _delete: function(boxNumber) {
     console.log("boxMaps._delete starting.");
     boxMaps.controlerBoxes.delete(boxNumber);
@@ -1701,19 +1701,6 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 // EVENT LISTENERS
-function setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber) {
-  _dupRow.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
-  _dupRow.querySelector("#rebootBox").id = "rebootBox" + _laserBoxIndexNumber;     // set a unique id
-  _dupRow.querySelector("#rebootAndSaveBox").addEventListener('click', _onClickBoxConfig.rebootAndSave, false);
-  _dupRow.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + _laserBoxIndexNumber;     // set a unique id
-  _dupRow.querySelector("#savePrefsBox").addEventListener('click', _onClickBoxConfig.savePrefs, false);
-  _dupRow.querySelector("#savePrefsBox").id = "savePrefsBox" + _laserBoxIndexNumber;     // set a unique id
-  // _dupRow.querySelector("#OTA1reboot").addEventListener('click', onclickOTABoxButton, false);
-  _dupRow.querySelector("#OTA1reboot").id = "OTA1reboot" + _laserBoxIndexNumber;     // set a unique id
-  // _dupRow.querySelector("#OTA2reboots").addEventListener('click', onclickOTABoxButton, false);
-  _dupRow.querySelector("#OTA2reboots").id = "OTA2reboots" + _laserBoxIndexNumber;     // set a unique id
-  return _dupRow;
-}
 
 function setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
   console.log("setEVentListenersOnGroupOfButtons: starting");
