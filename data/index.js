@@ -85,15 +85,28 @@ class controlerBox {
     // this.boxDefstate = props.boxDefstate;
     this.virtualHtmlRowElt = boxRowManager.template();
     this._setHtmlProperties();
+    this._setEventsOnConfigBtns();
   }
   
-  setHtmlProperties() {
+  _setHtmlProperties() {
     this.virtualHtmlRowElt.id = "boxRow" + this.lb;
     this.virtualHtmlRowElt.dataset.lb = this.lb;
     this.virtualHtmlRowElt.classList.remove('hidden');
     this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
   }
-  // setEventHandlers: setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber);
+
+  _setEventsOnConfigBtns() {
+    this.virtualHtmlRowElt.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
+    this.virtualHtmlRowElt.querySelector("#rebootBox").id = "rebootBox" + this.lb;     // set a unique id
+    this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").addEventListener('click', _onClickBoxConfig.rebootAndSave, false);
+    this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + this.lb;     // set a unique id
+    this.virtualHtmlRowElt.querySelector("#savePrefsBox").addEventListener('click', _onClickBoxConfig.savePrefs, false);
+    this.virtualHtmlRowElt.querySelector("#savePrefsBox").id = "savePrefsBox" + this.lb;     // set a unique id
+    // this.virtualHtmlRowElt.querySelector("#OTA1reboot").addEventListener('click', onclickOTABoxButton, false);
+    this.virtualHtmlRowElt.querySelector("#OTA1reboot").id = "OTA1reboot" + this.lb;     // set a unique id
+    // this.virtualHtmlRowElt.querySelector("#OTA2reboots").addEventListener('click', onclickOTABoxButton, false);
+    this.virtualHtmlRowElt.querySelector("#OTA2reboots").id = "OTA2reboots" + this.lbr;     // set a unique id
+}
 }
 
 
