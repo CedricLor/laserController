@@ -11,6 +11,13 @@
 
 // Global variables
 
+
+
+
+
+
+
+
 /** boxRowManager
  * 
  *  Object holding functions to create a new boxRow */
@@ -68,17 +75,37 @@ var boxRowManager  = {
 };
 
 
+
+
+
 class controlerBox {
   constructor (props) {
-    this.lb = props.lb;
+    this.lb = parseInt(props.lb, 10);
     this.boxState = props.boxState;
-    this.boxDefstate = props.boxDefstate;
-    this.id = "toto";
-    this.clicked = props.clicked || false;
+    // this.boxDefstate = props.boxDefstate;
+    this.virtualHtmlRowElt = boxRowManager.template();
+    this._setHtmlProperties();
   }
+  
+  setHtmlProperties() {
+    this.virtualHtmlRowElt.id = "boxRow" + this.lb;
+    this.virtualHtmlRowElt.dataset.lb = this.lb;
+    this.virtualHtmlRowElt.classList.remove('hidden');
+    this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
+  }
+  // setEventHandlers: setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber);
 }
 
-var myControlerBox = new controlerBox({lb: "1", boxState: "3", boxDefstate: "6" });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -86,7 +113,19 @@ var myControlerBox = new controlerBox({lb: "1", boxState: "3", boxDefstate: "6" 
 var boxMaps = {
   controlerBoxes: new Map(),
   boxesRows:      new Map(),
+  ctrlerBxes:       new Map(),
 
+  /** boxMaps._create(data)
+   *  Create a new entry in the ctrlerBxes map
+   */
+  _create: function(data) {
+    var _newCtrlBx = new controlerBox({props: data});
+    boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
+  },
+
+  /** boxMaps._add() <-- TO BE DELETED AND REPLACED BY boxMaps._create()
+   *  adder to the boxesRows and controlerBoxes maps.
+   */
   _add: function(data, _dupRow) {
     console.log("boxMaps._add starting.");
     boxMaps.controlerBoxes.set(data.lb, data.boxState);
@@ -1410,19 +1449,6 @@ function _setStateButtonAsActive(_selector, memRow) {
 
 
 
-function _newBoxRowSetProperties(_laserBoxIndexNumber, _dupRow) {
-  console.log("_newBoxRowSetProperties: _dupRow: setting the id of the new wrapper div to: " + _laserBoxIndexNumber);
-  _dupRow.id = "boxRow" + _laserBoxIndexNumber;     // set a unique id
-  console.log("_newBoxRowSetProperties: _dupRow: setting the data-lb property of the new wrapper div to: " + _laserBoxIndexNumber);
-  _dupRow.dataset.lb = _laserBoxIndexNumber;     // update data-lb attribute
-  console.log("_newBoxRowSetProperties: _dupRow: removing the class hidden from the classes of the new wrapper div");
-  _dupRow.classList.remove('hidden');
-  console.log("_newBoxRowSetProperties: _dupRow: setting the laser box number: " + (_laserBoxIndexNumber + 200));
-  _dupRow.querySelector("span.box_num").textContent = _laserBoxIndexNumber + 200;
-  _dupRow = setEventListenersOnBoxRowElements(_dupRow, _laserBoxIndexNumber);
-  console.log("_newBoxRowSetProperties: _dupRow: setting the reboot and save buttons for this box");
-  return _dupRow;
-}
 
 
 
@@ -1472,12 +1498,10 @@ function _selectMasterSelectInRow(_dupRow) {
 function addNewRowForNewBox(data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
-  // clone the template
-  var _dupRow = boxRowManager.template();  // get a duplicate of the box
-  console.log("addNewRowForNewBox: Clone _dupRow created");//console.log(_dupRow);
+  var _ctrlerBx = boxMaps._create(data);
 
-  // set properties
-  _dupRow = _newBoxRowSetProperties(data.lb, _dupRow);
+  // set properties of the boxRow
+  _ctrlerBx.setHtmlProperties();
 
   // set the activeState button
   // _setCurrentStateButton(memRow, datasetKey, datasetValue)
@@ -1505,8 +1529,6 @@ function addNewRowForNewBox(data) {
   // render in DOM
   _dupRow = boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_dupRow);
 
-  // add a key/entry pair to the controlerBoxes map and to the rowsMap map
-  boxMaps._add(data, _dupRow);
   console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
 }
 
