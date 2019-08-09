@@ -78,7 +78,14 @@ var boxRowManager  = {
 
 
 
-class controlerBox {
+
+
+
+  /** controlerBox._setEventsOnConfigBtns()
+   *  a class to hold the controller boxes coming and exiting
+   *  the DOM from the WebSocket.
+   *  */
+  class controlerBox {
   constructor (props) {
     this.lb = parseInt(props.lb, 10);
     this.boxState = props.boxState;
@@ -95,6 +102,11 @@ class controlerBox {
     this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
   }
 
+  /** controlerBox._setEventsOnConfigBtns()
+   *  sets event-listeners on the box config buttons.
+   *  To be reviewed: 
+   *  1. very similar to some other event-listener setters;
+   *  2. consider creating a reusable button class. */
   _setEventsOnConfigBtns() {
     this.virtualHtmlRowElt.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
     this.virtualHtmlRowElt.querySelector("#rebootBox").id = "rebootBox" + this.lb;     // set a unique id
@@ -102,12 +114,89 @@ class controlerBox {
     this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + this.lb;     // set a unique id
     this.virtualHtmlRowElt.querySelector("#savePrefsBox").addEventListener('click', _onClickBoxConfig.savePrefs, false);
     this.virtualHtmlRowElt.querySelector("#savePrefsBox").id = "savePrefsBox" + this.lb;     // set a unique id
-    // this.virtualHtmlRowElt.querySelector("#OTA1reboot").addEventListener('click', onclickOTABoxButton, false);
-    this.virtualHtmlRowElt.querySelector("#OTA1reboot").id = "OTA1reboot" + this.lb;     // set a unique id
-    // this.virtualHtmlRowElt.querySelector("#OTA2reboots").addEventListener('click', onclickOTABoxButton, false);
-    this.virtualHtmlRowElt.querySelector("#OTA2reboots").id = "OTA2reboots" + this.lbr;     // set a unique id
+    document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
+      function(_OTARebootButton, _i){
+        _OTARebootButton.addEventListener('click', _onClickBoxConfig.OTAReboots, false);
+        _OTARebootButton.id = "OTA" + _i + "reboot" + this.lb; // set a unique id
+      }
+    );    
   }
 }
+
+
+
+
+
+
+/**
+ *  _onClickBoxConfig:
+ *  Holder of all the onClick events of the box level configuration
+ *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
+var _onClickBoxConfig = {
+  wrapper:        function(e, _obj) {
+      // update the buttons
+      _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+      // if the connection is closed, inform the user
+      if (connectionObj.checkConnect.closedVerb()) { return; }
+      // else, complete the message
+      _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+      _obj.action = 'changeBox';
+      // and send the message
+      _onClickHelpers.btnSend(_obj);
+      // {action:"changeBox", key:"reboot", save: 0, lb:1}
+      // {action:"changeBox", key:"reboot", save: 1, lb:1}
+      // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+      // {action:"changeBox", key:"save", val: "all", lb:1}
+  },
+
+  reboot:         function(e) {
+      console.log("_onClickBoxConfig.reboot starting");
+      _onClickBoxConfig.wrapper(e, {
+        key:  "reboot",
+        save: 0, // reboot without saving
+      });
+      // {action:"changeBox", key:"reboot", save: 0, lb:1}
+      console.log("_onClickBoxConfig.reboot ending");  
+  },
+
+  rebootAndSave: function(e) {
+      console.log("_onClickBoxConfig.rebootAndSave starting");
+      _onClickBoxConfig.wrapper(e, {
+        key:  "reboot",
+        save: 1, // save and reboot
+      });
+      // {action:"changeBox", key:"reboot", save: 1, lb:1}
+      console.log("_onClickBoxConfig.rebootAndSave ending");
+  },
+
+  savePrefs:     function(e) {
+      console.log("_onClickBoxConfig.savePrefs starting");
+      _onClickBoxConfig.wrapper(e, {
+        key:  "save",
+        save: "all", // save (all the properties for this box) and reboot
+      });
+      // {action:"changeBox", key:"save", val: "all", lb:1}
+      console.log("_onClickBoxConfig.savePrefs ending");  
+  },
+
+  OTAReboots:   function(e) {
+    console.log("_onClickBoxConfig.OTAReboots starting");
+    _onClickBoxConfig.wrapper(e, {
+      key:      "save",
+      val:      "gi8RequestedOTAReboots",
+      reboots:  parseInt(this.dataset.reboots, 10),
+    });
+    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+    console.log("_onClickBoxConfig.OTAReboots ending");
+  }
+};
+
+
+
+
+
+
+
 
 
 
@@ -746,6 +835,9 @@ var onReboot = {
 
 
 
+
+
+
 /**
  * onMsgActionSwitch:
  * a kind of controller, dispatching messages to various functions
@@ -843,11 +935,9 @@ function onMsgActionSwitch(_data) {
 
 
 
-/**
- * _onClickHelpers:
+/** _onClickHelpers:
  * Library of helpers, to remove classes, add classes, send messages, identify the laser
- * box number, etc.
- */
+ * box number, etc. */
 var _onClickHelpers = {
   findUpLaserBoxNumber: function(el) {
       while (el.parentNode) {
@@ -894,79 +984,8 @@ var _onClickHelpers = {
 
 
 
-/**
- *  _onClickBoxConfig:
- *  Holder of all the onClick events of the box level configuration
- *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
-var _onClickBoxConfig = {
-  wrapper:        function(e, _obj) {
-      // update the buttons
-      _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
-      // if the connection is closed, inform the user
-      if (connectionObj.checkConnect.closedVerb()) { return; }
-      // else, complete the message
-      _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-      _obj.action = 'changeBox';
-      // and send the message
-      _onClickHelpers.btnSend(_obj);
-      // {action:"changeBox", key:"reboot", save: 0, lb:1}
-      // {action:"changeBox", key:"reboot", save: 1, lb:1}
-      // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-      // {action:"changeBox", key:"save", val: "all", lb:1}
-  },
 
-  reboot:         function(e) {
-      console.log("_onClickBoxConfig.reboot starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:  "reboot",
-        save: 0, // reboot without saving
-      });
-      // {action:"changeBox", key:"reboot", save: 0, lb:1}
-      console.log("_onClickBoxConfig.reboot ending");  
-  },
 
-  rebootAndSave: function(e) {
-      console.log("_onClickBoxConfig.rebootAndSave starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:  "reboot",
-        save: 1, // save and reboot
-      });
-      // {action:"changeBox", key:"reboot", save: 1, lb:1}
-      console.log("_onClickBoxConfig.rebootAndSave ending");
-  },
-
-  savePrefs:     function(e) {
-      console.log("_onClickBoxConfig.savePrefs starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:  "save",
-        save: "all", // save and reboot
-      });
-      // {action:"changeBox", key:"save", val: "all", lb:1}
-      console.log("_onClickBoxConfig.savePrefs ending");  
-  },
-
-  OTAReboots:   function(e) {
-    console.log("_onClickBoxConfig.OTAReboots starting");
-    _onClickBoxConfig.wrapper(e, {
-      key:      "save",
-      val:      "gi8RequestedOTAReboots",
-      reboots:  parseInt(this.dataset.reboots, 10),
-    });
-    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-    console.log("_onClickBoxConfig.OTAReboots ending");
-  }
-};
-
-function onclickgOTARebootsBoxBtn(e) {
-  console.log("onclickgOTARebootsBoxBtn starting");
-  _onClickBoxConfig.wrapper(e, {
-    key:     "save",
-    val:     "gi8RequestedOTAReboots",
-    reboots: parseInt(this.dataset.reboots, 10),
-  });
-  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-  console.log("onclickgi8RequestedOTAReboots ending");
-}
 
 
 
@@ -1082,6 +1101,10 @@ var infoBox = {
 
 
 
+
+
+
+
 var _onClickIF = {
     reboot: function(_e) {
       console.log("_onClickIF.reboot starting");
@@ -1107,6 +1130,10 @@ var _onClickIF = {
       console.log("_onClickIF.save ending");
     }
 };
+
+
+
+
 
 
 
@@ -1166,6 +1193,7 @@ var _onClickSaveWifi = {
     console.log("_onClickSaveWifi.onAll ending");
   }
 };
+
 
 
 
