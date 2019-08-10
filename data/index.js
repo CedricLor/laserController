@@ -257,6 +257,14 @@ var boxMaps = {
         while (boxRowManager.boxesContainer.children[0]) {
             boxRowManager.boxesContainer.removeChild(boxRowManager.boxesContainer.firstChild);
         }
+    },
+
+    toBoxStateObj: function() {
+        let _obj = Object.create(null);
+        for (let [k,v] of boxMaps.ctrlerBxes) {
+            _obj[k] = v.boxState;
+        }
+        return _obj;
     }
 };
 
@@ -339,7 +347,7 @@ var connectionObj = {
       // Send a message to the server with the list of boxMaps.ctrlerBxes I have in the DOM
       connectionObj.ws.send(JSON.stringify({
         action:           "handshake",
-        boxesStatesInDOM: mapToObj(boxMaps.controlerBoxes)
+        boxesStatesInDOM: boxMaps.toBoxStateObj()
       }));
       // {action:0, boxStateInDOM:{1:4;2:3}}
   },
