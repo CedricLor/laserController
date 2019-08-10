@@ -41,7 +41,7 @@ var boxRowManager  = {
     var _row                        = document.getElementById('boxTemplate');
     boxRowManager.virtualTemplate   = _row.cloneNode(true);
     boxRowManager.boxesContainer    = document.getElementById('boxesContainer');
-    // _row.parentNode.removeChild(_row);
+    _row.parentNode.removeChild(_row);
   },
   
   /** boxRowManager.template()
@@ -85,43 +85,44 @@ var boxRowManager  = {
    *  a class to hold the controller boxes coming and exiting
    *  the DOM from the WebSocket.
    *  */
-  class controlerBox {
-  constructor (props) {
-    this.lb = parseInt(props.lb, 10);
-    this.boxState = props.boxState;
-    // this.boxDefstate = props.boxDefstate;
-    this.virtualHtmlRowElt = boxRowManager.template();
-    this._setHtmlProperties();
-    this._setEventsOnConfigBtns();
-  }
-  
-  _setHtmlProperties() {
-    this.virtualHtmlRowElt.id = "boxRow" + this.lb;
-    this.virtualHtmlRowElt.dataset.lb = this.lb;
-    this.virtualHtmlRowElt.classList.remove('hidden');
-    this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
-  }
+class controlerBox {
+    constructor (props) {
+        this.lb = parseInt(props.lb, 10);
+        this.boxState = props.boxState;
+        // this.boxDefstate = props.boxDefstate;
+        this.virtualHtmlRowElt = boxRowManager.template();
+        this._setHtmlProperties();
+        this._setEventsOnConfigBtns();
+    }
+    
+    _setHtmlProperties() {
+        this.virtualHtmlRowElt.id = "boxRow" + this.lb;
+        this.virtualHtmlRowElt.dataset.lb = this.lb;
+        this.virtualHtmlRowElt.classList.remove('hidden');
+        this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
+    }
 
-  /** controlerBox._setEventsOnConfigBtns()
-   *  sets event-listeners on the box config buttons.
-   *  To be reviewed: 
-   *  1. very similar to some other event-listener setters;
-   *  2. consider creating a reusable button class. */
-  _setEventsOnConfigBtns() {
-    this.virtualHtmlRowElt.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
-    this.virtualHtmlRowElt.querySelector("#rebootBox").id = "rebootBox" + this.lb;     // set a unique id
-    this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").addEventListener('click', _onClickBoxConfig.rebootAndSave, false);
-    this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + this.lb;     // set a unique id
-    this.virtualHtmlRowElt.querySelector("#savePrefsBox").addEventListener('click', _onClickBoxConfig.savePrefs, false);
-    this.virtualHtmlRowElt.querySelector("#savePrefsBox").id = "savePrefsBox" + this.lb;     // set a unique id
-    document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
-      function(_OTARebootButton, _i){
-        _OTARebootButton.addEventListener('click', _onClickBoxConfig.OTAReboots, false);
-        _OTARebootButton.id = "OTA" + _i + "reboot" + this.lb; // set a unique id
-      }
-    );    
-  }
+    /** controlerBox._setEventsOnConfigBtns()
+     *  sets event-listeners on the box config buttons.
+     *  To be reviewed: 
+     *  1. very similar to some other event-listener setters;
+     *  2. consider creating a reusable button class. */
+    _setEventsOnConfigBtns() {
+        this.virtualHtmlRowElt.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
+        this.virtualHtmlRowElt.querySelector("#rebootBox").id = "rebootBox" + this.lb;     // set a unique id
+        this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").addEventListener('click', _onClickBoxConfig.rebootAndSave, false);
+        this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + this.lb;     // set a unique id
+        this.virtualHtmlRowElt.querySelector("#savePrefsBox").addEventListener('click', _onClickBoxConfig.savePrefs, false);
+        this.virtualHtmlRowElt.querySelector("#savePrefsBox").id = "savePrefsBox" + this.lb;     // set a unique id
+        document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
+            function(_OTARebootButton, _i){
+                _OTARebootButton.addEventListener('click', _onClickBoxConfig.OTAReboots, false);
+                _OTARebootButton.id = "OTA" + _i + "reboot" + this.lb; // set a unique id
+            }
+        );    
+    }
 }
+
 
 
 
@@ -133,62 +134,62 @@ var boxRowManager  = {
  *  Holder of all the onClick events of the box level configuration
  *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
 var _onClickBoxConfig = {
-  wrapper:        function(e, _obj) {
-      // update the buttons
-      _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
-      // if the connection is closed, inform the user
-      if (connectionObj.checkConnect.closedVerb()) { return; }
-      // else, complete the message
-      _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-      _obj.action = 'changeBox';
-      // and send the message
-      _onClickHelpers.btnSend(_obj);
-      // {action:"changeBox", key:"reboot", save: 0, lb:1}
-      // {action:"changeBox", key:"reboot", save: 1, lb:1}
+    wrapper:        function(e, _obj) {
+        // update the buttons
+        _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+        // if the connection is closed, inform the user
+        if (connectionObj.checkConnect.closedVerb()) { return; }
+        // else, complete the message
+        _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+        _obj.action = 'changeBox';
+        // and send the message
+        _onClickHelpers.btnSend(_obj);
+        // {action:"changeBox", key:"reboot", save: 0, lb:1}
+        // {action:"changeBox", key:"reboot", save: 1, lb:1}
+        // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+        // {action:"changeBox", key:"save", val: "all", lb:1}
+    },
+
+    reboot:         function(e) {
+        console.log("_onClickBoxConfig.reboot starting");
+        _onClickBoxConfig.wrapper(e, {
+          key:  "reboot",
+          save: 0, // reboot without saving
+        });
+        // {action:"changeBox", key:"reboot", save: 0, lb:1}
+        console.log("_onClickBoxConfig.reboot ending");  
+    },
+
+    rebootAndSave: function(e) {
+        console.log("_onClickBoxConfig.rebootAndSave starting");
+        _onClickBoxConfig.wrapper(e, {
+          key:  "reboot",
+          save: 1, // save and reboot
+        });
+        // {action:"changeBox", key:"reboot", save: 1, lb:1}
+        console.log("_onClickBoxConfig.rebootAndSave ending");
+    },
+
+    savePrefs:     function(e) {
+        console.log("_onClickBoxConfig.savePrefs starting");
+        _onClickBoxConfig.wrapper(e, {
+          key:  "save",
+          save: "all", // save (all the properties for this box) and reboot
+        });
+        // {action:"changeBox", key:"save", val: "all", lb:1}
+        console.log("_onClickBoxConfig.savePrefs ending");  
+    },
+
+    OTAReboots:   function(e) {
+      console.log("_onClickBoxConfig.OTAReboots starting");
+      _onClickBoxConfig.wrapper(e, {
+        key:      "save",
+        val:      "gi8RequestedOTAReboots",
+        reboots:  parseInt(this.dataset.reboots, 10),
+      });
       // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-      // {action:"changeBox", key:"save", val: "all", lb:1}
-  },
-
-  reboot:         function(e) {
-      console.log("_onClickBoxConfig.reboot starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:  "reboot",
-        save: 0, // reboot without saving
-      });
-      // {action:"changeBox", key:"reboot", save: 0, lb:1}
-      console.log("_onClickBoxConfig.reboot ending");  
-  },
-
-  rebootAndSave: function(e) {
-      console.log("_onClickBoxConfig.rebootAndSave starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:  "reboot",
-        save: 1, // save and reboot
-      });
-      // {action:"changeBox", key:"reboot", save: 1, lb:1}
-      console.log("_onClickBoxConfig.rebootAndSave ending");
-  },
-
-  savePrefs:     function(e) {
-      console.log("_onClickBoxConfig.savePrefs starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:  "save",
-        save: "all", // save (all the properties for this box) and reboot
-      });
-      // {action:"changeBox", key:"save", val: "all", lb:1}
-      console.log("_onClickBoxConfig.savePrefs ending");  
-  },
-
-  OTAReboots:   function(e) {
-    console.log("_onClickBoxConfig.OTAReboots starting");
-    _onClickBoxConfig.wrapper(e, {
-      key:      "save",
-      val:      "gi8RequestedOTAReboots",
-      reboots:  parseInt(this.dataset.reboots, 10),
-    });
-    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-    console.log("_onClickBoxConfig.OTAReboots ending");
-  }
+      console.log("_onClickBoxConfig.OTAReboots ending");
+    }
 };
 
 
@@ -218,25 +219,80 @@ var _onClickBoxConfig = {
  *  _delete */
 // BOX ROWS MAPS
 var boxMaps = {
-  controlerBoxes: new Map(),
-  boxesRows:      new Map(),
-  ctrlerBxes:     new Map(),
+    controlerBoxes: new Map(),
+    boxesRows:      new Map(),
+    ctrlerBxes:     new Map(),
 
-  /** boxMaps._create(data)
-   *  Create a new entry in the ctrlerBxes map */
-  _create: function(data) {
-    var _newCtrlBx = new controlerBox({props: data});
-    boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
-  },
-  
-  _delete: function(boxNumber) {
-    console.log("boxMaps._delete starting.");
-    boxMaps.controlerBoxes.delete(boxNumber);
-    boxMaps.boxesRows.delete(boxNumber);
-    console.log("boxMaps._delete ending.");
-  }     
+    /** boxMaps._create(data)
+     *  Create a new entry in the ctrlerBxes map */
+    _create: function(data) {
+        var _newCtrlBx = new controlerBox({props: data});
+        boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
+    },
+    
+    /** boxMaps._delete(boxNumber)
+     *  deletes a single box row and
+     *  the corresponding representations 
+     *  in the maps. */
+    _delete: function(boxNumber) {
+        console.log("boxMaps._delete starting.");
+        boxMaps.controlerBoxes.delete(boxNumber);
+        boxMaps.boxesRows.delete(boxNumber);
+        boxMaps.ctrlerBxes.delete(boxNumber);
+        console.log("boxMaps._delete ending.");
+    },
+
+    _deleteAll: function() {
+        // delete from maps representations
+        if (boxMaps.controlerBoxes.size) {
+            boxMaps.controlerBoxes.clear();
+        }
+        if (boxMaps.boxesRows.size) {
+            boxMaps.boxesRows.clear();
+        }
+        if (boxMaps.ctrlerBxes.size) {
+            boxMaps.ctrlerBxes.clear();
+        }
+        // delete from DOM
+        while (boxRowManager.boxesContainer.children[0]) {
+            boxRowManager.boxesContainer.removeChild(boxRowManager.boxesContainer.firstChild);
+        }
+    }
 };
 
+
+
+
+
+/** deleteBoxRow
+ *  deletes one boxRow from the DOM.
+ *  gets called from the action switch upon receiving a delete message from
+ *  the server. */
+function deleteBoxRow(_data) {
+  console.log("deleteBoxRow starting.");
+  // first check whether the boxMaps contain any boxRows. If not, just return.
+  if (boxMaps.ctrlerBxes.size) {
+    // if there are boxRows in the maps, try to find the corresponding box
+    var _boxRowToDelete = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
+    // if the corresponding box is not in the map, just return
+    if (_boxRowToDelete === undefined) {
+      console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in boxMaps.controlerBoxes map.");
+      return;
+    }
+
+    // else, the box exists: 
+    // 1. delete the box row and 
+    _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
+    // 2. update the controlesBoxes maps
+    boxMaps._delete(_data.lb);
+    // 3. check whether the box is not disconnecting as
+    //    a result of a reboot order and inform the user
+    onReboot.LBs.onDeleteBox(_data);
+    console.log("deleteBoxRow: deleted key [" + _data.lb + "] in controlerBoxes and boxesRows maps.");
+    console.log("deleteBoxRow ending.");
+    return true;
+  }
+}
 
 
 
@@ -298,7 +354,7 @@ var connectionObj = {
         console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e);
       }
       console.log('Socket is closed. Reason: ', e);
-      deleteAllBoxRows();
+      boxMaps._deleteAll();
   },
 
   wsonerror:        function(err){
@@ -508,7 +564,7 @@ var onReboot = {
         // delete the box from the waitingLBs map
         onReboot.LBs.waitingLBs.delete(parseInt(_data.lb, 10));
   
-        if (boxMaps.boxesRows.size === 0) {
+        if (boxMaps.ctrlerBxes.size === 0) {
           // remove the waiting LBs div
           removeDOMelement('#divLBsWaitingToReboot');
         }
@@ -558,7 +614,7 @@ var onReboot = {
       // 3. close the connection
       connectionObj.ws.close();
       // 5. delete all the boxes
-      deleteAllBoxRows();
+      boxMaps._deleteAll();
   
       console.log("--------------- end reboot all switch -----------------");
     }
@@ -763,9 +819,9 @@ var onReboot = {
      *  Called at the beginning of a reboot process
      * */
     createBoxTextNodesFromBoxRows: function(_spanLBsRebooting) {
-      // iterate over the boxMaps.boxesRows map, create textNodes for the span and
+      // iterate over the boxMaps.ctrlerBxes map, create textNodes for the span and
       // store them in a map
-      boxMaps.boxesRows.forEach(function(val, key) {
+      boxMaps.ctrlerBxes.forEach(function(val, key) {
         let _text = (parseInt(key) + 200) + ". ";
         // create a textNode to hold the box number
         let _boxNumbNode = document.createTextNode(_text);
@@ -882,7 +938,7 @@ function onMsgActionSwitch(_data) {
     // delete all the boxes
     if (_data.lb === 'a') {
       // _data = {action: "deleteBox"; lb: "a"}
-      deleteAllBoxRows();
+      boxMaps._deleteAll();
       return;
     }
     // if delete one box
@@ -1009,7 +1065,7 @@ var _onClickGroupReboot = {
     // if the connection is closed, inform the user
     if (connectionObj.checkConnect.closedVerb()) { return; }
     // if there are boxes in the boxes map, we are probably connected, so reboot
-    if (boxMaps.boxesRows.size) {
+    if (boxMaps.ctrlerBxes.size) {
       // 
       _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
       // else, complete the message and send it
@@ -1227,7 +1283,7 @@ function onclickgi8RequestedOTAReboots(_e) {
 var _onClickStateBtns = {
   wrapper: function(e, buttonSelector, _datasetValue, _clef) {
     var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-    _onClickHelpers.updateClickButtons(e, buttonSelector, boxMaps.boxesRows.get(_laserBoxNumber));
+    _onClickHelpers.updateClickButtons(e, buttonSelector, (boxMaps.ctrlerBxes.get(_laserBoxNumber)).virtualHtmlRowElt);
     // if the connection is closed, inform the user
     if (connectionObj.checkConnect.closedVerb()) { return; }
     _onClickHelpers.btnSend({
@@ -1309,7 +1365,7 @@ function updateStateButton(_data) {
   // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
   console.log("updateStateButton: laser box [" + _data.lb + "]; stateButton: " + _data.key + ".");
   // select the correct row in the map
-  var _boxRow = boxMaps.boxesRows.get(_data.lb);
+  var _boxRow = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
   var _requestStatus = parseInt(_data.st, 10);
 
   if (_requestStatus === 1) {
@@ -1373,7 +1429,7 @@ function updateBoxRow(_data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("updateBoxRow: a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
   // select the correct row in the map
-  var _boxRow = boxMaps.boxesRows.get(_data.lb);
+  var _boxRow = (boxMaps.controlerBoxes.get(_data.lb)).virtualHtmlRowElt;
 
   // update the current active and default states
   updateCurrentStateButtons(_data, _boxRow);
@@ -1572,6 +1628,9 @@ function addNewRowForNewBox(data) {
 
 
 
+
+
+
 function addOrUpdateNewRowForNewBox(_data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addOrUpdateNewRowForNewBox starting.");
@@ -1604,52 +1663,6 @@ function addOrUpdateNewRowForNewBox(_data) {
 
 
 
-function deleteAllBoxRows() {
-  // delete from maps represenations
-  if (boxMaps.controlerBoxes.size) {
-    boxMaps.controlerBoxes.clear();
-  }
-  if (boxMaps.boxesRows.size) {
-    boxMaps.boxesRows.clear();
-  }
-  // delete from DOM
-  var _boxRowsContainer = document.querySelector("#boxesContainer");
-  while (_boxRowsContainer.children[1]) {
-    _boxRowsContainer.removeChild(_boxRowsContainer.firstChild);
-  }
-}
-
-
-
-/** deleteBoxRow
- *  deletes one boxRow from the DOM.
- *  gets called from the action switch upon receiving a delete message from
- *  the server. */
-function deleteBoxRow(_data) {
-  console.log("deleteBoxRow starting.");
-  // first check whether the boxMaps contain any boxRows. If not, just return.
-  if (boxMaps.boxesRows.size) {
-    // if there are boxRows in the maps, try to find the corresponding box
-    var _boxRowToDelete = boxMaps.boxesRows.get(_data.lb);
-    // if the corresponding box is not in the map, just return
-    if (_boxRowToDelete === undefined) {
-      console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in boxMaps.controlerBoxes map.");
-      return;
-    }
-
-    // else, the box exists: 
-    // 1. delete the box row and 
-    _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
-    // 2. update the controlesBoxes maps
-    boxMaps._delete(_data.lb);
-    // 3. check whether the box is not disconnecting as
-    //    a result of a reboot order and inform the user
-    onReboot.LBs.onDeleteBox(_data);
-    console.log("deleteBoxRow: deleted key [" + _data.lb + "] in controlerBoxes and boxesRows maps.");
-    console.log("deleteBoxRow ending.");
-    return true;
-  }
-}
 
 
 
@@ -1662,6 +1675,7 @@ function selectMasterBoxNumberSpan(_dupRow) {
   console.log("selectMasterBoxNumberSpan: ending.");
   return _dupRow.querySelector(_masterBoxNumberSelector);
 }
+
 
 
 
@@ -1683,7 +1697,7 @@ function updateMasterBoxNumber(_data) {
   console.log("updateMasterBoxNumber starting.");
 
   // select the relevant row
-  var _row = boxMaps.boxesRows.get(_data.lb);
+  var _row = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
   console.log("updateMasterBoxNumber: selected row: " + _data.lb);
 
   // write box number in box number span
