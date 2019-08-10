@@ -211,8 +211,6 @@ var _onClickBoxConfig = {
  *  _delete */
 // BOX ROWS MAPS
 var boxMaps = {
-    controlerBoxes: new Map(),
-    boxesRows:      new Map(),
     ctrlerBxes:     new Map(),
 
     /** boxMaps._create(data)
@@ -228,20 +226,12 @@ var boxMaps = {
      *  in the maps. */
     _delete: function(boxNumber) {
         console.log("boxMaps._delete starting.");
-        boxMaps.controlerBoxes.delete(boxNumber);
-        boxMaps.boxesRows.delete(boxNumber);
         boxMaps.ctrlerBxes.delete(boxNumber);
         console.log("boxMaps._delete ending.");
     },
 
     _deleteAll: function() {
         // delete from maps representations
-        if (boxMaps.controlerBoxes.size) {
-            boxMaps.controlerBoxes.clear();
-        }
-        if (boxMaps.boxesRows.size) {
-            boxMaps.boxesRows.clear();
-        }
         if (boxMaps.ctrlerBxes.size) {
             boxMaps.ctrlerBxes.clear();
         }
@@ -293,7 +283,7 @@ function deleteBoxRow(_data) {
     // 3. check whether the box is not disconnecting as
     //    a result of a reboot order and inform the user
     onReboot.LBs.onDeleteBox(_data);
-    console.log("deleteBoxRow: deleted key [" + _data.lb + "] in controlerBoxes and boxesRows maps.");
+    console.log("deleteBoxRow: deleted key [" + _data.lb + "] in the map of Controller Boxes.");
     console.log("deleteBoxRow ending.");
     return true;
   }
@@ -374,7 +364,7 @@ var connectionObj = {
   
     /** ws: onopen
      *  send a message to the server with the list of 
-     * controlerBoxes currently in the DOM and their states. */
+     * controller boxes currently in the DOM and their states. */
     connectionObj.ws.onopen =     connectionObj.wsonopen;
 
     /** ws: on receive a message
