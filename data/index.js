@@ -18,53 +18,67 @@
 
 
 
-/** boxRowManager
+
+
+
+
+
+/** bxCont
  * 
- *  Object holding functions to create a new boxRow */
-var boxRowManager  = {
-  /** boxRowManager._virtualTemplate: Copy of the #boxTemplate hidden div.
-   *  Declared as undefined and loaded upon boxRowManager.init(). */
-  _virtualTemplate: undefined,
-
-  /** boxRowManager.boxesContainer:  Copy of the #boxesContainer div.
-   *  Declared as undefined and loaded upon boxRowManager.init(). */
-  boxesContainer:  undefined,
-
-  /** boxRowManager.init(): Loads copies of #boxesContainer and #boxTemplate
-   *  into this.boxesContainer and this._virtualTemplate. Deletes #boxTemplate
-   *  once loaded into memory.*/
-  init:            function() {
-    var _row                        = document.getElementById('boxTemplate');
-    boxRowManager._virtualTemplate   = _row.cloneNode(true);
-    boxRowManager.boxesContainer    = document.getElementById('boxesContainer');
-    _row.parentNode.removeChild(_row);
-  },
-  
-  /** boxRowManager.template(): Returns a clone this._virtualTemplate.
-   *  to create a new boxRow. */
-  template: function() {
-    return (this._virtualTemplate.cloneNode(true));
-  },
-
-  /** boxRowManager.insertNewBoxInBoxesContainerInDOM: container for
-   *  methods to insert new box rows in div#boxesContainer. */
-  insertNewBoxInBoxesContainerInDOM: {
-    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow): 
-     * inserts the _newRow as last child of div#boxesContainer. */
-    last:   function(_newRow){
-      boxRowManager.boxesContainer.appendChild(_newRow);
-    },
-    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_newRow):
-     *  Inserts the _newRow as first child in div#boxesContainer. Returns the _newRow to the user.*/
-    first:  function(_newRow){
-      if (boxRowManager.boxesContainer.hasChildNodes()) {
-        boxRowManager.boxesContainer.insertBefore(_newRow, boxRowManager.boxesContainer.firstChild);
-      } else {
-        boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow);
-      }
+ *  A class to hold div#boxesContainer, the array of controller boxes
+ *  and class level methods for the array of controller boxes. */
+class bxCont {
+    constructor () {
+        this.id         = "boxesContainer";
+        this.vElt       = document.getElementById(this.id);
+        this.vTemplate  = undefined;
+        this.init();
     }
-  }
-};
+
+    /** bxCont.init(): Loads copies of #boxesContainer and #boxTemplate
+     *  into this.vElt and this.vTemplate. Deletes #boxTemplate
+     *  once loaded into memory.*/
+    init() {
+        let _row        = document.getElementById('boxTemplate');
+        this.vTemplate  = _row.cloneNode(true);
+        _row.parentNode.removeChild(_row);
+    }
+
+    /** bxCont.template(): Returns a clone this._virtualTemplate.
+     *  to create a new boxRow. */
+    newRow() {
+        return (this.vTemplate.cloneNode(true));
+    }
+
+    /** bxCont.appendAsLastChild(_newRow): 
+     * inserts the _newRow as last child of div#boxesContainer. */
+    appendAsLastChild(_newRow){
+        this.vElt.appendChild(_newRow);
+    }
+
+    /** bxCont.appendAsFirstChild(_newRow):
+     *  Inserts the _newRow as first child in div#boxesContainer. Returns the _newRow to the user.*/
+    appendAsFirstChild(_newRow){
+        if (this.vElt.hasChildNodes()) {
+          this.vElt.insertBefore(_newRow, this.vElt.firstChild);
+        } else {
+          this.appendAsLastChild(_newRow);
+        }
+    }
+
+    deleteAllRows() {
+        // delete from maps representations
+        if (boxMaps.ctrlerBxes.size) {
+            boxMaps.ctrlerBxes.clear();
+        }
+        // delete from DOM
+        while (this.vElt.children[0]) {
+            this.vElt.removeChild(this.vElt.firstChild);
+        }
+    }
+}
+
+var boxCont = new bxCont();
 
 
 
@@ -73,22 +87,27 @@ var boxRowManager  = {
 
 
 
-  /** controlerBox._setEventsOnConfigBtns()
-   *  a class to hold the controller boxes coming and exiting
-   *  the DOM from the WebSocket.
-   *  */
+
+
+
+
+/** class controlerBox
+ * 
+ *  A class to hold the controller boxes coming and exiting
+ *  the DOM from the WebSocket.
+ *  */
 class controlerBox {
     constructor (props) {
-        this.lb = parseInt(props.lb, 10);
-        this.boxState = props.boxState;
-        // this.boxDefstate = props.boxDefstate;
-        this.virtualHtmlRowElt = boxRowManager.template();
+        this.lb                 = parseInt(props.lb, 10);
+        this.boxState           = props.boxState;
+        // this.boxDefstate         = props.boxDefstate;
+        this.virtualHtmlRowElt  = boxCont.newRow();
         this._setHtmlProperties();
         this._setEventsOnConfigBtns();
     }
     
     _setHtmlProperties() {
-        this.virtualHtmlRowElt.id = "boxRow" + this.lb;
+        this.virtualHtmlRowElt.id         = "boxRow" + this.lb;
         this.virtualHtmlRowElt.dataset.lb = this.lb;
         this.virtualHtmlRowElt.classList.remove('hidden');
         this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
@@ -114,6 +133,8 @@ class controlerBox {
         );    
     }
 }
+
+
 
 
 
@@ -236,9 +257,7 @@ var boxMaps = {
             boxMaps.ctrlerBxes.clear();
         }
         // delete from DOM
-        while (boxRowManager.boxesContainer.children[0]) {
-            boxRowManager.boxesContainer.removeChild(boxRowManager.boxesContainer.firstChild);
-        }
+        boxCont.deleteAllRows();
     },
 
     toBoxStateObj: function() {
@@ -349,7 +368,7 @@ var connectionObj = {
         console.log('Socket is closed. Reconnect will be attempted in 4 to 10 seconds. Reason: ', e);
       }
       console.log('Socket is closed. Reason: ', e);
-      boxMaps._deleteAll();
+      boxCont.deleteAllRows();
   },
 
   wsonerror:        function(err){
@@ -609,7 +628,7 @@ var onReboot = {
       // 3. close the connection
       connectionObj.ws.close();
       // 5. delete all the boxes
-      boxMaps._deleteAll();
+      boxCont.deleteAllRows();
   
       console.log("--------------- end reboot all switch -----------------");
     }
@@ -933,7 +952,7 @@ function onMsgActionSwitch(_data) {
     // delete all the boxes
     if (_data.lb === 'a') {
       // _data = {action: "deleteBox"; lb: "a"}
-      boxMaps._deleteAll();
+      boxCont.deleteAllRows();
       return;
     }
     // if delete one box
@@ -1613,7 +1632,7 @@ function addNewRowForNewBox(data) {
                                                                   onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
-  boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_ctrlerBx.virtualHtmlRowElt);
+  boxCont.appendAsFirstChild(_ctrlerBx.virtualHtmlRowElt);
 
   console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
 }
@@ -1791,7 +1810,7 @@ window.onload = function(_e){
     // (and reconnect as necessary) setInterval(check, 5000);
     connectionObj.start();
     setTimeout(setGroupEvents, 2000);
-    boxRowManager.init();
+    boxCont = new bxCont();
 };
 // END WINDOW LOAD
 
