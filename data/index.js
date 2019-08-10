@@ -86,6 +86,56 @@ var boxCont = new bxCont();
 
 
 
+/** boxMaps
+ *  Object playing the role of a static class, containing
+ *  a collection (as a map) of ctrlerBxes and providing 
+ *  collection level methods:
+ *  _create
+ *  _delete */
+// BOX ROWS MAPS
+var boxMaps = {
+  ctrlerBxes:     new Map(),
+
+  /** boxMaps._create(data)
+   *  Create a new entry in the ctrlerBxes map */
+  _create: function(data) {
+      var _newCtrlBx = new controlerBox({props: data});
+      boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
+  },
+  
+  /** boxMaps._delete(boxNumber)
+   *  deletes a single box row and
+   *  the corresponding representations 
+   *  in the maps. */
+  _delete: function(boxNumber) {
+      console.log("boxMaps._delete starting.");
+      boxMaps.ctrlerBxes.delete(boxNumber);
+      console.log("boxMaps._delete ending.");
+  },
+
+  _deleteAll: function() {
+      // delete from maps representations
+      if (boxMaps.ctrlerBxes.size) {
+          boxMaps.ctrlerBxes.clear();
+      }
+      // delete from DOM
+      boxCont.deleteAllRows();
+  },
+
+  toBoxStateObj: function() {
+      let _obj = Object.create(null);
+      for (let [k,v] of boxMaps.ctrlerBxes) {
+          _obj[k] = v.boxState;
+      }
+      return _obj;
+  }
+};
+
+
+
+
+
+
 
 
 
@@ -224,50 +274,7 @@ var _onClickBoxConfig = {
 
 
 
-/** boxMaps
- *  Object playing the role of a static class, containing
- *  a collection (as a map) of ctrlerBxes and providing 
- *  collection level methods:
- *  _create
- *  _delete */
-// BOX ROWS MAPS
-var boxMaps = {
-    ctrlerBxes:     new Map(),
 
-    /** boxMaps._create(data)
-     *  Create a new entry in the ctrlerBxes map */
-    _create: function(data) {
-        var _newCtrlBx = new controlerBox({props: data});
-        boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
-    },
-    
-    /** boxMaps._delete(boxNumber)
-     *  deletes a single box row and
-     *  the corresponding representations 
-     *  in the maps. */
-    _delete: function(boxNumber) {
-        console.log("boxMaps._delete starting.");
-        boxMaps.ctrlerBxes.delete(boxNumber);
-        console.log("boxMaps._delete ending.");
-    },
-
-    _deleteAll: function() {
-        // delete from maps representations
-        if (boxMaps.ctrlerBxes.size) {
-            boxMaps.ctrlerBxes.clear();
-        }
-        // delete from DOM
-        boxCont.deleteAllRows();
-    },
-
-    toBoxStateObj: function() {
-        let _obj = Object.create(null);
-        for (let [k,v] of boxMaps.ctrlerBxes) {
-            _obj[k] = v.boxState;
-        }
-        return _obj;
-    }
-};
 
 
 
