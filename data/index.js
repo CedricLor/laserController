@@ -1595,8 +1595,8 @@ function addNewRowForNewBox(data) {
                                                        "boxstate", data.boxState);
 
   // set event listener on current state buttons
-  // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
+  // setEventListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEventListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
                                                                   onclickButton, "button[data-boxstate]");
 
   // indicate masterbox number
@@ -1613,8 +1613,8 @@ function addNewRowForNewBox(data) {
                                                        "boxDefstate", data.boxDefstate);
 
   // set event listener on default state buttons
-  // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
+  // setEventListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEventListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
                                                                   onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
@@ -1748,10 +1748,13 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 
+
+
+
 // EVENT LISTENERS
 
-function setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
-  console.log("setEVentListenersOnGroupOfButtons: starting");
+function setEventListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
+  console.log("setEventListenersOnGroupOfButtons: starting");
   setButtonsGroupEvents(boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector), _eventHandler);
   return _dupRow;
 }
