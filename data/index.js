@@ -264,6 +264,11 @@ var boxMaps = {
 
 
 
+
+
+
+
+
 /** deleteBoxRow
  *  deletes one boxRow from the DOM.
  *  gets called from the action switch upon receiving a delete message from
@@ -276,7 +281,7 @@ function deleteBoxRow(_data) {
     var _boxRowToDelete = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
     // if the corresponding box is not in the map, just return
     if (_boxRowToDelete === undefined) {
-      console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in boxMaps.controlerBoxes map.");
+      console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in boxMaps.ctrlerBxes map.");
       return;
     }
 
@@ -330,8 +335,8 @@ var connectionObj = {
       connectionObj.checkConnect.retryCount = 0;
       // console.log("connect(): checkConnect.retryCount = " + checkConnect.retryCount + ".");
       connectionObj.checkConnect.deleteNotConnectedMsg();
-      console.log("Sending the server the list of boxMaps.controlerBoxes I have in the DOM (and their current state)");
-      // Send a message to the server with the list of boxMaps.controlerBoxes I have in the DOM
+      console.log("Sending the server the list of boxMaps.ctrlerBxes I have in the DOM (and their current state)");
+      // Send a message to the server with the list of boxMaps.ctrlerBxes I have in the DOM
       connectionObj.ws.send(JSON.stringify({
         action:           "handshake",
         boxesStatesInDOM: mapToObj(boxMaps.controlerBoxes)
@@ -1429,7 +1434,7 @@ function updateBoxRow(_data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("updateBoxRow: a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
   // select the correct row in the map
-  var _boxRow = (boxMaps.controlerBoxes.get(_data.lb)).virtualHtmlRowElt;
+  var _boxRow = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
 
   // update the current active and default states
   updateCurrentStateButtons(_data, _boxRow);
@@ -1636,7 +1641,7 @@ function addOrUpdateNewRowForNewBox(_data) {
   console.log("addOrUpdateNewRowForNewBox starting.");
 
   // Check whether the boxRow has not already been created
-  var _controlerBoxEntry = boxMaps.controlerBoxes.get(_data.lb);
+  var _controlerBoxEntry = boxMaps.ctrlerBxes.get(_data.lb);
   console.log("addOrUpdateNewRowForNewBox: looking if an entry exists in the map for this box");
   console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
   console.log("addOrUpdateNewRowForNewBox: testing if _controlerBoxEntry is undefined: -> " + (_controlerBoxEntry === undefined));
