@@ -22,53 +22,45 @@
  * 
  *  Object holding functions to create a new boxRow */
 var boxRowManager  = {
-  /** boxRowManager.virtualTemplate
-   * 
-   *  Will be a copy of the hidden div with id 'boxTemplate'.
-   *  Will be loaded once boxRowManager.init() has been called (onload). */
-  virtualTemplate: undefined,
-  /** boxRowManager.boxesContainer
-   * 
-   *  Will be a copy of the div with id 'boxesContainer'.
-   *  Will be loaded once boxRowManager.init() has been called (onload).*/
+  /** boxRowManager._virtualTemplate: Copy of the #boxTemplate hidden div.
+   *  Declared as undefined and loaded upon boxRowManager.init(). */
+  _virtualTemplate: undefined,
+
+  /** boxRowManager.boxesContainer:  Copy of the #boxesContainer div.
+   *  Declared as undefined and loaded upon boxRowManager.init(). */
   boxesContainer:  undefined,
 
-  /** boxRowManager.init()
-   * 
-   *  Loads copies of the divs with id 'boxesContainer' and 'boxTemplate'
-   *  into boxesContainer and virtualTemplate.*/
+  /** boxRowManager.init(): Loads copies of #boxesContainer and #boxTemplate
+   *  into this.boxesContainer and this._virtualTemplate. Deletes #boxTemplate
+   *  once loaded into memory.*/
   init:            function() {
     var _row                        = document.getElementById('boxTemplate');
-    boxRowManager.virtualTemplate   = _row.cloneNode(true);
+    boxRowManager._virtualTemplate   = _row.cloneNode(true);
     boxRowManager.boxesContainer    = document.getElementById('boxesContainer');
     _row.parentNode.removeChild(_row);
   },
   
-  /** boxRowManager.template()
-   * 
-   *  Returns a copy of the boxRow virtualTemplate.*/
+  /** boxRowManager.template(): Returns a clone this._virtualTemplate.
+   *  to create a new boxRow. */
   template: function() {
-    return (this.virtualTemplate.cloneNode(true));
+    return (this._virtualTemplate.cloneNode(true));
   },
 
-  /** boxRowManager.insertNewBoxInBoxesContainerInDOM
-   * 
-   *  Object containing function to insert the new box row in div#boxesContainer*/
+  /** boxRowManager.insertNewBoxInBoxesContainerInDOM: container for
+   *  methods to insert new box rows in div#boxesContainer. */
   insertNewBoxInBoxesContainerInDOM: {
-    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow)
-     * 
-     *  Inserts the _newRow as last child in div#boxesContainer*/
+    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow): 
+     * inserts the _newRow as last child of div#boxesContainer. */
     last:   function(_newRow){
-      return (boxRowManager.boxesContainer.appendChild(_newRow));
+      boxRowManager.boxesContainer.appendChild(_newRow);
     },
-    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow)
-     * 
+    /** boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_newRow):
      *  Inserts the _newRow as first child in div#boxesContainer. Returns the _newRow to the user.*/
     first:  function(_newRow){
       if (boxRowManager.boxesContainer.hasChildNodes()) {
-        return (boxRowManager.boxesContainer.insertBefore(_newRow, boxRowManager.boxesContainer.firstChild));
+        boxRowManager.boxesContainer.insertBefore(_newRow, boxRowManager.boxesContainer.firstChild);
       } else {
-        return (boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow));
+        boxRowManager.insertNewBoxInBoxesContainerInDOM.last(_newRow);
       }
     }
   }
@@ -1631,7 +1623,7 @@ function addNewRowForNewBox(data) {
                                                                   onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
-  _ctrlerBx.virtualHtmlRowElt = boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_ctrlerBx.virtualHtmlRowElt);
+  boxRowManager.insertNewBoxInBoxesContainerInDOM.first(_ctrlerBx.virtualHtmlRowElt);
 
   console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
 }
