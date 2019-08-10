@@ -29,9 +29,13 @@
  *  and class level methods for the array of controller boxes. */
 class bxCont {
     constructor () {
-        this.id         = "boxesContainer";
-        this.vElt       = document.getElementById(this.id);
-        this.vTemplate  = undefined;
+        this.id               = "boxesContainer";
+        this.vElt             = document.getElementById(this.id);
+        this.emptyElt         = this.vElt.cloneNode(true);
+        this._potBxCount      = 10;
+        this._bxCount         = 0;
+        this.vTemplate        = undefined;
+        this.controlerBoxes   = new Array(this._potBxCount);
         this.init();
     }
 
@@ -44,9 +48,14 @@ class bxCont {
         _row.parentNode.removeChild(_row);
     }
 
+    newCntrlerBox(data) {
+        this.controlerBoxes[data.lb] = new controlerBox(data);
+        this._bxCount++;
+    }
+
     /** bxCont.template(): Returns a clone this._virtualTemplate.
      *  to create a new boxRow. */
-    newRow() {
+    newRowElt() {
         return (this.vTemplate.cloneNode(true));
     }
 
@@ -56,8 +65,9 @@ class bxCont {
         this.vElt.appendChild(_newRow);
     }
 
-    /** bxCont.appendAsFirstChild(_newRow):
-     *  Inserts the _newRow as first child in div#boxesContainer. Returns the _newRow to the user.*/
+    /** bxCont.appendAsFirstChild(_newRow): inserts the _newRow
+     *  as first child in div#boxesContainer. Returns the _newRow 
+     * to the user.*/
     appendAsFirstChild(_newRow){
         if (this.vElt.hasChildNodes()) {
           this.vElt.insertBefore(_newRow, this.vElt.firstChild);
@@ -66,16 +76,53 @@ class bxCont {
         }
     }
 
-    deleteAllRows() {
-        // delete from maps representations
-        if (boxMaps.ctrlerBxes.size) {
-            boxMaps.ctrlerBxes.clear();
-        }
-        // delete from DOM
-        while (this.vElt.children[0]) {
-            this.vElt.removeChild(this.vElt.firstChild);
-        }
+    /** bxCont.deleteAllRows(boxNumber) deletes a single box row and
+    *  the corresponding representations in the array. Returns an
+    *  array with the deleted entry in the array*/
+   deleteAllRows() {
+        // empty the array of controller boxes  by splicing of all its members
+        var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
+        // resize the array of controller boxes to its original size
+        this.controlerBoxes.length = this._potBxCount;
+        this._bxCount = this._potBxCount;
+        // delete all from DOM by replacing the container by its initial form
+        this.vElt.parentNode.replaceChild(this.emptyElt, this.vElt);
+        // return the old array (the virtualHtmlRowElt have all been deleted at this stage, however)
+        return(oldBxArray);
     }
+
+    /** bxCont.deleteRow(boxNumber) deletes a single box row and
+    *  the corresponding representations in the array. As arg, receives 
+    *  a Json _data string (the method is being called from the onMsgActionSwitch). 
+    *  Returns a new array with the deleted entry as it sole member. */
+    deleteRow(_data) {
+        // delete the corresponding entry in the array of controller boxes
+        var delBx = this.controlerBoxes.splice(_data.lb, 1);
+        // clone the HTML node
+        var _clonedNode = delBx.virtualHtmlRowElt.cloneNode(true);
+        // remove from DOM
+        this.vElt.parentNode.removeChild(delBx.virtualHtmlRowElt);
+        // insert the cloned node into the deleted entry
+        delBx.virtualHtmlRowElt = _clonedNode;
+        // check whether the box is not disconnecting as
+        // a result of a reboot order and inform the user
+        onReboot.LBs.onDeleteBox(_data);
+        // return the entry in a single member array
+        return (delBx);
+    }
+
+    /** bxCont.toBoxStateObj() returns an object where keys are equal to
+     *  box numbers and values to their state as registered in the web app. */
+    toBoxStateObj() {
+        let _obj = Object.create(null);
+        this.controlerBoxes.forEach(function(element, index) {
+            _obj[index] = element.boxState;
+          }  
+        );
+        return _obj;
+    }
+
+
 }
 
 var boxCont = new bxCont();
@@ -86,50 +133,6 @@ var boxCont = new bxCont();
 
 
 
-/** boxMaps
- *  Object playing the role of a static class, containing
- *  a collection (as a map) of ctrlerBxes and providing 
- *  collection level methods:
- *  _create
- *  _delete */
-// BOX ROWS MAPS
-var boxMaps = {
-  ctrlerBxes:     new Map(),
-
-  /** boxMaps._create(data)
-   *  Create a new entry in the ctrlerBxes map */
-  _create: function(data) {
-      var _newCtrlBx = new controlerBox({props: data});
-      boxMaps.ctrlerBxes.set(data.lb, _newCtrlBx);
-  },
-  
-  /** boxMaps._delete(boxNumber)
-   *  deletes a single box row and
-   *  the corresponding representations 
-   *  in the maps. */
-  _delete: function(boxNumber) {
-      console.log("boxMaps._delete starting.");
-      boxMaps.ctrlerBxes.delete(boxNumber);
-      console.log("boxMaps._delete ending.");
-  },
-
-  _deleteAll: function() {
-      // delete from maps representations
-      if (boxMaps.ctrlerBxes.size) {
-          boxMaps.ctrlerBxes.clear();
-      }
-      // delete from DOM
-      boxCont.deleteAllRows();
-  },
-
-  toBoxStateObj: function() {
-      let _obj = Object.create(null);
-      for (let [k,v] of boxMaps.ctrlerBxes) {
-          _obj[k] = v.boxState;
-      }
-      return _obj;
-  }
-};
 
 
 
@@ -151,7 +154,8 @@ class controlerBox {
         this.lb                 = parseInt(props.lb, 10);
         this.boxState           = props.boxState;
         // this.boxDefstate         = props.boxDefstate;
-        this.virtualHtmlRowElt  = boxCont.newRow();
+        this.virtualHtmlRowElt  = boxCont.newRowElt();
+        this.insertedInDOM      = false;
         this._setHtmlProperties();
         this._setEventsOnConfigBtns();
     }
@@ -183,6 +187,9 @@ class controlerBox {
         );    
     }
 }
+
+
+
 
 
 
@@ -285,35 +292,7 @@ var _onClickBoxConfig = {
 
 
 
-/** deleteBoxRow
- *  deletes one boxRow from the DOM.
- *  gets called from the action switch upon receiving a delete message from
- *  the server. */
-function deleteBoxRow(_data) {
-  console.log("deleteBoxRow starting.");
-  // first check whether the boxMaps contain any boxRows. If not, just return.
-  if (boxMaps.ctrlerBxes.size) {
-    // if there are boxRows in the maps, try to find the corresponding box
-    var _boxRowToDelete = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
-    // if the corresponding box is not in the map, just return
-    if (_boxRowToDelete === undefined) {
-      console.log("deleteBoxRow: There was no laser box [" + _data.lb + "] in boxMaps.ctrlerBxes map.");
-      return;
-    }
 
-    // else, the box exists: 
-    // 1. delete the box row and 
-    _boxRowToDelete.parentNode.removeChild(_boxRowToDelete);
-    // 2. update the controlesBoxes maps
-    boxMaps._delete(_data.lb);
-    // 3. check whether the box is not disconnecting as
-    //    a result of a reboot order and inform the user
-    onReboot.LBs.onDeleteBox(_data);
-    console.log("deleteBoxRow: deleted key [" + _data.lb + "] in the map of Controller Boxes.");
-    console.log("deleteBoxRow ending.");
-    return true;
-  }
-}
 
 
 
@@ -351,11 +330,11 @@ var connectionObj = {
       connectionObj.checkConnect.retryCount = 0;
       // console.log("connect(): checkConnect.retryCount = " + checkConnect.retryCount + ".");
       connectionObj.checkConnect.deleteNotConnectedMsg();
-      console.log("Sending the server the list of boxMaps.ctrlerBxes I have in the DOM (and their current state)");
-      // Send a message to the server with the list of boxMaps.ctrlerBxes I have in the DOM
+      console.log("Sending the server the list of controller boxes I have in memory (and their current state)");
+      // Send a message to the server with the list of controller boxes I have in memory
       connectionObj.ws.send(JSON.stringify({
         action:           "handshake",
-        boxesStatesInDOM: boxMaps.toBoxStateObj()
+        boxesStatesInDOM: boxCont.toBoxStateObj()
       }));
       // {action:0, boxStateInDOM:{1:4;2:3}}
   },
@@ -585,7 +564,7 @@ var onReboot = {
         // delete the box from the waitingLBs map
         onReboot.LBs.waitingLBs.delete(parseInt(_data.lb, 10));
   
-        if (boxMaps.ctrlerBxes.size === 0) {
+        if (onReboot.LBs.waitingLBs.size === 0) {
           // remove the waiting LBs div
           removeDOMelement('#divLBsWaitingToReboot');
         }
@@ -840,17 +819,17 @@ var onReboot = {
      *  Called at the beginning of a reboot process
      * */
     createBoxTextNodesFromBoxRows: function(_spanLBsRebooting) {
-      // iterate over the boxMaps.ctrlerBxes map, create textNodes for the span and
+      // iterate over the boxCont.controllerBoxes array, create textNodes for the span and
       // store them in a map
-      boxMaps.ctrlerBxes.forEach(function(val, key) {
-        let _text = (parseInt(key) + 200) + ". ";
+      boxCont.controlerBoxes.forEach(function(val, index) {
+        let _text = (parseInt(index) + 200) + ". ";
         // create a textNode to hold the box number
         let _boxNumbNode = document.createTextNode(_text);
         // store it into a map
-        onReboot.common.rebootingLBs.set(key, _boxNumbNode);
+        onReboot.common.rebootingLBs.set(index, _boxNumbNode);
         // add the new textNode to the span
         // _spanLBsRebooting.appendChild(onRebootLBs.waitingLBs.get(key));
-        _spanLBsRebooting.appendChild(onReboot.common.rebootingLBs.get(key));
+        _spanLBsRebooting.appendChild(onReboot.common.rebootingLBs.get(index));
       });
       return _spanLBsRebooting;
     },
@@ -964,7 +943,7 @@ function onMsgActionSwitch(_data) {
     }
     // if delete one box
     // _data = {lb:1; action:"deleteBox"}
-    deleteBoxRow(_data);
+    boxCont.deleteRow(_data);
     return;
   }
 
@@ -1086,7 +1065,7 @@ var _onClickGroupReboot = {
     // if the connection is closed, inform the user
     if (connectionObj.checkConnect.closedVerb()) { return; }
     // if there are boxes in the boxes map, we are probably connected, so reboot
-    if (boxMaps.ctrlerBxes.size) {
+    if (boxCont._bxCount) {
       // 
       _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
       // else, complete the message and send it
@@ -1304,7 +1283,7 @@ function onclickgi8RequestedOTAReboots(_e) {
 var _onClickStateBtns = {
   wrapper: function(e, buttonSelector, _datasetValue, _clef) {
     var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-    _onClickHelpers.updateClickButtons(e, buttonSelector, (boxMaps.ctrlerBxes.get(_laserBoxNumber)).virtualHtmlRowElt);
+    _onClickHelpers.updateClickButtons(e, buttonSelector, boxCont.controlerBoxes[parseInt(_laserBoxNumber, 10)].virtualHtmlRowElt);
     // if the connection is closed, inform the user
     if (connectionObj.checkConnect.closedVerb()) { return; }
     _onClickHelpers.btnSend({
@@ -1386,7 +1365,7 @@ function updateStateButton(_data) {
   // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
   console.log("updateStateButton: laser box [" + _data.lb + "]; stateButton: " + _data.key + ".");
   // select the correct row in the map
-  var _boxRow = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
+  var _boxRow = boxCont.controlerBoxes[parseInt(_data.lb, 10)].virtualHtmlRowElt;
   var _requestStatus = parseInt(_data.st, 10);
 
   if (_requestStatus === 1) {
@@ -1450,7 +1429,7 @@ function updateBoxRow(_data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("updateBoxRow: a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
   // select the correct row in the map
-  var _boxRow = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
+  var _boxRow = boxCont.controlerBoxes[parseInt(_data.lb, 10)].virtualHtmlRowElt;
 
   // update the current active and default states
   updateCurrentStateButtons(_data, _boxRow);
@@ -1608,38 +1587,38 @@ function _selectMasterSelectInRow(_dupRow) {
 function addNewRowForNewBox(data) {
   // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
-  var _ctrlerBx = boxMaps._create(data);
+  bxCont.newCntrlerBox(data);
 
   // set the activeState button
   // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _ctrlerBx.virtualHtmlRowElt = _setCurrentStateButton(_ctrlerBx.virtualHtmlRowElt,
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _setCurrentStateButton(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt,
                                                        "boxstate", data.boxState);
 
   // set event listener on current state buttons
   // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  _ctrlerBx.virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(_ctrlerBx.virtualHtmlRowElt, 
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
                                                                   onclickButton, "button[data-boxstate]");
 
   // indicate masterbox number
-  _ctrlerBx.virtualHtmlRowElt = _indicateMasterBoxNumber(data.masterbox, 
-                                                         _ctrlerBx.virtualHtmlRowElt);
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _indicateMasterBoxNumber(data.masterbox, 
+    bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
 
   // set event listener on master select
-  var _select = _selectMasterSelectInRow(_ctrlerBx.virtualHtmlRowElt);
+  var _select = _selectMasterSelectInRow(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
   setSelectEvents(_select);
 
   // set boxDefaultState button
   // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _ctrlerBx.virtualHtmlRowElt = _setCurrentStateButton(_ctrlerBx.virtualHtmlRowElt, 
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _setCurrentStateButton(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
                                                        "boxDefstate", data.boxDefstate);
 
   // set event listener on default state buttons
   // setEVentListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  _ctrlerBx.virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(_ctrlerBx.virtualHtmlRowElt, 
+  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEVentListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
                                                                   onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
-  boxCont.appendAsFirstChild(_ctrlerBx.virtualHtmlRowElt);
+  boxCont.appendAsFirstChild(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
 
   console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
 }
@@ -1657,7 +1636,7 @@ function addOrUpdateNewRowForNewBox(_data) {
   console.log("addOrUpdateNewRowForNewBox starting.");
 
   // Check whether the boxRow has not already been created
-  var _controlerBoxEntry = boxMaps.ctrlerBxes.get(_data.lb);
+  var _controlerBoxEntry = boxCont.controlerBoxes[parseInt(_data.lb, 10)];
   console.log("addOrUpdateNewRowForNewBox: looking if an entry exists in the map for this box");
   console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
   console.log("addOrUpdateNewRowForNewBox: testing if _controlerBoxEntry is undefined: -> " + (_controlerBoxEntry === undefined));
@@ -1718,7 +1697,7 @@ function updateMasterBoxNumber(_data) {
   console.log("updateMasterBoxNumber starting.");
 
   // select the relevant row
-  var _row = (boxMaps.ctrlerBxes.get(_data.lb)).virtualHtmlRowElt;
+  var _row = boxCont.controlerBoxes[parseInt(_data.lb, 10)].virtualHtmlRowElt;
   console.log("updateMasterBoxNumber: selected row: " + _data.lb);
 
   // write box number in box number span
