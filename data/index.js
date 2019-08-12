@@ -23,6 +23,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 /** bxCont
  * 
  *  A class to hold div#boxesContainer, the array of controller boxes
@@ -144,6 +156,14 @@ var boxCont = new bxCont();
 
 
 
+
+
+
+
+
+
+
+
 /** class controlerBox
  * 
  *  A class to hold the controller boxes coming and exiting
@@ -187,6 +207,38 @@ class controlerBox {
         );    
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -261,28 +313,6 @@ var _onClickBoxConfig = {
       console.log("_onClickBoxConfig.OTAReboots ending");
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -894,6 +924,11 @@ var onReboot = {
 
 
 
+
+
+
+
+
 /**
  * onMsgActionSwitch:
  * a kind of controller, dispatching messages to various functions
@@ -991,6 +1026,19 @@ function onMsgActionSwitch(_data) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /** _onClickHelpers:
  * Library of helpers, to remove classes, add classes, send messages, identify the laser
  * box number, etc. */
@@ -1033,6 +1081,15 @@ var _onClickHelpers = {
     _button.classList.remove('button_change_received');
   } 
 };
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1119,6 +1176,17 @@ var _onClickGroupReboot = {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 // Infobox Object
 var infoBox = {
   createContainer: function(_type="span", _id="", _class="") {
@@ -1161,6 +1229,18 @@ var infoBox = {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 var _onClickIF = {
     reboot: function(_e) {
       console.log("_onClickIF.reboot starting");
@@ -1186,6 +1266,10 @@ var _onClickIF = {
       console.log("_onClickIF.save ending");
     }
 };
+
+
+
+
 
 
 
@@ -1260,6 +1344,14 @@ var _onClickSaveWifi = {
 
 
 
+
+
+
+
+
+
+
+
 function onclickgi8RequestedOTAReboots(_e) {
   console.log("onclickgi8RequestedOTAReboots starting");
 
@@ -1273,6 +1365,17 @@ function onclickgi8RequestedOTAReboots(_e) {
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
   console.log("onclickgi8RequestedOTAReboots ending");
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1317,6 +1420,17 @@ function onclickDefStateButton(e) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 function oninputMasterSelect(_e) {
   console.log("oninputMasterSelect: starting");
   var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(this.parentNode);
@@ -1339,6 +1453,23 @@ function oninputMasterSelect(_e) {
   console.log("oninputMasterSelect: ending");
 }
 // END EVENT HANDLERS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
