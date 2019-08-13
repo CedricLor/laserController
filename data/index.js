@@ -243,8 +243,11 @@ class controlerBox {
         // allocating the values from the Json data passed on by the server
         this.lb                       = parseInt(props.lb, 10); // this laser box number
         this.boxState                 = props.boxState;
+        this.boxStateChanging         = undefined;
         this.boxDefstate              = props.boxDefstate;
+        this.boxDefstateChanging      = undefined;
         this.masterbox                = parseInt(props.masterbox, 10); // masterbox number
+        this.masterboxChanging        = undefined;
 
         // creating the boxRow html element
         this.virtualHtmlRowElt        = boxCont.newRowElt();
@@ -333,6 +336,23 @@ class controlerBox {
       this.boxDefStateBtnGrp.update(this.boxDefstate);
     }
 
+    /** controlerBox.updateMasterFB(_data) updates the local data and the master span
+     *  on feedback from a {action: "changeBox", key: "masterbox"...} request. 
+     * */
+    updateMasterFB(_data) {
+      let FBstat = parseInt(_data.st, 10);
+      if (FBstat === 1) {
+        this.masterboxChanging  = this.masterbox;
+        this._updateLocalMaster(_data);
+        this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_received"});
+        return;
+      }
+      if (FBstat === 2) {
+        this.masterboxChanging = undefined;
+        this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_executed", delClass: "change_ms_received"});
+      }      
+    }
+
     /** controlerBox._updateLocalMaster(_data) updates the master related 
      *  local fields (masterbox)
      * */ 
@@ -345,7 +365,7 @@ class controlerBox {
      * */ 
     _updateChildrenMaster() {
       // update the master span
-      this.masterSpan.update(this.masterbox + 200);
+      this.masterSpan.update({textContent: this.masterbox + 200});
       // update the master select
       this.mastSel.update(this.masterbox);
     }
@@ -368,8 +388,10 @@ class span {
     this.vSpanElt.textContent = props.textContent;
   }
 
-  update (textContent) {
-    this.vSpanElt.textContent = textContent;
+  update (props) {
+    this.vSpanElt.textContent = props.textContent;
+    if (props.addClass) {this.vSpanElt.classList.add(props.addClass);}
+    if (props.delClass) {this.vSpanElt.classList.remove(props.delClass);}
   }
 }
 
@@ -1290,8 +1312,7 @@ function onMsgActionSwitch(_data) {
   if (_data.action === "changeBox" && _data.key === "masterbox") {
     // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
     // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
-    updateMasterBoxNumber(_data);
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].;
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateMasterFB(_data);
     return;
   }
 
@@ -1865,16 +1886,6 @@ function _setStateButtonAsActive(_selector, memRow) {
 
 
 
-function _selectMasterSelectInRow(_dupRow) {
-  console.log("_selectMasterSelectInRow: starting");
-  var _masterSelectSelector = "select.master_select";
-  console.log("_selectMasterSelectInRow: _masterSelectSelector = " + _masterSelectSelector);
-  var _select = _dupRow.querySelector(_masterSelectSelector);
-  console.log("_selectMasterSelectInRow: master select selected: ");
-  console.log(_select);
-  console.log("_selectMasterSelectInRow: ending returning _select");
-  return _select;
-}
 
 
 
@@ -1902,60 +1913,18 @@ function _selectMasterSelectInRow(_dupRow) {
 
 
 
-function selectMasterBoxNumberSpan(_dupRow) {
-  console.log("selectMasterBoxNumberSpan: starting.");
-  var _masterBoxNumberSelector = "span.master_box_number";
-  console.log("selectMasterBoxNumberSpan: _masterBoxNumberSelector = " + _masterBoxNumberSelector);
-  console.log("selectMasterBoxNumberSpan: ending.");
-  return _dupRow.querySelector(_masterBoxNumberSelector);
-}
 
 
 
 
 
-function writeMasterBoxNumberInBoxNumberSpan(_span, _masterBoxIndexNumber) {
-  console.log("writeMasterBoxNumberInBoxNumberSpan: starting.");
-  _span.textContent = _masterBoxIndexNumber + 200;
-  // _row.children[1].children[0].textContent = data.ms + 200;
-  console.log("writeMasterBoxNumberInBoxNumberSpan: masterbox span updated: " + (_masterBoxIndexNumber + 200));
-  console.log("writeMasterBoxNumberInBoxNumberSpan: ending.");
-}
 
 
 
 
-function updateMasterBoxNumber(_data) {
-  // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
-  console.log("updateMasterBoxNumber starting.");
 
-  // select the relevant row
-  var _row = boxCont.controlerBoxes[parseInt(_data.lb, 10)].virtualHtmlRowElt;
-  console.log("updateMasterBoxNumber: selected row: " + _data.lb);
 
-  // write box number in box number span
-  var _span = selectMasterBoxNumberSpan(_row);
-  writeMasterBoxNumberInBoxNumberSpan(_span, _data.val);
 
-  if (_data.st === 1) {
-    _span.classList.add("change_ms_received");
-    console.log("updateMasterBoxNumber: added class change_ms_received to masterbox span");
-    return;
-  }
-  if (_data.st === 2) {
-    // update the number mentionned in html
-    _span.classList.remove("change_ms_received");
-    console.log("updateMasterBoxNumber: removed class change_ms_received to masterbox span");
-    _span.classList.add("change_ms_executed");
-    console.log("updateMasterBoxNumber: added class change_ms_executed to masterbox span");
-
-    // update the select by choosing the correct option
-    var _select = _selectMasterSelectInRow(_row);
-    console.log("updateMasterBoxNumber: About to select correct option in master select");
-    _select.value = parseInt(_data.val, 10);
-  }
-}
 
 
 
