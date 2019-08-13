@@ -1,15 +1,18 @@
-/* TODO URGENTLY
-- OTA update for the laser boxes
-- indicate the name of the master on loading a new box
-- feedback on save and reboot individual boxes
-- force reboot button
-- when a box disconnects and it is on a second layer, the intereface does not detect it
-  -> check what is happening in the callbacks
-- I guess the problem is the same when a box connects (if it connect to a box other
-  than the IF, the IF does not detect it).
+/* TODO
+In index.js:
+  Current refactoring:
+  - read anew the getter and setter methods for javascript classes
+  - review the code in the bxCont, controlerBox and btnGrp classes
+  - consider using the btn class
+  - review delegatedOnClickButton method as its code look redundant with many others
+
+  New Features:
+  - OTA update for the laser boxes
+  - indicate the name of the master on loading a new box
+  - feedback on save and reboot individual boxes
+  - force reboot button
 */
 
-// Global variables
 
 
 
@@ -61,25 +64,26 @@ class bxCont {
     }
 
     newCntrlerBox(data) {
+        // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
         this.controlerBoxes[data.lb] = new controlerBox(data);
         this._bxCount++;
     }
 
-    /** bxCont.template(): Returns a clone this._virtualTemplate.
+    /** bxCont.newRowElt(): Returns a clone of this._virtualTemplate,
      *  to create a new boxRow. */
     newRowElt() {
         return (this.vTemplate.cloneNode(true));
     }
 
     /** bxCont.appendAsLastChild(_newRow): 
-     * inserts the _newRow as last child of div#boxesContainer. */
+     *  inserts the _newRow as last child of div#boxesContainer. */
     appendAsLastChild(_newRow){
         this.vElt.appendChild(_newRow);
     }
 
     /** bxCont.appendAsFirstChild(_newRow): inserts the _newRow
      *  as first child in div#boxesContainer. Returns the _newRow 
-     * to the user.*/
+     *  to the user.*/
     appendAsFirstChild(_newRow){
         if (this.vElt.hasChildNodes()) {
           this.vElt.insertBefore(_newRow, this.vElt.firstChild);
@@ -124,7 +128,8 @@ class bxCont {
     }
 
     /** bxCont.toBoxStateObj() returns an object where keys are equal to
-     *  box numbers and values to their state as registered in the web app. */
+     *  box numbers and values to their state as registered in the web app.
+     *  It is called from connectionObj.wsonopen */
     toBoxStateObj() {
         let _obj = Object.create(null);
         this.controlerBoxes.forEach(function(element, index) {
@@ -173,11 +178,14 @@ class controlerBox {
     constructor (props) {
         this.lb                 = parseInt(props.lb, 10);
         this.boxState           = props.boxState;
-        // this.boxDefstate         = props.boxDefstate;
+        this.boxDefstate        = props.boxDefstate;
         this.virtualHtmlRowElt  = boxCont.newRowElt();
         this.insertedInDOM      = false;
         this._setHtmlProperties();
         this._setEventsOnConfigBtns();
+
+        this.boxStateBtnGrp     = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
+        this.boxDefStateBtnGrp  = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
     }
     
     _setHtmlProperties() {
@@ -218,6 +226,77 @@ class controlerBox {
 
 
 
+class btnGrp {
+  constructor (props) {
+    // props = {parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState}
+    // props = {parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate}
+    this.parent                   = props.parent;
+    this.btnGrpContainerSelector  = props.btnGrpContainerSelector;
+    this.vEltBtnGrpContainer      = this.parent.querySelector(this.btnGrpContainerSelector);
+    this.clickedBtnClass          = 'button_clicked';
+    this.activeBtnClass           = 'button_active_state';
+    this.datasetKey               = props.datasetKey;
+    this.btnGpSelectorProto       = "button[data-" + props.datasetKey + "]";
+    this.vBtnNodeList             = this.parent.querySelectorAll(this.btnGpSelectorProto);
+    this.activeBtnNum             = props.activeBtnNum;
+
+    this.setActiveBtn();
+    this.setDelegatedBtnClickedEvent();
+  }
+
+  /** sets the active button among the buttons of this button group */
+  setActiveBtn() {
+    _onClickHelpers.removeClassesOnNonClickedButton(this.vBtnNodeList[this.activeBtnNum]);
+    this.vBtnNodeList[this.activeBtnNum].add(this.activeBtnClass);
+  }
+
+  /** sets an event listener on the button group container */
+  setDelegatedBtnClickedEvent() {
+    this.vEltBtnGrpContainer.addEventListener('click', this.delegatedOnClickButton.bind(this), false);
+  }
+
+  /** event listener on the button group container, listening to
+   *  click events occuring on the buttons of this button group */
+  delegatedOnClickButton(e) {
+    /** what is "this" in this context? What I want is the following:
+     *  this.btnGpSelectorProto <-- the class instance
+     *  this.dataset.boxstate <-- the clicked button
+     *  this.datasetKey <-- the class instance
+     * 
+     *  But I bound this to the event handler => this is the class instance.
+     * 
+     *  So I have to select rather e.target or e.currentTarget. Event bubble by 
+     *  default, so the parent elements will "hear" the children elements events.
+     * 
+     *  If e.currentTarget is called in an event handler attached to a parent 
+     *  element, e.currentTarget == the parent element; e.target == the children 
+     *  element on which the event occurred (ex. was clicked).
+     *  
+     *  If e.currentTarget is called in an event handler attached to the element 
+     *  on which the the event occured, it will be equal to e.target. 
+     * 
+     *  e.target: the element on which the event occured (was clicked)
+     *  e.currentTarget: the element to which the event handler is attached to
+     */
+
+    if (e.target && e.target.matches(this.btnGpSelectorProto)) {
+      // remove clicked classes on other btns
+      this.vBtnNodeList.forEach( (btn) => { _onClickHelpers.removeClassesOnNonClickedButton(btn); });
+      // add button_clicked class on clicked btn
+      e.target.className += ' ' + this.clickedBtnClass;
+      // if the connection is closed, inform the user and return
+      // TO DO: maybe, should trigger a delete all the boxes
+      if (connectionObj.checkConnect.closedVerb()) { return; }
+      // send the message via WS
+      _onClickHelpers.btnSend({
+        "action": "changeBox",
+        "key":    this.datasetKey,
+        "lb":     this.parent.dataset.lb,
+        "val":    parseInt(e.target.getAttribute(this.datasetKey), 10)
+      });
+    }
+  }
+}
 
 
 
@@ -231,8 +310,17 @@ class controlerBox {
 
 
 
-
-
+class btn {
+  constructor (props) {
+    this.activeBtnClass = 'button_active_state';
+    this.id             = props.id;
+    this.classList      = props.classList;
+    this.vElt           = props.vElt;
+    this.onClickEvent   = props.onClickEvent;
+    this.dataSets       = props.dataSets;
+    this.clicked        = false;
+  }
+}
 
 
 
@@ -1383,37 +1471,10 @@ function onclickgi8RequestedOTAReboots(_e) {
 
 
 
-var _onClickStateBtns = {
-  wrapper: function(e, buttonSelector, _datasetValue, _clef) {
-    var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-    _onClickHelpers.updateClickButtons(e, buttonSelector, boxCont.controlerBoxes[parseInt(_laserBoxNumber, 10)].virtualHtmlRowElt);
-    // if the connection is closed, inform the user
-    if (connectionObj.checkConnect.closedVerb()) { return; }
-    _onClickHelpers.btnSend({
-      "action": "changeBox",
-      "key":    _clef,
-      "lb":     _laserBoxNumber,
-      "val":    parseInt(_datasetValue, 10)
-    });
-      // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-      // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-      // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-  }
-};
 
 
-function onclickButton(e) {
-  console.log("onclickButton starting");
-  _onClickStateBtns.wrapper(e, "button[data-boxstate]", this.dataset.boxstate, "boxState");
-  console.log("onclickButton: ending");
-}
 
 
-function onclickDefStateButton(e) {
-  console.log("onclickDefStateButton starting");
-  _onClickStateBtns.wrapper(e, "button[data-boxDefstate]", this.dataset.boxdefstate, "boxDefstate");
-  console.log("onclickDefStateButton: ending");
-}
 
 
 
@@ -1716,19 +1777,9 @@ function _selectMasterSelectInRow(_dupRow) {
  *  TO BE REFACTORED. NEED A BUTTON CLASS.
  *  */
 function addNewRowForNewBox(data) {
-  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+  // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
   bxCont.newCntrlerBox(data);
-
-  // set the activeState button
-  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _setCurrentStateButton(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt,
-                                                       "boxstate", data.boxState);
-
-  // set event listener on current state buttons
-  // setEventListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEventListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
-                                                                  onclickButton, "button[data-boxstate]");
 
   // indicate masterbox number
   bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _indicateMasterBoxNumber(data.masterbox, 
@@ -1737,16 +1788,6 @@ function addNewRowForNewBox(data) {
   // set event listener on master select
   var _select = _selectMasterSelectInRow(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
   setSelectEvents(_select);
-
-  // set boxDefaultState button
-  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _setCurrentStateButton(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
-                                                       "boxDefstate", data.boxDefstate);
-
-  // set event listener on default state buttons
-  // setEventListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector);
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = setEventListenersOnGroupOfButtons(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt, 
-                                                                  onclickDefStateButton, "button[data-boxDefstate]");
 
   // render in DOM
   boxCont.appendAsFirstChild(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
@@ -1883,19 +1924,6 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 // EVENT LISTENERS
-
-function setEventListenersOnGroupOfButtons(_dupRow, _eventHandler, _buttonGroupSelector) {
-  console.log("setEventListenersOnGroupOfButtons: starting");
-  setButtonsGroupEvents(boxRowEltsGroupSelector(_dupRow, _buttonGroupSelector), _eventHandler);
-  return _dupRow;
-}
-
-function setButtonsGroupEvents(buttonList, eventHandler) {
-  // iterate over each buttons and add an eventListener on click
-  for (var i = 0; i < buttonList.length; i++) {
-    buttonList[i].addEventListener('click', eventHandler, false);
-  }
-}
 
 function setSelectEvents(selectElt) {
   selectElt.addEventListener('input', oninputMasterSelect, false);
