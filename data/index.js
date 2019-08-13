@@ -2,7 +2,6 @@
 In index.js:
   Current refactoring:
   - read anew the getter and setter methods for javascript classes
-  - review the code in the bxCont, controlerBox and btnGrp classes
   - consider using the btn class
   - review delegatedOnClickButton method as its code look redundant with many others
 
@@ -251,28 +250,9 @@ class controlerBox {
         this.masterSelect.value                = this.masterbox;
 
         // setting the event listener on the master select
-        this.masterSelect.addEventListener('input', this.oninputMasterSelect.bind(this), false);
+        this.masterSelect.addEventListener('input', this._oninputMasterSelect.bind(this), false);
 
         boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
-    }
-    
-    /** controlerBox.oninputMasterSelect(_e)
-     * 
-     * @param {event} _e 
-     */
-    oninputMasterSelect(_e) {
-      if ((this.lb !== null )) {
-        var _json = JSON.stringify({
-          action: "changeBox",
-          key:    "masterbox",
-          lb:     this.lb,
-          val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
-         });
-         //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-         //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-         //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-        connectionObj.ws.send(_json);
-      }
     }
     
     /** controlerBox._setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
@@ -307,7 +287,26 @@ class controlerBox {
             }
         );    
     }
-}
+
+    /** controlerBox._oninputMasterSelect(_e)
+     * 
+     * @param {event} _e 
+     */
+    _oninputMasterSelect(_e) {
+      if ((this.lb !== null )) {
+        var _json = JSON.stringify({
+          action: "changeBox",
+          key:    "masterbox",
+          lb:     this.lb,
+          val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
+         });
+         //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+         //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+         //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+        connectionObj.ws.send(_json);
+      }
+    }
+  }
 
 
 
