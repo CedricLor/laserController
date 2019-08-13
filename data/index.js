@@ -65,6 +65,16 @@ class bxCont {
         this.vBxContElt.removeChild(_row);
     }
 
+    /** newCntrlerBox(data) creates a new controlerBox by calling
+     *  the controlerBox class constructor, adds this new controlerBox
+     *  to this container controlerBoxes array and increment this._bxCount++.
+     * 
+     *  It is called from addOrUpdateNewRowForNewBox when the WS gets 
+     *  informed by the server of the connection of a new laser controller 
+     *  to the mesh.
+     * 
+     *  @param: data is the Json string received from the server.
+     * */
     newCntrlerBox(data) {
         // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
         this.controlerBoxes[data.lb] = new controlerBox(data);
@@ -102,7 +112,7 @@ class bxCont {
      *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
      *  to this.vBxContElt.insertBefore().
      * 
-     *  Called from the global function addNewRowForNewBox()
+     *  Called from the controlerBox constructor upon creating a new box.
      * */
     appendAsFirstChild(lb){
         if (this.vBxContElt.hasChildNodes()) {
@@ -208,10 +218,12 @@ var boxCont = new bxCont();
  *  the DOM from the WebSocket.
  *  */
 class controlerBox {
-    constructor (props) {
+        // props = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+        constructor (props) {
         this.lb                 = parseInt(props.lb, 10);
         this.boxState           = props.boxState;
         this.boxDefstate        = props.boxDefstate;
+        this.masterbox          = props.masterbox; // masterbox number
         this.virtualHtmlRowElt  = boxCont.newRowElt();
         this.insertedInDOM      = false;
         this._setBoxRowHtmlProps();
@@ -219,8 +231,30 @@ class controlerBox {
 
         this.boxStateBtnGrp     = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
         this.boxDefStateBtnGrp  = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
+
+        this._setMasterSelect();
+
+        boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
     }
     
+    /** setMasterSelect() sets the number of the master box, the select control
+     *  to change the master box and the related event.
+     * 
+     *  It currently is a wrapper around the former functions setting the master box
+     *  section of the controller box row.
+     * 
+     *  TODO: the various functions involved shall be repatriated either in a masterSelect class
+     *  or in the controlerBox class.
+     */
+    _setMasterSelect() {
+        // indicate masterbox number
+        _indicateMasterBoxNumber(this.masterbox, this.virtualHtmlRowElt);
+
+        // set event listener on master select
+        var _select = _selectMasterSelectInRow(this.virtualHtmlRowElt);
+        setSelectEvents(_select);
+    }
+
     /** _setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
      *  of the boxRow.
      *  
@@ -1816,28 +1850,6 @@ function _selectMasterSelectInRow(_dupRow) {
 
 
 
-/** addNewRowForNewBox(data)
- *  Adds a new box when the WS gets informed by the server of 
- *  the connection of a new laser controller to the mesh.
- *  */
-function addNewRowForNewBox(data) {
-  // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-  console.log("addNewRowForNewBox: Starting: the boxRow does not already exist. I am about to create it.");
-  bxCont.newCntrlerBox(data);
-
-  // indicate masterbox number
-  bxCont.controlerBoxes[data.lb].virtualHtmlRowElt = _indicateMasterBoxNumber(data.masterbox, 
-    bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
-
-  // set event listener on master select
-  var _select = _selectMasterSelectInRow(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
-  setSelectEvents(_select);
-
-  // render in DOM
-  boxCont.appendAsFirstChild(bxCont.controlerBoxes[data.lb].virtualHtmlRowElt);
-
-  console.log("addNewRowForNewBox: ending after adding laser box [" + data.lb + "]");
-}
 
 
 
@@ -1861,7 +1873,7 @@ function addOrUpdateNewRowForNewBox(_data) {
   if (_controlerBoxEntry === undefined) {
     // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
     // let's create it
-    addNewRowForNewBox(_data);
+    bxCont.newCntrlerBox(_data);
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   }
 
