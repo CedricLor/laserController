@@ -54,9 +54,11 @@ class bxCont {
         this.init();
     }
 
-    /** bxCont.init(): Loads copies of #boxesContainer and #boxTemplate
-     *  into this.vElt and this.vTemplate. Deletes #boxTemplate
-     *  once loaded into memory.*/
+    /** bxCont.init() loads a clone of div#boxTemplate into this.vTemplate and 
+     *  deletes div#boxTemplate from the DOM once the clone loaded into memory.
+     * 
+     *  Called from the constructor of this class.
+     * */
     init() {
         let _row        = document.getElementById('boxTemplate');
         this.vTemplate  = _row.cloneNode(true);
@@ -69,8 +71,12 @@ class bxCont {
         this._bxCount++;
     }
 
-    /** bxCont.newRowElt(): Returns a clone of this._virtualTemplate,
-     *  to create a new boxRow. */
+    /** bxCont.newRowElt(): creates and returns a clone of this.vTemplate,
+     *  to create a new boxRow. 
+     *  
+     *  Called from the controlerBox constructor, to allocate a value to 
+     *  virtualHtmlRowElt
+     * */
     newRowElt() {
         return (this.vTemplate.cloneNode(true));
     }
@@ -92,9 +98,11 @@ class bxCont {
         }
     }
 
-    /** bxCont.deleteAllRows(boxNumber) deletes a single box row and
-    *  the corresponding representations in the array. Returns an
-    *  array with the deleted entry in the array*/
+    /** bxCont.deleteAllRows() deletes a single box row and
+    *  the corresponding representations in the array of controlerBoxes.
+    *   
+    *  Returns an array with the deleted entry in the array
+    * */
    deleteAllRows() {
         // empty the array of controller boxes  by splicing of all its members
         var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
@@ -107,10 +115,13 @@ class bxCont {
         return(oldBxArray);
     }
 
-    /** bxCont.deleteRow(boxNumber) deletes a single box row and
-    *  the corresponding representations in the array. As arg, receives 
-    *  a Json _data string (the method is being called from the onMsgActionSwitch). 
-    *  Returns a new array with the deleted entry as it sole member. */
+    /** bxCont.deleteRow(_data) deletes a single box row and the corresponding 
+     *  representations in the array. 
+     * 
+     *  @param: a Json _data string (the method is being called from the onMsgActionSwitch). 
+     *  
+     *  Returns a new array with the deleted entry as it sole member. 
+     * */
     deleteRow(_data) {
         // delete the corresponding entry in the array of controller boxes
         var delBx = this.controlerBoxes.splice(_data.lb, 1);
@@ -127,9 +138,16 @@ class bxCont {
         return (delBx);
     }
 
-    /** bxCont.toBoxStateObj() returns an object where keys are equal to
-     *  box numbers and values to their state as registered in the web app.
-     *  It is called from connectionObj.wsonopen */
+    /** bxCont.toBoxStateObj() converts the controlerBoxes array to
+     *  an object with:
+     *  - properties = index numbers of the controlerBoxes
+     *  - values = state of the controlerBoxes
+     * 
+     *  Returns the object.
+     *  
+     *  Called from connectionObj.wsonopen, to be sent to the interface node,
+     *  for reconciliation upon a new connection the the WS server.
+     *  */
     toBoxStateObj() {
         let _obj = Object.create(null);
         this.controlerBoxes.forEach(function(element, index) {
@@ -195,11 +213,12 @@ class controlerBox {
         this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
     }
 
-    /** controlerBox._setEventsOnConfigBtns()
-     *  sets event-listeners on the box config buttons.
+    /** controlerBox._setEventsOnConfigBtns() sets event-listeners on the box config buttons.
+     * 
      *  To be reviewed: 
      *  1. very similar to some other event-listener setters;
-     *  2. consider creating a reusable button class. */
+     *  2. consider putting everything into a btnGrp.
+     * */
     _setEventsOnConfigBtns() {
         this.virtualHtmlRowElt.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
         this.virtualHtmlRowElt.querySelector("#rebootBox").id = "rebootBox" + this.lb;     // set a unique id
@@ -244,19 +263,25 @@ class btnGrp {
     this.setDelegatedBtnClickedEvent();
   }
 
-  /** sets the active button among the buttons of this button group */
+  /** setActiveBtn() sets the active button among the buttons of this button group 
+   *  by removing all non clicked button classes on this buton and adding the class
+   *  this.activeBtnClass to the classList of the selected button.
+   * */
   setActiveBtn() {
     _onClickHelpers.removeClassesOnNonClickedButton(this.vBtnNodeList[this.activeBtnNum]);
-    this.vBtnNodeList[this.activeBtnNum].add(this.activeBtnClass);
+    this.vBtnNodeList[this.activeBtnNum] = ' ' + this.activeBtnClass;
   }
 
-  /** sets an event listener on the button group container */
+  /** sets an event listener on the button group container, listening to the
+   *  events bubbling from its buttons.
+   * */
   setDelegatedBtnClickedEvent() {
     this.vEltBtnGrpContainer.addEventListener('click', this.delegatedOnClickButton.bind(this), false);
   }
 
   /** event listener on the button group container, listening to
-   *  click events occuring on the buttons of this button group */
+   *  click events bubbling from the buttons of this button group.
+   * */
   delegatedOnClickButton(e) {
     /** what is "this" in this context? What I want is the following:
      *  this.btnGpSelectorProto <-- the class instance
@@ -1774,7 +1799,6 @@ function _selectMasterSelectInRow(_dupRow) {
 /** addNewRowForNewBox(data)
  *  Adds a new box when the WS gets informed by the server of 
  *  the connection of a new laser controller to the mesh.
- *  TO BE REFACTORED. NEED A BUTTON CLASS.
  *  */
 function addNewRowForNewBox(data) {
   // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
