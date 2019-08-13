@@ -260,13 +260,11 @@ class controlerBox {
         this.boxStateBtnGrp           = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
         this.boxDefStateBtnGrp        = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
 
-        // setting the master box number
-        this.masterBoxNumberSelector          = "span.master_box_number";
-        this.masterBoxNumberSpan              = this.virtualHtmlRowElt.querySelector(this.masterBoxNumberSelector);
-        this.masterBoxNumberSpan.textContent  = this.masterbox + 200;
+        // setting the span master box number
+        this.masterSpan               = new span({parent: this.virtualHtmlRowElt, selector: "span.master_box_number", textContent: this.masterbox + 200});
 
         // setting the select master box number
-        this.mastSel                          = new mastSel({parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox});
+        this.mastSel                  = new mastSel({parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox});
 
         boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
     }
@@ -307,29 +305,62 @@ class controlerBox {
 
     /** controlerBox.update(_data) updates the controlerBox values upon receiving the corresponding
      *  values from WS.
-     * 
-    */
+     * */
     update(_data) {
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     console.log("controlerBox.update(_data): a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
 
-    // update the local fields
-    this.boxState                 = _data.boxState;
-    this.boxDefstate              = _data.boxDefstate;
-    this.masterbox                = parseInt(_data.masterbox, 10); // masterbox number
+      this._updateLocal(_data);
+      this._updateChildren();
+    }
 
+    /** controlerBox._updateLocal(_data) updates the local fields
+     *  (boxState, boxDefstate and masterbox)
+     * */ 
+    _updateLocal(_data) {
+      this.boxState     = _data.boxState;
+      this.boxDefstate  = _data.boxDefstate;
+      this.masterbox    = parseInt(_data.masterbox, 10); // masterbox number
+    }
+
+    /** controlerBox._updateChildren(_data) updates the children (state button, default state button,
+     *  master span and master select)
+     *  (boxState, boxDefstate and masterbox)
+     * */ 
+    _updateChildren() {
     // update the current active and default states
     this.boxStateBtnGrp.update(this.boxState);
     this.boxDefStateBtnGrp.update(this.boxDefstate);
   
     // update the master span
-    this.masterBoxNumberSpan.textContent = this.masterbox + 200;
+      this.masterSpan.update(this.masterbox + 200);
 
     // update the master select
-    this.mastSel.vSelectElt.value = this.masterbox;
-
-  } // controlerBox.update(_data)
+      this.mastSel.update(this.masterbox);
+    }
 } // controlerBox
+
+
+
+
+
+
+
+
+
+class span {
+  constructor (props) {
+    // {parent: this.virtualHtmlRowElt, selector: "span.master_box_number", textContent: this.masterbox + 200}
+    this.parent               = props.parent;
+    this.selector             = props.selector;
+    this.vSpanElt             = this.parent.querySelector(this.selector);
+    this.vSpanElt.textContent = props.textContent;
+  }
+
+  update (textContent) {
+    this.vSpanElt.textContent = textContent;
+  }
+}
 
 
 
@@ -351,7 +382,11 @@ class mastSel {
     this.vSelectElt.addEventListener('input', this._oninputMasterSelect.bind(this), false);
   }
 
-  /** controlerBox._oninputMasterSelect(_e)
+  update (value) {
+    this.vSelectElt.value = value;
+  }
+
+  /** mastSel._oninputMasterSelect(_e)
    * 
    * @param {event} _e 
    */
