@@ -310,32 +310,43 @@ class controlerBox {
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     console.log("controlerBox.update(_data): a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
 
-      this._updateLocal(_data);
-      this._updateChildren();
+      this._updateLocalStates(_data);
+      this._updateLocalMaster(_data);
+      this._updateChildrenStateBtns();
+      this._updateChildrenMaster();
     }
 
-    /** controlerBox._updateLocal(_data) updates the local fields
-     *  (boxState, boxDefstate and masterbox)
+    /** controlerBox._updateLocalStates(_data) updates the state related local fields
+     *  (boxState, boxDefstate)
      * */ 
-    _updateLocal(_data) {
+    _updateLocalStates(_data) {
       this.boxState     = _data.boxState;
       this.boxDefstate  = _data.boxDefstate;
+    }
+
+    /** controlerBox._updateChildrenStateBtns(_data) updates the state related 
+     *  children (state button, default state button)
+     * */ 
+    _updateChildrenStateBtns() {
+      // update the current active and default states
+      this.boxStateBtnGrp.update(this.boxState);
+      this.boxDefStateBtnGrp.update(this.boxDefstate);
+    }
+
+    /** controlerBox._updateLocalMaster(_data) updates the master related 
+     *  local fields (masterbox)
+     * */ 
+    _updateLocalMaster(_data) {
       this.masterbox    = parseInt(_data.masterbox, 10); // masterbox number
     }
 
-    /** controlerBox._updateChildren(_data) updates the children (state button, default state button,
-     *  master span and master select)
-     *  (boxState, boxDefstate and masterbox)
+    /** controlerBox._updateChildrenMaster(_data) updates the master related
+     *  children (master span and master select)
      * */ 
-    _updateChildren() {
-    // update the current active and default states
-    this.boxStateBtnGrp.update(this.boxState);
-    this.boxDefStateBtnGrp.update(this.boxDefstate);
-  
-    // update the master span
+    _updateChildrenMaster() {
+      // update the master span
       this.masterSpan.update(this.masterbox + 200);
-
-    // update the master select
+      // update the master select
       this.mastSel.update(this.masterbox);
     }
 } // controlerBox
@@ -361,7 +372,6 @@ class span {
     this.vSpanElt.textContent = textContent;
   }
 }
-
 
 
 
@@ -506,10 +516,6 @@ class btnGrp {
     }
   }
 }
-
-
-
-
 
 
 
@@ -1285,6 +1291,7 @@ function onMsgActionSwitch(_data) {
     // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
     // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
     updateMasterBoxNumber(_data);
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].;
     return;
   }
 
