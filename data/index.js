@@ -220,42 +220,62 @@ var boxCont = new bxCont();
 class controlerBox {
         // props = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
         constructor (props) {
-        this.lb                 = parseInt(props.lb, 10);
-        this.boxState           = props.boxState;
-        this.boxDefstate        = props.boxDefstate;
-        this.masterbox          = props.masterbox; // masterbox number
-        this.virtualHtmlRowElt  = boxCont.newRowElt();
-        this.insertedInDOM      = false;
+        // allocating the values from the Json data passed on by the server
+        this.lb                       = parseInt(props.lb, 10); // this laser box number
+        this.boxState                 = props.boxState;
+        this.boxDefstate              = props.boxDefstate;
+        this.masterbox                = parseInt(props.masterbox, 10); // masterbox number
+
+        // creating the boxRow html element
+        this.virtualHtmlRowElt        = boxCont.newRowElt();
+        
+        // DOM insertion witness (starts at false)
+        this.insertedInDOM            = false;
+
+        // setting global params for the controlerBox
         this._setBoxRowHtmlProps();
         this._setEventsOnConfigBtns();
 
-        this.boxStateBtnGrp     = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
-        this.boxDefStateBtnGrp  = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
+        // setting the state rows
+        this.boxStateBtnGrp           = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
+        this.boxDefStateBtnGrp        = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
 
-        this._setMasterSelect();
+        // setting the master box number
+        this.masterBoxNumberSelector          = "span.master_box_number";
+        this.masterBoxNumberSpan              = this.virtualHtmlRowElt.querySelector(this.masterBoxNumberSelector);
+        this.masterBoxNumberSpan.textContent  = this.masterbox + 200;
+
+        // setting the select master box number
+        this._masterSelectSelector             = "select.master_select";
+        this.masterSelect                      = this.virtualHtmlRowElt.querySelector(this._masterSelectSelector);
+        this.masterSelect.value                = this.masterbox;
+
+        // setting the event listener on the master select
+        this.masterSelect.addEventListener('input', this.oninputMasterSelect.bind(this), false);
 
         boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
     }
     
-    /** setMasterSelect() sets the number of the master box, the select control
-     *  to change the master box and the related event.
+    /** controlerBox.oninputMasterSelect(_e)
      * 
-     *  It currently is a wrapper around the former functions setting the master box
-     *  section of the controller box row.
-     * 
-     *  TODO: the various functions involved shall be repatriated either in a masterSelect class
-     *  or in the controlerBox class.
+     * @param {event} _e 
      */
-    _setMasterSelect() {
-        // indicate masterbox number
-        _indicateMasterBoxNumber(this.masterbox, this.virtualHtmlRowElt);
-
-        // set event listener on master select
-        var _select = _selectMasterSelectInRow(this.virtualHtmlRowElt);
-        setSelectEvents(_select);
+    oninputMasterSelect(_e) {
+      if ((this.lb !== null )) {
+        var _json = JSON.stringify({
+          action: "changeBox",
+          key:    "masterbox",
+          lb:     this.lb,
+          val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
+         });
+         //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+         //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+         //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+        connectionObj.ws.send(_json);
+      }
     }
-
-    /** _setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
+    
+    /** controlerBox._setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
      *  of the boxRow.
      *  
      *  Called from this class's constructor.
@@ -1532,66 +1552,6 @@ function onclickgi8RequestedOTAReboots(_e) {
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
   console.log("onclickgi8RequestedOTAReboots ending");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function oninputMasterSelect(_e) {
-  console.log("oninputMasterSelect: starting");
-  var _laserBoxNumber = _onClickHelpers.findUpLaserBoxNumber(this.parentNode);
-  if ((_laserBoxNumber !== null )) {
-    console.log("oninputMasterSelect: slave box: " + (_laserBoxNumber + 200));
-    console.log("oninputMasterSelect: master box " + this.options[this.selectedIndex].value);
-    var _json = JSON.stringify({
-      action: "changeBox",
-      key:    "masterbox",
-      lb:     _laserBoxNumber,
-      val:    parseInt(this.options[this.selectedIndex].value, 10)
-     });
-     //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-     //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-     //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-    console.log("oninputMasterSelect: about to send json via WS: " + _json);
-    connectionObj.ws.send(_json);
-    console.log("oninputMasterSelect: json sent.");
-  }
-  console.log("oninputMasterSelect: ending");
-}
 // END EVENT HANDLERS
 
 
@@ -1980,11 +1940,6 @@ function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
 
 
 // EVENT LISTENERS
-
-function setSelectEvents(selectElt) {
-  selectElt.addEventListener('input', oninputMasterSelect, false);
-}
-
 function setGroupEvents() {
   document.getElementById("rebootLBs").addEventListener('click', _onClickGroupReboot.onclickRebootLBsButton, false);
   document.getElementById("rebootIF").addEventListener('click', _onClickIF.reboot, false);
