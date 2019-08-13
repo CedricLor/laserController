@@ -64,11 +64,32 @@ class bxCont {
         this.vBxContElt.removeChild(_row);
     }
 
-    /** newCntrlerBox(data) creates a new controlerBox by calling
+    /** bxCont.addOrUpdateCntrlerBox(data) is called from the onMsgActionSwitch
+     *  upon receiving a _data.action === "addBox" message. It checks whether 
+     *  the box already exists. If so, it will update it, else, it will create it.
+     * 
+     *  In a last step (to be refactored), it handles the case where it is a reboot.
+     * */
+    addOrUpdateCntrlerBox(data) {
+      // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+      // Check whether the boxRow has already been created
+      let _controlerBoxEntry = boxCont.controlerBoxes[parseInt(data.lb, 10)];
+      if(_controlerBoxEntry) {
+        // let's update it
+        _controlerBoxEntry.update(data);
+      } else {
+        // let's create it
+        this.newCntrlerBox(data);
+      }
+      // handle the case where this is a reboot
+      onReboot.common.onAddBox(data);
+    }
+
+    /** bxCont.newCntrlerBox(data) creates a new controlerBox by calling
      *  the controlerBox class constructor, adds this new controlerBox
      *  to this container controlerBoxes array and increment this._bxCount++.
      * 
-     *  It is called from addOrUpdateNewRowForNewBox when the WS gets 
+     *  It is called from bxCont.addOrUpdateCntrlerBox(data) when the WS gets 
      *  informed by the server of the connection of a new laser controller 
      *  to the mesh.
      * 
@@ -965,7 +986,7 @@ var onReboot = {
     },
   
     /** reBoot.common.onAddBox:
-     * This gets called by addOrUpdateNewRowForNewBox(), which itself gets called from
+     * This gets called by bxCont.addOrUpdateCntrlerBox(data), which itself gets called from
      * the action switch, when a new box comes in. */
     onAddBox: function(_data){
 
@@ -1185,7 +1206,7 @@ function onMsgActionSwitch(_data) {
   if (_data.action === "addBox") {
     console.log("---------------- addBox switch starting -----------------");
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-    addOrUpdateNewRowForNewBox(_data);
+    bxCont.addOrUpdateCntrlerBox(_data);
     return;
   }
 
@@ -1813,34 +1834,7 @@ function _selectMasterSelectInRow(_dupRow) {
 
 
 
-function addOrUpdateNewRowForNewBox(_data) {
-  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-  console.log("addOrUpdateNewRowForNewBox starting.");
 
-  // Check whether the boxRow has not already been created
-  var _controlerBoxEntry = boxCont.controlerBoxes[parseInt(_data.lb, 10)];
-  console.log("addOrUpdateNewRowForNewBox: looking if an entry exists in the map for this box");
-  console.log("addOrUpdateNewRowForNewBox _controlerBoxEntry (if undefined, the entry does not exist): " + _controlerBoxEntry);
-  console.log("addOrUpdateNewRowForNewBox: testing if _controlerBoxEntry is undefined: -> " + (_controlerBoxEntry === undefined));
-
-  // Case where the box does not exist
-  if (_controlerBoxEntry === undefined) {
-    // _controlerBoxEntry is equal to undefined: the boxRow does not already exists
-    // let's create it
-    bxCont.newCntrlerBox(_data);
-    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-  }
-
-  // Case where the box exists
-  else {
-    // _controlerBoxEntry is not equal to undefined, the boxRow already exists
-    // let's update it instead
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].update(_data);
-  }
-
-  // handles the case where this is a reboot
-  onReboot.common.onAddBox(_data);
-}
 
 
 
