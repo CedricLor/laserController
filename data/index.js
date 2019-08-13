@@ -306,8 +306,32 @@ class controlerBox {
         connectionObj.ws.send(_json);
       }
     }
-  }
 
+    /** controlerBox.update(_data) updates the controlerBox values upon receiving the corresponding
+     *  values from WS.
+     * 
+    */
+    update(_data) {
+    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+    console.log("controlerBox.update(_data): a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
+
+    // update the local fields
+    this.boxState                 = _data.boxState;
+    this.boxDefstate              = _data.boxDefstate;
+    this.masterbox                = parseInt(_data.masterbox, 10); // masterbox number
+
+    // update the current active and default states
+    this.boxStateBtnGrp.update(this.boxState);
+    this.boxDefStateBtnGrp.update(this.boxDefstate);
+  
+    // update the master span
+    this.masterBoxNumberSpan.textContent = this.masterbox + 200;
+
+    // update the master select
+    this.masterSelect.value = this.masterbox;
+
+  } // controlerBox.update(_data)
+} // controlerBox
 
 
 
@@ -1670,42 +1694,12 @@ function updateClickedStateButton(_boxRow, _stateTypeSelector, _stateNumberSelec
 
 
 
-function updateBoxRow(_data) {
-  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-  console.log("updateBoxRow: a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
-  // select the correct row in the map
-  var _boxRow = boxCont.controlerBoxes[parseInt(_data.lb, 10)].virtualHtmlRowElt;
-
-  // update the current active and default states
-  updateCurrentStateButtons(_data, _boxRow);
-
-  // update the master select
-  _indicateMasterBoxNumber(_data.masterbox, _boxRow);
-
-  console.log("updateBoxRow: ending after updating laser box [" + _data.lb + "]");
-}
 
 
 
 
 
-function updateCurrentStateButtons(_data, _boxRow) {
-  // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-  console.log("updateCurrentStateButtons starting.");
-  console.log("updateCurrentStateButtons: About to set the activeState and defaultState buttons.");
 
-  // 1. remove classes on all the others stateButtons of this boxRow
-  // 2. add button_active_state class to the relevant stateButton
-  // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-  _boxRow = updateCurrentStateButton(_boxRow, "boxstate", _data.boxState);
-
-  // 1. remove classes on all the others default stateButtons of this boxRow
-  // 2. add button_active_state class to the relevant default stateButton
-  // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-  updateCurrentStateButton(_boxRow, "boxDefstate", _data.boxDefstate);
-
-  console.log("updateCurrentStateButtons: ending after updating laser box [" + _data.lb + "]");
-}
 
 
 
@@ -1787,21 +1781,7 @@ function _setStateButtonAsActive(_selector, memRow) {
 
 
 
-function _indicateMasterBoxNumber(_masterBoxIndexNumber, _dupRow) {
-  console.log("_indicateMasterBoxNumber: starting. About to write masterbox number");
 
-  // Write box number in box number span
-  var _span = selectMasterBoxNumberSpan(_dupRow);
-  writeMasterBoxNumberInBoxNumberSpan(_span, _masterBoxIndexNumber);
-
-  // Select corresponding option in masterBoxSelect
-  var _select = _selectMasterSelectInRow(_dupRow);
-  console.log("_indicateMasterBoxNumber: About to select correct option in master select");
-  _select.value = parseInt(_masterBoxIndexNumber, 10);
-  console.log("_indicateMasterBoxNumber: ending. About to return _dupRow.");
-
-  return _dupRow;
-}
 
 
 
@@ -1855,7 +1835,7 @@ function addOrUpdateNewRowForNewBox(_data) {
   else {
     // _controlerBoxEntry is not equal to undefined, the boxRow already exists
     // let's update it instead
-    updateBoxRow(_data);
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].update(_data);
   }
 
   // handles the case where this is a reboot
