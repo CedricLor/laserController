@@ -45,8 +45,8 @@ In index.js:
 class bxCont {
     constructor () {
         this.id               = "boxesContainer";
-        this.vElt             = document.getElementById(this.id);
-        this.emptyElt         = this.vElt.cloneNode(true);
+        this.vBxContElt       = document.getElementById(this.id);
+        this.emptyBxContElt   = this.vBxContElt.cloneNode(true);
         this._potBxCount      = 10;
         this._bxCount         = 0;
         this.vTemplate        = undefined;
@@ -60,9 +60,9 @@ class bxCont {
      *  Called from the constructor of this class.
      * */
     init() {
-        let _row        = document.getElementById('boxTemplate');
+        let _row        = this.vBxContElt.getElementById('boxTemplate');
         this.vTemplate  = _row.cloneNode(true);
-        _row.parentNode.removeChild(_row);
+        this.vBxContElt.removeChild(_row);
     }
 
     newCntrlerBox(data) {
@@ -81,20 +81,35 @@ class bxCont {
         return (this.vTemplate.cloneNode(true));
     }
 
-    /** bxCont.appendAsLastChild(_newRow): 
-     *  inserts the _newRow as last child of div#boxesContainer. */
-    appendAsLastChild(_newRow){
-        this.vElt.appendChild(_newRow);
+    /** bxCont.appendAsLastChild(lb) inserts a new row as last child 
+     *  of div#boxesContainer. 
+     * 
+     *  @param: lb is the laser box number, which is used to select the
+     *  new row in the controlerBoxes array and pass the html element 
+     *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+     *  to this.vBxContElt.appendChild().
+     * */
+    appendAsLastChild(lb){
+        this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
+        this.controlerBoxes[lb].insertedInDOM = true;
     }
 
-    /** bxCont.appendAsFirstChild(_newRow): inserts the _newRow
-     *  as first child in div#boxesContainer. Returns the _newRow 
-     *  to the user.*/
-    appendAsFirstChild(_newRow){
-        if (this.vElt.hasChildNodes()) {
-          this.vElt.insertBefore(_newRow, this.vElt.firstChild);
+    /** bxCont.appendAsFirstChild(_newRow) inserts the _newRow as first child
+     *  in div#boxesContainer.
+     * 
+     *  @param: lb is the laser box number, which is used to select the
+     *  new row in the controlerBoxes array and pass the html element 
+     *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+     *  to this.vBxContElt.insertBefore().
+     * 
+     *  Called from the global function addNewRowForNewBox()
+     * */
+    appendAsFirstChild(lb){
+        if (this.vBxContElt.hasChildNodes()) {
+          this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,
+                                       this.vBxContElt.firstChild);
         } else {
-          this.appendAsLastChild(_newRow);
+          this.appendAsLastChild(lb);
         }
     }
 
@@ -104,13 +119,13 @@ class bxCont {
     *  Returns an array with the deleted entry in the array
     * */
    deleteAllRows() {
-        // empty the array of controller boxes  by splicing of all its members
+        // empty the array of controller boxes by splicing of all its members
         var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
         // resize the array of controller boxes to its original size
         this.controlerBoxes.length = this._potBxCount;
         this._bxCount = this._potBxCount;
         // delete all from DOM by replacing the container by its initial form
-        this.vElt.parentNode.replaceChild(this.emptyElt, this.vElt);
+        this.vBxContElt.parentNode.replaceChild(this.emptyBxContElt, this.vBxContElt);
         // return the old array (the virtualHtmlRowElt have all been deleted at this stage, however)
         return(oldBxArray);
     }
@@ -128,7 +143,7 @@ class bxCont {
         // clone the HTML node
         var _clonedNode = delBx.virtualHtmlRowElt.cloneNode(true);
         // remove from DOM
-        this.vElt.parentNode.removeChild(delBx.virtualHtmlRowElt);
+        this.vBxContElt.removeChild(delBx.virtualHtmlRowElt);
         // insert the cloned node into the deleted entry
         delBx.virtualHtmlRowElt = _clonedNode;
         // check whether the box is not disconnecting as
@@ -199,14 +214,19 @@ class controlerBox {
         this.boxDefstate        = props.boxDefstate;
         this.virtualHtmlRowElt  = boxCont.newRowElt();
         this.insertedInDOM      = false;
-        this._setHtmlProperties();
+        this._setBoxRowHtmlProps();
         this._setEventsOnConfigBtns();
 
         this.boxStateBtnGrp     = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
         this.boxDefStateBtnGrp  = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
     }
     
-    _setHtmlProperties() {
+    /** _setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
+     *  of the boxRow.
+     *  
+     *  Called from this class's constructor.
+     */
+    _setBoxRowHtmlProps() {
         this.virtualHtmlRowElt.id         = "boxRow" + this.lb;
         this.virtualHtmlRowElt.dataset.lb = this.lb;
         this.virtualHtmlRowElt.classList.remove('hidden');
