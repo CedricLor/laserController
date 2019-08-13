@@ -311,12 +311,27 @@ class controlerBox {
      * */
     update(_data) {
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-    console.log("controlerBox.update(_data): a boxRow for laser box [" + _data.lb + "] already exists in DOM.");
-
       this._updateLocalStates(_data);
       this._updateLocalMaster(_data);
       this._updateChildrenStateBtns();
       this._updateChildrenMaster();
+    }
+
+    /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
+     *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
+     * */
+    updateStateFB(_data) {
+      // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+      // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+      // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+      // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+      if (_data.key === "boxState") {
+        this.boxStateBtnGrp.updateFB(_data);
+        return;
+      }
+      if (_data.key === "boxDefstate") {
+        this.boxDefStateBtnGrp.updateFB(_data);
+      }
     }
 
     /** controlerBox._updateLocalStates(_data) updates the state related local fields
@@ -455,6 +470,7 @@ class btnGrp {
     this.vEltBtnGrpContainer      = this.parent.querySelector(this.btnGrpContainerSelector);
     this.clickedBtnClass          = 'button_clicked';
     this.activeBtnClass           = 'button_active_state';
+    this.changedRecvdBtnClass     = 'button_change_received';
     this.datasetKey               = props.datasetKey;
     this.btnGpSelectorProto       = "button[data-" + props.datasetKey + "]";
     this.vBtnNodeList             = this.parent.querySelectorAll(this.btnGpSelectorProto);
@@ -466,17 +482,13 @@ class btnGrp {
 
   /** btnGrp.update(_data) updates the active button among the buttons of this button group
    *  by:
-   *  - removing all non clicked button classes on this buton;
    *  - updating this.activeBtnNum; and
+   *  - removing all non clicked button classes on this buton;
    *  - calling this.setActiveBtn();
    */
   update(activeBtnNum) {
-    this.vBtnNodeList.forEach(
-      function(_button) {
-        _onClickHelpers.removeClassesOnNonClickedButton(_button);
-      }
-    );
-    this.activeBtnNum             = activeBtnNum;
+    this.activeBtnNum = activeBtnNum;
+    this.markAllBtnsAsNonClicked();
     this.setActiveBtn();
   }
 
@@ -486,6 +498,63 @@ class btnGrp {
    * */
   setActiveBtn() {
     this.vBtnNodeList[this.activeBtnNum].className += ' ' + this.activeBtnClass;
+  }
+
+  /** btnGrp.markAllBtnsAsNonClicked() iterates over the buttons node list
+   *  to remove classes
+   * */
+  markAllBtnsAsNonClicked() {
+    this.vBtnNodeList.forEach( (_btn) => {
+      this.markBtnAsNonClicked(_btn);
+    });
+  }
+
+  /** btnGrp.markBtnAsNonClicked(_button)
+   *  Removes any "button_clicked", "button_active_state" or
+   *  "button_change_received" class that a button may retain. 
+   *  */
+  markBtnAsNonClicked(_btn) {
+    _btn.classList.remove(this.clickedBtnClass, this.activeBtnClass, this.changedRecvdBtnClass);
+  } 
+
+  /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
+   *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
+   * */
+  updateFB(_data) {
+    // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+    // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+    // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+    // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+    let FBstat = parseInt(_data.st, 10);
+    /** 
+     * _data.st === 1: the change request has been received by the IF and
+     * transmitted to the relevant laser box:
+     *    - change parent internal var boxStateChanging to former val of boxState;
+     *    - change parent internal var boxState to value of requested boxState; (?)
+     *    - add a red border to the btn (by applying class button_change_received)
+     * to inform the user that the corresponding request is currently being processed.
+     * */
+    if (FBstat === 1) {
+        this.parent.boxStateChanging = this.boxState;
+        this.parent.boxState         = _data.val;
+        this.vBtnNodeList[_data.val].classList.add(this.changedRecvdBtnClass);
+        return;
+    }
+    /** 
+     * _data.st === 2: the change request has been processed by the relevant 
+     * laser box:
+     *    - change parent internal var boxStateChanging to undefined;
+     *    - mark all the btns as non-clicked; (why now? why here? why not before?)
+     *    - mark the current state btn in red to inform the user of the actual state
+     * */
+    if (FBstat === 2) {
+        this.parent.boxStateChanging = undefined;
+        // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
+        // _removeClassesOnButtonsGroupForRow(this.virtualHtmlRowElt, "button[data-" + _data.Key + "]");
+        this.markAllBtnsAsNonClicked();
+        // _setCurrentStateButton(this.virtualHtmlRowElt, _data.Key, _data.val);
+        this.vBtnNodeList[_data.val].classList.add(this.activeBtnClass);
+    }
   }
 
   /** sets an event listener on the button group container, listening to the
@@ -1276,7 +1345,7 @@ function onMsgActionSwitch(_data) {
   if (_data.action === "changeBox" && _data.key === "boxState") {
     // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
     // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-    updateStateButton(_data);
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
     return;
   }
 
@@ -1323,7 +1392,7 @@ function onMsgActionSwitch(_data) {
   if (_data.action === "changeBox" && _data.key === "boxDefstate") {
     // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
     // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
-    updateStateButton(_data);
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
     return;
   }
 
@@ -1723,227 +1792,6 @@ function updateGlobalInformation(_data) {
   document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
   document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
   console.log("updateGlobalInformation() ending");
-}
-
-
-
-function updateStateButton(_data) {
-  // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-  // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-  // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
-  console.log("updateStateButton: laser box [" + _data.lb + "]; stateButton: " + _data.key + ".");
-  // select the correct row in the map
-  var _boxRow = boxCont.controlerBoxes[parseInt(_data.lb, 10)].virtualHtmlRowElt;
-  var _requestStatus = parseInt(_data.st, 10);
-
-  if (_requestStatus === 1) {
-    updateClickedStateButton(_boxRow, _data.key, _data.val);
-    return;
-  }
-  if (_requestStatus === 2) {
-    // 1. remove classes on all the others stateButtons of the same type of this boxRow
-    // 2. add button_active_state class to the relevant stateButton
-    // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-    // _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.val);
-    updateCurrentStateButton(_boxRow, _data.key, _data.val);
-    return;
-  }
-
-  console.log("updateStateButton: ending after updating laser box [" + _data.lb + "]");
-}
-
-
-
-
-/*
-  This function adds a red border (by applying class button_change_received)
-  to any button that has been touched and for which the browser has received
-  by WS a response from the server saying that the corresponding request is
-  currently being processed.
-*/
-function updateClickedStateButton(_boxRow, _stateTypeSelector, _stateNumberSelector) {
-  // updateClickedStateButton(_boxRow, _data.key:"boxState", _data.val:3);
-  console.log("updateClickedStateButton starting. _stateTypeSelector = " + _stateTypeSelector + "; _stateNumberSelector = " + _stateNumberSelector + "; _boxRow: ");console.log(_boxRow);
-  // --> updateClickedStateButton starting. _stateTypeSelector = boxState; _stateNumberSelector = 3.;
-  var _elt = _boxRow.querySelector("button[data-" + _stateTypeSelector + "='" + _stateNumberSelector + "']");
-  console.log(_elt);
-  if (_elt) {
-    _elt.classList.add('button_change_received');
-  }
-  console.log("updateClickedStateButton ending.");
-}
-
-
-
-
-// function updateDefaultStateButton(data) {
-//   console.log("updateDefaultStateButton: default state for laser box [" + data.lb + "] has changed.");
-//   // select the correct row in the map
-//   var _boxRow = boxMaps.boxesRows.get(data.lb);
-//
-//   // 1. remove classes on all the others default stateButtons of this boxRow
-//   // 2. add button_active_state class to the relevant default stateButton
-//   // _boxRow = updateCurrentStateButton(_boxRow, datasetKey, datasetValue);
-//   // _boxRow = updateCurrentStateButton(_boxRow, "boxDefstate", data.val);
-//   _boxRow = updateCurrentStateButton(_boxRow, data.key, data.val);
-//
-//   console.log("updateDefaultStateButton: ending after updating laser box [" + data.lb + "]");
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function updateCurrentStateButton(_boxRow, datasetKey, datasetValue) {
-  // 1. remove classes on all the others stateButtons of this boxRow
-  // 2. add button_active_state class to the relevant stateButton
-  console.log("updateCurrentStateButton starting.");
-  console.log("updateCurrentStateButton: datasetKey = " + datasetKey + "; datasetValue = " + datasetValue + "; _boxRow = ");console.log(_boxRow);
-
-  // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
-  // _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector)
-  _removeClassesOnButtonsGroupForRow(_boxRow, "button[data-" + datasetKey + "]");
-
-  // add button_active_state class to the relevant active / default stateButton
-  // _setCurrentStateButton(memRow, datasetKey, datasetValue)
-  _boxRow = _setCurrentStateButton(_boxRow, datasetKey, datasetValue);
-
-  console.log("updateCurrentStateButton: ending.");
-
-  return _boxRow;
-}
-
-
-
-
-
-function _removeClassesOnButtonsGroupForRow(_boxRow, _buttonsSelector) {
-  console.log("_removeClassesOnButtonsGroupForRow starting: _buttonsSelector: " + _buttonsSelector + "; _boxRow: ");console.log(_boxRow);
-  var _buttonList = boxRowEltsGroupSelector(_boxRow, _buttonsSelector);
-  console.log("_removeClassesOnButtonsGroupForRow: array of all the buttons related to this boxRow available = ");console.log(_buttonList);
-  if (_buttonList && _buttonList.length) {
-    _buttonList.forEach(
-      function(_button) {
-        _onClickHelpers.removeClassesOnNonClickedButton(_button);
-      }
-    );
-  }
-  console.log("_removeClassesOnButtonsGroupForRow ending.");
-}
-
-
-
-
-
-function _setCurrentStateButton(memRow, datasetKey, datasetValue) {
-  // console.log("_setCurrentStateButton: preparing a selector to select the state buttons included in _dupRow.");
-  var _buttonSelector = "button[data-" + datasetKey + "='" + datasetValue + "']";
-  console.log("_setCurrentStateButton: selector created: '" + _buttonSelector + "'");
-  memRow = _setStateButtonAsActive(_buttonSelector, memRow);
-  return memRow;
-}
-
-
-
-
-function _setStateButtonAsActive(_selector, memRow) {
-  var _targetButton = memRow.querySelector(_selector);
-  console.log("_setStateButtonAsActive: button selected: ");console.log(_targetButton);
-  if (_targetButton) {
-    console.log("_setStateButtonAsActive: about to add the active class to selected button");
-    _onClickHelpers.removeClassesOnNonClickedButton(_targetButton);
-    _targetButton.classList.add('button_active_state');
-  }
-  console.log("_setStateButtonAsActive: ending on returning row");
-  return memRow;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function boxRowEltsGroupSelector(_boxRow, _buttonsSelector) {
-  console.log("boxRowEltsGroupSelector starting: _buttonsSelector = " + _buttonsSelector + "; _boxRow = ");console.log(_boxRow);
-  var _elts = _boxRow.querySelectorAll(_buttonsSelector);
-  console.log(_elts);
-  console.log("boxRowEltsGroupSelector ending.");
-  return _elts;
 }
 // END DOM MANIPULATION
 
