@@ -256,7 +256,7 @@ class controlerBox {
         this._setBoxRowHtmlProps();
         this._setEventsOnConfigBtns();
 
-        // setting the state rows
+        // setting the state and default state buttons
         this.boxStateBtnGrp           = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
         this.boxDefStateBtnGrp        = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
 
@@ -266,12 +266,7 @@ class controlerBox {
         this.masterBoxNumberSpan.textContent  = this.masterbox + 200;
 
         // setting the select master box number
-        this._masterSelectSelector             = "select.master_select";
-        this.masterSelect                      = this.virtualHtmlRowElt.querySelector(this._masterSelectSelector);
-        this.masterSelect.value                = this.masterbox;
-
-        // setting the event listener on the master select
-        this.masterSelect.addEventListener('input', this._oninputMasterSelect.bind(this), false);
+        this.mastSel                          = new mastSel({parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox});
 
         boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
     }
@@ -309,24 +304,6 @@ class controlerBox {
         );    
     }
 
-    /** controlerBox._oninputMasterSelect(_e)
-     * 
-     * @param {event} _e 
-     */
-    _oninputMasterSelect(_e) {
-      if ((this.lb !== null )) {
-        var _json = JSON.stringify({
-          action: "changeBox",
-          key:    "masterbox",
-          lb:     this.lb,
-          val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
-         });
-         //   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-         //   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-         //   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-        connectionObj.ws.send(_json);
-      }
-    }
 
     /** controlerBox.update(_data) updates the controlerBox values upon receiving the corresponding
      *  values from WS.
@@ -349,11 +326,50 @@ class controlerBox {
     this.masterBoxNumberSpan.textContent = this.masterbox + 200;
 
     // update the master select
-    this.masterSelect.value = this.masterbox;
+    this.mastSel.vSelectElt.value = this.masterbox;
 
   } // controlerBox.update(_data)
 } // controlerBox
 
+
+
+
+
+
+
+
+
+
+class mastSel {
+  constructor (props) {
+    // {parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox}
+    this.parent           = props.parent;
+    this.selectSelector   = props.selectSelector;
+    this.vSelectElt       = this.parent.querySelector(this.selectSelector);
+    this.vSelectElt.value = props.selectValue;
+
+    this.vSelectElt.addEventListener('input', this._oninputMasterSelect.bind(this), false);
+  }
+
+  /** controlerBox._oninputMasterSelect(_e)
+   * 
+   * @param {event} _e 
+   */
+  _oninputMasterSelect(_e) {
+    if ((this.parent.lb !== null )) {
+      var _json = JSON.stringify({
+        action: "changeBox",
+        key:    "masterbox",
+        lb:     this.parent.lb,
+        val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
+        });
+        // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
+        // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
+        // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
+      connectionObj.ws.send(_json);
+    }
+  }
+}
 
 
 
