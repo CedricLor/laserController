@@ -336,13 +336,28 @@ class btnGrp {
     this.setDelegatedBtnClickedEvent();
   }
 
-  /** setActiveBtn() sets the active button among the buttons of this button group 
-   *  by removing all non clicked button classes on this buton and adding the class
-   *  this.activeBtnClass to the classList of the selected button.
+  /** btnGrp.update(_data) updates the active button among the buttons of this button group
+   *  by:
+   *  - removing all non clicked button classes on this buton;
+   *  - updating this.activeBtnNum; and
+   *  - calling this.setActiveBtn();
+   */
+  update(activeBtnNum) {
+    this.vBtnNodeList.forEach(
+      function(_button) {
+        _onClickHelpers.removeClassesOnNonClickedButton(_button);
+      }
+    );
+    this.activeBtnNum             = activeBtnNum;
+    this.setActiveBtn();
+  }
+
+  /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
+   *  by adding the class this.activeBtnClass to the classList of the button corresponnding
+   *  to this.activeBtnNum.
    * */
   setActiveBtn() {
-    _onClickHelpers.removeClassesOnNonClickedButton(this.vBtnNodeList[this.activeBtnNum]);
-    this.vBtnNodeList[this.activeBtnNum] = ' ' + this.activeBtnClass;
+    this.vBtnNodeList[this.activeBtnNum].className += ' ' + this.activeBtnClass;
   }
 
   /** sets an event listener on the button group container, listening to the
@@ -1243,7 +1258,7 @@ var _onClickHelpers = {
     connectionObj.ws.send(JSON.stringify(_obj));
   },
 
-  /** updateClickButtons
+  /** _onClickHelpers.updateClickButtons(e, _selector, _buttonsParentElement)
    *  Called by onClick event handlers on buttons.
    *  Iterates over the group of buttons to which the clicked buttons pertains.
    *  Removes any "button_clicked", "button_active_state" or
@@ -1258,7 +1273,7 @@ var _onClickHelpers = {
     e.target.className += ' button_clicked';
   },
 
-  /** removeClassesOnNonClickedButton
+  /** _onClickHelpers.removeClassesOnNonClickedButton(_button)
    *   Removes any "button_clicked", "button_active_state" or
    *  "button_change_received" class that a button may retain.  */
   removeClassesOnNonClickedButton: (_button) => {
