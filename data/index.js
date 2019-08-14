@@ -261,7 +261,9 @@ class btnGrp {
 
 
 
-/** event listener on the button group container, listening to
+/** class dlgtdBoxBtnEvent
+ * 
+ * event listener on the button group container, listening to
  *  click events bubbling from the buttons of this button group.
  * */
 class dlgtdBoxBtnEvent {
@@ -296,7 +298,7 @@ class dlgtdBoxBtnEvent {
     self._obj = self.parent._eventTargetSwitch(self._targt, self._obj);
 
     if (self._obj) {
-    self._setClassesAndSendMsg();
+      self._setClassesAndSendMsg();
     }
   } // onClick(e)
 
@@ -518,7 +520,7 @@ class controlerBox {
       if (_subObj) {
         Object.assign(_obj, this._onClickBxConf(_targt));
         return _obj;
-  }
+      }
     }
     return false;
   }
@@ -769,6 +771,173 @@ var boxCont = new bxCont();
 
 
 
+/** class inpt: <input> holder and setter
+ *  TODO: could also be a getter, carrying out validations
+ */
+class inpt {
+  // props {parent: this, name: node.id, vElt: node, value: props[node.id]}
+  constructor({props}) {
+    this.parent   = props.parent;
+    this.name     = props.name;
+    this.vElt     = props.vElt;
+    this.dataSet  = props.dataSet || undefined;
+    this.value    = props.value || undefined;
+  }
+
+  setValue(val) {
+    this.value      = val;
+    this.vElt.value = val;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/** class grpSetter: holder of forms used to set various group settings
+ *  (such as root node setter, IF node setter, Soft AP settings setter, 
+ *   Mesh settings setter, wifi settings setter)
+ */
+class grpSetter {
+  // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
+  constructor(props) {
+    // generic selector
+    this.selector       = props.selector;
+    this.vElt           = document.querySelector(this.selector);
+    delete props.selector;
+    // load the settings and the <input> children of this container div into an inputsMap
+    this.inputsMap      = new Map(
+      this.vElt.querySelectorAll('input').forEach(_input => {
+        this.inputs[_input.id] = new inpt({parent: this, name: _input.id, vElt: _input, value: props[_input.id]});
+      })  
+    );
+    // add a button group to hold the setters buttons
+    this.btnGrp         = new btnGrp({parent: this});
+    // add an event handler for clicks on grp buttons
+    this.dlgtdBtnEvent  = new dlgtdBoxBtnEvent({parent: this});
+    this.setDelegatedBtnClickedEvent();
+  }
+
+  /** grpSetter.setDelegatedBtnClickedEvent() sets an event listener on the settersGrp, listening to the
+   *  events bubbling from its buttons.
+   * */
+  setDelegatedBtnClickedEvent() {
+    // document.getElementById('saveWifiSettingsIF').addEventListener('click', _onClickSaveWifi.onIF, false);
+    // document.getElementById('saveWifiSettingsAll').addEventListener('click', _onClickSaveWifi.onAll, false);  
+    this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
+  }
+
+    /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
+   *  matches with one of the controlerBox button groups selector.
+   * 
+   *  If so, it sets the "key" and "value" fields of the Json object that will
+   *  be sent to the IF. The "lb" field is set at the beginning of the method.
+   * 
+   *  @params: _targt: the event target, _obj: the Json _obj
+   *  @return: the object _obj ready to be sent.
+   *  
+   *  Gets called from this.dlgtdBtnEvent.
+   */
+  _eventTargetSwitch(_targt, _obj) {
+    _obj.lb = this.lb;
+    /**  1. checks whether the event.target HTML element matches with the boxState button group
+     *   selector. */
+    if (_targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
+      // a. get the dataset key (boxState) and allot it to _obj.key
+      _obj.key   = this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey;
+      // b. get the value for dataset key (boxState) and allot it to _obj.value
+      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+      return _obj;
+    }
+    /**  2. checks whether the event.target HTML element matches with the default boxState button
+     *  group selector. */
+    if (_targt.matches(this.boxDefStateBtnGrp.btnGpSelectorProto)) {
+      // a. get the dataset key (defaultBoxstate) and allot it to _obj.key
+      _obj.key   = this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey;
+      // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.value
+      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+      return _obj;
+    }
+    /**  3. checks whether the event.target HTML element matches with the configuration buttons
+     *  group selector. */
+    if (_targt.matches(this.configBtnGrp.btnGpSelectorProto)) {
+      let _subObj = this._onClickBxConf(_targt);
+      if (_subObj) {
+        Object.assign(_obj, this._onClickBxConf(_targt));
+        return _obj;
+      }
+    }
+    return false;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+var _onClickSaveWifi = {
+  obj: {
+    key: "save",
+    val: "wifi",
+    dataset: {
+      ssid: document.getElementById('ssid').value,
+      pass: document.getElementById('pass').value,
+      gatewayIP: document.getElementById('gatewayIP').value,
+      ui16GatewayPort: parseInt(document.getElementById('ui16GatewayPort').value, 10),
+      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10),
+    }
+  },
+  buildObj: function(_passedObj) {
+    return Object.assign(this.obj, _passedObj);
+  },
+  wrapper: function(e, _obj) {
+    // update the buttons
+    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+    // if the connection is closed, inform the user
+    if (connectionObj.checkConnect.closedVerb()) { return; }
+    // else, complete the message
+    _obj = this.buildObj(_obj);
+    // and send the message
+    _onClickHelpers.btnSend(_obj);
+    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  },
+
+  onIF: function (e) {
+    console.log("_onClickSaveWifi.onIF starting");
+    _onClickSaveWifi.wrapper(e, {
+        action: "changeBox",
+        lb: 0,
+      });
+    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+    console.log("_onClickSaveWifi.onIF ending");
+  },
+
+  onAll: function (e) {
+    console.log("_onClickSaveWifi.onAll starting");
+  
+    _onClickSaveWifi.wrapper(e, {
+        action: "changeNet",
+        lb: "all",
+      });
+    // {action: "changeNet", key: "save", val: "wifi", lb: "all", dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  
+    console.log("_onClickSaveWifi.onAll ending");
+  }
+};
 
 
 
@@ -784,7 +953,17 @@ var boxCont = new bxCont();
 
 
 
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////
 // WEB SOCKET
+////////////////////////////////////////////////////
 /**
  * connectionObj:
  * Object to hold all the connection and WS management related stuffs
@@ -966,17 +1145,6 @@ var connectionObj = {
     // {action:"ReceivedIP}
   }  
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1728,8 +1896,8 @@ var _onClickIF = {
 
 
 
-  
-  
+
+
 
 
 
@@ -1778,84 +1946,16 @@ function onclickgi8RequestedOTAReboots(_e) {
 
 
 
-// DOM MANIPULATION
+
 function updateGlobalInformation(_data) {
   console.log("updateGlobalInformation() starting");
   // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
   document.getElementById('serverIp').innerHTML = _data.serverIP;
-
-  document.getElementById('ssid').value = _data.ssid;
-  document.getElementById('pass').value = _data.pass;
-  document.getElementById('gatewayIP').value = _data.gatewayIP;
-  document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
-  document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
-
   console.log("updateGlobalInformation() ending");
 }
-// END DOM MANIPULATION
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-var _onClickSaveWifi = {
-  obj: {
-    key: "save",
-    val: "wifi",
-    dataset: {
-      ssid: document.getElementById('ssid').value,
-      pass: document.getElementById('pass').value,
-      gatewayIP: document.getElementById('gatewayIP').value,
-      ui16GatewayPort: parseInt(document.getElementById('ui16GatewayPort').value, 10),
-      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10),
-    }
-  },
-  buildObj: function(_passedObj) {
-    return Object.assign(this.obj, _passedObj);
-  },
-  wrapper: function(e, _obj) {
-    // update the buttons
-    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
-    // if the connection is closed, inform the user
-    if (connectionObj.checkConnect.closedVerb()) { return; }
-    // else, complete the message
-    _obj = this.buildObj(_obj);
-    // and send the message
-    _onClickHelpers.btnSend(_obj);
-    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
-  },
-
-  onIF: function (e) {
-    console.log("_onClickSaveWifi.onIF starting");
-    _onClickSaveWifi.wrapper(e, {
-        action: "changeBox",
-        lb: 0,
-      });
-    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
-    console.log("_onClickSaveWifi.onIF ending");
-  },
-
-  onAll: function (e) {
-    console.log("_onClickSaveWifi.onAll starting");
-
-    _onClickSaveWifi.wrapper(e, {
-        action: "changeNet",
-        lb: "all",
-      });
-    // {action: "changeNet", key: "save", val: "wifi", lb: "all", dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
-  
-    console.log("_onClickSaveWifi.onAll ending");
-  }
-};
 
 
 
@@ -1873,8 +1973,7 @@ function setGroupEvents() {
   document.getElementById("saveLBs").addEventListener('click', _onClickGroupReboot.onclickSaveLBsButton, false);
   document.getElementById("saveIF").addEventListener('click', _onClickIF.save, false);
   document.getElementById("saveAll").addEventListener('click', _onClickGroupReboot.onclickSaveAllButton, false);
-  document.getElementById('saveWifiSettingsIF').addEventListener('click', _onClickSaveWifi.onIF, false);
-  document.getElementById('saveWifiSettingsAll').addEventListener('click', _onClickSaveWifi.onAll, false);
+
   document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
     (_OTARebootButton) => {
       _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);

@@ -182,7 +182,9 @@
 
     <div class='mesh_glob_setters marg_top'>
       <div class='section_title bold  pad_tb10'>Mesh Global Settings</div>
+
       <div class='subsection_title pad_tb10'>Special Nodes Setters</div>
+
       <!-- Root node setter -->
       <div> <!-- root node number -->
         <label class='wifi_labels' for='rootBox'>Root Node:</label>
@@ -191,7 +193,8 @@
       <div class='pad_tb20'> <!-- buttons save IF Node settings -->
         <button id='saveRootNodeNumb' class='button'>Save</button>&nbsp;
         <button id='applyRootNodeNumb' class='button'>Apply</button>&nbsp;
-      </div>
+      </div> <!-- end root node setter -->
+
       <!-- IF node setter -->      
       <div> <!-- IF node number -->
         <label class='wifi_labels' for='IFBox'>Interface Node:</label>
@@ -201,6 +204,7 @@
         <button id='saveIFNodeNumb' class='button'>Save</button>&nbsp;
         <button id='applyIFNodeNumb' class='button'>Apply</button>&nbsp;
       </div>
+
       <!-- Soft AP settings setter -->
       <div class='subsection_title pad_tb10'>Soft AP Settings</div>
       <div> <!-- my soft AP IP -->
@@ -219,6 +223,7 @@
         <button id='saveSoftAPSettings' class='button'>Save</button>
         <button id='applySoftAPSettings' class='button'>Apply</button>
       </div>
+
       <!-- Mesh settings setter -->            
       <div class='subsection_title pad_tb10'>Mesh Settings</div>
       <div> <!-- mesh name-->
@@ -237,6 +242,8 @@
         <button id='saveMeshSettings' class='button'>On All</button>
       </div>
     </div> <!-- end mesh_glob_setters -->
+
+    <!-- wifi settings setter -->
     <div class='wifi_setters marg_top'>
       <div class='section_title bold  pad_tb10'>External Wifi Settings</div>
       <div> <!-- SSID -->
@@ -269,6 +276,7 @@
         <button id='saveWifiSettingsAll' class='button'>on All</button>
       </div>
     </div> <!-- wifi_setters -->
+
     <div class='if_ota_cmds marg_top'>
       <div class='section_title bold  pad_tb10'>Interface OTA Reboots</div>
       <div>
@@ -276,6 +284,7 @@
         <button class='gi8RequestedOTAReboots button' data-reboots='2'>2 reboots</button>
       </div>
     </div> <!-- if_ota_cmds -->
+
     <script src='index.js'></script>
 
   </body>
