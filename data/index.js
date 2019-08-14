@@ -481,10 +481,10 @@ class controlerBox {
   }
 
   /** controlerBox._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
-   *  matches with one of the parent button groups selector.
+   *  matches with one of the controlerBox button groups selector.
    * 
-   *  If so, it is able to set the "key" and "value" fields of the Json object that will
-   *  be sent to the IF.
+   *  If so, it sets the "key" and "value" fields of the Json object that will
+   *  be sent to the IF. The "lb" field is set at the beginning of the method.
    * 
    *  @params: _targt: the event target, _obj: the Json _obj
    *  @return: the object _obj ready to be sent.
@@ -492,6 +492,7 @@ class controlerBox {
    *  Gets called from this.dlgtdBtnEvent.
    */
   _eventTargetSwitch(_targt, _obj) {
+    _obj.lb = this.lb;
     /**  1. checks whether the event.target HTML element matches with the boxState button group
      *   selector. */
     if (_targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
