@@ -154,12 +154,10 @@ class delgtdDataSet {
 
 class btnGrp {
   constructor (props) {
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpContainerSelector:'div.box_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState}
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpContainerSelector:'div.box_def_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate}
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpContainerSelector:'div.command_gp', btnGrpCommonAttr: {selector: ""}}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/}
     this.parent                   = props.parent;
-    this.btnGrpContainerSelector  = props.btnGrpContainerSelector;
-    this.vEltBtnGrpContainer      = this.parent.virtualHtmlRowElt.querySelector(this.btnGrpContainerSelector);
     
     this.clickedBtnClass          = 'button_clicked';
     this.activeBtnClass           = 'button_active_state';
@@ -413,11 +411,11 @@ class controlerBox {
     this._setBoxRowHtmlProps();
 
     // grabbing the command buttons into a btnGrp
-    this.configBtnGrp             = new btnGrp({parent: this, btnGrpContainerSelector:'div.command_gp', datasetKey: "boxstate"});
+    this.configBtnGrp             = new btnGrp({parent: this, datasetKey: "boxstate"});
     
     // setting the state and default state buttons btnGrps
-    this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState});
-    this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_def_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate});
+    this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState});
+    this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate});
 
     // setting the span master box number
     this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
