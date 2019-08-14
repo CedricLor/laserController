@@ -804,7 +804,7 @@ class inpt {
 /** class grpSetter: holder of forms used to set various group settings
  *  (such as root node setter, IF node setter, Soft AP settings setter, 
  *   Mesh settings setter, wifi settings setter)
- */
+ *  */
 class grpSetter {
   // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
   constructor(props) {
@@ -826,53 +826,46 @@ class grpSetter {
   }
 
   /** grpSetter.setDelegatedBtnClickedEvent() sets an event listener on the settersGrp, listening to the
-   *  events bubbling from its buttons.
-   * */
+   *  events bubbling from its buttons. */
   setDelegatedBtnClickedEvent() {
     // document.getElementById('saveWifiSettingsIF').addEventListener('click', _onClickSaveWifi.onIF, false);
     // document.getElementById('saveWifiSettingsAll').addEventListener('click', _onClickSaveWifi.onAll, false);  
     this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
 
-    /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
-   *  matches with one of the controlerBox button groups selector.
+  /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
+   *  matches with a selector composed of the grpSetter button groups selector and the relevant
+   *  button id.
    * 
-   *  If so, it sets the "key" and "value" fields of the Json object that will
-   *  be sent to the IF. The "lb" field is set at the beginning of the method.
+   *  If so, it sets the _obj.lb and _obj.action fields of the Json object that will
+   *  be sent to the IF.
+   * 
+   *  The method also sets the other fields of the Json object at the beginning of the method.
    * 
    *  @params: _targt: the event target, _obj: the Json _obj
-   *  @return: the object _obj ready to be sent.
+   *  @return: the Json _obj ready to be sent.
    *  
-   *  Gets called from this.dlgtdBtnEvent.
-   */
+   *  Gets called from this.dlgtdBtnEvent. */
   _eventTargetSwitch(_targt, _obj) {
-    _obj.lb = this.lb;
-    /**  1. checks whether the event.target HTML element matches with the boxState button group
-     *   selector. */
-    if (_targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
-      // a. get the dataset key (boxState) and allot it to _obj.key
-      _obj.key   = this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey;
-      // b. get the value for dataset key (boxState) and allot it to _obj.value
-      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+    _obj.key      =  "save";
+    _obj.val      =  "wifi";
+    _obj.dataset  = {};
+    this.inputsMap.forEach((_inpt, _k) => {
+      _obj.dataset[_k] = _inpt.value;
+    });
+    /**  1. checks whether the event.target HTML element matches with the selector 
+     * "button#saveWifiSettingsIF" */
+    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj.lb     = 0;
+      _obj.action = "changeBox";
       return _obj;
     }
-    /**  2. checks whether the event.target HTML element matches with the default boxState button
-     *  group selector. */
-    if (_targt.matches(this.boxDefStateBtnGrp.btnGpSelectorProto)) {
-      // a. get the dataset key (defaultBoxstate) and allot it to _obj.key
-      _obj.key   = this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey;
-      // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.value
-      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
-      return _obj;
-    }
-    /**  3. checks whether the event.target HTML element matches with the configuration buttons
-     *  group selector. */
-    if (_targt.matches(this.configBtnGrp.btnGpSelectorProto)) {
-      let _subObj = this._onClickBxConf(_targt);
-      if (_subObj) {
-        Object.assign(_obj, this._onClickBxConf(_targt));
-        return _obj;
-      }
+    /**  2. checks whether the event.target HTML element matches with the selector 
+     * "button#saveWifiSettingsAll" */
+    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+    return _obj;
     }
     return false;
   }
@@ -889,55 +882,7 @@ class grpSetter {
 
 
 
-var _onClickSaveWifi = {
-  obj: {
-    key: "save",
-    val: "wifi",
-    dataset: {
-      ssid: document.getElementById('ssid').value,
-      pass: document.getElementById('pass').value,
-      gatewayIP: document.getElementById('gatewayIP').value,
-      ui16GatewayPort: parseInt(document.getElementById('ui16GatewayPort').value, 10),
-      ui8WifiChannel: parseInt(document.getElementById('ui8WifiChannel').value, 10),
-    }
-  },
-  buildObj: function(_passedObj) {
-    return Object.assign(this.obj, _passedObj);
-  },
-  wrapper: function(e, _obj) {
-    // update the buttons
-    _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
-    // if the connection is closed, inform the user
-    if (connectionObj.checkConnect.closedVerb()) { return; }
-    // else, complete the message
-    _obj = this.buildObj(_obj);
-    // and send the message
-    _onClickHelpers.btnSend(_obj);
-    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
-  },
 
-  onIF: function (e) {
-    console.log("_onClickSaveWifi.onIF starting");
-    _onClickSaveWifi.wrapper(e, {
-        action: "changeBox",
-        lb: 0,
-      });
-    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
-    console.log("_onClickSaveWifi.onIF ending");
-  },
-
-  onAll: function (e) {
-    console.log("_onClickSaveWifi.onAll starting");
-  
-    _onClickSaveWifi.wrapper(e, {
-        action: "changeNet",
-        lb: "all",
-      });
-    // {action: "changeNet", key: "save", val: "wifi", lb: "all", dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
-  
-    console.log("_onClickSaveWifi.onAll ending");
-  }
-};
 
 
 
