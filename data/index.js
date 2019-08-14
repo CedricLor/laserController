@@ -59,7 +59,7 @@ class bxCont {
      *  Called from the constructor of this class.
      * */
     init() {
-        let _row        = this.vBxContElt.getElementById('boxTemplate');
+        let _row        = this.vBxContElt.querySelector('#boxTemplate');
         this.vTemplate  = _row.cloneNode(true);
         this.vBxContElt.removeChild(_row);
     }
@@ -120,8 +120,8 @@ class bxCont {
      *  to this.vBxContElt.appendChild().
      * */
     appendAsLastChild(lb){
-        this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
         this.controlerBoxes[lb].insertedInDOM = true;
+      this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
     }
 
     /** bxCont.appendAsFirstChild(_newRow) inserts the _newRow as first child
@@ -135,12 +135,35 @@ class bxCont {
      *  Called from the controlerBox constructor upon creating a new box.
      * */
     appendAsFirstChild(lb){
-        if (this.vBxContElt.hasChildNodes()) {
+        this.controlerBoxes[lb].insertedInDOM = true;
+        if (this._bxCount && this.controlerBoxes.find(_cb => _cb.insertedInDOM)) {
           this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,
                                        this.vBxContElt.firstChild);
-        } else {
+          return;
+        }
           this.appendAsLastChild(lb);
         }
+
+    /** bxCont.appendNthChild(_newRow) inserts the _newRow as first child
+     *  in div#boxesContainer.
+     * 
+     *  @param: lb is the laser box number, which is used:
+     *  - to look for the next following row that might have been previously inserted
+     *  into the DOM;
+     *  - to select the new row in the controlerBoxes array and pass the html 
+     *  element representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+     *  to this.vBxContElt.insertBefore();
+     * 
+     *  Called from the controlerBox constructor upon creating a new box.
+     * */
+    appendAsNthChild(lb){
+      this.controlerBoxes[lb].insertedInDOM = true;
+      const _nextRow = this.controlerBoxes.find(_cb => ((_cb.lb > lb) && _cb.insertedInDOM));
+      if (_nextRow) {
+          this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,_nextRow);
+          return;
+      }
+      this.appendAsLastChild(lb);
     }
 
     /** bxCont.deleteAllRows() deletes a single box row and
@@ -195,7 +218,7 @@ class bxCont {
      *  */
     toBoxStateObj() {
         let _obj = Object.create(null);
-        this.controlerBoxes.forEach(function(element, index) {
+        this.controlerBoxes.forEach((element, index) => {
             _obj[index] = element.boxState;
           }  
         );
@@ -1813,7 +1836,7 @@ function setGroupEvents() {
   document.getElementById('saveWifiSettingsIF').addEventListener('click', _onClickSaveWifi.onIF, false);
   document.getElementById('saveWifiSettingsAll').addEventListener('click', _onClickSaveWifi.onAll, false);
   document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
-    function(_OTARebootButton){
+    (_OTARebootButton) => {
       _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);
     }
   );  
