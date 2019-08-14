@@ -120,7 +120,7 @@ class bxCont {
      *  to this.vBxContElt.appendChild().
      * */
     appendAsLastChild(lb){
-        this.controlerBoxes[lb].insertedInDOM = true;
+      this.controlerBoxes[lb].insertedInDOM = true;
       this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
     }
 
@@ -141,8 +141,8 @@ class bxCont {
                                        this.vBxContElt.firstChild);
           return;
         }
-          this.appendAsLastChild(lb);
-        }
+        this.appendAsLastChild(lb);
+    }
 
     /** bxCont.appendNthChild(_newRow) inserts the _newRow as first child
      *  in div#boxesContainer.
@@ -171,7 +171,7 @@ class bxCont {
     *   
     *  Returns an array with the deleted entry in the array
     * */
-   deleteAllRows() {
+    deleteAllRows() {
         // empty the array of controller boxes by splicing of all its members
         var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
         // resize the array of controller boxes to its original size
@@ -280,11 +280,13 @@ class controlerBox {
 
         // setting global params for the controlerBox
         this._setBoxRowHtmlProps();
+        this.configBtnGrp               = new btnGrp({parent: this, btnGrpContainerSelector:'div.command_gp', datasetKey: "boxstate"});
+        this.configBtnGrp.dlgtdBtnEvent = _onClickBoxConfig.wrapper;
         this._setEventsOnConfigBtns();
 
         // setting the state and default state buttons
-        this.boxStateBtnGrp           = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState});
-        this.boxDefStateBtnGrp        = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
+        this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState});
+        this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_def_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate});
 
         // setting the span master box number
         this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
@@ -314,16 +316,12 @@ class controlerBox {
      *  2. consider putting everything into a btnGrp.
      * */
     _setEventsOnConfigBtns() {
-        this.virtualHtmlRowElt.querySelector("#rebootBox").addEventListener('click', _onClickBoxConfig.reboot, false);
-        this.virtualHtmlRowElt.querySelector("#rebootBox").id = "rebootBox" + this.lb;     // set a unique id
-        this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").addEventListener('click', _onClickBoxConfig.rebootAndSave, false);
-        this.virtualHtmlRowElt.querySelector("#rebootAndSaveBox").id = "rebootAndSaveBox" + this.lb;     // set a unique id
-        this.virtualHtmlRowElt.querySelector("#savePrefsBox").addEventListener('click', _onClickBoxConfig.savePrefs, false);
-        this.virtualHtmlRowElt.querySelector("#savePrefsBox").id = "savePrefsBox" + this.lb;     // set a unique id
-        document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
-            function(_OTARebootButton, _i){
-                _OTARebootButton.addEventListener('click', _onClickBoxConfig.OTAReboots, false);
-                _OTARebootButton.id = "OTA" + (_i + 1) + "reboot" + this.lb; // set a unique id
+        this.virtualHtmlRowElt.querySelector("button[data-rebootBox]").addEventListener('click', _onClickBoxConfig.reboot, false);
+        this.virtualHtmlRowElt.querySelector("button[data-rebootAndSaveBox]").addEventListener('click', _onClickBoxConfig.rebootAndSave, false);
+        this.virtualHtmlRowElt.querySelector("button[data-savePrefsBox]").addEventListener('click', _onClickBoxConfig.savePrefs, false);
+        document.querySelectorAll('button[data-OTAreboot]').forEach(
+            (_btn) => {
+              _btn.addEventListener('click', _onClickBoxConfig.OTAReboots, false);
             }
         );    
     }
@@ -551,20 +549,27 @@ class dlgtdBtnEventWithDataSet {
 
 class btnGrp {
   constructor (props) {
-    // props = {parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_state_setter', datasetKey: "boxstate", activeBtnNum: this.boxState}
-    // props = {parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpContainerSelector:'div.box_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpContainerSelector:'div.box_def_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpContainerSelector:'div.command_gp', btnGrpCommonAttr: {selector: ""}}
     this.parent                   = props.parent;
     this.btnGrpContainerSelector  = props.btnGrpContainerSelector;
-    this.vEltBtnGrpContainer      = this.parent.querySelector(this.btnGrpContainerSelector);
+    this.vEltBtnGrpContainer      = this.parent.virtualHtmlRowElt.querySelector(this.btnGrpContainerSelector);
+    
     this.clickedBtnClass          = 'button_clicked';
     this.activeBtnClass           = 'button_active_state';
     this.changedRecvdBtnClass     = 'button_change_received';
-    this.datasetKey               = props.datasetKey;
-    this.btnGpSelectorProto       = "button[data-" + props.datasetKey + "]";
-    this.vBtnNodeList             = this.parent.querySelectorAll(this.btnGpSelectorProto);
-    this.activeBtnNum             = props.activeBtnNum;
+
+    // this.datasetKey               = props.datasetKey;
+    this.btnGrpCommonAttr         = props.btnGrpCommonAttr;
+    this.btnGpSelectorProto       = "button" + this.btnGrpCommonAttr.selector;
+
+    this.vBtnNodeList             = this.parent.virtualHtmlRowElt.querySelectorAll(this.btnGpSelectorProto);
+    this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
 
     this.setActiveBtn();
+
+    this.dlgtdBtnEvent            = new dlgtdBtnEventWithDataSet();
     this.setDelegatedBtnClickedEvent();
   }
 
@@ -575,9 +580,9 @@ class btnGrp {
    *  - calling this.setActiveBtn();
    */
   update(activeBtnNum) {
-    this.activeBtnNum = activeBtnNum;
-    this.markAllBtnsAsNonClicked();
-    this.setActiveBtn();
+      this.activeBtnNum = activeBtnNum;
+      this.markAllBtnsAsNonClicked();
+      this.setActiveBtn();  
   }
 
   /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
@@ -585,7 +590,9 @@ class btnGrp {
    *  to this.activeBtnNum.
    * */
   setActiveBtn() {
-    this.vBtnNodeList[this.activeBtnNum].className += ' ' + this.activeBtnClass;
+    if (this.activeBtnNum) {
+      this.vBtnNodeList[this.activeBtnNum].className += ' ' + this.activeBtnClass;
+    }
   }
 
   /** btnGrp.markAllBtnsAsNonClicked() iterates over the buttons node list
@@ -649,51 +656,10 @@ class btnGrp {
    *  events bubbling from its buttons.
    * */
   setDelegatedBtnClickedEvent() {
-    this.vEltBtnGrpContainer.addEventListener('click', this.delegatedOnClickButton.bind(this), false);
+    this.vEltBtnGrpContainer.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this), false);
   }
 
-  /** event listener on the button group container, listening to
-   *  click events bubbling from the buttons of this button group.
-   * */
-  delegatedOnClickButton(e) {
-    /** what is "this" in this context? What I want is the following:
-     *  this.btnGpSelectorProto <-- the class instance
-     *  this.dataset.boxstate <-- the clicked button
-     *  this.datasetKey <-- the class instance
-     * 
-     *  But I bound this to the event handler => this is the class instance.
-     * 
-     *  So I have to select rather e.target or e.currentTarget. Event bubble by 
-     *  default, so the parent elements will "hear" the children elements events.
-     * 
-     *  If e.currentTarget is called in an event handler attached to a parent 
-     *  element, e.currentTarget == the parent element; e.target == the children 
-     *  element on which the event occurred (ex. was clicked).
-     *  
-     *  If e.currentTarget is called in an event handler attached to the element 
-     *  on which the the event occured, it will be equal to e.target. 
-     * 
-     *  e.target: the element on which the event occured (was clicked)
-     *  e.currentTarget: the element to which the event handler is attached to
-     */
 
-    if (e.target && e.target.matches(this.btnGpSelectorProto)) {
-      // remove clicked classes on other btns
-      this.vBtnNodeList.forEach( (btn) => { _onClickHelpers.removeClassesOnNonClickedButton(btn); });
-      // add button_clicked class on clicked btn
-      e.target.className += ' ' + this.clickedBtnClass;
-      // if the connection is closed, inform the user and return
-      // TO DO: maybe, should trigger a delete all the boxes
-      if (connectionObj.checkConnect.closedVerb()) { return; }
-      // send the message via WS
-      _onClickHelpers.btnSend({
-        "action": "changeBox",
-        "key":    this.datasetKey,
-        "lb":     this.parent.dataset.lb,
-        "val":    parseInt(e.target.getAttribute(this.datasetKey), 10)
-      });
-    }
-  }
 }
 
 
@@ -738,11 +704,13 @@ class btn {
  *  Holder of all the onClick events of the box level configuration
  *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
 var _onClickBoxConfig = {
-    wrapper:        function(e, _obj) {
+    wrapper: function(e) {
         // update the buttons
         _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
         // if the connection is closed, inform the user
         if (connectionObj.checkConnect.closedVerb()) { return; }
+        var _obj;
+        _onClickBoxConfig.switch(e);
         // else, complete the message
         _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
         _obj.action = 'changeBox';
@@ -753,48 +721,37 @@ var _onClickBoxConfig = {
         // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
         // {action:"changeBox", key:"save", val: "all", lb:1}
     },
-
-    reboot:         function(e) {
-        console.log("_onClickBoxConfig.reboot starting");
-        _onClickBoxConfig.wrapper(e, {
-          key:  "reboot",
-          save: 0, // reboot without saving
-        });
-        // {action:"changeBox", key:"reboot", save: 0, lb:1}
-        console.log("_onClickBoxConfig.reboot ending");  
+    switch: function(e) {
+        if (e.target.data.rebootBox) {
+          return _onClickBoxConfig.reboot;
+        }
+        if (e.target.data.rebootAndSaveBox) {
+          return _onClickBoxConfig.rebootAndSave;
+        }
+        if (e.target.data.savePrefsBox) {
+          return _onClickBoxConfig.savePrefs;
+        }
+        if (e.target.data.OTAreboot) {
+          return _onClickBoxConfig.OTAReboots;
+        }
     },
-
-    rebootAndSave: function(e) {
-        console.log("_onClickBoxConfig.rebootAndSave starting");
-        _onClickBoxConfig.wrapper(e, {
-          key:  "reboot",
-          save: 1, // save and reboot
-        });
-        // {action:"changeBox", key:"reboot", save: 1, lb:1}
-        console.log("_onClickBoxConfig.rebootAndSave ending");
-    },
-
-    savePrefs:     function(e) {
-        console.log("_onClickBoxConfig.savePrefs starting");
-        _onClickBoxConfig.wrapper(e, {
-          key:  "save",
-          save: "all", // save (all the properties for this box) and reboot
-        });
-        // {action:"changeBox", key:"save", val: "all", lb:1}
-        console.log("_onClickBoxConfig.savePrefs ending");  
-    },
-
-    OTAReboots:   function(e) {
-      console.log("_onClickBoxConfig.OTAReboots starting");
-      _onClickBoxConfig.wrapper(e, {
-        key:      "save",
-        val:      "gi8RequestedOTAReboots",
-        reboots:  parseInt(this.dataset.reboots, 10),
-      });
+    // {action:"changeBox", key:"reboot", save: 0, lb:1}
+    /* reboot without saving */
+    reboot:  { key: "reboot", save: 0},
+    // {action:"changeBox", key:"reboot", save: 1, lb:1}
+    // save and reboot
+    rebootAndSave: { key: "reboot", save: 1},
+    // {action:"changeBox", key:"save", val: "all", lb:1}
+    // save (all the properties for this box) and reboot
+    savePrefs:  { key:  "save", save: "all"},
       // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-      console.log("_onClickBoxConfig.OTAReboots ending");
+    OTAReboots: { 
+      key: "save", 
+      val: "gi8RequestedOTAReboots", 
+      reboots: function(e) { (parseInt(e.target.dataset.reboots, 10));}
     }
 };
+
 
 
 
