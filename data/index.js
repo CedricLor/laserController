@@ -265,10 +265,12 @@ class btnGrp {
  *  click events bubbling from the buttons of this button group.
  * */
 class dlgtdBoxBtnEvent {
-  constructor() {
-    this._btnGrp           = undefined;
-    this._obj              = {"action":"changeBox"};
-    this._targt            = undefined;
+  // props: {parent: this, actionObj: {action:"changeBox"}}
+  constructor({props}) {
+    this.parent   = props.parent; 
+    this._obj     = props.actionObj || {action:"changeBox"};
+    this._btnGrp  = undefined;
+    this._targt   = undefined;
   }
   
   onClick(e) {
@@ -280,72 +282,23 @@ class dlgtdBoxBtnEvent {
 
     /** In an event hanlder, "this" is by default bound to the event.
      * 
-     *  However, here, "this" has been bound to the controlerBox instance where
-     *  this instance of the dlgtdBoxBtnEvent class has been created.
+     *  However, here, "this" has been bound to this dlgtdBoxBtnEvent instance, in the controlerBox
+     *  instance where this dlgtdBoxBtnEvent instance was created.
      * 
-     *  Because we need to be able to access "this" as bound to the class instance,
-     *  we get back to it by the "this" bound to the controlerBox instance.
+     *  This binding was done because we need to be able to access to this dlgtdBoxBtnEvent instance.
      * 
      *  Hence, var self = this.dlgtdBtnEvent;
      * */
-    var self          = this.dlgtdBtnEvent;
-    self._obj.action  = this.lb;
-    self._targt       = e.target;
+    var self      = this.dlgtdBtnEvent;
+    self._targt   = e.target;
 
-    self._eventTargetSwitch();
+    // self.parent._eventTargetSwitch(self._targt, self._obj)
+    self._obj = self.parent._eventTargetSwitch(self._targt, self._obj);
 
+    if (self._obj) {
     self._setClassesAndSendMsg();
+    }
   } // onClick(e)
-
-  _eventTargetSwitch() {
-    if (this._targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
-      this._btnGrp    = this.boxStateBtnGrp;
-      this._obj.key   = this._btnGrp.btnGrpCommonAttr.datasetKey;
-      this._obj.value = parseInt(this._targt.getAttribute(this._btnGrp.btnGrpCommonAttr.datasetKey), 10);
-      return;
-    }
-    if (this._targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
-      this._btnGrp    = this.boxDefStateBtnGrp;
-      this._obj.key   = this._btnGrp.btnGrpCommonAttr.datasetKey;
-      this._obj.value = parseInt(this._targt.getAttribute(this._btnGrp.btnGrpCommonAttr.datasetKey), 10);
-      return;
-    }
-    if (this._targt.matches(this.configBtnGrp.btnGpSelectorProto)) {
-      this._btnGrp = this.configBtnGrp;
-      Object.assign(this._obj, this._onClickBxConf());
-    }
-  }
-
-  /** _onClickBxConf():
-   * 
-   *  Returns objects to build the final object to be sent on click events on the 
-   *  box level configuration btns (reboot, reboot and save, save, OTA reboot). */
-  _onClickBxConf() {
-    if (this._targt.data.rebootBox) {
-      /** reboot without saving 
-       * {action:"changeBox", key:"reboot", save: 0, lb:1} */
-      return {key: "reboot", save: 0};
-    }
-    if (this._targt.data.rebootAndSaveBox) {
-      /** save and reboot 
-       * {action:"changeBox", key:"reboot", save: 1, lb:1} */
-      return {key: "reboot", save: 1};
-    }
-    if (this._targt.data.savePrefsBox) {
-      /** save (all the properties for this box) and reboot
-       * {action:"changeBox", key:"save", val: "all", lb:1} */
-      return {key:  "save", save: "all"};
-    }
-    if (this._targt.data.OTAreboot) {
-      /** OTA reboots
-       *  {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2} */
-      return { 
-        key: "save", 
-        val: "gi8RequestedOTAReboots", 
-        reboots: () => { return (parseInt(this._targt.dataset.reboots, 10));}
-      };
-    }
-  }
 
   _setClassesAndSendMsg() {
     this.setClassesOnBtns();
@@ -422,7 +375,7 @@ class controlerBox {
     // setting the select master box number
     this.mastSel                  = new mastSel({parent: this, selectSelector:'select.master_select', selectValue: this.masterbox});
 
-    this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent();
+    this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent({parent: this, actionObj: {action:"changeBox"}});
     this.setDelegatedBtnClickedEvent();
     
     boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
@@ -520,11 +473,85 @@ class controlerBox {
     this.mastSel.update(this.masterbox);
   }
 
-  /** sets an event listener on the controler box, listening to the
-   *  events bubbling from its buttons.
+  /** controlerBox.setDelegatedBtnClickedEvent() sets an event listener on the 
+   *  controler box, listening to the events bubbling from its buttons.
    * */
   setDelegatedBtnClickedEvent() {
-    this.virtualHtmlRowElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this), false);
+    this.virtualHtmlRowElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
+  }
+
+  /** controlerBox._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
+   *  matches with one of the parent button groups selector.
+   * 
+   *  If so, it is able to set the "key" and "value" fields of the Json object that will
+   *  be sent to the IF.
+   * 
+   *  @params: _targt: the event target, _obj: the Json _obj
+   *  @return: the object _obj ready to be sent.
+   *  
+   *  Gets called from this.dlgtdBtnEvent.
+   */
+  _eventTargetSwitch(_targt, _obj) {
+    /**  1. checks whether the event.target HTML element matches with the boxState button group
+     *   selector. */
+    if (_targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
+      // a. get the dataset key (boxState) and allot it to _obj.key
+      _obj.key   = this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey;
+      // b. get the value for dataset key (boxState) and allot it to _obj.value
+      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+      return _obj;
+    }
+    /**  2. checks whether the event.target HTML element matches with the default boxState button
+     *  group selector. */
+    if (_targt.matches(this.boxDefStateBtnGrp.btnGpSelectorProto)) {
+      // a. get the dataset key (defaultBoxstate) and allot it to _obj.key
+      _obj.key   = this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey;
+      // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.value
+      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+      return _obj;
+    }
+    /**  3. checks whether the event.target HTML element matches with the configuration buttons
+     *  group selector. */
+    if (_targt.matches(this.configBtnGrp.btnGpSelectorProto)) {
+      let _subObj = this._onClickBxConf(_targt);
+      if (_subObj) {
+        Object.assign(_obj, this._onClickBxConf(_targt));
+        return _obj;
+  }
+    }
+    return false;
+  }
+
+  /** controlerBox._onClickBxConf(_targt):
+   * 
+   *  Returns objects to build the final object to be sent on click events on the 
+   *  box level configuration btns (reboot, reboot and save, save, OTA reboot). */
+  _onClickBxConf(_targt) {
+    if (_targt.data.rebootBox) {
+      /** reboot without saving if the target HTML element has a data attribute rebootBox
+       * {action:"changeBox", key:"reboot", save: 0, lb:1} */
+      return {key: "reboot", save: 0};
+    }
+    if (_targt.data.rebootAndSaveBox) {
+      /** save and reboot if the target HTML element has a data attribute rebootAndSaveBox
+       * {action:"changeBox", key:"reboot", save: 1, lb:1} */
+      return {key: "reboot", save: 1};
+    }
+    if (_targt.data.savePrefsBox) {
+      /** save (all the properties for this box) and reboot if the target HTML element has 
+       *  a data attribute savePrefsBox
+       * {action:"changeBox", key:"save", val: "all", lb:1} */
+      return {key:  "save", save: "all"};
+    }
+    if (_targt.data.OTAreboot) {
+      /** OTA reboots if the target HTML element has a data attribute OTAreboot
+       *  {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2} */
+      return { 
+        key: "save", 
+        val: "gi8RequestedOTAReboots", 
+        reboots: parseInt(_targt.dataset.reboots, 10)
+      };
+    }
   }
 } // controlerBox
 
@@ -1760,12 +1787,6 @@ var _onClickSaveWifi = {
 
 
 
-
-
-
-
-
-
 function onclickgi8RequestedOTAReboots(_e) {
   console.log("onclickgi8RequestedOTAReboots starting");
 
@@ -1806,14 +1827,33 @@ function updateGlobalInformation(_data) {
   console.log("updateGlobalInformation() starting");
   // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
   document.getElementById('serverIp').innerHTML = _data.serverIP;
+
   document.getElementById('ssid').value = _data.ssid;
   document.getElementById('pass').value = _data.pass;
   document.getElementById('gatewayIP').value = _data.gatewayIP;
   document.getElementById('ui16GatewayPort').value = _data.ui16GatewayPort;
   document.getElementById('ui8WifiChannel').value = _data.ui8WifiChannel;
+
   console.log("updateGlobalInformation() ending");
 }
 // END DOM MANIPULATION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
