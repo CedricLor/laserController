@@ -482,6 +482,71 @@ class mastSel {
 
 
 
+class delgtdDataSet {
+  // props: {datasetKey: "boxState"}
+  constructor(props) {
+    this.datasetKey = props.datasetKey;
+    this.selector   = "[data-" + this.datasetKey + "]";
+  }
+}
+
+
+
+
+
+
+
+class dlgtdBtnEventWithDataSet {
+  /** event listener on the button group container, listening to
+   *  click events bubbling from the buttons of this button group.
+   * */
+  onClick(e) {
+    /** what is "this" in this context? What I want is the following:
+     *  this.btnGpSelectorProto <-- the class instance
+     *  this.dataset.boxstate <-- the clicked button
+     *  this.datasetKey <-- the class instance
+     * 
+     *  But I bound this to the event handler => this is the class instance.
+     * 
+     *  So I have to select rather e.target or e.currentTarget. Event bubble by 
+     *  default, so the parent elements will "hear" the children elements events.
+     * 
+     *  If e.currentTarget is called in an event handler attached to a parent 
+     *  element, e.currentTarget == the parent element; e.target == the children 
+     *  element on which the event occurred (ex. was clicked).
+     *  
+     *  If e.currentTarget is called in an event handler attached to the element 
+     *  on which the the event occured, it will be equal to e.target. 
+     * 
+     *  e.target: the element on which the event occured (was clicked)
+     *  e.currentTarget: the element to which the event handler is attached to
+     */
+
+    if (e.target && e.target.matches(this.btnGpSelectorProto)) {
+      // remove clicked classes on other btns
+      this.markAllBtnsAsNonClicked();
+      // add button_clicked class on clicked btn
+      e.target.className += ' ' + this.clickedBtnClass;
+      // if the connection is closed, inform the user and return
+      // TO DO: maybe, should trigger a delete all the boxes
+      if (connectionObj.checkConnect.closedVerb()) { return; }
+      // send the message via WS
+      _onClickHelpers.btnSend({
+        "action": "changeBox",
+        "key":    this.btnGrpCommonAttr.datasetKey,
+        "lb":     this.parent.lb,
+        "val":    parseInt(e.target.getAttribute(this.btnGrpCommonAttr.datasetKey), 10)
+      });
+    }
+  }
+}
+
+
+
+
+
+
+
 
 
 class btnGrp {
