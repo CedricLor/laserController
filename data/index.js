@@ -532,23 +532,23 @@ class controlerBox {
   _onClickBxConf(_targt) {
     if (_targt.data.rebootBox) {
       /** reboot without saving if the target HTML element has a data attribute rebootBox
-       * {action:"changeBox", key:"reboot", save: 0, lb:1} */
+       *  return: {action:"changeBox", key:"reboot", save: 0, lb:1} */
       return {key: "reboot", save: 0};
     }
     if (_targt.data.rebootAndSaveBox) {
       /** save and reboot if the target HTML element has a data attribute rebootAndSaveBox
-       * {action:"changeBox", key:"reboot", save: 1, lb:1} */
+       *  return: {action:"changeBox", key:"reboot", save: 1, lb:1} */
       return {key: "reboot", save: 1};
     }
     if (_targt.data.savePrefsBox) {
       /** save (all the properties for this box) and reboot if the target HTML element has 
        *  a data attribute savePrefsBox
-       * {action:"changeBox", key:"save", val: "all", lb:1} */
+       *  return: {action:"changeBox", key:"save", val: "all", lb:1} */
       return {key:  "save", save: "all"};
     }
     if (_targt.data.OTAreboot) {
       /** OTA reboots if the target HTML element has a data attribute OTAreboot
-       *  {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2} */
+       *  return: {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2} */
       return { 
         key: "save", 
         val: "gi8RequestedOTAReboots", 
