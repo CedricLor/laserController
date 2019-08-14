@@ -13,380 +13,30 @@ In index.js:
 */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** bxCont
+/** Classes:
  * 
- *  A class to hold div#boxesContainer, the array of controller boxes
- *  and class level methods for the array of controller boxes. */
-class bxCont {
-    constructor () {
-        this.id               = "boxesContainer";
-        this.vBxContElt       = document.getElementById(this.id);
-        this.emptyBxContElt   = this.vBxContElt.cloneNode(true);
-        this._potBxCount      = 10;
-        this._bxCount         = 0;
-        this.vTemplate        = undefined;
-        this.controlerBoxes   = new Array(this._potBxCount);
-        this.init();
-    }
-
-    /** bxCont.init() loads a clone of div#boxTemplate into this.vTemplate and 
-     *  deletes div#boxTemplate from the DOM once the clone loaded into memory.
-     * 
-     *  Called from the constructor of this class.
-     * */
-    init() {
-        let _row        = this.vBxContElt.querySelector('#boxTemplate');
-        this.vTemplate  = _row.cloneNode(true);
-        this.vBxContElt.removeChild(_row);
-    }
-
-    /** bxCont.addOrUpdateCntrlerBox(data) is called from the onMsgActionSwitch
-     *  upon receiving a _data.action === "addBox" message. It checks whether 
-     *  the box already exists. If so, it will update it, else, it will create it.
-     * 
-     *  In a last step (to be refactored), it handles the case where it is a reboot.
-     * */
-    addOrUpdateCntrlerBox(data) {
-      // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-      // Check whether the boxRow has already been created
-      let _controlerBoxEntry = boxCont.controlerBoxes[parseInt(data.lb, 10)];
-      if(_controlerBoxEntry) {
-        // let's update it
-        _controlerBoxEntry.update(data);
-      } else {
-        // let's create it
-        this.newCntrlerBox(data);
-      }
-      // handle the case where this is a reboot
-      onReboot.common.onAddBox(data);
-    }
-
-    /** bxCont.newCntrlerBox(data) creates a new controlerBox by calling
-     *  the controlerBox class constructor, adds this new controlerBox
-     *  to this container controlerBoxes array and increment this._bxCount++.
-     * 
-     *  It is called from bxCont.addOrUpdateCntrlerBox(data) when the WS gets 
-     *  informed by the server of the connection of a new laser controller 
-     *  to the mesh.
-     * 
-     *  @param: data is the Json string received from the server.
-     * */
-    newCntrlerBox(data) {
-        // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-        this.controlerBoxes[data.lb] = new controlerBox(data);
-        this._bxCount++;
-    }
-
-    /** bxCont.newRowElt(): creates and returns a clone of this.vTemplate,
-     *  to create a new boxRow. 
-     *  
-     *  Called from the controlerBox constructor, to allocate a value to 
-     *  virtualHtmlRowElt
-     * */
-    newRowElt() {
-        return (this.vTemplate.cloneNode(true));
-    }
-
-    /** bxCont.appendAsLastChild(lb) inserts a new row as last child 
-     *  of div#boxesContainer. 
-     * 
-     *  @param: lb is the laser box number, which is used to select the
-     *  new row in the controlerBoxes array and pass the html element 
-     *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
-     *  to this.vBxContElt.appendChild().
-     * */
-    appendAsLastChild(lb){
-      this.controlerBoxes[lb].insertedInDOM = true;
-      this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
-    }
-
-    /** bxCont.appendAsFirstChild(_newRow) inserts the _newRow as first child
-     *  in div#boxesContainer.
-     * 
-     *  @param: lb is the laser box number, which is used to select the
-     *  new row in the controlerBoxes array and pass the html element 
-     *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
-     *  to this.vBxContElt.insertBefore().
-     * 
-     *  Called from the controlerBox constructor upon creating a new box.
-     * */
-    appendAsFirstChild(lb){
-        this.controlerBoxes[lb].insertedInDOM = true;
-        if (this._bxCount && this.controlerBoxes.find(_cb => _cb.insertedInDOM)) {
-          this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,
-                                       this.vBxContElt.firstChild);
-          return;
-        }
-        this.appendAsLastChild(lb);
-    }
-
-    /** bxCont.appendNthChild(_newRow) inserts the _newRow as first child
-     *  in div#boxesContainer.
-     * 
-     *  @param: lb is the laser box number, which is used:
-     *  - to look for the next following row that might have been previously inserted
-     *  into the DOM;
-     *  - to select the new row in the controlerBoxes array and pass the html 
-     *  element representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
-     *  to this.vBxContElt.insertBefore();
-     * 
-     *  Called from the controlerBox constructor upon creating a new box.
-     * */
-    appendAsNthChild(lb){
-      this.controlerBoxes[lb].insertedInDOM = true;
-      const _nextRow = this.controlerBoxes.find(_cb => ((_cb.lb > lb) && _cb.insertedInDOM));
-      if (_nextRow) {
-          this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,_nextRow);
-          return;
-      }
-      this.appendAsLastChild(lb);
-    }
-
-    /** bxCont.deleteAllRows() deletes a single box row and
-    *  the corresponding representations in the array of controlerBoxes.
-    *   
-    *  Returns an array with the deleted entry in the array
-    * */
-    deleteAllRows() {
-        // empty the array of controller boxes by splicing of all its members
-        var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
-        // resize the array of controller boxes to its original size
-        this.controlerBoxes.length = this._potBxCount;
-        this._bxCount = this._potBxCount;
-        // delete all from DOM by replacing the container by its initial form
-        this.vBxContElt.parentNode.replaceChild(this.emptyBxContElt, this.vBxContElt);
-        // return the old array (the virtualHtmlRowElt have all been deleted at this stage, however)
-        return(oldBxArray);
-    }
-
-    /** bxCont.deleteRow(_data) deletes a single box row and the corresponding 
-     *  representations in the array. 
-     * 
-     *  @param: a Json _data string (the method is being called from the onMsgActionSwitch). 
-     *  
-     *  Returns a new array with the deleted entry as it sole member. 
-     * */
-    deleteRow(_data) {
-        // delete the corresponding entry in the array of controller boxes
-        var delBx = this.controlerBoxes.splice(_data.lb, 1);
-        // clone the HTML node
-        var _clonedNode = delBx.virtualHtmlRowElt.cloneNode(true);
-        // remove from DOM
-        this.vBxContElt.removeChild(delBx.virtualHtmlRowElt);
-        // insert the cloned node into the deleted entry
-        delBx.virtualHtmlRowElt = _clonedNode;
-        // check whether the box is not disconnecting as
-        // a result of a reboot order and inform the user
-        onReboot.LBs.onDeleteBox(_data);
-        // return the entry in a single member array
-        return (delBx);
-    }
-
-    /** bxCont.toBoxStateObj() converts the controlerBoxes array to
-     *  an object with:
-     *  - properties = index numbers of the controlerBoxes
-     *  - values = state of the controlerBoxes
-     * 
-     *  Returns the object.
-     *  
-     *  Called from connectionObj.wsonopen, to be sent to the interface node,
-     *  for reconciliation upon a new connection the the WS server.
-     *  */
-    toBoxStateObj() {
-        let _obj = Object.create(null);
-        this.controlerBoxes.forEach((element, index) => {
-            _obj[index] = element.boxState;
-          }  
-        );
-        return _obj;
-    }
-
-
-}
-
-var boxCont = new bxCont();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** class controlerBox
+ * class span
  * 
- *  A class to hold the controller boxes coming and exiting
- *  the DOM from the WebSocket.
- *  */
-class controlerBox {
-        // props = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-        constructor (props) {
-        // allocating the values from the Json data passed on by the server
-        this.lb                       = parseInt(props.lb, 10); // this laser box number
-        this.boxState                 = props.boxState;
-        this.boxStateChanging         = undefined;
-        this.boxDefstate              = props.boxDefstate;
-        this.boxDefstateChanging      = undefined;
-        this.masterbox                = parseInt(props.masterbox, 10); // masterbox number
-        this.masterboxChanging        = undefined;
+ * class mastSel
+ * 
+ * class btn
+ * 
+ * class delgtdDataSet
+ * 
+ * class dlgtdBtnEventWithDataSet
+ *  
+ * class btnGrp
+ * 
+ * class controlerBox
+ * 
+ * class bxCont
+ * 
+ */
 
-        // creating the boxRow html element
-        this.virtualHtmlRowElt        = boxCont.newRowElt();
-        
-        // DOM insertion witness (starts at false)
-        this.insertedInDOM            = false;
 
-        // setting global params for the controlerBox
-        this._setBoxRowHtmlProps();
-        this.configBtnGrp               = new btnGrp({parent: this, btnGrpContainerSelector:'div.command_gp', datasetKey: "boxstate", onClickEventHandler: _onClickBoxConfig.wrapper});
-        
 
-        // setting the state and default state buttons
-        this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState});
-        this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_def_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate});
 
-        // setting the span master box number
-        this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
 
-        // setting the select master box number
-        this.mastSel                  = new mastSel({parent: this, selectSelector:'select.master_select', selectValue: this.masterbox});
-
-        boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
-    }
-    
-    /** controlerBox._setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
-     *  of the boxRow.
-     *  
-     *  Called from this class's constructor.
-     */
-    _setBoxRowHtmlProps() {
-        this.virtualHtmlRowElt.id         = "boxRow" + this.lb;
-        this.virtualHtmlRowElt.dataset.lb = this.lb;
-        this.virtualHtmlRowElt.classList.remove('hidden');
-        this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
-    }
-
-    /** controlerBox.update(_data) updates the controlerBox values upon receiving the corresponding
-     *  values from WS.
-     * */
-    update(_data) {
-    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-      this._updateLocalStates(_data);
-      this._updateLocalMaster(_data);
-      this._updateChildrenStateBtns();
-      this._updateChildrenMaster();
-    }
-
-    /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
-     *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
-     * */
-    updateStateFB(_data) {
-      // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-      // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-      // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-      // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
-      if (_data.key === "boxState") {
-        this.boxStateBtnGrp.updateFB(_data);
-        return;
-      }
-      if (_data.key === "boxDefstate") {
-        this.boxDefStateBtnGrp.updateFB(_data);
-      }
-    }
-
-    /** controlerBox._updateLocalStates(_data) updates the state related local fields
-     *  (boxState, boxDefstate)
-     * */ 
-    _updateLocalStates(_data) {
-      this.boxState     = _data.boxState;
-      this.boxDefstate  = _data.boxDefstate;
-    }
-
-    /** controlerBox._updateChildrenStateBtns(_data) updates the state related 
-     *  children (state button, default state button)
-     * */ 
-    _updateChildrenStateBtns() {
-      // update the current active and default states
-      this.boxStateBtnGrp.update(this.boxState);
-      this.boxDefStateBtnGrp.update(this.boxDefstate);
-    }
-
-    /** controlerBox.updateMasterFB(_data) updates the local data and the master span
-     *  on feedback from a {action: "changeBox", key: "masterbox"...} request. 
-     * */
-    updateMasterFB(_data) {
-      let FBstat = parseInt(_data.st, 10);
-      if (FBstat === 1) {
-        this.masterboxChanging  = this.masterbox;
-        this._updateLocalMaster(_data);
-        this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_received"});
-        return;
-      }
-      if (FBstat === 2) {
-        this.masterboxChanging = undefined;
-        this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_executed", delClass: "change_ms_received"});
-      }      
-    }
-
-    /** controlerBox._updateLocalMaster(_data) updates the master related 
-     *  local fields (masterbox)
-     * */ 
-    _updateLocalMaster(_data) {
-      this.masterbox    = parseInt(_data.masterbox, 10); // masterbox number
-    }
-
-    /** controlerBox._updateChildrenMaster(_data) updates the master related
-     *  children (master span and master select)
-     * */ 
-    _updateChildrenMaster() {
-      // update the master span
-      this.masterSpan.update({textContent: this.masterbox + 200});
-      // update the master select
-      this.mastSel.update(this.masterbox);
-    }
-} // controlerBox
 
 
 
@@ -411,6 +61,7 @@ class span {
     if (props.delClass) {this.vSpanElt.classList.remove(props.delClass);}
   }
 }
+
 
 
 
@@ -461,6 +112,26 @@ class mastSel {
 
 
 
+class btn {
+  constructor (props) {
+    this.activeBtnClass = 'button_active_state';
+    this.id             = props.id;
+    this.classList      = props.classList;
+    this.vElt           = props.vElt;
+    this.onClickEvent   = props.onClickEvent;
+    this.dataSets       = props.dataSets;
+    this.clicked        = false;
+  }
+}
+
+
+
+
+
+
+
+
+
 class delgtdDataSet {
   // props: {datasetKey: "boxState"}
   constructor(props) {
@@ -468,6 +139,9 @@ class delgtdDataSet {
     this.selector   = "[data-" + this.datasetKey + "]";
   }
 }
+
+
+
 
 
 
@@ -519,6 +193,69 @@ class dlgtdBtnEventWithDataSet {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+/**
+ *  _onClickBoxConfig:
+ *  Holder of all the onClick events of the box level configuration
+ *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
+var _onClickBoxConfig = {
+    wrapper: function(e) {
+        // update the buttons
+        _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
+        // if the connection is closed, inform the user
+        if (connectionObj.checkConnect.closedVerb()) { return; }
+        var _obj;
+        _onClickBoxConfig.switch(e);
+        // else, complete the message
+        _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
+        _obj.action = 'changeBox';
+        // and send the message
+        _onClickHelpers.btnSend(_obj);
+        // {action:"changeBox", key:"reboot", save: 0, lb:1}
+        // {action:"changeBox", key:"reboot", save: 1, lb:1}
+        // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+        // {action:"changeBox", key:"save", val: "all", lb:1}
+    },
+    switch: function(e) {
+        if (e.target.data.rebootBox) {
+          return _onClickBoxConfig.reboot;
+        }
+        if (e.target.data.rebootAndSaveBox) {
+          return _onClickBoxConfig.rebootAndSave;
+        }
+        if (e.target.data.savePrefsBox) {
+          return _onClickBoxConfig.savePrefs;
+        }
+        if (e.target.data.OTAreboot) {
+          return _onClickBoxConfig.OTAReboots;
+        }
+    },
+    // {action:"changeBox", key:"reboot", save: 0, lb:1}
+    /* reboot without saving */
+    reboot:  { key: "reboot", save: 0},
+    // {action:"changeBox", key:"reboot", save: 1, lb:1}
+    // save and reboot
+    rebootAndSave: { key: "reboot", save: 1},
+    // {action:"changeBox", key:"save", val: "all", lb:1}
+    // save (all the properties for this box) and reboot
+    savePrefs:  { key:  "save", save: "all"},
+      // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
+    OTAReboots: { 
+      key: "save", 
+      val: "gi8RequestedOTAReboots", 
+      reboots: function(e) { (parseInt(e.target.dataset.reboots, 10));}
+    }
+};
+
 
 
 
@@ -639,8 +376,6 @@ class btnGrp {
   setDelegatedBtnClickedEvent() {
     this.vEltBtnGrpContainer.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this), false);
   }
-
-
 }
 
 
@@ -651,91 +386,342 @@ class btnGrp {
 
 
 
-class btn {
+
+/** class controlerBox
+ * 
+ *  A class to hold the controller boxes coming and exiting
+ *  the DOM from the WebSocket.
+ *  */
+class controlerBox {
+  // props = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   constructor (props) {
-    this.activeBtnClass = 'button_active_state';
-    this.id             = props.id;
-    this.classList      = props.classList;
-    this.vElt           = props.vElt;
-    this.onClickEvent   = props.onClickEvent;
-    this.dataSets       = props.dataSets;
-    this.clicked        = false;
+    // allocating the values from the Json data passed on by the server
+    this.lb                       = parseInt(props.lb, 10); // this laser box number
+    this.boxState                 = props.boxState;
+    this.boxStateChanging         = undefined;
+    this.boxDefstate              = props.boxDefstate;
+    this.boxDefstateChanging      = undefined;
+    this.masterbox                = parseInt(props.masterbox, 10); // masterbox number
+    this.masterboxChanging        = undefined;
+
+    // creating the boxRow html element
+    this.virtualHtmlRowElt        = boxCont.newRowElt();
+    
+    // DOM insertion witness (starts at false)
+    this.insertedInDOM            = false;
+
+    // setting global params for the controlerBox
+    this._setBoxRowHtmlProps();
+
+    // grabbing the command buttons into a btnGrp
+    this.configBtnGrp               = new btnGrp({parent: this, btnGrpContainerSelector:'div.command_gp', datasetKey: "boxstate", onClickEventHandler: _onClickBoxConfig.wrapper});
+    
+    // setting the state and default state buttons btnGrps
+    this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState});
+    this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpContainerSelector:'div.box_def_state_setter', btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate});
+
+    // setting the span master box number
+    this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
+    // setting the select master box number
+    this.mastSel                  = new mastSel({parent: this, selectSelector:'select.master_select', selectValue: this.masterbox});
+
+    boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
   }
+
+  /** controlerBox._setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
+  *  of the boxRow.
+  *  
+  *  Called from this class's constructor.
+  */
+  _setBoxRowHtmlProps() {
+    this.virtualHtmlRowElt.id         = "boxRow" + this.lb;
+    this.virtualHtmlRowElt.dataset.lb = this.lb;
+    this.virtualHtmlRowElt.classList.remove('hidden');
+    this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
+  }
+
+  /** controlerBox.update(_data) updates the controlerBox values upon receiving the corresponding
+  *  values from WS.
+  * 
+  *  _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+  * */
+  update(_data) {
+  this._updateLocalStates(_data);
+  this._updateLocalMaster(_data);
+  this._updateChildrenStateBtns();
+  this._updateChildrenMaster();
+  }
+
+  /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
+  *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
+  *  _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+  *  _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+  *  _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+  *  _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+  * */
+  updateStateFB(_data) {
+    if (_data.key === "boxState") {
+      this.boxStateBtnGrp.updateFB(_data);
+      return;
+    }
+    if (_data.key === "boxDefstate") {
+      this.boxDefStateBtnGrp.updateFB(_data);
+    }
+  }
+
+  /** controlerBox._updateLocalStates(_data) updates the state related local fields
+  *  (boxState, boxDefstate)
+  * */ 
+  _updateLocalStates(_data) {
+    this.boxState     = _data.boxState;
+    this.boxDefstate  = _data.boxDefstate;
+  }
+
+  /** controlerBox._updateChildrenStateBtns(_data) updates the state related 
+  *  children (state button, default state button)
+  * */ 
+  _updateChildrenStateBtns() {
+    // update the current active and default states
+    this.boxStateBtnGrp.update(this.boxState);
+    this.boxDefStateBtnGrp.update(this.boxDefstate);
+  }
+
+  /** controlerBox.updateMasterFB(_data) updates the local data and the master span
+  *  on feedback from a {action: "changeBox", key: "masterbox"...} request. 
+  * */
+  updateMasterFB(_data) {
+    let FBstat = parseInt(_data.st, 10);
+    if (FBstat === 1) {
+      this.masterboxChanging  = this.masterbox;
+      this._updateLocalMaster(_data);
+      this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_received"});
+      return;
+    }
+    if (FBstat === 2) {
+      this.masterboxChanging = undefined;
+      this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_executed", delClass: "change_ms_received"});
+    }      
+  }
+
+  /** controlerBox._updateLocalMaster(_data) updates the master related 
+  *  local fields (masterbox)
+  * */ 
+  _updateLocalMaster(_data) {
+    this.masterbox    = parseInt(_data.masterbox, 10); // masterbox number
+  }
+
+  /** controlerBox._updateChildrenMaster(_data) updates the master related
+  *  children (master span and master select)
+  * */ 
+  _updateChildrenMaster() {
+    // update the master span
+    this.masterSpan.update({textContent: this.masterbox + 200});
+    // update the master select
+    this.mastSel.update(this.masterbox);
+  }
+} // controlerBox
+
+
+
+
+
+
+
+
+
+
+/** bxCont
+ * 
+ *  A class to hold div#boxesContainer, the array of controller boxes
+ *  and class level methods for the array of controller boxes. */
+class bxCont {
+  constructor () {
+      this.id               = "boxesContainer";
+      this.vBxContElt       = document.getElementById(this.id);
+      this.emptyBxContElt   = this.vBxContElt.cloneNode(true);
+      this._potBxCount      = 10;
+      this._bxCount         = 0;
+      this.vTemplate        = undefined;
+      this.controlerBoxes   = new Array(this._potBxCount);
+      this.init();
+  }
+
+  /** bxCont.init() loads a clone of div#boxTemplate into this.vTemplate and 
+   *  deletes div#boxTemplate from the DOM once the clone loaded into memory.
+   * 
+   *  Called from the constructor of this class.
+   * */
+  init() {
+      let _row        = this.vBxContElt.querySelector('#boxTemplate');
+      this.vTemplate  = _row.cloneNode(true);
+      this.vBxContElt.removeChild(_row);
+  }
+
+  /** bxCont.addOrUpdateCntrlerBox(data) is called from the onMsgActionSwitch
+   *  upon receiving a _data.action === "addBox" message. It checks whether 
+   *  the box already exists. If so, it will update it, else, it will create it.
+   * 
+   *  In a last step (to be refactored), it handles the case where it is a reboot.
+   * */
+  addOrUpdateCntrlerBox(data) {
+    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+    // Check whether the boxRow has already been created
+    let _controlerBoxEntry = boxCont.controlerBoxes[parseInt(data.lb, 10)];
+    if(_controlerBoxEntry) {
+      // let's update it
+      _controlerBoxEntry.update(data);
+    } else {
+      // let's create it
+      this.newCntrlerBox(data);
+    }
+    // handle the case where this is a reboot
+    onReboot.common.onAddBox(data);
+  }
+
+  /** bxCont.newCntrlerBox(data) creates a new controlerBox by calling
+   *  the controlerBox class constructor, adds this new controlerBox
+   *  to this container controlerBoxes array and increment this._bxCount++.
+   * 
+   *  It is called from bxCont.addOrUpdateCntrlerBox(data) when the WS gets 
+   *  informed by the server of the connection of a new laser controller 
+   *  to the mesh.
+   * 
+   *  @param: data is the Json string received from the server.
+   * */
+  newCntrlerBox(data) {
+      // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+      this.controlerBoxes[data.lb] = new controlerBox(data);
+      this._bxCount++;
+  }
+
+  /** bxCont.newRowElt(): creates and returns a clone of this.vTemplate,
+   *  to create a new boxRow. 
+   *  
+   *  Called from the controlerBox constructor, to allocate a value to 
+   *  virtualHtmlRowElt
+   * */
+  newRowElt() {
+      return (this.vTemplate.cloneNode(true));
+  }
+
+  /** bxCont.appendAsLastChild(lb) inserts a new row as last child 
+   *  of div#boxesContainer. 
+   * 
+   *  @param: lb is the laser box number, which is used to select the
+   *  new row in the controlerBoxes array and pass the html element 
+   *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+   *  to this.vBxContElt.appendChild().
+   * */
+  appendAsLastChild(lb){
+    this.controlerBoxes[lb].insertedInDOM = true;
+    this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
+  }
+
+  /** bxCont.appendAsFirstChild(_newRow) inserts the _newRow as first child
+   *  in div#boxesContainer.
+   * 
+   *  @param: lb is the laser box number, which is used to select the
+   *  new row in the controlerBoxes array and pass the html element 
+   *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+   *  to this.vBxContElt.insertBefore().
+   * 
+   *  Called from the controlerBox constructor upon creating a new box.
+   * */
+  appendAsFirstChild(lb){
+      this.controlerBoxes[lb].insertedInDOM = true;
+      if (this._bxCount && this.controlerBoxes.find(_cb => _cb.insertedInDOM)) {
+        this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,
+                                     this.vBxContElt.firstChild);
+        return;
+      }
+      this.appendAsLastChild(lb);
+  }
+
+  /** bxCont.appendNthChild(_newRow) inserts the _newRow as first child
+   *  in div#boxesContainer.
+   * 
+   *  @param: lb is the laser box number, which is used:
+   *  - to look for the next following row that might have been previously inserted
+   *  into the DOM;
+   *  - to select the new row in the controlerBoxes array and pass the html 
+   *  element representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+   *  to this.vBxContElt.insertBefore();
+   * 
+   *  Called from the controlerBox constructor upon creating a new box.
+   * */
+  appendAsNthChild(lb){
+    this.controlerBoxes[lb].insertedInDOM = true;
+    const _nextRow = this.controlerBoxes.find(_cb => ((_cb.lb > lb) && _cb.insertedInDOM));
+    if (_nextRow) {
+        this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,_nextRow);
+        return;
+    }
+    this.appendAsLastChild(lb);
+  }
+
+  /** bxCont.deleteAllRows() deletes a single box row and
+  *  the corresponding representations in the array of controlerBoxes.
+  *   
+  *  Returns an array with the deleted entry in the array
+  * */
+  deleteAllRows() {
+      // empty the array of controller boxes by splicing of all its members
+      var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
+      // resize the array of controller boxes to its original size
+      this.controlerBoxes.length = this._potBxCount;
+      this._bxCount = this._potBxCount;
+      // delete all from DOM by replacing the container by its initial form
+      this.vBxContElt.parentNode.replaceChild(this.emptyBxContElt, this.vBxContElt);
+      // return the old array (the virtualHtmlRowElt have all been deleted at this stage, however)
+      return(oldBxArray);
+  }
+
+  /** bxCont.deleteRow(_data) deletes a single box row and the corresponding 
+   *  representations in the array. 
+   * 
+   *  @param: a Json _data string (the method is being called from the onMsgActionSwitch). 
+   *  
+   *  Returns a new array with the deleted entry as it sole member. 
+   * */
+  deleteRow(_data) {
+      // delete the corresponding entry in the array of controller boxes
+      var delBx = this.controlerBoxes.splice(_data.lb, 1);
+      // clone the HTML node
+      var _clonedNode = delBx.virtualHtmlRowElt.cloneNode(true);
+      // remove from DOM
+      this.vBxContElt.removeChild(delBx.virtualHtmlRowElt);
+      // insert the cloned node into the deleted entry
+      delBx.virtualHtmlRowElt = _clonedNode;
+      // check whether the box is not disconnecting as
+      // a result of a reboot order and inform the user
+      onReboot.LBs.onDeleteBox(_data);
+      // return the entry in a single member array
+      return (delBx);
+  }
+
+  /** bxCont.toBoxStateObj() converts the controlerBoxes array to
+   *  an object with:
+   *  - properties = index numbers of the controlerBoxes
+   *  - values = state of the controlerBoxes
+   * 
+   *  Returns the object.
+   *  
+   *  Called from connectionObj.wsonopen, to be sent to the interface node,
+   *  for reconciliation upon a new connection the the WS server.
+   *  */
+  toBoxStateObj() {
+      let _obj = Object.create(null);
+      this.controlerBoxes.forEach((element, index) => {
+          _obj[index] = element.boxState;
+        }  
+      );
+      return _obj;
+  }
+
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- *  _onClickBoxConfig:
- *  Holder of all the onClick events of the box level configuration
- *  buttons (reboot, save, reboot and save, OTA reboot) buttons. */
-var _onClickBoxConfig = {
-    wrapper: function(e) {
-        // update the buttons
-        _onClickHelpers.updateClickButtons(e, 'button', e.target.parentNode); // parent node is <div class='setters_group command_gp'>
-        // if the connection is closed, inform the user
-        if (connectionObj.checkConnect.closedVerb()) { return; }
-        var _obj;
-        _onClickBoxConfig.switch(e);
-        // else, complete the message
-        _obj.lb = _onClickHelpers.findUpLaserBoxNumber(e.target.parentNode);
-        _obj.action = 'changeBox';
-        // and send the message
-        _onClickHelpers.btnSend(_obj);
-        // {action:"changeBox", key:"reboot", save: 0, lb:1}
-        // {action:"changeBox", key:"reboot", save: 1, lb:1}
-        // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-        // {action:"changeBox", key:"save", val: "all", lb:1}
-    },
-    switch: function(e) {
-        if (e.target.data.rebootBox) {
-          return _onClickBoxConfig.reboot;
-        }
-        if (e.target.data.rebootAndSaveBox) {
-          return _onClickBoxConfig.rebootAndSave;
-        }
-        if (e.target.data.savePrefsBox) {
-          return _onClickBoxConfig.savePrefs;
-        }
-        if (e.target.data.OTAreboot) {
-          return _onClickBoxConfig.OTAReboots;
-        }
-    },
-    // {action:"changeBox", key:"reboot", save: 0, lb:1}
-    /* reboot without saving */
-    reboot:  { key: "reboot", save: 0},
-    // {action:"changeBox", key:"reboot", save: 1, lb:1}
-    // save and reboot
-    rebootAndSave: { key: "reboot", save: 1},
-    // {action:"changeBox", key:"save", val: "all", lb:1}
-    // save (all the properties for this box) and reboot
-    savePrefs:  { key:  "save", save: "all"},
-      // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2}
-    OTAReboots: { 
-      key: "save", 
-      val: "gi8RequestedOTAReboots", 
-      reboots: function(e) { (parseInt(e.target.dataset.reboots, 10));}
-    }
-};
-
-
-
-
+var boxCont = new bxCont();
 
 
 
