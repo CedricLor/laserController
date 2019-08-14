@@ -287,7 +287,7 @@ class controlerBox {
         this.boxDefStateBtnGrp        = new btnGrp({parent: this.virtualHtmlRowElt, btnGrpContainerSelector:'div.box_def_state_setter', datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
 
         // setting the span master box number
-        this.masterSpan               = new span({parent: this.virtualHtmlRowElt, selector: "span.master_box_number", textContent: this.masterbox + 200});
+        this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
 
         // setting the select master box number
         this.mastSel                  = new mastSel({parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox});
@@ -419,10 +419,10 @@ class controlerBox {
 
 class span {
   constructor (props) {
-    // {parent: this.virtualHtmlRowElt, selector: "span.master_box_number", textContent: this.masterbox + 200}
+    // {parent: this/*bx.controlerBoxes[0]*/, selector: "span.master_box_number", textContent: this.masterbox + 200}
     this.parent               = props.parent;
     this.selector             = props.selector;
-    this.vSpanElt             = this.parent.querySelector(this.selector);
+    this.vSpanElt             = this.parent.virtualHtmlRowElt.querySelector(this.selector);
     this.vSpanElt.textContent = props.textContent;
   }
 
