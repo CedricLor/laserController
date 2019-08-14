@@ -46,6 +46,9 @@ In index.js:
 
 
 
+
+
+
 class span {
   constructor (props) {
     // {parent: this/*bx.controlerBoxes[0]*/, selector: "span.master_box_number", textContent: this.masterbox + 200}
@@ -377,9 +380,6 @@ class btnGrp {
     this.vEltBtnGrpContainer.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this), false);
   }
 }
-
-
-
 
 
 
@@ -722,6 +722,7 @@ class bxCont {
 }
 
 var boxCont = new bxCont();
+
 
 
 
