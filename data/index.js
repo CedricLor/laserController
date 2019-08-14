@@ -323,7 +323,7 @@ class controlerBox {
         document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
             function(_OTARebootButton, _i){
                 _OTARebootButton.addEventListener('click', _onClickBoxConfig.OTAReboots, false);
-                _OTARebootButton.id = "OTA" + _i + "reboot" + this.lb; // set a unique id
+                _OTARebootButton.id = "OTA" + (_i + 1) + "reboot" + this.lb; // set a unique id
             }
         );    
     }
