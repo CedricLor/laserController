@@ -290,7 +290,7 @@ class controlerBox {
         this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
 
         // setting the select master box number
-        this.mastSel                  = new mastSel({parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox});
+        this.mastSel                  = new mastSel({parent: this, selectSelector:'select.master_select', selectValue: this.masterbox});
 
         boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
     }
@@ -443,10 +443,10 @@ class span {
 
 class mastSel {
   constructor (props) {
-    // {parent: this.virtualHtmlRowElt, selectSelector:'select.master_select', selectValue: this.masterbox}
+    // {parent: this.controlerBoxes[0], selectSelector:'select.master_select', selectValue: this.masterbox}
     this.parent           = props.parent;
     this.selectSelector   = props.selectSelector;
-    this.vSelectElt       = this.parent.querySelector(this.selectSelector);
+    this.vSelectElt       = this.parent.virtualHtmlRowElt.querySelector(this.selectSelector);
     this.vSelectElt.value = props.selectValue;
 
     this.vSelectElt.addEventListener('input', this._oninputMasterSelect.bind(this), false);
