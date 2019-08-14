@@ -164,7 +164,7 @@ class btnGrp {
     this.changedRecvdBtnClass     = 'button_change_received';
 
     // this.datasetKey               = props.datasetKey;
-    this.btnGrpCommonAttr         = props.btnGrpCommonAttr;
+    this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
     this.btnGpSelectorProto       = "button" + this.btnGrpCommonAttr.selector;
 
     this.vBtnNodeList             = this.parent.virtualHtmlRowElt.querySelectorAll(this.btnGpSelectorProto);
