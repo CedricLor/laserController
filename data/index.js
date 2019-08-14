@@ -954,6 +954,183 @@ var connectionObj = {
 
 
 /**
+ * onMsgActionSwitch:
+ * a kind of controller, dispatching messages to various functions
+ * depending on their types
+ */
+function onMsgActionSwitch(_data) {
+  // Received IP and other global data (wifi settings)
+  if (_data.action === 3) {
+    // console.log("WS JSON message: " + _data.ServerIP);
+    // Fill in the data in the DOM and add some eventHandlers
+    updateGlobalInformation(_data);
+    connectionObj.sendReceivedIP();
+    return;
+  }
+
+
+  // 4. User request to change boxState of a given box has been received
+  // and is being processed
+  // 5. boxState of existing box has been updated
+  if (_data.action === "changeBox" && _data.key === "boxState") {
+    // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+    // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
+    return;
+  }
+
+
+  // 6. a new box has connected to the mesh
+  if (_data.action === "addBox") {
+    console.log("---------------- addBox switch starting -----------------");
+    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+    bxCont.addOrUpdateCntrlerBox(_data);
+    return;
+  }
+
+
+  // 7. an existing box has been disconnected from the mesh
+  // (or the DOM contained boxRows corresponding to boxes that
+  // have been disconnected from the mesh)
+  if (_data.action === "deleteBox") {
+    console.log("---------------- delete switch starting -----------------");
+    // delete all the boxes
+    if (_data.lb === 'a') {
+      // _data = {action: "deleteBox"; lb: "a"}
+      boxCont.deleteAllRows();
+      return;
+    }
+    // if delete one box
+    // _data = {lb:1; action:"deleteBox"}
+    boxCont.deleteRow(_data);
+    return;
+  }
+
+
+  // 8. a box has changed master
+  if (_data.action === "changeBox" && _data.key === "masterbox") {
+    // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+    // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateMasterFB(_data);
+    return;
+  }
+
+
+  // 9. User request to change default boxState of a given box has been received
+  // and is being processed
+  // 10. the default state of a given box has changed
+  if (_data.action === "changeBox" && _data.key === "boxDefstate") {
+    // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+    // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
+    return;
+  }
+
+
+  if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === (0 || "all")) { // 9. User request to reboot the interface or all the boxes has been received and is being processed
+    // _data = {lb:1; action: "changeBox"; key: "reboot"; val: 0; lb: 0 st: 1}
+    onReboot.all.startConfirm();
+    return;
+  }
+
+
+  if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { // User request to reboot the LBs has been received and is being processed
+    console.log("---------------- rebootStart switch starting -----------------");
+    onReboot.LBs.startConfirm();
+    return;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** _onClickHelpers:
+ * Library of helpers, to remove classes, add classes, send messages, identify the laser
+ * box number, etc. */
+var _onClickHelpers = {
+  findUpLaserBoxNumber: function(el) {
+      while (el.parentNode) {
+          el = el.parentNode;
+          if (el.dataset.lb) {
+            return parseInt(el.dataset.lb, 10);
+          }
+      }
+      return null;
+  },
+
+  btnSend: function (_obj) {
+    connectionObj.ws.send(JSON.stringify(_obj));
+  },
+
+  /** _onClickHelpers.updateClickButtons(e, _selector, _buttonsParentElement)
+   *  Called by onClick event handlers on buttons.
+   *  Iterates over the group of buttons to which the clicked buttons pertains.
+   *  Removes any "button_clicked", "button_active_state" or
+   *  "button_change_received" class that they may retain.
+   *  Add a "button_clicked" class to the clicked button. */
+  updateClickButtons: (e, _selector, _buttonsParentElement) => {
+    _buttonsParentElement.querySelectorAll(_selector).forEach(
+      (_button) => {
+        _onClickHelpers.removeClassesOnNonClickedButton(_button);
+      }
+    );
+    e.target.className += ' button_clicked';
+  },
+
+  /** _onClickHelpers.removeClassesOnNonClickedButton(_button)
+   *   Removes any "button_clicked", "button_active_state" or
+   *  "button_change_received" class that a button may retain.  */
+  removeClassesOnNonClickedButton: (_button) => {
+    _button.classList.remove('button_clicked');
+    _button.classList.remove('button_active_state');
+    _button.classList.remove('button_change_received');
+  } 
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
  * onReboot: Object holding all the stack to handle the process of informing the user
  * on rebooting the all the LBs or all the mesh nodes
  */
@@ -1319,183 +1496,6 @@ var onReboot = {
 
 
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * onMsgActionSwitch:
- * a kind of controller, dispatching messages to various functions
- * depending on their types
- */
-function onMsgActionSwitch(_data) {
-  // Received IP and other global data (wifi settings)
-  if (_data.action === 3) {
-    // console.log("WS JSON message: " + _data.ServerIP);
-    // Fill in the data in the DOM and add some eventHandlers
-    updateGlobalInformation(_data);
-    connectionObj.sendReceivedIP();
-    return;
-  }
-
-
-  // 4. User request to change boxState of a given box has been received
-  // and is being processed
-  // 5. boxState of existing box has been updated
-  if (_data.action === "changeBox" && _data.key === "boxState") {
-    // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-    // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
-    return;
-  }
-
-
-  // 6. a new box has connected to the mesh
-  if (_data.action === "addBox") {
-    console.log("---------------- addBox switch starting -----------------");
-    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-    bxCont.addOrUpdateCntrlerBox(_data);
-    return;
-  }
-
-
-  // 7. an existing box has been disconnected from the mesh
-  // (or the DOM contained boxRows corresponding to boxes that
-  // have been disconnected from the mesh)
-  if (_data.action === "deleteBox") {
-    console.log("---------------- delete switch starting -----------------");
-    // delete all the boxes
-    if (_data.lb === 'a') {
-      // _data = {action: "deleteBox"; lb: "a"}
-      boxCont.deleteAllRows();
-      return;
-    }
-    // if delete one box
-    // _data = {lb:1; action:"deleteBox"}
-    boxCont.deleteRow(_data);
-    return;
-  }
-
-
-  // 8. a box has changed master
-  if (_data.action === "changeBox" && _data.key === "masterbox") {
-    // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-    // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateMasterFB(_data);
-    return;
-  }
-
-
-  // 9. User request to change default boxState of a given box has been received
-  // and is being processed
-  // 10. the default state of a given box has changed
-  if (_data.action === "changeBox" && _data.key === "boxDefstate") {
-    // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-    // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
-    return;
-  }
-
-
-  if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === (0 || "all")) { // 9. User request to reboot the interface or all the boxes has been received and is being processed
-    // _data = {lb:1; action: "changeBox"; key: "reboot"; val: 0; lb: 0 st: 1}
-    onReboot.all.startConfirm();
-    return;
-  }
-
-
-  if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { // User request to reboot the LBs has been received and is being processed
-    console.log("---------------- rebootStart switch starting -----------------");
-    onReboot.LBs.startConfirm();
-    return;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** _onClickHelpers:
- * Library of helpers, to remove classes, add classes, send messages, identify the laser
- * box number, etc. */
-var _onClickHelpers = {
-  findUpLaserBoxNumber: function(el) {
-      while (el.parentNode) {
-          el = el.parentNode;
-          if (el.dataset.lb) {
-            return parseInt(el.dataset.lb, 10);
-          }
-      }
-      return null;
-  },
-
-  btnSend: function (_obj) {
-    connectionObj.ws.send(JSON.stringify(_obj));
-  },
-
-  /** _onClickHelpers.updateClickButtons(e, _selector, _buttonsParentElement)
-   *  Called by onClick event handlers on buttons.
-   *  Iterates over the group of buttons to which the clicked buttons pertains.
-   *  Removes any "button_clicked", "button_active_state" or
-   *  "button_change_received" class that they may retain.
-   *  Add a "button_clicked" class to the clicked button. */
-  updateClickButtons: (e, _selector, _buttonsParentElement) => {
-    _buttonsParentElement.querySelectorAll(_selector).forEach(
-      (_button) => {
-        _onClickHelpers.removeClassesOnNonClickedButton(_button);
-      }
-    );
-    e.target.className += ' button_clicked';
-  },
-
-  /** _onClickHelpers.removeClassesOnNonClickedButton(_button)
-   *   Removes any "button_clicked", "button_active_state" or
-   *  "button_change_received" class that a button may retain.  */
-  removeClassesOnNonClickedButton: (_button) => {
-    _button.classList.remove('button_clicked');
-    _button.classList.remove('button_active_state');
-    _button.classList.remove('button_change_received');
-  } 
-};
-
-
-
-
-
-
-
-
-
 
 
 
