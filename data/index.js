@@ -212,7 +212,7 @@ class btnGrp {
     _btn.classList.remove(this.clickedBtnClass, this.activeBtnClass, this.changedRecvdBtnClass);
   } 
 
-  /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
+  /** btnGrp.updateStateFB(_data) updates the local data and the btnGrp
    *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
    * */
   updateFB(_data) {
