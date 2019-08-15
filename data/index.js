@@ -1000,7 +1000,9 @@ var connectionObj = {
   // connect makes the connection. It is called by the connectionObj.check() function.
   connect:          function() {
     console.log("connect() starting.");
-    connectionObj.ws =            new WebSocket('ws://'+ self.location.host +'/');
+    // let wsServerIp = self.location.host;
+    let wsServerIp = '192.168.43.50';
+    connectionObj.ws =            new WebSocket('ws://'+ wsServerIp +'/');
   
     /** ws: onopen
      *  send a message to the server with the list of 
