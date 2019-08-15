@@ -1208,7 +1208,7 @@ function onMsgActionSwitch(_data) {
   if (_data.action === "addBox") {
     console.log("---------------- addBox switch starting -----------------");
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-    bxCont.addOrUpdateCntrlerBox(_data);
+    boxCont.addOrUpdateCntrlerBox(_data);
     return;
   }
 
