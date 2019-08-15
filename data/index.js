@@ -814,19 +814,39 @@ class inpt {
 class grpSetter {
   // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
   constructor(props={}) {
-  constructor(props) {
+    // if no selector has been provided, just return
+    if (!(props.selector)) {
+      return;
+    }
     // generic selector
     this.selector       = props.selector;
     this.vElt           = document.querySelector(this.selector);
     delete props.selector;
-    // load the settings and the <input> children of this container div into an inputsMap
-    this.inputsMap      = new Map(
-      this.vElt.querySelectorAll('input').forEach(_input => {
-        this.inputs[_input.id] = new inpt({parent: this, name: _input.id, vElt: _input, value: props[_input.id]});
-      })  
-    );
-    // add a button group to hold the setters buttons
+    // create an inputs map to manage the <input>s
+    this.inputsMap      = new Map();
+    // add a button group to manage the setters buttons
     this.btnGrp         = new btnGrp({parent: this});
+  }
+
+  /** grpSetter.update(props) updates the grpSetter upon receiving new 
+   *  information from the IF.
+   * 
+   *  Update process consists in:
+   *  1. clearing the inputsMap;
+   *  2. loading the inputs and corresponding values from the WS message into
+   *  new entries in the inputsMap;
+   *  3. instantiating the dlgtdBoxBtnEvent attached to this grpSetter's instance;
+   *  4. attaching/reattaching the new dlgtdBoxBtnEvent to this grpSetters' instance.
+   *  
+   * @param: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
+   *  */
+  update(props) {
+    this.inputsMap.clear();
+    // load the settings and the <input> children of this container div into an inputsMap
+    this.vElt.querySelectorAll('input').forEach((_input) => {
+      console.log("wifiSetter: update: props[_input.id]: " + props[_input.id]);
+      this.inputsMap[_input.id] = new inpt({parent: this, name: _input.id, vElt: _input, value: props[_input.id]});
+    });
     // add an event handler for clicks on grp buttons
     this.dlgtdBtnEvent  = new dlgtdBoxBtnEvent({parent: this});
     this.setDelegatedBtnClickedEvent();
@@ -837,6 +857,7 @@ class grpSetter {
   setDelegatedBtnClickedEvent() {
     // document.getElementById('saveWifiSettingsIF').addEventListener('click', _onClickSaveWifi.onIF, false);
     // document.getElementById('saveWifiSettingsAll').addEventListener('click', _onClickSaveWifi.onAll, false);  
+    this.vElt.removeEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
     this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
 
@@ -854,15 +875,10 @@ class grpSetter {
    *  
    *  Gets called from this.dlgtdBtnEvent. */
   _eventTargetSwitch(_targt, _obj) {
-    _obj.key      =  "save";
-    _obj.val      =  "wifi";
-    _obj.dataset  = {};
-    this.inputsMap.forEach((_inpt, _k) => {
-      _obj.dataset[_k] = _inpt.value;
-    });
     /**  1. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsIF" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj = this._baseObj(_obj);
       _obj.lb     = 0;
       _obj.action = "changeBox";
       return _obj;
@@ -870,11 +886,22 @@ class grpSetter {
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsAll" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj = this._baseObj(_obj);
       _obj.lb     = "all";
       _obj.action = "changeNet";
     return _obj;
     }
     return false;
+  }
+
+  _baseObj(_obj) {
+    _obj.key      =  "save";
+    _obj.val      =  "wifi";
+    _obj.dataset  = {};
+    this.inputsMap.forEach((_inpt, _k) => {
+      _obj.dataset[_k] = _inpt.value;
+    });
+    return _obj;
   }
 }
 
@@ -1120,6 +1147,7 @@ function onMsgActionSwitch(_data) {
     // console.log("WS JSON message: " + _data.ServerIP);
     // Fill in the data in the DOM and add some eventHandlers
     updateGlobalInformation(_data);
+    wifiSetters.update(_data);
     connectionObj.sendReceivedIP();
     return;
   }
@@ -1938,6 +1966,7 @@ function setGroupEvents() {
 
 
 var boxCont = new bxCont();
+var wifiSetters = new grpSetter({selector: 'div.wifi_setters'});
 
 
 // WINDOW LOAD
@@ -1947,6 +1976,7 @@ window.onload = function(_e){
     // (and reconnect as necessary) setInterval(check, 5000);
     connectionObj.start();
     setTimeout(setGroupEvents, 2000);
+
 
 };
 // END WINDOW LOAD
