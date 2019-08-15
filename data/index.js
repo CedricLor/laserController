@@ -23,14 +23,17 @@ In index.js:
  * 
  * class delgtdDataSet
  * 
- * class dlgtdBoxBtnEvent
- *  
  * class btnGrp
  * 
+ * class dlgtdBoxBtnEvent
+ *  
  * class controlerBox
  * 
  * class bxCont
  * 
+ * class inpt
+ * 
+ * class grpSetter
  */
 
 
@@ -170,7 +173,7 @@ class btnGrp {
     this.vBtnNodeList             = this.parent.vElt.querySelectorAll(this.btnGpSelectorProto);
     this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
 
-    this.setActiveBtn();
+    this.setActiveBtn();  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
   }
 
   /** btnGrp.update(_data) updates the active button among the buttons of this button group
@@ -189,7 +192,7 @@ class btnGrp {
    *  by adding the class this.activeBtnClass to the classList of the button corresponnding
    *  to this.activeBtnNum.
    * */
-  setActiveBtn() {
+  setActiveBtn() {  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
     if (this.activeBtnNum) {
       this.vBtnNodeList[this.activeBtnNum].className += ' ' + this.activeBtnClass;
     }
@@ -215,7 +218,7 @@ class btnGrp {
   /** btnGrp.updateStateFB(_data) updates the local data and the btnGrp
    *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
    * */
-  updateFB(_data) {
+  updateFB(_data) { // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
     // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
     // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
     // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
@@ -293,7 +296,7 @@ class dlgtdBoxBtnEvent {
     // console.log("dlgtdBoxBtnEvent: onClick(e): e.target = ");console.log(e.target);
     // console.log("dlgtdBoxBtnEvent: onClick(e): e.currentTarget = ");console.log(e.currentTarget);
     // console.log("dlgtdBoxBtnEvent: onClick(e): this = ");console.log(this);
-
+    
     this._targt   = e.target;
     // console.log("dlgtdBoxBtnEvent: onClick(e): this._targt");console.log(this._targt);
     // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
@@ -1778,6 +1781,74 @@ var _onClickGroupReboot = {
 
 
 
+var _onClickIF = {
+  reboot: function(_e) {
+    console.log("_onClickIF.reboot starting");
+    connectionObj.ws.send(JSON.stringify({
+      action: "changeBox",
+      key: "reboot",
+      save: 0,
+      lb: 0
+    }));
+    // {action:"changeBox", key:"reboot", save: 0, lb:0}
+    console.log("_onClickIF.reboot: ending");
+  },
+
+  save: function (_e) {
+    console.log("_onClickIF.save starting");
+    connectionObj.ws.send(JSON.stringify({
+      action: "changeBox",
+      key: "save",
+      val: "all",
+      lb: 0
+    }));
+    // {action: "changeBox", key: "save", val: "all", lb: 0}
+    console.log("_onClickIF.save ending");
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function onclickgi8RequestedOTAReboots(_e) {
+console.log("onclickgi8RequestedOTAReboots starting");
+
+connectionObj.ws.send(JSON.stringify({
+  action: "changeBox",
+  key: "save",
+  val: "gi8RequestedOTAReboots",
+  lb: 0,
+  reboots: parseInt(this.dataset.reboots, 10)
+}));
+// {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
+console.log("onclickgi8RequestedOTAReboots ending");
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1833,113 +1904,18 @@ var infoBox = {
 
 
 
-
-
-
-
-
-var _onClickIF = {
-    reboot: function(_e) {
-      console.log("_onClickIF.reboot starting");
-      connectionObj.ws.send(JSON.stringify({
-        action: "changeBox",
-        key: "reboot",
-        save: 0,
-        lb: 0
-      }));
-      // {action:"changeBox", key:"reboot", save: 0, lb:0}
-      console.log("_onClickIF.reboot: ending");
-    },
-
-    save: function (_e) {
-      console.log("_onClickIF.save starting");
-      connectionObj.ws.send(JSON.stringify({
-        action: "changeBox",
-        key: "save",
-        val: "all",
-        lb: 0
-      }));
-      // {action: "changeBox", key: "save", val: "all", lb: 0}
-      console.log("_onClickIF.save ending");
-    }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function onclickgi8RequestedOTAReboots(_e) {
-  console.log("onclickgi8RequestedOTAReboots starting");
-
-  connectionObj.ws.send(JSON.stringify({
-    action: "changeBox",
-    key: "save",
-    val: "gi8RequestedOTAReboots",
-    lb: 0,
-    reboots: parseInt(this.dataset.reboots, 10)
-  }));
-  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
-  console.log("onclickgi8RequestedOTAReboots ending");
-}
-// END EVENT HANDLERS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function updateGlobalInformation(_data) {
   console.log("updateGlobalInformation() starting");
   // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
   document.getElementById('serverIp').innerHTML = _data.serverIP;
   console.log("updateGlobalInformation() ending");
 }
+
+
+
+
+
+
 
 
 
@@ -1967,7 +1943,6 @@ function setGroupEvents() {
     }
   );  
 }
-
 // END EVENT LISTENERS
 
 
