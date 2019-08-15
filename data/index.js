@@ -1720,10 +1720,8 @@ var _onClickGroupReboot = {
   /** _onClickGroupReboot.removeClassesOnNonClickedButton(_button)
    *   Removes any "button_clicked", "button_active_state" or
    *  "button_change_received" class that a button may retain.  */
-  removeClassesOnNonClickedButton: (_button) => {
-    _button.classList.remove('button_clicked');
-    _button.classList.remove('button_active_state');
-    _button.classList.remove('button_change_received');
+  removeClassesOnNonClickedButton: (_btn) => {
+    _btn.classList.remove('button_clicked', 'button_active_state', 'button_change_received');
   },
 
   onclickRebootLBsButton: function(e) {
