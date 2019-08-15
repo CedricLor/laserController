@@ -575,6 +575,8 @@ class bxCont {
   constructor () {
       this.id               = "boxesContainer";
       this.vBxContElt       = document.getElementById(this.id);
+      // console.log("bxCont: constructor:");
+      // console.log(this.vBxContElt);
       this.emptyBxContElt   = this.vBxContElt.cloneNode(true);
       this._potBxCount      = 10;
       this._bxCount         = 0;
@@ -589,6 +591,8 @@ class bxCont {
    *  Called from the constructor of this class.
    * */
   init() {
+      // console.log("bxCont: init():");
+      // console.log(this.vBxContElt);
       let _row        = this.vBxContElt.querySelector('#boxTemplate');
       this.vTemplate  = _row.cloneNode(true);
       this.vBxContElt.removeChild(_row);
@@ -758,7 +762,6 @@ class bxCont {
 
 }
 
-var boxCont = new bxCont();
 
 
 
@@ -1934,6 +1937,7 @@ function setGroupEvents() {
 
 
 
+var boxCont = new bxCont();
 
 
 // WINDOW LOAD
@@ -1943,7 +1947,7 @@ window.onload = function(_e){
     // (and reconnect as necessary) setInterval(check, 5000);
     connectionObj.start();
     setTimeout(setGroupEvents, 2000);
-    boxCont = new bxCont();
+
 };
 // END WINDOW LOAD
 
