@@ -787,7 +787,8 @@ class inpt {
     this.name     = props.name;
     this.vElt     = props.vElt;
     this.dataSet  = props.dataSet || undefined;
-    this.value    = props.value || undefined;
+    this.value    = props.value;
+    this.setValue(this.value);
   }
 
   setValue(val) {
