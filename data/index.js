@@ -54,7 +54,7 @@ class span {
     // {parent: this/*bx.controlerBoxes[0]*/, selector: "span.master_box_number", textContent: this.masterbox + 200}
     this.parent               = props.parent;
     this.selector             = props.selector;
-    this.vSpanElt             = this.parent.virtualHtmlRowElt.querySelector(this.selector);
+    this.vSpanElt             = this.parent.vElt.querySelector(this.selector);
     this.vSpanElt.textContent = props.textContent;
   }
 
@@ -79,7 +79,7 @@ class mastSel {
     // {parent: this.controlerBoxes[0], selectSelector:'select.master_select', selectValue: this.masterbox}
     this.parent           = props.parent;
     this.selectSelector   = props.selectSelector;
-    this.vSelectElt       = this.parent.virtualHtmlRowElt.querySelector(this.selectSelector);
+    this.vSelectElt       = this.parent.vElt.querySelector(this.selectSelector);
     this.vSelectElt.value = props.selectValue;
 
     this.vSelectElt.addEventListener('input', this._oninputMasterSelect.bind(this), false);
@@ -167,7 +167,7 @@ class btnGrp {
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
     this.btnGpSelectorProto       = "button" + this.btnGrpCommonAttr.selector;
 
-    this.vBtnNodeList             = this.parent.virtualHtmlRowElt.querySelectorAll(this.btnGpSelectorProto);
+    this.vBtnNodeList             = this.parent.vElt.querySelectorAll(this.btnGpSelectorProto);
     this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
 
     this.setActiveBtn();
@@ -245,9 +245,9 @@ class btnGrp {
     if (FBstat === 2) {
         this.parent.boxStateChanging = undefined;
         // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
-        // _removeClassesOnButtonsGroupForRow(this.virtualHtmlRowElt, "button[data-" + _data.Key + "]");
+        // _removeClassesOnButtonsGroupForRow(this.vElt, "button[data-" + _data.Key + "]");
         this.markAllBtnsAsNonClicked();
-        // _setCurrentStateButton(this.virtualHtmlRowElt, _data.Key, _data.val);
+        // _setCurrentStateButton(this.vElt, _data.Key, _data.val);
         this.vBtnNodeList[_data.val].classList.add(this.activeBtnClass);
     }
   }
@@ -357,7 +357,7 @@ class controlerBox {
     this.masterboxChanging        = undefined;
 
     // creating the boxRow html element
-    this.virtualHtmlRowElt        = boxCont.newRowElt();
+    this.vElt        = boxCont.newRowElt();
     
     // DOM insertion witness (starts at false)
     this.insertedInDOM            = false;
@@ -380,7 +380,7 @@ class controlerBox {
     this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent({parent: this, actionObj: {action:"changeBox"}});
     this.setDelegatedBtnClickedEvent();
     
-    boxCont.appendAsFirstChild(this.virtualHtmlRowElt);
+    boxCont.appendAsFirstChild(this.vElt);
   }
 
   /** controlerBox._setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
@@ -389,10 +389,10 @@ class controlerBox {
   *  Called from this class's constructor.
   */
   _setBoxRowHtmlProps() {
-    this.virtualHtmlRowElt.id         = "boxRow" + this.lb;
-    this.virtualHtmlRowElt.dataset.lb = this.lb;
-    this.virtualHtmlRowElt.classList.remove('hidden');
-    this.virtualHtmlRowElt.querySelector("span.box_num").textContent = this.lb + 200;
+    this.vElt.id         = "boxRow" + this.lb;
+    this.vElt.dataset.lb = this.lb;
+    this.vElt.classList.remove('hidden');
+    this.vElt.querySelector("span.box_num").textContent = this.lb + 200;
   }
 
   /** controlerBox.update(_data) updates the controlerBox values upon receiving the corresponding
@@ -479,7 +479,7 @@ class controlerBox {
    *  controler box, listening to the events bubbling from its buttons.
    * */
   setDelegatedBtnClickedEvent() {
-    this.virtualHtmlRowElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
+    this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
 
   /** controlerBox._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
@@ -635,7 +635,7 @@ class bxCont {
    *  to create a new boxRow. 
    *  
    *  Called from the controlerBox constructor, to allocate a value to 
-   *  virtualHtmlRowElt
+   *  vElt
    * */
   newRowElt() {
       return (this.vTemplate.cloneNode(true));
@@ -646,12 +646,12 @@ class bxCont {
    * 
    *  @param: lb is the laser box number, which is used to select the
    *  new row in the controlerBoxes array and pass the html element 
-   *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+   *  representing the new box (-> this.controlerBoxes[lb].vElt)
    *  to this.vBxContElt.appendChild().
    * */
   appendAsLastChild(lb){
     this.controlerBoxes[lb].insertedInDOM = true;
-    this.vBxContElt.appendChild(this.controlerBoxes[lb].virtualHtmlRowElt);
+    this.vBxContElt.appendChild(this.controlerBoxes[lb].vElt);
   }
 
   /** bxCont.appendAsFirstChild(_newRow) inserts the _newRow as first child
@@ -659,7 +659,7 @@ class bxCont {
    * 
    *  @param: lb is the laser box number, which is used to select the
    *  new row in the controlerBoxes array and pass the html element 
-   *  representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+   *  representing the new box (-> this.controlerBoxes[lb].vElt)
    *  to this.vBxContElt.insertBefore().
    * 
    *  Called from the controlerBox constructor upon creating a new box.
@@ -667,7 +667,7 @@ class bxCont {
   appendAsFirstChild(lb){
       this.controlerBoxes[lb].insertedInDOM = true;
       if (this._bxCount && this.controlerBoxes.find(_cb => _cb.insertedInDOM)) {
-        this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,
+        this.vBxContElt.insertBefore(this.controlerBoxes[lb].vElt,
                                      this.vBxContElt.firstChild);
         return;
       }
@@ -681,7 +681,7 @@ class bxCont {
    *  - to look for the next following row that might have been previously inserted
    *  into the DOM;
    *  - to select the new row in the controlerBoxes array and pass the html 
-   *  element representing the new box (-> this.controlerBoxes[lb].virtualHtmlRowElt)
+   *  element representing the new box (-> this.controlerBoxes[lb].vElt)
    *  to this.vBxContElt.insertBefore();
    * 
    *  Called from the controlerBox constructor upon creating a new box.
@@ -690,7 +690,7 @@ class bxCont {
     this.controlerBoxes[lb].insertedInDOM = true;
     const _nextRow = this.controlerBoxes.find(_cb => ((_cb.lb > lb) && _cb.insertedInDOM));
     if (_nextRow) {
-        this.vBxContElt.insertBefore(this.controlerBoxes[lb].virtualHtmlRowElt,_nextRow);
+        this.vBxContElt.insertBefore(this.controlerBoxes[lb].vElt,_nextRow);
         return;
     }
     this.appendAsLastChild(lb);
@@ -709,7 +709,7 @@ class bxCont {
       this._bxCount = this._potBxCount;
       // delete all from DOM by replacing the container by its initial form
       this.vBxContElt.parentNode.replaceChild(this.emptyBxContElt, this.vBxContElt);
-      // return the old array (the virtualHtmlRowElt have all been deleted at this stage, however)
+      // return the old array (the vElt have all been deleted at this stage, however)
       return(oldBxArray);
   }
 
@@ -724,11 +724,11 @@ class bxCont {
       // delete the corresponding entry in the array of controller boxes
       var delBx = this.controlerBoxes.splice(_data.lb, 1);
       // clone the HTML node
-      var _clonedNode = delBx.virtualHtmlRowElt.cloneNode(true);
+      var _clonedNode = delBx.vElt.cloneNode(true);
       // remove from DOM
-      this.vBxContElt.removeChild(delBx.virtualHtmlRowElt);
+      this.vBxContElt.removeChild(delBx.vElt);
       // insert the cloned node into the deleted entry
-      delBx.virtualHtmlRowElt = _clonedNode;
+      delBx.vElt = _clonedNode;
       // check whether the box is not disconnecting as
       // a result of a reboot order and inform the user
       onReboot.LBs.onDeleteBox(_data);
