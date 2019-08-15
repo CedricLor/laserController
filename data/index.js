@@ -328,7 +328,7 @@ class dlgtdBoxBtnEvent {
 
   _sendMsg() {
     // send the message via WS
-    _onClickHelpers.btnSend(this._obj);    
+    connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
 
@@ -505,7 +505,7 @@ class controlerBox {
    * 
    *  If it matches with boxStateBtnGrp or boxDefStateBtnGrp, it sets the "key" and "value" 
    *  fields of the Json object.
-   *  
+   * 
    *  If it matches with configBtnGrp, it goes through the _onClickBxConf method to populate 
    *  the relevant fields of the Json object.
    * 
@@ -888,7 +888,7 @@ class grpSetter {
     this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
 
-  /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
+  /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element 
    *  matches with a selector composed of:
    * 
    *  - the grpSetter button group selector; and 
@@ -899,7 +899,7 @@ class grpSetter {
    *      - returns an array containing (i) the Json _obj and (ii) the relevant btnGrp to the dlgtdBoxBtnEvent.
    * 
    * - Else, it returns a [false, false] to the dlgtdBoxBtnEvent.
-   *  
+   * 
    *  @params: _targt: event.target HTMLElt, _obj: a basic Json _obj
    *  @return: [the Json _obj ready to be sent, the relevant btnGrp] or [false, false]
    *  
@@ -1264,78 +1264,6 @@ function onMsgActionSwitch(_data) {
     return;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** _onClickHelpers:
- * Library of helpers, to remove classes, add classes, send messages, identify the laser
- * box number, etc. */
-var _onClickHelpers = {
-  findUpLaserBoxNumber: function(el) {
-      while (el.parentNode) {
-          el = el.parentNode;
-          if (el.dataset.lb) {
-            return parseInt(el.dataset.lb, 10);
-          }
-      }
-      return null;
-  },
-
-  btnSend: function (_obj) {
-    // console.log("_onClickHelpers.btnSend: about to send: " + JSON.stringify(_obj));
-    connectionObj.ws.send(JSON.stringify(_obj));
-  },
-
-  /** _onClickHelpers.updateClickButtons(e, _selector, _buttonsParentElement)
-   *  Called by onClick event handlers on buttons.
-   *  Iterates over the group of buttons to which the clicked buttons pertains.
-   *  Removes any "button_clicked", "button_active_state" or
-   *  "button_change_received" class that they may retain.
-   *  Add a "button_clicked" class to the clicked button. */
-  updateClickButtons: (e, _selector, _buttonsParentElement) => {
-    _buttonsParentElement.querySelectorAll(_selector).forEach(
-      (_button) => {
-        _onClickHelpers.removeClassesOnNonClickedButton(_button);
-      }
-    );
-    e.target.className += ' button_clicked';
-  },
-
-  /** _onClickHelpers.removeClassesOnNonClickedButton(_button)
-   *   Removes any "button_clicked", "button_active_state" or
-   *  "button_change_received" class that a button may retain.  */
-  removeClassesOnNonClickedButton: (_button) => {
-    _button.classList.remove('button_clicked');
-    _button.classList.remove('button_active_state');
-    _button.classList.remove('button_change_received');
-  } 
-};
-
-
-
-
-
-
 
 
 
@@ -1754,16 +1682,48 @@ var _onClickGroupReboot = {
     if (connectionObj.checkConnect.closedVerb()) { return; }
     // if there are boxes in the boxes map, we are probably connected, so reboot
     if (boxCont._bxCount) {
-      // 
-      _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
+      
+      // _onClickHelpers.updateClickButtons(e, '.net_command_gp > button', document);
+      // /** _onClickHelpers.updateClickButtons(e, _selector, _buttonsParentElement)
+      //  *  Called by onClick event handlers on buttons.
+      //  *  Iterates over the group of buttons to which the clicked buttons pertains.
+      //  *  Removes any "button_clicked", "button_active_state" or
+      //  *  "button_change_received" class that they may retain.
+      //  *  Add a "button_clicked" class to the clicked button. */
+      // updateClickButtons: (e, _selector, _buttonsParentElement) => {
+      //   _buttonsParentElement.querySelectorAll(_selector).forEach(
+      //     (_button) => {
+      //       _onClickHelpers.removeClassesOnNonClickedButton(_button);
+      //     }
+      //   );
+      //   e.target.className += ' button_clicked';
+      // },
+      // updateClickButtons: (e, _selector, _buttonsParentElement) => {
+      document.querySelectorAll('.net_command_gp > button').forEach(
+        (_button) => {
+          _onClickGroupReboot.removeClassesOnNonClickedButton(_button);
+        }
+      );
+      e.target.className += ' button_clicked';
+      // },
+
       // else, complete the message and send it
       _obj.action = 'changeNet';
-      _onClickHelpers.btnSend(_obj);
+      connectionObj.ws.send(JSON.stringify(_obj));
       // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}
       return;
     }
     // if there are no boxes in the boxes map, inform the user that there are no boxes
     onReboot.common.addNoConnectedBoxesSpan();
+  },
+
+  /** _onClickGroupReboot.removeClassesOnNonClickedButton(_button)
+   *   Removes any "button_clicked", "button_active_state" or
+   *  "button_change_received" class that a button may retain.  */
+  removeClassesOnNonClickedButton: (_button) => {
+    _button.classList.remove('button_clicked');
+    _button.classList.remove('button_active_state');
+    _button.classList.remove('button_change_received');
   },
 
   onclickRebootLBsButton: function(e) {
