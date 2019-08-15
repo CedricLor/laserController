@@ -167,8 +167,11 @@ class btnGrp {
     this.changedRecvdBtnClass     = 'button_change_received';
 
     // this.datasetKey               = props.datasetKey;
+    // console.log("btnGrp: constructor: props.btnGrpCommonAttr = ");console.log(props.btnGrpCommonAttr);
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
-    this.btnGpSelectorProto       = "button" + this.btnGrpCommonAttr.selector;
+    // console.log("btnGrp: constructor: this.btnGrpCommonAttr = ");console.log(this.btnGrpCommonAttr);
+    this.btnGpSelectorProto       = (this.btnGrpCommonAttr.selector ? ("button" + this.btnGrpCommonAttr.selector) : "button" + this.btnGrpCommonAttr);
+    // console.log("btnGrp: constructor: this.btnGpSelectorProto = ");console.log(this.btnGpSelectorProto);
 
     this.vBtnNodeList             = this.parent.vElt.querySelectorAll(this.btnGpSelectorProto);
     this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
