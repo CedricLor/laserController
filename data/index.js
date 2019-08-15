@@ -155,6 +155,7 @@ class delgtdDataSet {
 
 
 
+
 class btnGrp {
   constructor (props={}) {
     // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState}
@@ -166,14 +167,16 @@ class btnGrp {
     this.activeBtnClass           = 'button_active_state';
     this.changedRecvdBtnClass     = 'button_change_received';
 
-    // this.datasetKey               = props.datasetKey;
-    // console.log("btnGrp: constructor: props.btnGrpCommonAttr = ");console.log(props.btnGrpCommonAttr);
+    // console.log("btnGrp: constructor: props.btnGrpCommonAttr = " + props.btnGrpCommonAttr);
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
-    // console.log("btnGrp: constructor: this.btnGrpCommonAttr = ");console.log(this.btnGrpCommonAttr);
-    this.btnGpSelectorProto       = (this.btnGrpCommonAttr.selector ? ("button" + this.btnGrpCommonAttr.selector) : "button" + this.btnGrpCommonAttr);
-    // console.log("btnGrp: constructor: this.btnGpSelectorProto = ");console.log(this.btnGpSelectorProto);
+    // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + this.btnGrpCommonAttr);
+    this.btnGpSelectorProto       = (props.restrictParentSelector || "") + " button" + (this.btnGrpCommonAttr.selector || this.btnGrpCommonAttr);
+    // console.log("btnGrp: constructor: this.btnGpSelectorProto = "+ this.btnGpSelectorProto);
 
-    this.vBtnNodeList             = this.parent.vElt.querySelectorAll(this.btnGpSelectorProto);
+    this.btnsArray                = [];
+    this.loadBtnsInArray();
+    // console.log("btnGrp.constructor: this.btnsArray: ");console.log(this.btnsArray);
+    // this.vBtnNodeList             = this.parent.vElt.querySelectorAll(this.btnGpSelectorProto);
     this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
 
     this.setActiveBtn();  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
@@ -191,13 +194,28 @@ class btnGrp {
       this.setActiveBtn();  
   }
 
+  /** btnGrp.loadBtnsInArray() loads the btns of this btnGrp
+   *  into an array.
+   */
+  loadBtnsInArray() {
+    if (this.btnGrpCommonAttr.datasetKey) {
+      this.parent.vElt.querySelectorAll(this.btnGpSelectorProto).forEach((_btn) => { 
+        this.btnsArray[_btn.dataset[this.btnGrpCommonAttr.datasetKey]] = _btn;
+      });
+      return;
+    }
+    this.btnsArray = Array.from(this.parent.vElt.querySelectorAll(this.btnGpSelectorProto));
+  }
+
   /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
    *  by adding the class this.activeBtnClass to the classList of the button corresponnding
    *  to this.activeBtnNum.
    * */
   setActiveBtn() {  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
     if (this.activeBtnNum) {
-      this.vBtnNodeList[this.activeBtnNum].className += ' ' + this.activeBtnClass;
+      // console.log("btnGrp.setActiveBtn: this.activeBtnNum: " + this.activeBtnNum);
+      // console.log("btnGrp.setActiveBtn: this.btnsArray: ");console.log(this.btnsArray);
+      this.btnsArray[this.activeBtnNum].className += ' ' + this.activeBtnClass;
     }
   }
 
@@ -205,7 +223,7 @@ class btnGrp {
    *  to remove classes
    * */
   markAllBtnsAsNonClicked() {
-    this.vBtnNodeList.forEach((_btn) => {
+    this.btnsArray.forEach((_btn) => {
       this.markBtnAsNonClicked(_btn);
     });
   }
@@ -238,7 +256,7 @@ class btnGrp {
     if (FBstat === 1) {
         this.parent.boxStateChanging = this.boxState;
         this.parent.boxState         = _data.val;
-        this.vBtnNodeList[_data.val].classList.add(this.changedRecvdBtnClass);
+        this.btnsArray[_data.val].classList.add(this.changedRecvdBtnClass);
         return;
     }
     /** 
@@ -254,7 +272,7 @@ class btnGrp {
         // _removeClassesOnButtonsGroupForRow(this.vElt, "button[data-" + _data.Key + "]");
         this.markAllBtnsAsNonClicked();
         // _setCurrentStateButton(this.vElt, _data.Key, _data.val);
-        this.vBtnNodeList[_data.val].classList.add(this.activeBtnClass);
+        this.btnsArray[_data.val].classList.add(this.activeBtnClass);
     }
   }
 }
@@ -378,11 +396,11 @@ class controlerBox {
     this._setBoxRowHtmlProps();
 
     // grabbing the command buttons into a btnGrp
-    this.configBtnGrp             = new btnGrp({parent: this, datasetKey: "boxstate"});
+    this.configBtnGrp             = new btnGrp({parent: this, restrictParentSelector: '.command_gp > '});
     
     // setting the state and default state buttons btnGrps
-    this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState});
-    this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate});
+    this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxstate"}), activeBtnNum: this.boxState});
+    this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "box_defstate"}), activeBtnNum: this.boxDefstate});
 
     // setting the span master box number
     this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
@@ -392,7 +410,6 @@ class controlerBox {
     this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent({parent: this, actionObj: {action:"changeBox"}});
     this.setDelegatedBtnClickedEvent();
     
-    boxCont.appendAsFirstChild(this.vElt);
   }
 
   /** controlerBox._setBoxRowHtmlProps() sets the HTML properties (id, data-lb, class, box number) 
@@ -571,8 +588,8 @@ class controlerBox {
        *  return: {action:"changeBox", key:"save", val: "all", lb:1} */
       return {key:  "save", save: "all"};
     }
-    if (_targt.data.OTAreboot) {
-      /** OTA reboots if the target HTML element has a data attribute OTAreboot
+    if (_targt.data.otaReboot) {
+      /** OTA reboots if the target HTML element has a data attribute otaReboot
        *  return: {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2} */
       return { 
         key: "save", 
@@ -630,14 +647,17 @@ class bxCont {
    *  In a last step (to be refactored), it handles the case where it is a reboot.
    * */
   addOrUpdateCntrlerBox(data) {
+    // console.log("bxCont.addOrUpdateCntrlerBox -- Starting.")
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     // Check whether the boxRow has already been created
     let _controlerBoxEntry = boxCont.controlerBoxes[parseInt(data.lb, 10)];
+    // console.log("bxCont.addOrUpdateCntrlerBox: _controlerBoxEntry: ");console.log(_controlerBoxEntry);
     if(_controlerBoxEntry) {
       // let's update it
       _controlerBoxEntry.update(data);
     } else {
       // let's create it
+      // console.log("bxCont.addOrUpdateCntrlerBox: about to call this.newCntrlerBox");
       this.newCntrlerBox(data);
     }
     // handle the case where this is a reboot
@@ -656,7 +676,10 @@ class bxCont {
    * */
   newCntrlerBox(data) {
       // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-      this.controlerBoxes[data.lb] = new controlerBox(data);
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes: -- starting");
+      this.controlerBoxes[parseInt(data.lb)] = new controlerBox(data);
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes: ");console.log(this.controlerBoxes);
+      this.insertInDom(this.controlerBoxes[parseInt(data.lb)], this.appendAsNthChild);
       this._bxCount++;
   }
 
@@ -667,9 +690,13 @@ class bxCont {
    *  vElt
    * */
   newRowElt() {
-      return (this.vTemplate.cloneNode(true));
+    return this.vTemplate.cloneNode(true);
   }
 
+  insertInDom(controlBx, cBack) {
+    cBack(controlBx);
+    controlBx.insertedInDOM = true;
+  }
   /** bxCont.appendAsLastChild(lb) inserts a new row as last child 
    *  of div#boxesContainer. 
    * 
@@ -678,9 +705,8 @@ class bxCont {
    *  representing the new box (-> this.controlerBoxes[lb].vElt)
    *  to this.vBxContElt.appendChild().
    * */
-  appendAsLastChild(lb){
-    this.controlerBoxes[lb].insertedInDOM = true;
-    this.vBxContElt.appendChild(this.controlerBoxes[lb].vElt);
+  appendAsLastChild(controlBx){
+    boxCont.vBxContElt.appendChild(controlBx.vElt);
   }
 
   /** bxCont.appendAsFirstChild(_newRow) inserts the _newRow as first child
@@ -693,14 +719,14 @@ class bxCont {
    * 
    *  Called from the controlerBox constructor upon creating a new box.
    * */
-  appendAsFirstChild(lb){
-      this.controlerBoxes[lb].insertedInDOM = true;
-      if (this._bxCount && this.controlerBoxes.find(_cb => _cb.insertedInDOM)) {
-        this.vBxContElt.insertBefore(this.controlerBoxes[lb].vElt,
-                                     this.vBxContElt.firstChild);
-        return;
-      }
-      this.appendAsLastChild(lb);
+  appendAsFirstChild(controlBx){
+    controlBx.insertedInDOM = true;
+    if (boxCont._bxCount) {
+      boxCont.vBxContElt.insertBefore(controlBx.vElt,
+        boxCont.vBxContElt.firstChild);
+      return;
+    }
+    boxCont.appendAsLastChild(controlBx);
   }
 
   /** bxCont.appendNthChild(_newRow) inserts the _newRow as first child
@@ -715,14 +741,16 @@ class bxCont {
    * 
    *  Called from the controlerBox constructor upon creating a new box.
    * */
-  appendAsNthChild(lb){
-    this.controlerBoxes[lb].insertedInDOM = true;
-    const _nextRow = this.controlerBoxes.find(_cb => ((_cb.lb > lb) && _cb.insertedInDOM));
-    if (_nextRow) {
-        this.vBxContElt.insertBefore(this.controlerBoxes[lb].vElt,_nextRow);
-        return;
+  appendAsNthChild(controlBx){
+    controlBx.insertedInDOM = true;
+    if (boxCont._bxCount) {
+      const _nextRow = boxCont.controlerBoxes.find((_cb) => ((_cb.lb > controlBx.lb) && _cb.insertedInDOM));
+      if (_nextRow) {
+        boxCont.vBxContElt.insertBefore(controlBx.vElt,_nextRow);
+          return;
+      }
     }
-    this.appendAsLastChild(lb);
+    boxCont.appendAsLastChild(controlBx);
   }
 
   /** bxCont.deleteAllRows() deletes a single box row and
