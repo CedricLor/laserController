@@ -50,7 +50,7 @@ In index.js:
 
 
 class span {
-  constructor (props) {
+  constructor (props={}) {
     // {parent: this/*bx.controlerBoxes[0]*/, selector: "span.master_box_number", textContent: this.masterbox + 200}
     this.parent               = props.parent;
     this.selector             = props.selector;
@@ -75,7 +75,7 @@ class span {
 
 
 class mastSel {
-  constructor (props) {
+  constructor (props={}) {
     // {parent: this.controlerBoxes[0], selectSelector:'select.master_select', selectValue: this.masterbox}
     this.parent           = props.parent;
     this.selectSelector   = props.selectSelector;
@@ -116,7 +116,7 @@ class mastSel {
 
 
 class btn {
-  constructor (props) {
+  constructor (props={}) {
     this.activeBtnClass = 'button_active_state';
     this.id             = props.id;
     this.classList      = props.classList;
@@ -137,7 +137,7 @@ class btn {
 
 class delgtdDataSet {
   // props: {datasetKey: "boxState"}
-  constructor(props) {
+  constructor(props={}) {
     this.datasetKey = props.datasetKey;
     this.selector   = "[data-" + this.datasetKey + "]";
   }
@@ -153,7 +153,7 @@ class delgtdDataSet {
 
 
 class btnGrp {
-  constructor (props) {
+  constructor (props={}) {
     // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState}
     // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate}
     // props = {parent: this/*bxCont.controlerBoxes[0]*/}
@@ -268,7 +268,7 @@ class btnGrp {
  * */
 class dlgtdBoxBtnEvent {
   // props: {parent: this, actionObj: {action:"changeBox"}}
-  constructor({props}) {
+  constructor(props={}) {
     this.parent   = props.parent; 
     this._obj     = props.actionObj || {action:"changeBox"};
     this._btnGrp  = undefined;
@@ -346,7 +346,7 @@ class dlgtdBoxBtnEvent {
  *  */
 class controlerBox {
   // props = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-  constructor (props) {
+  constructor (props={}) {
     // allocating the values from the Json data passed on by the server
     this.lb                       = parseInt(props.lb, 10); // this laser box number
     this.boxState                 = props.boxState;
@@ -771,12 +771,15 @@ var boxCont = new bxCont();
 
 
 
+
 /** class inpt: <input> holder and setter
- *  TODO: could also be a getter, carrying out validations
+ *  TODO: could also be carrying out validations on user inputs
  */
 class inpt {
-  // props {parent: this, name: node.id, vElt: node, value: props[node.id]}
-  constructor({props}) {
+  // props {parent: this, name: _input.id, vElt: node, value: props[_input.id]}
+  constructor(props={}) {
+    // console.log("inpt: update: props.name: " + props.name);
+    // console.log("inpt: update: props.value: " + props.value);
     this.parent   = props.parent;
     this.name     = props.name;
     this.vElt     = props.vElt;
@@ -807,6 +810,7 @@ class inpt {
  *  */
 class grpSetter {
   // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
+  constructor(props={}) {
   constructor(props) {
     // generic selector
     this.selector       = props.selector;
