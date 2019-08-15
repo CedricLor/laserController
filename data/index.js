@@ -202,7 +202,7 @@ class btnGrp {
    *  to remove classes
    * */
   markAllBtnsAsNonClicked() {
-    this.vBtnNodeList.forEach( (_btn) => {
+    this.vBtnNodeList.forEach((_btn) => {
       this.markBtnAsNonClicked(_btn);
     });
   }
@@ -285,12 +285,14 @@ class dlgtdBoxBtnEvent {
     // TO DO: maybe, should trigger a delete all the boxes
     if (connectionObj.checkConnect.closedVerb()) { return; }
 
-    /** In an event hanlder, "this" is by default bound to the event.
+    /** this = this dlgtdBoxBtnEvent instance
      * 
-     *  However, here, "this" has been bound to this dlgtdBoxBtnEvent instance, in the controlerBox
-     *  instance where this dlgtdBoxBtnEvent instance was created.
+     * In an event hanlder, "this" is by default bound to the event.
      * 
-     *  This binding was done because we need to be able to access to this dlgtdBoxBtnEvent instance.
+     *  Here, "this" has been bound to this dlgtdBoxBtnEvent instance (in the controlerBox or grpSetter
+     *  instance to which this dlgtdBoxBtnEvent instance is attached).
+     * 
+     *  Binding done in order to be able to access this dlgtdBoxBtnEvent instance from within the handler.
      * */
     // console.log("dlgtdBoxBtnEvent: onClick(e): e = ");console.log(e);
     // console.log("dlgtdBoxBtnEvent: onClick(e): e.target = ");console.log(e.target);
@@ -301,7 +303,7 @@ class dlgtdBoxBtnEvent {
     // console.log("dlgtdBoxBtnEvent: onClick(e): this._targt");console.log(this._targt);
     // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
     // self.parent._eventTargetSwitch(self._targt, self._obj)
-    this._obj = this.parent._eventTargetSwitch(this._targt, this._obj);
+    [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
 
     // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
     if (this._obj) {
@@ -310,12 +312,12 @@ class dlgtdBoxBtnEvent {
   } // onClick(e)
 
   _setClassesAndSendMsg() {
-    this.setClassesOnBtns();
+    this._setClassesOnBtns();
     this._sendMsg();
   }
 
   _setClassesOnBtns() {
-    // remove clicked classes on other btns
+    // remove clicked classes on other btns of the btnGrp to which this btn pertains
     this._btnGrp.markAllBtnsAsNonClicked();
     // add button_clicked class on clicked btn
     this._targt.className += ' ' + this._btnGrp.clickedBtnClass;
@@ -489,14 +491,27 @@ class controlerBox {
     this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
 
-  /** controlerBox._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
-   *  matches with one of the controlerBox button groups selector.
+  /** controlerBox._eventTargetSwitch(_targt, _obj) sets the fields of the Json object to be sent to 
+   *  the IF.
    * 
-   *  If so, it sets the "key" and "value" fields of the Json object that will
-   *  be sent to the IF. The "lb" field is set at the beginning of the method.
+   *  - set the [lb] field (laser box number) of the Json _obj before any test;
+   *  - checks whether the event.target HTMLElt matches with on the btnGrp selectors:
+   *    - boxStateBtnGrp;
+   *    - boxDefStateBtnGrp;
+   *    - configBtnGrp.
    * 
-   *  @params: _targt: the event target, _obj: the Json _obj
-   *  @return: the object _obj ready to be sent.
+   *  If it matches with boxStateBtnGrp or boxDefStateBtnGrp, it sets the "key" and "value" 
+   *  fields of the Json object.
+   *  
+   *  If it matches with configBtnGrp, it goes through the _onClickBxConf method to populate 
+   *  the relevant fields of the Json object.
+   * 
+   *  In all positive cases, it returns [finalized _obj, relevant btnGrp]
+   * 
+   *  Else, it return [false, false].
+   * 
+   *  @params: _targt: the event.target, _obj: a base for the Json _obj
+   *  @return: [the object _obj ready to be sent, the relevant btnGrp] or [false, false]
    *  
    *  Gets called from this.dlgtdBtnEvent.
    */
@@ -509,7 +524,7 @@ class controlerBox {
       _obj.key   = this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey;
       // b. get the value for dataset key (boxState) and allot it to _obj.value
       _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
-      return _obj;
+      return [_obj, this.boxStateBtnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the default boxState button
      *  group selector. */
@@ -518,7 +533,7 @@ class controlerBox {
       _obj.key   = this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey;
       // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.value
       _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
-      return _obj;
+      return [_obj, this.boxDefStateBtnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the configuration buttons
      *  group selector. */
@@ -526,10 +541,10 @@ class controlerBox {
       let _subObj = this._onClickBxConf(_targt);
       if (_subObj) {
         Object.assign(_obj, this._onClickBxConf(_targt));
-        return _obj;
+        return [_obj, this.configBtnGrp];
       }
     }
-    return false;
+    return [false, false];
   }
 
   /** controlerBox._onClickBxConf(_targt):
@@ -852,9 +867,10 @@ class grpSetter {
     this.inputsMap.clear();
     // load the settings and the <input> children of this container div into an inputsMap
     this.vElt.querySelectorAll('input').forEach((_input) => {
-      console.log("wifiSetter: update: props[_input.id]: " + props[_input.id]);
-      this.inputsMap[_input.id] = new inpt({parent: this, name: _input.id, vElt: _input, value: props[_input.id]});
+      this.inputsMap.set(_input.id, new inpt({parent: this, name: _input.id, vElt: _input, value: props[_input.id]}));
+      // console.log("wifiSetter: update: props[" + _input.id + "] = " + props[_input.id]);
     });
+    // console.log("wifiSetter: update: this.inputsMap.size = " + this.inputsMap.size);
     // add an event handler for clicks on grp buttons
     this.dlgtdBtnEvent  = new dlgtdBoxBtnEvent({parent: this});
     this.setDelegatedBtnClickedEvent();
@@ -870,45 +886,56 @@ class grpSetter {
   }
 
   /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element
-   *  matches with a selector composed of the grpSetter button groups selector and the relevant
-   *  button id.
+   *  matches with a selector composed of:
    * 
-   *  If so, it sets the _obj.lb and _obj.action fields of the Json object that will
-   *  be sent to the IF.
+   *  - the grpSetter button group selector; and 
+   *  - the relevant button id.
    * 
-   *  The method also sets the other fields of the Json object at the beginning of the method.
+   *  - If so, it: 
+   *      - sets the Json _obj fields (_obj.lb, _obj.action and the common fields);
+   *      - returns an array containing (i) the Json _obj and (ii) the relevant btnGrp to the dlgtdBoxBtnEvent.
    * 
-   *  @params: _targt: the event target, _obj: the Json _obj
-   *  @return: the Json _obj ready to be sent.
+   * - Else, it returns a [false, false] to the dlgtdBoxBtnEvent.
    *  
-   *  Gets called from this.dlgtdBtnEvent. */
+   *  @params: _targt: event.target HTMLElt, _obj: a basic Json _obj
+   *  @return: [the Json _obj ready to be sent, the relevant btnGrp] or [false, false]
+   *  
+   *  Gets called from dlgtdBtnEvent instance. */
   _eventTargetSwitch(_targt, _obj) {
+    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): starting");
+    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): this.btnGrp.btnGpSelectorProto: " + this.btnGrp.btnGpSelectorProto);
+    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): this.btnGrp.btnGpSelectorProto" + "#saveWifiSettingsIF: " + this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF");
+    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): _targt: ");console.log(_targt);
+    // console.log(_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF"));
     /**  1. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsIF" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
-      _obj = this._baseObj(_obj);
+      _obj        = this._baseObj(_obj);
       _obj.lb     = 0;
       _obj.action = "changeBox";
-      return _obj;
+      return [_obj, this.btnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsAll" */
-    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
-      _obj = this._baseObj(_obj);
+    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
+      _obj        = this._baseObj(_obj);
       _obj.lb     = "all";
       _obj.action = "changeNet";
-    return _obj;
+      return [_obj, this.btnGrp];
     }
-    return false;
+    return [false, false];
   }
 
   _baseObj(_obj) {
     _obj.key      =  "save";
     _obj.val      =  "wifi";
     _obj.dataset  = {};
+    console.log("grpSetter._baseObj: this.inputsMap.size(): " + this.inputsMap.size);
     this.inputsMap.forEach((_inpt, _k) => {
+      console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.value: _obj.dataset[" + _k + "] = " + _inpt.value);
       _obj.dataset[_k] = _inpt.value;
     });
+    console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
     return _obj;
   }
 }
@@ -1272,6 +1299,7 @@ var _onClickHelpers = {
   },
 
   btnSend: function (_obj) {
+    // console.log("_onClickHelpers.btnSend: about to send: " + JSON.stringify(_obj));
     connectionObj.ws.send(JSON.stringify(_obj));
   },
 
