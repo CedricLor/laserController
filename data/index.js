@@ -288,17 +288,21 @@ class dlgtdBoxBtnEvent {
      *  instance where this dlgtdBoxBtnEvent instance was created.
      * 
      *  This binding was done because we need to be able to access to this dlgtdBoxBtnEvent instance.
-     * 
-     *  Hence, var self = this.dlgtdBtnEvent;
      * */
-    var self      = this.dlgtdBtnEvent;
-    self._targt   = e.target;
+    // console.log("dlgtdBoxBtnEvent: onClick(e): e = ");console.log(e);
+    // console.log("dlgtdBoxBtnEvent: onClick(e): e.target = ");console.log(e.target);
+    // console.log("dlgtdBoxBtnEvent: onClick(e): e.currentTarget = ");console.log(e.currentTarget);
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this = ");console.log(this);
 
+    this._targt   = e.target;
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this._targt");console.log(this._targt);
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
     // self.parent._eventTargetSwitch(self._targt, self._obj)
-    self._obj = self.parent._eventTargetSwitch(self._targt, self._obj);
+    this._obj = this.parent._eventTargetSwitch(this._targt, this._obj);
 
-    if (self._obj) {
-      self._setClassesAndSendMsg();
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
+    if (this._obj) {
+      this._setClassesAndSendMsg();
     }
   } // onClick(e)
 
