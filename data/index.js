@@ -289,12 +289,13 @@ class btnGrp {
  *  click events bubbling from the buttons of this button group.
  * */
 class dlgtdBoxBtnEvent {
-  // props: {parent: this, actionObj: {action:"changeBox"}}
+  // props: {parent: this, objAction: {action:"changeBox"}}
   constructor(props={}) {
-    this.parent   = props.parent; 
-    this._obj     = props.actionObj || {action:"changeBox"};
-    this._btnGrp  = undefined;
-    this._targt   = undefined;
+    this.parent     = props.parent; 
+    // console.log("dlgtdBoxBtnEvent.constructor: props.objAction");console.log(props.objAction);
+    this._objAction = Object.assign({}, (props.objAction || {action:"changeBox"}));
+    // console.log("dlgtdBoxBtnEvent.constructor: this._objAction");console.log(this._objAction);
+    this._resetBaseProps();
   }
   
   onClick(e) {
@@ -328,7 +329,14 @@ class dlgtdBoxBtnEvent {
     if (this._obj) {
       this._setClassesAndSendMsg();
     }
+    this._resetBaseProps();
   } // onClick(e)
+
+  _resetBaseProps() {
+    this._obj     = Object.assign({}, this._objAction);
+    this._targt   = undefined;
+    this._btnGrp  = undefined;
+  }
 
   _setClassesAndSendMsg() {
     this._setClassesOnBtns();
@@ -405,7 +413,7 @@ class controlerBox {
     // setting the select master box number
     this.mastSel                  = new mastSel({parent: this, selectSelector:'select.master_select', selectValue: this.masterbox});
 
-    this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent({parent: this, actionObj: {action:"changeBox"}});
+    this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent({parent: this, objAction: {action:"changeBox"}});
     this.setDelegatedBtnClickedEvent();
     
   }
@@ -533,6 +541,8 @@ class controlerBox {
    *  Gets called from this.dlgtdBtnEvent.
    */
   _eventTargetSwitch(_targt, _obj) {
+    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _targt: ");console.log(_targt);
+    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _obj: ");console.log(_obj);
     _obj.lb = this.lb;
     /**  1. checks whether the event.target HTML element matches with the boxState button group
      *   selector. */
@@ -540,7 +550,7 @@ class controlerBox {
       // a. get the dataset key (boxState) and allot it to _obj.key
       _obj.key   = this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey;
       // b. get the value for dataset key (boxState) and allot it to _obj.value
-      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+      _obj.value = parseInt(_targt.dataset[this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey], 10);
       return [_obj, this.boxStateBtnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the default boxState button
@@ -549,7 +559,7 @@ class controlerBox {
       // a. get the dataset key (defaultBoxstate) and allot it to _obj.key
       _obj.key   = this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey;
       // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.value
-      _obj.value = parseInt(_targt.getAttribute(_obj.key), 10);
+      _obj.value = parseInt(_targt.dataset[this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey], 10);
       return [_obj, this.boxDefStateBtnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the configuration buttons
@@ -569,29 +579,34 @@ class controlerBox {
    *  Returns objects to build the final object to be sent on click events on the 
    *  box level configuration btns (reboot, reboot and save, save, OTA reboot). */
   _onClickBxConf(_targt) {
-    if (_targt.data.rebootBox) {
+    // console.log("controlerBox._onClickBxConf(_targt): _targt.dataset");console.log(_targt.dataset);
+    // console.log("controlerBox._onClickBxConf(_targt): _targt.dataset.rebootBox");console.log(_targt.dataset.rebootBox);
+    // console.log("controlerBox._onClickBxConf(_targt): _targt.dataset.rebootAndSaveBox");console.log(_targt.dataset.rebootAndSaveBox);
+    // console.log("controlerBox._onClickBxConf(_targt): _targt.dataset.savePrefsBox");console.log(_targt.dataset.savePrefsBox);
+    // console.log("controlerBox._onClickBxConf(_targt): _targt.dataset.otaReboot");console.log(_targt.dataset.otaReboot);
+    if (_targt.dataset.rebootBox !== undefined) {
       /** reboot without saving if the target HTML element has a data attribute rebootBox
        *  return: {action:"changeBox", key:"reboot", save: 0, lb:1} */
       return {key: "reboot", save: 0};
     }
-    if (_targt.data.rebootAndSaveBox) {
+    if (_targt.dataset.rebootAndSaveBox !== undefined) {
       /** save and reboot if the target HTML element has a data attribute rebootAndSaveBox
        *  return: {action:"changeBox", key:"reboot", save: 1, lb:1} */
       return {key: "reboot", save: 1};
     }
-    if (_targt.data.savePrefsBox) {
+    if (_targt.dataset.savePrefsBox !== undefined) {
       /** save (all the properties for this box) and reboot if the target HTML element has 
        *  a data attribute savePrefsBox
        *  return: {action:"changeBox", key:"save", val: "all", lb:1} */
-      return {key:  "save", save: "all"};
+      return {key: "save", save: "all"};
     }
-    if (_targt.data.otaReboot) {
+    if (_targt.dataset.otaReboot !== undefined) {
       /** OTA reboots if the target HTML element has a data attribute otaReboot
        *  return: {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 1, reboots: 2} */
       return { 
         key: "save", 
         val: "gi8RequestedOTAReboots", 
-        reboots: parseInt(_targt.dataset.reboots, 10)
+        reboots: parseInt(_targt.dataset.otaReboot, 10)
       };
     }
   }
@@ -760,7 +775,7 @@ class bxCont {
       var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
       // resize the array of controller boxes to its original size
       this.controlerBoxes.length = this._potBxCount;
-      this._bxCount = this._potBxCount;
+      this._bxCount = 0;
       // delete all from DOM by replacing the container by its initial form
       this.vBxContElt.parentNode.replaceChild(this.emptyBxContElt, this.vBxContElt);
       // return the old array (the vElt have all been deleted at this stage, however)
@@ -776,7 +791,9 @@ class bxCont {
    * */
   deleteRow(_data) {
       // delete the corresponding entry in the array of controller boxes
-      var delBx = this.controlerBoxes.splice(_data.lb, 1);
+      // console.log("bxCont.deleteRow(_data): _data: " + _data);
+      var delBx = (this.controlerBoxes.splice(_data.lb, 1))[0];
+      // console.log("bxCont.deleteRow(_data): delBx: ");console.log(delBx);
       // clone the HTML node
       var _clonedNode = delBx.vElt.cloneNode(true);
       // remove from DOM
@@ -786,6 +803,7 @@ class bxCont {
       // check whether the box is not disconnecting as
       // a result of a reboot order and inform the user
       onReboot.LBs.onDeleteBox(_data);
+      this._bxCount--;
       // return the entry in a single member array
       return (delBx);
   }
