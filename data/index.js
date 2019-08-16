@@ -98,16 +98,15 @@ class mastSel {
    */
   _oninputMasterSelect(_e) {
     if ((this.parent.lb !== null )) {
-      var _json = JSON.stringify({
+      connectionObj.ws.send(JSON.stringify({
         action: "changeBox",
         key:    "masterbox",
         lb:     this.parent.lb,
         val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
-        });
+        }));
         // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
         // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
         // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-      connectionObj.ws.send(_json);
     }
   }
 }
@@ -236,15 +235,14 @@ class btnGrp {
     _btn.classList.remove(this.clickedBtnClass, this.activeBtnClass, this.changedRecvdBtnClass);
   } 
 
-  /** btnGrp.updateStateFB(_data) updates the local data and the btnGrp
-   *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
+  /** btnGrp.updateFB(_data) updates the local data and the btnGrp
+   *  on feedback from an {action: "changeBox", key: "boxState || boxDefstate"...} request. 
    * */
   updateFB(_data) { // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
     // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
     // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
     // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
     // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
-    let FBstat = parseInt(_data.st, 10);
     /** 
      * _data.st === 1: the change request has been received by the IF and
      * transmitted to the relevant laser box:
@@ -253,7 +251,7 @@ class btnGrp {
      *    - add a red border to the btn (by applying class button_change_received)
      * to inform the user that the corresponding request is currently being processed.
      * */
-    if (FBstat === 1) {
+    if (parseInt(_data.st, 10) === 1) {
         this.parent.boxStateChanging = this.boxState;
         this.parent.boxState         = _data.val;
         this.btnsArray[_data.val].classList.add(this.changedRecvdBtnClass);
@@ -266,7 +264,7 @@ class btnGrp {
      *    - mark all the btns as non-clicked; (why now? why here? why not before?)
      *    - mark the current state btn in red to inform the user of the actual state
      * */
-    if (FBstat === 2) {
+    if (parseInt(_data.st, 10) === 2) {
         this.parent.boxStateChanging = undefined;
         // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
         // _removeClassesOnButtonsGroupForRow(this.vElt, "button[data-" + _data.Key + "]");
@@ -474,14 +472,13 @@ class controlerBox {
   *  on feedback from a {action: "changeBox", key: "masterbox"...} request. 
   * */
   updateMasterFB(_data) {
-    let FBstat = parseInt(_data.st, 10);
-    if (FBstat === 1) {
+    if (parseInt(_data.st, 10) === 1) {
       this.masterboxChanging  = this.masterbox;
       this._updateLocalMaster(_data);
       this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_received"});
       return;
     }
-    if (FBstat === 2) {
+    if (parseInt(_data.st, 10) === 2) {
       this.masterboxChanging = undefined;
       this.masterSpan.update({textContent: this.masterbox + 200, addClass: "change_ms_executed", delClass: "change_ms_received"});
     }      
