@@ -352,6 +352,7 @@ class dlgtdBoxBtnEvent {
 
   _sendMsg() {
     // send the message via WS
+    // console.log("dlgtdBoxBtnEvent._sendMsg(): " + JSON.stringify(this._obj));
     connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
@@ -863,6 +864,10 @@ class inpt {
     this.value      = val;
     this.vElt.value = val;
   }
+
+  getValue() {
+    return (this.value = this.vElt.value);
+  }
 }
 
 
@@ -897,8 +902,7 @@ class grpSetter {
     this.btnGrp         = new btnGrp({parent: this});
   }
 
-  /** grpSetter.update(props) updates the grpSetter upon receiving new 
-   *  information from the IF.
+  /** grpSetter.update(props) updates the grpSetter upon receiving new information from the IF.
    * 
    *  Update process consists in:
    *  1. clearing the inputsMap;
@@ -976,12 +980,12 @@ class grpSetter {
     _obj.key      =  "save";
     _obj.val      =  "wifi";
     _obj.dataset  = {};
-    console.log("grpSetter._baseObj: this.inputsMap.size(): " + this.inputsMap.size);
+    // console.log("grpSetter._baseObj: this.inputsMap.size(): " + this.inputsMap.size);
     this.inputsMap.forEach((_inpt, _k) => {
-      console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.value: _obj.dataset[" + _k + "] = " + _inpt.value);
-      _obj.dataset[_k] = _inpt.value;
+      // console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.value: _obj.dataset[" + _k + "] = " + _inpt.value);
+      _obj.dataset[_k] = _inpt.getValue();
     });
-    console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
+    // console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
     return _obj;
   }
 }
