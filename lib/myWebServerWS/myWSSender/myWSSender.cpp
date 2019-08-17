@@ -222,6 +222,8 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __newObj["gatewayIP"] = gatewayIP.toString();
     __newObj["ui16GatewayPort"] = ui16GatewayPort;
     __newObj["ui8WifiChannel"] = ui8WifiChannel;
+    __newObj["fixedIP"] = fixedIP.toString();
+    __newObj["fixedNetmaskIP"] = fixedNetmaskIP.toString();
     // expected JSON obj:  {"action":3;"serverIP":"192.168.43.84"}
   }
 

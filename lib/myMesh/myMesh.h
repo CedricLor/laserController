@@ -44,8 +44,6 @@ class myMeshStarter
     static IPAddress _soft_ap_my_ip;
     static IPAddress _soft_ap_me_as_gateway_ip;
     static IPAddress _soft_ap_netmask;
-    static IPAddress _fixed_ip;
-    static IPAddress _fixed_netmask;
 
     void myMeshSetup();
 

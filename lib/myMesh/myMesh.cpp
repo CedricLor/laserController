@@ -49,8 +49,6 @@ IPAddress myMeshStarter::_soft_ap_netmask          = IPAddress(255, 255, 255, 0)
     This is the use case recommended by the developpers of painlessMesh.
     But this only works with my own refactored version of painlessMesh.
  */
-IPAddress myMeshStarter::_fixed_ip                 = IPAddress(192, 168, 43, 50);
-IPAddress myMeshStarter::_fixed_netmask            = IPAddress(255, 255, 255, 0);
 
 myMeshStarter::myMeshStarter() {};
 
@@ -115,7 +113,7 @@ void myMeshStarter::_initMesh() {
 */
 void myMeshStarter::_initStationManual() {
   if (isInterface && isRoot) {
-    laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, _fixed_ip, _fixed_netmask);
+    laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, fixedIP, fixedNetmaskIP);
     // laserControllerMesh.stationManual(ssid, pass);
   }
 }
