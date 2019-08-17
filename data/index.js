@@ -23,7 +23,7 @@ In index.js:
  * 
  * class btnGrp
  * 
- * class dlgtdBoxBtnEvent
+ * class dlgtdBtnEvt
  *  
  * class controlerBox
  * 
@@ -290,19 +290,19 @@ class btnGrp {
 
 
 
-/** class dlgtdBoxBtnEvent
+/** class dlgtdBtnEvt
  * 
  * event listener on the button group container, listening to
  *  click events bubbling from the buttons of this button group.
  * */
-class dlgtdBoxBtnEvent {
+class dlgtdBtnEvt {
   // props: {parent: this, objAction: {action:"changeBox"}}
   constructor(props={}) {
-    // console.log("dlgtdBoxBtnEvent.constructor: STARTING");
+    // console.log("dlgtdBtnEvt.constructor: STARTING");
     this.parent     = props.parent; 
-    // console.log("dlgtdBoxBtnEvent.constructor: props.objAction.action = " + (props.objAction && props.objAction.action || "no props._objAction passed"));
+    // console.log("dlgtdBtnEvt.constructor: props.objAction.action = " + (props.objAction && props.objAction.action || "no props._objAction passed"));
     this._objAction = Object.assign({}, (props.objAction || {action:"changeBox"}));
-    // console.log("dlgtdBoxBtnEvent.constructor: this._objAction.action = " + (this._objAction.action || "no this._objAction"));
+    // console.log("dlgtdBtnEvt.constructor: this._objAction.action = " + (this._objAction.action || "no this._objAction"));
     // console.log("--------- --------- ---------");
     this._resetBaseProps();
   }
@@ -314,27 +314,27 @@ class dlgtdBoxBtnEvent {
     // TO DO: maybe, should trigger a delete all the boxes
     if (connectionObj.checkConnect.closedVerb()) { return; }
 
-    /** this = this dlgtdBoxBtnEvent instance
+    /** this = this dlgtdBtnEvt instance
      * 
      * In an event hanlder, "this" is by default bound to the event.
      * 
-     *  Here, "this" has been bound to this dlgtdBoxBtnEvent instance (in the controlerBox or grpSetter
-     *  instance to which this dlgtdBoxBtnEvent instance is attached).
+     *  Here, "this" has been bound to this dlgtdBtnEvt instance (in the controlerBox or grpSetter
+     *  instance to which this dlgtdBtnEvt instance is attached).
      * 
-     *  Binding done in order to be able to access this dlgtdBoxBtnEvent instance from within the handler.
+     *  Binding done in order to be able to access this dlgtdBtnEvt instance from within the handler.
      * */
-    // console.log("dlgtdBoxBtnEvent: onClick(e): e = ");console.log(e);
-    // console.log("dlgtdBoxBtnEvent: onClick(e): e.target = ");console.log(e.target);
-    // console.log("dlgtdBoxBtnEvent: onClick(e): e.currentTarget = ");console.log(e.currentTarget);
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this = ");console.log(this);
+    // console.log("dlgtdBtnEvt: onClick(e): e = ");console.log(e);
+    // console.log("dlgtdBtnEvt: onClick(e): e.target = ");console.log(e.target);
+    // console.log("dlgtdBtnEvt: onClick(e): e.currentTarget = ");console.log(e.currentTarget);
+    // console.log("dlgtdBtnEvt: onClick(e): this = ");console.log(this);
     
     this._targt   = e.target;
     // console.log("+++++++++ +++++++++ +++++++++");
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this._targt = ");console.log(this._targt);
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj = " + JSON.stringify(this._obj));
+    // console.log("dlgtdBtnEvt: onClick(e): this._targt = ");console.log(this._targt);
+    // console.log("dlgtdBtnEvt: onClick(e): this._obj = " + JSON.stringify(this._obj));
     [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
 
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj" + JSON.stringify(this._obj));
+    // console.log("dlgtdBtnEvt: onClick(e): this._obj" + JSON.stringify(this._obj));
     if (this._obj) {
       this._setClassesAndSendMsg();
     }
@@ -342,17 +342,17 @@ class dlgtdBoxBtnEvent {
   } // onClick(e)
 
   _resetBaseProps() {
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: STARTING");
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj = " + JSON.stringify(this._obj));
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj.action (before Object.assign) = " + (this._obj ? this._obj.action : "this._obj has not yet been defined <---") );
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._objAction.action = " + this._objAction.action);
+    // console.log("dlgtdBtnEvt._resetBaseProps: STARTING");
+    // console.log("dlgtdBtnEvt._resetBaseProps: this._obj = " + JSON.stringify(this._obj));
+    // console.log("dlgtdBtnEvt._resetBaseProps: this._obj.action (before Object.assign) = " + (this._obj ? this._obj.action : "this._obj has not yet been defined <---") );
+    // console.log("dlgtdBtnEvt._resetBaseProps: this._objAction.action = " + this._objAction.action);
     this._obj     = Object.assign({}, this._objAction);
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj.action (after Object.assign) = " + this._obj.action);
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._targt = " + JSON.stringify(this._targt));
+    // console.log("dlgtdBtnEvt._resetBaseProps: this._obj.action (after Object.assign) = " + this._obj.action);
+    // console.log("dlgtdBtnEvt._resetBaseProps: this._targt = " + JSON.stringify(this._targt));
     this._targt   = undefined;
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._targt (after assigning undefined) = " + JSON.stringify(this._targt));
+    // console.log("dlgtdBtnEvt._resetBaseProps: this._targt (after assigning undefined) = " + JSON.stringify(this._targt));
     this._btnGrp  = undefined;
-    // console.log("dlgtdBoxBtnEvent._resetBaseProps: ENDING");
+    // console.log("dlgtdBtnEvt._resetBaseProps: ENDING");
   }
 
   _setClassesAndSendMsg() {
@@ -369,7 +369,7 @@ class dlgtdBoxBtnEvent {
 
   _sendMsg() {
     // send the message via WS
-    // console.log("dlgtdBoxBtnEvent._sendMsg(): " + JSON.stringify(this._obj));
+    // console.log("dlgtdBtnEvt._sendMsg(): " + JSON.stringify(this._obj));
     connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
@@ -431,7 +431,7 @@ class controlerBox {
     // setting the select master box number
     this.mastSel                  = new mastSel({parent: this, selectSelector:'select.master_select', selectValue: this.masterbox});
 
-    this.dlgtdBtnEvent            = new dlgtdBoxBtnEvent({parent: this, objAction: {action:"changeBox"}});
+    this.dlgtdBtnEvent            = new dlgtdBtnEvt({parent: this, objAction: {action:"changeBox"}});
     this.setDelegatedBtnClickedEvent();
     
   }
@@ -952,8 +952,8 @@ class grpSetter {
    *  1. clearing the inputsMap;
    *  2. loading the inputs and corresponding values from the WS message into
    *  new entries in the inputsMap;
-   *  3. instantiating the dlgtdBoxBtnEvent attached to this grpSetter's instance;
-   *  4. attaching/reattaching the new dlgtdBoxBtnEvent to this grpSetters' instance.
+   *  3. instantiating the dlgtdBtnEvt attached to this grpSetter's instance;
+   *  4. attaching/reattaching the new dlgtdBtnEvt to this grpSetters' instance.
    *  
    * @param: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.50", fixedNetmaskIP: "255.255.255.0"}
    *  */
@@ -975,7 +975,7 @@ class grpSetter {
     });
     // console.log("wifiSetter: update: this.inputsMap.size = " + this.inputsMap.size);
     // add an event handler for clicks on grp buttons
-    this.dlgtdBtnEvent  = new dlgtdBoxBtnEvent({parent: this});
+    this.dlgtdBtnEvent  = new dlgtdBtnEvt({parent: this});
     this.setDelegatedBtnClickedEvent();
   }
 
@@ -996,9 +996,9 @@ class grpSetter {
    * 
    *  - If so, it: 
    *      - sets the Json _obj fields (_obj.lb, _obj.action and the common fields);
-   *      - returns an array containing (i) the Json _obj and (ii) the relevant btnGrp to the dlgtdBoxBtnEvent.
+   *      - returns an array containing (i) the Json _obj and (ii) the relevant btnGrp to the dlgtdBtnEvt.
    * 
-   * - Else, it returns a [false, false] to the dlgtdBoxBtnEvent.
+   * - Else, it returns a [false, false] to the dlgtdBtnEvt.
    * 
    *  @params: _targt: event.target HTMLElt, _obj: a basic Json _obj
    *  @return: [the Json _obj ready to be sent, the relevant btnGrp] or [false, false]
