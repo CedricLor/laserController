@@ -2005,7 +2005,7 @@ var infoBox = {
 
 function updateGlobalInformation(_data) {
   console.log("updateGlobalInformation() starting");
-  // {"action":3,"serverIP":"...","ssid":"...","pass":"...","gatewayIP":true,"...":0,"ui8WifiChannel":6}
+  // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.1", fixedNetmaskIP: "255.255.255.0"}
   document.getElementById('serverIp').innerHTML = _data.serverIP;
   console.log("updateGlobalInformation() ending");
 }

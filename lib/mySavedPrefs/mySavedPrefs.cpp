@@ -113,16 +113,20 @@ void mySavedPrefs::loadPrefsWrapper() {
 
 void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
-  // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
   if (_obj["val"] == "wifi") {
     Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
     // load data from Json to memory
     JsonObject _joDataset = _obj["dataset"];
-    strcpy(ssid, _joDataset["ssid"]);
-    strcpy(pass, _joDataset["pass"]);
-    gatewayIP.fromString(_joDataset["gatewayIP"].as<const char*>());
-    ui16GatewayPort = _joDataset["ui16GatewayPort"];
-    ui8WifiChannel = _joDataset["ui8WifiChannel"];
+    
+    strcpy(ssid,                _joDataset["ssid"]);
+    strcpy(pass,                _joDataset["pass"]);
+    gatewayIP.fromString(       _joDataset["gatewayIP"].as<const char*>());
+    ui16GatewayPort           = _joDataset["ui16GatewayPort"];
+    ui8WifiChannel            = _joDataset["ui8WifiChannel"];
+    fixedIP.fromString(         _joDataset["fixedIP"].as<const char*>());
+    fixedNetmaskIP.fromString(  _joDataset["fixedNetmaskIP"].as<const char*>());
+
     saveBoxSpecificPrefsWrapper(_saveNetworkCredentials);
     return;
   }
@@ -215,23 +219,25 @@ void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
   gatewayIP
   ui16GatewayPort
   ui8WifiChannel
+  fixedIP
+  fixedNetmaskIP
 */
 void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   // save value of ssid
   // Interface only
-  // -> reboot required
+  // -> restart the mesh
   size_t _sssidRet = _preferences.putString("ssid", ssid);
   Serial.printf("%s ssid == %s %s\"ssid\"\n", debugSaveMsgStart, ssid, (_sssidRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of pass
   // Interface only
-  // -> reboot required
+  // -> restart the mesh
   size_t _spassRet = _preferences.putString("pass", pass);
   Serial.printf("%s pass == %s %s\"pass\"\n", debugSaveMsgStart, pass, (_spassRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of gatewayIP
   // Interface only
-  // -> reboot required
+  // -> restart the mesh
   // putBytes(const char* key, const void* value, size_t len)
   uint8_t _ui8GatewayIP[4] = {gatewayIP[0], gatewayIP[1], gatewayIP[2], gatewayIP[3]};
   size_t _bsGatewayIPRet = _preferences.putBytes("gateIP", _ui8GatewayIP, 4);
@@ -239,17 +245,33 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
 
   // save value of ui16GatewayPort
   // Interface only
-  // -> reboot required
+  // -> restart the mesh
   // putShort(const char* key, int16_t value)
   size_t _ui16GatewayPortRet = _preferences.putUShort("gatePort", ui16GatewayPort);
   Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of ui8WifiChannel
   // Interface only
-  // -> reboot required
+  // -> restart the mesh
   // putUChar(const char* key, uint8_t value)
   size_t _ui8WifiChannelRet = _preferences.putUChar("wifiChan", ui8WifiChannel);
   Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+
+  // save value of fixedIP
+  // Interface only
+  // -> restart the mesh
+  // putBytes(const char* key, const void* value, size_t len)
+  uint8_t _ui8fixedIP[4] = {fixedIP[0], fixedIP[1], fixedIP[2], fixedIP[3]};
+  size_t _bsFixedIPRet = _preferences.putBytes("fixedIP", _ui8fixedIP, 4);
+  Serial.printf("%s IF fixed IP == %s %s\"fixedIP\"\n", debugSaveMsgStart, fixedIP.toString().c_str(), (_bsFixedIPRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+
+  // save value of fixedNetmaskIP
+  // Interface only
+  // -> restart the mesh
+  // putBytes(const char* key, const void* value, size_t len)
+  uint8_t _ui8FixedNetmaskIP[4] = {fixedNetmaskIP[0], fixedNetmaskIP[1], fixedNetmaskIP[2], fixedNetmaskIP[3]};
+  size_t _bsFixedNetmaskIPRet = _preferences.putBytes("netMask", _ui8FixedNetmaskIP, 4);
+  Serial.printf("%s Wifi netmask == %s %s\"netMask\"\n", debugSaveMsgStart, fixedNetmaskIP.toString().c_str(), (_bsFixedNetmaskIPRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -428,9 +450,15 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
 /*
   ssid
   pass
+  gatewayIP
+  ui16GatewayPort
+  ui8WifiChannel
+  fixedIP
+  fixedNetmaskIP
 */
 void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   // ssid
+  // -> restart the mesh
   char _ssid[20];
   if (_preferences.getString("ssid", _ssid, 20)) {
     strcpy(ssid, (const char*)_ssid);
@@ -438,6 +466,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   }
 
   // pass
+  // -> restart the mesh
   char _pass[30];
   if (_preferences.getString("pass", _pass, 30)) {
     strcpy(pass, (const char*)_pass);
@@ -446,7 +475,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
 
   // get the value of gatewayIP
   // Interface only
-  // -> reboot required
+  // -> restart the mesh
   // getBytesLength(const char* key)
   // getBytes(const char* key, void * buf, size_t maxLen)
   if (_preferences.getBytesLength("gateIP")) {
@@ -461,14 +490,48 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   }
 
   // get the value of ui16GatewayPort
+  // -> restart the mesh
   // getShort(const char* key, const int16_t defaultValue)
   ui16GatewayPort = _preferences.getUShort("gatePort", ui16GatewayPort);
   Serial.printf("%s ui16GatewayPort set to: %u\n", _debugLoadMsgStart, ui16GatewayPort);
 
   // get the value of ui8WifiChannel
+  // -> restart the mesh
   // getUChar(const char* key, const uint8_t defaultValue)
   ui8WifiChannel = _preferences.getUChar("wifiChan", ui8WifiChannel);
   Serial.printf("%s ui8WifiChannel set to: %i\n", _debugLoadMsgStart, ui8WifiChannel);
+
+  // get the value of fixedIP
+  // Interface only
+  // -> restart the mesh
+  // getBytesLength(const char* key)
+  // getBytes(const char* key, void * buf, size_t maxLen)
+  if (_preferences.getBytesLength("fixedIP")) {
+    char _fixedIPBuffer[4];
+    _preferences.getBytes("fixedIP", _fixedIPBuffer, 4);
+    for (int __ipIt=0; __ipIt<4; __ipIt++) {
+      fixedIP[__ipIt] = _fixedIPBuffer[__ipIt];
+    }
+    Serial.printf("%s fixedIP set to: %s\n", _debugLoadMsgStart, fixedIP.toString().c_str());
+  } else {
+    Serial.printf("%s fixedIP could not be retrieved.\n", _debugLoadMsgStart);
+  }
+
+  // get the value of fixedNetmaskIP
+  // Interface only
+  // -> restart the mesh
+  // getBytesLength(const char* key)
+  // getBytes(const char* key, void * buf, size_t maxLen)
+  if (_preferences.getBytesLength("netMask")) {
+    char _fixedNetmaskIPBuffer[4];
+    _preferences.getBytes("netMask", _fixedNetmaskIPBuffer, 4);
+    for (int __ipIt=0; __ipIt<4; __ipIt++) {
+      fixedNetmaskIP[__ipIt] = _fixedNetmaskIPBuffer[__ipIt];
+    }
+    Serial.printf("%s fixedNetmaskIP set to: %s\n", _debugLoadMsgStart, fixedNetmaskIP.toString().c_str());
+  } else {
+    Serial.printf("%s fixedNetmaskIP could not be retrieved.\n", _debugLoadMsgStart);
+  }
 }
 
 

@@ -174,7 +174,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     if (MY_DG_WS) {
       Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE WIFI settings message.");
     }
-    // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+    // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
     _saveWifiIF(_obj);
     return;
   }
@@ -220,9 +220,8 @@ void myWSReceiver::_saveIF(JsonObject& _obj) {
 
 
 void myWSReceiver::_saveWifiIF(JsonObject& _obj) {
-  // {action: "changeBox", key: "save", val: "wifi", lb: 0, dataset: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.25.1", ui16GatewayPort: 0, ui8WifiChannel: 6}}
+  // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveWifiIF(): About to save Wifi preferences on IF.\n"); }
-
   // save preferences
   mySavedPrefs::saveFromNetRequest(_obj);
 }
