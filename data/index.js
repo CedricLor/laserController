@@ -140,8 +140,11 @@ class btn {
 class delgtdDataSet {
   // props: {datasetKey: "boxState"}
   constructor(props={}) {
+    console.log("delgtdDataSet.constructor(props={}): props =");console.log(props);
     this.datasetKey = props.datasetKey;
+    console.log("delgtdDataSet.constructor(props={}): this.datasetKey = " + this.datasetKey);console.log(this.datasetKey);
     this.selector   = "[data-" + this.datasetKey + "]";
+    console.log("delgtdDataSet.constructor(props={}): this.selector = " + this.selector);console.log(this.selector);
   }
 }
 
@@ -174,8 +177,7 @@ class btnGrp {
 
     this.btnsArray                = [];
     this.loadBtnsInArray();
-    // console.log("btnGrp.constructor: this.btnsArray: ");console.log(this.btnsArray);
-    // this.vBtnNodeList             = this.parent.vElt.querySelectorAll(this.btnGpSelectorProto);
+    console.log("btnGrp.constructor: this.btnsArray: ");console.log(this.btnsArray);
     this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
 
     this.setActiveBtn();  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
@@ -251,6 +253,8 @@ class btnGrp {
      *    - add a red border to the btn (by applying class button_change_received)
      * to inform the user that the corresponding request is currently being processed.
      * */
+    console.log("btnGrp.updateFB(_data): ");console.log(_data);
+    console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 1: " + (parseInt(_data.st, 10) === 1));
     if (parseInt(_data.st, 10) === 1) {
         this.parent.boxStateChanging = this.boxState;
         this.parent.boxState         = _data.val;
@@ -264,6 +268,7 @@ class btnGrp {
      *    - mark all the btns as non-clicked; (why now? why here? why not before?)
      *    - mark the current state btn in red to inform the user of the actual state
      * */
+    console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 2: " + (parseInt(_data.st, 10) === 2));
     if (parseInt(_data.st, 10) === 2) {
         this.parent.boxStateChanging = undefined;
         // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
@@ -292,9 +297,10 @@ class dlgtdBoxBtnEvent {
   // props: {parent: this, objAction: {action:"changeBox"}}
   constructor(props={}) {
     this.parent     = props.parent; 
-    // console.log("dlgtdBoxBtnEvent.constructor: props.objAction");console.log(props.objAction);
+    console.log("dlgtdBoxBtnEvent.constructor: props.objAction");console.log(props.objAction);
     this._objAction = Object.assign({}, (props.objAction || {action:"changeBox"}));
-    // console.log("dlgtdBoxBtnEvent.constructor: this._objAction");console.log(this._objAction);
+    console.log("dlgtdBoxBtnEvent.constructor: this._objAction");console.log(this._objAction);
+    console.log("--------- --------- ---------");
     this._resetBaseProps();
   }
   
@@ -320,9 +326,9 @@ class dlgtdBoxBtnEvent {
     // console.log("dlgtdBoxBtnEvent: onClick(e): this = ");console.log(this);
     
     this._targt   = e.target;
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this._targt");console.log(this._targt);
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
-    // self.parent._eventTargetSwitch(self._targt, self._obj)
+    console.log("+++++++++ +++++++++ +++++++++");
+    console.log("dlgtdBoxBtnEvent: onClick(e): this._targt");console.log(this._targt);
+    console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
     [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
 
     // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
@@ -333,7 +339,9 @@ class dlgtdBoxBtnEvent {
   } // onClick(e)
 
   _resetBaseProps() {
+    console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj (before Object.assign) = ");console.log(this._obj);
     this._obj     = Object.assign({}, this._objAction);
+    console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj (after Object.assign) = ");console.log(this._obj);
     this._targt   = undefined;
     this._btnGrp  = undefined;
   }
@@ -352,7 +360,7 @@ class dlgtdBoxBtnEvent {
 
   _sendMsg() {
     // send the message via WS
-    // console.log("dlgtdBoxBtnEvent._sendMsg(): " + JSON.stringify(this._obj));
+    console.log("dlgtdBoxBtnEvent._sendMsg(): " + JSON.stringify(this._obj));
     connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
@@ -437,6 +445,7 @@ class controlerBox {
   *  _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   * */
   update(_data) {
+    console.log("controlerBox.update(_data):");
   this._updateLocalStates(_data);
   this._updateLocalMaster(_data);
   this._updateChildrenStateBtns();
@@ -445,12 +454,20 @@ class controlerBox {
 
   /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
   *  on feedback from a {action: "changeBox", key: "boxState || boxDefstate"...} request. 
-  *  _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+  *  This is what it looks like:
+  *  --> _data: {"action":"changeBox","lb":1,"key":"boxState","value":4,"st":1,"NNa":200,"APIP":[10,97,45,1],"StIP":[192,168,43,50]}
+  *  --> _data: {"action":"changeBox","lb":1,"key":"box_defstate","value":4,"st":1,"NNa":200,"APIP":[10,97,45,1],"StIP":[192,168,43,50]}
+  *  This is what it should look like: 
+  * _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   *  _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
   *  _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   *  _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
   * */
   updateStateFB(_data) {
+    console.log("controlerBox.updateStateFB(_data): ");
+    console.log("controlerBox.updateStateFB(_data): _data.key: " + _data.key);
+    console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxState\"): " + (_data.key === "boxState"));
+    console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxDefstate\"): " + (_data.key === "boxDefstate"));
     if (_data.key === "boxState") {
       this.boxStateBtnGrp.updateFB(_data);
       return;
@@ -464,6 +481,7 @@ class controlerBox {
   *  (boxState, boxDefstate)
   * */ 
   _updateLocalStates(_data) {
+    console.log("controlerBox._updateLocalStates(_data): _data: ");console.log(_data);
     this.boxState     = _data.boxState;
     this.boxDefstate  = _data.boxDefstate;
   }
@@ -542,8 +560,9 @@ class controlerBox {
    *  Gets called from this.dlgtdBtnEvent.
    */
   _eventTargetSwitch(_targt, _obj) {
-    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _targt: ");console.log(_targt);
-    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _obj: ");console.log(_obj);
+    console.log("--------- --------- ---------");
+    console.log("controlerBox._eventTargetSwitch(_targt, _obj): _targt: ");console.log(_targt);
+    console.log("controlerBox._eventTargetSwitch(_targt, _obj): _obj: ");console.log(_obj);
     _obj.lb = this.lb;
     /**  1. checks whether the event.target HTML element matches with the boxState button group
      *   selector. */
@@ -660,15 +679,19 @@ class bxCont {
    *  In a last step (to be refactored), it handles the case where it is a reboot.
    * */
   addOrUpdateCntrlerBox(data) {
-    // console.log("bxCont.addOrUpdateCntrlerBox -- Starting.")
+    console.log("bxCont.addOrUpdateCntrlerBox -- Starting. data: ");console.log(data);
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     // Check whether the boxRow has already been created
+    console.log("bxCont.addOrUpdateCntrlerBox: " + data.lb);
+    console.log("bxCont.addOrUpdateCntrlerBox: _controlerBoxEntry");console.log(boxCont.controlerBoxes[parseInt(data.lb, 10)]);
     let _controlerBoxEntry = boxCont.controlerBoxes[parseInt(data.lb, 10)];
     // console.log("bxCont.addOrUpdateCntrlerBox: _controlerBoxEntry: ");console.log(_controlerBoxEntry);
     if(_controlerBoxEntry) {
+      console.log("bxCont.addOrUpdateCntrlerBox -- That's an update.");
       // let's update it
       _controlerBoxEntry.update(data);
     } else {
+      console.log("bxCont.addOrUpdateCntrlerBox -- That's a new box.");
       // let's create it
       // console.log("bxCont.addOrUpdateCntrlerBox: about to call this.newCntrlerBox");
       this.newCntrlerBox(data);
@@ -1229,6 +1252,8 @@ var connectionObj = {
  * depending on their types
  */
 function onMsgActionSwitch(_data) {
+  console.log("onMsgActionSwitch: starting. _data: ");console.log(_data);
+  console.log("onMsgActionSwitch: _data.action: " + _data.action);
   // Received IP and other global data (wifi settings)
   if (_data.action === 3) {
     // console.log("WS JSON message: " + _data.ServerIP);
@@ -1243,9 +1268,13 @@ function onMsgActionSwitch(_data) {
   // 4. User request to change boxState of a given box has been received
   // and is being processed
   // 5. boxState of existing box has been updated
+  console.log("onMsgActionSwitch: _data.key: " + _data.key);
   if (_data.action === "changeBox" && _data.key === "boxState") {
     // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
     // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+    console.log("onMsgActionSwitch: inside --> (if (_data.action === \"changeBox\" && _data.key === \"boxState\"))");
+    console.log("onMsgActionSwitch: boxCont.controlerBoxes = ");console.log(boxCont.controlerBoxes);
+    console.log("onMsgActionSwitch: boxCont.controlerBoxes[parseInt(_data.lb, 10)] = ");console.log(boxCont.controlerBoxes[parseInt(_data.lb, 10)]);
     boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
     return;
   }
