@@ -930,7 +930,7 @@ class inpt {
  *   Mesh settings setter, wifi settings setter)
  *  */
 class grpSetter {
-  // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
+  // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.1", fixedNetmaskIP: "255.255.255.0"}
   constructor(props={}) {
     // if no selector has been provided, just return
     if (!(props.selector)) {
@@ -955,13 +955,22 @@ class grpSetter {
    *  3. instantiating the dlgtdBoxBtnEvent attached to this grpSetter's instance;
    *  4. attaching/reattaching the new dlgtdBoxBtnEvent to this grpSetters' instance.
    *  
-   * @param: {ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6}
+   * @param: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.50", fixedNetmaskIP: "255.255.255.0"}
    *  */
   update(props) {
     this.inputsMap.clear();
-    // load the settings and the <input> children of this container div into an inputsMap
+    // load the settings and the <input> children of this container <div> into an inputsMap
     this.vElt.querySelectorAll('input').forEach((_input) => {
-      this.inputsMap.set(_input.id, new inpt({parent: this, name: _input.id, vElt: _input, value: props[_input.id]}));
+      this.inputsMap.set(_input.id, 
+                         new inpt(
+                           {
+                              parent: this, 
+                              name: _input.id, 
+                              vElt: _input, 
+                              value: props[_input.id] // BE CAREFULL: the _input.id MUST match with the received Json document properties (no buts, no ifs)
+                            }
+                         )
+                        );
       // console.log("wifiSetter: update: props[" + _input.id + "] = " + props[_input.id]);
     });
     // console.log("wifiSetter: update: this.inputsMap.size = " + this.inputsMap.size);

@@ -11,7 +11,7 @@
   </head>
   <body class='center_al'>
     <h1>
-      <span id='nodeName'>%UI8_NODE_NAME%</span> - Server IP: <span id='serverIp'>%SERVER_IP%</span>
+      Interface IP: <span id='serverIp'></span>
     </h1>
     <div id='infoBox' class='marg_top'></div>
     <div class='netwide_cmds marg_top'>
@@ -263,8 +263,12 @@
         <input id='ui16GatewayPort' type='text' >
       </div>
       <div> <!-- IF IP on External Network -->
-        <label class='wifi_labels' for='wishedIp'>Wished IP:</label>
-        <input id='wishedIp' type='text' >
+        <label class='wifi_labels' for='fixedIP'>Fixed IP:</label>
+        <input id='fixedIP' type='text' >
+      </div>
+      <div> <!-- External Network Netmask -->
+        <label class='wifi_labels' for='fixedNetmaskIP'>Netmask:</label>
+        <input id='fixedNetmaskIP' type='text' >
       </div>
       <div> <!-- External Network Channel -->
         <label class='wifi_labels' for='ui8WifiChannel'>Wifi Channel:</label>
