@@ -137,16 +137,6 @@ class btn {
 
 
 
-class delgtdDataSet {
-  // props: {datasetKey: "boxState"}
-  constructor(props={}) {
-    console.log("delgtdDataSet.constructor(props={}): props =");console.log(props);
-    this.datasetKey = props.datasetKey;
-    console.log("delgtdDataSet.constructor(props={}): this.datasetKey = " + this.datasetKey);console.log(this.datasetKey);
-    this.selector   = "[data-" + this.datasetKey + "]";
-    console.log("delgtdDataSet.constructor(props={}): this.selector = " + this.selector);console.log(this.selector);
-  }
-}
 
 
 
@@ -169,10 +159,9 @@ class btnGrp {
     this.activeBtnClass           = 'button_active_state';
     this.changedRecvdBtnClass     = 'button_change_received';
 
-    // console.log("btnGrp: constructor: props.btnGrpCommonAttr = " + props.btnGrpCommonAttr);
+    this.datasetKey               = props.datasetKey || "";
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
-    // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + this.btnGrpCommonAttr);
-    this.btnGpSelectorProto       = (props.restrictParentSelector || "") + " button" + (this.btnGrpCommonAttr.selector || this.btnGrpCommonAttr);
+    this.btnGpSelectorProto       = (props.restrictParentSelector || "") + " button" + this.btnGrpCommonAttr;
     // console.log("btnGrp: constructor: this.btnGpSelectorProto = "+ this.btnGpSelectorProto);
 
     this.btnsArray                = [];
@@ -199,13 +188,25 @@ class btnGrp {
    *  into an array.
    */
   loadBtnsInArray() {
-    if (this.btnGrpCommonAttr.datasetKey) {
-      this.parent.vElt.querySelectorAll(this.btnGpSelectorProto).forEach((_btn) => { 
-        this.btnsArray[_btn.dataset[this.btnGrpCommonAttr.datasetKey]] = _btn;
-      });
-      return;
-    }
+    // 1. select all the buttons according the build up this.btnGpSelectorProto
     this.btnsArray = Array.from(this.parent.vElt.querySelectorAll(this.btnGpSelectorProto));
+    /**2. the btnGpSelectorProto does not include any datasetKey (would need to decamelize 
+     *    the string and I don't want to): if there is a dataset, two problems:
+     *      a. we might have too many buttons in the array;
+     *      b. the index of each button must match the value of the relevant datasetKey. */
+    if (this.datasetKey) {
+      // 1. let's filter it and store it into a temporary array -> grabbing only the _btn that have a datasetKey that correspond to this btnGrp
+      let _filteredBtns = this.btnsArray.filter( _btn => _btn.dataset[this.datasetKey] !== undefined);
+      // 2. empty this.btnsArray
+      this.btnsArray.splice(0, this.btnsArray.length);
+      // 3. let's load this.btnsArray in the correct order 
+      _filteredBtns.forEach(
+        (_btn) => {
+          this.btnsArray[_btn.dataset[this.datasetKey]] = _btn;
+  }
+      );
+    }
+
   }
 
   /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
@@ -257,8 +258,8 @@ class btnGrp {
     console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 1: " + (parseInt(_data.st, 10) === 1));
     if (parseInt(_data.st, 10) === 1) {
         this.parent.boxStateChanging = this.boxState;
-        this.parent.boxState         = _data.val;
-        this.btnsArray[_data.val].classList.add(this.changedRecvdBtnClass);
+        this.parent.boxState         = parseInt(_data.val, 10);
+        this.btnsArray[this.parent.boxState].classList.add(this.changedRecvdBtnClass);
         return;
     }
     /** 
@@ -275,7 +276,7 @@ class btnGrp {
         // _removeClassesOnButtonsGroupForRow(this.vElt, "button[data-" + _data.Key + "]");
         this.markAllBtnsAsNonClicked();
         // _setCurrentStateButton(this.vElt, _data.Key, _data.val);
-        this.btnsArray[_data.val].classList.add(this.activeBtnClass);
+        this.btnsArray[parseInt(_data.val, 10)].classList.add(this.activeBtnClass);
     }
   }
 }
@@ -414,8 +415,8 @@ class controlerBox {
     this.configBtnGrp             = new btnGrp({parent: this, restrictParentSelector: '.command_gp > '});
     
     // setting the state and default state buttons btnGrps
-    this.boxStateBtnGrp           = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxstate"}), activeBtnNum: this.boxState});
-    this.boxDefStateBtnGrp        = new btnGrp({parent: this, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "box_defstate"}), activeBtnNum: this.boxDefstate});
+    this.boxStateBtnGrp           = new btnGrp({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
+    this.boxDefStateBtnGrp        = new btnGrp({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
 
     // setting the span master box number
     this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
@@ -566,20 +567,18 @@ class controlerBox {
     _obj.lb = this.lb;
     /**  1. checks whether the event.target HTML element matches with the boxState button group
      *   selector. */
-    if (_targt.matches(this.boxStateBtnGrp.btnGpSelectorProto)) {
+    if (_targt.dataset[this.boxStateBtnGrp.datasetKey]) {
       // a. get the dataset key (boxState) and allot it to _obj.key
-      _obj.key   = this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey;
-      // b. get the value for dataset key (boxState) and allot it to _obj.value
-      _obj.value = parseInt(_targt.dataset[this.boxStateBtnGrp.btnGrpCommonAttr.datasetKey], 10);
+      _obj.key = this.boxStateBtnGrp.datasetKey;
+      _obj.val = parseInt(_targt.dataset[this.boxStateBtnGrp.datasetKey], 10);
       return [_obj, this.boxStateBtnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the default boxState button
      *  group selector. */
-    if (_targt.matches(this.boxDefStateBtnGrp.btnGpSelectorProto)) {
+    if (_targt.dataset[this.boxDefStateBtnGrp.datasetKey]) {
       // a. get the dataset key (defaultBoxstate) and allot it to _obj.key
-      _obj.key   = this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey;
-      // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.value
-      _obj.value = parseInt(_targt.dataset[this.boxDefStateBtnGrp.btnGrpCommonAttr.datasetKey], 10);
+      _obj.key = this.boxDefStateBtnGrp.datasetKey;
+      _obj.val = parseInt(_targt.dataset[this.boxDefStateBtnGrp.datasetKey], 10);
       return [_obj, this.boxDefStateBtnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the configuration buttons
@@ -712,10 +711,8 @@ class bxCont {
    * */
   newCntrlerBox(data) {
       // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-      // console.log("bxCont.newCntrlerBox: this.controlerBoxes: -- starting");
-      this.controlerBoxes[parseInt(data.lb)] = new controlerBox(data);
-      // console.log("bxCont.newCntrlerBox: this.controlerBoxes: ");console.log(this.controlerBoxes);
-      this.insertInDom(this.controlerBoxes[parseInt(data.lb)], this.appendAsNthChild);
+      this.controlerBoxes[parseInt(data.lb, 10)] = new controlerBox(data);
+      this.insertInDom(this.controlerBoxes[parseInt(data.lb, 10)], this.appendAsNthChild);
       this._bxCount++;
   }
 
@@ -795,15 +792,18 @@ class bxCont {
   *  Returns an array with the deleted entries
   * */
   deleteAllRows() {
+    if (this._bxCount) {
       // empty the array of controller boxes by splicing of all its members
-      var oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
+      let oldBxArray = this.controlerBoxes.splice(0, this._potBxCount);
       // resize the array of controller boxes to its original size
       this.controlerBoxes.length = this._potBxCount;
       this._bxCount = 0;
       // delete all from DOM by replacing the container by its initial form
       this.vBxContElt.parentNode.replaceChild(this.emptyBxContElt, this.vBxContElt);
       // return the old array (the vElt have all been deleted at this stage, however)
-      return(oldBxArray);
+      return oldBxArray;      
+    }
+    return this.controlerBoxes;
   }
 
   /** bxCont.deleteRow(_data) deletes a single box row and its corresponding 
