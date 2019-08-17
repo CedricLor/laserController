@@ -97,7 +97,7 @@ class mastSel {
    * @param {event} _e 
    */
   _oninputMasterSelect(_e) {
-    if ((this.parent.lb !== null )) {
+    if ((this.parent.lb !== null)) {
       connectionObj.ws.send(JSON.stringify({
         action: "changeBox",
         key:    "masterbox",
@@ -766,10 +766,10 @@ class bxCont {
     boxCont.appendAsLastChild(controlBx);
   }
 
-  /** bxCont.deleteAllRows() deletes a single box row and
-  *  the corresponding representations in the array of controlerBoxes.
+  /** bxCont.deleteAllRows() deletes all the box rows and
+  *  their corresponding representations in the array of controlerBoxes.
   *   
-  *  Returns an array with the deleted entry in the array
+  *  Returns an array with the deleted entries
   * */
   deleteAllRows() {
       // empty the array of controller boxes by splicing of all its members
@@ -783,8 +783,8 @@ class bxCont {
       return(oldBxArray);
   }
 
-  /** bxCont.deleteRow(_data) deletes a single box row and the corresponding 
-   *  representations in the array. 
+  /** bxCont.deleteRow(_data) deletes a single box row and its corresponding 
+   *  representation in the array. 
    * 
    *  @param: a Json _data string (the method is being called from the onMsgActionSwitch). 
    *  
@@ -982,7 +982,7 @@ class grpSetter {
     _obj.dataset  = {};
     // console.log("grpSetter._baseObj: this.inputsMap.size(): " + this.inputsMap.size);
     this.inputsMap.forEach((_inpt, _k) => {
-      // console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.value: _obj.dataset[" + _k + "] = " + _inpt.value);
+      // console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.getValue(): _obj.dataset[" + _k + "] = " + _inpt.getValue());
       _obj.dataset[_k] = _inpt.getValue();
     });
     // console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
@@ -1635,7 +1635,7 @@ var onReboot = {
       // iterate over the boxCont.controllerBoxes array, create textNodes for the span and
       // store them in a map
       boxCont.controlerBoxes.forEach(function(val, index) {
-        let _text = (parseInt(index) + 200) + ". ";
+        let _text = (parseInt(index, 10) + 200) + ". ";
         // create a textNode to hold the box number
         let _boxNumbNode = document.createTextNode(_text);
         // store it into a map
