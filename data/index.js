@@ -21,8 +21,6 @@ In index.js:
  * 
  * class btn
  * 
- * class delgtdDataSet
- * 
  * class btnGrp
  * 
  * class dlgtdBoxBtnEvent
@@ -104,9 +102,7 @@ class mastSel {
         lb:     this.parent.lb,
         val:    parseInt(_e.currentTarget.options[_e.currentTarget.selectedIndex].value, 10)
         }));
-        // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
         // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
-        // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
     }
   }
 }
@@ -150,8 +146,8 @@ class btn {
 
 class btnGrp {
   constructor (props={}) {
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "boxState"}), activeBtnNum: this.boxState}
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, btnGrpCommonAttr: new delgtdDataSet({datasetKey: "defaultState"}), activeBtnNum: this.boxDefstate}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, datasetKey: "boxState", activeBtnNum: this.boxState}
+    // props = {parent: this/*bxCont.controlerBoxes[0]*/, datasetKey: "defaultState", activeBtnNum: this.boxDefstate}
     // props = {parent: this/*bxCont.controlerBoxes[0]*/}
     this.parent                   = props.parent;
     
@@ -160,13 +156,16 @@ class btnGrp {
     this.changedRecvdBtnClass     = 'button_change_received';
 
     this.datasetKey               = props.datasetKey || "";
+    // console.log("btnGrp: constructor: this.datasetKey = " + (this.datasetKey || "no datasetKey for this btnGrp"));
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
+    // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + (this.btnGrpCommonAttr || "no btnGrpCommonAttr for this btnGrp"));
     this.btnGpSelectorProto       = (props.restrictParentSelector || "") + " button" + this.btnGrpCommonAttr;
     // console.log("btnGrp: constructor: this.btnGpSelectorProto = "+ this.btnGpSelectorProto);
 
     this.btnsArray                = [];
+    // console.log("btnGrp.constructor: this.btnsArray.length: " + this.btnsArray.length);
     this.loadBtnsInArray();
-    console.log("btnGrp.constructor: this.btnsArray: ");console.log(this.btnsArray);
+    // console.log("btnGrp.constructor: this.btnsArray.length: " + this.btnsArray.length);
     this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
 
     this.setActiveBtn();  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
@@ -203,10 +202,10 @@ class btnGrp {
       _filteredBtns.forEach(
         (_btn) => {
           this.btnsArray[_btn.dataset[this.datasetKey]] = _btn;
-  }
+        }
       );
     }
-
+    
   }
 
   /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
@@ -254,11 +253,13 @@ class btnGrp {
      *    - add a red border to the btn (by applying class button_change_received)
      * to inform the user that the corresponding request is currently being processed.
      * */
-    console.log("btnGrp.updateFB(_data): ");console.log(_data);
-    console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 1: " + (parseInt(_data.st, 10) === 1));
+    // console.log("btnGrp.updateFB(_data): ");console.log(_data);
+    // console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 1: " + (parseInt(_data.st, 10) === 1));
     if (parseInt(_data.st, 10) === 1) {
         this.parent.boxStateChanging = this.boxState;
         this.parent.boxState         = parseInt(_data.val, 10);
+        // console.log("btnGrp.updateFB(_data): this.btnsArray: " + JSON.stringify(this.btnsArray));
+        // console.log("btnGrp.updateFB(_data): this.parent.boxState: " + this.parent.boxState);
         this.btnsArray[this.parent.boxState].classList.add(this.changedRecvdBtnClass);
         return;
     }
@@ -269,7 +270,7 @@ class btnGrp {
      *    - mark all the btns as non-clicked; (why now? why here? why not before?)
      *    - mark the current state btn in red to inform the user of the actual state
      * */
-    console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 2: " + (parseInt(_data.st, 10) === 2));
+    // console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 2: " + (parseInt(_data.st, 10) === 2));
     if (parseInt(_data.st, 10) === 2) {
         this.parent.boxStateChanging = undefined;
         // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
@@ -297,11 +298,12 @@ class btnGrp {
 class dlgtdBoxBtnEvent {
   // props: {parent: this, objAction: {action:"changeBox"}}
   constructor(props={}) {
+    // console.log("dlgtdBoxBtnEvent.constructor: STARTING");
     this.parent     = props.parent; 
-    console.log("dlgtdBoxBtnEvent.constructor: props.objAction");console.log(props.objAction);
+    // console.log("dlgtdBoxBtnEvent.constructor: props.objAction.action = " + (props.objAction && props.objAction.action || "no props._objAction passed"));
     this._objAction = Object.assign({}, (props.objAction || {action:"changeBox"}));
-    console.log("dlgtdBoxBtnEvent.constructor: this._objAction");console.log(this._objAction);
-    console.log("--------- --------- ---------");
+    // console.log("dlgtdBoxBtnEvent.constructor: this._objAction.action = " + (this._objAction.action || "no this._objAction"));
+    // console.log("--------- --------- ---------");
     this._resetBaseProps();
   }
   
@@ -327,12 +329,12 @@ class dlgtdBoxBtnEvent {
     // console.log("dlgtdBoxBtnEvent: onClick(e): this = ");console.log(this);
     
     this._targt   = e.target;
-    console.log("+++++++++ +++++++++ +++++++++");
-    console.log("dlgtdBoxBtnEvent: onClick(e): this._targt");console.log(this._targt);
-    console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
+    // console.log("+++++++++ +++++++++ +++++++++");
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this._targt = ");console.log(this._targt);
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj = " + JSON.stringify(this._obj));
     [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
 
-    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj");console.log(this._obj);
+    // console.log("dlgtdBoxBtnEvent: onClick(e): this._obj" + JSON.stringify(this._obj));
     if (this._obj) {
       this._setClassesAndSendMsg();
     }
@@ -340,11 +342,17 @@ class dlgtdBoxBtnEvent {
   } // onClick(e)
 
   _resetBaseProps() {
-    console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj (before Object.assign) = ");console.log(this._obj);
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: STARTING");
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj = " + JSON.stringify(this._obj));
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj.action (before Object.assign) = " + (this._obj ? this._obj.action : "this._obj has not yet been defined <---") );
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._objAction.action = " + this._objAction.action);
     this._obj     = Object.assign({}, this._objAction);
-    console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj (after Object.assign) = ");console.log(this._obj);
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._obj.action (after Object.assign) = " + this._obj.action);
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._targt = " + JSON.stringify(this._targt));
     this._targt   = undefined;
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: this._targt (after assigning undefined) = " + JSON.stringify(this._targt));
     this._btnGrp  = undefined;
+    // console.log("dlgtdBoxBtnEvent._resetBaseProps: ENDING");
   }
 
   _setClassesAndSendMsg() {
@@ -361,7 +369,7 @@ class dlgtdBoxBtnEvent {
 
   _sendMsg() {
     // send the message via WS
-    console.log("dlgtdBoxBtnEvent._sendMsg(): " + JSON.stringify(this._obj));
+    // console.log("dlgtdBoxBtnEvent._sendMsg(): " + JSON.stringify(this._obj));
     connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
@@ -446,11 +454,11 @@ class controlerBox {
   *  _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
   * */
   update(_data) {
-    console.log("controlerBox.update(_data):");
-  this._updateLocalStates(_data);
-  this._updateLocalMaster(_data);
-  this._updateChildrenStateBtns();
-  this._updateChildrenMaster();
+    // console.log("controlerBox.update(_data):");
+    this._updateLocalStates(_data);
+    this._updateLocalMaster(_data);
+    this._updateChildrenStateBtns();
+    this._updateChildrenMaster();
   }
 
   /** controlerBox.updateStateFB(_data) updates the local data and the btnGrp
@@ -465,10 +473,10 @@ class controlerBox {
   *  _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
   * */
   updateStateFB(_data) {
-    console.log("controlerBox.updateStateFB(_data): ");
-    console.log("controlerBox.updateStateFB(_data): _data.key: " + _data.key);
-    console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxState\"): " + (_data.key === "boxState"));
-    console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxDefstate\"): " + (_data.key === "boxDefstate"));
+    // console.log("controlerBox.updateStateFB(_data): ");
+    // console.log("controlerBox.updateStateFB(_data): _data.key: " + _data.key);
+    // console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxState\"): " + (_data.key === "boxState"));
+    // console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxDefstate\"): " + (_data.key === "boxDefstate"));
     if (_data.key === "boxState") {
       this.boxStateBtnGrp.updateFB(_data);
       return;
@@ -482,7 +490,7 @@ class controlerBox {
   *  (boxState, boxDefstate)
   * */ 
   _updateLocalStates(_data) {
-    console.log("controlerBox._updateLocalStates(_data): _data: ");console.log(_data);
+    // console.log("controlerBox._updateLocalStates(_data): _data: ");console.log(_data);
     this.boxState     = _data.boxState;
     this.boxDefstate  = _data.boxDefstate;
   }
@@ -561,29 +569,37 @@ class controlerBox {
    *  Gets called from this.dlgtdBtnEvent.
    */
   _eventTargetSwitch(_targt, _obj) {
-    console.log("--------- --------- ---------");
-    console.log("controlerBox._eventTargetSwitch(_targt, _obj): _targt: ");console.log(_targt);
-    console.log("controlerBox._eventTargetSwitch(_targt, _obj): _obj: ");console.log(_obj);
+    // console.log("--------- --------- ---------");
+    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _targt = ");console.log(_targt);
+    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _obj = " + JSON.stringify(_obj));
     _obj.lb = this.lb;
+    // console.log("controlerBox._eventTargetSwitch(_targt, _obj): _obj = " + JSON.stringify(_obj));
+    // console.log("------ controlerBox._eventTargetSwitch(_targt, _obj): _targt.dataset = " + _targt.dataset);
+    // console.log("------ controlerBox._eventTargetSwitch(_targt, _obj): this.configBtnGrp.btnGpSelectorProto = " + this.configBtnGrp.btnGpSelectorProto);
     /**  1. checks whether the event.target HTML element matches with the boxState button group
      *   selector. */
     if (_targt.dataset[this.boxStateBtnGrp.datasetKey]) {
+      // console.log("------ controlerBox._eventTargetSwitch(_targt, _obj): e.target is a boxState btn.");
       // a. get the dataset key (boxState) and allot it to _obj.key
       _obj.key = this.boxStateBtnGrp.datasetKey;
+      // b. get the value for dataset key (boxState) and allot it to _obj.val
       _obj.val = parseInt(_targt.dataset[this.boxStateBtnGrp.datasetKey], 10);
       return [_obj, this.boxStateBtnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the default boxState button
      *  group selector. */
     if (_targt.dataset[this.boxDefStateBtnGrp.datasetKey]) {
+      // console.log("------ controlerBox._eventTargetSwitch(_targt, _obj): e.target is a default boxState btn.");
       // a. get the dataset key (defaultBoxstate) and allot it to _obj.key
       _obj.key = this.boxDefStateBtnGrp.datasetKey;
+      // b. get the value for dataset key (defaultBoxstate) and allot it to _obj.val
       _obj.val = parseInt(_targt.dataset[this.boxDefStateBtnGrp.datasetKey], 10);
       return [_obj, this.boxDefStateBtnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the configuration buttons
      *  group selector. */
     if (_targt.matches(this.configBtnGrp.btnGpSelectorProto)) {
+      // console.log("------ controlerBox._eventTargetSwitch(_targt, _obj): e.target is a box config btn.");
       let _subObj = this._onClickBxConf(_targt);
       if (_subObj) {
         Object.assign(_obj, this._onClickBxConf(_targt));
@@ -681,16 +697,16 @@ class bxCont {
     console.log("bxCont.addOrUpdateCntrlerBox -- Starting. data: ");console.log(data);
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     // Check whether the boxRow has already been created
-    console.log("bxCont.addOrUpdateCntrlerBox: " + data.lb);
-    console.log("bxCont.addOrUpdateCntrlerBox: _controlerBoxEntry");console.log(boxCont.controlerBoxes[parseInt(data.lb, 10)]);
+    // console.log("bxCont.addOrUpdateCntrlerBox: " + data.lb);
+    // console.log("bxCont.addOrUpdateCntrlerBox: _controlerBoxEntry");console.log(boxCont.controlerBoxes[parseInt(data.lb, 10)]);
     let _controlerBoxEntry = boxCont.controlerBoxes[parseInt(data.lb, 10)];
     // console.log("bxCont.addOrUpdateCntrlerBox: _controlerBoxEntry: ");console.log(_controlerBoxEntry);
     if(_controlerBoxEntry) {
-      console.log("bxCont.addOrUpdateCntrlerBox -- That's an update.");
+      // console.log("bxCont.addOrUpdateCntrlerBox -- That's an update.");
       // let's update it
       _controlerBoxEntry.update(data);
     } else {
-      console.log("bxCont.addOrUpdateCntrlerBox -- That's a new box.");
+      // console.log("bxCont.addOrUpdateCntrlerBox -- That's a new box.");
       // let's create it
       // console.log("bxCont.addOrUpdateCntrlerBox: about to call this.newCntrlerBox");
       this.newCntrlerBox(data);
@@ -711,7 +727,12 @@ class bxCont {
    * */
   newCntrlerBox(data) {
       // data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes(data): -- starting");
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes(data): data = " + JSON.stringify(data));
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes(data): data.lb = " + data.lb);
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes(data): parseInt(data.lb, 10) = " + parseInt(data.lb, 10));
       this.controlerBoxes[parseInt(data.lb, 10)] = new controlerBox(data);
+      // console.log("bxCont.newCntrlerBox: this.controlerBoxes(data): does this.controlerBoxes[parseInt(data.lb, 10)] exist? -> " + ( this.controlerBoxes[parseInt(data.lb, 10)] ? "Yes" : "No"));
       this.insertInDom(this.controlerBoxes[parseInt(data.lb, 10)], this.appendAsNthChild);
       this._bxCount++;
   }
@@ -1252,8 +1273,8 @@ var connectionObj = {
  * depending on their types
  */
 function onMsgActionSwitch(_data) {
-  console.log("onMsgActionSwitch: starting. _data: ");console.log(_data);
-  console.log("onMsgActionSwitch: _data.action: " + _data.action);
+  // console.log("onMsgActionSwitch: STARTING. _data = " + JSON.stringify(_data));
+  // console.log("onMsgActionSwitch: _data.action = " + _data.action);
   // Received IP and other global data (wifi settings)
   if (_data.action === 3) {
     // console.log("WS JSON message: " + _data.ServerIP);
@@ -1268,13 +1289,13 @@ function onMsgActionSwitch(_data) {
   // 4. User request to change boxState of a given box has been received
   // and is being processed
   // 5. boxState of existing box has been updated
-  console.log("onMsgActionSwitch: _data.key: " + _data.key);
+  // console.log("onMsgActionSwitch: _data.key = " + _data.key);
   if (_data.action === "changeBox" && _data.key === "boxState") {
     // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
     // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-    console.log("onMsgActionSwitch: inside --> (if (_data.action === \"changeBox\" && _data.key === \"boxState\"))");
-    console.log("onMsgActionSwitch: boxCont.controlerBoxes = ");console.log(boxCont.controlerBoxes);
-    console.log("onMsgActionSwitch: boxCont.controlerBoxes[parseInt(_data.lb, 10)] = ");console.log(boxCont.controlerBoxes[parseInt(_data.lb, 10)]);
+    // console.log("onMsgActionSwitch: inside --> (if (_data.action === \"changeBox\" && _data.key === \"boxState\"))");
+    // console.log("onMsgActionSwitch: boxCont.controlerBoxes = ");console.log(boxCont.controlerBoxes);
+    // console.log("onMsgActionSwitch: boxCont.controlerBoxes[parseInt(_data.lb, 10)] = ");console.log(boxCont.controlerBoxes[parseInt(_data.lb, 10)]);
     boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
     return;
   }
