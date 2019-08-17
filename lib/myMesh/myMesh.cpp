@@ -204,7 +204,7 @@ myMesh::myMesh()
 // Mesh Network Callbacks
 void myMesh::receivedCallback(uint32_t from, String &msg ) {
   if (MY_DG_MESH) {
-    Serial.printf("myMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
+    Serial.printf("\nmyMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
 
   myMeshController myMeshController(from, msg);
