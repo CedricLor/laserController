@@ -1029,6 +1029,10 @@ class grpSetter {
     return [false, false];
   }
 
+  /** grpSetter._baseObj(_obj)
+   * 
+   * @param {*} _obj: JSON object received from the dlgtdBtnEvt handler
+   */
   _baseObj(_obj) {
     _obj.key      =  "save";
     _obj.val      =  "wifi";
