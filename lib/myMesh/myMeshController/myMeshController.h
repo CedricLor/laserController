@@ -68,8 +68,6 @@ class myMeshController
     // static Task _tChangeBoxSendConfirmationMsg;
     void _changeBoxSendConfirmationMsg();
 
-    // helpers to _changedBoxConfirmation (on the interface and the other boxes)
-    void _updateSenderDefaultState(uint16_t _ui16BoxIndex);
 
     // void _manualSwitch(JsonDocument& root);
     // void _changeInclusionIR(JsonDocument& root);
