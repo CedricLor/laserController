@@ -47,6 +47,7 @@
 #include "../../mySavedPrefs/mySavedPrefs.h"
 #include <../ControlerBox.h>
 #include <../myMesh/myMeshViews/myMeshViews.h>
+#include <../myWebServerWS/myWebServerWS.h>
 
 class myWSReceiver
 {

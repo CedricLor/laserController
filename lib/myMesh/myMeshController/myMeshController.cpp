@@ -181,9 +181,25 @@ void myMeshController::_changeBoxRequest() {
 
   // if this is a save request
   // _nsobj = {action: "changeBox"; key: "save"; lb: 1, val: "all"} // save all the values
-  if (_nsobj["key"] == "save") {
+  if ((_nsobj["key"] == "save") && (_nsobj["val"] == "all")) {
     Serial.println("------------------------------ THIS IS A SAVE REQUEST ---------------------------");
     _save();
+    return;
+  }
+
+  // if this is a save wifi values request
+  // _nsobj = {action: "changeBox"; key: "save"; lb: 1, val: "wifi"} // save the external wifi values
+  if ((_nsobj["key"] == "save") && (_nsobj["val"] == "wifi")) {
+    Serial.println("------------------------------ THIS IS A SAVE WIFI REQUEST ---------------------------");
+    _saveWifi();
+    return;
+}
+
+  // if this is a "OTA save and reboot" request
+  // _nsobj = {action: "changeBox"; key: "save"; lb: 1, val: "gi8RequestedOTAReboots"}
+  if ((_nsobj["key"] == "save") && (_nsobj["val"] == "gi8RequestedOTAReboots")) {
+    Serial.println("------------------------------ THIS IS AN OTA SAVE AND REBOOT REQUEST ---------------------------");
+    _savegi8RequestedOTAReboots();
     return;
   }
 }
@@ -233,6 +249,10 @@ void myMeshController::_changedBoxConfirmation() {
     return;
   }
 
+  // if this is a "save" confirmation
+  // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
+  if (_nsobj["key"] == "save") {
+}
 }
 
 
@@ -340,12 +360,40 @@ void myMeshController::_rebootEsp() {
 
 
 void myMeshController::_save() {
-  // save preferences
+  // {action: "changeBox", key: "save", val: "all", lb: 1} // save all the values that can be saved
   mySavedPrefs::savePrefsWrapper();
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");
   _changeBoxSendConfirmationMsg();
+}
+
+
+void myMeshController::_saveWifi() {
+  // {action: "changeBox", key: "save", val: "wifi", lb: 1} // save external wifi values
+
+  // if this is an "OTA save and reboot" or a "wifi save" request
+    mySavedPrefs::saveFromNetRequest(_nsobj);
+
+  // send confirmation message
+  Serial.println("------------------------------ CONFIRMING SAVE WIFI ---------------------------");
+  _changeBoxSendConfirmationMsg();
+}
+
+
+void myMeshController::_savegi8RequestedOTAReboots() {
+  // {action: "changeBox", key: "save", lb: 1, val: "gi8RequestedOTAReboots"}
+
+  // if this is an "OTA save and reboot" request
+  mySavedPrefs::saveFromNetRequest(_nsobj);
+
+  // send confirmation message
+  Serial.println("------------------------------ CONFIRMING SAVE OTA ---------------------------");
+  _changeBoxSendConfirmationMsg();
+
+  // reboot
+  Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
+  ControlerBox::tReboot.enableDelayed();
 }
 
 

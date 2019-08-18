@@ -184,10 +184,10 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     if (MY_DG_WS) {
       Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE gi8RequestedOTAReboots message.");
     }
+    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
+    _savegi8RequestedOTAReboots(_obj);
+    return;
   }
-  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
-  _savegi8RequestedOTAReboots(_obj);
-  return;
 }
 
 
@@ -280,10 +280,18 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   }
 
   // If this is a save message
-  if (_obj["key"] == "save") {
+  if ((_obj["key"] == "save") && (_obj["val"] == "all")) {
     // If save "all", IF shall be rebooted
     if (_obj["lb"] == "all") {
       _saveIF(_obj);
+    }
+  }
+
+  // If this is a save Wifi message
+  if ((_obj["key"] == "save") && (_obj["val"] == "wifi")) {
+    // If save "all", IF shall be rebooted
+    if (_obj["lb"] == "all") {
+      _saveWifiIF(_obj);
     }
   }
 

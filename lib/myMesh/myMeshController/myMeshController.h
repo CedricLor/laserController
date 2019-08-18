@@ -35,7 +35,7 @@ class myMeshController
     myMeshController(uint32_t _ui32SenderNodeId, String &_msg);
 
   private:
-    static constexpr int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
+    static constexpr int _capacity = JSON_OBJECT_SIZE(30);
     StaticJsonDocument<_capacity> _nsdoc;
     JsonObject _nsobj;
     uint32_t _ui32SenderNodeId;
@@ -58,9 +58,13 @@ class myMeshController
     void _updateMyValFromWeb();
     void _updateMyMasterBoxName();
     void _updateMyDefaultState();
-    void _rebootEsp();
-    void _save();
     
+    void _rebootEsp();
+
+    void _save();
+    void _saveWifi();
+    void _savegi8RequestedOTAReboots();
+
     // static Task _tChangeBoxSendConfirmationMsg;
     void _changeBoxSendConfirmationMsg();
 
