@@ -687,7 +687,7 @@ class bxCont {
       this.vBxContElt.removeChild(_row);
   }
 
-  /** bxCont.addOrUpdateCntrlerBox(data) is called from the onMsgActionSwitch
+  /** bxCont.addOrUpdateCntrlerBox(data) is called from the connectionObj.onMsgActionSwitch
    *  upon receiving a _data.action === "addBox" message. It checks whether 
    *  the box already exists. If so, it will update it, else, it will create it.
    * 
@@ -830,7 +830,7 @@ class bxCont {
   /** bxCont.deleteRow(_data) deletes a single box row and its corresponding 
    *  representation in the array. 
    * 
-   *  @param: a Json _data string (the method is being called from the onMsgActionSwitch). 
+   *  @param: a Json _data string (the method is being called from the connectionObj.onMsgActionSwitch). 
    *  
    *  Returns a new array with the deleted entry as it sole member. 
    * */
@@ -1118,7 +1118,7 @@ var connectionObj = {
       // if other messages, parse JSON
       console.log( "WS Received Message: " + e.data);
       var _data = JSON.parse(e.data);
-      onMsgActionSwitch(_data);
+      connectionObj.onMsgActionSwitch(_data);
   },
 
   wsonclose:        function(e) {
@@ -1266,7 +1266,99 @@ var connectionObj = {
       action: "ReceivedIP"
     }));
     // {action:"ReceivedIP}
-  }  
+  },
+
+  /**
+   * connectionObj.onMsgActionSwitch:
+   * a kind of controller, dispatching messages to various functions
+   * depending on their types
+   */
+  onMsgActionSwitch: function(_data) {
+    // console.log("connectionObj.onMsgActionSwitch: STARTING. _data = " + JSON.stringify(_data));
+    // console.log("connectionObj.onMsgActionSwitch: _data.action = " + _data.action);
+    // Received IP and other global data (wifi settings)
+    if (_data.action === 3) {
+      // console.log("WS JSON message: " + _data.ServerIP);
+      // Fill in the data in the DOM and add some eventHandlers
+      updateGlobalInformation(_data);
+      wifiSetters.update(_data);
+      connectionObj.sendReceivedIP();
+      return;
+    }
+
+    // 4. User request to change boxState of a given box has been received
+    // and is being processed
+    // 5. boxState of existing box has been updated
+    // console.log("connectionObj.onMsgActionSwitch: _data.key = " + _data.key);
+    if (_data.action === "changeBox" && _data.key === "boxState") {
+      // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+      // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+      // console.log("connectionObj.onMsgActionSwitch: inside --> (if (_data.action === \"changeBox\" && _data.key === \"boxState\"))");
+      // console.log("connectionObj.onMsgActionSwitch: boxCont.controlerBoxes = ");console.log(boxCont.controlerBoxes);
+      // console.log("connectionObj.onMsgActionSwitch: boxCont.controlerBoxes[parseInt(_data.lb, 10)] = ");console.log(boxCont.controlerBoxes[parseInt(_data.lb, 10)]);
+      boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
+      return;
+    }
+
+    // 6. a new box has connected to the mesh
+    if (_data.action === "addBox") {
+      console.log("---------------- addBox switch starting -----------------");
+      // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+      boxCont.addOrUpdateCntrlerBox(_data);
+      return;
+    }
+
+    // 7. an existing box has been disconnected from the mesh
+    // (or the DOM contained boxRows corresponding to boxes that
+    // have been disconnected from the mesh)
+    if (_data.action === "deleteBox") {
+      console.log("---------------- delete switch starting -----------------");
+      // delete all the boxes
+      if (_data.lb === 'a') {
+        // _data = {action: "deleteBox"; lb: "a"}
+        boxCont.deleteAllRows();
+        return;
+      }
+      // if delete one box
+      // _data = {lb:1; action:"deleteBox"}
+      boxCont.deleteRow(_data);
+      return;
+    }
+
+    // 8. a box has changed master
+    if (_data.action === "changeBox" && _data.key === "masterbox") {
+      // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
+      // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
+      boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateMasterFB(_data);
+      return;
+    }
+
+    // 9. User request to change default boxState of a given box has been received
+    // and is being processed
+    // 10. the default state of a given box has changed
+    if (_data.action === "changeBox" && _data.key === "boxDefstate") {
+      // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+      // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+      boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
+      return;
+    }
+
+    // 10. User request to reboot the interface or all the boxes has been received and is being processed
+    if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === (0 || "all")) {
+      // _data = {lb:1; action: "changeBox"; key: "reboot"; val: 0; lb: 0 st: 1}
+      console.log("---------------- reboot IF or All switch starting -----------------");
+      onReboot.all.startConfirm();
+      return;
+    }
+
+    // 11. User request to reboot the LBs has been received and is being processed
+    if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { 
+      console.log("---------------- reboot LBS switch starting -----------------");
+      onReboot.LBs.startConfirm();
+      return;
+    }
+}
+
 };
 
 
@@ -1277,103 +1369,6 @@ var connectionObj = {
 
 
 
-
-
-
-/**
- * onMsgActionSwitch:
- * a kind of controller, dispatching messages to various functions
- * depending on their types
- */
-function onMsgActionSwitch(_data) {
-  // console.log("onMsgActionSwitch: STARTING. _data = " + JSON.stringify(_data));
-  // console.log("onMsgActionSwitch: _data.action = " + _data.action);
-  // Received IP and other global data (wifi settings)
-  if (_data.action === 3) {
-    // console.log("WS JSON message: " + _data.ServerIP);
-    // Fill in the data in the DOM and add some eventHandlers
-    updateGlobalInformation(_data);
-    wifiSetters.update(_data);
-    connectionObj.sendReceivedIP();
-    return;
-  }
-
-
-  // 4. User request to change boxState of a given box has been received
-  // and is being processed
-  // 5. boxState of existing box has been updated
-  // console.log("onMsgActionSwitch: _data.key = " + _data.key);
-  if (_data.action === "changeBox" && _data.key === "boxState") {
-    // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-    // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-    // console.log("onMsgActionSwitch: inside --> (if (_data.action === \"changeBox\" && _data.key === \"boxState\"))");
-    // console.log("onMsgActionSwitch: boxCont.controlerBoxes = ");console.log(boxCont.controlerBoxes);
-    // console.log("onMsgActionSwitch: boxCont.controlerBoxes[parseInt(_data.lb, 10)] = ");console.log(boxCont.controlerBoxes[parseInt(_data.lb, 10)]);
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
-    return;
-  }
-
-
-  // 6. a new box has connected to the mesh
-  if (_data.action === "addBox") {
-    console.log("---------------- addBox switch starting -----------------");
-    // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
-    boxCont.addOrUpdateCntrlerBox(_data);
-    return;
-  }
-
-
-  // 7. an existing box has been disconnected from the mesh
-  // (or the DOM contained boxRows corresponding to boxes that
-  // have been disconnected from the mesh)
-  if (_data.action === "deleteBox") {
-    console.log("---------------- delete switch starting -----------------");
-    // delete all the boxes
-    if (_data.lb === 'a') {
-      // _data = {action: "deleteBox"; lb: "a"}
-      boxCont.deleteAllRows();
-      return;
-    }
-    // if delete one box
-    // _data = {lb:1; action:"deleteBox"}
-    boxCont.deleteRow(_data);
-    return;
-  }
-
-
-  // 8. a box has changed master
-  if (_data.action === "changeBox" && _data.key === "masterbox") {
-    // _data = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-    // _data = {lb: 1; action: "changeBox"; key: "masterbox"; val: 9; st: 2}
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateMasterFB(_data);
-    return;
-  }
-
-
-  // 9. User request to change default boxState of a given box has been received
-  // and is being processed
-  // 10. the default state of a given box has changed
-  if (_data.action === "changeBox" && _data.key === "boxDefstate") {
-    // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-    // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
-    boxCont.controlerBoxes[parseInt(_data.lb, 10)].updateStateFB(_data);
-    return;
-  }
-
-
-  if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === (0 || "all")) { // 9. User request to reboot the interface or all the boxes has been received and is being processed
-    // _data = {lb:1; action: "changeBox"; key: "reboot"; val: 0; lb: 0 st: 1}
-    onReboot.all.startConfirm();
-    return;
-  }
-
-
-  if (_data.action === "changeBox" && _data.key === "reboot" && _data.lb === "LBs") { // User request to reboot the LBs has been received and is being processed
-    console.log("---------------- rebootStart switch starting -----------------");
-    onReboot.LBs.startConfirm();
-    return;
-  }
-}
 
 
 
