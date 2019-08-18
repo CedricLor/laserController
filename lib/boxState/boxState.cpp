@@ -74,10 +74,10 @@ reverse dependency graph
       - gui16MyIndexInCBArray: 94 results in 13 files
       - gui16ControllerBoxPrefix: 47 results in 8 files
   II. BoxState and Steps
-    A. bMasterBoxName
-      - casting bMasterBoxName
-      - calculations of bMasterBoxName index which result in negative numbers
-      - initial setting of ControlerBox.bMasterBoxName
+    A. ui16MasterBoxName
+      - casting ui16MasterBoxName
+      - calculations of ui16MasterBoxName index which result in negative numbers
+      - initial setting of ControlerBox.ui16MasterBoxName
       - empty class constructor for steps and boxStates -> should initialize
       each parameter to avoid leaving dump values
     B. Implement array of masterBoxes
@@ -532,8 +532,8 @@ void boxState::_resetSignalCatchers() {
   ControlerBox::bValFromPir = LOW;
   ControlerBox::ui32SettingTimeOfValFromPir = 0;
   ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  if (_thisBox.bMasterBoxName != 254) {
-    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.bMasterBoxName);
+  if (_thisBox.ui16MasterBoxName != 254) {
+    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
     ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
   }
 }
@@ -620,14 +620,14 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
   // check whether masterBox has been set (the masterBox
   // could have been disconnected, or forgotten to be set)
   // Serial.println("---------------- DEBUG ------------ BOX STATE ----------- DEBUG -------------");
-  // Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.bMasterBoxName: %u\n", _thisBox.bMasterBoxName);
-  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.bMasterBoxName == 254): %i\n", _thisBox.bMasterBoxName == 254);
-  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.bMasterBoxName == 0): %i\n", _thisBox.bMasterBoxName == 254);
-  if (_thisBox.bMasterBoxName == 254) {
+  // Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.ui16MasterBoxName: %u\n", _thisBox.ui16MasterBoxName);
+  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.ui16MasterBoxName == 254): %i\n", _thisBox.ui16MasterBoxName == 254);
+  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.ui16MasterBoxName == 0): %i\n", _thisBox.ui16MasterBoxName == 254);
+  if (_thisBox.ui16MasterBoxName == 254) {
     return false;
   }
 
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.bMasterBoxName);
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
   // Serial.printf("boxState::_meshHasBeenTriggered(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
   ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", (_masterBox.boxActiveStateHasBeenTakenIntoAccount ? "true" : "false"));
@@ -657,7 +657,7 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   Serial.println("--------------------- double trigger ----------");
   // if so, compare the times at which each signal catcher has been set
   // and give priority to the most recent one
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.bMasterBoxName);
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
   // Serial.printf("boxState::_resolveTriggersConflict(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
   ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
   if (ControlerBox::ui32SettingTimeOfValFromPir > _masterBox.ui32BoxActiveStateStartTime) {

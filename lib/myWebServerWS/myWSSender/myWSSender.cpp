@@ -105,7 +105,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       }
       _obj["action"] = "addBox";
       _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
-      _obj["masterbox"] = (int)ControlerBoxes[_ui16BoxIndex].bMasterBoxName - gui16ControllerBoxPrefix;
+      _obj["masterbox"] = (int)ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName - gui16ControllerBoxPrefix;
       _obj["boxDefstate"] = ControlerBoxes[_ui16BoxIndex].sBoxDefaultState;
       // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       // reset all the booleans to true
@@ -142,13 +142,12 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     if (ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
       if (MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%u] has changed master\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. (int)(ControlerBoxes[%u].bMasterBoxName) == %u\n", _ui16BoxIndex, (uint16_t)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%i].bMasterBoxName) == %u\n", _ui16BoxIndex, (uint16_t)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. New master: %u\n", (int)(ControlerBoxes[_ui16BoxIndex].bMasterBoxName));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%u].ui16MasterBoxName) == %u\n", _ui16BoxIndex, (ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. New master: %u\n", (int)(ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName));
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "masterbox";
-      _obj["val"] = (uint16_t)ControlerBoxes[_ui16BoxIndex].bMasterBoxName - gui16ControllerBoxPrefix;
+      _obj["val"] = ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName - gui16ControllerBoxPrefix;
       _obj["st"] = 2; // "st" for status, 2 for executed
       // expected _obj = {lb:1; action:"changeBox"; key: "masterbox"; val: 9; st: 2}
       ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;

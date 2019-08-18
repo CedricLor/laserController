@@ -96,7 +96,7 @@ class ControlerBox
      * browser. */
     bool boxDeletionHasBeenSignaled;
 
-    byte bMasterBoxName;
+    uint16_t ui16MasterBoxName;
     bool bMasterBoxNameChangeHasBeenSignaled;
 
     short int sBoxDefaultState;
@@ -109,7 +109,7 @@ class ControlerBox
      * */
     void updateThisBoxProperties();
     void printProperties(const uint16_t _ui16BoxIndex);
-    void updateMasterBoxName(const byte _bMasterBoxName);
+    void updateMasterBoxName(const uint16_t _ui16MasterBoxName);
     void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);

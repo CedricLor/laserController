@@ -42,7 +42,7 @@ const short VERSION = 0;
 // All the ControlerBoxes() are initialized with default master at 254.
 // 254 shall mean no master. This value may be changed here (at compile time).
 // This value is used to set:
-//        ControlerBoxes[gui16MyIndexInCBArray].bMasterBoxName
+//        ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
 // If the NVS has a different value saved under key 
 //        bMasterNName,
 // the saved value will prevail over this one at start up.

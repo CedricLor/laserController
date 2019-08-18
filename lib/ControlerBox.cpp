@@ -42,7 +42,7 @@ ControlerBox::ControlerBox()
   isNewBoxHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
 
-  // this->bMasterBoxName
+  // this->ui16MasterBoxName
   // setters:
   // - here; -> from the global.UI8_DEFAULT_MASTER_NODE_NAME
   // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
@@ -54,7 +54,7 @@ ControlerBox::ControlerBox()
   // - here (printProperties)
   // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
   // - in mySavedPrefs::savePreferences()
-  this->bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
+  this->ui16MasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
 
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
@@ -106,15 +106,15 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxName: %u\n", __ui16BoxIndex, bMasterBoxName);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16MasterBoxName: %u\n", __ui16BoxIndex, ui16MasterBoxName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxNameChangeHasBeenSignaled: %i\n", __ui16BoxIndex, bMasterBoxNameChangeHasBeenSignaled);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultState: %u\n", __ui16BoxIndex, sBoxDefaultState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
-void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
-  bMasterBoxName = _bMasterBoxName;  // see in constructor for information on where this variable is set and read
+void ControlerBox::updateMasterBoxName(const uint16_t _ui16MasterBoxName) {
+  ui16MasterBoxName = _ui16MasterBoxName;  // see in constructor for information on where this variable is set and read
   bMasterBoxNameChangeHasBeenSignaled = false; // see in constructor for information on where this variable is set and read
 }
 
@@ -289,8 +289,8 @@ void ControlerBox::deleteBox() {
   boxDeletionHasBeenSignaled = false;
   Serial.println("ControlerBox::deleteBox(): boxDeletionHasBeenSignaled set to FALSE");
 
-  bMasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
-  Serial.printf("ControlerBox::deleteBox(): bMasterBoxName set to %u\n", UI8_DEFAULT_MASTER_NODE_NAME);
+  ui16MasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
+  Serial.printf("ControlerBox::deleteBox(): ui16MasterBoxName set to %u\n", UI8_DEFAULT_MASTER_NODE_NAME);
   bMasterBoxNameChangeHasBeenSignaled = true;
   Serial.printf("ControlerBox::deleteBox(): bMasterBoxNameChangeHasBeenSignaled set to true\n");
 

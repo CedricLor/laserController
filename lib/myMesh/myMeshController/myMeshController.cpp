@@ -315,7 +315,7 @@ void myMeshController::_updateMyMasterBoxName() {
     Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to %u\n", _nsobj["val"].as<uint16_t>() + gui16ControllerBoxPrefix);
   }
 
-  // update bMasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
+  // update ui16MasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
   ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName(_nsobj["val"].as<uint16_t>() + gui16ControllerBoxPrefix);
 
   // send confirmation message
@@ -478,7 +478,7 @@ void myMeshController::_updateSenderMasterBox(uint16_t _ui16BoxIndex) {
   ControlerBoxes[_ui16BoxIndex].updateMasterBoxName(__ui16MasterBoxName);
 
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderMasterBox: ControlerBoxes[%u].bMasterBoxName has been updated to %u\n", _ui16BoxIndex, ControlerBoxes[_ui16BoxIndex].bMasterBoxName);
+    Serial.printf("myMeshController::_updateSenderMasterBox: ControlerBoxes[%u].ui16MasterBoxName has been updated to %u\n", _ui16BoxIndex, ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName);
   }
 }
 
