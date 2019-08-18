@@ -102,8 +102,14 @@ void myMeshController::_statusMessage() {
     with the values received from the other box.
   */
 
+  // Setting nodeName, nodeId and IP properties
+  // extract the index of the relevant box from its senderNodeName in the JSON
+  uint16_t __ui16NodeName = _nsobj["NNa"]; // ex. 201
+  Serial.printf("myMeshController::_statusMessage(): __ui16NodeName = %u\n", __ui16NodeName);
+  uint16_t __ui16BoxIndex = __ui16NodeName - gui16ControllerBoxPrefix; // 201 - 200 = 1
+
   // update the box properties in my CB array
-  ControlerBox::updateOtherBoxProperties(_ui32SenderNodeId, _nsobj);
+  ControlerBoxes[__ui16BoxIndex].updateOtherBoxProperties(_ui32SenderNodeId, _nsobj, __ui16BoxIndex);
 }
 
 

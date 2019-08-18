@@ -92,7 +92,7 @@ void ControlerBox::updateThisBoxProperties() {
 
 
 
-void ControlerBox::printProperties(const uint8_t __ui16BoxIndex) {
+void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].nodeId: %u\n", __ui16BoxIndex, nodeId);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].APIP:", __ui16BoxIndex);Serial.println(APIP.toString());
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].stationIP:", __ui16BoxIndex);Serial.println(stationIP.toString());
@@ -137,33 +137,26 @@ uint16_t ControlerBox::findByNodeId(uint32_t _ui32nodeId) {
 
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
-void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
 
-  // Setting nodeName, nodeId and IP properties
-  // extract the index of the relevant box from its senderNodeName in the JSON
-  uint16_t __ui16NodeName = _obj["NNa"]; // ex. 201
-  Serial.printf("ControlerBox::updateOtherBoxProperties(): __ui16NodeName = %u\n", __ui16NodeName);
-  uint16_t __ui16BoxIndex = __ui16NodeName - gui16ControllerBoxPrefix; // 201 - 200 = 1
-
   // set the nodeId
-  Serial.printf("ControlerBox::updateOtherBoxProperties(): __ui16BoxIndex = %u\n", __ui16BoxIndex);
-  if (ControlerBoxes[__ui16BoxIndex].nodeId == 0) {
+  if (nodeId == 0) {
     updateConnectedBoxCount(connectedBoxesCount + 1);
-    ControlerBoxes[__ui16BoxIndex].isNewBoxHasBeenSignaled = false;
-    Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__ui16BoxIndex].isNewBoxHasBeenSignaled = %i\n", ControlerBoxes[__ui16BoxIndex].isNewBoxHasBeenSignaled);
+    isNewBoxHasBeenSignaled = false;
+    Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
   }
-  ControlerBoxes[__ui16BoxIndex].nodeId = _ui32SenderNodeId;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[__ui16BoxIndex].nodeId = %u\n", ControlerBoxes[__ui16BoxIndex]._ui32SenderNodeId);
+  nodeId = _ui32SenderNodeId;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].nodeId = %u\n", __ui16BoxIndex, _ui32SenderNodeId);
 
   // set the IPs
-  ControlerBoxes[__ui16BoxIndex].APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
+  APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
-  ControlerBoxes[__ui16BoxIndex].stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
+  stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
 
   // set the ui16NodeName
-  ControlerBoxes[__ui16BoxIndex].ui16NodeName = __ui16NodeName;
+  ui16NodeName = _obj["NNa"];
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui16NodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui16NodeName);
 
   // Setting activeState stack
@@ -184,7 +177,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // Print out the updated properties
   if (MY_DEBUG == true) {
     Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %u. Calling printProperties().\n", __ui16BoxIndex);
-    ControlerBoxes[__ui16BoxIndex].printProperties(__ui16BoxIndex);
+    printProperties(__ui16BoxIndex);
   }
   Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
 }

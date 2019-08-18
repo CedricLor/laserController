@@ -100,7 +100,7 @@ class ControlerBox
 
     // void updateProperties();
     void updateThisBoxProperties();
-    void printProperties(const uint8_t _ui8BoxIndex);
+    void printProperties(const uint16_t _ui16BoxIndex);
     void updateMasterBoxName(const byte _bMasterBoxName);
 
     // Signal catchers -- static variables
@@ -114,7 +114,7 @@ class ControlerBox
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;
 
-    static void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj);
+    void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     static void setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     static void setBoxDefaultState(const uint8_t _ui8BoxIndex, const short _sBoxDefaultState);
 
