@@ -20,7 +20,7 @@ void pirController::initPir() {
 
 void pirController::pirCntrl() {
   if (digitalRead(_INPUT_PIN) == HIGH) {
-    ControlerBox::valFromPir = HIGH;
-    ControlerBox::uiSettingTimeOfValFromPir = laserControllerMesh.getNodeTime();
+    ControlerBox::bValFromPir = HIGH;
+    ControlerBox::ui32SettingTimeOfValFromPir = laserControllerMesh.getNodeTime();
   }
 }

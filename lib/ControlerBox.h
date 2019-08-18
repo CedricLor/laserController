@@ -11,19 +11,90 @@
 class ControlerBox
 {
   public:
+    /** constructor */
     ControlerBox();
-    uint32_t nodeId; // calculated by painlessMesh from the mac address
-    bool isNewBoxHasBeenSignaled;   // when it is a new box, mark it so that the interface can send a WS message
-    IPAddress stationIP; // set by painlessMesh or, for the interface, by the AP to which it is connected
-    IPAddress APIP; // set by painlessMesh
-    uint16_t ui16NodeName; // set by me, in global (201, 202, etc.)
-    int16_t i16BoxActiveState; // set by events or user
-    bool boxActiveStateHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a boxState change, the WebSocket can read this and send a message to the browser
-    bool boxActiveStateHasBeenTakenIntoAccount; // set to false when updating another box value (not in use for self) and to true by boxState, once boxState has taken the new state into account
-    uint32_t uiBoxActiveStateStartTime; // written upon occurence of an event
-    bool boxDeletionHasBeenSignaled; // set by events or user; usefull mainly on the interface, for the moment; when the mesh registers a box disconnection, the WebSocket can read this and send a message to the browser
+
+    /** public instance variables */
+
+    /** uint32_t nodeId: calculated by painlessMesh from the ESP's mac address */
+    uint32_t nodeId;
+
+    /** bool isNewBoxHasBeenSignaled: allows myWSSender to detect new boxes and
+     *  inform the user by sending a WS message to the browser.
+     * 
+     * - read and set by ControlerBox, myMeshViews, myWSReceiver and myWSSender.*/
+    bool isNewBoxHasBeenSignaled;
+
+    /** IPAddress stationIP: stores the stationIP (by reading painlessMesh.stationIP or wifi.stationIP).
+     * 
+     * The stationIP may be set automatically (by an AP to which this box connects)
+     * or manually (see myMeshStarter, etc.). */
+    IPAddress stationIP;
+
+    /** IPAddress APIP: stores the APIP  (by reading painlessMesh.APIP or wifi.APIP).
+     * 
+     * The APIP set by painlessMesh, calculated from the ESP's mac address or set manually
+     * when the IF is broadcasted on this ESP's AP interface. */
+    IPAddress APIP;
+
+    /** uint16_t ui16NodeName:
+     * 
+     * set by me, in global (201, 202, etc.) */
+    uint16_t ui16NodeName;
+
+    /** int16_t i16BoxActiveState:
+     * 
+     * - set by boxState events, by steps or manually by WS requests.
+     * - read by myWSSender, myMeshViews, myWSReceiver and boxState. */
+    int16_t i16BoxActiveState;
+
+    /** bool boxActiveStateHasBeenSignaled:
+     * 
+     * - set by the ControlerBox itself upon a changes of i16BoxActiveState 
+     * triggered by the mesh, boxState events, steps or WS requests.
+     * 
+     * - read by myWSSender, myWSReceiver, myMeshViews and boxState.
+     * 
+     * Usefull on the IF: allows the myWSSender to know of changes of boxStates
+     * of the ControlerBoxes and inform the user by sending a WS message to the
+     * browser. */
+    bool boxActiveStateHasBeenSignaled;
+
+    /** bool boxActiveStateHasBeenTakenIntoAccount: used by boxSate to detect
+     *  changes in other boxes boxState .
+     * 
+     * Set via ControlerBox::setBoxActiveState(), ControlerBox::deleteBox() 
+     * or boxState class.
+     * 
+     * Read from boxState.
+     * 
+     * Set to false when updating another box value (not used by the controlerBoxes
+     * for their own states) and to true by boxState, once  the new state of another
+     * box (a master box) has been taken into account. */
+    bool boxActiveStateHasBeenTakenIntoAccount;
+
+    /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
+     *  by a call to meshNodeTime.
+     * 
+     * Set via ControlerBox::setBoxActiveState.
+     * 
+     * TODO: should be set for other boxes from status messages received from from the mesh. 
+     * */
+    uint32_t ui32BoxActiveStateStartTime;
+
+    /** bool boxDeletionHasBeenSignaled: 
+     * 
+     * - read and set by myWSSender, myWSReceiver (in the consistency check between
+     * browser data and ControlerBox database) and ControlerBox::deleteBox.
+     * 
+     * Usefull on the IF: allows myWSSender to know of disconnections and reboots
+     * of ControlerBoxes and inform the user by sending a WS message to the
+     * browser. */
+    bool boxDeletionHasBeenSignaled;
+
     byte bMasterBoxName;
     bool bMasterBoxNameChangeHasBeenSignaled;
+
     short int sBoxDefaultState;
     bool sBoxDefaultStateChangeHasBeenSignaled;
 
@@ -33,8 +104,8 @@ class ControlerBox
     void updateMasterBoxName(const byte _bMasterBoxName);
 
     // Signal catchers -- static variables
-    static bool valFromPir;
-    static uint32_t uiSettingTimeOfValFromPir;
+    static bool bValFromPir;
+    static uint32_t ui32SettingTimeOfValFromPir;
     static short int valFromWeb;
 
     static uint16_t findByNodeId(uint32_t _ui32nodeId);
@@ -44,7 +115,7 @@ class ControlerBox
     static short int previousConnectedBoxesCount;
 
     static void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj);
-    static void setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sBoxActiveState, const uint32_t _uiBoxActiveStateStartTime);
+    static void setBoxActiveState(const uint8_t _ui8BoxIndex, const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     static void setBoxDefaultState(const uint8_t _ui8BoxIndex, const short _sBoxDefaultState);
 
     static void deleteBox(uint16_t _ui16BoxIndex);

@@ -82,7 +82,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
   // load the JSON document with values
   _joMsg["actSt"] = ControlerBoxes[gui16MyIndexInCBArray].i16BoxActiveState;
-  _joMsg["actStStartT"] = ControlerBoxes[gui16MyIndexInCBArray].uiBoxActiveStateStartTime; // gets the recorded mesh time
+  _joMsg["actStStartT"] = ControlerBoxes[gui16MyIndexInCBArray].ui32BoxActiveStateStartTime; // gets the recorded mesh time
   _joMsg["boxDefstate"] = ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState;
   _joMsg["action"] = "s";
 

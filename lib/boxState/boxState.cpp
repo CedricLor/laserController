@@ -421,7 +421,7 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &userScheduler, fal
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed (the catchers):
-  - ControlerBox::valFromPir (when the current boxState is set to react to signals from the PIR);
+  - ControlerBox::bValFromPir (when the current boxState is set to react to signals from the PIR);
   - ControlerBoxes[PARENT].i16BoxActiveState (when the current boxState is set to react to signals from the mesh);
   - _boxActiveStateHasBeenReset;
   - _boxTargetState;
@@ -493,7 +493,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
     // check whether both have been triggered
-    if (ControlerBox::valFromPir == HIGH && _currentBoxState._meshHasBeenTriggered(_thisBox)) {
+    if (ControlerBox::bValFromPir == HIGH && _currentBoxState._meshHasBeenTriggered(_thisBox)) {
       // if so, resolve the conflict and return
       _currentBoxState._resolveTriggersConflict(_thisBox);
       return;
@@ -529,8 +529,8 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 */
 void boxState::_resetSignalCatchers() {
   ControlerBox::valFromWeb = -1;
-  ControlerBox::valFromPir = LOW;
-  ControlerBox::uiSettingTimeOfValFromPir = 0;
+  ControlerBox::bValFromPir = LOW;
+  ControlerBox::ui32SettingTimeOfValFromPir = 0;
   ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
   if (_thisBox.bMasterBoxName != 254) {
     ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
@@ -599,7 +599,7 @@ bool boxState::_hasBothTriggers() {
 void boxState::_checkIRTriggerAndAct() {
   // check whether IR has been triggered;
   // if so, set the boxTarget state accordingly
-  if (ControlerBox::valFromPir == HIGH) {
+  if (ControlerBox::bValFromPir == HIGH) {
     Serial.println("--------------------- IR triggered ----------");
     _setBoxTargetState(i16onIRTrigger);
   }
@@ -657,7 +657,7 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   // if so, compare the times at which each signal catcher has been set
   // and give priority to the most recent one
   ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
-  if (ControlerBox::uiSettingTimeOfValFromPir > _masterBox.uiBoxActiveStateStartTime) {
+  if (ControlerBox::ui32SettingTimeOfValFromPir > _masterBox.ui32BoxActiveStateStartTime) {
     _setBoxTargetState(i16onIRTrigger);
   } else {
     _setBoxTargetState(i16onMeshTrigger);
