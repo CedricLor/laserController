@@ -112,6 +112,8 @@ class ControlerBox
     void updateMasterBoxName(const byte _bMasterBoxName);
     void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
+    void setBoxDefaultState(const short _sBoxDefaultState);
+
 
 
 
@@ -131,8 +133,6 @@ class ControlerBox
     static void updateConnectedBoxCount(short int _newConnectedBoxesCount);
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;
-
-    static void setBoxDefaultState(const uint8_t _ui8BoxIndex, const short _sBoxDefaultState);
 
     static void deleteBox(uint16_t _ui16BoxIndex);
     static void deleteBoxByNodeId(uint32_t _ui32nodeId);

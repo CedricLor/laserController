@@ -500,7 +500,7 @@ void myMeshController::_updateSenderDefaultState(uint16_t _ui16BoxIndex) {
   // ControlerBoxes array
   // 2. set the bool announcing that the change has not been signaled,
   // to have it caught by the webServerTask (on the interface)
-  ControlerBox::setBoxDefaultState(_ui16BoxIndex, __ui16DefaultState);
+  ControlerBoxes[_ui16BoxIndex].setBoxDefaultState(__ui16DefaultState);
 
   if (MY_DG_MESH) {
     Serial.printf("myMeshController::_updateSenderDefaultState: ControlerBoxes[%u].sBoxDefaultState has been updated to %u\n", _ui16BoxIndex, ControlerBoxes[_ui16BoxIndex].sBoxDefaultState);

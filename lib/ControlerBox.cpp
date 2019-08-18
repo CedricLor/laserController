@@ -172,7 +172,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
   const short int __senderBoxDefaultState = _obj["boxDefstate"];
-  setBoxDefaultState(__ui16BoxIndex, __senderBoxDefaultState);
+  setBoxDefaultState(__senderBoxDefaultState);
 
   // Print out the updated properties
   if (MY_DEBUG == true) {
@@ -224,13 +224,13 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
 
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
-void ControlerBox::setBoxDefaultState(const uint8_t __ui16BoxIndex, const short _sBoxDefaultState) {
+void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   // Serial.println("ControlerBox::setBoxDefaultState(): Starting");
 
-  ControlerBoxes[__ui16BoxIndex].sBoxDefaultState = _sBoxDefaultState;
+  sBoxDefaultState = _sBoxDefaultState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
 
-  ControlerBoxes[__ui16BoxIndex].sBoxDefaultStateChangeHasBeenSignaled = false;
+  sBoxDefaultStateChangeHasBeenSignaled = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
 
   // Serial.println("ControlerBox::setBoxDefaultState(): Ending");
