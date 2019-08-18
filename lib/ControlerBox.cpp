@@ -121,16 +121,16 @@ void ControlerBox::updateMasterBoxName(const byte _bMasterBoxName) {
 
 
 // Static Methods
-uint16_t ControlerBox::findByNodeId(uint32_t _ui32nodeId) {
-  Serial.printf("ControlerBox::findByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
+uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
+  Serial.printf("ControlerBox::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
-      Serial.printf("ControlerBox::findByNodeId(): found ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-      Serial.printf("ControlerBox::findByNodeId(): ControlerBox with _ui32nodeId %u has index: %u\n", _ui32nodeId, _i);
+      Serial.printf("ControlerBox::findIndexByNodeId(): found ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
+      Serial.printf("ControlerBox::findIndexByNodeId(): ControlerBox with _ui32nodeId %u has index: %u\n", _ui32nodeId, _i);
       return _i;
     }
   }
-  Serial.printf("ControlerBox::findByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
+  Serial.printf("ControlerBox::findIndexByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   return 254;
 }
 

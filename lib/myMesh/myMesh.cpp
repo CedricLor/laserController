@@ -575,7 +575,7 @@ void myMesh::_deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap) {
 
 uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   // 1. check if the box is listed in my ControlerBoxes[]
-  uint16_t _ui16droppedIndex = ControlerBox::findByNodeId(nodeId);
+  uint16_t _ui16droppedIndex = ControlerBox::findIndexByNodeId(nodeId);
 
   // 2. if the box index is different than 254, it exists
   if (_ui16droppedIndex == 254) {

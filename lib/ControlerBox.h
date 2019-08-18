@@ -128,7 +128,8 @@ class ControlerBox
     // -------- Public Static Methods -----------------
 
     // Class utilities (finders, etc.)
-    static uint16_t findByNodeId(uint32_t _ui32nodeId);
+    static uint16_t findIndexByNodeId(uint32_t _ui32nodeId);
+    static uint16_t findIndexByNodeName(uint16_t ui16NodeName);
     static void deleteBoxByNodeId(uint32_t _ui32nodeId);
 
     // Box counter
