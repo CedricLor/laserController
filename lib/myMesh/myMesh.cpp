@@ -583,8 +583,8 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
     return 0;
   }
 
-  // 3. delete the box from ControlerBox[]
-  ControlerBox::deleteBox(_ui16droppedIndex);
+  // 3. delete the box from ControlerBoxes[]
+  ControlerBoxes[_ui16droppedIndex].deleteBox();
 
   return _ui16droppedIndex;
 }

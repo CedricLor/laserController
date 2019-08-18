@@ -113,6 +113,7 @@ class ControlerBox
     void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);
+    void deleteBox();
 
 
 
@@ -126,16 +127,14 @@ class ControlerBox
 
     // -------- Public Static Methods -----------------
 
-    // Finders
+    // Class utilities (finders, etc.)
     static uint16_t findByNodeId(uint32_t _ui32nodeId);
+    static void deleteBoxByNodeId(uint32_t _ui32nodeId);
 
     // Box counter
     static void updateConnectedBoxCount(short int _newConnectedBoxesCount);
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;
-
-    static void deleteBox(uint16_t _ui16BoxIndex);
-    static void deleteBoxByNodeId(uint32_t _ui32nodeId);
 
     static Task tReboot;
     static void _reboot();
