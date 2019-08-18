@@ -533,8 +533,8 @@ void boxState::_resetSignalCatchers() {
   ControlerBox::ui32SettingTimeOfValFromPir = 0;
   ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
   if (_thisBox.bMasterBoxName != 254) {
-    ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
-    _masterBox.boxActiveStateHasBeenTakenIntoAccount = true;
+    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.bMasterBoxName);
+    ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
   }
 }
 
@@ -627,8 +627,9 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
     return false;
   }
 
-  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.bMasterBoxName - gui16ControllerBoxPrefix) -> index in ControlerBoxes[]: %u\n", _thisBox.bMasterBoxName - gui16ControllerBoxPrefix);
-  ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.bMasterBoxName);
+  // Serial.printf("boxState::_meshHasBeenTriggered(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
+  ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", (_masterBox.boxActiveStateHasBeenTakenIntoAccount ? "true" : "false"));
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.i16BoxActiveState: %i\n", _masterBox.i16BoxActiveState);
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", ((_masterBox.boxActiveStateHasBeenTakenIntoAccount || _masterBox.i16BoxActiveState == -1) ? "true" : "false"));
@@ -656,7 +657,9 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   Serial.println("--------------------- double trigger ----------");
   // if so, compare the times at which each signal catcher has been set
   // and give priority to the most recent one
-  ControlerBox& _masterBox = ControlerBoxes[_thisBox.bMasterBoxName - gui16ControllerBoxPrefix];
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.bMasterBoxName);
+  // Serial.printf("boxState::_resolveTriggersConflict(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
+  ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
   if (ControlerBox::ui32SettingTimeOfValFromPir > _masterBox.ui32BoxActiveStateStartTime) {
     _setBoxTargetState(i16onIRTrigger);
   } else {
