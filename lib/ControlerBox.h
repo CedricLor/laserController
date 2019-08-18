@@ -14,7 +14,11 @@ class ControlerBox
     /** constructor */
     ControlerBox();
 
-    /** public instance variables */
+
+
+
+    /** -------- Public Instance Variables -----------------
+     * */
 
     /** uint32_t nodeId: calculated by painlessMesh from the ESP's mac address */
     uint32_t nodeId;
@@ -98,20 +102,32 @@ class ControlerBox
     short int sBoxDefaultState;
     bool sBoxDefaultStateChangeHasBeenSignaled;
 
-    // instance methods
+
+
+
+    /** -------- Public Instance Methods -----------------
+     * */
     void updateThisBoxProperties();
     void printProperties(const uint16_t _ui16BoxIndex);
     void updateMasterBoxName(const byte _bMasterBoxName);
     void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
 
-    // Signal catchers -- static variables
+
+
+
+    /** -------- Public Static Variables - Signal catchers -----------------
+     * */
     static bool bValFromPir;
     static uint32_t ui32SettingTimeOfValFromPir;
     static short int valFromWeb;
 
+    // -------- Public Static Methods -----------------
+
+    // Finders
     static uint16_t findByNodeId(uint32_t _ui32nodeId);
 
+    // Box counter
     static void updateConnectedBoxCount(short int _newConnectedBoxesCount);
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;
