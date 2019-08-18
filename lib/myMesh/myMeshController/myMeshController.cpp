@@ -228,7 +228,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   if (_nsobj["key"] == "masterbox") {
     // Serial.println("----------------- THIS A MASTERBOX CONFIRMATION ---------------");
-    _updateSenderMasterBox(__ui16BoxIndex);
+    ControlerBoxes[__ui16BoxIndex].updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
     return;
   }
 
@@ -463,28 +463,6 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 
 
 // _changedBoxConfirmation HELPER FUNCTIONS
-void myMeshController::_updateSenderMasterBox(uint16_t _ui16BoxIndex) {
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
-  // get the new masterBoxName from the JSON
-  uint16_t __ui16MasterBoxName = _nsobj["val"].as<uint16_t>() + gui16ControllerBoxPrefix;
-  if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderMasterBox: __ui16MasterBoxName = %u\n",  __ui16MasterBoxName);
-  }
-
-  // 1. set the new master box number of the relevant ControlerBox in the
-  // ControlerBoxes array
-  // 2. set the bool announcing that the change has not been signaled,
-  // to have it caught by the webServerTask (on the interface)
-  ControlerBoxes[_ui16BoxIndex].updateMasterBoxName(__ui16MasterBoxName);
-
-  if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateSenderMasterBox: ControlerBoxes[%u].ui16MasterBoxName has been updated to %u\n", _ui16BoxIndex, ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName);
-  }
-}
-
-
-
-
 
 
 
