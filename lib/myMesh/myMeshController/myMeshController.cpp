@@ -193,7 +193,7 @@ void myMeshController::_changeBoxRequest() {
     Serial.println("------------------------------ THIS IS A SAVE WIFI REQUEST ---------------------------");
     _saveWifi();
     return;
-}
+  }
 
   // if this is a "OTA save and reboot" request
   // _nsobj = {action: "changeBox"; key: "save"; lb: 1, val: "gi8RequestedOTAReboots"}
@@ -252,7 +252,12 @@ void myMeshController::_changedBoxConfirmation() {
   // if this is a "save" confirmation
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if (_nsobj["key"] == "save") {
-}
+    // Serial.println("----------------- THIS A SAVE CONFIRMATION ---------------");
+    /**
+     * DO SOMETHING SMART -> SEND SOMETHING TO THE WEB SERVER
+    */
+    return;
+  }
 }
 
 
