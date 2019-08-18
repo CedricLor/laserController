@@ -123,7 +123,7 @@ step::step(int16_t __i16stepBoxStateNb,
   int16_t __i16onIRTrigger,
   int16_t __i16onMeshTrigger,
   int16_t __i16onExpire,
-  int16_t __i16stepMasterBoxName
+  uint16_t __ui16stepMasterBoxName
 )
     : _i16stepBoxStateNb(__i16stepBoxStateNb),
     _i16StateDuration(__i16StateDuration),
@@ -131,7 +131,7 @@ step::step(int16_t __i16stepBoxStateNb,
     _i16onIRTrigger(__i16onIRTrigger),
     _i16onMeshTrigger(__i16onMeshTrigger),
     _i16onExpire(__i16onExpire),
-    _i16stepMasterBoxName(__i16stepMasterBoxName)
+    _ui16stepMasterBoxName(__ui16stepMasterBoxName)
 {
 }
 
@@ -153,7 +153,7 @@ void step::_tcbPreloadNextStep() {
   //   /*_i16onIRTrigger*/,
   //   /*_i16onMeshTrigger*/,
   //   /*_i16onExpire*/,
-  //   /*_i16stepMasterBoxName*/
+  //   /*_ui16stepMasterBoxName*/
   // };
 }
 
@@ -165,7 +165,7 @@ void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
   _nextStep._i16onIRTrigger = _joStep["_i16onIRTrigger"];
   _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
   _nextStep._i16onExpire = _joStep["_i16onExpire"];
-  _nextStep._i16stepMasterBoxName = _joStep["_i16stepMasterBoxName"];
+  _nextStep._ui16stepMasterBoxName = _joStep["_ui16stepMasterBoxName"];
 }
 
 
@@ -206,10 +206,9 @@ void step::applyStep() {
 
   // set the masterBoxName which state changes shall be watched over
   // Serial.println("step::applyStep(). debug master box name setter");
-  // Serial.println(_i16stepMasterBoxName);
-  // Serial.println((const byte)_i16stepMasterBoxName);
-  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const byte)_i16stepMasterBoxName);
-  // _thisStepBoxState._i16stepMasterBoxName = _i16stepMasterBoxName;
+  // Serial.println(_ui16stepMasterBoxName);
+  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const uint16_t)_ui16stepMasterBoxName);
+  // _thisStepBoxState._ui16stepMasterBoxName = _ui16stepMasterBoxName;
 
   // preload the next step from memory
   step::_tPreloadNextStep.enable();
@@ -225,59 +224,59 @@ void step::initSteps() {
   - no passenger */
   steps[0] = {4, -1, 5, 6, -1, 4, 254};
   // Serial.println("step::initSteps():");
-  // Serial.println(steps[0]._i16stepMasterBoxName);
+  // Serial.println(steps[0]._ui16stepMasterBoxName);
   /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
     onIRTrigger: apply state 6, onMeshTrigger: -1 (no mesh trigger),
-    onExpire: 4 (no expiration, repeat), _i16stepMasterBoxName: 254 */
+    onExpire: 4 (no expiration, repeat), _ui16stepMasterBoxName: 254 */
 
   /* step 1: PIR High, waiting both, relays
   - passenger at box 1 (this box) */
   steps[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, 202 /*and 203*/};
   /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, sequence: 0 - relays,
     onIRTrigger: apply state 6 (repeat), onMeshTrigger: 12 (Mesh High, waiting mesh),
-    onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], _i16stepMasterBoxName: 202 [-- TO BE IMPROVED: and 203] */
+    onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], _ui16stepMasterBoxName: 202 [-- TO BE IMPROVED: and 203] */
 
   /* step 2: Mesh High, waiting mesh, all Off
   - passenger at boxes 2 or 3, going to boxes 5 or 6 */
   steps[2] = {12, 60, 5, -1, 12, 12, 205 /*and 206*/};
   /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, sequence: 5 - all Off,
     onIRTrigger: -1, onMeshTrigger: 12 (repeat Mesh High, waiting mesh),
-    onExpire: 12 (repeat), _i16stepMasterBoxName: 205 [-- TO BE IMPROVED: and 203] */
+    onExpire: 12 (repeat), _ui16stepMasterBoxName: 205 [-- TO BE IMPROVED: and 203] */
 
   /* step 3: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going between boxes 5 and 6 */
   steps[3] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
+    onExpire: 12 (repeat until mesh trigger), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 4: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going to box 4 */
   steps[4] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
+    onExpire: 12 (repeat until mesh trigger), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 5: Mesh High, waiting mesh, relays
   - passenger at box 4, going to box 2 or 3 */
   steps[5] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), _i16stepMasterBoxName: 202 [and 203] */
+    onExpire: 12 (repeat until mesh trigger), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 6: Mesh High, IR interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
   steps[6] = {11, -1, 0, 9, 11, 11, 254};
   /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: 11 (repeat),
-    onExpire: 11 (repeat once), _i16stepMasterBoxName: 202 [and 203] */
+    onExpire: 11 (repeat once), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 7: IR High, no interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
   steps[7] = {9, -1, 0, -1, -1, 9, 254};
   /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
-    onExpire: 9 (repeat once), _i16stepMasterBoxName: 254 */
+    onExpire: 9 (repeat once), _ui16stepMasterBoxName: 254 */
   Serial.println("step::initSteps(): starting");
 }
 

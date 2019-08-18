@@ -105,7 +105,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       }
       _obj["action"] = "addBox";
       _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
-      _obj["masterbox"] = (int)ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName - gui16ControllerBoxPrefix;
+      _obj["masterbox"] = ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName - gui16ControllerBoxPrefix;
       _obj["boxDefstate"] = ControlerBoxes[_ui16BoxIndex].sBoxDefaultState;
       // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       // reset all the booleans to true
