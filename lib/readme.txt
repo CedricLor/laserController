@@ -152,7 +152,6 @@ TO DO:
     - review webServerControler to start decoding requests properly
 
   B. optimizations
-  - ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, String rootKey): try to get rid of the String in the parameters;
   - short/int to bool or byte
     - each time I use a short int as a bool, change it to a bool
     - each time I use a short for a very short number, change it to a byte

@@ -152,7 +152,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // set the IPs
   APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
-  stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);; // _parseIpStringToIPAddress(_obj, "APIP");
+  stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
   // Serial.print("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
 
   // set the ui16NodeName
@@ -319,56 +319,3 @@ void ControlerBox::_reboot() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
-IPAddress ControlerBox::_parseIpStringToIPAddress(JsonDocument& root, const char* rootKey/*String& rootKey*/) {
-  Serial.println("ControlerBox::_parseIpStringToIPAddress: Starting");
-  // Serial.print("ControlerBox::_parseIpStringToIPAddress: rootKey = ");Serial.println(rootKey);
-  const char* ipStr = root[rootKey];
-  // Serial.print("ControlerBox::_parseIpStringToIPAddress: ipStr = ");Serial.println(ipStr);
-  byte ip[4];
-  _parseCharArrayToBytes(ipStr, '.', ip, 4, 10);
-  Serial.println("ControlerBox::_parseIpStringToIPAddress: Ending");
-  return ip;
-}
-
-void ControlerBox::_parseCharArrayToBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) {
-  // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
-  /*  Call it this way:
-        const char* ipStr = "50.100.150.200";
-        byte ip[4];
-        _parseBytesToCharArray(ipStr, '.', ip, 4, 10);
-   */
-  Serial.println("ControlerBox::_parseCharArrayToBytes: Starting");
-  // Serial.print("ControlerBox::_parseCharArrayToBytes: str = ");Serial.println(str);
-  for (int i = 0; i < maxBytes; i++) {
-    // Serial.println("ControlerBox::_parseCharArrayToBytes: In for loop");
-    // Serial.print("ControlerBox::_parseCharArrayToBytes: i = ");Serial.println(i);
-    bytes[i] = strtoul(str, NULL, base);  // Convert byte
-    // Serial.print("ControlerBox::_parseCharArrayToBytes: bytes[i] = ");Serial.println(bytes[i]);
-    str = strchr(str, sep);               // Find next separator
-    // Serial.print("ControlerBox::_parseCharArrayToBytes: str = ");Serial.println(str);
-    if (str == NULL || *str == '\0') {
-        // Serial.println("ControlerBox::_parseCharArrayToBytes: in if (str == NULL || *str == '\0')");
-        break;                            // No more separators, exit
-    }
-    str++;                                // Point to next character after separator
-  }
-  Serial.println("ControlerBox::_parseCharArrayToBytes: Ending");
-}
-
-
-IPAddress _IpStringToIPAddress(const char* _cIpCharArray) {
-  // see https://stackoverflow.com/questions/35227449/convert-ip-or-mac-address-from-string-to-byte-array-arduino-or-c
-  /*  Call it this way:
-    _IpStringToIPAddress("192.168.25.34");
-   */
-  byte _ip[4];
-  for (int i = 0; i < 4; i++) {
-    _ip[i] = strtoul(_cIpCharArray, NULL, 10);  // Convert to byte
-    _cIpCharArray = strchr(_cIpCharArray, '.');             // Find next separator
-    if (_cIpCharArray == NULL || *_cIpCharArray == '\0') {
-        break;                            // No more separators, exit
-    }
-    _cIpCharArray++;                                // Point to next character after separator
-  }
-  return _ip;
-}
