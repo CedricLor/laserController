@@ -207,7 +207,7 @@ void step::applyStep() {
   // set the masterBoxName which state changes shall be watched over
   // Serial.println("step::applyStep(). debug master box name setter");
   // Serial.println(_ui16stepMasterBoxName);
-  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName((const uint16_t)_ui16stepMasterBoxName);
+  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName(_ui16stepMasterBoxName);
   // _thisStepBoxState._ui16stepMasterBoxName = _ui16stepMasterBoxName;
 
   // preload the next step from memory
@@ -621,7 +621,6 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
   // Serial.println("---------------- DEBUG ------------ BOX STATE ----------- DEBUG -------------");
   // Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.ui16MasterBoxName: %u\n", _thisBox.ui16MasterBoxName);
   // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.ui16MasterBoxName == 254): %i\n", _thisBox.ui16MasterBoxName == 254);
-  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.ui16MasterBoxName == 0): %i\n", _thisBox.ui16MasterBoxName == 254);
   if (_thisBox.ui16MasterBoxName == 254) {
     return false;
   }

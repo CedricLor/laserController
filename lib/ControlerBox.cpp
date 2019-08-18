@@ -42,7 +42,7 @@ ControlerBox::ControlerBox()
   isNewBoxHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
 
-  // this->ui16MasterBoxName
+  // ui16MasterBoxName
   // setters:
   // - here; -> from the global.UI8_DEFAULT_MASTER_NODE_NAME
   // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
@@ -54,7 +54,7 @@ ControlerBox::ControlerBox()
   // - here (printProperties)
   // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
   // - in mySavedPrefs::savePreferences()
-  this->ui16MasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
+  ui16MasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
 
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
@@ -113,10 +113,15 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
+
+
 void ControlerBox::updateMasterBoxName(const uint16_t _ui16MasterBoxName) {
   ui16MasterBoxName = _ui16MasterBoxName;  // see in constructor for information on where this variable is set and read
   bMasterBoxNameChangeHasBeenSignaled = false; // see in constructor for information on where this variable is set and read
 }
+
+
+
 
 
 
