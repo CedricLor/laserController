@@ -165,7 +165,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // extract the __senderBoxActiveState from the JSON
   const short int __senderBoxActiveState = _obj["actSt"];
   const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
-  setBoxActiveState(__ui16BoxIndex, __senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
+  setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
 
   // Setting defaultState stack
   // need to send via myMeshViews and add to ControlerBox the time
@@ -188,13 +188,13 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 // Setter for the activeState and associated variables
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
-void ControlerBox::setBoxActiveState(const uint8_t __ui16BoxIndex, const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
-  ControlerBoxes[__ui16BoxIndex].i16BoxActiveState = _sBoxActiveState;
+  i16BoxActiveState = _sBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
 
-  ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled = false;
+  boxActiveStateHasBeenSignaled = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
   // setters:
   // - by default to true upon init (controlerBox constructor);
@@ -203,10 +203,10 @@ void ControlerBox::setBoxActiveState(const uint8_t __ui16BoxIndex, const short _
   // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
   // used by the interface mostly
 
-  ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
+  ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
 
-  ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount = false;
+  boxActiveStateHasBeenTakenIntoAccount = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount);
   // setters:
   // - by default at true upon init (controlerBox constructor);

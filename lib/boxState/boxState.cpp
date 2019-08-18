@@ -573,7 +573,7 @@ void boxState::_restart_tPlayBoxState() {
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
     // 4. Set the i16BoxActiveState to the _boxTargetState
-    ControlerBox::setBoxActiveState(gui16MyIndexInCBArray, _boxTargetState, laserControllerMesh.getNodeTime());
+    ControlerBoxes[gui16MyIndexInCBArray].setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
 
     // 5. Restart/enable _tPlayBoxState
