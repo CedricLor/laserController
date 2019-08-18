@@ -122,6 +122,9 @@ void ControlerBox::updateMasterBoxName(const uint16_t _ui16MasterBoxName) {
 
 
 
+void ControlerBox::updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxNameFromWeb) {
+  updateMasterBoxName(_ui16MasterBoxNameFromWeb + gui16ControllerBoxPrefix);
+}
 
 
 
