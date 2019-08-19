@@ -214,14 +214,24 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
-    __newObj["serverIP"] = ((isRoot == true) ? (WiFi.localIP().toString()) : (WiFi.softAPIP().toString()));
-    __newObj["ssid"] = ssid;
-    __newObj["pass"] = pass;
-    __newObj["gatewayIP"] = gatewayIP.toString();
+    __newObj["serverIP"]        = ((isRoot == true) ? (WiFi.localIP().toString()) : (WiFi.softAPIP().toString()));
+    __newObj["ssid"]            = ssid;
+    __newObj["pass"]            = pass;
+    __newObj["gatewayIP"]       = gatewayIP.toString();
     __newObj["ui16GatewayPort"] = ui16GatewayPort;
-    __newObj["ui8WifiChannel"] = ui8WifiChannel;
-    __newObj["fixedIP"] = fixedIP.toString();
-    __newObj["fixedNetmaskIP"] = fixedNetmaskIP.toString();
+    __newObj["ui8WifiChannel"]  = ui8WifiChannel;
+    __newObj["fixedIP"]         = fixedIP.toString();
+    __newObj["fixedNetmaskIP"]  = fixedNetmaskIP.toString();
+
+    // __newObj["rootNode"]        = ((isRoot == true) ? (ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName) : (254));
+    __newObj["IF"]              = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
+
+    __newObj["softApSsid"]      = _soft_ap_ssid;
+    __newObj["softApPass"]      = _soft_ap_password;
+    __newObj["softAPmyIP"]      = _soft_ap_my_ip.toString();
+    __newObj["softAPMeGatew"]   = _soft_ap_me_as_gateway_ip.toString();
+    __newObj["softAPNetmask"]   = _soft_ap_netmask.toString();
+
     // expected JSON obj:  {"action":3;"serverIP":"192.168.43.84"}
   }
 
