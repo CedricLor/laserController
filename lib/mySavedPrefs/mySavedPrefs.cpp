@@ -120,7 +120,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     JsonObject _joDataset = _obj["dataset"];
     
     strlcpy(ssid,               _joDataset["wssid"] | ssid, 32);
-    strcpy(pass,                _joDataset["wpass"] | pass, 32);
+    strlcpy(pass,               _joDataset["wpass"] | pass, 32);
     gatewayIP.fromString(       _joDataset["wgw"].as<const char*>());
     ui16GatewayPort           = _joDataset["wgwp"];
     ui8WifiChannel            = _joDataset["wch"];
@@ -412,7 +412,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   */
   // size_t putULong(const char* key, uint32_t value);
   size_t _ui32DefaultRootNodeIdRet = _preferences.putULong("RootNId", ui32DefaultRootNodeId);
-  Serial.printf("%s ui32DefaultRootNodeId == %i %s\"ui32DefaultRootNodeId\"\n", debugSaveMsgStart, ui32DefaultRootNodeId, (_ui32DefaultRootNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  Serial.printf("%s ui32DefaultRootNodeId == %u %s\"ui32DefaultRootNodeId\"\n", debugSaveMsgStart, ui32DefaultRootNodeId, (_ui32DefaultRootNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -645,7 +645,7 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // ui32DefaultRootNodeId
   // uint32_t getULong(const char* key, uint32_t defaultValue = 0);
   ui32DefaultRootNodeId = _preferences.getULong("RootNId", ui32DefaultRootNodeId);
-  Serial.printf("%s ui32DefaultRootNodeId set to: %i\n", _debugLoadMsgStart, ui32DefaultRootNodeId);
+  Serial.printf("%s ui32DefaultRootNodeId set to: %u\n", _debugLoadMsgStart, ui32DefaultRootNodeId);
 }
 
 
