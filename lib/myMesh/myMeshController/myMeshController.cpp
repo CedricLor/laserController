@@ -300,7 +300,7 @@ uint16_t myMeshController::_getSenderBoxIndexNumber() {
 void myMeshController::_updateMyValFromWeb() {
 // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to %u\n", (_nsobj["val"].as<uint16_t>()));
+    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%u]\n", (_nsobj["val"].as<uint16_t>()));
   }
 
   // update the valFromWeb
@@ -330,7 +330,7 @@ void myMeshController::_updateMyMasterBoxName() {
 void myMeshController::_updateMyDefaultState() {
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to %u\n", _nsobj["val"].as<uint16_t>());
+    Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to [%u]\n", _nsobj["val"].as<uint16_t>());
   }
 
   ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState = _nsobj["val"].as<uint16_t>();

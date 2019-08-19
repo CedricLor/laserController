@@ -141,9 +141,8 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // if the box master has changed
     if (ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
       if (MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%u] has changed master\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. (ControlerBoxes[%u].ui16MasterBoxName) == %u\n", _ui16BoxIndex, (ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName));
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. New master: %u\n", (int)(ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName));
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Box [%u] has changed master: ", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
+        Serial.printf("ControlerBoxes[%u].ui16MasterBoxName == %u\n", _ui16BoxIndex, ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName);
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "masterbox";
