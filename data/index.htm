@@ -186,9 +186,13 @@
       <div class='subsection_title pad_tb10'>Special Nodes Setters</div>
 
       <!-- Root node setter -->
+      <div> <!-- root node id -->
+        <label class='wifi_labels' for='roNID'>Root Id:</label>
+        <input id='roNID' type='text' >
+      </div>
       <div> <!-- root node number -->
-        <label class='wifi_labels' for='rootBox'>Root Node:</label>
-        <input id='rootBox' type='text' >
+        <label class='wifi_labels' for='roNNa'>Root Name:</label>
+        <input id='roNNa' type='text' >
       </div>
       <div class='pad_tb20'> <!-- buttons save IF Node settings -->
         <button id='saveRootNodeNumb' class='button'>Save</button>&nbsp;
@@ -197,8 +201,8 @@
 
       <!-- IF node setter -->      
       <div> <!-- IF node number -->
-        <label class='wifi_labels' for='IFBox'>Interface Node:</label>
-        <input id='IFBox' type='text' >
+        <label class='wifi_labels' for='IFNNA'>IF Name:</label>
+        <input id='IFNNA' type='text' >
       </div>
       <div class='pad_tb20'> <!-- buttons save IF Node settings -->
         <button id='saveIFNodeNumb' class='button'>Save</button>&nbsp;
@@ -206,18 +210,26 @@
       </div>
 
       <!-- Soft AP settings setter -->
-      <div class='subsection_title pad_tb10'>Soft AP Settings</div>
+      <div class='subsection_title pad_tb10'>IF on Soft AP Settings</div>
       <div> <!-- my soft AP IP -->
-        <label class='wifi_labels' for='_soft_ap_my_ip'>Interface IP:</label>
-        <input id='_soft_ap_my_ip' type='text' >
+        <label class='wifi_labels' for='sIP'>IP Address:</label>
+        <input id='sIP' type='text' >
       </div>
       <div> <!-- soft AP SSID -->
-        <label class='wifi_labels' for='_soft_ap_ssid'>Interface SSID:</label>
-        <input id='_soft_ap_ssid' type='text' >
+        <label class='wifi_labels' for='sssid'>SSID:</label>
+        <input id='sssid' type='text' >
       </div>
       <div> <!-- soft AP password -->
-        <label class='wifi_labels' for='_soft_ap_password'>Interface Password:</label>
-        <input id='_soft_ap_password' type='text' >
+        <label class='wifi_labels' for='spass'>Password:</label>
+        <input id='spass' type='text' >
+      </div>
+      <div> <!-- soft AP gateway -->
+        <label class='wifi_labels' for='sgw'>Gateway:</label>
+        <input id='sgw' type='text' >
+      </div>
+      <div> <!-- soft AP netmask -->
+        <label class='wifi_labels' for='snm'>Netmask:</label>
+        <input id='snm' type='text' >
       </div>
       <div class='pad_tb10'> <!-- buttons save soft AP settings -->
         <button id='saveSoftAPSettings' class='button'>Save</button>
@@ -227,16 +239,20 @@
       <!-- Mesh settings setter -->            
       <div class='subsection_title pad_tb10'>Mesh Settings</div>
       <div> <!-- mesh name-->
-        <label class='wifi_labels' for='meshPrefix'>Name:</label>
-        <input id='meshPrefix' type='text' >
+        <label class='wifi_labels' for='mssid'>SSID:</label>
+        <input id='mssid' type='text' >
       </div>
       <div> <!-- mesh password -->
-        <label class='wifi_labels' for='meshPassword'>Password:</label>
-        <input id='meshPassword' type='text' >
+        <label class='wifi_labels' for='mpass'>Password:</label>
+        <input id='mpass' type='text' >
       </div>
       <div> <!-- mesh channel -->
-        <label class='wifi_labels' for='meshChannel'>Channel:</label>
-        <input id='meshChannel' type='text' >
+        <label class='wifi_labels' for='mch'>Channel:</label>
+        <input id='mch' type='text' >
+      </div>
+      <div> <!-- mesh channel -->
+        <label class='wifi_labels' for='mport'>Port:</label>
+        <input id='mport' type='text' >
       </div>
       <div class='pad_tb10'> <!-- buttons save mesh settings -->
         <button id='saveMeshSettings' class='button'>On All</button>
@@ -247,32 +263,32 @@
     <div class='wifi_setters marg_top'>
       <div class='section_title bold  pad_tb10'>External Wifi Settings</div>
       <div> <!-- SSID -->
-        <label class='wifi_labels' for='ssid'>SSID:</label>
-        <input id='ssid' type='text' >
+        <label class='wifi_labels' for='wssid'>SSID:</label>
+        <input id='wssid' type='text' >
       </div>
       <div> <!-- Pass -->
-        <label class='wifi_labels' for='pass'>Pass</label>
-        <input id='pass' type='text' >
+        <label class='wifi_labels' for='wpass'>Pass</label>
+        <input id='wpass' type='text' >
       </div>
       <div> <!-- Gateway IP -->
-        <label class='wifi_labels' for='gatewayIP'>Gateway IP:</label>
-        <input id='gatewayIP' type='text' >
+        <label class='wifi_labels' for='wgw'>Gateway IP:</label>
+        <input id='wgw' type='text' >
       </div>
       <div> <!-- Gateway Port -->
-        <label class='wifi_labels' for='ui16GatewayPort'>Gateway Port:</label>
-        <input id='ui16GatewayPort' type='text' >
+        <label class='wifi_labels' for='wgwp'>Gateway Port:</label>
+        <input id='wgwp' type='text' >
       </div>
       <div> <!-- IF IP on External Network -->
-        <label class='wifi_labels' for='fixedIP'>Fixed IP:</label>
-        <input id='fixedIP' type='text' >
+        <label class='wifi_labels' for='wfip'>Fixed IP:</label>
+        <input id='wfip' type='text' >
       </div>
       <div> <!-- External Network Netmask -->
-        <label class='wifi_labels' for='fixedNetmaskIP'>Netmask:</label>
-        <input id='fixedNetmaskIP' type='text' >
+        <label class='wifi_labels' for='wfip'>Netmask:</label>
+        <input id='wfip' type='text' >
       </div>
       <div> <!-- External Network Channel -->
-        <label class='wifi_labels' for='ui8WifiChannel'>Wifi Channel:</label>
-        <input id='ui8WifiChannel' type='text' >
+        <label class='wifi_labels' for='wch'>Wifi Channel:</label>
+        <input id='wch' type='text' >
       </div>
       <div class='subsection_title pad_tb10'>Save wifi settings</div>
       <div> <!-- buttons save external wifi settings -->
