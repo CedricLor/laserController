@@ -26,8 +26,9 @@
 #define myMeshController_h
 
 #include "Arduino.h"
-#include <./mySavedPrefs.h>
+#include <mySavedPrefs.h>
 #include <./myMeshViews/myMeshViews.h>
+#include <./../myWebServerWS/myWSSender/myWSSender.h>
 
 class myMeshController
 {
