@@ -253,7 +253,12 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
     size_t _len = measureJson(_joMsg);
     AsyncWebSocketMessageBuffer * _buffer = myWebServerWS::ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
 
-    if (_buffer) {
+    size_t _client_count = myWebServerWS::ws.count();
+
+    /** check that there are any client connected */
+    if (_client_count) {
+
+        // 
         serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
         Serial.print("- myWSSender::sendWSData. Serialized message: ");
         serializeJson(_joMsg, Serial);
@@ -261,28 +266,41 @@ void myWSSender::sendWSData(JsonObject& _joMsg) {
         
         // Before sending anything, check if you have any client
         if (size_t _client_count = myWebServerWS::ws.count()) {
-          // check that you have the client_id
-          // check that the client with the client_id you have is not pointing to nothing
-          // check if the client is connected
+          /** Test whether we have:
+           * - the client_id;
+           * - the client with the client_id we have is not pointing to nothing;
+           * - the client is connected. */
+          
+          /** If so, send the message to this client. */
           if (myWebServerWS::ws_client_id &&
             myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr &&
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) {
             if (MY_DG_WS) Serial.printf("- myWSSender::sendWSData. Sending the WS message to client [%i].\n", myWebServerWS::ws_client_id);
             myWebServerWS::ws.client(myWebServerWS::ws_client_id)->text(_buffer);
             if (MY_DG_WS) Serial.println("- myWSSender::sendWSData. Message sent\n");
-          }  // end if (myWebServerWS::ws_client_id && ..
+          }  // end if (myWebServerWS::ws_client_id && ...
+
+          /** If the ws_client_id we have does not match existing client
+           *  OR the corresponding client points to nothing
+           *  OR the client is no longer connected,
+           * 
+           *  send the message to all the clients */
           else {
-            // the ws_client_id I have does not match existing client
-            // send the info to all the clients
             if (MY_DG_WS)  Serial.printf("- myWSSender::sendWSData. Client [%u] not found. Sending the WS message message to all %u clients.\n", myWebServerWS::ws_client_id, _client_count);
             myWebServerWS::ws.textAll(_buffer);
             if (MY_DG_WS) Serial.println(F("- myWSSender::sendWSData. Message broadcasted"));
           } // end else
+
         } // end if (size_t _client_count = myWebServerWS::ws.count()) {...}
-        else { // there is no client connected
-          if (MY_DG_WS) Serial.println(F("- myWSSender::sendWSData: The message could not be sent because there are no WS client connected."));
+    
+    } // if _buffer and _client_count
+
+    else { // No client connected
+      if (MY_DG_WS) {
+        Serial.printf("- myWSSender::sendWSData: The message could not be sent. No client connected.");
         }
     }
+
     if (MY_DG_WS) {
       Serial.println(F("- myWSSender::sendWSData. Ending."));
     }
