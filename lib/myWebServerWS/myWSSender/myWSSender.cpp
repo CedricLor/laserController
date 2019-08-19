@@ -179,7 +179,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
 void myWSSender::prepareWSData(const int8_t _i8messageType) {
   Serial.printf("- myWSSender::prepareWSData. Starting. Message type [%i]\n", _i8messageType);
-  StaticJsonDocument<800> __doc;
+  StaticJsonDocument<900> __doc;
   JsonObject __newObj = __doc.to<JsonObject>();
   __newObj["action"] = _i8messageType;
 
@@ -232,7 +232,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __wifiSettings["wgwp"]  = ui16GatewayPort;
     __wifiSettings["wch"]   = ui8WifiChannel;
     __wifiSettings["wfip"]  = fixedIP.toString();
-    __wifiSettings["wnm"]  = fixedNetmaskIP.toString();
+    __wifiSettings["wnm"]   = fixedNetmaskIP.toString();
 
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
@@ -242,18 +242,22 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __rootIFSettings["IFNNA"]   = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
-    JsonObject __softAPSettings       = __newObj.createNestedObject("softAP");
+    JsonObject __softAPSettings = __newObj.createNestedObject("softAP");
     __softAPSettings["sssid"]   = softApSsid;
     __softAPSettings["spass"]   = softApPassword;
     __softAPSettings["sIP"]     = softApMyIp.toString();
     __softAPSettings["sgw"]     = softApMeAsGatewayIp.toString();
     __softAPSettings["snm"]     = softApNetmask.toString();
+    __softAPSettings["shi"]     = softApHidden;
+    __softAPSettings["smc"]     = softApMaxConnection;
 
     // Mesh settings
-    JsonObject __meshSettings         = __newObj.createNestedObject("mesh");
-    __meshSettings["mssid"]           = meshPrefix;
-    __meshSettings["mpass"]           = meshPass;
-    __meshSettings["mport"]           = meshPort;
+    JsonObject __meshSettings = __newObj.createNestedObject("mesh");
+    __meshSettings["mssid"]   = meshPrefix;
+    __meshSettings["mpass"]   = meshPass;
+    __meshSettings["mport"]   = meshPort;
+    __meshSettings["mhi"]     = meshHidden;
+    __meshSettings["mmc"]     = meshMaxConnection;
   }
 
   sendWSData(__newObj);

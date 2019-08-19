@@ -76,7 +76,7 @@ void myMeshStarter::_initMesh() {
     // All the other mesh nodes  (whether root or non-root, interface on STATION,
     // ControlerBoxes, relays, IR, etc. ) share the same init function. (no ad hoc 
     // config of the Soft AP is required).
-    laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_AP_STA, ui8WifiChannel);
+    laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_AP_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
   }
 }
 
@@ -114,17 +114,17 @@ void myMeshStarter::_rootTheMesh() {
 */
 void myMeshStarter::_interfaceOnAPInit() {
   // 1. init the mesh in station only
-  laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_STA, ui8WifiChannel);
+  laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
   // 2. configure the soft AP
   if(!WiFi.softAPConfig(softApMyIp, softApMeAsGatewayIp, softApNetmask)){
     Serial.println("\nAP Config Failed\n");
   }
   if (WiFi.softAP(softApSsid, softApPassword, 
-                  ui8WifiChannel, 0 /* int ssid_hidden*/, 
-                  10 /*int max_connection */)){
+                  ui8WifiChannel, softApHidden, 
+                  softApMaxConnection)){
     IPAddress myIP = WiFi.softAPIP();
     Serial.println("Network " + String(softApSsid) + " running");
-    Serial.println("AP IP address:" + String(myIP) +"");
+    Serial.println("AP IP address:" + String(myIP));
   } else {
     Serial.println("\nStarting AP failed.\n");
   }
