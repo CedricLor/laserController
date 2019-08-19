@@ -31,24 +31,6 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-/*  
-    Variables for use case "Interface on soft AP"
-    The following variables are used when providing the interface on the soft AP,
-    instead of the having the interface connecting to an external gateway (as 
-    recommended by the developpers of painlessMesh).
- */
-const char* myMeshStarter::_soft_ap_ssid     = "ESP32-Access-Point";
-const char* myMeshStarter::_soft_ap_password = "123456789";
-IPAddress myMeshStarter::_soft_ap_my_ip            = IPAddress(192, 168, 5, 1);
-IPAddress myMeshStarter::_soft_ap_me_as_gateway_ip = IPAddress(192, 168, 5, 1);
-IPAddress myMeshStarter::_soft_ap_netmask          = IPAddress(255, 255, 255, 0);
-/*  
-    Variables for use case: stationManual / "Interface on STATION"
-    The following variables are used when providing the interface on the soft AP,
-    instead of the having the interface connecting to an external gateway. 
-    This is the use case recommended by the developpers of painlessMesh.
-    But this only works with my own refactored version of painlessMesh.
- */
 
 myMeshStarter::myMeshStarter() {};
 

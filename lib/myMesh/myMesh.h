@@ -38,12 +38,6 @@ class myMeshStarter
 {
   public:
     myMeshStarter();    // Variables for Interface on AP mode
-    static const char* _soft_ap_ssid;    
-    static const char* _soft_ap_password;
-
-    static IPAddress _soft_ap_my_ip;
-    static IPAddress _soft_ap_me_as_gateway_ip;
-    static IPAddress _soft_ap_netmask;
 
     void myMeshSetup();
 
