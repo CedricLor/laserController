@@ -233,11 +233,16 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __newObj["IF"]              = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
-    __newObj["softApSsid"]      = _soft_ap_ssid;
-    __newObj["softApPass"]      = _soft_ap_password;
-    __newObj["softAPmyIP"]      = _soft_ap_my_ip.toString();
-    __newObj["softAPGw"]        = _soft_ap_me_as_gateway_ip.toString();
-    __newObj["softAPNetmask"]   = _soft_ap_netmask.toString();
+    __newObj["softAPssid"]      = softApSsid;
+    __newObj["softAPpass"]      = softApPassword;
+    __newObj["softAPmyIP"]      = softApMyIp.toString();
+    __newObj["softAPgw"]        = softApMeAsGatewayIp.toString();
+    __newObj["softAPnetmask"]   = softApNetmask.toString();
+
+    // Mesh settings
+    __newObj["meshPrefix"]      = meshPrefix;
+    __newObj["meshPass"]        = meshPass;
+    __newObj["meshPort"]        = meshPort;
 
     // expected JSON obj:  {"action":3;"serverIP":"192.168.43.84"}
   }

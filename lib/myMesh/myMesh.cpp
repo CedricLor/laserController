@@ -25,11 +25,8 @@
 #include "Arduino.h"
 #include "myMesh.h"
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MESH constant /////////////////////////////////////////////////////////////////////////////////////////////////
-#define   MESH_PREFIX     "laser_boxes"
-#define   MESH_PASSWORD   "somethingSneaky"
-#define   MESH_PORT       5555
+
+
 
 
 myMeshStarter::myMeshStarter() {};
@@ -79,7 +76,7 @@ void myMeshStarter::_initMesh() {
     // All the other mesh nodes  (whether root or non-root, interface on STATION,
     // ControlerBoxes, relays, IR, etc. ) share the same init function. (no ad hoc 
     // config of the Soft AP is required).
-    laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_AP_STA, ui8WifiChannel);
+    laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_AP_STA, ui8WifiChannel);
   }
 }
 
@@ -117,16 +114,16 @@ void myMeshStarter::_rootTheMesh() {
 */
 void myMeshStarter::_interfaceOnAPInit() {
   // 1. init the mesh in station only
-  laserControllerMesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT, WIFI_STA, ui8WifiChannel);
+  laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_STA, ui8WifiChannel);
   // 2. configure the soft AP
-  if(!WiFi.softAPConfig(_soft_ap_my_ip, _soft_ap_me_as_gateway_ip, _soft_ap_netmask)){
+  if(!WiFi.softAPConfig(softApMyIp, softApMeAsGatewayIp, softApNetmask)){
     Serial.println("\nAP Config Failed\n");
   }
-  if (WiFi.softAP(_soft_ap_ssid, _soft_ap_password, 
+  if (WiFi.softAP(softApSsid, softApPassword, 
                   ui8WifiChannel, 0 /* int ssid_hidden*/, 
                   10 /*int max_connection */)){
     IPAddress myIP = WiFi.softAPIP();
-    Serial.println("Network " + String(_soft_ap_ssid) + " running");
+    Serial.println("Network " + String(softApSsid) + " running");
     Serial.println("AP IP address:" + String(myIP) +"");
   } else {
     Serial.println("\nStarting AP failed.\n");
