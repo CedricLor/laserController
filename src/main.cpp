@@ -12,15 +12,10 @@
 #include <../lib/ControlerBox.cpp>
 
 #include <mySavedPrefs.cpp>
-
 #include <myOta.cpp>
-
 #include <myMesh.cpp>
-
 #include <boxState.cpp>
-
 #include "../lib/pirController.cpp"
-
 #include <myWebServerBase.cpp>
 
 

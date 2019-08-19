@@ -10,8 +10,8 @@
 #include <painlessMesh.h>
 
 
-extern constexpr short PIN_COUNT = 4;                                                     // BOX BY BOX
-extern short relayPins[];  // an array of pin numbers to which relays are attached// BOX BY BOX
+extern constexpr short PIN_COUNT                     = 4;                          // BOX BY BOX
+extern short relayPins[];  // an array of pin numbers to which relays are attached // BOX BY BOX
 
 extern const bool MY_DEBUG;
 extern const bool MY_DG_LASER;
@@ -22,7 +22,7 @@ extern const bool MY_DEEP_DG_MESH;
 
 extern const short VERSION;
 
-extern const uint8_t UI8_DEFAULT_MASTER_NODE_NAME;                                    // BOX BY BOX
+extern const uint8_t UI8_DEFAULT_MASTER_NODE_NAME;                                 // BOX BY BOX
 
 extern uint16_t gui16NodeName;
 extern bool isInterface;
@@ -31,7 +31,9 @@ extern uint32_t ui32DefaultRootNodeId;
 extern uint32_t gui32InterfaceNodeId;
 extern uint16_t gui16InterfaceIndexInCBArray;
 
-extern constexpr short MESH_REQUEST_CAPACITY = 20;            // Used for sizing of my custom JSONDocuments received and sent via the mesh and is used in MeshViews and MeshController
+/** Used for sizing of custom JSONDocuments received and sent via the mesh
+ *  and in MeshViews and MeshController. */
+extern constexpr short MESH_REQUEST_CAPACITY        = 20;
 
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
@@ -43,7 +45,7 @@ extern uint16_t gui16InterfaceNodeName;
 
 extern const char* slaveReactionHtml[4];
 
-extern constexpr uint8_t UI8_BOXES_COUNT = 10;                                                   // NETWORK BY NETWORK
+extern constexpr uint8_t UI8_BOXES_COUNT            = 10;                                                   // NETWORK BY NETWORK
 extern uint16_t gui16BoxesCount;                           // NETWORK BY NETWORK
 
 extern const short S_BOX_DEFAULT_STATE;
