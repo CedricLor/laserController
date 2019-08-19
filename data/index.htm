@@ -180,86 +180,98 @@
       </div> <!-- box_wrapper -->
     </div> <!-- boxesContainer -->
 
+
+
+    <!-- start: mesh global settings setter -->
     <div class='mesh_glob_setters marg_top'>
       <div class='section_title bold  pad_tb10'>Mesh Global Settings</div>
 
-      <div class='subsection_title pad_tb10'>Special Nodes Setters</div>
 
-      <!-- Root node setter -->
-      <div> <!-- root node id -->
-        <label class='wifi_labels' for='roNID'>Root Id:</label>
-        <input id='roNID' type='text' >
-      </div>
-      <div> <!-- root node number -->
-        <label class='wifi_labels' for='roNNa'>Root Name:</label>
-        <input id='roNNa' type='text' >
-      </div>
-      <div class='pad_tb20'> <!-- buttons save IF Node settings -->
-        <button id='saveRootNodeNumb' class='button'>Save</button>&nbsp;
-        <button id='applyRootNodeNumb' class='button'>Apply</button>&nbsp;
-      </div> <!-- end root node setter -->
+      <div class='mesh_spec_nodes_setters'>
+        <div class='subsection_title pad_tb10'>Special Nodes Setters</div>
 
-      <!-- IF node setter -->      
-      <div> <!-- IF node number -->
-        <label class='wifi_labels' for='IFNNA'>IF Name:</label>
-        <input id='IFNNA' type='text' >
-      </div>
-      <div class='pad_tb20'> <!-- buttons save IF Node settings -->
-        <button id='saveIFNodeNumb' class='button'>Save</button>&nbsp;
-        <button id='applyIFNodeNumb' class='button'>Apply</button>&nbsp;
-      </div>
+        <!-- Root node setter -->
+        <div> <!-- root node id -->
+          <label class='wifi_labels' for='roNID'>Root Id:</label>
+          <input id='roNID' type='text' >
+        </div>
+        <div> <!-- root node number -->
+          <label class='wifi_labels' for='roNNa'>Root Name:</label>
+          <input id='roNNa' type='text' >
+        </div>
+        <div class='pad_tb20'> <!-- buttons save IF Node settings -->
+          <button id='saveRootNodeNumb' class='button'>Save</button>&nbsp;
+          <button id='applyRootNodeNumb' class='button'>Apply</button>&nbsp;
+        </div> <!-- end root node setter -->
+  
+        <!-- IF node setter -->      
+        <div> <!-- IF node number -->
+          <label class='wifi_labels' for='IFNNA'>IF Name:</label>
+          <input id='IFNNA' type='text' >
+        </div>
+        <div class='pad_tb20'> <!-- buttons save IF Node settings -->
+          <button id='saveIFNodeNumb' class='button'>Save</button>&nbsp;
+          <button id='applyIFNodeNumb' class='button'>Apply</button>&nbsp;
+        </div>
+      </div> <!-- mesh_spec_nodes_setters -->
 
-      <!-- Soft AP settings setter -->
-      <div class='subsection_title pad_tb10'>IF on Soft AP Settings</div>
-      <div> <!-- my soft AP IP -->
-        <label class='wifi_labels' for='sIP'>IP Address:</label>
-        <input id='sIP' type='text' >
-      </div>
-      <div> <!-- soft AP SSID -->
-        <label class='wifi_labels' for='sssid'>SSID:</label>
-        <input id='sssid' type='text' >
-      </div>
-      <div> <!-- soft AP password -->
-        <label class='wifi_labels' for='spass'>Password:</label>
-        <input id='spass' type='text' >
-      </div>
-      <div> <!-- soft AP gateway -->
-        <label class='wifi_labels' for='sgw'>Gateway:</label>
-        <input id='sgw' type='text' >
-      </div>
-      <div> <!-- soft AP netmask -->
-        <label class='wifi_labels' for='snm'>Netmask:</label>
-        <input id='snm' type='text' >
-      </div>
-      <div class='pad_tb10'> <!-- buttons save soft AP settings -->
-        <button id='saveSoftAPSettings' class='button'>Save</button>
-        <button id='applySoftAPSettings' class='button'>Apply</button>
-      </div>
 
-      <!-- Mesh settings setter -->            
-      <div class='subsection_title pad_tb10'>Mesh Settings</div>
-      <div> <!-- mesh name-->
-        <label class='wifi_labels' for='mssid'>SSID:</label>
-        <input id='mssid' type='text' >
-      </div>
-      <div> <!-- mesh password -->
-        <label class='wifi_labels' for='mpass'>Password:</label>
-        <input id='mpass' type='text' >
-      </div>
-      <div> <!-- mesh channel -->
-        <label class='wifi_labels' for='mch'>Channel:</label>
-        <input id='mch' type='text' >
-      </div>
-      <div> <!-- mesh channel -->
-        <label class='wifi_labels' for='mport'>Port:</label>
-        <input id='mport' type='text' >
-      </div>
-      <div class='pad_tb10'> <!-- buttons save mesh settings -->
-        <button id='saveMeshSettings' class='button'>On All</button>
-      </div>
+      <div class='mesh_softap_setters'>
+        <!-- Soft AP settings setter -->
+        <div class='subsection_title pad_tb10'>IF on Soft AP Settings</div>
+        <div> <!-- my soft AP IP -->
+          <label class='wifi_labels' for='sIP'>IP Address:</label>
+          <input id='sIP' type='text' >
+        </div>
+        <div> <!-- soft AP SSID -->
+          <label class='wifi_labels' for='sssid'>SSID:</label>
+          <input id='sssid' type='text' >
+        </div>
+        <div> <!-- soft AP password -->
+          <label class='wifi_labels' for='spass'>Password:</label>
+          <input id='spass' type='text' >
+        </div>
+        <div> <!-- soft AP gateway -->
+          <label class='wifi_labels' for='sgw'>Gateway:</label>
+          <input id='sgw' type='text' >
+        </div>
+        <div> <!-- soft AP netmask -->
+          <label class='wifi_labels' for='snm'>Netmask:</label>
+          <input id='snm' type='text' >
+        </div>
+        <div class='pad_tb10'> <!-- buttons save soft AP settings -->
+          <button id='saveSoftAPSettings' class='button'>Save</button>
+          <button id='applySoftAPSettings' class='button'>Apply</button>
+        </div>
+      </div> <!-- mesh_softap_setters -->
+
+
+      <div class='mesh_gp_setters'>
+        <!-- Mesh settings setter -->            
+        <div class='subsection_title pad_tb10'>Mesh Settings</div>
+        <div> <!-- mesh name-->
+          <label class='wifi_labels' for='mssid'>SSID:</label>
+          <input id='mssid' type='text' >
+        </div>
+        <div> <!-- mesh password -->
+          <label class='wifi_labels' for='mpass'>Password:</label>
+          <input id='mpass' type='text' >
+        </div>
+        <div> <!-- mesh channel -->
+          <label class='wifi_labels' for='mch'>Channel:</label>
+          <input id='mch' type='text' >
+        </div>
+        <div> <!-- mesh channel -->
+          <label class='wifi_labels' for='mport'>Port:</label>
+          <input id='mport' type='text' >
+        </div>
+        <div class='pad_tb10'> <!-- buttons save mesh settings -->
+          <button id='saveMeshSettings' class='button'>On All</button>
+        </div>
+      </div> <!-- mesh_gp_setters -->
     </div> <!-- end mesh_glob_setters -->
 
-    <!-- wifi settings setter -->
+    <!-- start: external wifi settings setter -->
     <div class='wifi_setters marg_top'>
       <div class='section_title bold  pad_tb10'>External Wifi Settings</div>
       <div> <!-- SSID -->
@@ -267,7 +279,7 @@
         <input id='wssid' type='text' >
       </div>
       <div> <!-- Pass -->
-        <label class='wifi_labels' for='wpass'>Pass</label>
+        <label class='wifi_labels' for='wpass'>Pass:</label>
         <input id='wpass' type='text' >
       </div>
       <div> <!-- Gateway IP -->
@@ -283,8 +295,8 @@
         <input id='wfip' type='text' >
       </div>
       <div> <!-- External Network Netmask -->
-        <label class='wifi_labels' for='wfip'>Netmask:</label>
-        <input id='wfip' type='text' >
+        <label class='wifi_labels' for='wnm'>Netmask:</label>
+        <input id='wnm' type='text' >
       </div>
       <div> <!-- External Network Channel -->
         <label class='wifi_labels' for='wch'>Wifi Channel:</label>

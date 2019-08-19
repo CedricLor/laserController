@@ -1280,9 +1280,8 @@ var connectionObj = {
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
       // Fill in the data in the DOM and add some eventHandlers
-      updateGlobalInformation(_data);
-      wifiSetters.update(_data);
       connectionObj.sendReceivedIP();
+      updateGlobalInformation(_data);
       return;
     }
 
@@ -1999,9 +1998,18 @@ var infoBox = {
 
 
 function updateGlobalInformation(_data) {
+    /** {"action":3,
+     * "serverIP":[192,168,43,50],
+     * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
+     * "rootIF":{"roNID":2760139053,"roNNa":200,"IFNNA":200},
+     * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
+     * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
   console.log("updateGlobalInformation() starting");
-  // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.1", fixedNetmaskIP: "255.255.255.0"}
   document.getElementById('serverIp').innerHTML = _data.serverIP;
+  wifiSetters.update(Object.assign(_data.wifi, _data.serverIP));
+  rootIFsetters.update(_data.rootIF);
+  softAPSetters.update(_data.softAP);
+  meshSetters.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));
   console.log("updateGlobalInformation() ending");
 }
 
@@ -2043,6 +2051,9 @@ function setGroupEvents() {
 
 var boxCont = new bxCont();
 var wifiSetters = new grpSetter({selector: 'div.wifi_setters'});
+var rootIFsetters = new grpSetter({selector: 'div.mesh_spec_nodes_setters'});
+var meshSetters = new grpSetter({selector: 'div.mesh_gp_setters'});
+var softAPSetters = new grpSetter({selector: 'div.mesh_softap_setters'});
 
 
 // WINDOW LOAD
@@ -2076,11 +2087,3 @@ function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-// Converts a Map to an Object
-function mapToObj(map) {
-    let obj = Object.create(null);
-    for (let [k,v] of map) {
-        obj[k] = v;
-    }
-    return obj;
-}
