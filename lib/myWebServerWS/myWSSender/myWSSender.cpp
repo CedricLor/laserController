@@ -179,7 +179,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
 void myWSSender::prepareWSData(const int8_t _i8messageType) {
   Serial.printf("- myWSSender::prepareWSData. Starting. Message type [%i]\n", _i8messageType);
-  StaticJsonDocument<256> __doc;
+  StaticJsonDocument<532> __doc;
   JsonObject __newObj = __doc.to<JsonObject>();
   __newObj["action"] = _i8messageType;
 
@@ -210,42 +210,50 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
   // message type 3: change in station IP
   if (_i8messageType == 3) {
+    /** {"action":3,
+     * "serverIP":"192.168.43.50",
+     * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":"192.168.43.1","wgwp":0,"wch":6,"wfip":"255.255.255.0"},
+     * "rootIF":{"roNID":2760139053,"roNNa":200,"IFNNA":200},
+     * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":"192.168.5.1","sgw":"192.168.5.1","snm":"255.255.255.0"},
+     * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky"}} */
     if (MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
 
     // Real IP of the Interface
-    __newObj["serverIP"]        = ( (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
+    __newObj["serverIP"]     = ( (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
     
     // Wifi Settings of External Network (in case the IF is served on the station interface of the ESP)
-    __newObj["ssid"]            = ssid;
-    __newObj["pass"]            = pass;
-    __newObj["gatewayIP"]       = gatewayIP.toString();
-    __newObj["ui16GatewayPort"] = ui16GatewayPort;
-    __newObj["ui8WifiChannel"]  = ui8WifiChannel;
-    __newObj["fixedIP"]         = fixedIP.toString();
-    __newObj["fixedNetmaskIP"]  = fixedNetmaskIP.toString();
+    JsonObject __wifiSettings = __newObj.createNestedObject("wifi");
+    __wifiSettings["wssid"] = ssid;
+    __wifiSettings["wpass"] = pass;
+    __wifiSettings["wgw"]   = gatewayIP.toString();
+    __wifiSettings["wgwp"]  = ui16GatewayPort;
+    __wifiSettings["wch"]   = ui8WifiChannel;
+    __wifiSettings["wfip"]  = fixedIP.toString();
+    __wifiSettings["wfip"]  = fixedNetmaskIP.toString();
 
-    // Root and Interface Node Names
-    __newObj["rootNodeID"]      = ui32DefaultRootNodeId;
+    // Root and Interface Nodes Params
+    JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
+    __rootIFSettings["roNID"]   = ui32DefaultRootNodeId;
     uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32DefaultRootNodeId);
-    __newObj["rootNodeName"]    = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
-    __newObj["IF"]              = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
+    __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
+    __rootIFSettings["IFNNA"]   = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
-    __newObj["softAPssid"]      = softApSsid;
-    __newObj["softAPpass"]      = softApPassword;
-    __newObj["softAPmyIP"]      = softApMyIp.toString();
-    __newObj["softAPgw"]        = softApMeAsGatewayIp.toString();
-    __newObj["softAPnetmask"]   = softApNetmask.toString();
+    JsonObject __softAPSettings       = __newObj.createNestedObject("softAP");
+    __softAPSettings["sssid"]   = softApSsid;
+    __softAPSettings["spass"]   = softApPassword;
+    __softAPSettings["sIP"]     = softApMyIp.toString();
+    __softAPSettings["sgw"]     = softApMeAsGatewayIp.toString();
+    __softAPSettings["snm"]     = softApNetmask.toString();
 
     // Mesh settings
-    __newObj["meshPrefix"]      = meshPrefix;
-    __newObj["meshPass"]        = meshPass;
-    __newObj["meshPort"]        = meshPort;
-
-    // expected JSON obj:  {"action":3;"serverIP":"192.168.43.84"}
+    JsonObject __meshSettings         = __newObj.createNestedObject("mesh");
+    __meshSettings["mssid"]           = meshPrefix;
+    __meshSettings["mpass"]           = meshPass;
+    __meshSettings["mport"]           = meshPort;
   }
 
   sendWSData(__newObj);
