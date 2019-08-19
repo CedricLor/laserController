@@ -369,7 +369,7 @@ void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
   gui16NodeName
   gui16MyIndexInCBArray
   isInterface
-  isRoot
+  ui32DefaultRootNodeId
 */
 // Need a reboot
 void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
@@ -395,22 +395,24 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   /*
     Save value of isInterface
     -> runtime change possible; would require a restart of painlessMesh
-    See below for possible implications with isRoot
+    See below for possible implications with ui32DefaultRootNodeId
   */
   size_t _isInterfaceRet = _preferences.putBool("isIF", isInterface);
   Serial.printf("%s isInterface == %i %s\"isIF\"\n", debugSaveMsgStart, isInterface, (_isInterfaceRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   /*
-    Save value of isRoot
+    Save value of ui32DefaultRootNodeId
     -> runtime change possible, but 
-      - would require a restart of painlessMesh on this node
+      - would require a restart of painlessMesh on this node (and probably on all the other nodes)
       - would also require a symetric change to be done on another
       node (ex. if this node was root and shall no longer be,
       another node shall be assigned this role and painlessMesh shall 
-      also be restarted on the other node)
+      also be restarted on the other node, at the minimum ; ideally, the mesh shall be restarted
+      on all the nodes, so that each get the opportunity to look for the root node).
   */
-  size_t _isRootRet = _preferences.putBool("isRoot", isRoot);
-  Serial.printf("%s isRoot == %i %s\"isRoot\"\n", debugSaveMsgStart, isRoot, (_isRootRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  // size_t putULong(const char* key, uint32_t value);
+  size_t _ui32DefaultRootNodeIdRet = _preferences.putULong("RootNId", ui32DefaultRootNodeId);
+  Serial.printf("%s ui32DefaultRootNodeId == %i %s\"ui32DefaultRootNodeId\"\n", debugSaveMsgStart, ui32DefaultRootNodeId, (_ui32DefaultRootNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -627,7 +629,7 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
   gui16NodeName
   gui16MyIndexInCBArray
   isInterface
-  isRoot
+  ui32DefaultRootNodeId
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // gui16NodeName
@@ -643,9 +645,10 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   isInterface = _preferences.getBool("isIF", isInterface);
   Serial.printf("%s isInterface set to: %i\n", _debugLoadMsgStart, isInterface);
 
-  // isRoot
-  isRoot = _preferences.getBool("isRoot", isRoot);
-  Serial.printf("%s isRoot set to: %i\n", _debugLoadMsgStart, isRoot);
+  // ui32DefaultRootNodeId
+  // uint32_t getULong(const char* key, uint32_t defaultValue = 0);
+  ui32DefaultRootNodeId = _preferences.getULong("RootNId", ui32DefaultRootNodeId);
+  Serial.printf("%s ui32DefaultRootNodeId set to: %i\n", _debugLoadMsgStart, ui32DefaultRootNodeId);
 }
 
 

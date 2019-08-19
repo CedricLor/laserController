@@ -215,9 +215,9 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
     // Real IP of the Interface
-    __newObj["serverIP"]        = ((isRoot == true) ? (WiFi.localIP().toString()) : (WiFi.softAPIP().toString()));
+    __newObj["serverIP"]        = ( (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
     
-    // Wifi Settings of External Network (in case the IF is broadcasted on the station interface of the ESP)
+    // Wifi Settings of External Network (in case the IF is served on the station interface of the ESP)
     __newObj["ssid"]            = ssid;
     __newObj["pass"]            = pass;
     __newObj["gatewayIP"]       = gatewayIP.toString();
@@ -227,14 +227,16 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __newObj["fixedNetmaskIP"]  = fixedNetmaskIP.toString();
 
     // Root and Interface Node Names
-    __newObj["rootNode"]        = ((isRoot == true) ? (ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName) : (254));
+    __newObj["rootNodeID"]      = ui32DefaultRootNodeId;
+    uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32DefaultRootNodeId);
+    __newObj["rootNodeName"]    = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
     __newObj["IF"]              = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
 
-    // 
+    // Soft AP Settings (in case the IF is served on the softAP of the ESP)
     __newObj["softApSsid"]      = _soft_ap_ssid;
     __newObj["softApPass"]      = _soft_ap_password;
     __newObj["softAPmyIP"]      = _soft_ap_my_ip.toString();
-    __newObj["softAPMeGatew"]   = _soft_ap_me_as_gateway_ip.toString();
+    __newObj["softAPGw"]        = _soft_ap_me_as_gateway_ip.toString();
     __newObj["softAPNetmask"]   = _soft_ap_netmask.toString();
 
     // expected JSON obj:  {"action":3;"serverIP":"192.168.43.84"}

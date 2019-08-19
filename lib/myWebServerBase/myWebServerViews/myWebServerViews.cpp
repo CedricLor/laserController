@@ -77,20 +77,6 @@ myWebServerViews::myWebServerViews(AsyncWebServerRequest *request, const char* u
 // If it meets a placeholder, replace it with a given value
 String myWebServerViews::_processor(const String& var) {
 
-  if(var == "UI8_NODE_NAME") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"UI8_NODE_NAME\")\n");
-    char _cNodeName[4];         // the ASCII of the integer will be stored in this char array
-    itoa(ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName,_cNodeName,10); //(integer, yourBuffer, base)
-    return F(_cNodeName);
-  }
-  if(var == "SERVER_IP") {
-    // Serial.print("myWebServerBase::_processor(): if(var == \"SERVER_IP\")\n");
-    if (isRoot) {
-      return F(WiFi.localIP().toString().c_str());
-    } else {
-      return F(WiFi.softAPIP().toString().c_str());
-    }
-  }
   if (MY_DG_WEB) {
     Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");
   }

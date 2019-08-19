@@ -51,10 +51,6 @@ void myMeshStarter::myMeshSetup()
 
   _setupMdns();}
 
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup Helpers
 
@@ -76,7 +72,7 @@ void myMeshStarter::_initAndConfigureMesh() {
    Either init the mesh with interface/bridge on AP or interface on STATION
 */
 void myMeshStarter::_initMesh() {
-  if (isInterface && !(isRoot)) {
+  if (isInterface && (ui32DefaultRootNodeId != laserControllerMesh.getNodeId())) {
     // Special init for case of physically mobile interface (interface on AP)
     _interfaceOnAPInit();
   } else {
@@ -88,13 +84,13 @@ void myMeshStarter::_initMesh() {
 }
 
 /* _initStationManual()
-  If the mesh is interface and isRoot, the STATION shall try to connect to an external 
+  If the mesh is interface and (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()), the STATION shall try to connect to an external 
   network and the web users will have access to the STATION through their browser. 
   The other mesh nodes will connect on the AP. (This is the recommended use case
   by the devs of painlessMesh.)
 */
 void myMeshStarter::_initStationManual() {
-  if (isInterface && isRoot) {
+  if (isInterface && (ui32DefaultRootNodeId == laserControllerMesh.getNodeId())) {
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, fixedIP, fixedNetmaskIP);
     // laserControllerMesh.stationManual(ssid, pass);
   }
@@ -105,7 +101,7 @@ void myMeshStarter::_initStationManual() {
   it and all other mesh member should know that the mesh contains a root.
 */
 void myMeshStarter::_rootTheMesh() {
-  if (isRoot) {
+  if (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) {
     laserControllerMesh.setRoot(true);
   }
   laserControllerMesh.setContainsRoot(true);
