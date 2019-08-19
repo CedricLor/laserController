@@ -369,7 +369,7 @@ class dlgtdBtnEvt {
 
   _sendMsg() {
     // send the message via WS
-    // console.log("dlgtdBtnEvt._sendMsg(): " + JSON.stringify(this._obj));
+    console.log("dlgtdBtnEvt._sendMsg(): " + JSON.stringify(this._obj));
     connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
@@ -1014,6 +1014,7 @@ class grpSetter {
      * "button#saveWifiSettingsIF" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
       _obj        = this._baseObj(_obj);
+      _obj.val    = "wifi";
       _obj.lb     = 0;
       _obj.action = "changeBox";
       return [_obj, this.btnGrp];
@@ -1022,6 +1023,16 @@ class grpSetter {
      * "button#saveWifiSettingsAll" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
       _obj        = this._baseObj(_obj);
+      _obj.val    = "wifi";
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+      return [_obj, this.btnGrp];
+    }
+    /**  3. checks whether the event.target HTML element matches with the selector 
+     * "button#saveMeshSettings" */
+    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
+      _obj        = this._baseObj(_obj);
+      _obj.val    = "mesh";
       _obj.lb     = "all";
       _obj.action = "changeNet";
       return [_obj, this.btnGrp];
@@ -1035,7 +1046,6 @@ class grpSetter {
    */
   _baseObj(_obj) {
     _obj.key      =  "save";
-    _obj.val      =  "wifi";
     _obj.dataset  = {};
     // console.log("grpSetter._baseObj: this.inputsMap.size(): " + this.inputsMap.size);
     this.inputsMap.forEach((_inpt, _k) => {
