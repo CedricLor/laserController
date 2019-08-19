@@ -264,9 +264,8 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if (_nsobj["key"] == "save") {
     // Serial.println("----------------- THIS A SAVE CONFIRMATION ---------------");
-    /**
-     * DO SOMETHING SMART -> SEND SOMETHING TO THE WEB SERVER
-    */
+    myWSSender _myWSSender;
+    _myWSSender.sendWSData(_nsobj);
     return;
   }
 }
