@@ -214,6 +214,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
+
     // Real IP of the Interface
     __newObj["serverIP"]        = ( (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
     
