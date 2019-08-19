@@ -113,19 +113,19 @@ void mySavedPrefs::loadPrefsWrapper() {
 
 void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
-  // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
+  // {"action":"changeBox","key":"save","val":"wifi","dataset":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":"192.168.43.1","wgwp":"0","wfip":"192.168.43.50","wnm":"255.255.255.0","wch":"6"},"lb":0}
   if (_obj["val"] == "wifi") {
     Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
     // load data from Json to memory
     JsonObject _joDataset = _obj["dataset"];
     
-    strcpy(ssid,                _joDataset["ssid"]);
-    strcpy(pass,                _joDataset["pass"]);
-    gatewayIP.fromString(       _joDataset["gatewayIP"].as<const char*>());
-    ui16GatewayPort           = _joDataset["ui16GatewayPort"];
-    ui8WifiChannel            = _joDataset["ui8WifiChannel"];
-    fixedIP.fromString(         _joDataset["fixedIP"].as<const char*>());
-    fixedNetmaskIP.fromString(  _joDataset["fixedNetmaskIP"].as<const char*>());
+    strlcpy(ssid,               _joDataset["wssid"] | ssid, 32);
+    strcpy(pass,                _joDataset["wpass"] | pass, 32);
+    gatewayIP.fromString(       _joDataset["wgw"].as<const char*>());
+    ui16GatewayPort           = _joDataset["wgwp"];
+    ui8WifiChannel            = _joDataset["wch"];
+    fixedIP.fromString(         _joDataset["wfip"].as<const char*>());
+    fixedNetmaskIP.fromString(  _joDataset["wnm"].as<const char*>());
 
     saveBoxSpecificPrefsWrapper(_saveNetworkCredentials);
     return;
@@ -435,9 +435,6 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
   // -> no reboot (this is saving the value straight from ControlerBoxes[gui16MyIndexInCBArray])
   size_t _masterNodeNameRet = _preferences.putUChar("bMasterNName", (uint8_t)ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName);
   Serial.printf("%s ControlerBoxes[%u].ui16MasterBoxName == %u %s\"bMasterNName\"\n", debugSaveMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName, (_masterNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-
-  // save value of iSlaveOnOffReaction
-  // _preferences.putShort("iSlavOnOffReac", iSlaveOnOffReaction);
 }
 
 
