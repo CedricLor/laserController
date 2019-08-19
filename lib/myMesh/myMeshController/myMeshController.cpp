@@ -115,9 +115,14 @@ void myMeshController::_statusMessage() {
 
 
 
-
-// CHANGEBOX REQUEST AND CONFIRMATION
-// (received by the laser boxes only on request and by the interface and all the lbs on confirmation)
+/** CHANGEBOX REQUEST AND CONFIRMATION */
+/* myMeshController::_changeBox(): called upon receiving a message marked with _nsobj["action"] == "changeBox".
+ * 
+ * Switches between changeBox requests and changeBox confirmations.
+ * 
+ * "changeBox requests" are sent by the IF to the laser controllers ONLY.
+ * "changeBox confirmations" are sent by the laser controllers and are received (and acted upon) by 
+ *  BOTH the IF and the laser controllers. */
 void myMeshController::_changeBox() {
   // ON REQUEST:
   // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
@@ -149,7 +154,7 @@ void myMeshController::_changeBox() {
 
 
 
-// CHANGEBOX REQUEST (received by the laser boxes only)
+// CHANGEBOX REQUEST: emitted by the IF and received by the laser boxes only
 void myMeshController::_changeBoxRequest() {
 
   // if this is a change active state request

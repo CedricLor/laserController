@@ -42,7 +42,6 @@ class myMeshController
     uint32_t _ui32SenderNodeId;
 
     void _main();
-    char _action;
 
     void _statusMessage();
 
