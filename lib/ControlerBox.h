@@ -111,6 +111,7 @@ class ControlerBox
     void printProperties(const uint16_t _ui16BoxIndex);
     void updateMasterBoxName(const uint16_t _ui16MasterBoxName);
     void updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxName);
+    uint16_t getMasterBoxNameForWeb();
     void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);

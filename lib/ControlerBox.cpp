@@ -128,6 +128,12 @@ void ControlerBox::updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxNameF
 
 
 
+uint16_t ControlerBox::getMasterBoxNameForWeb() {
+  return (ui16MasterBoxName - gui16ControllerBoxPrefix);
+}
+
+
+
 // Static Methods
 uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
   Serial.printf("ControlerBox::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);

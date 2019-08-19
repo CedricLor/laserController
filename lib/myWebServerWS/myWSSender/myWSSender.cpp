@@ -105,7 +105,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       }
       _obj["action"] = "addBox";
       _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
-      _obj["masterbox"] = ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName - gui16ControllerBoxPrefix;
+      _obj["masterbox"] = ControlerBoxes[_ui16BoxIndex].getMasterBoxNameForWeb();
       _obj["boxDefstate"] = ControlerBoxes[_ui16BoxIndex].sBoxDefaultState;
       // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       // reset all the booleans to true
@@ -146,7 +146,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "masterbox";
-      _obj["val"] = ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName - gui16ControllerBoxPrefix;
+      _obj["val"] = ControlerBoxes[_ui16BoxIndex].getMasterBoxNameForWeb();
       _obj["st"] = 2; // "st" for status, 2 for executed
       // expected _obj = {lb:1; action:"changeBox"; key: "masterbox"; val: 9; st: 2}
       ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled = true;
