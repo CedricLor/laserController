@@ -34,7 +34,7 @@ void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const byte bMasterBox
 
 void MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber) {
   // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Starting with bMasterBoxNumber = %u\n", bMasterBoxNumber);
-  ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName = UI8_MASTER_NODE_PREFIX + bMasterBoxNumber;
+  thisBox.ui16MasterBoxName = UI8_MASTER_NODE_PREFIX + bMasterBoxNumber;
   // Serial.print("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Done\n");
 }
 

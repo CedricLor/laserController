@@ -38,7 +38,6 @@ extern constexpr short MESH_REQUEST_CAPACITY        = 20;
 extern const short I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern uint16_t gui16ControllerBoxPrefix;
-extern uint16_t gui16MyIndexInCBArray;
 
 extern short iSlaveOnOffReaction;
 extern uint16_t gui16InterfaceNodeName;

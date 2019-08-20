@@ -68,10 +68,9 @@ reverse dependency graph
 
   LOW:
   I. Global
-    - setting and use of gui16MyIndexInCBArray // gui16ControllerBoxPrefix
+    - setting and use of gui16ControllerBoxPrefix
     -> make them two different values and adapt the whole code
     -> this is a very long shot:
-      - gui16MyIndexInCBArray: 94 results in 13 files
       - gui16ControllerBoxPrefix: 47 results in 8 files
   II. BoxState and Steps
     A. ui16MasterBoxName
@@ -142,7 +141,7 @@ void step::_tcbPreloadNextStep() {
   mySpiffs _mySpiffs;
   // read next step values from the file system
   char _cNodeName[4];
-  snprintf(_cNodeName, 4, "%u", ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName);
+  snprintf(_cNodeName, 4, "%u", thisBox.ui16NodeName);
   _mySpiffs.readJSONObjLineInFile("/sessions.json", step::_preloadNextStepFromJSON, boxState::ui16stepCounter, _cNodeName);
 
   // load the values in memory as variables into the next step
@@ -207,7 +206,7 @@ void step::applyStep() {
   // set the masterBoxName which state changes shall be watched over
   // Serial.println("step::applyStep(). debug master box name setter");
   // Serial.println(_ui16stepMasterBoxName);
-  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxName(_ui16stepMasterBoxName);
+  thisBox.updateMasterBoxName(_ui16stepMasterBoxName);
   // _thisStepBoxState._ui16stepMasterBoxName = _ui16stepMasterBoxName;
 
   // preload the next step from memory
@@ -486,15 +485,14 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   }
 
   // give handy access to _thisBox and the _currentBoxState
-  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  boxState& _currentBoxState = boxStates[_thisBox.i16BoxActiveState];
+  boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
     // check whether both have been triggered
-    if (ControlerBox::bValFromPir == HIGH && _currentBoxState._meshHasBeenTriggered(_thisBox)) {
+    if (ControlerBox::bValFromPir == HIGH && _currentBoxState._meshHasBeenTriggered(thisBox)) {
       // if so, resolve the conflict and return
-      _currentBoxState._resolveTriggersConflict(_thisBox);
+      _currentBoxState._resolveTriggersConflict(thisBox);
       return;
     }
     /*
@@ -514,7 +512,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
   if (_currentBoxState.i16onMeshTrigger != -1){
-    _currentBoxState._checkMeshTriggerAndAct(_thisBox);
+    _currentBoxState._checkMeshTriggerAndAct(thisBox);
   }
 }
 
@@ -530,9 +528,8 @@ void boxState::_resetSignalCatchers() {
   ControlerBox::valFromWeb = -1;
   ControlerBox::bValFromPir = LOW;
   ControlerBox::ui32SettingTimeOfValFromPir = 0;
-  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  if (_thisBox.ui16MasterBoxName != 254) {
-    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
+  if (thisBox.ui16MasterBoxName != 254) {
+    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
     ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
   }
 }
@@ -572,7 +569,7 @@ void boxState::_restart_tPlayBoxState() {
     // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
 
     // 4. Set the i16BoxActiveState to the _boxTargetState
-    ControlerBoxes[gui16MyIndexInCBArray].setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
+    thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
     // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
 
     // 5. Restart/enable _tPlayBoxState
@@ -709,7 +706,7 @@ bool boxState::_oetcbPlayBoxState(){
   // Serial.print("boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.i16BoxActiveState);
 
   // 1. select the currently active state
-  boxState& _currentBoxState = boxStates[ControlerBoxes[gui16MyIndexInCBArray].i16BoxActiveState];
+  boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // 2. Set the active sequence
   sequence::setActiveSequence(_currentBoxState.ui16AssociatedSequence);
@@ -746,8 +743,7 @@ void boxState::_odtcbPlayBoxState(){
   // Serial.print("boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
   // Serial.println(_tPlayBoxState.getInterval());
 
-  ControlerBox& _thisBox = ControlerBoxes[gui16MyIndexInCBArray];
-  boxState& _currentBoxState = boxStates[_thisBox.i16BoxActiveState];
+  boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
   sequence::tPlaySequenceInLoop.disable();
@@ -761,7 +757,7 @@ void boxState::_odtcbPlayBoxState(){
   if (_currentBoxState.i16onExpire != -1) {
     _setBoxTargetState(_currentBoxState.i16onExpire);
   } else {
-    _setBoxTargetState(_thisBox.sBoxDefaultState);
+    _setBoxTargetState(thisBox.sBoxDefaultState);
 
   }
   Serial.println("boxState::_odtcbPlayBoxState(). Ending.");

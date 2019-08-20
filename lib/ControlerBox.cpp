@@ -86,7 +86,7 @@ void ControlerBox::updateThisBoxProperties() {
   // by a call to setBoxActiveState from boxState
   if (MY_DEBUG == true) {
     Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
-    ControlerBoxes[gui16MyIndexInCBArray].printProperties(gui16MyIndexInCBArray);
+    thisBox.printProperties(findIndexByNodeName(thisBox.ui16NodeName));
   };
 }
 

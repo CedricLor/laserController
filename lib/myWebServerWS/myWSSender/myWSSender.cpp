@@ -58,7 +58,7 @@ myWSSender::myWSSender()
 Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
 
 void myWSSender::_tcbSendWSDataIfChangeStationIp() {
-  // if (!(laserControllerMesh.getStationIP() == ControlerBoxes[gui16MyIndexInCBArray].stationIP)) {
+  // if (!(laserControllerMesh.getStationIP() == thisBox.stationIP)) {
     // if (MY_DG_WS) {
     //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
     // }
@@ -70,7 +70,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
     }
     _myWSSender.prepareWSData(3); // 3 for message sent in case of change in station IP
 
-    ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
+    thisBox.updateThisBoxProperties();
   // }
 }
 
@@ -239,7 +239,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __rootIFSettings["roNID"]   = ui32RootNodeId;
     uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);
     __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
-    __rootIFSettings["IFNNA"]   = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
+    __rootIFSettings["IFNNA"]   = thisBox.ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
     JsonObject __softAPSettings = __newObj.createNestedObject("softAP");

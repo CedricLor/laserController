@@ -44,7 +44,7 @@ void myMeshStarter::myMeshSetup()
   myMesh::_tSaveNodeMap.restart();
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
-  ControlerBoxes[gui16MyIndexInCBArray].updateThisBoxProperties();
+  thisBox.updateThisBoxProperties();
 
   _setupMdns();}
 
@@ -338,7 +338,7 @@ void myMesh::changedConnectionCallback() {
   }
 
   if (MY_DEEP_DG_MESH) {
-    Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
+    Serial.printf("myMesh::changedConnectionCallback(): thisBoxes' index in CB array: %u\n", thisBox.findIndexByNodeName(thisBox.ui16NodeName));
     Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tChangedConnection.isEnabled());
     Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tChangedConnection.getInterval());
     Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tChangedConnection.getIterations());

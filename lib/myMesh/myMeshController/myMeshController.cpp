@@ -306,13 +306,13 @@ void myMeshController::_updateMyMasterBoxName() {
   }
 
   // update ui16MasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-  ControlerBoxes[gui16MyIndexInCBArray].updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
+  thisBox.updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
 
   // send confirmation message
   _changeBoxSendConfirmationMsg();
 
   // mark the change as signaled
-  ControlerBoxes[gui16MyIndexInCBArray].bMasterBoxNameChangeHasBeenSignaled = true;
+  thisBox.bMasterBoxNameChangeHasBeenSignaled = true;
 }
 
 
@@ -323,13 +323,13 @@ void myMeshController::_updateMyDefaultState() {
     Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to [%u]\n", _nsobj["val"].as<uint16_t>());
   }
 
-  ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState = _nsobj["val"].as<uint16_t>();
+  thisBox.sBoxDefaultState = _nsobj["val"].as<uint16_t>();
 
   // send confirmation message
   _changeBoxSendConfirmationMsg();
 
   // mark the change as signaled
-  ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultStateChangeHasBeenSignaled = true;
+  thisBox.sBoxDefaultStateChangeHasBeenSignaled = true;
 }
 
 
@@ -417,7 +417,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   // replace it with thix box's index number so that the ControlerBoxes array
   // be properly updated in _changedBoxConfirmation
   if ((_nsobj["lb"] == "LBs") || (_nsobj["lb"] == "all")) {
-    _nsobj["lb"] = gui16MyIndexInCBArray;
+    _nsobj["lb"] = thisBox.ui16NodeName - gui16ControllerBoxPrefix;
   }
 
   myMeshViews __myMeshViews;

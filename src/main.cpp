@@ -60,7 +60,7 @@ void setup() {
   }
 
   mySpiffs _mySpiffs;
-  _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName);
+  _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
 
   if (isInterface) {
     myWebServerBase _myWebServer;

@@ -21,8 +21,7 @@ mySavedPrefs::mySavedPrefs()
 
   *  sBoxDefaultState
   *  gui16NodeName
-  *  gui16MyIndexInCBArray -- not saved, calculated
-  *  ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName;
+  *  thisBox.ui16MasterBoxName;
   *  iSlaveOnOffReaction
   *  isInterface
   */
@@ -88,7 +87,7 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadBoxBehaviorPreferences(_preferences);
 
     } else {
-      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%i].ui16MasterBoxName (%i) and gui16BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName, gui16BoxesCount);
+      Serial.printf("%s \"savedSettingsNS\" does not exist. thisBox ui16MasterBoxName (%i) and gui16BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName, gui16BoxesCount);
     }
 
   _endPreferences(_preferences);
@@ -181,7 +180,7 @@ void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
       callBack(_preferences);
 
     } else {
-      Serial.printf("%s \"savedSettingsNS\" does not exist. ControlerBoxes[%u].ui16MasterBoxName (%u) and gui16BoxesCount (%u) will keep their default values\n", _debugLoadMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName, gui16BoxesCount);
+      Serial.printf("%s \"savedSettingsNS\" does not exist. thisBox ui16MasterBoxName (%u) and gui16BoxesCount (%u) will keep their default values\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName, gui16BoxesCount);
     }
   }
 
@@ -353,7 +352,6 @@ void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
 
 /*
   gui16NodeName
-  gui16MyIndexInCBArray
   isInterface
   ui32RootNodeId
   isRoot
@@ -365,7 +363,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // -> would need a reboot
   // -> fix: call ControlerBox::updateThisBoxProperties
   // this value is then used in ControlerBox::updateThisBoxProperties
-  // to set ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName
+  // to set thisBox.ui16NodeName
   // putUChar(const char* key, uint8_t value)
   size_t _gui16NodeNameRet = _preferences.putUChar("ui8NdeName", (uint8_t)(gui16NodeName));
   Serial.printf("%s gui16NodeName == %u %s\"ui8NdeName\"\n", debugSaveMsgStart, gui16NodeName, (_gui16NodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
@@ -414,21 +412,21 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
 
 
 /*
-  ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState
-  ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
+  thisBox.sBoxDefaultState
+  thisBox.ui16MasterBoxName
 */
 void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
   // save value of sBoxDefaultState
   // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot (this is saving the value straight from ControlerBoxes[gui16MyIndexInCBArray])
-  size_t _sBoxDefaultStateRet = _preferences.putShort("sBoxDefSta", ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState);
-  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", debugSaveMsgStart, ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState, (_sBoxDefaultStateRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  // -> no reboot (this is saving the value straight from thisBox)
+  size_t _sBoxDefaultStateRet = _preferences.putShort("sBoxDefSta", thisBox.sBoxDefaultState);
+  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", debugSaveMsgStart, thisBox.sBoxDefaultState, (_sBoxDefaultStateRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
-  // save value of ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
+  // save value of thisBox.ui16MasterBoxName
   // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot (this is saving the value straight from ControlerBoxes[gui16MyIndexInCBArray])
-  size_t _masterNodeNameRet = _preferences.putUChar("bMasterNName", (uint8_t)ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName);
-  Serial.printf("%s ControlerBoxes[%u].ui16MasterBoxName == %u %s\"bMasterNName\"\n", debugSaveMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName, (_masterNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  // -> no reboot (this is saving the value straight from thisBox)
+  size_t _masterNodeNameRet = _preferences.putUChar("bMasterNName", (uint8_t)thisBox.ui16MasterBoxName);
+  Serial.printf("%s thisBox.ui16MasterBoxName == %u %s\"bMasterNName\"\n", debugSaveMsgStart, thisBox.ui16MasterBoxName, (_masterNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
 
 
@@ -613,7 +611,6 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
 
 /*
   gui16NodeName
-  gui16MyIndexInCBArray
   isInterface
   ui32RootNodeId
   isRoot
@@ -643,24 +640,23 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
 
 
 
-/*
-  ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState
-  ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
-*/
+/**
+ * thisBox.sBoxDefaultState
+ * thisBox.ui16MasterBoxName */
 void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   // sBoxDefaultState
-  ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState =_preferences.getShort("sBoxDefSta", ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState);
-  Serial.printf("%s ControlerBoxes[%u].sBoxDefaultState set to: %i\n", _debugLoadMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].sBoxDefaultState);
+  thisBox.sBoxDefaultState =_preferences.getShort("sBoxDefSta", thisBox.sBoxDefaultState);
+  Serial.printf("%s thisBox.sBoxDefaultState set to: %i\n", _debugLoadMsgStart, thisBox.sBoxDefaultState);
 
-  // ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
+  // thisBox.ui16MasterBoxName
   // If there is a value saved for bMasterNName, reset
-  // ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
+  // thisBox.ui16MasterBoxName
   // which is set by default to UI8_DEFAULT_MASTER_NODE_NAME
   // in the ControlerBox constructor. Else, the value of
-  // ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName
+  // thisBox.ui16MasterBoxName
   // will stay unchanged.
-  ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName = _preferences.getUChar("bMasterNName", ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName);
-  Serial.printf("%s ControlerBoxes[%u].ui16MasterBoxName set to: %u\n", _debugLoadMsgStart, gui16MyIndexInCBArray, ControlerBoxes[gui16MyIndexInCBArray].ui16MasterBoxName);
+  thisBox.ui16MasterBoxName = _preferences.getUChar("bMasterNName", thisBox.ui16MasterBoxName);
+  Serial.printf("%s thisBox.ui16MasterBoxName set to: %u\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName);
 
   // iSlaveOnOffReaction
   // iSlaveOnOffReaction =_preferences.getShort("iSlavOnOffReac", iSlaveOnOffReaction);
