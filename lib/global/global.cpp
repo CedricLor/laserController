@@ -54,26 +54,29 @@ const uint8_t UI8_DEFAULT_MASTER_NODE_NAME    = 254; // 254 means no one
  *  node id in the current configuration 2760608337 */
 const uint8_t UI8_NODE_NAME                   = 201;                          // BOX BY BOX
 const bool IS_INTERFACE                       = false;                        // BOX BY BOX
+const bool IS_ROOT                            = false;                        // BOX BY BOX
 
 /** CONTROLLER BOX 202 
  *  node id in the current configuration 2752898073 */
 // const uint8_t UI8_NODE_NAME                = 202;                          // BOX BY BOX
 // const bool IS_INTERFACE                    = false;                        // BOX BY BOX
-
+// const bool IS_ROOT                         = false;                        // BOX BY BOX
 
 /** CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER 
  *  node id in the current configuration 2760139053 */
 // const uint8_t UI8_NODE_NAME                = 200;                          // BOX BY BOX
 // const bool IS_INTERFACE                    = true;                         // BOX BY BOX
+// const bool IS_ROOT                         = true;                         // BOX BY BOX
 
 
 uint16_t gui16NodeName                        = UI8_NODE_NAME;
 bool isInterface                              = IS_INTERFACE;
+bool isRoot                                   = IS_ROOT;
 
 const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 
-/** uint32_t ui32DefaultRootNodeId
+/** uint32_t ui32RootNodeId
  * 
  *  Shall be equal to UI32_DEFAULT_INTERFACE_NODE_ID if the IF is also Root Node
  *  (IF served on station Interface of the ESP).
@@ -82,7 +85,7 @@ const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
  *    (i) not set as root and 
  *    (ii) served on the SoftAP of one of the nodes.
 */
-uint32_t ui32DefaultRootNodeId                = 2760139053;
+uint32_t ui32RootNodeId                = 0;
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION   = 0;
 

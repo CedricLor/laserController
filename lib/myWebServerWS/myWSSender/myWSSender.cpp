@@ -222,7 +222,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     }
 
     // Real IP of the Interface
-    __newObj["serverIP"]     = ( (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
+    __newObj["serverIP"]        = ( isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
     
     // Wifi Settings of External Network (in case the IF is served on the station interface of the ESP)
     JsonObject __wifiSettings = __newObj.createNestedObject("wifi");
@@ -236,8 +236,8 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
-    __rootIFSettings["roNID"]   = ui32DefaultRootNodeId;
-    uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32DefaultRootNodeId);
+    __rootIFSettings["roNID"]   = ui32RootNodeId;
+    uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);
     __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
     __rootIFSettings["IFNNA"]   = ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName;
 

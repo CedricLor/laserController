@@ -66,28 +66,34 @@ void myMeshStarter::_initAndConfigureMesh() {
 }
 
 /* _initMesh()
-   Either init the mesh with interface/bridge on AP or interface on STATION
-*/
+   Either init the mesh with interface/bridge on AP or interface on STATION */
 void myMeshStarter::_initMesh() {
-  if (isInterface && (ui32DefaultRootNodeId != laserControllerMesh.getNodeId())) {
-    // Special init for case of physically mobile interface (interface on AP)
+  /** If this ESP is defined as IF and is NOT Root node:
+   *  - it shall connect to the mesh using its "station" interface;
+   *  - it shall serve the web IF on its softAP. */
+  if (isInterface && !(isRoot)) {
+    // Special init for case of physically mobile interface (web interface served on AP)
     _interfaceOnAPInit();
-  } else {
-    // All the other mesh nodes  (whether root or non-root, interface on STATION,
-    // ControlerBoxes, relays, IR, etc. ) share the same init function. (no ad hoc 
-    // config of the Soft AP is required).
+  } 
+  /** Else: 2 cases: 
+   * (i) this ESP is not defined as IF; OR
+   * (ii) this ESP is defined as IF and as Root node.
+   * In such cases, init the mesh as recommended by the librarie's devs:
+   * - if it is root and IF, it will connect to the mesh using its "softAP" interface;
+   * - if it is not root, both SoftAP and Station will connect to the mesh. */  
+  else {
     laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_AP_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
   }
 }
 
 /* _initStationManual()
-  If the mesh is interface and (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()), the STATION shall try to connect to an external 
+  If the mesh is interface and isRoot, the STATION shall try to connect to an external 
   network and the web users will have access to the STATION through their browser. 
   The other mesh nodes will connect on the AP. (This is the recommended use case
   by the devs of painlessMesh.)
 */
 void myMeshStarter::_initStationManual() {
-  if (isInterface && (ui32DefaultRootNodeId == laserControllerMesh.getNodeId())) {
+  if (isInterface && isRoot) {
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, fixedIP, fixedNetmaskIP);
     // laserControllerMesh.stationManual(ssid, pass);
   }
@@ -98,8 +104,9 @@ void myMeshStarter::_initStationManual() {
   it and all other mesh member should know that the mesh contains a root.
 */
 void myMeshStarter::_rootTheMesh() {
-  if (ui32DefaultRootNodeId == laserControllerMesh.getNodeId()) {
+  if (isRoot) {
     laserControllerMesh.setRoot(true);
+    ui32RootNodeId = laserControllerMesh.getNodeId();
   }
   laserControllerMesh.setContainsRoot(true);
 }
@@ -318,6 +325,17 @@ void myMesh::changedConnectionCallback() {
   _tChangedConnection.setInterval((2900 + gui16MyIndexInCBArray * 100));
   _tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
   _tChangedConnection.restartDelayed();
+
+  // 5. If I do not know the number of the root node, try and figure out whether the mesh knows it
+  if (!(ui32RootNodeId)) {
+    // {"nodeId":2760139053,"root":true}
+    char* _ptr = strstr(laserControllerMesh.subConnectionJson().c_str(), ",\"root\":true");
+    char _cRootNodeId[12];
+    if (_ptr != nullptr) {
+      strncpy(_cRootNodeId, _ptr - 10, 11);
+      ui32RootNodeId = strtoul(_cRootNodeId, NULL, 10);
+    }
+  }
 
   if (MY_DEEP_DG_MESH) {
     Serial.printf("myMesh::changedConnectionCallback(): gui16MyIndexInCBArray: %u\n", gui16MyIndexInCBArray);
