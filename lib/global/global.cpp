@@ -73,8 +73,8 @@ uint16_t gui16NodeName                        = UI8_NODE_NAME;
 bool isInterface                              = IS_INTERFACE;
 bool isRoot                                   = IS_ROOT;
 
-const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
+const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 
 /** uint32_t ui32RootNodeId
  *  
