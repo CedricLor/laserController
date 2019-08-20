@@ -1068,6 +1068,18 @@ class grpSetter {
   }
 }
 
+const grpStrs = {
+  wifi:   new grpSetter({selector: 'div.wifi_setters'}),
+  rootIF: new grpSetter({selector: 'div.mesh_spec_nodes_setters'}),
+  mesh:   new grpSetter({selector: 'div.mesh_gp_setters'}),
+  softAP: new grpSetter({selector: 'div.mesh_softap_setters'}),
+  update: (_data) => {
+    grpStrs.wifi.update(Object.assign(_data.wifi, _data.serverIP));
+    grpStrs.rootIF.update(_data.rootIF);
+    grpStrs.softAP.update(_data.softAP);
+    grpStrs.mesh.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));  
+  }
+};
 
 
 
@@ -2026,10 +2038,7 @@ function updateGlobalInformation(_data) {
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
   console.log("updateGlobalInformation() starting");
   document.getElementById('serverIp').innerHTML = _data.serverIP;
-  wifiSetters.update(Object.assign(_data.wifi, _data.serverIP));
-  rootIFsetters.update(_data.rootIF);
-  softAPSetters.update(_data.softAP);
-  meshSetters.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));
+  grpStrs.update(_data);
   console.log("updateGlobalInformation() ending");
 }
 
@@ -2070,10 +2079,6 @@ function setGroupEvents() {
 
 
 var boxCont = new bxCont();
-var wifiSetters = new grpSetter({selector: 'div.wifi_setters'});
-var rootIFsetters = new grpSetter({selector: 'div.mesh_spec_nodes_setters'});
-var meshSetters = new grpSetter({selector: 'div.mesh_gp_setters'});
-var softAPSetters = new grpSetter({selector: 'div.mesh_softap_setters'});
 
 
 // WINDOW LOAD
