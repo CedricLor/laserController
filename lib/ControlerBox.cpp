@@ -151,7 +151,7 @@ uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
 uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
   Serial.printf("ControlerBox::findIndexByNodeName(): looking for ControlerBox with uint16_t ui16NodeName = %u\n", _ui16NodeName);
   for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
-    if (ControlerBoxes[_i].nodeId == _ui16NodeName) {
+    if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
       Serial.printf("ControlerBox::findIndexByNodeName(): found ControlerBox with _ui16NodeName = %u\n", _ui16NodeName);
       Serial.printf("ControlerBox::findIndexByNodeName(): ControlerBox with _ui16NodeName %u has index: %u\n", _ui16NodeName, _i);
       return _i;
