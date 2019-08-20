@@ -146,5 +146,6 @@ class ControlerBox
 };
 
 extern ControlerBox ControlerBoxes[];
+extern ControlerBox & thisBox;
 
 #endif
