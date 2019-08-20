@@ -92,13 +92,12 @@ const short I_DEFAULT_SLAVE_ON_OFF_REACTION   = 0;
 const uint8_t UI8_MASTER_NODE_PREFIX          = 200;                 // Used in MaserSlaveBox class and myWebServerViews to set the name of a new masterBox from website informations (where the boxes are numbered from 1 to 10)
 const uint8_t UI8_CONTROLLER_BOX_PREFIX       = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 uint16_t gui16ControllerBoxPrefix             = UI8_CONTROLLER_BOX_PREFIX;
-uint16_t gui16MyIndexInCBArray                = gui16NodeName - gui16ControllerBoxPrefix;
+uint16_t gui16MyIndexInCBArray                = 0;
 
 short iSlaveOnOffReaction                     = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 uint32_t gui32InterfaceNodeId                 = UI32_DEFAULT_INTERFACE_NODE_ID;
 uint16_t gui16InterfaceNodeName               = UI8_DEFAULT_INTERFACE_NODE_NAME;
-uint16_t gui16InterfaceIndexInCBArray         = gui16InterfaceNodeName - gui16ControllerBoxPrefix;
 
 const char* slaveReactionHtml[4]              = {"syn", "opp", "aon", "aof"};
 

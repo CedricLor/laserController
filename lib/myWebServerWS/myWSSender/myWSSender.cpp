@@ -103,9 +103,9 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       if (MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%u] has joined.\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
       }
-      _obj["action"] = "addBox";
-      _obj["boxState"] = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
-      _obj["masterbox"] = ControlerBoxes[_ui16BoxIndex].getMasterBoxNameForWeb();
+      _obj["action"]      = "addBox";
+      _obj["boxState"]    = ControlerBoxes[_ui16BoxIndex].i16BoxActiveState;
+      _obj["masterbox"]   = ControlerBoxes[_ui16BoxIndex].getMasterBoxNameForWeb();
       _obj["boxDefstate"] = ControlerBoxes[_ui16BoxIndex].sBoxDefaultState;
       // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       // reset all the booleans to true

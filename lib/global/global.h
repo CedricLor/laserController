@@ -30,7 +30,6 @@ extern bool isRoot;
 extern uint32_t ui32RootNodeId;
 
 extern uint32_t gui32InterfaceNodeId;
-extern uint16_t gui16InterfaceIndexInCBArray;
 
 /** Used for sizing of custom JSONDocuments received and sent via the mesh
  *  and in MeshViews and MeshController. */

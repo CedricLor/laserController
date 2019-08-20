@@ -14,7 +14,6 @@ mySavedPrefs::mySavedPrefs()
   *  gui32InterfaceNodeId (e.g. 2760139053)
   *  gui16InterfaceNodeName (e.g. 201)
   *  gui16ControllerBoxPrefix
-  *  gui16InterfaceIndexInCBArray -- not saved, calculated
   *  gui16BoxesCount
   *  PIN_COUNT
   *  ssid
@@ -287,8 +286,8 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
   // save value of gui16ControllerBoxPrefix
   // -> no reboot but very messy if no reboot of the IF and the whole mesh
   // putUChar(const char* key, uint8_t value)
-  size_t _ggui16ControllerBoxPrefixRet = _preferences.putUChar("bContrBPref", (uint8_t)gui16ControllerBoxPrefix);
-  Serial.printf("%s gui16ControllerBoxPrefix == %i %s\"bContrBPref\"\n", debugSaveMsgStart, gui16ControllerBoxPrefix, (_ggui16ControllerBoxPrefixRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  size_t _gui16ControllerBoxPrefixRet = _preferences.putUChar("bContrBPref", (uint8_t)gui16ControllerBoxPrefix);
+  Serial.printf("%s gui16ControllerBoxPrefix == %i %s\"bContrBPref\"\n", debugSaveMsgStart, gui16ControllerBoxPrefix, (_gui16ControllerBoxPrefixRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of gui16BoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant UI8_BOXES_COUNT
@@ -304,29 +303,16 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
 /*
   gui32InterfaceNodeId
   gui16InterfaceNodeName
-  gui16InterfaceIndexInCBArray
 */
 void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
   // USELESS PREFERENCES
   // save value of gui32InterfaceNodeId
-  // Not a very usefull value: the interface nodeid is fixed at startup in global
-  // It is never used thereafter (usually using ControlerBoxes[gui16InterfaceIndexInCBArray].nodeId or the senderID in the mesh)
-  // Even a reboot would not suffice to have this param taken into account
   size_t _gui32InterfaceNodeIdRet = _preferences.putUInt("iIFNodId", gui32InterfaceNodeId);
   Serial.printf("%s gui32InterfaceNodeId == %u %s\"iIFNodId\"\n", debugSaveMsgStart, gui32InterfaceNodeId, (_gui32InterfaceNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   // save value of gui16InterfaceNodeName
-  // Not a very usefull value: the interface node name is fixed at startup based on the constant
-  // It is never used thereafter (usually using ControlerBoxes[gui16InterfaceIndexInCBArray].nodeName)
-  // Even a reboot would not suffice to have this param taken into account
   size_t _gui16InterfaceNodeNameRet = _preferences.putUChar("sIFNodNam", (uint8_t)gui16InterfaceNodeName);
   Serial.printf("%s gui16InterfaceNodeName == %u %s\"sIFNodNam\"\n", debugSaveMsgStart, gui16InterfaceNodeName, (_gui16InterfaceNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-
-  // recalculate gui16InterfaceIndexInCBArray with the new values of gui16InterfaceNodeName and gui16ControllerBoxPrefix
-  // It is never used thereafter (usually using ControlerBoxes[gui16InterfaceIndexInCBArray].nodeName)
-  // -> no reboot but very messy if no reboot of the IF and the whole mesh
-  gui16InterfaceIndexInCBArray = gui16InterfaceNodeName - gui16ControllerBoxPrefix;
-  Serial.printf("%s gui16InterfaceIndexInCBArray recalculated to: %u (not saved)\n", debugSaveMsgStart, gui16InterfaceIndexInCBArray);
 }
 
 
@@ -383,15 +369,6 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   // putUChar(const char* key, uint8_t value)
   size_t _gui16NodeNameRet = _preferences.putUChar("ui8NdeName", (uint8_t)(gui16NodeName));
   Serial.printf("%s gui16NodeName == %u %s\"ui8NdeName\"\n", debugSaveMsgStart, gui16NodeName, (_gui16NodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-
-  // recalculate gui16MyIndexInCBArray with the new values of gui16NodeName and gui16ControllerBoxPrefix
-  // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot required, but very messy without a reboot of the whole mesh
-  // -> fix: complicated; would need each and everybox to update its ControlerBoxes array
-  // this value is then used in ControlerBox::updateThisBoxProperties
-  // to set ControlerBoxes[gui16MyIndexInCBArray].ui16NodeName
-  gui16MyIndexInCBArray = gui16NodeName - gui16ControllerBoxPrefix;
-  Serial.printf("%s gui16MyIndexInCBArray recalculated to: %u (not saved)\n", debugSaveMsgStart, gui16MyIndexInCBArray);
 
   /*
     Save value of isInterface
@@ -600,7 +577,6 @@ void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
 /*
   gui32InterfaceNodeId
   gui16InterfaceNodeName
-  gui16InterfaceIndexInCBArray
 */
 void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
   // gui32InterfaceNodeId
@@ -614,10 +590,6 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
   // gui16InterfaceNodeName
   gui16InterfaceNodeName = (uint16_t)(_preferences.getUChar("iIFNodName", gui16InterfaceNodeName));
   Serial.printf("%s gui16InterfaceNodeName set to: %u\n", _debugLoadMsgStart, gui16InterfaceNodeName);
-
-  // recalculate gui16InterfaceIndexInCBArray with the new values of gui16InterfaceNodeName and gui16ControllerBoxPrefix
-  gui16InterfaceIndexInCBArray = gui16InterfaceNodeName - gui16ControllerBoxPrefix;
-  Serial.printf("%s gui16InterfaceIndexInCBArray reset to: %u\n", _debugLoadMsgStart, gui16InterfaceIndexInCBArray);
 }
 
 
@@ -651,10 +623,6 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // getUChar(const char* key, const uint8_t defaultValue)
   gui16NodeName = (uint16_t)(_preferences.getUChar("ui8NdeName", gui16NodeName));
   Serial.printf("%s gui16NodeName set to: %i\n", _debugLoadMsgStart, gui16NodeName);
-
-  // recalculate gui16MyIndexInCBArray with the new values of gui16NodeName and gui16ControllerBoxPrefix
-  gui16MyIndexInCBArray = gui16NodeName - gui16ControllerBoxPrefix;
-  Serial.printf("%s gui16MyIndexInCBArray reset to: %i\n", _debugLoadMsgStart, gui16MyIndexInCBArray);
 
   // isInterface
   isInterface = _preferences.getBool("isIF", isInterface);
