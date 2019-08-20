@@ -816,7 +816,7 @@ class bxCont {
       const _nextRow = boxCont.controlerBoxes.find(boxCont.nextElt().bind(controlBx));
       if (_nextRow) {
         boxCont.vBxContElt.insertBefore(controlBx.vElt,_nextRow);
-          return;
+        return;
       }
     }
     boxCont.appendAsLastChild(controlBx);
@@ -1067,6 +1067,15 @@ const grpStrs = {
       return [_obj, _grpSetter.btnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the selector 
+     * "button#saveMeshSettings" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+      _obj.val    = "mesh";
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+      return [_obj, _grpSetter.btnGrp];
+    }
+    /**  4. checks whether the event.target HTML element matches with the selector 
      * "button#saveMeshSettings" */
     if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
       _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
