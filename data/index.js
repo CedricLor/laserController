@@ -1020,6 +1020,12 @@ const grpStrs = {
   softAP: new grpSetter({selector: 'div.mesh_softap_setters'}),
 
   update: (_data) => {
+    /** {"action":3,
+     * "serverIP":[192,168,43,50],
+     * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
+     * "rootIF":{"roNID":2760139053,"roNNa":200,"IFNNA":200},
+     * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
+     * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
     grpStrs.wifi.update(Object.assign(_data.wifi, _data.serverIP));
     grpStrs.rootIF.update(_data.rootIF);
     grpStrs.softAP.update(_data.softAP);
@@ -1084,6 +1090,60 @@ const grpStrs = {
       _obj.action = "changeNet";
       return [_obj, _grpSetter.btnGrp];
     }
+    /**  5. checks whether the event.target HTML element matches with the selector 
+     * "button#saveRootNodeNumb" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveRootNodeNumb")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+      _obj.val    = "RoSet";
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+      return [_obj, _grpSetter.btnGrp];
+    }
+    /**  6. checks whether the event.target HTML element matches with the selector 
+     * "button#applyRootNodeNumb" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applyRootNodeNumb")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap, "apply");
+      _obj.val    = "RoSet";
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+      return [_obj, _grpSetter.btnGrp];
+    }
+    /**  7. checks whether the event.target HTML element matches with the selector 
+     * "button#saveIFNodeNumb" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
+      _obj.key    = "save";
+      _obj.val    = "IFSet";
+      _obj.lb     = _grpSetter.inputsMap.get("IFNNA");
+      _obj.action = "changeBox";
+      return [_obj, _grpSetter.btnGrp];
+    }
+    /**  8. checks whether the event.target HTML element matches with the selector 
+     * "button#applyIFNodeNumb" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
+      _obj.key    = "apply";
+      _obj.val    = "IFSet";
+      _obj.lb     = _grpSetter.inputsMap.get("IFNNA");
+      _obj.action = "changeBox";
+      return [_obj, _grpSetter.btnGrp];
+    }
+    /**  9. checks whether the event.target HTML element matches with the selector 
+     * "button#saveSoftAPSettings" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveSoftAPSettings")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+      _obj.val    = "softAP";
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+      return [_obj, _grpSetter.btnGrp];
+    }
+    /**  10. checks whether the event.target HTML element matches with the selector 
+     * "button#applySoftAPSettings" */
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applySoftAPSettings")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap, "apply");
+      _obj.val    = "softAP";
+      _obj.lb     = "all";
+      _obj.action = "changeNet";
+      return [_obj, _grpSetter.btnGrp];
+    }
     return [false, false];
   },
 
@@ -1092,8 +1152,8 @@ const grpStrs = {
    * @param {*} _obj: JSON object received from the dlgtdBtnEvt handler
    * @param {*} inputsMap: map of inputs from where new data shall be read
    */
-  _baseObj: (_obj, inputsMap) => {
-    _obj.key      = "save";
+  _baseObj: (_obj, inputsMap, key="save") => {
+    _obj.key      = key;
     _obj.dataset  = Object.create(null);
     // console.log("grpSetter._baseObj: inputsMap.size(): " + inputsMap.size);
     inputsMap.forEach((_inpt, _k) => {
