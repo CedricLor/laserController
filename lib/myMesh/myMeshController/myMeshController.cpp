@@ -109,6 +109,7 @@ void myMeshController::_statusMessage() {
   uint16_t __ui16BoxIndex = ControlerBox::findIndexByNodeName(__ui16NodeName);
 
   // update the box properties in my CB array
+  __ui16BoxIndex = ((__ui16BoxIndex == 254) ? ControlerBox::connectedBoxesCount : __ui16BoxIndex);
   ControlerBoxes[__ui16BoxIndex].updateOtherBoxProperties(_ui32SenderNodeId, _nsobj, __ui16BoxIndex);
 }
 
@@ -276,21 +277,6 @@ void myMeshController::_changedBoxConfirmation() {
 /////////////////
 // HELPERS
 ////////////////
-
-
-// _statusMessage HELPER FUNCTION
-uint16_t myMeshController::_getSenderBoxIndexNumber() {
-  // get the nodeName number of the sender
-  uint16_t __ui16SenderNodeName = _nsobj["NNa"];
-  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __ui16SenderNodeName = ");Serial.println(__ui16SenderNodeName);}
-
-  // get index number of the sender
-  uint16_t __ui16BoxIndex = ControlerBox::findIndexByNodeName(__ui16SenderNodeName);
-  if (MY_DG_MESH) {Serial.print("myMeshController::_getSenderBoxIndexNumber: __ui16BoxIndex = ");Serial.println(__ui16BoxIndex);}
-
-  return __ui16BoxIndex;
-}
-
 
 
 

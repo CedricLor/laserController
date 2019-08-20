@@ -51,9 +51,6 @@ class myMeshController
 
     void _changedBoxConfirmation();
 
-    // helpers to _statusMessage
-    uint16_t _getSenderBoxIndexNumber();
-
     // helpers to _changeBoxRequest
     void _updateMyValFromWeb();
     void _updateMyMasterBoxName();
