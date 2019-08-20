@@ -143,12 +143,23 @@ class btn {
 
 
 
-
+/** btnGrp class
+ * 
+ *  Instance of btnGrp class are "newed" in instances of controlerBox and grpSetter.
+ * 
+ *  btnGrp handle added and removing classes on btns. They do not handle events.
+ */
 class btnGrp {
   constructor (props={}) {
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, datasetKey: "boxState", activeBtnNum: this.boxState}
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/, datasetKey: "defaultState", activeBtnNum: this.boxDefstate}
-    // props = {parent: this/*bxCont.controlerBoxes[0]*/}
+    /**
+     * In the ControlerBoxes
+     * new btnGrp({parent: this, restrictParentSelector: '.command_gp > '});
+     * new btnGrp({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
+     * new btnGrp({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
+     * 
+     * In the grpSetter
+     * new btnGrp({parent: this});
+     *  */
     this.parent                   = props.parent;
     
     this.clickedBtnClass          = 'button_clicked';
@@ -927,7 +938,7 @@ class inpt {
 
 /** class grpSetter: holder of forms used to set various group settings
  *  (such as root node setter, IF node setter, Soft AP settings setter, 
- *   Mesh settings setter, wifi settings setter)
+ *   Mesh settings setter, wifi settings setter).
  *  */
 class grpSetter {
   // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.1", fixedNetmaskIP: "255.255.255.0"}
@@ -1366,9 +1377,8 @@ var connectionObj = {
       onReboot.LBs.startConfirm();
       return;
     }
-}
-
-};
+  } // end onMsgActionSwitch: function(_data)
+}; // end connectionObj
 
 
 
@@ -2073,8 +2083,6 @@ window.onload = function(_e){
     // (and reconnect as necessary) setInterval(check, 5000);
     connectionObj.start();
     setTimeout(setGroupEvents, 2000);
-
-
 };
 // END WINDOW LOAD
 
