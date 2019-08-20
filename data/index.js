@@ -813,13 +813,20 @@ class bxCont {
   appendAsNthChild(controlBx){
     controlBx.insertedInDOM = true;
     if (boxCont._bxCount) {
-      const _nextRow = boxCont.controlerBoxes.find((_cb) => ((_cb.lb > controlBx.lb) && _cb.insertedInDOM));
+      const _nextRow = boxCont.controlerBoxes.find(boxCont.nextElt().bind(controlBx));
       if (_nextRow) {
         boxCont.vBxContElt.insertBefore(controlBx.vElt,_nextRow);
           return;
       }
     }
     boxCont.appendAsLastChild(controlBx);
+  }
+
+  nextElt(_cb) {
+    if ((_cb.lb > this.lb) && (_cb.insertedInDOM === true)) {
+      return _cb.vElt;          
+    }
+    return undefined;
   }
 
   /** bxCont.deleteAllRows() deletes all the box rows and
