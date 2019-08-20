@@ -1024,7 +1024,7 @@ class grpSetter {
     /**  1. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsIF" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
-      _obj        = this._baseObj(_obj);
+      _obj        = grpStrs._baseObj(_obj, this.inputsMap);
       _obj.val    = "wifi";
       _obj.lb     = 0;
       _obj.action = "changeBox";
@@ -1033,7 +1033,7 @@ class grpSetter {
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsAll" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
-      _obj        = this._baseObj(_obj);
+      _obj        = grpStrs._baseObj(_obj, this.inputsMap);
       _obj.val    = "wifi";
       _obj.lb     = "all";
       _obj.action = "changeNet";
@@ -1042,7 +1042,7 @@ class grpSetter {
     /**  3. checks whether the event.target HTML element matches with the selector 
      * "button#saveMeshSettings" */
     if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
-      _obj        = this._baseObj(_obj);
+      _obj        = grpStrs._baseObj(_obj, this.inputsMap);
       _obj.val    = "mesh";
       _obj.lb     = "all";
       _obj.action = "changeNet";
@@ -1051,21 +1051,6 @@ class grpSetter {
     return [false, false];
   }
 
-  /** grpSetter._baseObj(_obj)
-   * 
-   * @param {*} _obj: JSON object received from the dlgtdBtnEvt handler
-   */
-  _baseObj(_obj) {
-    _obj.key      =  "save";
-    _obj.dataset  = {};
-    // console.log("grpSetter._baseObj: this.inputsMap.size(): " + this.inputsMap.size);
-    this.inputsMap.forEach((_inpt, _k) => {
-      // console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.getValue(): _obj.dataset[" + _k + "] = " + _inpt.getValue());
-      _obj.dataset[_k] = _inpt.getValue();
-    });
-    // console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
-    return _obj;
-  }
 }
 
 const grpStrs = {
@@ -1078,6 +1063,23 @@ const grpStrs = {
     grpStrs.rootIF.update(_data.rootIF);
     grpStrs.softAP.update(_data.softAP);
     grpStrs.mesh.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));  
+  },
+
+  /** grpStrs._baseObj(_obj, inputsMap)
+   * 
+   * @param {*} _obj: JSON object received from the dlgtdBtnEvt handler
+   * @param {*} inputsMap: map of inputs from where new data shall be read
+   */
+  _baseObj: (_obj, inputsMap) => {
+    _obj.key      = "save";
+    _obj.dataset  = Object.create(null);
+    // console.log("grpSetter._baseObj: inputsMap.size(): " + inputsMap.size);
+    inputsMap.forEach((_inpt, _k) => {
+      // console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.getValue(): _obj.dataset[" + _k + "] = " + _inpt.getValue());
+      _obj.dataset[_k] = _inpt.getValue();
+    });
+    // console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
+    return _obj;
   }
 };
 
