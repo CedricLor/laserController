@@ -322,7 +322,7 @@ void myMesh::changedConnectionCallback() {
   // in case a new comer is joining or be interrupted by the droppedConnection callback
   // if the changedConnectionCallback was triggered by a direct dropper for this box.
   Serial.printf("myMesh::changedConnectionCallback(): I am not alone. Sending my status.\n");
-  _tChangedConnection.setInterval((2900 + gui16MyIndexInCBArray * 100));
+  _tChangedConnection.setInterval(2900 + gui16NodeName);
   _tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
   _tChangedConnection.restartDelayed();
 
@@ -380,17 +380,27 @@ void myMesh::changedConnectionCallback() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
-/* IamAlone
-   Checks whether the node is alone, upon mesh events or before sending
-   messages through the mesh.
-*/
+/** IamAlone
+ *  Checks whether the node is alone, upon mesh events or before sending
+ *  messages through the mesh. */
 bool myMesh::IamAlone() {
   Serial.printf("myMesh::IamAlone(): Starting\n");
+  /** Tests:
+   *  (i) is the size of the nodeList < 2 (=> equal to 1 or 0)?
+   *  (ii) is the last item of the nodeList equal to 0? <-- this second test is suspect. */
   if (
     laserControllerMesh.getNodeList().size() < 2 && 
     0 == *laserControllerMesh.getNodeList().rbegin()
     ) {
     Serial.printf("myMesh::IamAlone(): Yes\n");
+    /** Tests:
+     *  (i) whether this node is NOT an interface?
+     *  (ii) the task _tIamAloneTimeOut is not enabled?
+     *  
+     *  This should be moved somewhere else? It is not answering to the 
+     *  question "Am I alone?" but to the question "When I am alone, have I already 
+     *  planned steps to find other nodes?"
+     *  */
     if ((!(isInterface)) && (!(_tIamAloneTimeOut.isEnabled()))) {
       Serial.println("\nmyMesh::IamAlone(): Enabling _tIamAloneTimeOut.\n");
     }

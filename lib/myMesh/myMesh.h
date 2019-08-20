@@ -60,29 +60,68 @@ class myMesh
 
   private:
     friend class myMeshStarter;
-    // painlessMesh callbacks
+
+
+    /** ----- receivedCallback stack -----
+     **********************************************/
+
+    /** --> painlessMesh receivedCallback */
     static void receivedCallback( uint32_t from, String &msg);
 
-    static void _tcbSendStatusOnNewConnection();  // attaches to _tChangedConnection 
+
+
+    /** ----- newConnectionCallback stack -----
+     **********************************************/
+
+    /** _tcbSendStatusOnNewConnection() is the default callback
+     *  of _tChangedConnection().
+     * 
+     *  It sends a statusMsg upon detecting a new connection. */
+    static void _tcbSendStatusOnNewConnection();
+    /** --> painlessMesh newConnectionCallback */
     static void newConnectionCallback(uint32_t nodeId);
 
-    static void _tcbSendNotifOnDroppedConnection(uint32_t nodeId);  // attaches to _tChangedConnection 
+
+
+    /** ----- droppedConnectionCallback stack ----- 
+     **********************************************/
+
+    /** _tcbSendNotifOnDroppedConnection() is the alternative callback
+     *  of _tChangedConnection.
+     * 
+     *  It is attached to _tChangedConnection, as a replacement of 
+     *  _tcbSendStatusOnNewConnection() when the droppedConnectionCallback
+     *  is called a few seconds after the changedConnectionCallback().
+     * 
+     *  It sends a notification to the mesh, informing the other boxes
+     *  of the disconnection of a direct neighbour. */
+    static void _tcbSendNotifOnDroppedConnection(uint32_t nodeId);  
+    /** --> painlessMesh changedConnectionCallback */
     static void droppedConnectionCallback(uint32_t nodeId);
 
+
+    /** ----- changedConnectionCallback stack -----
+     **********************************************/
     static Task _tChangedConnection;
     static void _odtcbChangedConnection();
+    /** --> painlessMesh changedConnectionCallback */
     static void changedConnectionCallback();
 
     // static void nodeTimeAdjustedCallback(int32_t offset);
     // static void delayReceivedCallback(uint32_t from, int32_t delay);
 
+
     // Helpers
     
-    // For the bug when the subnodes stop scanning after being disconnected
+    /** _tIamAloneTimeOut() was implemented as a way to solve the weird
+     * behavior of painlessMesh where subnodes stopped scanning after being 
+     * disconnected and left alone. 
+     * 
+     * It was simply restarting the mesh. */
     static Task _tIamAloneTimeOut;
     static void _tcbIamAloneTimeOut();
+    /** static bool _IamAlone stores the state returned by IamAlone() */
     static bool IamAlone();
-    static bool _IamAlone;
 
     // For debug purposes
     static Task _tPrintMeshTopo;
