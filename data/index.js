@@ -1920,17 +1920,34 @@ var _onClickIF = {
 
   reboot: () => {
     console.log("_onClickIF.reboot starting");
-    this.common({key: "reboot", save: 0});
+    this.common({
+      key: "reboot", 
+      save: 0
+    });
     // {action:"changeBox", key:"reboot", save: 0, lb:0}
     console.log("_onClickIF.reboot: ending");
   },
 
   save: () => {
     console.log("_onClickIF.save starting");
-    this.common({key: "reboot", val: "all"});
+    this.common({
+      key: "reboot", 
+      val: "all"
+    });
     // {action: "changeBox", key: "save", val: "all", lb: 0}
     console.log("_onClickIF.save ending");
-  }
+  },
+
+  OTAReboots(_e) {
+    console.log("_onClickIF.OTAReboots starting");
+    this.common({
+        key: "save",
+        val: "gi8RequestedOTAReboots",
+        reboots: parseInt(_e.target.dataset.reboots, 10)
+    });
+    // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
+    console.log("_onClickIF.OTAReboots ending");
+  }    
 };
 
 
@@ -1948,20 +1965,6 @@ var _onClickIF = {
 
 
 
-
-
-function onclickgi8RequestedOTAReboots(_e) {
-console.log("onclickgi8RequestedOTAReboots starting");
-  connectionObj.ws.send(JSON.stringify({
-    action: "changeBox",
-    key: "save",
-    val: "gi8RequestedOTAReboots",
-    lb: 0,
-    reboots: parseInt(this.dataset.reboots, 10)
-  }));
-  // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
-  console.log("onclickgi8RequestedOTAReboots ending");
-}
 
 
 
@@ -2070,7 +2073,7 @@ function setGroupEvents() {
 
   document.querySelectorAll('.gi8RequestedOTAReboots').forEach(
     (_OTARebootButton) => {
-      _OTARebootButton.addEventListener('click', onclickgi8RequestedOTAReboots, false);
+      _OTARebootButton.addEventListener('click', _onClickIF.OTAReboots, false);
     }
   );  
 }
