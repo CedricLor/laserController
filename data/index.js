@@ -384,7 +384,8 @@ class dlgtdBtnEvt {
 
   _sendMsg() {
     // send the message via WS
-    console.log("dlgtdBtnEvt._sendMsg(): " + JSON.stringify(this._obj));
+    // console.log("dlgtdBtnEvt._sendMsg(): ");console.log(this._obj);
+    // console.log("dlgtdBtnEvt._sendMsg(): " + JSON.stringify(this._obj));
     connectionObj.ws.send(JSON.stringify(this._obj));
   }
 }
@@ -1113,7 +1114,7 @@ const grpStrs = {
     if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
       _obj.key    = "save";
       _obj.val    = "IFSet";
-      _obj.lb     = _grpSetter.inputsMap.get("IFNNA");
+      _obj.lb     = (_grpSetter.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
       return [_obj, _grpSetter.btnGrp];
     }
@@ -1122,7 +1123,7 @@ const grpStrs = {
     if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
       _obj.key    = "apply";
       _obj.val    = "IFSet";
-      _obj.lb     = _grpSetter.inputsMap.get("IFNNA");
+      _obj.lb     = (_grpSetter.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
       return [_obj, _grpSetter.btnGrp];
     }
