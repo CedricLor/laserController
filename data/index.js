@@ -1024,7 +1024,7 @@ const grpStrs = {
     /** {"action":3,
      * "serverIP":[192,168,43,50],
      * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
-     * "rootIF":{"roNID":2760139053,"roNNa":200,"IFNNA":200},
+     * "rootIF":{"roNNa":200,"IFNNA":200},
      * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
     grpStrs.wifi.update(Object.assign(_data.wifi, _data.serverIP));
@@ -2121,7 +2121,7 @@ function updateGlobalInformation(_data) {
     /** {"action":3,
      * "serverIP":[192,168,43,50],
      * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
-     * "rootIF":{"roNID":2760139053,"roNNa":200,"IFNNA":200},
+     * "rootIF":{"roNNa":200,"IFNNA":200},
      * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
   console.log("updateGlobalInformation() starting");

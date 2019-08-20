@@ -213,7 +213,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     /** {"action":3,
      * "serverIP":[192,168,43,50],
      * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
-     * "rootIF":{"roNID":2760139053,"roNNa":200,"IFNNA":200},
+     * "rootIF":{"roNNa":200,"IFNNA":200},
      * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
     if (MY_DG_WS) {
@@ -236,7 +236,6 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
-    __rootIFSettings["roNID"]   = ui32RootNodeId;
     uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);
     __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
     __rootIFSettings["IFNNA"]   = thisBox.ui16NodeName;
