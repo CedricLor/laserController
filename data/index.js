@@ -343,8 +343,12 @@ class dlgtdBtnEvt {
     // console.log("+++++++++ +++++++++ +++++++++");
     // console.log("dlgtdBtnEvt: onClick(e): this._targt = ");console.log(this._targt);
     // console.log("dlgtdBtnEvt: onClick(e): this._obj = " + JSON.stringify(this._obj));
-    [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
-
+    // if (this.parent instanceof controlerBox) {
+    if (Object.prototype.hasOwnProperty.call(this.parent, '_eventTargetSwitch')) {
+        [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
+    } else {
+      [this._obj, this._btnGrp] = grpStrs._eventTargetSwitch(this.parent, this._targt, this._obj);
+    }
     // console.log("dlgtdBtnEvt: onClick(e): this._obj" + JSON.stringify(this._obj));
     if (this._obj) {
       this._setClassesAndSendMsg();
@@ -998,9 +1002,25 @@ class grpSetter {
     this.vElt.removeEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
     this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
+}
 
-  /** grpSetter._eventTargetSwitch(_targt, _obj) checks whether the event.target HTML element 
-   *  matches with a selector composed of:
+
+
+const grpStrs = {
+  wifi:   new grpSetter({selector: 'div.wifi_setters'}),
+  rootIF: new grpSetter({selector: 'div.mesh_spec_nodes_setters'}),
+  mesh:   new grpSetter({selector: 'div.mesh_gp_setters'}),
+  softAP: new grpSetter({selector: 'div.mesh_softap_setters'}),
+
+  update: (_data) => {
+    grpStrs.wifi.update(Object.assign(_data.wifi, _data.serverIP));
+    grpStrs.rootIF.update(_data.rootIF);
+    grpStrs.softAP.update(_data.softAP);
+    grpStrs.mesh.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));  
+  },
+
+  /** grpStrs._eventTargetSwitch(_grpSetter, _targt, _obj) checks whether the 
+   *  event.target HTML element (passed in _targt) matches with a selector composed of:
    * 
    *  - the grpSetter button group selector; and 
    *  - the relevant button id.
@@ -1015,54 +1035,40 @@ class grpSetter {
    *  @return: [the Json _obj ready to be sent, the relevant btnGrp] or [false, false]
    *  
    *  Gets called from dlgtdBtnEvent instance. */
-  _eventTargetSwitch(_targt, _obj) {
-    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): starting");
-    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): this.btnGrp.btnGpSelectorProto: " + this.btnGrp.btnGpSelectorProto);
-    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): this.btnGrp.btnGpSelectorProto" + "#saveWifiSettingsIF: " + this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF");
-    // console.log("grpSetter._eventTargetSwitch(_targt, _obj): _targt: ");console.log(_targt);
-    // console.log(_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF"));
+  _eventTargetSwitch(_grpSetter, _targt, _obj) {
+    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): starting");
+    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): _grpSetter.btnGrp.btnGpSelectorProto: " + _grpSetter.btnGrp.btnGpSelectorProto);
+    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): _grpSetter.btnGrp.btnGpSelectorProto" + "#saveWifiSettingsIF: " + _grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF");
+    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): _targt: ");console.log(_targt);
+    // console.log(_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF"));
     /**  1. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsIF" */
-    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
-      _obj        = grpStrs._baseObj(_obj, this.inputsMap);
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
       _obj.val    = "wifi";
       _obj.lb     = 0;
       _obj.action = "changeBox";
-      return [_obj, this.btnGrp];
+      return [_obj, _grpSetter.btnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsAll" */
-    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
-      _obj        = grpStrs._baseObj(_obj, this.inputsMap);
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
       _obj.val    = "wifi";
       _obj.lb     = "all";
       _obj.action = "changeNet";
-      return [_obj, this.btnGrp];
+      return [_obj, _grpSetter.btnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the selector 
      * "button#saveMeshSettings" */
-    if (_targt.matches(this.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
-      _obj        = grpStrs._baseObj(_obj, this.inputsMap);
+    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
+      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
       _obj.val    = "mesh";
       _obj.lb     = "all";
       _obj.action = "changeNet";
-      return [_obj, this.btnGrp];
+      return [_obj, _grpSetter.btnGrp];
     }
     return [false, false];
-  }
-
-}
-
-const grpStrs = {
-  wifi:   new grpSetter({selector: 'div.wifi_setters'}),
-  rootIF: new grpSetter({selector: 'div.mesh_spec_nodes_setters'}),
-  mesh:   new grpSetter({selector: 'div.mesh_gp_setters'}),
-  softAP: new grpSetter({selector: 'div.mesh_softap_setters'}),
-  update: (_data) => {
-    grpStrs.wifi.update(Object.assign(_data.wifi, _data.serverIP));
-    grpStrs.rootIF.update(_data.rootIF);
-    grpStrs.softAP.update(_data.softAP);
-    grpStrs.mesh.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));  
   },
 
   /** grpStrs._baseObj(_obj, inputsMap)
