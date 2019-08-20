@@ -77,15 +77,14 @@ const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 
 /** uint32_t ui32RootNodeId
- * 
- *  Shall be equal to UI32_DEFAULT_INTERFACE_NODE_ID if the IF is also Root Node
- *  (IF served on station Interface of the ESP).
+ *  
+ *  Set to 0 at startup.
  * 
  *  Shall be equal to one of the nodes IDs if the IF is (IF is served on AP Interface of the ESP):
  *    (i) not set as root and 
  *    (ii) served on the SoftAP of one of the nodes.
 */
-uint32_t ui32RootNodeId                = 0;
+uint32_t ui32RootNodeId                       = 0;
 
 const short I_DEFAULT_SLAVE_ON_OFF_REACTION   = 0;
 

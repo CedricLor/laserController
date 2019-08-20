@@ -353,7 +353,6 @@ void mySavedPrefs::_resetOTASuccess(Preferences& _preferences) {
 /*
   gui16NodeName
   isInterface
-  ui32RootNodeId
   isRoot
 */
 // Need a reboot
@@ -371,24 +370,10 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
   /*
     Save value of isInterface
     -> runtime change possible; would require a restart of painlessMesh
-    See below for possible implications with ui32RootNodeId and isRoot
+    See below for possible implications with isRoot
   */
   size_t _isInterfaceRet = _preferences.putBool("isIF", isInterface);
   Serial.printf("%s isInterface == %i %s\"isIF\"\n", debugSaveMsgStart, isInterface, (_isInterfaceRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-
-  // /*
-  //   Save value of ui32RootNodeId
-  //   -> runtime change possible, but 
-  //     - would require a restart of painlessMesh on this node (and probably on all the other nodes)
-  //     - would also require a symetric change to be done on another
-  //     node (ex. if this node was root and shall no longer be,
-  //     another node shall be assigned this role and painlessMesh shall 
-  //     also be restarted on the other node, at the minimum ; ideally, the mesh shall be restarted
-  //     on all the nodes, so that each get the opportunity to look for the root node).
-  // */
-  // // size_t putULong(const char* key, uint32_t value);
-  // size_t _ui32RootNodeIdRet = _preferences.putULong("RootNId", ui32RootNodeId);
-  // Serial.printf("%s ui32RootNodeId == %u %s\"ui32RootNodeId\"\n", debugSaveMsgStart, ui32RootNodeId, (_ui32RootNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 
   /*
     Save value of isRoot
@@ -398,11 +383,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences(Preferences& _preferences) {
       node (ex. if this node was root and shall no longer be,
       another node shall be assigned this role and painlessMesh shall 
       also be restarted on the other node)
-    isRoot shall not be changed "directly" (i.e. by the user). isRoot shall
-    be calculated from the comparison of ui32RootNodeId with the current
-    node id of this ESP in the mesh.
   */
-  // isRoot = (ui32RootNodeId == laserControllerMesh.getNodeId());
   size_t _isRootRet = _preferences.putBool("isRoot", isRoot);
   Serial.printf("%s isRoot == %i %s\"isRoot\"\n", debugSaveMsgStart, isRoot, (_isRootRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
@@ -612,7 +593,6 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
 /*
   gui16NodeName
   isInterface
-  ui32RootNodeId
   isRoot
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
@@ -624,11 +604,6 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // isInterface
   isInterface = _preferences.getBool("isIF", isInterface);
   Serial.printf("%s isInterface set to: %i\n", _debugLoadMsgStart, isInterface);
-
-  // // ui32RootNodeId
-  // // uint32_t getULong(const char* key, uint32_t defaultValue = 0);
-  // ui32RootNodeId = _preferences.getULong("RootNId", ui32RootNodeId);
-  // Serial.printf("%s ui32RootNodeId set to: %u\n", _debugLoadMsgStart, ui32RootNodeId);
 
   // isRoot
   isRoot = _preferences.getBool("isRoot", isRoot);
