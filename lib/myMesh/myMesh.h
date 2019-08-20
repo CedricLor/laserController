@@ -89,7 +89,7 @@ class myMesh
     static void _printNodeListAndTopology();
 
     // To update the ControlerBoxes array
-    static Task _tUpdateCDOnChangedConnections;
+    static Task _tUpdateCBArrayOnChangedConnections;
     static bool _oetcbUpdateCBOnChangedConnections();
     static void _tcbUpdateCBOnChangedConnections();
     static void _odtcbUpdateCBOnChangedConnections();

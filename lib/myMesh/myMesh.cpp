@@ -302,8 +302,8 @@ void myMesh::_odtcbChangedConnection() {
 }
 
 void myMesh::changedConnectionCallback() {
-  // 1. Enabling the Task _tUpdateCDOnChangedConnections
-  _tUpdateCDOnChangedConnections.enable();
+  // 1. Enabling the Task _tUpdateCBArrayOnChangedConnections
+  _tUpdateCBArrayOnChangedConnections.enable();
 
   // 2. Printing the mesh topology
   if (MY_DEEP_DG_MESH) {
@@ -460,7 +460,7 @@ void myMesh::_printNodeListAndTopology() {
   Each remaining node should know how to delete the subs.
   Upon such events, this Task does the job after 10 seconds.
 */
-Task myMesh::_tUpdateCDOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnChangedConnections, &userScheduler, false, &_oetcbUpdateCBOnChangedConnections, &_odtcbUpdateCBOnChangedConnections);
+Task myMesh::_tUpdateCBArrayOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnChangedConnections, &userScheduler, false, &_oetcbUpdateCBOnChangedConnections, &_odtcbUpdateCBOnChangedConnections);
 
 
 bool myMesh::_oetcbUpdateCBOnChangedConnections() {
@@ -596,13 +596,13 @@ Task myMesh::_tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, &userScheduler
 
 void myMesh::_tcbSaveNodeMap() {
   if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(_tSaveNodeMap.getIterations()));
-  if (_tUpdateCDOnChangedConnections.isEnabled()) {
-    if (MY_DEEP_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCDOnChangedConnections is enabled. Passing this iteration.");
+  if (_tUpdateCBArrayOnChangedConnections.isEnabled()) {
+    if (MY_DEEP_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCBArrayOnChangedConnections is enabled. Passing this iteration.");
     _tSaveNodeMap.setIterations(_tSaveNodeMap.getIterations() + 1);
     return;
   }
   _tSaveNodeMap.setInterval(20 * TASK_SECOND);
-  if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCDOnChangedConnections is not enabled. Updating mesh topo map.");
+  if (MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): _tUpdateCBArrayOnChangedConnections is not enabled. Updating mesh topo map.");
   _saveNodeMap();
 }
 
