@@ -205,14 +205,6 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   // save value of pass
   _myPrefsRef->_saveStringTypePrefs("pass", "password", pass);
 
-  // save value of gatewayIP
-  // Interface only
-  // -> restart the mesh
-  // putBytes(const char* key, const void* value, size_t len)
-  uint8_t _ui8GatewayIP[4] = {gatewayIP[0], gatewayIP[1], gatewayIP[2], gatewayIP[3]};
-  size_t _bsGatewayIPRet = _myPrefsRef->_prefLib.putBytes("gateIP", _ui8GatewayIP, 4);
-  Serial.printf("%s gatewayIP == %s %s\"gateIP\"\n", _myPrefsRef->debugSaveMsgStart, gatewayIP.toString().c_str(), (_bsGatewayIPRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
-
   // save value of ui16GatewayPort
   // Interface only
   // -> restart the mesh
@@ -225,21 +217,10 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   // -> restart the mesh
   _myPrefsRef->_saveUCharTypePrefs("wifiChan", "ui8WifiChannel", ui8WifiChannel);
 
-  // save value of fixedIP
-  // Interface only
-  // -> restart the mesh
-  // putBytes(const char* key, const void* value, size_t len)
-  uint8_t _ui8fixedIP[4] = {fixedIP[0], fixedIP[1], fixedIP[2], fixedIP[3]};
-  size_t _bsFixedIPRet = _myPrefsRef->_prefLib.putBytes("fixedIP", _ui8fixedIP, 4);
-  Serial.printf("%s IF fixed IP == %s %s\"fixedIP\"\n", _myPrefsRef->debugSaveMsgStart, fixedIP.toString().c_str(), (_bsFixedIPRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
-
-  // save value of fixedNetmaskIP
-  // Interface only
-  // -> restart the mesh
-  // putBytes(const char* key, const void* value, size_t len)
-  uint8_t _ui8FixedNetmaskIP[4] = {fixedNetmaskIP[0], fixedNetmaskIP[1], fixedNetmaskIP[2], fixedNetmaskIP[3]};
-  size_t _bsFixedNetmaskIPRet = _myPrefsRef->_prefLib.putBytes("netMask", _ui8FixedNetmaskIP, 4);
-  Serial.printf("%s Wifi netmask == %s %s\"netMask\"\n", _myPrefsRef->debugSaveMsgStart, fixedNetmaskIP.toString().c_str(), (_bsFixedNetmaskIPRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  // save value of the gatewayIP, the fixedIP and fixed Netmask
+  _myPrefsRef->_saveIPTypePrefs("gateIP", "wifi gateway IP", gatewayIP);
+  _myPrefsRef->_saveIPTypePrefs("fixedIP", "IF fixed IP", fixedIP);
+  _myPrefsRef->_saveIPTypePrefs("netMask", "wifi netmask", fixedNetmaskIP);
 
   Serial.println("End External Wifi Credentials");
 }
@@ -380,6 +361,17 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
 void mySavedPrefs::_saveStringTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], char* strEnvVar){
   size_t _ret = _prefLib.putString(NVSVarName, strEnvVar);
   Serial.printf("%s %s == %s %s\"%s\"\n", debugSaveMsgStart, humanReadableVarName, strEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+}
+
+
+/** _saveIPTypePrefs saves the value of IPs in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - size_t putBytes(const char* key, const void* value, size_t len); */
+void mySavedPrefs::_saveIPTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], IPAddress& envIP){
+  uint8_t _ui8envIP[4] = {envIP[0], envIP[1], envIP[2], envIP[3]};
+  size_t _ret = _prefLib.putBytes(NVSVarName, _ui8envIP, 4);
+  Serial.printf("%s %s == %s %s\"%s\"\n", debugSaveMsgStart, humanReadableVarName, envIP.toString().c_str(), (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
