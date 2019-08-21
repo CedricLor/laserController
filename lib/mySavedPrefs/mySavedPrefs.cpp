@@ -417,6 +417,55 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
 ///////////////////////////////////////////////////
 // LOADERS
 ///////////////////////////////////////////////////
+
+const char * mySavedPrefs::setFromNVS = "set from NVS to:";
+const char * mySavedPrefs::couldNotBeRetriedFromNVS = "could not be retrieved from NVS. Using hard coded value:";
+
+/** _loadIPTypePrefs gets the value of IPs stored in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - getBytesLength(const char* key)
+ *  - getBytes(const char* key, void * buf, size_t maxLen)*/
+void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[11], const char humanReadableVarName[20], IPAddress& envIP){
+  // 1. set the special debug message buffer
+  char _specDebugMess[60];
+
+  // 2. process the request
+  if (_preferences.getBytesLength(NVSVarName)) {
+    char _IPBuffer[4];
+    _preferences.getBytes(NVSVarName, _IPBuffer, 4);
+    for (int __ipIt=0; __ipIt<4; __ipIt++) {
+      envIP[__ipIt] = _IPBuffer[__ipIt];
+    }
+    snprintf(_specDebugMess, 18, "%s", setFromNVS);
+  } else {
+    snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
+  }
+  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, envIP.toString().c_str());
+}
+
+
+/** _loadUCharTypePrefs gets values of type UChar stored in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - getUChar(const char* key, const uint8_t defaultValue) */
+void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[11], const char humanReadableVarName[20], uint8_t& ui8envVar){
+  // 1. set the special debug message buffer
+  char _specDebugMess[60];
+
+  // 2. process the request
+  // getUChar(const char* key, const uint8_t defaultValue)
+  uint8_t _ui8envVar = _preferences.getUChar("wifiChan", ui8WifiChannel);
+  if (_ui8envVar) {
+    ui8envVar = _ui8envVar;
+    snprintf(_specDebugMess, 18, "%s", setFromNVS);
+  } else {
+    snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
+  }
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, ui8envVar);
+}
+
+
 /*
   ssid
   pass
@@ -427,11 +476,10 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
   fixedNetmaskIP
 */
 void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
-  Serial.println("Loading External Wifi Credentials");
+  Serial.println(String(_debugLoadMsgStart) + " Loading External Wifi Credentials");
 
   // ssid
   // -> restart the mesh
-
   char _ssid[20];
   if (_preferences.getString("ssid", _ssid, 20)) {
     strcpy(ssid, (const char*)_ssid);
@@ -446,40 +494,6 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
     Serial.printf("%s pass set to: %s\n", _debugLoadMsgStart, pass);
   }
 
-  /** get the value of gatewayIP from NVS
-   *  
-   *  use case: web interface served on ESP station interface.
-   *  
-   *  default value location: secret library
-   * 
-   *  dynamic reset: -> restart the mesh
-   * 
-   *  preferences library methods signatures:
-   *  - getBytesLength(const char* key)
-   *  - getBytes(const char* key, void * buf, size_t maxLen)
-   */
-  // 1. set the variables related to this specific pref 
-  char NVSVarName[11];
-  snprintf(NVSVarName, 9, "%s", "gateIP");
-  char humanReadableVarName[20];
-  snprintf(humanReadableVarName, 12, "%s", "gateway IP");
-  // 2. set the special debug message buffer
-  const char * setFromNVS = "set from NVS to:";
-  const char * couldNotBeRetriedFromNVS = "could not be retrieved from NVS. Using hard coded value:";
-  char specDebugMess[80];
-  // 3. process the request
-  if (_preferences.getBytesLength(NVSVarName)) {
-    char _gatewayIPBuffer[4];
-    _preferences.getBytes(NVSVarName, _gatewayIPBuffer, 4);
-    for (int __ipIt=0; __ipIt<4; __ipIt++) {
-      gatewayIP[__ipIt] = _gatewayIPBuffer[__ipIt];
-    }
-    snprintf(specDebugMess, 18, "%s", setFromNVS);
-  } else {
-    snprintf(specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
-  }
-  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, specDebugMess, gatewayIP.toString().c_str());
-
   // get the value of ui16GatewayPort
   // -> restart the mesh
   // getShort(const char* key, const int16_t defaultValue)
@@ -492,69 +506,16 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   ui8WifiChannel = _preferences.getUChar("wifiChan", ui8WifiChannel);
   Serial.printf("%s ui8WifiChannel set to: %i\n", _debugLoadMsgStart, ui8WifiChannel);
 
-
-  /** get the value of fixedIP from NVS
+  /** get the value of gatewayIP, fixedIP and fixedNetmaskIP from NVS
    *  
-   *  use case: web interface served on ESP station interface.
-   *  
-   *  default value location: secret library
-   * 
-   *  dynamic reset: -> restart the mesh
-   * 
-   *  preferences library methods signatures:
-   *  - getBytesLength(const char* key)
-   *  - getBytes(const char* key, void * buf, size_t maxLen)
-   */
-  // 1. set the variables related to this specific pref
-  snprintf(NVSVarName, 9, "%s", "fixedIP");
-  snprintf(humanReadableVarName, 9, "%s", "fixedIP");
-  // 2. set the special debug message buffer
-  specDebugMess[0] = 0;
-  // 3. process the request
-  if (_preferences.getBytesLength(NVSVarName)) {
-    char _fixedIPBuffer[4];
-    _preferences.getBytes(NVSVarName, _fixedIPBuffer, 4);
-    for (int __ipIt=0; __ipIt<4; __ipIt++) {
-      fixedIP[__ipIt] = _fixedIPBuffer[__ipIt];
-    }
-    snprintf(specDebugMess, 18, "%s", setFromNVS);
-  } else {
-    snprintf(specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
-  }
-  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, specDebugMess, fixedIP.toString().c_str());  
+   *  * use case: web interface served on ESP station interface.
+   *  * dynamic reset: -> restart the mesh
+   *  * default value location: secret library */
+  _loadIPTypePrefs(_preferences, "gateIP", "gateway IP", gatewayIP);
+  _loadIPTypePrefs(_preferences, "fixedIP", "fixedIP", fixedIP);
+  _loadIPTypePrefs(_preferences, "netMask", "fixedNetmaskIP", fixedNetmaskIP);
 
-
-  /** get the value of fixedNetmaskIP from NVS
-   *  
-   *  use case: web interface served on ESP station interface.
-   *  
-   *  dynamic reset: -> restart the mesh
-   * 
-   *  default value location: secret library
-   * 
-   *  preferences library methods signatures:
-   *  - getBytesLength(const char* key)
-   *  - getBytes(const char* key, void * buf, size_t maxLen)
-   */
-  // 1. set the variables related to this specific pref
-  snprintf(NVSVarName, 9, "%s", "netMask");
-  snprintf(humanReadableVarName, 9, "%s", "fixedNetmaskIP");
-  // 2. reset the special debug message buffer
-  specDebugMess[0] = 0;
-  // 3. process the request
-  if (_preferences.getBytesLength(NVSVarName)) {
-    char _fixedNetmaskIPBuffer[4];
-    _preferences.getBytes(NVSVarName, _fixedNetmaskIPBuffer, 4);
-    for (int __ipIt=0; __ipIt<4; __ipIt++) {
-      fixedNetmaskIP[__ipIt] = _fixedNetmaskIPBuffer[__ipIt];
-    }
-    snprintf(specDebugMess, 18, "%s", setFromNVS);
-  } else {
-    snprintf(specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
-  }
-  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, specDebugMess, fixedNetmaskIP.toString().c_str());  
-
-  Serial.println("End Loading External Wifi Credentials");
+  Serial.println(String(_debugLoadMsgStart) + " End Loading External Wifi Credentials");
 }
 
 
