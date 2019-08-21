@@ -29,8 +29,6 @@ extern bool isInterface;
 extern bool isRoot;
 extern uint32_t ui32RootNodeId;
 
-extern uint32_t gui32InterfaceNodeId;
-
 /** Used for sizing of custom JSONDocuments received and sent via the mesh
  *  and in MeshViews and MeshController. */
 extern constexpr short MESH_REQUEST_CAPACITY        = 20;

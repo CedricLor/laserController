@@ -11,7 +11,6 @@ mySavedPrefs::mySavedPrefs()
 }
 
   /* variables to be saved in NVS:
-  *  gui32InterfaceNodeId (e.g. 2760139053)
   *  gui16InterfaceNodeName (e.g. 201)
   *  gui16ControllerBoxPrefix
   *  gui16BoxesCount
@@ -300,15 +299,10 @@ void mySavedPrefs::_saveNetworkEssentialPreferences(Preferences& _preferences) {
 
 
 /*
-  gui32InterfaceNodeId
   gui16InterfaceNodeName
 */
 void mySavedPrefs::_saveUselessPreferences(Preferences& _preferences) {
   // USELESS PREFERENCES
-  // save value of gui32InterfaceNodeId
-  size_t _gui32InterfaceNodeIdRet = _preferences.putUInt("iIFNodId", gui32InterfaceNodeId);
-  Serial.printf("%s gui32InterfaceNodeId == %u %s\"iIFNodId\"\n", debugSaveMsgStart, gui32InterfaceNodeId, (_gui32InterfaceNodeIdRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
-
   // save value of gui16InterfaceNodeName
   size_t _gui16InterfaceNodeNameRet = _preferences.putUChar("sIFNodNam", (uint8_t)gui16InterfaceNodeName);
   Serial.printf("%s gui16InterfaceNodeName == %u %s\"sIFNodNam\"\n", debugSaveMsgStart, gui16InterfaceNodeName, (_gui16InterfaceNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
@@ -554,17 +548,9 @@ void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
 
 
 /*
-  gui32InterfaceNodeId
   gui16InterfaceNodeName
 */
 void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
-  // gui32InterfaceNodeId
-  // Serial.printf("%s TRACING UI32_DEFAULT_INTERFACE_NODE_ID AND gui32InterfaceNodeId\n", _debugLoadMsgStart);
-  // Serial.print("UI32_DEFAULT_INTERFACE_NODE_ID = ");Serial.println(UI32_DEFAULT_INTERFACE_NODE_ID);
-  // Serial.print("gui32InterfaceNodeId = ");Serial.println(gui32InterfaceNodeId);
-  gui32InterfaceNodeId =_preferences.getUInt("iIFNodId", gui32InterfaceNodeId);
-  // Serial.print("gui32InterfaceNodeId = ");Serial.println(gui32InterfaceNodeId);
-  Serial.printf("%s gui32InterfaceNodeId set to: %u\n", _debugLoadMsgStart, gui32InterfaceNodeId);
 
   // gui16InterfaceNodeName
   gui16InterfaceNodeName = (uint16_t)(_preferences.getUChar("iIFNodName", gui16InterfaceNodeName));

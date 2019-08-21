@@ -73,7 +73,6 @@ uint16_t gui16NodeName                        = UI8_NODE_NAME;
 bool isInterface                              = IS_INTERFACE;
 bool isRoot                                   = IS_ROOT;
 
-const uint32_t UI32_DEFAULT_INTERFACE_NODE_ID = 2760139053;
 const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 
 /** uint32_t ui32RootNodeId
@@ -94,7 +93,6 @@ uint16_t gui16ControllerBoxPrefix             = UI8_CONTROLLER_BOX_PREFIX;
 
 short iSlaveOnOffReaction                     = I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
-uint32_t gui32InterfaceNodeId                 = UI32_DEFAULT_INTERFACE_NODE_ID;
 uint16_t gui16InterfaceNodeName               = UI8_DEFAULT_INTERFACE_NODE_NAME;
 
 const char* slaveReactionHtml[4]              = {"syn", "opp", "aon", "aof"};
