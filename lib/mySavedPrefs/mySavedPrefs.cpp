@@ -269,16 +269,15 @@ void mySavedPrefs::_saveUselessPreferences() {
 void mySavedPrefs::_saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef) {
   // save value of gi8RequestedOTAReboots
   // Note to use Prefs without reboot: needs a reboot to be effective
-  size_t _gi8RequestedOTARebootsRet = _myPrefsRef->_prefLib.putChar("OTARebReq", gi8RequestedOTAReboots);
-  Serial.printf("%s gi8RequestedOTAReboots == %i %s\"OTARebReq\"\n", _myPrefsRef->debugSaveMsgStart, gi8RequestedOTAReboots, (_gi8RequestedOTARebootsRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  _myPrefsRef->_saveCharTypePrefs("OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
 }
 
-  /** mySavedPrefs::_resetOTASuccess(): resets the values of ui8OTA1SuccessErrorCode 
-  *  and ui8OTA2SuccessErrorCode when an OTA reboot is requested.
-  *  
-  *  dynamic reload: no need to reboot /*
-  ui8OTA1SuccessErrorCode
-  ui8OTA2SuccessErrorCode
+/** mySavedPrefs::_resetOTASuccess(): resets the values of ui8OTA1SuccessErrorCode 
+*  and ui8OTA2SuccessErrorCode when an OTA reboot is requested.
+*  
+*  dynamic reload: no need to reboot /*
+ui8OTA1SuccessErrorCode
+ui8OTA2SuccessErrorCode
 */
 void mySavedPrefs::_resetOTASuccess(mySavedPrefs * _myPrefsRef) {
   uint8_t _initialSuccessCode = 11;
@@ -375,7 +374,17 @@ void mySavedPrefs::_saveIPTypePrefs(const char NVSVarName[NVSVarNameSize], const
 }
 
 
-/** _saveUCharTypePrefs gets values of type UChar stored in NVS.
+/** _saveCharTypePrefs stores global variables of type Char in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - putChar(const char* key, uint8_t value) */
+void mySavedPrefs::_saveCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int8_t& i8EnvVar){
+  size_t _ret = _prefLib.putChar(NVSVarName, i8EnvVar);
+  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, i8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+}
+
+
+/** _saveUCharTypePrefs stores global variables of type UChar in NVS.
  * 
  *  preferences library methods signatures:
  *  - putUChar(const char* key, uint8_t value) */
@@ -555,7 +564,7 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(){
  * 
  *  preferences library methods signatures:
  *  - size_t getString(const char* key, char* value, size_t maxLen); */
-void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[30], char* strEnvVar){
+void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], char* strEnvVar){
   // 1. set the special debug message buffer
   char _specDebugMess[60];
 

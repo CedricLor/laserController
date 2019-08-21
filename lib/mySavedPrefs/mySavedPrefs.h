@@ -55,6 +55,7 @@ class mySavedPrefs
     // Save Abstract
     void _saveStringTypePrefs(const char NVSVarName[], const char humanReadableVarName[], char* strEnvVar);
     void _saveIPTypePrefs(const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
+    void _saveCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], int8_t& i8EnvVar);
     void _saveUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     void _saveUi16ToUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
 
@@ -74,8 +75,8 @@ class mySavedPrefs
     // Load Abstract
     void _loadStringTypePrefs(const char NVSVarName[], const char humanReadableVarName[], char* strEnvVar);
     void _loadIPTypePrefs(const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
-    void _loadUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     void _loadCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], int8_t& i8EnvVar);
+    void _loadUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     void _loadUCharToUi16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
     void _loadI16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], int16_t& i16EnvVar);
     void _loadUi16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
