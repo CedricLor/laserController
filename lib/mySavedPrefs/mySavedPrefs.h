@@ -43,7 +43,8 @@ class mySavedPrefs
     // Save Prefs
     void _handleOTAReboots();
 
-    static void _saveNetworkCredentials(mySavedPrefs * _myPrefsRef);
+    static void _stSaveNetworkCredentials(mySavedPrefs * _myPrefsRef);
+    void _saveNetworkCredentials();
     void _saveNetworkEssentialPreferences();
     void _saveUselessPreferences();
 

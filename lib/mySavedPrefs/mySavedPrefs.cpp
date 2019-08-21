@@ -67,7 +67,7 @@ mySavedPrefs::mySavedPrefs(bool readOnly) :
 void mySavedPrefs::savePrefsWrapper() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
 
-  _saveNetworkCredentials(this);
+  _saveNetworkCredentials();
   _saveNetworkEssentialPreferences();
   _saveUselessPreferences();
 
@@ -147,7 +147,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     fixedNetmaskIP.fromString(  _joDataset["wnm"].as<const char*>());
 
     mySavedPrefs _myPrefsRef;
-    _myPrefsRef.actOnPrefsThroughCallback(_saveNetworkCredentials);
+    _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
     return;
   }
 
@@ -196,25 +196,29 @@ void mySavedPrefs::actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*)) {
   fixedIP
   fixedNetmaskIP
 */
-void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
+void mySavedPrefs::_stSaveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
+  _myPrefsRef->_saveNetworkCredentials();
+}
+
+void mySavedPrefs::_saveNetworkCredentials() {
   Serial.println("Saving External Wifi Credentials");
 
   // save value of ssid
-  _myPrefsRef->_saveStringTypePrefs("ssid", "ssid", ssid);
+  _saveStringTypePrefs("ssid", "ssid", ssid);
 
   // save value of pass
-  _myPrefsRef->_saveStringTypePrefs("pass", "password", pass);
+  _saveStringTypePrefs("pass", "password", pass);
 
   // save value of ui16GatewayPort
-  _myPrefsRef->_saveUi16TypePrefs("gatePort", "ui16GatewayPort", ui16GatewayPort);
+  _saveUi16TypePrefs("gatePort", "ui16GatewayPort", ui16GatewayPort);
 
   // save value of ui8WifiChannel
-  _myPrefsRef->_saveUCharTypePrefs("wifiChan", "ui8WifiChannel", ui8WifiChannel);
+  _saveUCharTypePrefs("wifiChan", "ui8WifiChannel", ui8WifiChannel);
 
   // save value of the gatewayIP, the fixedIP and fixed Netmask
-  _myPrefsRef->_saveIPTypePrefs("gateIP", "wifi gateway IP", gatewayIP);
-  _myPrefsRef->_saveIPTypePrefs("fixedIP", "IF fixed IP", fixedIP);
-  _myPrefsRef->_saveIPTypePrefs("netMask", "wifi netmask", fixedNetmaskIP);
+  _saveIPTypePrefs("gateIP", "wifi gateway IP", gatewayIP);
+  _saveIPTypePrefs("fixedIP", "IF fixed IP", fixedIP);
+  _saveIPTypePrefs("netMask", "wifi netmask", fixedNetmaskIP);
 
   Serial.println("End External Wifi Credentials");
 }
