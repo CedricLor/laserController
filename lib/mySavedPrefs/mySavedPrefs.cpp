@@ -206,9 +206,7 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   _myPrefsRef->_saveStringTypePrefs("pass", "password", pass);
 
   // save value of ui16GatewayPort
-  // putShort(const char* key, int16_t value)
-  size_t _ui16GatewayPortRet = _myPrefsRef->_prefLib.putUShort("gatePort", ui16GatewayPort);
-  Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", _myPrefsRef->debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  _myPrefsRef->_saveUi16TypePrefs("gatePort", "ui16GatewayPort", ui16GatewayPort);
 
   // save value of ui8WifiChannel
   _myPrefsRef->_saveUCharTypePrefs("wifiChan", "ui8WifiChannel", ui8WifiChannel);
@@ -335,8 +333,7 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
   // save value of sBoxDefaultState
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
-  size_t _sBoxDefaultStateRet = _prefLib.putShort("sBoxDefSta", thisBox.sBoxDefaultState);
-  Serial.printf("%s sBoxDefaultState == %i %s\"sBoxDefSta\"\n", debugSaveMsgStart, thisBox.sBoxDefaultState, (_sBoxDefaultStateRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  _saveI16TypePrefs("sBoxDefSta", "sBoxDefaultState", thisBox.sBoxDefaultState);
 
   // save value of thisBox.ui16MasterBoxName
   // Note to use Prefs without reboot (would be updated without reboot):
@@ -401,6 +398,24 @@ void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSiz
 }
 
 
+/** _saveI16TypePrefs stores global variables of type i16int_t in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - putChar(const char* key, uint8_t value) */
+void mySavedPrefs::_saveI16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int16_t& i16EnvVar){
+  size_t _ret = _prefLib.putShort(NVSVarName, i16EnvVar);
+  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, i16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+}
+
+
+/** _saveUi16TypePrefs stores global variables of type ui16int_t in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - putUChar(const char* key, uint8_t value) */
+void mySavedPrefs::_saveUi16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
+  size_t _ret = _prefLib.putUShort(NVSVarName, ui16EnvVar);
+  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+}
 
 
 ///////////////////////////////////////////////////

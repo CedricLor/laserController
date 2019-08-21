@@ -58,6 +58,8 @@ class mySavedPrefs
     void _saveCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], int8_t& i8EnvVar);
     void _saveUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     void _saveUi16ToUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
+    void _saveI16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], int16_t& i16EnvVar);
+    void _saveUi16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
 
     // Load Prefs
     const char * couldNotBeRetriedFromNVS;
