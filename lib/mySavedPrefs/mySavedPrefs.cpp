@@ -167,8 +167,8 @@ void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
   /** Open namespace "savedSettingsNS" in read only:
    *  second parameter has to be true. */
   if (_preferences.begin("savedSettingsNS", /*read only = */true) == true){
-      callBack(_preferences);
-    }
+    callBack(_preferences);
+  }
 
   _endPreferences(_preferences);
 }
@@ -433,9 +433,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
 
   // get the value of ui16GatewayPort
   // -> restart the mesh
-  // getShort(const char* key, const int16_t defaultValue)
-  ui16GatewayPort = _preferences.getUShort("gatePort", ui16GatewayPort);
-  Serial.printf("%s ui16GatewayPort set to: %u\n", _debugLoadMsgStart, ui16GatewayPort);
+  _loadUi16TypePrefs(_preferences, "gatePort", "ui16GatewayPort", ui16GatewayPort);
 
   // get the value of ui8WifiChannel
   // -> restart the mesh
@@ -623,6 +621,16 @@ void mySavedPrefs::_loadI16TypePrefs(Preferences& _preferences, const char NVSVa
 }
 
 
+/** _loadUi16TypePrefs gets values of type UI16 stored in NVS
+ *  to load it to an uint16_t global variable.
+ * 
+ *  preferences library methods signatures:
+ *  - getUShort(const char* key, const uint16_t defaultValue) */
+void mySavedPrefs::_loadUi16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+  int16_t _ui16EnvVar = _preferences.getUShort(NVSVarName);
+  if (_ui16EnvVar) ui16EnvVar = _ui16EnvVar;
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
+}
 
 
 
