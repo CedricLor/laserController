@@ -55,6 +55,7 @@ class mySavedPrefs
     // Save Abstract
     void _saveStringTypePrefs(const char NVSVarName[], const char humanReadableVarName[], char* strEnvVar);
     void _saveIPTypePrefs(const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
+    void _saveBoolTypePrefs(const char NVSVarName[], const char humanReadableVarName[], bool& bEnvVar);
     void _saveCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], int8_t& i8EnvVar);
     void _saveUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     void _saveUi16ToUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);

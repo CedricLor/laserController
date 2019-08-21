@@ -257,22 +257,19 @@ void mySavedPrefs::_saveUselessPreferences() {
 
 
 
-/*
-  gi8RequestedOTAReboots
-*/
+/** gi8RequestedOTAReboots(): save the fact that the next 1 and/or 2 reboots
+ *   shall be OTA reboots. 
+ *
+ *  dynamic reload: no need to reboo, but next (and following, as the case may 
+ *  be) reboots will be OTA reboots */
 void mySavedPrefs::_saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef) {
-  // save value of gi8RequestedOTAReboots
-  // Note to use Prefs without reboot: needs a reboot to be effective
   _myPrefsRef->_saveCharTypePrefs("OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
 }
 
 /** mySavedPrefs::_resetOTASuccess(): resets the values of ui8OTA1SuccessErrorCode 
 *  and ui8OTA2SuccessErrorCode when an OTA reboot is requested.
 *  
-*  dynamic reload: no need to reboot /*
-ui8OTA1SuccessErrorCode
-ui8OTA2SuccessErrorCode
-*/
+*  dynamic reload: no need to reboot */
 void mySavedPrefs::_resetOTASuccess(mySavedPrefs * _myPrefsRef) {
   uint8_t _initialSuccessCode = 11;
   _myPrefsRef->_saveUCharTypePrefs("OTASucc1", "OTA update numb. 1 success code", _initialSuccessCode);
@@ -305,8 +302,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
     -> runtime change possible; would require a restart of painlessMesh
     See below for possible implications with isRoot
   */
-  size_t _isInterfaceRet = _prefLib.putBool("isIF", isInterface);
-  Serial.printf("%s isInterface == %i %s\"isIF\"\n", debugSaveMsgStart, isInterface, (_isInterfaceRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+ _saveBoolTypePrefs("isIF", "isInterface", isInterface);
 
   /*
     Save value of isRoot
@@ -317,8 +313,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
       another node shall be assigned this role and painlessMesh shall 
       also be restarted on the other node)
   */
-  size_t _isRootRet = _prefLib.putBool("isRoot", isRoot);
-  Serial.printf("%s isRoot == %i %s\"isRoot\"\n", debugSaveMsgStart, isRoot, (_isRootRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+ _saveBoolTypePrefs("isRoot", "isRoot", isRoot);
 }
 
 
@@ -367,10 +362,20 @@ void mySavedPrefs::_saveIPTypePrefs(const char NVSVarName[NVSVarNameSize], const
 }
 
 
+/** _saveBoolTypePrefs stores global variables of type bool in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - size_t putBool(const char* key, bool value); */
+void mySavedPrefs::_saveBoolTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], bool& bEnvVar){
+  size_t _ret = _prefLib.putBool(NVSVarName, bEnvVar);
+  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, bEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+}
+
+
 /** _saveCharTypePrefs stores global variables of type Char in NVS.
  * 
  *  preferences library methods signatures:
- *  - putChar(const char* key, uint8_t value) */
+ *  - size_t putChar(const char* key, int8_t value) */
 void mySavedPrefs::_saveCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int8_t& i8EnvVar){
   size_t _ret = _prefLib.putChar(NVSVarName, i8EnvVar);
   Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, i8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
@@ -380,7 +385,7 @@ void mySavedPrefs::_saveCharTypePrefs(const char NVSVarName[NVSVarNameSize], con
 /** _saveUCharTypePrefs stores global variables of type UChar in NVS.
  * 
  *  preferences library methods signatures:
- *  - putUChar(const char* key, uint8_t value) */
+ *  - size_t putUChar(const char* key, uint8_t value) */
 void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint8_t& ui8EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, ui8EnvVar);
   Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
@@ -391,7 +396,7 @@ void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], co
  *  as UChar in NVS
  * 
  *  preferences library methods signatures:
- *  - getUChar(const char* key, const uint8_t defaultValue) */
+ *  - size_t putUChar(const char* key, const uint8_t defaultValue) */
 void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, (uint8_t)ui16EnvVar);
   Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
@@ -401,7 +406,7 @@ void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSiz
 /** _saveI16TypePrefs stores global variables of type i16int_t in NVS.
  * 
  *  preferences library methods signatures:
- *  - putChar(const char* key, uint8_t value) */
+ *  - size_t putShort(const char* key, int16_t value); */
 void mySavedPrefs::_saveI16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int16_t& i16EnvVar){
   size_t _ret = _prefLib.putShort(NVSVarName, i16EnvVar);
   Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, i16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
@@ -411,7 +416,7 @@ void mySavedPrefs::_saveI16TypePrefs(const char NVSVarName[NVSVarNameSize], cons
 /** _saveUi16TypePrefs stores global variables of type ui16int_t in NVS.
  * 
  *  preferences library methods signatures:
- *  - putUChar(const char* key, uint8_t value) */
+ *  - size_t putUShort(const char* key, uint16_t value); */
 void mySavedPrefs::_saveUi16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   size_t _ret = _prefLib.putUShort(NVSVarName, ui16EnvVar);
   Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
