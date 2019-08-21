@@ -480,7 +480,7 @@ void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVS
   fixedNetmaskIP
 */
 void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
-  Serial.println(String(_debugLoadMsgStart) + " Loading External Wifi Credentials");
+  Serial.println("--- " + String(_debugLoadMsgStart) + " Loading External Wifi Credentials");
 
   // ssid
   // -> restart the mesh
@@ -506,7 +506,6 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
 
   // get the value of ui8WifiChannel
   // -> restart the mesh
-  // getUChar(const char* key, const uint8_t defaultValue)
   _loadUCharTypePrefs(_preferences, "wifiChan", "wifi channel", ui8WifiChannel);
 
   /** get the value of gatewayIP, fixedIP and fixedNetmaskIP from NVS
@@ -518,7 +517,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   _loadIPTypePrefs(_preferences, "fixedIP", "fixedIP", fixedIP);
   _loadIPTypePrefs(_preferences, "netMask", "fixedNetmaskIP", fixedNetmaskIP);
 
-  Serial.println(String(_debugLoadMsgStart) + " End Loading External Wifi Credentials");
+  Serial.println("--- " + String(_debugLoadMsgStart) + " End Loading External Wifi Credentials");
 }
 
 
@@ -547,11 +546,9 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 
 
 
-/*
-  uint8_t ui8OTA1SuccessErrorCode
-  uint8_t ui8OTA2SuccessErrorCode
-  uint8_t ui8RebootsSinceLastOTAReboot = 0;
-*/
+/**
+ * uint8_t ui8OTA1SuccessErrorCode
+ * uint8_t ui8OTA2SuccessErrorCode */
 uint8_t mySavedPrefs::ui8OTA1SuccessErrorCode = 11;
 uint8_t mySavedPrefs::ui8OTA2SuccessErrorCode = 11;
 
