@@ -396,7 +396,7 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
  *  - putUChar(const char* key, uint8_t value) */
 void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint8_t& ui8EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, ui8EnvVar);
-  Serial.printf("%s %s == %u %s\"OTASucc1\"\n", debugSaveMsgStart, humanReadableVarName, 11, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -407,7 +407,7 @@ void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], co
  *  - getUChar(const char* key, const uint8_t defaultValue) */
 void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, (uint8_t)ui16EnvVar);
-  Serial.printf("%s %s == %u %s\"OTASucc1\"\n", debugSaveMsgStart, humanReadableVarName, 11, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
