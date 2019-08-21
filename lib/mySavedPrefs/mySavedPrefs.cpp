@@ -80,7 +80,7 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadNetworkEssentialPreferences(_preferences);
       _loadUselessPreferences(_preferences);
 
-      loadOTASuccess(_preferences);
+      _loadOTASuccess(_preferences);
       _loadBoxStartupTypePreferences(_preferences);
       _loadBoxEssentialPreferences(_preferences);
       _loadBoxBehaviorPreferences(_preferences);
@@ -421,53 +421,6 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
 const char * mySavedPrefs::setFromNVS = "set from NVS to:";
 const char * mySavedPrefs::couldNotBeRetriedFromNVS = "could not be retrieved from NVS. Using hard coded value:";
 
-/** _loadIPTypePrefs gets the value of IPs stored in NVS.
- * 
- *  preferences library methods signatures:
- *  - getBytesLength(const char* key)
- *  - getBytes(const char* key, void * buf, size_t maxLen)*/
-void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], IPAddress& envIP){
-  // 1. set the special debug message buffer
-  char _specDebugMess[60];
-
-  // 2. process the request
-  if (_preferences.getBytesLength(NVSVarName)) {
-    char _IPBuffer[4];
-    _preferences.getBytes(NVSVarName, _IPBuffer, 4);
-    for (int __ipIt=0; __ipIt<4; __ipIt++) {
-      envIP[__ipIt] = _IPBuffer[__ipIt];
-    }
-    snprintf(_specDebugMess, 18, "%s", setFromNVS);
-  } else {
-    snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
-  }
-  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, envIP.toString().c_str());
-}
-
-
-/** _loadUCharTypePrefs gets values of type UChar stored in NVS.
- * 
- *  preferences library methods signatures:
- *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
-  uint8_t _ui8EnvVar = _preferences.getUChar(NVSVarName);
-  if (_ui8EnvVar) ui8EnvVar = _ui8EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui8EnvVar);
-}
-
-
-/** _loadUCharToU16TypePrefs gets values of type UChar stored in NVS
- *  to load it to an uint16_t global variable.
- * 
- *  preferences library methods signatures:
- *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_loadUCharToU16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
-  uint8_t _ui8EnvVar = _preferences.getUChar(NVSVarName);
-  if (_ui8EnvVar) ui16EnvVar = (uint16_t)_ui8EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
-}
-
-
 /*
   ssid
   pass
@@ -547,7 +500,7 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 uint8_t mySavedPrefs::ui8OTA1SuccessErrorCode = 11;
 uint8_t mySavedPrefs::ui8OTA2SuccessErrorCode = 11;
 
-void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
+void mySavedPrefs::_loadOTASuccess(Preferences& _preferences) {
   // save the success code in the relevant NVS location
   _loadUCharTypePrefs(_preferences, "OTASucc1", "1st OTA Update Success", ui8OTA1SuccessErrorCode);
   _loadUCharTypePrefs(_preferences, "OTASucc2", "2nd OTA Update Success", ui8OTA2SuccessErrorCode);
@@ -626,6 +579,65 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   // will stay unchanged.
   _loadUCharToU16TypePrefs(_preferences, "bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
 }
+
+
+
+
+
+
+
+
+
+
+/** _loadIPTypePrefs gets the value of IPs stored in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - getBytesLength(const char* key)
+ *  - getBytes(const char* key, void * buf, size_t maxLen)*/
+void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], IPAddress& envIP){
+  // 1. set the special debug message buffer
+  char _specDebugMess[60];
+
+  // 2. process the request
+  if (_preferences.getBytesLength(NVSVarName)) {
+    char _IPBuffer[4];
+    _preferences.getBytes(NVSVarName, _IPBuffer, 4);
+    for (int __ipIt=0; __ipIt<4; __ipIt++) {
+      envIP[__ipIt] = _IPBuffer[__ipIt];
+    }
+    snprintf(_specDebugMess, 18, "%s", setFromNVS);
+  } else {
+    snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
+  }
+  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, envIP.toString().c_str());
+}
+
+
+/** _loadUCharTypePrefs gets values of type UChar stored in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - getUChar(const char* key, const uint8_t defaultValue) */
+void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
+  uint8_t _ui8EnvVar = _preferences.getUChar(NVSVarName);
+  if (_ui8EnvVar) ui8EnvVar = _ui8EnvVar;
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui8EnvVar);
+}
+
+
+/** _loadUCharToU16TypePrefs gets values of type UChar stored in NVS
+ *  to load it to an uint16_t global variable.
+ * 
+ *  preferences library methods signatures:
+ *  - getUChar(const char* key, const uint8_t defaultValue) */
+void mySavedPrefs::_loadUCharToU16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+  uint8_t _ui8EnvVar = _preferences.getUChar(NVSVarName);
+  if (_ui8EnvVar) ui16EnvVar = (uint16_t)_ui8EnvVar;
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
+}
+
+
+
+
 
 
 

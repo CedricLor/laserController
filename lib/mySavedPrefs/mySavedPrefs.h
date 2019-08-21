@@ -22,9 +22,9 @@ class mySavedPrefs
     static void loadPrefsWrapper();
 
     static void saveFromNetRequest(JsonObject& _obj);
+
     static uint8_t ui8OTA1SuccessErrorCode;
     static uint8_t ui8OTA2SuccessErrorCode;
-    static void loadOTASuccess(Preferences& _preferences);
 
     static void saveBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
     static void loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&));
@@ -53,19 +53,20 @@ class mySavedPrefs
     static const char * setFromNVS;
     static const char * couldNotBeRetriedFromNVS;
 
-    static void _loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
-    static void _loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
-    static void _loadUCharToU16TypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
-
     static void _loadNetworkCredentials(Preferences& _preferences);
     static void _loadNetworkEssentialPreferences(Preferences& _preferences);
     static void _loadUselessPreferences(Preferences& _preferences);
 
+    static void _loadOTASuccess(Preferences& _preferences);
     static void _loadBoxStartupTypePreferences(Preferences& _preferences);
     static void _loadBoxEssentialPreferences(Preferences& _preferences);
     static void _loadBoxBehaviorPreferences(Preferences& _preferences);
 
     // Common
+    static void _loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
+    static void _loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
+    static void _loadUCharToU16TypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
+
     static void _endPreferences(Preferences& _preferences);
 };
 
