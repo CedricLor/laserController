@@ -70,10 +70,6 @@ void mySavedPrefs::savePrefsWrapper() {
 void mySavedPrefs::loadPrefsWrapper() {
   Serial.print("\nSETUP: loadPrefsWrapper(): starting\n");
 
-  // Instanciate preferences
-  mySavedPrefs _myPrefsInst;
-  _myPrefsRef = _myPrefsInst;
-
     /** Open namespace "savedSettingsNS" in read only:
    *  second parameter has to be true. */
   if (_myPrefsRef._prefLib.begin("savedSettingsNS", /*read only = */true)){
@@ -94,7 +90,7 @@ void mySavedPrefs::loadPrefsWrapper() {
       Serial.printf("%s \"savedSettingsNS\" does not exist. thisBox ui16MasterBoxName (%i) and gui16BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName, gui16BoxesCount);
     }
 
-  _endPreferences();
+  _myPrefsRef._endPreferences();
 
   // On reboot, if the number of requested OTA reboots is superior to 0,
   // decrement it by 1 (and save it to NVS) until it reaches 0, where
@@ -154,13 +150,12 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)()) {
   // Instanciate preferences
   mySavedPrefs _myPrefsInst;
-  _myPrefsRef = _myPrefsInst;
 
   _startSavePreferences();
 
   callBack();
 
-  _endPreferences();
+  _myPrefsInst._endPreferences();
 }
 
 
@@ -178,7 +173,7 @@ void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)()) {
     callBack();
   }
 
-  _endPreferences();
+  _myPrefsInst._endPreferences();
 }
 
 

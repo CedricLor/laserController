@@ -73,7 +73,7 @@ class mySavedPrefs
     void _loadI16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], int16_t& i16EnvVar);
     void _loadUi16TypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
 
-    static void _endPreferences();
+    void _endPreferences();
 };
 
 extern mySavedPrefs _myPrefsRef;
