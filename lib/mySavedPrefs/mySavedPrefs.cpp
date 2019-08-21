@@ -206,15 +206,11 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   _myPrefsRef->_saveStringTypePrefs("pass", "password", pass);
 
   // save value of ui16GatewayPort
-  // Interface only
-  // -> restart the mesh
   // putShort(const char* key, int16_t value)
   size_t _ui16GatewayPortRet = _myPrefsRef->_prefLib.putUShort("gatePort", ui16GatewayPort);
   Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", _myPrefsRef->debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of ui8WifiChannel
-  // Interface only
-  // -> restart the mesh
   _myPrefsRef->_saveUCharTypePrefs("wifiChan", "ui8WifiChannel", ui8WifiChannel);
 
   // save value of the gatewayIP, the fixedIP and fixed Netmask
