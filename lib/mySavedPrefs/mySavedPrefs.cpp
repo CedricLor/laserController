@@ -568,6 +568,29 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
 
 
 
+/** _loadStringTypePrefs gets the value of c-strings stored in NVS and
+ *  copies them to a c-string global variable
+ * 
+ *  preferences library methods signatures:
+ *  - size_t getString(const char* key, char* value, size_t maxLen); */
+void mySavedPrefs::_loadStringTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], char* strEnvVar){
+  // 1. set the special debug message buffer
+  char _specDebugMess[60];
+
+  // 2. process the request
+  char _strEnvVar[30];
+  size_t _ret = _preferences.getString(NVSVarName, _strEnvVar, 30);
+  if (_ret) {
+    snprintf(strEnvVar, 30, "%s", _strEnvVar);
+    snprintf(_specDebugMess, 18, "%s", setFromNVS);
+  } else {
+    snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
+  }
+
+  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, _strEnvVar);
+}
+
+
 /** _loadIPTypePrefs gets the value of IPs stored in NVS.
  * 
  *  preferences library methods signatures:

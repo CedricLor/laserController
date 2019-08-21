@@ -63,6 +63,7 @@ class mySavedPrefs
     static void _loadBoxBehaviorPreferences(Preferences& _preferences);
 
     // Common
+    static void _loadStringTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], char* strEnvVar);
     static void _loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
     static void _loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     static void _loadCharTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], int8_t& i8EnvVar);
