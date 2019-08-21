@@ -492,7 +492,7 @@ void mySavedPrefs::_loadUselessPreferences(){
 
 
 
-/*
+/* _loadBoxEssentialPreferences()
   gui16NodeName
   isInterface
   isRoot
@@ -501,7 +501,6 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading Node Essential Preferences");
 
   // gui16NodeName
-  // getUChar(const char* key, const uint8_t defaultValue)
   _loadUCharToUi16TypePrefs("ui8NdeName", "gui16NodeName", gui16NodeName);
 
   // isInterface
