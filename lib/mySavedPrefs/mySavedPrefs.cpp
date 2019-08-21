@@ -70,11 +70,9 @@ void mySavedPrefs::loadPrefsWrapper() {
   // Instanciate preferences
   Preferences _preferences;
 
-  if (_preferences.begin("savedSettingsNS", /*read only = */true)){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
-
-    // read the value of "savedSettingsNS":"savedSettings"
-    unsigned int _savedSettings =_preferences.getShort("savedSettings", 0);
-    Serial.printf("%s \"savedSettings\" = _savedSettings = %i \n", _debugLoadMsgStart, _savedSettings);
+    /** Open namespace "savedSettingsNS" in read only:
+   *  second parameter has to be true. */
+  if (_preferences.begin("savedSettingsNS", /*read only = */true)){
 
       _loadNetworkCredentials(_preferences);
       _loadNetworkEssentialPreferences(_preferences);
@@ -166,22 +164,11 @@ void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(Preferences&)) {
   // Instanciate preferences
   Preferences _preferences;
 
-  if (_preferences.begin("savedSettingsNS", /*read only = */true) == true){       // Open Preferences with savedSettingsNS namespace. Open storage in Read only mode (second parameter true).
-
-    // read the value of "savedSettingsNS":"savedSettings"
-    unsigned int _savedSettings =_preferences.getShort("savedSettings", 0);
-    Serial.printf("%s \"savedSettings\" = _savedSettings = %i \n", _debugLoadMsgStart, _savedSettings);
-
-    // if the value of _savedSettings > 0, this means that some settings have been saved in the past
-    if (_savedSettings > 0) {
-      Serial.printf("%s NVS has saved settings. Loading values.\n", _debugLoadMsgStart);
-
+  /** Open namespace "savedSettingsNS" in read only:
+   *  second parameter has to be true. */
+  if (_preferences.begin("savedSettingsNS", /*read only = */true) == true){
       callBack(_preferences);
-
-    } else {
-      Serial.printf("%s \"savedSettingsNS\" does not exist. thisBox ui16MasterBoxName (%u) and gui16BoxesCount (%u) will keep their default values\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName, gui16BoxesCount);
     }
-  }
 
   _endPreferences(_preferences);
 }
@@ -197,14 +184,9 @@ void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
 
 
-  // Open namespace "savedSettingsNS" in read-write
-  _preferences.begin("savedSettingsNS", /*read only = */false);        // Open Preferences with savedSettingsNS namespace. Open storage in RW-mode (second parameter has to be false).
-
-  // // Immediately add a "savedSettings" key:value pair
-  // // (incrementing a counter of the number of time save
-  // // operations have taken place)
-  // // size_t _sSavedSettingsRet =_preferences.putShort("savedSettings",_preferences.getShort("savedSettings", 0) + 1);
-  // // Serial.printf("%s savedSettings == %u %s\"savedSettings\"\n", debugSaveMsgStart, _preferences.getShort("savedSettings"), (_sSavedSettingsRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  /** Open namespace "savedSettingsNS" in read-write:
+   *  second parameter has to be false. */
+  _preferences.begin("savedSettingsNS", /*read only = */false);
 }
 
 
