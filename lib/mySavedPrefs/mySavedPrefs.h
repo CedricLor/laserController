@@ -20,8 +20,8 @@ class mySavedPrefs
 
     Preferences _prefLib;
 
-    static void savePrefsWrapper();
-    static void loadPrefsWrapper();
+    void savePrefsWrapper();
+    void loadPrefsWrapper();
 
     static void saveFromNetRequest(JsonObject& _obj);
 
@@ -52,8 +52,8 @@ class mySavedPrefs
     static void _saveBoxBehaviorPreferences();
 
     // Load Prefs
-    static const char * setFromNVS;
-    static const char * couldNotBeRetriedFromNVS;
+    const char * setFromNVS;
+    const char * couldNotBeRetriedFromNVS;
 
     void _loadNetworkCredentials();
     void _loadNetworkEssentialPreferences();

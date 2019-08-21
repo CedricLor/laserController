@@ -8,7 +8,9 @@
 
 mySavedPrefs _myPrefsRef;
 
-mySavedPrefs::mySavedPrefs()
+mySavedPrefs::mySavedPrefs() : 
+  setFromNVS("set from NVS to:"), 
+  couldNotBeRetriedFromNVS("could not be retrieved from NVS. Using hard coded value:")
 {
   // Instanciate preferences library
   Preferences _prefLib;
@@ -405,9 +407,6 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
 ///////////////////////////////////////////////////
 // LOADERS
 ///////////////////////////////////////////////////
-
-const char * mySavedPrefs::setFromNVS = "set from NVS to:";
-const char * mySavedPrefs::couldNotBeRetriedFromNVS = "could not be retrieved from NVS. Using hard coded value:";
 
 /*
   ssid
