@@ -16,6 +16,10 @@
 class mySavedPrefs
 {
   public:
+    const PROGMEM char * debugSaveMsgStart;
+    const PROGMEM char * debugSaveMsgEndSuccess;
+    const PROGMEM char * debugSaveMsgEndFail;
+
     mySavedPrefs();
 
     Preferences _prefLib;
@@ -31,29 +35,25 @@ class mySavedPrefs
     void saveBoxSpecificPrefsWrapper(void (&callBack)());
     void loadBoxSpecificPrefsWrapper(void (&callBack)());
 
-    const PROGMEM char * debugSaveMsgStart;
-    const PROGMEM char * debugSaveMsgEndSuccess;
-    const PROGMEM char * debugSaveMsgEndFail;
-
   private:
 
     const PROGMEM char * _debugLoadMsgStart;
 
     // Save Prefs
-    static void _startSavePreferences();
+    void _startSavePreferences();
 
     static void _saveNetworkCredentials();
-    static void _saveNetworkEssentialPreferences();
-    static void _saveUselessPreferences();
+    void _saveNetworkEssentialPreferences();
+    void _saveUselessPreferences();
 
     static void _saveBoxStartupTypePreferences();
     static void _resetOTASuccess();
-    static void _saveBoxEssentialPreferences();
-    static void _saveBoxBehaviorPreferences();
+    void _saveBoxEssentialPreferences();
+    void _saveBoxBehaviorPreferences();
 
     // Load Prefs
-    const char * setFromNVS;
     const char * couldNotBeRetriedFromNVS;
+    const char * setFromNVS;
 
     void _loadNetworkCredentials();
     void _loadNetworkEssentialPreferences();
