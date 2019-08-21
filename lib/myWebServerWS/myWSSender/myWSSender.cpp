@@ -236,8 +236,12 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
-    uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);
-    __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
+    if (isRoot) {
+      __rootIFSettings["roNNa"] = thisBox.ui16NodeName;
+    } else {
+      uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);
+      __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
+    }
     __rootIFSettings["IFNNA"]   = thisBox.ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
