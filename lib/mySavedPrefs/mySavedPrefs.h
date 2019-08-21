@@ -29,7 +29,7 @@ class mySavedPrefs
     static uint8_t ui8OTA2SuccessErrorCode;
 
     static void saveBoxSpecificPrefsWrapper(void (&callBack)());
-    static void loadBoxSpecificPrefsWrapper(void (&callBack)());
+    void loadBoxSpecificPrefsWrapper(void (&callBack)());
 
     static const PROGMEM char debugSaveMsgStart[];
     static const PROGMEM char debugSaveMsgEndSuccess[];
