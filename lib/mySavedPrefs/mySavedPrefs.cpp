@@ -478,7 +478,7 @@ void mySavedPrefs::_loadUCharToU16TypePrefs(Preferences& _preferences, const cha
   fixedNetmaskIP
 */
 void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
-  Serial.println("--- " + String(_debugLoadMsgStart) + " Loading External Wifi Credentials");
+  Serial.println(String(_debugLoadMsgStart) + " --- Loading External Wifi Credentials");
 
   // ssid
   // -> restart the mesh
@@ -515,7 +515,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   _loadIPTypePrefs(_preferences, "fixedIP", "fixedIP", fixedIP);
   _loadIPTypePrefs(_preferences, "netMask", "fixedNetmaskIP", fixedNetmaskIP);
 
-  Serial.println("--- " + String(_debugLoadMsgStart) + " End Loading External Wifi Credentials");
+  Serial.println(String(_debugLoadMsgStart) + " --- End Loading External Wifi Credentials");
 }
 
 
