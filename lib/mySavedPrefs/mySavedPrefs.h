@@ -55,14 +55,14 @@ class mySavedPrefs
     static const char * setFromNVS;
     static const char * couldNotBeRetriedFromNVS;
 
-    static void _loadNetworkCredentials();
-    static void _loadNetworkEssentialPreferences();
-    static void _loadUselessPreferences();
+    void _loadNetworkCredentials();
+    void _loadNetworkEssentialPreferences();
+    void _loadUselessPreferences();
 
-    static void _loadBoxStartupTypePreferences();
-    static void _loadOTASuccess();
-    static void _loadBoxEssentialPreferences();
-    static void _loadBoxBehaviorPreferences();
+    void _loadBoxStartupTypePreferences();
+    void _loadOTASuccess();
+    void _loadBoxEssentialPreferences();
+    void _loadBoxBehaviorPreferences();
 
     // Common
     void _loadStringTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], char* strEnvVar);

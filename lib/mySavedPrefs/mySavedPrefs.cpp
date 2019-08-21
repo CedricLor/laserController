@@ -76,17 +76,17 @@ void mySavedPrefs::loadPrefsWrapper() {
    *  second parameter has to be true. */
   if (_myPrefsRef._prefLib.begin("savedSettingsNS", /*read only = */true)){
 
-      _loadNetworkCredentials();
-      _loadNetworkEssentialPreferences();
-      _loadUselessPreferences();
+      _myPrefsRef._loadNetworkCredentials();
+      _myPrefsRef._loadNetworkEssentialPreferences();
+      _myPrefsRef._loadUselessPreferences();
 
       Serial.println(String(_debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
-      _loadBoxStartupTypePreferences();
-      _loadOTASuccess();
+      _myPrefsRef._loadBoxStartupTypePreferences();
+      _myPrefsRef._loadOTASuccess();
       Serial.println(String(_debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
 
-      _loadBoxEssentialPreferences();
-      _loadBoxBehaviorPreferences();
+      _myPrefsRef._loadBoxEssentialPreferences();
+      _myPrefsRef._loadBoxBehaviorPreferences();
 
     } else {
       Serial.printf("%s \"savedSettingsNS\" does not exist. thisBox ui16MasterBoxName (%i) and gui16BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName, gui16BoxesCount);
