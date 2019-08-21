@@ -7,11 +7,44 @@
 #include "mySavedPrefs.h"
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**********************************************************************
+***************************** MySavedPrefs ****************************
+***********************************************************************/
+
+
+/** Default constructor */
 mySavedPrefs::mySavedPrefs(bool readOnly) : 
   debugSaveMsgStart("PREFERENCES: savePreferences(): the value of"),
   debugSaveMsgEndSuccess("has been saved to \"savedSettingsNS\":"),
   debugSaveMsgEndFail("could not be saved to \"savedSettingsNS\":"),
-  _debugLoadMsgStart("SETUP: loadPreferences():"),
+  debugLoadMsgStart("SETUP: loadPreferences():"),
   couldNotBeRetriedFromNVS("could not be retrieved from NVS. Using hard coded value:"),
   setFromNVS("set from NVS to:")
 {
@@ -23,6 +56,9 @@ mySavedPrefs::mySavedPrefs(bool readOnly) :
    *  By default, the class constructor opens in rw. */
   _prefLib.begin("savedSettingsNS", /*read only = */readOnly);
 }
+
+
+
 
 
   /* variables to be saved in NVS:
@@ -76,10 +112,10 @@ void mySavedPrefs::loadPrefsWrapper() {
   _loadNetworkEssentialPreferences();
   _loadUselessPreferences();
 
-  Serial.println(String(_debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
+  Serial.println(String(debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
   _loadBoxStartupTypePreferences();
   _loadOTASuccess();
-  Serial.println(String(_debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
+  Serial.println(String(debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
 
   _loadBoxEssentialPreferences();
   _loadBoxBehaviorPreferences();
@@ -391,14 +427,14 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
   fixedNetmaskIP
 */
 void mySavedPrefs::_loadNetworkCredentials(){
-  Serial.println(String(_debugLoadMsgStart) + " --- Loading External Wifi Credentials");
+  Serial.println(String(debugLoadMsgStart) + " --- Loading External Wifi Credentials");
 
   // ssid
   // -> restart the mesh
   char _ssid[20];
   if (_prefLib.getString("ssid", _ssid, 20)) {
     strcpy(ssid, (const char*)_ssid);
-    Serial.printf("%s ssid set to: %s\n", _debugLoadMsgStart, ssid);
+    Serial.printf("%s ssid set to: %s\n", debugLoadMsgStart, ssid);
   }
 
   // pass
@@ -406,7 +442,7 @@ void mySavedPrefs::_loadNetworkCredentials(){
   char _pass[30];
   if (_prefLib.getString("pass", _pass, 30)) {
     strcpy(pass, (const char*)_pass);
-    Serial.printf("%s pass set to: %s\n", _debugLoadMsgStart, pass);
+    Serial.printf("%s pass set to: %s\n", debugLoadMsgStart, pass);
   }
 
   // get the value of ui16GatewayPort
@@ -426,7 +462,7 @@ void mySavedPrefs::_loadNetworkCredentials(){
   _loadIPTypePrefs("fixedIP", "fixedIP", fixedIP);
   _loadIPTypePrefs("netMask", "fixedNetmaskIP", fixedNetmaskIP);
 
-  Serial.println(String(_debugLoadMsgStart) + " --- End External Wifi Credentials");
+  Serial.println(String(debugLoadMsgStart) + " --- End External Wifi Credentials");
 }
 
 
@@ -501,7 +537,7 @@ void mySavedPrefs::_loadUselessPreferences(){
   isRoot
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(){
-  Serial.println(String(_debugLoadMsgStart) + " --- Loading Node Essential Preferences");
+  Serial.println(String(debugLoadMsgStart) + " --- Loading Node Essential Preferences");
 
   // gui16NodeName
   // getUChar(const char* key, const uint8_t defaultValue)
@@ -509,13 +545,13 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
 
   // isInterface
   isInterface = _prefLib.getBool("isIF", isInterface);
-  Serial.printf("%s isInterface set to: %i\n", _debugLoadMsgStart, isInterface);
+  Serial.printf("%s isInterface set to: %i\n", debugLoadMsgStart, isInterface);
 
   // isRoot
   isRoot = _prefLib.getBool("isRoot", isRoot);
-  Serial.printf("%s isRoot set to: %i\n", _debugLoadMsgStart, isRoot);
+  Serial.printf("%s isRoot set to: %i\n", debugLoadMsgStart, isRoot);
 
-  Serial.println(String(_debugLoadMsgStart) + " --- End Node Essential Preferences");
+  Serial.println(String(debugLoadMsgStart) + " --- End Node Essential Preferences");
 }
 
 
@@ -562,7 +598,7 @@ void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[13], const char hu
     snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
 
-  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, _strEnvVar);
+  Serial.printf("%s %s %s %s\n", debugLoadMsgStart, humanReadableVarName, _specDebugMess, _strEnvVar);
 }
 
 
@@ -586,7 +622,7 @@ void mySavedPrefs::_loadIPTypePrefs(const char NVSVarName[13], const char humanR
   } else {
     snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
-  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, envIP.toString().c_str());
+  Serial.printf("%s %s %s %s\n", debugLoadMsgStart, humanReadableVarName, _specDebugMess, envIP.toString().c_str());
 }
 
 
@@ -597,7 +633,7 @@ void mySavedPrefs::_loadIPTypePrefs(const char NVSVarName[13], const char humanR
 void mySavedPrefs::_loadCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], int8_t& i8EnvVar){
   int8_t _i8EnvVar = _prefLib.getChar(NVSVarName);
   if (_i8EnvVar) i8EnvVar = _i8EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_i8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i8EnvVar);
+  Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_i8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i8EnvVar);
 }
 
 
@@ -608,7 +644,7 @@ void mySavedPrefs::_loadCharTypePrefs(const char NVSVarName[13], const char huma
 void mySavedPrefs::_loadUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
   uint8_t _ui8EnvVar = _prefLib.getUChar(NVSVarName);
   if (_ui8EnvVar) ui8EnvVar = _ui8EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui8EnvVar);
+  Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui8EnvVar);
 }
 
 
@@ -620,7 +656,7 @@ void mySavedPrefs::_loadUCharTypePrefs(const char NVSVarName[13], const char hum
 void mySavedPrefs::_loadUCharToUi16TypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
   uint8_t _ui8EnvVar = _prefLib.getUChar(NVSVarName);
   if (_ui8EnvVar) ui16EnvVar = (uint16_t)_ui8EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
+  Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
 }
 
 
@@ -632,7 +668,7 @@ void mySavedPrefs::_loadUCharToUi16TypePrefs(const char NVSVarName[13], const ch
 void mySavedPrefs::_loadI16TypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], int16_t& i16EnvVar){
   int16_t _i16EnvVar = _prefLib.getShort(NVSVarName);
   if (_i16EnvVar) i16EnvVar = _i16EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_i16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i16EnvVar);
+  Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_i16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i16EnvVar);
 }
 
 
@@ -644,7 +680,7 @@ void mySavedPrefs::_loadI16TypePrefs(const char NVSVarName[13], const char human
 void mySavedPrefs::_loadUi16TypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
   uint16_t _ui16EnvVar = _prefLib.getUShort(NVSVarName);
   if (_ui16EnvVar) ui16EnvVar = _ui16EnvVar;
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
+  Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
 }
 
 
