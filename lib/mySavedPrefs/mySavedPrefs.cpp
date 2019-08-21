@@ -220,6 +220,8 @@ void mySavedPrefs::_startSavePreferences(Preferences& _preferences) {
   fixedNetmaskIP
 */
 void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
+  Serial.println("Saving External Wifi Credentials");
+
   // save value of ssid
   // Interface only
   // -> restart the mesh
@@ -269,6 +271,8 @@ void mySavedPrefs::_saveNetworkCredentials(Preferences& _preferences) {
   uint8_t _ui8FixedNetmaskIP[4] = {fixedNetmaskIP[0], fixedNetmaskIP[1], fixedNetmaskIP[2], fixedNetmaskIP[3]};
   size_t _bsFixedNetmaskIPRet = _preferences.putBytes("netMask", _ui8FixedNetmaskIP, 4);
   Serial.printf("%s Wifi netmask == %s %s\"netMask\"\n", debugSaveMsgStart, fixedNetmaskIP.toString().c_str(), (_bsFixedNetmaskIPRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+
+  Serial.println("End External Wifi Credentials");
 }
 
 
@@ -423,8 +427,11 @@ void mySavedPrefs::_saveBoxBehaviorPreferences(Preferences& _preferences) {
   fixedNetmaskIP
 */
 void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
+  Serial.println("Loading External Wifi Credentials");
+
   // ssid
   // -> restart the mesh
+
   char _ssid[20];
   if (_preferences.getString("ssid", _ssid, 20)) {
     strcpy(ssid, (const char*)_ssid);
@@ -439,21 +446,39 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
     Serial.printf("%s pass set to: %s\n", _debugLoadMsgStart, pass);
   }
 
-  // get the value of gatewayIP
-  // Interface only
-  // -> restart the mesh
-  // getBytesLength(const char* key)
-  // getBytes(const char* key, void * buf, size_t maxLen)
-  if (_preferences.getBytesLength("gateIP")) {
+  /** get the value of gatewayIP from NVS
+   *  
+   *  use case: web interface served on ESP station interface.
+   *  
+   *  default value location: secret library
+   * 
+   *  dynamic reset: -> restart the mesh
+   * 
+   *  preferences library methods signatures:
+   *  - getBytesLength(const char* key)
+   *  - getBytes(const char* key, void * buf, size_t maxLen)
+   */
+  // 1. set the variables related to this specific pref 
+  char NVSVarName[11];
+  snprintf(NVSVarName, 9, "%s", "gateIP");
+  char humanReadableVarName[20];
+  snprintf(humanReadableVarName, 12, "%s", "gateway IP");
+  // 2. set the special debug message buffer
+  const char * setFromNVS = "set from NVS to:";
+  const char * couldNotBeRetriedFromNVS = "could not be retrieved from NVS. Using hard coded value:";
+  char specDebugMess[80];
+  // 3. process the request
+  if (_preferences.getBytesLength(NVSVarName)) {
     char _gatewayIPBuffer[4];
-    _preferences.getBytes("gateIP", _gatewayIPBuffer, 4);
+    _preferences.getBytes(NVSVarName, _gatewayIPBuffer, 4);
     for (int __ipIt=0; __ipIt<4; __ipIt++) {
       gatewayIP[__ipIt] = _gatewayIPBuffer[__ipIt];
     }
-    Serial.printf("%s gatewayIP set to: %s\n", _debugLoadMsgStart, gatewayIP.toString().c_str());
+    snprintf(specDebugMess, 18, "%s", setFromNVS);
   } else {
-    Serial.printf("%s gatewayIP could not be retrieved.\n", _debugLoadMsgStart);
+    snprintf(specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
+  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, specDebugMess, gatewayIP.toString().c_str());
 
   // get the value of ui16GatewayPort
   // -> restart the mesh
@@ -467,37 +492,69 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   ui8WifiChannel = _preferences.getUChar("wifiChan", ui8WifiChannel);
   Serial.printf("%s ui8WifiChannel set to: %i\n", _debugLoadMsgStart, ui8WifiChannel);
 
-  // get the value of fixedIP
-  // Interface only
-  // -> restart the mesh
-  // getBytesLength(const char* key)
-  // getBytes(const char* key, void * buf, size_t maxLen)
-  if (_preferences.getBytesLength("fixedIP")) {
+
+  /** get the value of fixedIP from NVS
+   *  
+   *  use case: web interface served on ESP station interface.
+   *  
+   *  default value location: secret library
+   * 
+   *  dynamic reset: -> restart the mesh
+   * 
+   *  preferences library methods signatures:
+   *  - getBytesLength(const char* key)
+   *  - getBytes(const char* key, void * buf, size_t maxLen)
+   */
+  // 1. set the variables related to this specific pref
+  snprintf(NVSVarName, 9, "%s", "fixedIP");
+  snprintf(humanReadableVarName, 9, "%s", "fixedIP");
+  // 2. set the special debug message buffer
+  specDebugMess[0] = 0;
+  // 3. process the request
+  if (_preferences.getBytesLength(NVSVarName)) {
     char _fixedIPBuffer[4];
-    _preferences.getBytes("fixedIP", _fixedIPBuffer, 4);
+    _preferences.getBytes(NVSVarName, _fixedIPBuffer, 4);
     for (int __ipIt=0; __ipIt<4; __ipIt++) {
       fixedIP[__ipIt] = _fixedIPBuffer[__ipIt];
     }
-    Serial.printf("%s fixedIP set to: %s\n", _debugLoadMsgStart, fixedIP.toString().c_str());
+    snprintf(specDebugMess, 18, "%s", setFromNVS);
   } else {
-    Serial.printf("%s fixedIP could not be retrieved.\n", _debugLoadMsgStart);
+    snprintf(specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
+  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, specDebugMess, fixedIP.toString().c_str());  
 
-  // get the value of fixedNetmaskIP
-  // Interface only
-  // -> restart the mesh
-  // getBytesLength(const char* key)
-  // getBytes(const char* key, void * buf, size_t maxLen)
-  if (_preferences.getBytesLength("netMask")) {
+
+  /** get the value of fixedNetmaskIP from NVS
+   *  
+   *  use case: web interface served on ESP station interface.
+   *  
+   *  dynamic reset: -> restart the mesh
+   * 
+   *  default value location: secret library
+   * 
+   *  preferences library methods signatures:
+   *  - getBytesLength(const char* key)
+   *  - getBytes(const char* key, void * buf, size_t maxLen)
+   */
+  // 1. set the variables related to this specific pref
+  snprintf(NVSVarName, 9, "%s", "netMask");
+  snprintf(humanReadableVarName, 9, "%s", "fixedNetmaskIP");
+  // 2. reset the special debug message buffer
+  specDebugMess[0] = 0;
+  // 3. process the request
+  if (_preferences.getBytesLength(NVSVarName)) {
     char _fixedNetmaskIPBuffer[4];
-    _preferences.getBytes("netMask", _fixedNetmaskIPBuffer, 4);
+    _preferences.getBytes(NVSVarName, _fixedNetmaskIPBuffer, 4);
     for (int __ipIt=0; __ipIt<4; __ipIt++) {
       fixedNetmaskIP[__ipIt] = _fixedNetmaskIPBuffer[__ipIt];
     }
-    Serial.printf("%s fixedNetmaskIP set to: %s\n", _debugLoadMsgStart, fixedNetmaskIP.toString().c_str());
+    snprintf(specDebugMess, 18, "%s", setFromNVS);
   } else {
-    Serial.printf("%s fixedNetmaskIP could not be retrieved.\n", _debugLoadMsgStart);
+    snprintf(specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
+  Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, specDebugMess, fixedNetmaskIP.toString().c_str());  
+
+  Serial.println("End Loading External Wifi Credentials");
 }
 
 
