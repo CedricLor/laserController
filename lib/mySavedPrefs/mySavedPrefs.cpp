@@ -8,32 +8,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**********************************************************************
 ***************************** MySavedPrefs ****************************
 ***********************************************************************/
@@ -417,47 +391,34 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
 // LOADERS
 ///////////////////////////////////////////////////
 
-/*
-  ssid
-  pass
-  gatewayIP
-  ui16GatewayPort
-  ui8WifiChannel
-  fixedIP
-  fixedNetmaskIP
-*/
+/** _loadNetworkCredentials(): 
+ *   
+ *  * use case: web interface served on ESP station interface.
+ *  * dynamic reset: -> restart painlessmesh on the IF node 
+ *  * default value location: secret library 
+ * 
+ *  saved settings:
+ *  - ssid
+ *  - pass
+ *  - gatewayIP
+ *  - ui16GatewayPort
+ *  - ui8WifiChannel
+ *  - fixedIP
+ *  - fixedNetmaskIP */
 void mySavedPrefs::_loadNetworkCredentials(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading External Wifi Credentials");
 
-  // ssid
-  // -> restart the mesh
-  char _ssid[20];
-  if (_prefLib.getString("ssid", _ssid, 20)) {
-    strcpy(ssid, (const char*)_ssid);
-    Serial.printf("%s ssid set to: %s\n", debugLoadMsgStart, ssid);
-  }
+  /** get the value of the external wifi network SSID and password */
+  _loadStringTypePrefs("ssid", "external wifi network ssid", ssid);
+  _loadStringTypePrefs("pass", "external wifi network password", pass);
 
-  // pass
-  // -> restart the mesh
-  char _pass[30];
-  if (_prefLib.getString("pass", _pass, 30)) {
-    strcpy(pass, (const char*)_pass);
-    Serial.printf("%s pass set to: %s\n", debugLoadMsgStart, pass);
-  }
-
-  // get the value of ui16GatewayPort
-  // -> restart the mesh
+  /** get the value of ui16GatewayPort */
   _loadUi16TypePrefs("gatePort", "ui16GatewayPort", ui16GatewayPort);
 
-  // get the value of ui8WifiChannel
-  // -> restart the mesh
+  /** get the value of ui8WifiChannel */
   _loadUCharTypePrefs("wifiChan", "wifi channel", ui8WifiChannel);
 
-  /** get the value of gatewayIP, fixedIP and fixedNetmaskIP from NVS
-   *  
-   *  * use case: web interface served on ESP station interface.
-   *  * dynamic reset: -> restart the mesh
-   *  * default value location: secret library */
+  /** get the value of gatewayIP, fixedIP and fixedNetmaskIP from NVS */
   _loadIPTypePrefs("gateIP", "gateway IP", gatewayIP);
   _loadIPTypePrefs("fixedIP", "fixedIP", fixedIP);
   _loadIPTypePrefs("netMask", "fixedNetmaskIP", fixedNetmaskIP);
