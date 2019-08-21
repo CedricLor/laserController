@@ -627,7 +627,7 @@ void mySavedPrefs::_loadI16TypePrefs(Preferences& _preferences, const char NVSVa
  *  preferences library methods signatures:
  *  - getUShort(const char* key, const uint16_t defaultValue) */
 void mySavedPrefs::_loadUi16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
-  int16_t _ui16EnvVar = _preferences.getUShort(NVSVarName);
+  uint16_t _ui16EnvVar = _preferences.getUShort(NVSVarName);
   if (_ui16EnvVar) ui16EnvVar = _ui16EnvVar;
   Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
 }
