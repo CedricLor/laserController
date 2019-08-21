@@ -54,7 +54,7 @@ class mySavedPrefs
     static const char * couldNotBeRetriedFromNVS;
 
     static void _loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
-    static void _loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[11], const char humanReadableVarName[20], uint8_t& ui8envVar);
+    static void _loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
 
     static void _loadNetworkCredentials(Preferences& _preferences);
     static void _loadNetworkEssentialPreferences(Preferences& _preferences);

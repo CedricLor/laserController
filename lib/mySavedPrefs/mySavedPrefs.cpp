@@ -449,20 +449,24 @@ void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVar
  * 
  *  preferences library methods signatures:
  *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[11], const char humanReadableVarName[20], uint8_t& ui8envVar){
-  // 1. set the special debug message buffer
-  char _specDebugMess[60];
+void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
+  uint8_t _ui8EnvVar = _preferences.getUChar(NVSVarName);
+  if (_ui8EnvVar) ui8EnvVar = _ui8EnvVar;
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui8EnvVar);
+}
 
-  // 2. process the request
-  // getUChar(const char* key, const uint8_t defaultValue)
-  uint8_t _ui8envVar = _preferences.getUChar("wifiChan", ui8WifiChannel);
-  if (_ui8envVar) {
-    ui8envVar = _ui8envVar;
-    snprintf(_specDebugMess, 18, "%s", setFromNVS);
-  } else {
-    snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
-  }
-  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, ui8envVar);
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
@@ -553,10 +557,8 @@ uint8_t mySavedPrefs::ui8OTA2SuccessErrorCode = 11;
 
 void mySavedPrefs::loadOTASuccess(Preferences& _preferences) {
   // save the success code in the relevant NVS location
-  ui8OTA1SuccessErrorCode = _preferences.getUChar("OTASucc1", ui8OTA1SuccessErrorCode);
-  Serial.printf("%s ui8OTA1SuccessErrorCode set to: %u\n", _debugLoadMsgStart, ui8OTA1SuccessErrorCode);
-  ui8OTA2SuccessErrorCode = _preferences.getUChar("OTASucc2", ui8OTA2SuccessErrorCode);
-  Serial.printf("%s ui8OTA2SuccessErrorCode set to: %u\n", _debugLoadMsgStart, ui8OTA2SuccessErrorCode);
+  _loadUCharTypePrefs(_preferences, "OTASucc1", "1st OTA Update Success", ui8OTA1SuccessErrorCode);
+  _loadUCharTypePrefs(_preferences, "OTASucc2", "2nd OTA Update Success", ui8OTA2SuccessErrorCode);
 }
 
 
