@@ -503,8 +503,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   // get the value of ui8WifiChannel
   // -> restart the mesh
   // getUChar(const char* key, const uint8_t defaultValue)
-  ui8WifiChannel = _preferences.getUChar("wifiChan", ui8WifiChannel);
-  Serial.printf("%s ui8WifiChannel set to: %i\n", _debugLoadMsgStart, ui8WifiChannel);
+  _loadUCharTypePrefs(_preferences, "wifiChan", "wifi channel", ui8WifiChannel);
 
   /** get the value of gatewayIP, fixedIP and fixedNetmaskIP from NVS
    *  
