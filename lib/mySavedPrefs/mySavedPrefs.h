@@ -66,6 +66,7 @@ class mySavedPrefs
     static void _loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
     static void _loadUCharTypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
     static void _loadUCharToUi16TypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
+    static void _loadI16TypePrefs(Preferences& _preferences, const char NVSVarName[], const char humanReadableVarName[], int16_t& i16EnvVar);
 
     static void _endPreferences(Preferences& _preferences);
 };

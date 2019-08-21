@@ -549,8 +549,7 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
  * thisBox.ui16MasterBoxName */
 void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   // sBoxDefaultState
-  thisBox.sBoxDefaultState =_preferences.getShort("sBoxDefSta", thisBox.sBoxDefaultState);
-  Serial.printf("%s thisBox.sBoxDefaultState set to: %i\n", _debugLoadMsgStart, thisBox.sBoxDefaultState);
+  _loadI16TypePrefs(_preferences, "sBoxDefSta", "thisBox.sBoxDefaultState", thisBox.sBoxDefaultState);
 
   // thisBox.ui16MasterBoxName
   _loadUCharToUi16TypePrefs(_preferences, "bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
@@ -612,6 +611,16 @@ void mySavedPrefs::_loadUCharToUi16TypePrefs(Preferences& _preferences, const ch
 }
 
 
+/** _loadI16TypePrefs gets values of type I16 stored in NVS
+ *  to load it to an int16_t global variable.
+ * 
+ *  preferences library methods signatures:
+ *  - getShort(const char* key, const int16_t defaultValue) */
+void mySavedPrefs::_loadI16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], int16_t& i16EnvVar){
+  int16_t _i16EnvVar = _preferences.getShort(NVSVarName);
+  if (_i16EnvVar) i16EnvVar = _i16EnvVar;
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_i16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i16EnvVar);
+}
 
 
 
