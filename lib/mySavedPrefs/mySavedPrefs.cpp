@@ -510,8 +510,7 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
   gi8RequestedOTAReboots
 */
 void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
-  gi8RequestedOTAReboots =_preferences.getChar("OTARebReq", gi8RequestedOTAReboots);
-  Serial.printf("%s gi8RequestedOTAReboots set to: %i\n", _debugLoadMsgStart, gi8RequestedOTAReboots);
+  _loadCharTypePrefs(_preferences, "OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
 }
 
 
@@ -583,6 +582,17 @@ void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVar
     snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
   Serial.printf("%s %s %s %s\n", _debugLoadMsgStart, humanReadableVarName, _specDebugMess, envIP.toString().c_str());
+}
+
+
+/** _loadCharTypePrefs gets values of type Char stored in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - getChar(const char* key, const int8_t defaultValue) */
+void mySavedPrefs::_loadCharTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], int8_t& i8EnvVar){
+  int8_t _i8EnvVar = _preferences.getChar(NVSVarName);
+  if (_i8EnvVar) i8EnvVar = _i8EnvVar;
+  Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_i8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i8EnvVar);
 }
 
 
