@@ -3,31 +3,36 @@
   Created by Cedric Lor, January 2, 2019.
 */
 
+
+/**********************************************************************
+***************************** GLOBAL **********************************
+***********************************************************************/
+
 /*
- * 2752557361, 10.107.105.1 = box 201, master 201, StationIP = 10.177.49.2
- * 2752932713, 10.177.49.1 = box 202, master 201
- * 2752577349, 10.255.69.1 = box 204, master 201
- */
+ * 2752557361, 10.107.105.1 = box 201, StationIP = 10.177.49.2
+ * 2752932713, 10.177.49.1 = box 202, 
+* 2752577349, 10.255.69.1 = box 204, 
+*/
 
 #include "Arduino.h"
 #include "global.h"
 
 /** short relayPins[PIN_COUNT]: array of pins connected to the lasers
  * in ControlerBoxes */ 
-short relayPins[] = { 5, 17, 16, 4 };
-// short relayPins[] = { 22, 21, 19, 18, 5, 17, 16, 4 };
+short relayPins[]                             = { 5, 17, 16, 4 };
+// short relayPins[]                            = { 22, 21, 19, 18, 5, 17, 16, 4 };
 
 
 // Debug variables: setting them to true or false enables or disables more
 // Serial.prints
-const bool MY_DEBUG = true;
-const bool MY_DG_LASER = false;
-const bool MY_DG_WS = true;
-const bool MY_DG_WEB = true;
-const bool MY_DG_MESH = true;
-const bool MY_DEEP_DG_MESH = false;
+const bool MY_DEBUG                           = true;
+const bool MY_DG_LASER                        = false;
+const bool MY_DG_WS                           = true;
+const bool MY_DG_WEB                          = true;
+const bool MY_DG_MESH                         = true;
+const bool MY_DEEP_DG_MESH                    = false;
 
-const short VERSION = 0;
+const short VERSION                           = 0;
 
 
 /** UI8_DEFAULT_MASTER_NODE_NAME:
