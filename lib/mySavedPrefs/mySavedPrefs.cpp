@@ -386,6 +386,27 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
 
 
 
+/** _saveUCharTypePrefs gets values of type UChar stored in NVS.
+ * 
+ *  preferences library methods signatures:
+ *  - putUChar(const char* key, uint8_t value) */
+void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
+  size_t _ret = _prefLib.putUChar(NVSVarName, ui8EnvVar);
+  Serial.printf("%s %s == %u %s\"OTASucc1\"\n", debugSaveMsgStart, humanReadableVarName, 11, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+}
+
+
+/** _saveUi16ToUCharTypePrefs stores global variables of type uint16_t
+ *  as UChar in NVS
+ * 
+ *  preferences library methods signatures:
+ *  - getUChar(const char* key, const uint8_t defaultValue) */
+void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+  size_t _ret = _prefLib.putUChar(NVSVarName, (uint8_t)ui16EnvVar);
+  Serial.printf("%s %s == %u %s\"OTASucc1\"\n", debugSaveMsgStart, humanReadableVarName, 11, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+}
+
+
 
 ///////////////////////////////////////////////////
 // LOADERS
@@ -642,6 +663,13 @@ void mySavedPrefs::_loadUi16TypePrefs(const char NVSVarName[13], const char huma
   if (_ui16EnvVar) ui16EnvVar = _ui16EnvVar;
   Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
 }
+
+
+
+
+
+
+
 
 
 
