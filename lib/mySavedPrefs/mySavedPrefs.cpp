@@ -463,10 +463,10 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
 */
 void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
   // gui16ControllerBoxPrefix
-  _loadUCharToU16TypePrefs(_preferences, "bContrBPref", "gui16ControllerBoxPrefix", gui16ControllerBoxPrefix);
+  _loadUCharToUi16TypePrefs(_preferences, "bContrBPref", "gui16ControllerBoxPrefix", gui16ControllerBoxPrefix);
 
   // gui16BoxesCount
-  _loadUCharToU16TypePrefs(_preferences, "BoxesCount", "gui16BoxesCount", gui16BoxesCount);
+  _loadUCharToUi16TypePrefs(_preferences, "BoxesCount", "gui16BoxesCount", gui16BoxesCount);
 }
 
 
@@ -498,7 +498,7 @@ void mySavedPrefs::_loadOTASuccess(Preferences& _preferences) {
 */
 void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
   // gui16InterfaceNodeName
-  _loadUCharToU16TypePrefs(_preferences, "sIFNodNam", "gui16InterfaceNodeName", gui16InterfaceNodeName);
+  _loadUCharToUi16TypePrefs(_preferences, "sIFNodNam", "gui16InterfaceNodeName", gui16InterfaceNodeName);
 }
 
 
@@ -528,7 +528,7 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // gui16NodeName
   // getUChar(const char* key, const uint8_t defaultValue)
-  _loadUCharToU16TypePrefs(_preferences, "ui8NdeName", "gui16NodeName", gui16NodeName);
+  _loadUCharToUi16TypePrefs(_preferences, "ui8NdeName", "gui16NodeName", gui16NodeName);
 
   // isInterface
   isInterface = _preferences.getBool("isIF", isInterface);
@@ -553,13 +553,7 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(Preferences& _preferences){
   Serial.printf("%s thisBox.sBoxDefaultState set to: %i\n", _debugLoadMsgStart, thisBox.sBoxDefaultState);
 
   // thisBox.ui16MasterBoxName
-  // If there is a value saved for bMasterNName, reset
-  // thisBox.ui16MasterBoxName
-  // which is set by default to UI8_DEFAULT_MASTER_NODE_NAME
-  // in the ControlerBox constructor. Else, the value of
-  // thisBox.ui16MasterBoxName
-  // will stay unchanged.
-  _loadUCharToU16TypePrefs(_preferences, "bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
+  _loadUCharToUi16TypePrefs(_preferences, "bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
 }
 
 
@@ -606,12 +600,12 @@ void mySavedPrefs::_loadUCharTypePrefs(Preferences& _preferences, const char NVS
 }
 
 
-/** _loadUCharToU16TypePrefs gets values of type UChar stored in NVS
+/** _loadUCharToUi16TypePrefs gets values of type UChar stored in NVS
  *  to load it to an uint16_t global variable.
  * 
  *  preferences library methods signatures:
  *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_loadUCharToU16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+void mySavedPrefs::_loadUCharToUi16TypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
   uint8_t _ui8EnvVar = _preferences.getUChar(NVSVarName);
   if (_ui8EnvVar) ui16EnvVar = (uint16_t)_ui8EnvVar;
   Serial.printf("%s %s %s %u\n", _debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
