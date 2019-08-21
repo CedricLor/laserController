@@ -7,7 +7,7 @@
 #include "mySavedPrefs.h"
 
 
-mySavedPrefs::mySavedPrefs() : 
+mySavedPrefs::mySavedPrefs(bool readOnly) : 
   debugSaveMsgStart("PREFERENCES: savePreferences(): the value of"),
   debugSaveMsgEndSuccess("has been saved to \"savedSettingsNS\":"),
   debugSaveMsgEndFail("could not be saved to \"savedSettingsNS\":"),
@@ -17,6 +17,10 @@ mySavedPrefs::mySavedPrefs() :
 {
   // Instanciate preferences library
   Preferences _prefLib;
+
+  /** Open namespace "savedSettingsNS" in read-write:
+   *  second parameter has to be false. */
+  _prefLib.begin("savedSettingsNS", /*read only = */readOnly);
 }
 
 
@@ -47,10 +51,6 @@ mySavedPrefs::mySavedPrefs() :
 // GLOBAL WRAPPERS
 void mySavedPrefs::savePrefsWrapper() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
-
-  _startSavePreferences();
-  
-  mySavedPrefs _privateSavedPref;
 
   _saveNetworkCredentials(this);
   _saveNetworkEssentialPreferences();
@@ -99,7 +99,7 @@ void mySavedPrefs::loadPrefsWrapper() {
   if (gi8RequestedOTAReboots) {
     gi8OTAReboot = 1;
     gi8RequestedOTAReboots = gi8RequestedOTAReboots - 1;
-    saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
+    actOnPrefsThroughCallback(_saveBoxStartupTypePreferences);
   }
 
   Serial.print("\nSETUP: loadPrefsWrapper(): ending\n");
@@ -127,7 +127,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     fixedNetmaskIP.fromString(  _joDataset["wnm"].as<const char*>());
 
     mySavedPrefs _myPrefsRef;
-    _myPrefsRef.saveBoxSpecificPrefsWrapper(_saveNetworkCredentials);
+    _myPrefsRef.actOnPrefsThroughCallback(_saveNetworkCredentials);
     return;
   }
 
@@ -138,8 +138,8 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     gi8RequestedOTAReboots = _obj["reboots"];
 
     mySavedPrefs _myPrefsRef;
-    _myPrefsRef.saveBoxSpecificPrefsWrapper(_saveBoxStartupTypePreferences);
-    _myPrefsRef.saveBoxSpecificPrefsWrapper(_resetOTASuccess);
+    _myPrefsRef.actOnPrefsThroughCallback(_saveBoxStartupTypePreferences);
+    _myPrefsRef.actOnPrefsThroughCallback(_resetOTASuccess);
     return;
   }
 
@@ -151,10 +151,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
 
 
-void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*)) {
-
-
-  _startSavePreferences();
+void mySavedPrefs::actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*)) {
   callBack(this);
   _endPreferences();
 }
@@ -164,34 +161,12 @@ void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*)) 
 
 
 
-void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*)) {
-
-  /** Open namespace "savedSettingsNS" in read only:
-   *  second parameter has to be true. */
-  if (_prefLib.begin("savedSettingsNS", /*read only = */true) == true){
-    callBack(this);
-  }
-  _endPreferences();
-}
-
-
 
 
 
 ///////////////////////////////////////////////////
 // SAVERS
 ///////////////////////////////////////////////////
-void mySavedPrefs::_startSavePreferences() {
-  Serial.print("PREFERENCES: savePreferences(): starting\n");
-
-
-  /** Open namespace "savedSettingsNS" in read-write:
-   *  second parameter has to be false. */
-  _prefLib.begin("savedSettingsNS", /*read only = */false);
-}
-
-
-
 
 /*
   ssid

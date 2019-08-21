@@ -20,7 +20,7 @@ class mySavedPrefs
     const PROGMEM char * debugSaveMsgEndSuccess;
     const PROGMEM char * debugSaveMsgEndFail;
 
-    mySavedPrefs();
+    mySavedPrefs(bool readOnly=false);
 
     Preferences _prefLib;
 
@@ -32,16 +32,13 @@ class mySavedPrefs
     static uint8_t ui8OTA1SuccessErrorCode;
     static uint8_t ui8OTA2SuccessErrorCode;
 
-    void saveBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*));
-    void loadBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*));
+    void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
 
   private:
 
     const PROGMEM char * _debugLoadMsgStart;
 
     // Save Prefs
-    void _startSavePreferences();
-
     static void _saveNetworkCredentials(mySavedPrefs * _myPrefsRef);
     void _saveNetworkEssentialPreferences();
     void _saveUselessPreferences();

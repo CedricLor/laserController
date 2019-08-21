@@ -37,7 +37,7 @@ void setup() {
   delay(2000);
   serialInit();
 
-  mySavedPrefs _myPrefsRef;
+  mySavedPrefs _myPrefsRef(false);
   _myPrefsRef.loadPrefsWrapper();
 
   // The ESP was restarted with an OTA request saved in mySavedPrefs

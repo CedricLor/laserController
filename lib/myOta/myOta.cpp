@@ -67,7 +67,7 @@ void myOta::_startOTA()
   _i8OTASuccessErrorCode = 7;
 
   mySavedPrefs _myPrefsRef;
-  _myPrefsRef.saveBoxSpecificPrefsWrapper(_saveOTASuccess);
+  _myPrefsRef.actOnPrefsThroughCallback(_saveOTASuccess);
 
   String type;
   if (ArduinoOTA.getCommand() == U_FLASH) {
@@ -89,7 +89,7 @@ void myOta::_endOTA()
   // else, it is 0, this means that there will be not be another OTA reboot after this one
   _i8OTASuccessErrorCode = 6;
   mySavedPrefs _myPrefsRef;
-  _myPrefsRef.saveBoxSpecificPrefsWrapper(_saveOTASuccess);
+  _myPrefsRef.actOnPrefsThroughCallback(_saveOTASuccess);
   Serial.printf("\nOTA Update End\n");
 }
 
@@ -109,7 +109,7 @@ void myOta::_errorOTA(ota_error_t error)
   // else, it is 0, this means that there will be not be another OTA reboot after this one
   _i8OTASuccessErrorCode = error;
   mySavedPrefs _myPrefsRef;
-  _myPrefsRef.saveBoxSpecificPrefsWrapper(_saveOTASuccess);
+  _myPrefsRef.actOnPrefsThroughCallback(_saveOTASuccess);
   Serial.printf("Error[%u]: \n", error);
   if (error == OTA_AUTH_ERROR)
     Serial.printf("Auth Failed\n");
