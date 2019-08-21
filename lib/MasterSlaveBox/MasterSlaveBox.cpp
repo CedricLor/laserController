@@ -46,8 +46,7 @@ void MasterSlaveBox::_changeSlaveReaction(const char* action) {
     // Serial.print("MasterSlaveBox::_changeSlaveReaction(const char* action): looping over the slaveReactionHtml[] array\n");
     if (strcmp(slaveReactionHtml[i], action) > 0) {
       // Serial.print("MasterSlaveBox::_changeSlaveReaction(const char* action): saving iSlaveOnOffReaction\n");
-      short t = i;
-      iSlaveOnOffReaction = t;  // iSlaveOnOffReaction has been defined in the global singleton
+      iSlaveOnOffReaction = i;  // iSlaveOnOffReaction has been defined in the global singleton
       break; // break for
     }
   }
