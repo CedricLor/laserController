@@ -28,16 +28,16 @@ class mySavedPrefs
     static uint8_t ui8OTA1SuccessErrorCode;
     static uint8_t ui8OTA2SuccessErrorCode;
 
-    static void saveBoxSpecificPrefsWrapper(void (&callBack)());
+    void saveBoxSpecificPrefsWrapper(void (&callBack)());
     void loadBoxSpecificPrefsWrapper(void (&callBack)());
 
-    static const PROGMEM char debugSaveMsgStart[];
-    static const PROGMEM char debugSaveMsgEndSuccess[];
-    static const PROGMEM char debugSaveMsgEndFail[];
+    const PROGMEM char * debugSaveMsgStart;
+    const PROGMEM char * debugSaveMsgEndSuccess;
+    const PROGMEM char * debugSaveMsgEndFail;
 
   private:
 
-    static const PROGMEM char _debugLoadMsgStart[];
+    const PROGMEM char * _debugLoadMsgStart;
 
     // Save Prefs
     static void _startSavePreferences();
