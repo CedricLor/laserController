@@ -53,8 +53,8 @@ class mySavedPrefs
     void _saveBoxBehaviorPreferences();
 
     // Save Abstract
-    void _saveUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar);
-    void _saveUi16ToUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar);
+    void _saveUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint8_t& ui8EnvVar);
+    void _saveUi16ToUCharTypePrefs(const char NVSVarName[], const char humanReadableVarName[], uint16_t& ui16EnvVar);
 
     // Load Prefs
     const char * couldNotBeRetriedFromNVS;

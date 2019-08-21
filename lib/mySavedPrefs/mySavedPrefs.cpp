@@ -229,9 +229,7 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   // save value of ui8WifiChannel
   // Interface only
   // -> restart the mesh
-  // putUChar(const char* key, uint8_t value)
-  size_t _ui8WifiChannelRet = _myPrefsRef->_prefLib.putUChar("wifiChan", ui8WifiChannel);
-  Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", _myPrefsRef->debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  _myPrefsRef->_saveUCharTypePrefs("wifiChan", "ui8WifiChannel", ui8WifiChannel);
 
   // save value of fixedIP
   // Interface only
@@ -263,16 +261,13 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
 */
 void mySavedPrefs::_saveNetworkEssentialPreferences() {
   // save value of gui16ControllerBoxPrefix
-  // -> no reboot but very messy if no reboot of the IF and the whole mesh
-  // putUChar(const char* key, uint8_t value)
-  size_t _gui16ControllerBoxPrefixRet = _prefLib.putUChar("bContrBPref", (uint8_t)gui16ControllerBoxPrefix);
-  Serial.printf("%s gui16ControllerBoxPrefix == %i %s\"bContrBPref\"\n", debugSaveMsgStart, gui16ControllerBoxPrefix, (_gui16ControllerBoxPrefixRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  // -> no reboot
+  _saveUi16ToUCharTypePrefs("bContrBPref", "gui16ControllerBoxPrefix", gui16ControllerBoxPrefix);
 
   // save value of gui16BoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant UI8_BOXES_COUNT
   // Even a reboot would not suffice to have this param taken into account
-  size_t _gui16BoxesCountRet = _prefLib.putUChar("BoxesCount", (uint8_t)gui16BoxesCount);
-  Serial.printf("%s gui16BoxesCount == %u %s\"BoxesCount\"\n", debugSaveMsgStart, gui16BoxesCount, (_gui16BoxesCountRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  _saveUi16ToUCharTypePrefs("BoxesCount", "gui16BoxesCount", gui16BoxesCount);
 }
 
 
@@ -283,10 +278,7 @@ void mySavedPrefs::_saveNetworkEssentialPreferences() {
   gui16InterfaceNodeName
 */
 void mySavedPrefs::_saveUselessPreferences() {
-  // USELESS PREFERENCES
-  // save value of gui16InterfaceNodeName
-  size_t _gui16InterfaceNodeNameRet = _prefLib.putUChar("sIFNodNam", (uint8_t)gui16InterfaceNodeName);
-  Serial.printf("%s gui16InterfaceNodeName == %u %s\"sIFNodNam\"\n", debugSaveMsgStart, gui16InterfaceNodeName, (_gui16InterfaceNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  _saveUi16ToUCharTypePrefs("sIFNodNam", "gui16InterfaceNodeName", gui16InterfaceNodeName);
 }
 
 
@@ -306,17 +298,17 @@ void mySavedPrefs::_saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef) {
   Serial.printf("%s gi8RequestedOTAReboots == %i %s\"OTARebReq\"\n", _myPrefsRef->debugSaveMsgStart, gi8RequestedOTAReboots, (_gi8RequestedOTARebootsRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 }
 
-/*
+  /** mySavedPrefs::_resetOTASuccess(): resets the values of ui8OTA1SuccessErrorCode 
+  *  and ui8OTA2SuccessErrorCode when an OTA reboot is requested.
+  *  
+  *  dynamic reload: no need to reboot /*
   ui8OTA1SuccessErrorCode
   ui8OTA2SuccessErrorCode
 */
 void mySavedPrefs::_resetOTASuccess(mySavedPrefs * _myPrefsRef) {
-  // resets the values of ui8OTA1SuccessErrorCode and ui8OTA2SuccessErrorCode when an OTA reboot is requested
-  // Note to use Prefs without reboot: no need for reboots; used to display data in console and webpage
-  size_t _ui8OTA1SuccessErrorCodeRet = _myPrefsRef->_prefLib.putUChar("OTASucc1", 11);
-  Serial.printf("%s OTA update numb. 1 success code == %u %s\"OTASucc1\"\n", _myPrefsRef->debugSaveMsgStart, 11, (_ui8OTA1SuccessErrorCodeRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
-  size_t _ui8OTA2SuccessErrorCodeRet = _myPrefsRef->_prefLib.putUChar("OTASucc2", 11);
-  Serial.printf("%s OTA update numb. 2 success code == %u %s\"OTASucc2\"\n", _myPrefsRef->debugSaveMsgStart, 11, (_ui8OTA2SuccessErrorCodeRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  uint8_t _initialSuccessCode = 11;
+  _myPrefsRef->_saveUCharTypePrefs("OTASucc1", "OTA update numb. 1 success code", _initialSuccessCode);
+  _myPrefsRef->_saveUCharTypePrefs("OTASucc2", "OTA update numb. 2 success code", _initialSuccessCode);
 }
 
 
@@ -338,9 +330,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
   // -> fix: call ControlerBox::updateThisBoxProperties
   // this value is then used in ControlerBox::updateThisBoxProperties
   // to set thisBox.ui16NodeName
-  // putUChar(const char* key, uint8_t value)
-  size_t _gui16NodeNameRet = _prefLib.putUChar("ui8NdeName", (uint8_t)(gui16NodeName));
-  Serial.printf("%s gui16NodeName == %u %s\"ui8NdeName\"\n", debugSaveMsgStart, gui16NodeName, (_gui16NodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  _saveUi16ToUCharTypePrefs("ui8NdeName", "gui16NodeName", gui16NodeName);
 
   /*
     Save value of isInterface
@@ -381,8 +371,7 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
   // save value of thisBox.ui16MasterBoxName
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
-  size_t _masterNodeNameRet = _prefLib.putUChar("bMasterNName", (uint8_t)thisBox.ui16MasterBoxName);
-  Serial.printf("%s thisBox.ui16MasterBoxName == %u %s\"bMasterNName\"\n", debugSaveMsgStart, thisBox.ui16MasterBoxName, (_masterNodeNameRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
+  _saveUi16ToUCharTypePrefs("bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
 }
 
 
@@ -409,6 +398,7 @@ void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSiz
   size_t _ret = _prefLib.putUChar(NVSVarName, (uint8_t)ui16EnvVar);
   Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
+
 
 
 
