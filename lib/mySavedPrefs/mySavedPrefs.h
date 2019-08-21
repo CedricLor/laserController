@@ -57,8 +57,8 @@ class mySavedPrefs
     static void _loadNetworkEssentialPreferences(Preferences& _preferences);
     static void _loadUselessPreferences(Preferences& _preferences);
 
-    static void _loadOTASuccess(Preferences& _preferences);
     static void _loadBoxStartupTypePreferences(Preferences& _preferences);
+    static void _loadOTASuccess(Preferences& _preferences);
     static void _loadBoxEssentialPreferences(Preferences& _preferences);
     static void _loadBoxBehaviorPreferences(Preferences& _preferences);
 

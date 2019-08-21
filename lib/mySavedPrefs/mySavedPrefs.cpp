@@ -79,8 +79,8 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadUselessPreferences(_preferences);
 
       Serial.println(String(_debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
-      _loadOTASuccess(_preferences);
       _loadBoxStartupTypePreferences(_preferences);
+      _loadOTASuccess(_preferences);
       Serial.println(String(_debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
 
       _loadBoxEssentialPreferences(_preferences);
@@ -477,6 +477,17 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(Preferences& _preferences){
 
 
 
+/*
+  gi8RequestedOTAReboots
+*/
+void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
+  _loadCharTypePrefs(_preferences, "OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
+}
+
+
+
+
+
 /**
  * uint8_t ui8OTA1SuccessErrorCode
  * uint8_t ui8OTA2SuccessErrorCode */
@@ -489,17 +500,6 @@ void mySavedPrefs::_loadOTASuccess(Preferences& _preferences) {
   _loadUCharTypePrefs(_preferences, "OTASucc2", "2nd OTA Update Success", ui8OTA2SuccessErrorCode);
 }
 
-
-
-
-
-
-/*
-  gi8RequestedOTAReboots
-*/
-void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
-  _loadCharTypePrefs(_preferences, "OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
-}
 
 
 
