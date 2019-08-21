@@ -8,16 +8,15 @@
 
 
 mySavedPrefs::mySavedPrefs() : 
-  _debugLoadMsgStart("SETUP: loadPreferences():"),
-  setFromNVS("set from NVS to:"), 
-  couldNotBeRetriedFromNVS("could not be retrieved from NVS. Using hard coded value:"),
   debugSaveMsgStart("PREFERENCES: savePreferences(): the value of"),
   debugSaveMsgEndSuccess("has been saved to \"savedSettingsNS\":"),
-  debugSaveMsgEndFail("could not be saved to \"savedSettingsNS\":")
+  debugSaveMsgEndFail("could not be saved to \"savedSettingsNS\":"),
+  _debugLoadMsgStart("SETUP: loadPreferences():"),
+  couldNotBeRetriedFromNVS("could not be retrieved from NVS. Using hard coded value:"),
+  setFromNVS("set from NVS to:")
 {
   // Instanciate preferences library
   Preferences _prefLib;
-
 }
 
 
