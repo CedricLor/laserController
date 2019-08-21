@@ -97,7 +97,7 @@ uint16_t gui16InterfaceNodeName               = UI8_DEFAULT_INTERFACE_NODE_NAME;
 const char* slaveReactionHtml[4]              = {"syn", "opp", "aon", "aof"};
 
 /** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
-uint16_t gui16BoxesCount                      = UI8_BOXES_COUNT;                           // NETWORK BY NETWORK
+uint16_t gui16BoxesCount                      = UI8_BOXES_COUNT;
 
 const short S_BOX_DEFAULT_STATE               = 5;
 

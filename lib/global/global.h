@@ -42,8 +42,8 @@ extern uint16_t gui16InterfaceNodeName;
 
 extern const char* slaveReactionHtml[4];
 
-extern constexpr uint8_t UI8_BOXES_COUNT            = 10;                                                   // NETWORK BY NETWORK
-extern uint16_t gui16BoxesCount;                           // NETWORK BY NETWORK
+extern constexpr uint8_t UI8_BOXES_COUNT            = 10;                         // NETWORK BY NETWORK
+extern uint16_t gui16BoxesCount;
 
 extern const short S_BOX_DEFAULT_STATE;
 
