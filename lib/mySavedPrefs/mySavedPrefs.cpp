@@ -426,7 +426,7 @@ const char * mySavedPrefs::couldNotBeRetriedFromNVS = "could not be retrieved fr
  *  preferences library methods signatures:
  *  - getBytesLength(const char* key)
  *  - getBytes(const char* key, void * buf, size_t maxLen)*/
-void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[11], const char humanReadableVarName[20], IPAddress& envIP){
+void mySavedPrefs::_loadIPTypePrefs(Preferences& _preferences, const char NVSVarName[13], const char humanReadableVarName[30], IPAddress& envIP){
   // 1. set the special debug message buffer
   char _specDebugMess[60];
 
