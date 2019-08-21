@@ -25,7 +25,7 @@ class myOta
   private:
     static int8_t _i8OTASuccessErrorCode;
 
-    static void _saveOTASuccess();
+    static void _saveOTASuccess(mySavedPrefs * _myPrefsRef);
     static void _startOTA();
     static void _endOTA();
     static void _progressOTA(unsigned int progress, unsigned int total);

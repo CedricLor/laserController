@@ -50,8 +50,10 @@ void mySavedPrefs::savePrefsWrapper() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
 
   _startSavePreferences();
+  
+  mySavedPrefs _privateSavedPref;
 
-  _saveNetworkCredentials();
+  _saveNetworkCredentials(this);
   _saveNetworkEssentialPreferences();
   _saveUselessPreferences();
 
@@ -150,10 +152,11 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
 
 
-void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)()) {
+void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*)) {
+
 
   _startSavePreferences();
-  callBack();
+  callBack(this);
   _endPreferences();
 }
 
@@ -162,12 +165,12 @@ void mySavedPrefs::saveBoxSpecificPrefsWrapper(void (&callBack)()) {
 
 
 
-void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)()) {
+void mySavedPrefs::loadBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*)) {
 
   /** Open namespace "savedSettingsNS" in read only:
    *  second parameter has to be true. */
   if (_prefLib.begin("savedSettingsNS", /*read only = */true) == true){
-    callBack();
+    callBack(this);
   }
   _endPreferences();
 }
@@ -200,60 +203,58 @@ void mySavedPrefs::_startSavePreferences() {
   fixedIP
   fixedNetmaskIP
 */
-void mySavedPrefs::_saveNetworkCredentials() {
+void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   Serial.println("Saving External Wifi Credentials");
-
-  mySavedPrefs _myPrefsRef; 
 
   // save value of ssid
   // Interface only
   // -> restart the mesh
-  size_t _sssidRet = _myPrefsRef._prefLib.putString("ssid", ssid);
-  Serial.printf("%s ssid == %s %s\"ssid\"\n", _myPrefsRef.debugSaveMsgStart, ssid, (_sssidRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _sssidRet = _myPrefsRef->_prefLib.putString("ssid", ssid);
+  Serial.printf("%s ssid == %s %s\"ssid\"\n", _myPrefsRef->debugSaveMsgStart, ssid, (_sssidRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of pass
   // Interface only
   // -> restart the mesh
-  size_t _spassRet = _myPrefsRef._prefLib.putString("pass", pass);
-  Serial.printf("%s pass == %s %s\"pass\"\n", _myPrefsRef.debugSaveMsgStart, pass, (_spassRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _spassRet = _myPrefsRef->_prefLib.putString("pass", pass);
+  Serial.printf("%s pass == %s %s\"pass\"\n", _myPrefsRef->debugSaveMsgStart, pass, (_spassRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of gatewayIP
   // Interface only
   // -> restart the mesh
   // putBytes(const char* key, const void* value, size_t len)
   uint8_t _ui8GatewayIP[4] = {gatewayIP[0], gatewayIP[1], gatewayIP[2], gatewayIP[3]};
-  size_t _bsGatewayIPRet = _myPrefsRef._prefLib.putBytes("gateIP", _ui8GatewayIP, 4);
-  Serial.printf("%s gatewayIP == %s %s\"gateIP\"\n", _myPrefsRef.debugSaveMsgStart, gatewayIP.toString().c_str(), (_bsGatewayIPRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _bsGatewayIPRet = _myPrefsRef->_prefLib.putBytes("gateIP", _ui8GatewayIP, 4);
+  Serial.printf("%s gatewayIP == %s %s\"gateIP\"\n", _myPrefsRef->debugSaveMsgStart, gatewayIP.toString().c_str(), (_bsGatewayIPRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of ui16GatewayPort
   // Interface only
   // -> restart the mesh
   // putShort(const char* key, int16_t value)
-  size_t _ui16GatewayPortRet = _myPrefsRef._prefLib.putUShort("gatePort", ui16GatewayPort);
-  Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", _myPrefsRef.debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _ui16GatewayPortRet = _myPrefsRef->_prefLib.putUShort("gatePort", ui16GatewayPort);
+  Serial.printf("%s ui16GatewayPort == %u %s\"gatePort\"\n", _myPrefsRef->debugSaveMsgStart, ui16GatewayPort, (_ui16GatewayPortRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of ui8WifiChannel
   // Interface only
   // -> restart the mesh
   // putUChar(const char* key, uint8_t value)
-  size_t _ui8WifiChannelRet = _myPrefsRef._prefLib.putUChar("wifiChan", ui8WifiChannel);
-  Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", _myPrefsRef.debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _ui8WifiChannelRet = _myPrefsRef->_prefLib.putUChar("wifiChan", ui8WifiChannel);
+  Serial.printf("%s ui8WifiChannel == %u %s\"wifiChan\"\n", _myPrefsRef->debugSaveMsgStart, ui8WifiChannel, (_ui8WifiChannelRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of fixedIP
   // Interface only
   // -> restart the mesh
   // putBytes(const char* key, const void* value, size_t len)
   uint8_t _ui8fixedIP[4] = {fixedIP[0], fixedIP[1], fixedIP[2], fixedIP[3]};
-  size_t _bsFixedIPRet = _myPrefsRef._prefLib.putBytes("fixedIP", _ui8fixedIP, 4);
-  Serial.printf("%s IF fixed IP == %s %s\"fixedIP\"\n", _myPrefsRef.debugSaveMsgStart, fixedIP.toString().c_str(), (_bsFixedIPRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _bsFixedIPRet = _myPrefsRef->_prefLib.putBytes("fixedIP", _ui8fixedIP, 4);
+  Serial.printf("%s IF fixed IP == %s %s\"fixedIP\"\n", _myPrefsRef->debugSaveMsgStart, fixedIP.toString().c_str(), (_bsFixedIPRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   // save value of fixedNetmaskIP
   // Interface only
   // -> restart the mesh
   // putBytes(const char* key, const void* value, size_t len)
   uint8_t _ui8FixedNetmaskIP[4] = {fixedNetmaskIP[0], fixedNetmaskIP[1], fixedNetmaskIP[2], fixedNetmaskIP[3]};
-  size_t _bsFixedNetmaskIPRet = _myPrefsRef._prefLib.putBytes("netMask", _ui8FixedNetmaskIP, 4);
-  Serial.printf("%s Wifi netmask == %s %s\"netMask\"\n", _myPrefsRef.debugSaveMsgStart, fixedNetmaskIP.toString().c_str(), (_bsFixedNetmaskIPRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _bsFixedNetmaskIPRet = _myPrefsRef->_prefLib.putBytes("netMask", _ui8FixedNetmaskIP, 4);
+  Serial.printf("%s Wifi netmask == %s %s\"netMask\"\n", _myPrefsRef->debugSaveMsgStart, fixedNetmaskIP.toString().c_str(), (_bsFixedNetmaskIPRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 
   Serial.println("End External Wifi Credentials");
 }
@@ -305,26 +306,24 @@ void mySavedPrefs::_saveUselessPreferences() {
 /*
   gi8RequestedOTAReboots
 */
-void mySavedPrefs::_saveBoxStartupTypePreferences() {
-  mySavedPrefs _myPrefsRef; 
+void mySavedPrefs::_saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef) {
   // save value of gi8RequestedOTAReboots
   // Note to use Prefs without reboot: needs a reboot to be effective
-  size_t _gi8RequestedOTARebootsRet = _myPrefsRef._prefLib.putChar("OTARebReq", gi8RequestedOTAReboots);
-  Serial.printf("%s gi8RequestedOTAReboots == %i %s\"OTARebReq\"\n", _myPrefsRef.debugSaveMsgStart, gi8RequestedOTAReboots, (_gi8RequestedOTARebootsRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _gi8RequestedOTARebootsRet = _myPrefsRef->_prefLib.putChar("OTARebReq", gi8RequestedOTAReboots);
+  Serial.printf("%s gi8RequestedOTAReboots == %i %s\"OTARebReq\"\n", _myPrefsRef->debugSaveMsgStart, gi8RequestedOTAReboots, (_gi8RequestedOTARebootsRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 }
 
 /*
   ui8OTA1SuccessErrorCode
   ui8OTA2SuccessErrorCode
 */
-void mySavedPrefs::_resetOTASuccess() {
+void mySavedPrefs::_resetOTASuccess(mySavedPrefs * _myPrefsRef) {
   // resets the values of ui8OTA1SuccessErrorCode and ui8OTA2SuccessErrorCode when an OTA reboot is requested
   // Note to use Prefs without reboot: no need for reboots; used to display data in console and webpage
-  mySavedPrefs _myPrefsRef;
-  size_t _ui8OTA1SuccessErrorCodeRet = _myPrefsRef._prefLib.putUChar("OTASucc1", 11);
-  Serial.printf("%s OTA update numb. 1 success code == %u %s\"OTASucc1\"\n", _myPrefsRef.debugSaveMsgStart, 11, (_ui8OTA1SuccessErrorCodeRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
-  size_t _ui8OTA2SuccessErrorCodeRet = _myPrefsRef._prefLib.putUChar("OTASucc2", 11);
-  Serial.printf("%s OTA update numb. 2 success code == %u %s\"OTASucc2\"\n", _myPrefsRef.debugSaveMsgStart, 11, (_ui8OTA2SuccessErrorCodeRet)?(_myPrefsRef.debugSaveMsgEndSuccess):(_myPrefsRef.debugSaveMsgEndFail));
+  size_t _ui8OTA1SuccessErrorCodeRet = _myPrefsRef->_prefLib.putUChar("OTASucc1", 11);
+  Serial.printf("%s OTA update numb. 1 success code == %u %s\"OTASucc1\"\n", _myPrefsRef->debugSaveMsgStart, 11, (_ui8OTA1SuccessErrorCodeRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  size_t _ui8OTA2SuccessErrorCodeRet = _myPrefsRef->_prefLib.putUChar("OTASucc2", 11);
+  Serial.printf("%s OTA update numb. 2 success code == %u %s\"OTASucc2\"\n", _myPrefsRef->debugSaveMsgStart, 11, (_ui8OTA2SuccessErrorCodeRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
 }
 
 

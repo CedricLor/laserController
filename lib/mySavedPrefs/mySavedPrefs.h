@@ -32,8 +32,8 @@ class mySavedPrefs
     static uint8_t ui8OTA1SuccessErrorCode;
     static uint8_t ui8OTA2SuccessErrorCode;
 
-    void saveBoxSpecificPrefsWrapper(void (&callBack)());
-    void loadBoxSpecificPrefsWrapper(void (&callBack)());
+    void saveBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*));
+    void loadBoxSpecificPrefsWrapper(void (&callBack)(mySavedPrefs*));
 
   private:
 
@@ -42,12 +42,12 @@ class mySavedPrefs
     // Save Prefs
     void _startSavePreferences();
 
-    static void _saveNetworkCredentials();
+    static void _saveNetworkCredentials(mySavedPrefs * _myPrefsRef);
     void _saveNetworkEssentialPreferences();
     void _saveUselessPreferences();
 
-    static void _saveBoxStartupTypePreferences();
-    static void _resetOTASuccess();
+    static void _saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef);
+    static void _resetOTASuccess(mySavedPrefs * _myPrefsRef);
     void _saveBoxEssentialPreferences();
     void _saveBoxBehaviorPreferences();
 
