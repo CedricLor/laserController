@@ -18,8 +18,9 @@ mySavedPrefs::mySavedPrefs(bool readOnly) :
   // Instanciate preferences library
   Preferences _prefLib;
 
-  /** Open namespace "savedSettingsNS" in read-write:
-   *  second parameter has to be false. */
+  /** Open namespace "savedSettingsNS" in read-only (readOnly = true)
+   *  or read-write (readOnly = false).
+   *  By default, the class constructor opens in rw. */
   _prefLib.begin("savedSettingsNS", /*read only = */readOnly);
 }
 
@@ -71,31 +72,23 @@ void mySavedPrefs::savePrefsWrapper() {
 void mySavedPrefs::loadPrefsWrapper() {
   Serial.print("\nSETUP: loadPrefsWrapper(): starting\n");
 
-    /** Open namespace "savedSettingsNS" in read only:
-   *  second parameter has to be true. */
-  if (_prefLib.begin("savedSettingsNS", /*read only = */true)){
+  _loadNetworkCredentials();
+  _loadNetworkEssentialPreferences();
+  _loadUselessPreferences();
 
-      _loadNetworkCredentials();
-      _loadNetworkEssentialPreferences();
-      _loadUselessPreferences();
+  Serial.println(String(_debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
+  _loadBoxStartupTypePreferences();
+  _loadOTASuccess();
+  Serial.println(String(_debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
 
-      Serial.println(String(_debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
-      _loadBoxStartupTypePreferences();
-      _loadOTASuccess();
-      Serial.println(String(_debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
-
-      _loadBoxEssentialPreferences();
-      _loadBoxBehaviorPreferences();
-
-    } else {
-      Serial.printf("%s \"savedSettingsNS\" does not exist. thisBox ui16MasterBoxName (%i) and gui16BoxesCount (%i) will keep their default values\n", _debugLoadMsgStart, thisBox.ui16MasterBoxName, gui16BoxesCount);
-    }
+  _loadBoxEssentialPreferences();
+  _loadBoxBehaviorPreferences();
 
   _endPreferences();
 
-  // On reboot, if the number of requested OTA reboots is superior to 0,
-  // decrement it by 1 (and save it to NVS) until it reaches 0, where
-  // the ESP will reboot to its normal state
+  /** On reboot, if the number of requested OTA reboots is superior to 0,
+   *  decrement it by 1 (and save it to NVS) until it reaches 0, where
+   *  the ESP will reboot to its normal state */
   if (gi8RequestedOTAReboots) {
     gi8OTAReboot = 1;
     gi8RequestedOTAReboots = gi8RequestedOTAReboots - 1;
@@ -112,6 +105,7 @@ void mySavedPrefs::loadPrefsWrapper() {
 
 void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
+
   // {"action":"changeBox","key":"save","val":"wifi","dataset":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":"192.168.43.1","wgwp":"0","wfip":"192.168.43.50","wnm":"255.255.255.0","wch":"6"},"lb":0}
   if (_obj["val"] == "wifi") {
     Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
@@ -142,7 +136,6 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     _myPrefsRef.actOnPrefsThroughCallback(_resetOTASuccess);
     return;
   }
-
 }
 
 
