@@ -200,16 +200,10 @@ void mySavedPrefs::_saveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
   Serial.println("Saving External Wifi Credentials");
 
   // save value of ssid
-  // Interface only
-  // -> restart the mesh
-  size_t _sssidRet = _myPrefsRef->_prefLib.putString("ssid", ssid);
-  Serial.printf("%s ssid == %s %s\"ssid\"\n", _myPrefsRef->debugSaveMsgStart, ssid, (_sssidRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  _myPrefsRef->_saveStringTypePrefs("ssid", "ssid", ssid);
 
   // save value of pass
-  // Interface only
-  // -> restart the mesh
-  size_t _spassRet = _myPrefsRef->_prefLib.putString("pass", pass);
-  Serial.printf("%s pass == %s %s\"pass\"\n", _myPrefsRef->debugSaveMsgStart, pass, (_spassRet)?(_myPrefsRef->debugSaveMsgEndSuccess):(_myPrefsRef->debugSaveMsgEndFail));
+  _myPrefsRef->_saveStringTypePrefs("pass", "password", pass);
 
   // save value of gatewayIP
   // Interface only
@@ -377,6 +371,16 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
 
 
 
+
+
+/** _saveStringTypePrefs saves the value of c-strings global variable to NVS
+ * 
+ *  preferences library methods signatures:
+ *  - size_t putString(const char* key, const char* value); */
+void mySavedPrefs::_saveStringTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], char* strEnvVar){
+  size_t _ret = _prefLib.putString(NVSVarName, strEnvVar);
+  Serial.printf("%s %s == %s %s\"%s\"\n", debugSaveMsgStart, humanReadableVarName, strEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+}
 
 
 /** _saveUCharTypePrefs gets values of type UChar stored in NVS.
