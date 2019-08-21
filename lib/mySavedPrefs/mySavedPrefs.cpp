@@ -12,6 +12,10 @@
 ***************************** MySavedPrefs ****************************
 ***********************************************************************/
 
+const uint8_t mySavedPrefs::NVSVarNameSize = 12;
+const uint8_t mySavedPrefs::humanReadableVarNameSize = 34;
+
+
 
 /** Default constructor */
 mySavedPrefs::mySavedPrefs(bool readOnly) : 
@@ -390,7 +394,7 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
  * 
  *  preferences library methods signatures:
  *  - putUChar(const char* key, uint8_t value) */
-void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
+void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint8_t& ui8EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, ui8EnvVar);
   Serial.printf("%s %s == %u %s\"OTASucc1\"\n", debugSaveMsgStart, humanReadableVarName, 11, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
@@ -401,7 +405,7 @@ void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[13], const char hum
  * 
  *  preferences library methods signatures:
  *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, (uint8_t)ui16EnvVar);
   Serial.printf("%s %s == %u %s\"OTASucc1\"\n", debugSaveMsgStart, humanReadableVarName, 11, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail));
 }
@@ -565,7 +569,7 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(){
  * 
  *  preferences library methods signatures:
  *  - size_t getString(const char* key, char* value, size_t maxLen); */
-void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], char* strEnvVar){
+void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[30], char* strEnvVar){
   // 1. set the special debug message buffer
   char _specDebugMess[60];
 
@@ -588,7 +592,7 @@ void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[13], const char hu
  *  preferences library methods signatures:
  *  - getBytesLength(const char* key)
  *  - getBytes(const char* key, void * buf, size_t maxLen)*/
-void mySavedPrefs::_loadIPTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], IPAddress& envIP){
+void mySavedPrefs::_loadIPTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], IPAddress& envIP){
   // 1. set the special debug message buffer
   char _specDebugMess[60];
 
@@ -611,7 +615,7 @@ void mySavedPrefs::_loadIPTypePrefs(const char NVSVarName[13], const char humanR
  * 
  *  preferences library methods signatures:
  *  - getChar(const char* key, const int8_t defaultValue) */
-void mySavedPrefs::_loadCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], int8_t& i8EnvVar){
+void mySavedPrefs::_loadCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int8_t& i8EnvVar){
   int8_t _i8EnvVar = _prefLib.getChar(NVSVarName);
   if (_i8EnvVar) i8EnvVar = _i8EnvVar;
   Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_i8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i8EnvVar);
@@ -622,7 +626,7 @@ void mySavedPrefs::_loadCharTypePrefs(const char NVSVarName[13], const char huma
  * 
  *  preferences library methods signatures:
  *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_loadUCharTypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint8_t& ui8EnvVar){
+void mySavedPrefs::_loadUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint8_t& ui8EnvVar){
   uint8_t _ui8EnvVar = _prefLib.getUChar(NVSVarName);
   if (_ui8EnvVar) ui8EnvVar = _ui8EnvVar;
   Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui8EnvVar);
@@ -634,7 +638,7 @@ void mySavedPrefs::_loadUCharTypePrefs(const char NVSVarName[13], const char hum
  * 
  *  preferences library methods signatures:
  *  - getUChar(const char* key, const uint8_t defaultValue) */
-void mySavedPrefs::_loadUCharToUi16TypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+void mySavedPrefs::_loadUCharToUi16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   uint8_t _ui8EnvVar = _prefLib.getUChar(NVSVarName);
   if (_ui8EnvVar) ui16EnvVar = (uint16_t)_ui8EnvVar;
   Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui8EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);
@@ -646,7 +650,7 @@ void mySavedPrefs::_loadUCharToUi16TypePrefs(const char NVSVarName[13], const ch
  * 
  *  preferences library methods signatures:
  *  - getShort(const char* key, const int16_t defaultValue) */
-void mySavedPrefs::_loadI16TypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], int16_t& i16EnvVar){
+void mySavedPrefs::_loadI16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int16_t& i16EnvVar){
   int16_t _i16EnvVar = _prefLib.getShort(NVSVarName);
   if (_i16EnvVar) i16EnvVar = _i16EnvVar;
   Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_i16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), i16EnvVar);
@@ -658,7 +662,7 @@ void mySavedPrefs::_loadI16TypePrefs(const char NVSVarName[13], const char human
  * 
  *  preferences library methods signatures:
  *  - getUShort(const char* key, const uint16_t defaultValue) */
-void mySavedPrefs::_loadUi16TypePrefs(const char NVSVarName[13], const char humanReadableVarName[30], uint16_t& ui16EnvVar){
+void mySavedPrefs::_loadUi16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   uint16_t _ui16EnvVar = _prefLib.getUShort(NVSVarName);
   if (_ui16EnvVar) ui16EnvVar = _ui16EnvVar;
   Serial.printf("%s %s %s %u\n", debugLoadMsgStart, humanReadableVarName, (_ui16EnvVar ? setFromNVS : couldNotBeRetriedFromNVS), ui16EnvVar);

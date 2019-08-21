@@ -35,8 +35,10 @@ class mySavedPrefs
     void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
 
   private:
-
+    // abstract variables
     const PROGMEM char * debugLoadMsgStart;
+    static const uint8_t NVSVarNameSize;
+    static const uint8_t humanReadableVarNameSize;
 
     // Save Prefs
     void _handleOTAReboots();
