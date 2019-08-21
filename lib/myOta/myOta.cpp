@@ -127,12 +127,12 @@ void myOta::_errorOTA(ota_error_t error)
 
 
 
-void myOta::_saveOTASuccess(Preferences& _preferences) {
+void myOta::_saveOTASuccess() {
   // choose the location where to save the error code for this OTA update
   Serial.println("myOta::_saveOTASuccess: starting.");
   char __cOTASuccessErrorNVSKey[9] = "OTASucc";
   snprintf(__cOTASuccessErrorNVSKey, 9, "%s%u", __cOTASuccessErrorNVSKey, (uint32_t)(gi8RequestedOTAReboots + 1));
   // save the success code in the relevant NVS location
-  size_t __i8OTASuccessErrorCodeRet = _preferences.putUChar(__cOTASuccessErrorNVSKey, _i8OTASuccessErrorCode);
+  size_t __i8OTASuccessErrorCodeRet = _myPrefsRef._prefLib.putUChar(__cOTASuccessErrorNVSKey, _i8OTASuccessErrorCode);
   Serial.printf("%s OTA update numb. %u success code == %i %s\"%s\"\n", mySavedPrefs::debugSaveMsgStart, (gi8RequestedOTAReboots + 1), _i8OTASuccessErrorCode, (__i8OTASuccessErrorCodeRet)?(mySavedPrefs::debugSaveMsgEndSuccess):(mySavedPrefs::debugSaveMsgEndFail), __cOTASuccessErrorNVSKey);
 }
