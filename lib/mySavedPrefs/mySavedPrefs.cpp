@@ -78,8 +78,11 @@ void mySavedPrefs::loadPrefsWrapper() {
       _loadNetworkEssentialPreferences(_preferences);
       _loadUselessPreferences(_preferences);
 
+      Serial.println(String(_debugLoadMsgStart) + " --- Loading OTA Reboot Prefs ");
       _loadOTASuccess(_preferences);
       _loadBoxStartupTypePreferences(_preferences);
+      Serial.println(String(_debugLoadMsgStart) + " --- End OTA Reboot Prefs ");
+
       _loadBoxEssentialPreferences(_preferences);
       _loadBoxBehaviorPreferences(_preferences);
 
@@ -448,7 +451,7 @@ void mySavedPrefs::_loadNetworkCredentials(Preferences& _preferences){
   _loadIPTypePrefs(_preferences, "fixedIP", "fixedIP", fixedIP);
   _loadIPTypePrefs(_preferences, "netMask", "fixedNetmaskIP", fixedNetmaskIP);
 
-  Serial.println(String(_debugLoadMsgStart) + " --- End Loading External Wifi Credentials");
+  Serial.println(String(_debugLoadMsgStart) + " --- End External Wifi Credentials");
 }
 
 
@@ -523,6 +526,8 @@ void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
   isRoot
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
+  Serial.println(String(_debugLoadMsgStart) + " --- Loading Node Essential Preferences");
+
   // gui16NodeName
   // getUChar(const char* key, const uint8_t defaultValue)
   _loadUCharToUi16TypePrefs(_preferences, "ui8NdeName", "gui16NodeName", gui16NodeName);
@@ -534,6 +539,8 @@ void mySavedPrefs::_loadBoxEssentialPreferences(Preferences& _preferences){
   // isRoot
   isRoot = _preferences.getBool("isRoot", isRoot);
   Serial.printf("%s isRoot set to: %i\n", _debugLoadMsgStart, isRoot);
+
+  Serial.println(String(_debugLoadMsgStart) + " --- End Node Essential Preferences");
 }
 
 
