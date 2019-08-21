@@ -86,17 +86,29 @@ void mySavedPrefs::loadPrefsWrapper() {
 
   _endPreferences();
 
+  _handleOTAReboots();
+
+  Serial.print("\nSETUP: loadPrefsWrapper(): ending\n");
+}
+
+
+
+
+
+
+
   /** On reboot, if the number of requested OTA reboots is superior to 0,
    *  decrement it by 1 (and save it to NVS) until it reaches 0, where
    *  the ESP will reboot to its normal state */
+void mySavedPrefs::_handleOTAReboots() {
   if (gi8RequestedOTAReboots) {
+    _prefLib.begin("savedSettingsNS", false);
     gi8OTAReboot = 1;
     gi8RequestedOTAReboots = gi8RequestedOTAReboots - 1;
     actOnPrefsThroughCallback(_saveBoxStartupTypePreferences);
   }
-
-  Serial.print("\nSETUP: loadPrefsWrapper(): ending\n");
 }
+
 
 
 

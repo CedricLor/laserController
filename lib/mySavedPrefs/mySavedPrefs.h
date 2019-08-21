@@ -39,6 +39,8 @@ class mySavedPrefs
     const PROGMEM char * _debugLoadMsgStart;
 
     // Save Prefs
+    void _handleOTAReboots();
+
     static void _saveNetworkCredentials(mySavedPrefs * _myPrefsRef);
     void _saveNetworkEssentialPreferences();
     void _saveUselessPreferences();
