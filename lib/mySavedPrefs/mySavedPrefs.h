@@ -76,6 +76,5 @@ class mySavedPrefs
     void _endPreferences();
 };
 
-extern mySavedPrefs _myPrefsRef;
 
 #endif

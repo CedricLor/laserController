@@ -37,7 +37,8 @@ void setup() {
   delay(2000);
   serialInit();
 
-  mySavedPrefs::loadPrefsWrapper();
+  mySavedPrefs _myPrefsRef;
+  _myPrefsRef.loadPrefsWrapper();
 
   // The ESP was restarted with an OTA request saved in mySavedPrefs
   if (gi8OTAReboot) {

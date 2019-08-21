@@ -362,7 +362,8 @@ void myMeshController::_rebootEsp() {
 
 void myMeshController::_save() {
   // {action: "changeBox", key: "save", val: "all", lb: 1} // save all the values that can be saved
-  mySavedPrefs::savePrefsWrapper();
+  mySavedPrefs _myPrefsRef;
+  _myPrefsRef.savePrefsWrapper();
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");

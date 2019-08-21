@@ -212,7 +212,8 @@ void myWSReceiver::_rebootIF(JsonObject& _obj) {
 void myWSReceiver::_saveIF(JsonObject& _obj) {
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
   // save preferences
-  mySavedPrefs::savePrefsWrapper();
+  mySavedPrefs _myPrefsRef;
+  _myPrefsRef.savePrefsWrapper();
 }
 
 
@@ -233,10 +234,8 @@ void myWSReceiver::_saveWifiIF(JsonObject& _obj) {
 void myWSReceiver::_savegi8RequestedOTAReboots(JsonObject& _obj) {
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_savegi8RequestedOTAReboots(): About to save gi8RequestedOTAReboots in mySavedPrefs on IF.\n"); }
-
   // save preferences
   mySavedPrefs::saveFromNetRequest(_obj);
-
   // reboot
   _rebootIF(_obj);
 }
