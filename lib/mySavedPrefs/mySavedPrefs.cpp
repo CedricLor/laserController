@@ -495,6 +495,17 @@ void mySavedPrefs::_loadOTASuccess(Preferences& _preferences) {
 
 
 /*
+  gi8RequestedOTAReboots
+*/
+void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
+  _loadCharTypePrefs(_preferences, "OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
+}
+
+
+
+
+
+/*
   gui16InterfaceNodeName
 */
 void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
@@ -504,17 +515,6 @@ void mySavedPrefs::_loadUselessPreferences(Preferences& _preferences){
 
 
 
-
-
-
-
-
-/*
-  gi8RequestedOTAReboots
-*/
-void mySavedPrefs::_loadBoxStartupTypePreferences(Preferences& _preferences) {
-  _loadCharTypePrefs(_preferences, "OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
-}
 
 
 
