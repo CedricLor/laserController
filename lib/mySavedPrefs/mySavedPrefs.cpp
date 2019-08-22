@@ -18,8 +18,9 @@ const uint8_t mySavedPrefs::humanReadableVarNameSize = 34;
 
 
 /** Default constructor */
-mySavedPrefs::mySavedPrefs(bool readOnly) : 
-  debugSaveMsgStart("PREFERENCES: savePreferences(): the value of"),
+mySavedPrefs::mySavedPrefs() : 
+  debugSaveMsgStart("PREFERENCES: savePreferences():"),
+  debugSaveMsgTheValOf("the value of"),
   debugSaveMsgEndSuccess("has been saved to \"savedSettingsNS\":"),
   debugSaveMsgEndFail("could not be saved to \"savedSettingsNS\":"),
   debugLoadMsgStart("SETUP: loadPreferences():"),
@@ -28,11 +29,6 @@ mySavedPrefs::mySavedPrefs(bool readOnly) :
 {
   // Instanciate preferences library
   Preferences _prefLib;
-
-  /** Open namespace "savedSettingsNS" in read-only (readOnly = true)
-   *  or read-write (readOnly = false).
-   *  By default, the class constructor opens in rw. */
-  _prefLib.begin("savedSettingsNS", /*read only = */readOnly);
 }
 
 
@@ -58,6 +54,13 @@ mySavedPrefs::mySavedPrefs(bool readOnly) :
 
 
 
+void mySavedPrefs::_openNamespace(bool readOnly) {
+  Serial.print("mySavedPrefs::_openNamespace(): opening \"savedSettingsNS\" in readonly? ");Serial.println(readOnly);
+  bool openSucc = _prefLib.begin("savedSettingsNS", /*read only = */readOnly);
+  Serial.print("mySavedPrefs::_openNamespace(): \"savedSettingsNS\" namespace opened? ");Serial.println(openSucc);
+  size_t _freeEntries = _prefLib.freeEntries();
+  Serial.printf("mySavedPrefs::_openNamespace(): Remaining free entries in NVS: %i\n", _freeEntries);
+}
 
 
 
@@ -66,6 +69,8 @@ mySavedPrefs::mySavedPrefs(bool readOnly) :
 // GLOBAL WRAPPERS
 void mySavedPrefs::savePrefsWrapper() {
   Serial.print("PREFERENCES: savePreferences(): starting\n");
+
+  _openNamespace();
 
   _saveNetworkCredentials();
   _saveNetworkEssentialPreferences();
@@ -85,6 +90,8 @@ void mySavedPrefs::savePrefsWrapper() {
 
 void mySavedPrefs::loadPrefsWrapper() {
   Serial.print("\nSETUP: loadPrefsWrapper(): starting\n");
+
+  _openNamespace(true);
 
   _loadNetworkCredentials();
   _loadNetworkEssentialPreferences();
@@ -171,6 +178,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
 
 void mySavedPrefs::actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*)) {
+  _openNamespace();
   callBack(this);
   _endPreferences();
 }
@@ -201,7 +209,7 @@ void mySavedPrefs::_stSaveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
 }
 
 void mySavedPrefs::_saveNetworkCredentials() {
-  Serial.println("Saving External Wifi Credentials");
+  Serial.println(String(debugSaveMsgStart) + " Saving External Wifi Credentials");
 
   // save value of ssid
   _saveStringTypePrefs("ssid", "ssid", ssid);
@@ -220,7 +228,7 @@ void mySavedPrefs::_saveNetworkCredentials() {
   _saveIPTypePrefs("fixedIP", "IF fixed IP", fixedIP);
   _saveIPTypePrefs("netMask", "wifi netmask", fixedNetmaskIP);
 
-  Serial.println("End External Wifi Credentials");
+  Serial.println(String(debugSaveMsgStart) + " End External Wifi Credentials");
 }
 
 
@@ -350,7 +358,7 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
  *  - size_t putString(const char* key, const char* value); */
 void mySavedPrefs::_saveStringTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], char* strEnvVar){
   size_t _ret = _prefLib.putString(NVSVarName, strEnvVar);
-  Serial.printf("%s %s == %s %s\"%s\"\n", debugSaveMsgStart, humanReadableVarName, strEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %s %s\"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, strEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -361,7 +369,7 @@ void mySavedPrefs::_saveStringTypePrefs(const char NVSVarName[NVSVarNameSize], c
 void mySavedPrefs::_saveIPTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], IPAddress& envIP){
   uint8_t _ui8envIP[4] = {envIP[0], envIP[1], envIP[2], envIP[3]};
   size_t _ret = _prefLib.putBytes(NVSVarName, _ui8envIP, 4);
-  Serial.printf("%s %s == %s %s\"%s\"\n", debugSaveMsgStart, humanReadableVarName, envIP.toString().c_str(), (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %s %s\"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, envIP.toString().c_str(), (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -371,7 +379,7 @@ void mySavedPrefs::_saveIPTypePrefs(const char NVSVarName[NVSVarNameSize], const
  *  - size_t putBool(const char* key, bool value); */
 void mySavedPrefs::_saveBoolTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], bool& bEnvVar){
   size_t _ret = _prefLib.putBool(NVSVarName, bEnvVar);
-  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, bEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %u %s \"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, bEnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -381,7 +389,7 @@ void mySavedPrefs::_saveBoolTypePrefs(const char NVSVarName[NVSVarNameSize], con
  *  - size_t putChar(const char* key, int8_t value) */
 void mySavedPrefs::_saveCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int8_t& i8EnvVar){
   size_t _ret = _prefLib.putChar(NVSVarName, i8EnvVar);
-  Serial.printf("%s %s == %i %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, i8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %i %s \"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, i8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -391,7 +399,7 @@ void mySavedPrefs::_saveCharTypePrefs(const char NVSVarName[NVSVarNameSize], con
  *  - size_t putUChar(const char* key, uint8_t value) */
 void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint8_t& ui8EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, ui8EnvVar);
-  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %u %s \"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, ui8EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -402,7 +410,7 @@ void mySavedPrefs::_saveUCharTypePrefs(const char NVSVarName[NVSVarNameSize], co
  *  - size_t putUChar(const char* key, const uint8_t defaultValue) */
 void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   size_t _ret = _prefLib.putUChar(NVSVarName, (uint8_t)ui16EnvVar);
-  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %u %s \"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -412,7 +420,7 @@ void mySavedPrefs::_saveUi16ToUCharTypePrefs(const char NVSVarName[NVSVarNameSiz
  *  - size_t putShort(const char* key, int16_t value); */
 void mySavedPrefs::_saveI16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], int16_t& i16EnvVar){
   size_t _ret = _prefLib.putShort(NVSVarName, i16EnvVar);
-  Serial.printf("%s %s == %i %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, i16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %i %s \"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, i16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -422,7 +430,7 @@ void mySavedPrefs::_saveI16TypePrefs(const char NVSVarName[NVSVarNameSize], cons
  *  - size_t putUShort(const char* key, uint16_t value); */
 void mySavedPrefs::_saveUi16TypePrefs(const char NVSVarName[NVSVarNameSize], const char humanReadableVarName[humanReadableVarNameSize], uint16_t& ui16EnvVar){
   size_t _ret = _prefLib.putUShort(NVSVarName, ui16EnvVar);
-  Serial.printf("%s %s == %u %s \"%s\"\n", debugSaveMsgStart, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
+  Serial.printf("%s %s %s == %u %s \"%s\"\n", debugSaveMsgStart, debugSaveMsgTheValOf, humanReadableVarName, ui16EnvVar, (_ret)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), NVSVarName);
 }
 
 
@@ -595,7 +603,7 @@ void mySavedPrefs::_loadStringTypePrefs(const char NVSVarName[NVSVarNameSize], c
     snprintf(_specDebugMess, 58, "%s", couldNotBeRetriedFromNVS);
   }
 
-  Serial.printf("%s %s %s %s\n", debugLoadMsgStart, humanReadableVarName, _specDebugMess, _strEnvVar);
+  Serial.printf("%s %s %s %s\n", debugLoadMsgStart, humanReadableVarName, _specDebugMess, strEnvVar);
 }
 
 

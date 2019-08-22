@@ -17,10 +17,11 @@ class mySavedPrefs
 {
   public:
     const PROGMEM char * debugSaveMsgStart;
+    const PROGMEM char * debugSaveMsgTheValOf;
     const PROGMEM char * debugSaveMsgEndSuccess;
     const PROGMEM char * debugSaveMsgEndFail;
 
-    mySavedPrefs(bool readOnly=false);
+    mySavedPrefs();
 
     Preferences _prefLib;
 
@@ -35,6 +36,8 @@ class mySavedPrefs
     void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
 
   private:
+    void _openNamespace(bool readOnly=false);
+
     // abstract variables
     const PROGMEM char * debugLoadMsgStart;
     static const uint8_t NVSVarNameSize;

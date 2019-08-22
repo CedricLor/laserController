@@ -37,7 +37,9 @@ void setup() {
   delay(2000);
   serialInit();
 
-  mySavedPrefs _myPrefsRef(false);
+
+  // TRUE IS READONLY and FALSE IS RW!!!
+  mySavedPrefs _myPrefsRef;
   _myPrefsRef.loadPrefsWrapper();
 
   // The ESP was restarted with an OTA request saved in mySavedPrefs
