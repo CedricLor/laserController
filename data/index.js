@@ -23,6 +23,8 @@ In index.js:
  * 
  * class btnGrp
  * 
+ * btnGrpForLBsStates
+ * 
  * class dlgtdBtnEvt
  *  
  * class controlerBox
@@ -172,6 +174,7 @@ class btnGrp {
     this.changedRecvdBtnClass     = 'button_change_received';
 
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
+    // console.log("btnGrp.constructor(): this.btnGrpCommonAttr: " + props.btnGrpCommonAttr);
     // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + (this.btnGrpCommonAttr || "no btnGrpCommonAttr for this btnGrp"));
     this.btnGpSelectorProto       = (props.restrictParentSelector || "") + " button" + this.btnGrpCommonAttr;
     // console.log("btnGrp: constructor: this.btnGpSelectorProto = "+ this.btnGpSelectorProto);
@@ -200,7 +203,9 @@ class btnGrp {
    */
   loadBtnsInArray() {
     // 1. select all the buttons according the build up this.btnGpSelectorProto
-    this.btnsArray = Array.from(this.parent.vElt.querySelectorAll(this.btnGpSelectorProto));    
+    // console.log("btnGrp.loadBtnsInArray: this.btnGpSelectorProto: " + this.btnGpSelectorProto);
+    this.btnsArray = Array.from(this.parent.vElt.querySelectorAll(this.btnGpSelectorProto));
+    // console.log("btnGrp.loadBtnsInArray: this.btnsArray: ");console.log(this.btnsArray);
   }
 
   /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
@@ -209,8 +214,8 @@ class btnGrp {
    * */
   setActiveBtn() {
     if (this.activeBtnNum) {
-      // console.log("btnGrp.setActiveBtn: this.activeBtnNum: " + this.activeBtnNum);
-      // console.log("btnGrp.setActiveBtn: this.btnsArray: ");console.log(this.btnsArray);
+      console.log("btnGrp.setActiveBtn: this.activeBtnNum: " + this.activeBtnNum);
+      console.log("btnGrp.setActiveBtn: this.btnsArray: ");console.log(this.btnsArray);
       this.btnsArray[this.activeBtnNum].className += ' ' + this.activeBtnClass;
     }
   }
@@ -251,7 +256,7 @@ class btnGrp {
 
 
 
-/** btnGrpForLBsStates class
+/** class btnGrpForLBsStates
  * 
  *  Instance of btnGrpForLBsStates class are "newed" in instances of controlerBox.
  * 
@@ -268,11 +273,10 @@ class btnGrpForLBsStates {
     /**
      * In the ControlerBoxes
      * new btnGrpForLBsStates({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
-     * new btnGrpForLBsStates({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
-     * 
-     *  */
+     * new btnGrpForLBsStates({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate}); */
     this.parent                   = props.parent;
-    
+    this.vElt                     = this.parent.vElt;
+
     this.datasetKey               = props.datasetKey;
     // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + (this.btnGrpCommonAttr || "no btnGrpCommonAttr for this btnGrp"));
 
@@ -284,7 +288,6 @@ class btnGrpForLBsStates {
     this.filterBtnsArray();
 
     this.activeBtnNum             = props.activeBtnNum;
-
     this.setActiveBtn();
   }
 
@@ -392,7 +395,7 @@ class dlgtdBtnEvt {
     // console.log("dlgtdBtnEvt.constructor: STARTING");
     this.parent     = props.parent; 
     // console.log("dlgtdBtnEvt.constructor: props.objAction.action = " + (props.objAction && props.objAction.action || "no props._objAction passed"));
-    this._objAction = Object.assign({}, (props.objAction || {action:"changeBox"}));
+    this._objAction = Object.assign(Object.create(null), (props.objAction || {action:"changeBox"}));
     // console.log("dlgtdBtnEvt.constructor: this._objAction.action = " + (this._objAction.action || "no this._objAction"));
     // console.log("--------- --------- ---------");
     this._resetBaseProps();
@@ -424,11 +427,7 @@ class dlgtdBtnEvt {
     // console.log("dlgtdBtnEvt: onClick(e): this._targt = ");console.log(this._targt);
     // console.log("dlgtdBtnEvt: onClick(e): this._obj = " + JSON.stringify(this._obj));
     // if (this.parent instanceof controlerBox) {
-    if (Object.prototype.hasOwnProperty.call(this.parent, '_eventTargetSwitch')) {
-        [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
-    } else {
-      [this._obj, this._btnGrp] = grpStrs._eventTargetSwitch(this.parent, this._targt, this._obj);
-    }
+    [this._obj, this._btnGrp] = this.parent._eventTargetSwitch(this._targt, this._obj);
     // console.log("dlgtdBtnEvt: onClick(e): this._obj" + JSON.stringify(this._obj));
     if (this._obj) {
       this._setClassesAndSendMsg();
@@ -441,7 +440,7 @@ class dlgtdBtnEvt {
     // console.log("dlgtdBtnEvt._resetBaseProps: this._obj = " + JSON.stringify(this._obj));
     // console.log("dlgtdBtnEvt._resetBaseProps: this._obj.action (before Object.assign) = " + (this._obj ? this._obj.action : "this._obj has not yet been defined <---") );
     // console.log("dlgtdBtnEvt._resetBaseProps: this._objAction.action = " + this._objAction.action);
-    this._obj     = Object.assign({}, this._objAction);
+    this._obj     = Object.assign(Object.create(null), this._objAction);
     // console.log("dlgtdBtnEvt._resetBaseProps: this._obj.action (after Object.assign) = " + this._obj.action);
     // console.log("dlgtdBtnEvt._resetBaseProps: this._targt = " + JSON.stringify(this._targt));
     this._targt   = undefined;
@@ -1084,27 +1083,33 @@ class grpSetter {
     });
     // console.log("wifiSetter: update: this.inputsMap.size = " + this.inputsMap.size);
     // add an event handler for clicks on grp buttons
-    this.dlgtdBtnEvent  = new dlgtdBtnEvt({parent: this});
-    this.setDelegatedBtnClickedEvent();
-  }
-
-  /** grpSetter.setDelegatedBtnClickedEvent() sets an event listener on the settersGrp, listening to the
-   *  events bubbling from its buttons. */
-  setDelegatedBtnClickedEvent() {
-    // document.getElementById('saveWifiSettingsIF').addEventListener('click', _onClickSaveWifi.onIF, false);
-    // document.getElementById('saveWifiSettingsAll').addEventListener('click', _onClickSaveWifi.onAll, false);  
-    this.vElt.removeEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
-    this.vElt.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
   }
 }
 
 
 
+
+
+
+
+
+
+
+
 const grpStrs = {
-  wifi:   new grpSetter({selector: 'div.wifi_setters'}),
-  rootIF: new grpSetter({selector: 'div.mesh_spec_nodes_setters'}),
-  mesh:   new grpSetter({selector: 'div.mesh_gp_setters'}),
-  softAP: new grpSetter({selector: 'div.mesh_softap_setters'}),
+  wifi:           new grpSetter({selector: 'div.wifi_setters'}),
+  rootIF:         new grpSetter({selector: 'div.mesh_spec_nodes_setters'}),
+  mesh:           new grpSetter({selector: 'div.mesh_gp_setters'}),
+  softAP:         new grpSetter({selector: 'div.mesh_softap_setters'}),
+  dlgtdBtnEvent:  undefined,
+
+  /** grpStrs.setDelegatedBtnClickedEvent() sets an event listener on the settersGrp, listening to the
+   *  events bubbling from its buttons. */
+  addEvtListner: () => {
+    grpStrs.dlgtdBtnEvent = new dlgtdBtnEvt({parent: grpStrs});
+    document.removeEventListener('click', grpStrs.dlgtdBtnEvent.onClick.bind(grpStrs.dlgtdBtnEvent), false);
+    document.addEventListener('click', grpStrs.dlgtdBtnEvent.onClick.bind(grpStrs.dlgtdBtnEvent), false);
+  },
 
   update: (_data) => {
     /** {"action":3,
@@ -2239,6 +2244,7 @@ function updateGlobalInformation(_data) {
 
 // EVENT LISTENERS
 function setGroupEvents() {
+  grpStrs.addEvtListner();
   document.getElementById("rebootLBs").addEventListener('click', _onClickGroupReboot.onclickRebootLBsButton, false);
   document.getElementById("rebootIF").addEventListener('click', _onClickIF.reboot, false);
   document.getElementById("rebootAll").addEventListener('click', _onClickGroupReboot.onclickRebootAllButton, false);
@@ -2261,7 +2267,7 @@ var boxCont = new bxCont();
 
 
 // WINDOW LOAD
-window.onload = function(_e){
+window.onload = function(/*_e*/){
     console.log("window.onload");
     // Interval at which to check if WS server is still available
     // (and reconnect as necessary) setInterval(check, 5000);
