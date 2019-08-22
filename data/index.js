@@ -2006,20 +2006,24 @@ var _onClickGroupReboot = {
 
 
 var _onClickIF = {
-  baseObj: {
-    action: "changeBox",
-    lb: 0
-  },
+  baseObj: Object.assign(
+    Object.create(null),
+    {action: "changeBox"},
+    {lb: 0}
+  ),
 
   common: (_saveObj) => {
-    connectionObj.ws.send(JSON.stringify(
-      Object.assign(this.baseObj, _saveObj)
+    console.log(JSON.stringify(
+      Object.assign(_onClickIF.baseObj, _saveObj)
     ));
+    // connectionObj.ws.send(JSON.stringify(
+    //   Object.assign(_onClickIF.baseObj, _saveObj)
+    // ));
   },
 
   reboot: () => {
     console.log("_onClickIF.reboot starting");
-    this.common({
+    _onClickIF.common({
       key: "reboot", 
       save: 0
     });
@@ -2029,7 +2033,7 @@ var _onClickIF = {
 
   save: () => {
     console.log("_onClickIF.save starting");
-    this.common({
+    _onClickIF.common({
       key: "reboot", 
       val: "all"
     });
@@ -2039,7 +2043,7 @@ var _onClickIF = {
 
   OTAReboots(_e) {
     console.log("_onClickIF.OTAReboots starting");
-    this.common({
+    _onClickIF.common({
         key: "save",
         val: "gi8RequestedOTAReboots",
         reboots: parseInt(_e.target.dataset.reboots, 10)
