@@ -148,6 +148,14 @@ class btn {
  *  Instance of btnGrp class are "newed" in instances of controlerBox and grpSetter.
  * 
  *  btnGrp handle added and removing classes on btns. They do not handle events.
+ * 
+ *  A btnGrp has:
+ *  - a series of classes to apply to the btns of its group;
+ *  - eventually, a dataset common to all the btns of its group;
+ *  - eventually, a btnGrp common attribute (which may be different than its common dataset);
+ *  - a btnGpSelector prototype, which by default, always include the 'button' tag;
+ *  - a btnsArray, which holds references to the buttons html elements pertaining to the group;
+ *  - eventually, an activeBtnNumber.
  */
 class btnGrp {
   constructor (props={}) {
@@ -951,6 +959,12 @@ class inpt {
 /** class grpSetter: holder of forms used to set various group settings
  *  (such as root node setter, IF node setter, Soft AP settings setter, 
  *   Mesh settings setter, wifi settings setter).
+ * 
+ *   A grpSetter has:
+ *   - a common selector;
+ *   - a virtual HTML element;
+ *   - an inputs map;
+ *   - a btnGrp.
  *  */
 class grpSetter {
   // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.1", fixedNetmaskIP: "255.255.255.0"}
@@ -2152,6 +2166,7 @@ function setGroupEvents() {
   document.getElementById("rebootLBs").addEventListener('click', _onClickGroupReboot.onclickRebootLBsButton, false);
   document.getElementById("rebootIF").addEventListener('click', _onClickIF.reboot, false);
   document.getElementById("rebootAll").addEventListener('click', _onClickGroupReboot.onclickRebootAllButton, false);
+
   document.getElementById("saveLBs").addEventListener('click', _onClickGroupReboot.onclickSaveLBsButton, false);
   document.getElementById("saveIF").addEventListener('click', _onClickIF.save, false);
   document.getElementById("saveAll").addEventListener('click', _onClickGroupReboot.onclickSaveAllButton, false);
