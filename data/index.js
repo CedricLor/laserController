@@ -151,7 +151,6 @@ class btn {
  * 
  *  A btnGrp has:
  *  - a series of classes to apply to the btns of its group;
- *  - eventually, a dataset common to all the btns of its group;
  *  - eventually, a btnGrp common attribute (which may be different than its common dataset);
  *  - a btnGpSelector prototype, which by default, always include the 'button' tag;
  *  - a btnsArray, which holds references to the buttons html elements pertaining to the group;
@@ -162,8 +161,6 @@ class btnGrp {
     /**
      * In the ControlerBoxes
      * new btnGrp({parent: this, restrictParentSelector: '.command_gp > '});
-     * new btnGrp({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
-     * new btnGrp({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
      * 
      * In the grpSetter
      * new btnGrp({parent: this});
@@ -174,8 +171,6 @@ class btnGrp {
     this.activeBtnClass           = 'button_active_state';
     this.changedRecvdBtnClass     = 'button_change_received';
 
-    this.datasetKey               = props.datasetKey || "";
-    // console.log("btnGrp: constructor: this.datasetKey = " + (this.datasetKey || "no datasetKey for this btnGrp"));
     this.btnGrpCommonAttr         = props.btnGrpCommonAttr || "";
     // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + (this.btnGrpCommonAttr || "no btnGrpCommonAttr for this btnGrp"));
     this.btnGpSelectorProto       = (props.restrictParentSelector || "") + " button" + this.btnGrpCommonAttr;
@@ -185,9 +180,7 @@ class btnGrp {
     // console.log("btnGrp.constructor: this.btnsArray.length: " + this.btnsArray.length);
     this.loadBtnsInArray();
     // console.log("btnGrp.constructor: this.btnsArray.length: " + this.btnsArray.length);
-    this.activeBtnNum             = (props.activeBtnNum ? props.activeBtnNum : undefined);
-
-    this.setActiveBtn();  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
+    this.activeBtnNum             = undefined;
   }
 
   /** btnGrp.update(_data) updates the active button among the buttons of this button group
@@ -207,31 +200,14 @@ class btnGrp {
    */
   loadBtnsInArray() {
     // 1. select all the buttons according the build up this.btnGpSelectorProto
-    this.btnsArray = Array.from(this.parent.vElt.querySelectorAll(this.btnGpSelectorProto));
-    /**2. the btnGpSelectorProto does not include any datasetKey (would need to decamelize 
-     *    the string and I don't want to): if there is a dataset, two problems:
-     *      a. we might have too many buttons in the array;
-     *      b. the index of each button must match the value of the relevant datasetKey. */
-    if (this.datasetKey) {
-      // 1. let's filter it and store it into a temporary array -> grabbing only the _btn that have a datasetKey that correspond to this btnGrp
-      let _filteredBtns = this.btnsArray.filter( _btn => _btn.dataset[this.datasetKey] !== undefined);
-      // 2. empty this.btnsArray
-      this.btnsArray.splice(0, this.btnsArray.length);
-      // 3. let's load this.btnsArray in the correct order 
-      _filteredBtns.forEach(
-        (_btn) => {
-          this.btnsArray[_btn.dataset[this.datasetKey]] = _btn;
-        }
-      );
-    }
-    
+    this.btnsArray = Array.from(this.parent.vElt.querySelectorAll(this.btnGpSelectorProto));    
   }
 
   /** btnGrp.setActiveBtn() sets the active button among the buttons of this button group 
    *  by adding the class this.activeBtnClass to the classList of the button corresponnding
    *  to this.activeBtnNum.
    * */
-  setActiveBtn() {  // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
+  setActiveBtn() {
     if (this.activeBtnNum) {
       // console.log("btnGrp.setActiveBtn: this.activeBtnNum: " + this.activeBtnNum);
       // console.log("btnGrp.setActiveBtn: this.btnsArray: ");console.log(this.btnsArray);
@@ -254,16 +230,107 @@ class btnGrp {
    *  */
   markBtnAsNonClicked(_btn) {
     _btn.classList.remove(this.clickedBtnClass, this.activeBtnClass, this.changedRecvdBtnClass);
-  } 
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** btnGrpForLBsStates class
+ * 
+ *  Instance of btnGrpForLBsStates class are "newed" in instances of controlerBox.
+ * 
+ *  They handle adding and removing classes on state btns and similar. They do not handle events
+ *  themselves. This is delegated to the controlerBox to which they pertain.
+ * 
+ *  A btnGrpForLBsStates has:
+ *  - a btnGrp;
+ *  - a dataset common to all the btns of its group;
+ *  - an activeBtnNumber.
+ */
+class btnGrpForLBsStates {
+  constructor (props={}) {
+    /**
+     * In the ControlerBoxes
+     * new btnGrpForLBsStates({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
+     * new btnGrpForLBsStates({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
+     * 
+     *  */
+    this.parent                   = props.parent;
+    
+    this.datasetKey               = props.datasetKey;
+    // console.log("btnGrp: constructor: this.btnGrpCommonAttr = " + (this.btnGrpCommonAttr || "no btnGrpCommonAttr for this btnGrp"));
+
+    this.btnGrp                   = new btnGrp({parent: this});
+
+    // shallowing the props and methods of btnGrp
+    this.clickedBtnClass          = this.btnGrp.clickedBtnClass;
+    this.btnsArray                = this.btnGrp.btnsArray;
+    this.filterBtnsArray();
+
+    this.activeBtnNum             = props.activeBtnNum;
+
+    this.setActiveBtn();
+  }
+
+  /** btnGrp.loadBtnsInArray() loads the btns of this btnGrp
+   *  into an array.
+   */
+  filterBtnsArray() {
+    /**  The btnGpSelectorProto of the btnGrp base class does not include any 
+     *     datasetKey (would need to decamelize the string and I don't want to). 
+     *     If the buttons we want to include in this btnGrpForLBsStates where 
+     *     conceived in the HTML with a common dataset, there might result two problems
+     *     from the raw selection of the base btnGrp:
+     *       a. we might have too many buttons in the array;
+     *       b. the index of each button in the array must match the value of the 
+     *          relevant datasetKey for the setActiveButton method to work properly. */
+    // a. let's filter it and store it into a temporary array -> grabbing only the _btn that have a datasetKey that correspond to this btnGrp
+    let _filteredBtns = this.btnsArray.filter( _btn => _btn.dataset[this.datasetKey] !== undefined);
+    // b. empty the shallow copy of the btnGrp's btnsArray
+    this.btnsArray.splice(0, this.btnsArray.length);
+    // c. reload this.btnsArray in the correct order 
+    _filteredBtns.forEach(
+      (_btn) => {
+        /** there might result some missing indexes in the middle of the array
+         *   (but this is by design). */
+        this.btnsArray[_btn.dataset[this.datasetKey]] = _btn;
+      }
+    );
+  }
+
+update(activeBtnNum) { this.btnGrp.update(activeBtnNum); }
+
+setActiveBtn() {
+  this.btnGrp.activeBtnNum = this.activeBtnNum;
+  this.btnGrp.setActiveBtn(); 
+}
+
+markAllBtnsAsNonClicked() { this.btnGrp.markAllBtnsAsNonClicked(); }
 
   /** btnGrp.updateFB(_data) updates the local data and the btnGrp
-   *  on feedback from an {action: "changeBox", key: "boxState || boxDefstate"...} request. 
+   *  on feedback from a request of the type:
+   *  - {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1}
+   *  - {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
+   *  - {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1}
+   *  - {lb: 1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
    * */
-  updateFB(_data) { // <-- opinionated - works well for boxState and similar, pain in the ass in other cases
-    // _data = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-    // _data = {lb: 1; action: "changeBox"; key: "boxState"; val: 6; st: 2}
-    // _data = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-    // _data = {lb:1; action: "changeBox"; key: "boxDefstate"; val: 4; st: 2}
+  updateFB(_data) {
     /** 
      * _data.st === 1: the change request has been received by the IF and
      * transmitted to the relevant laser box:
@@ -275,7 +342,7 @@ class btnGrp {
     // console.log("btnGrp.updateFB(_data): ");console.log(_data);
     // console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 1: " + (parseInt(_data.st, 10) === 1));
     if (parseInt(_data.st, 10) === 1) {
-        this.parent.boxStateChanging = this.boxState;
+        this.parent.boxStateChanging = this.parent.boxState;
         this.parent.boxState         = parseInt(_data.val, 10);
         // console.log("btnGrp.updateFB(_data): this.btnsArray: " + JSON.stringify(this.btnsArray));
         // console.log("btnGrp.updateFB(_data): this.parent.boxState: " + this.parent.boxState);
@@ -300,6 +367,11 @@ class btnGrp {
     }
   }
 }
+
+
+
+
+
 
 
 
@@ -447,8 +519,8 @@ class controlerBox {
     this.configBtnGrp             = new btnGrp({parent: this, restrictParentSelector: '.command_gp > '});
     
     // setting the state and default state buttons btnGrps
-    this.boxStateBtnGrp           = new btnGrp({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
-    this.boxDefStateBtnGrp        = new btnGrp({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
+    this.boxStateBtnGrp           = new btnGrpForLBsStates({parent: this, datasetKey: "boxState", activeBtnNum: this.boxState});
+    this.boxDefStateBtnGrp        = new btnGrpForLBsStates({parent: this, datasetKey: "boxDefstate", activeBtnNum: this.boxDefstate});
 
     // setting the span master box number
     this.masterSpan               = new span({parent: this, selector: "span.master_box_number", textContent: this.masterbox + 200});
