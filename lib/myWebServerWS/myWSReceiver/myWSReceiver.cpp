@@ -65,14 +65,8 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
   if (MY_DG_WS) {
     Serial.print("myWSReceiver::myWSReceiver(): message msg deserialized into JsonDocument _doc\n");
     Serial.print("myWSReceiver::myWSReceiver(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
+    serializeJson(_doc, Serial);Serial.println();
   }
-
-  // read the action type of message
-  // NEW: _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
-  // ancient: _obj["action"] = 0 (handshake), 3 (received IP), 4 (change active state), 9 (change default state), 8 ()
-  // const int8_t __i8MessageActionType = _obj["action"]; // correspondings to root[action] in meshController
-  // if (MY_DG_WS) { Serial.printf("myWSReceiver::myWSReceiver(): The message __i8MessageActionType is %i \n", __i8MessageActionType); }
-
 
   // choose the type of reaction depending on the message action type
   _actionSwitch(_obj);
@@ -138,6 +132,8 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     // {action: "changeNet", key: "reboot", save: 0, lb: "all"}
     // {action: "changeNet", key: "save", val: "all", lb: "LBs"}
     // {action: "changeNet", key: "save", val: "all", lb: "all"}
+    // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
+    // {"action":"changeNet","key":"save","dataset":{"sIP":"192.168.5.1","sssid":"ESP32-Access-Point","spass":"123456789","sgw":"192.168.5.1","snm":"255.255.255.0","shi":"0","smc":"10"},"lb":"all","val":"softAP"}
     _requestNetChange(_obj);
     return;
   }
@@ -268,11 +264,13 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
 
 
 void myWSReceiver::_requestNetChange(JsonObject& _obj) {
+  // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
+  // {"action":"changeNet","key":"save","dataset":{"sIP":"192.168.5.1","sssid":"ESP32-Access-Point","spass":"123456789","sgw":"192.168.5.1","snm":"255.255.255.0","shi":"0","smc":"10"},"lb":"all","val":"softAP"}
   if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Starting.\n"); }
 
   // If this is a reboot message
   if (_obj["key"] == "reboot") {
-    // If reboot "all", IF shall be rebooted
+    // If reboot "all", IF shall be also rebooted
     if (_obj["lb"] == "all") {
       ControlerBox::tReboot.enableDelayed();
     }
@@ -280,7 +278,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
 
   // If this is a save message
   if ((_obj["key"] == "save") && (_obj["val"] == "all")) {
-    // If save "all", IF shall be rebooted
+    // If _obj["lb"] == "all", it shall also be saved on the IF
     if (_obj["lb"] == "all") {
       _saveIF(_obj);
     }
@@ -291,6 +289,22 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
     // If save "all", IF shall be rebooted
     if (_obj["lb"] == "all") {
       _saveWifiIF(_obj);
+    }
+  }
+
+  // If this is a save softAP message
+  if ((_obj["key"] == "save") && (_obj["val"] == "softAP")) {
+    // If _obj["lb"] == "all", it shall also be saved on the IF
+    if (_obj["lb"] == "all") {
+      // _saveSoftAPIF(_obj);
+    }
+  }
+
+  // If this is a save mesh message
+  if ((_obj["key"] == "save") && (_obj["val"] == "mesh")) {
+    // If _obj["lb"] == "all", it shall also be saved on the IF
+    if (_obj["lb"] == "all") {
+      // _saveMeshIF(_obj);
     }
   }
 
