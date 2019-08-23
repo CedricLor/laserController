@@ -1152,7 +1152,9 @@ const grpStrs = {
     if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
       _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap);
       _obj.val    = "wifi";
-      return [_obj, grpStrs.wifi.btnGrp];
+      _obj.lb     = 0;
+      _obj.action = "changeBox";
+        return [_obj, grpStrs.wifi.btnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#applyWifiSettingsAll" */

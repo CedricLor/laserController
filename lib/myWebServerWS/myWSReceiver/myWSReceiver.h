@@ -44,7 +44,7 @@
 #include "Arduino.h"
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
-#include <myMeshViews.h>
+#include <myMeshViews/myMeshViews.h>
 #include <myWebServerWS.h>
 
 class myWSReceiver
@@ -67,9 +67,7 @@ class myWSReceiver
     
     void _rebootIF(JsonObject& _obj);
     void _saveIF(JsonObject& _obj);
-    void _saveWifiIF(JsonObject& _obj);
-    void _saveSoftAPIF(JsonObject& _obj);
-    void _saveMeshIF(JsonObject& _obj);
+    void _saveOnIF(JsonObject& _obj);
 
     void _savegi8RequestedOTAReboots(JsonObject& _obj);
     void _requestNetChange(JsonObject& _obj);
