@@ -96,6 +96,8 @@ void mySavedPrefs::loadPrefsWrapper() {
   _openNamespace(true);
 
   _loadNetworkCredentials();
+  _loadMeshNetworkCredentials();
+  _loadIfOnSoftAPCredentials();
   _loadNetworkEssentialPreferences();
   _loadUselessPreferences();
 
@@ -233,11 +235,10 @@ void mySavedPrefs::_saveNetworkCredentials() {
   Serial.println(String(debugSaveMsgStart) + " End External Wifi Credentials");
 }
 
-/**_saveIfOnSoftAPCredentials()
+/**_saveMeshNetworkCredentials()
  * 
- * softAP settings are settings used on the mobile IF i.e.:
- * - softAP interface serving the web interface;
- * - station interface connecting to the mesh. 
+ * mesh network credentials are settings used on each node to join
+ * the mesh.
  * 
  * instance method.
  * 
@@ -552,6 +553,82 @@ void mySavedPrefs::_loadNetworkCredentials(){
   Serial.println(String(debugLoadMsgStart) + " --- End External Wifi Credentials");
 }
 
+/**_loadMeshNetworkCredentials()
+ * 
+ * mesh network credentials are settings used on each node to join
+ * the mesh.
+ *  
+ * instance method.
+ * 
+ * saved settings (declared and defined in secret singleton):
+ * char meshPrefix[20]         = "laser_boxes";
+ * char meshPass[20]           = "somethingSneaky";
+ * uint16_t meshPort           = 5555;
+ * uint8_t meshHidden          = 0;
+ * uint8_t meshMaxConnection   = 10;
+ * 
+ * __meshSettings["mssid"]     = meshPrefix;
+ * __meshSettings["mpass"]     = meshPass;
+ * __meshSettings["mport"]     = meshPort;
+ * __meshSettings["mhi"]       = meshHidden;
+ * __meshSettings["mmc"]       = meshMaxConnection;
+*/
+void mySavedPrefs::_loadMeshNetworkCredentials() {
+  // load value of mesh ssid
+  _loadStringTypePrefs("mssid", "mesh prefix ssid", meshPrefix);
+
+  // load value of mesh password
+  _loadStringTypePrefs("mpass", "mesh password", meshPass);
+
+  // save mesh port
+  _loadUi16TypePrefs("mport", "mesh port", meshPort);
+
+  // save values of hidden and max connection of soft AP
+  _loadCharTypePrefs("mhi", "mesh ssid is hidden?", softApHidden);
+  _loadCharTypePrefs("mmc", "mesh max connections / node's softAP", softApMaxConnection);
+}
+
+/**_loadIfOnSoftAPCredentials()
+ * 
+ * softAP settings are settings used on the mobile IF i.e.:
+ * - softAP interface serving the web interface;
+ * - station interface connecting to the mesh. 
+ * 
+ * instance method.
+ * 
+ * saved settings (declared and defined in secret singleton):
+ * char softApSsid[20]           = "ESP32-Access-Point";
+ * char softApPassword[20]       = "123456789";
+ * IPAddress softApMyIp          = {192, 168, 5, 1};
+ * IPAddress softApMeAsGatewayIp = {192, 168, 5, 1};
+ * IPAddress softApNetmask       = {255, 255, 255, 0};
+ * int8_t softApHidden           = 0;
+ * int8_t softApMaxConnection    = 10;
+ * 
+ *  __softAPSettings["sssid"]   = softApSsid;
+ *  __softAPSettings["spass"]   = softApPassword;
+ *  __softAPSettings["sIP"]     = softApMyIp.toString();
+ *  __softAPSettings["sgw"]     = softApMeAsGatewayIp.toString();
+ *  __softAPSettings["snm"]     = softApNetmask.toString();
+ *  __softAPSettings["shi"]     = softApHidden;
+ *  __softAPSettings["smc"]     = softApMaxConnection;
+*/
+void mySavedPrefs::_loadIfOnSoftAPCredentials() {
+  // load value of soft AP ssid
+  _loadStringTypePrefs("sssid", "soft AP ssid", softApSsid);
+
+  // load value of soft AP password
+  _loadStringTypePrefs("spass", "soft AP password", softApPassword);
+
+  // load value of the gatewayIP, the fixedIP and fixed Netmask
+  _loadIPTypePrefs("sIP", "soft AP IP", softApMyIp);
+  _loadIPTypePrefs("sgw", "soft AP Gateway", softApMeAsGatewayIp);
+  _loadIPTypePrefs("snm", "soft AP wifi netmask", softApNetmask);
+
+  // load values of hidden and max connection of soft AP
+  _loadCharTypePrefs("shi", "soft AP is hidden?", softApHidden);
+  _loadCharTypePrefs("shi", "soft AP max connections", softApMaxConnection);
+}
 
 
 

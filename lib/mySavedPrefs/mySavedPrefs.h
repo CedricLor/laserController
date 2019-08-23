@@ -73,6 +73,8 @@ class mySavedPrefs
     const char * setFromNVS;
 
     void _loadNetworkCredentials();
+    void _loadMeshNetworkCredentials();
+    void _loadIfOnSoftAPCredentials();
     void _loadNetworkEssentialPreferences();
     void _loadUselessPreferences();
 
