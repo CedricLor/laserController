@@ -48,6 +48,8 @@ class mySavedPrefs
 
     static void _stSaveNetworkCredentials(mySavedPrefs * _myPrefsRef);
     void _saveNetworkCredentials();
+    void _saveMeshNetworkCredentials();
+    void _saveIfOnSoftAPCredentials();
     void _saveNetworkEssentialPreferences();
     void _saveUselessPreferences();
 

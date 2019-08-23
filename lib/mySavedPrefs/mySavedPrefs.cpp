@@ -73,6 +73,8 @@ void mySavedPrefs::savePrefsWrapper() {
   _openNamespace();
 
   _saveNetworkCredentials();
+  _saveMeshNetworkCredentials();
+  _saveIfOnSoftAPCredentials();
   _saveNetworkEssentialPreferences();
   _saveUselessPreferences();
 
@@ -231,6 +233,83 @@ void mySavedPrefs::_saveNetworkCredentials() {
   Serial.println(String(debugSaveMsgStart) + " End External Wifi Credentials");
 }
 
+/**_saveIfOnSoftAPCredentials()
+ * 
+ * softAP settings are settings used on the mobile IF i.e.:
+ * - softAP interface serving the web interface;
+ * - station interface connecting to the mesh. 
+ * 
+ * instance method.
+ * 
+ * saved settings (declared and defined in secret singleton):
+ * char meshPrefix[20]         = "laser_boxes";
+ * char meshPass[20]           = "somethingSneaky";
+ * uint16_t meshPort           = 5555;
+ * uint8_t meshHidden          = 0;
+ * uint8_t meshMaxConnection   = 10;
+ * 
+ * __meshSettings["mssid"]     = meshPrefix;
+ * __meshSettings["mpass"]     = meshPass;
+ * __meshSettings["mport"]     = meshPort;
+ * __meshSettings["mhi"]       = meshHidden;
+ * __meshSettings["mmc"]       = meshMaxConnection;
+*/
+void mySavedPrefs::_saveMeshNetworkCredentials() {
+  // save value of mesh ssid
+  _saveStringTypePrefs("mssid", "mesh prefix ssid", meshPrefix);
+
+  // save value of mesh password
+  _saveStringTypePrefs("mpass", "mesh password", meshPass);
+
+  // save mesh port
+  _saveUi16TypePrefs("mport", "mesh port", meshPort);
+
+  // save values of hidden and max connection of soft AP
+  _saveCharTypePrefs("mhi", "mesh ssid is hidden?", softApHidden);
+  _saveCharTypePrefs("mmc", "mesh max connections / node's softAP", softApMaxConnection);
+}
+
+/**_saveIfOnSoftAPCredentials()
+ * 
+ * softAP settings are settings used on the mobile IF i.e.:
+ * - softAP interface serving the web interface;
+ * - station interface connecting to the mesh. 
+ * 
+ * instance method.
+ * 
+ * saved settings (declared and defined in secret singleton):
+ * char softApSsid[20]           = "ESP32-Access-Point";
+ * char softApPassword[20]       = "123456789";
+ * IPAddress softApMyIp          = {192, 168, 5, 1};
+ * IPAddress softApMeAsGatewayIp = {192, 168, 5, 1};
+ * IPAddress softApNetmask       = {255, 255, 255, 0};
+ * int8_t softApHidden           = 0;
+ * int8_t softApMaxConnection    = 10;
+ * 
+ *  __softAPSettings["sssid"]   = softApSsid;
+ *  __softAPSettings["spass"]   = softApPassword;
+ *  __softAPSettings["sIP"]     = softApMyIp.toString();
+ *  __softAPSettings["sgw"]     = softApMeAsGatewayIp.toString();
+ *  __softAPSettings["snm"]     = softApNetmask.toString();
+ *  __softAPSettings["shi"]     = softApHidden;
+ *  __softAPSettings["smc"]     = softApMaxConnection;
+*/
+void mySavedPrefs::_saveIfOnSoftAPCredentials() {
+  // save value of soft AP ssid
+  _saveStringTypePrefs("sssid", "soft AP ssid", softApSsid);
+
+  // save value of soft AP password
+  _saveStringTypePrefs("spass", "soft AP password", softApPassword);
+
+  // save value of the gatewayIP, the fixedIP and fixed Netmask
+  _saveIPTypePrefs("sIP", "soft AP IP", softApMyIp);
+  _saveIPTypePrefs("sgw", "soft AP Gateway", softApMeAsGatewayIp);
+  _saveIPTypePrefs("snm", "soft AP wifi netmask", softApNetmask);
+
+  // save values of hidden and max connection of soft AP
+  _saveCharTypePrefs("shi", "soft AP is hidden?", softApHidden);
+  _saveCharTypePrefs("shi", "soft AP max connections", softApMaxConnection);
+}
 
 
 
