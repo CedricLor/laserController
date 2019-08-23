@@ -45,7 +45,9 @@ void setup() {
   // TRUE IS READONLY and FALSE IS RW!!!
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.loadPrefsWrapper();
-
+  thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
+  thisBox.sBoxDefaultState = gi16BoxDefaultState;
+  
   // The ESP was restarted with an OTA request saved in mySavedPrefs
   if (gi8OTAReboot) {
     myOta::OTAConfig();
@@ -65,7 +67,6 @@ void setup() {
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
-
   mySpiffs _mySpiffs;
   _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
 
