@@ -42,12 +42,10 @@
 #define myWSReceiver_h
 
 #include "Arduino.h"
-#include <painlessMesh.h>
-#include <global.h>
-#include "../../mySavedPrefs/mySavedPrefs.h"
+#include <mySavedPrefs.h>
 #include <ControlerBox.h>
-#include <../myMesh/myMeshViews/myMeshViews.h>
-#include <../myWebServerWS/myWebServerWS.h>
+#include <myMeshViews.h>
+#include <myWebServerWS.h>
 
 class myWSReceiver
 {
@@ -66,9 +64,13 @@ class myWSReceiver
 
     void _requestBoxChange(JsonObject& _obj, bool _bBroadcast=false);
     void _requestIFChange(JsonObject& _obj);
+    
     void _rebootIF(JsonObject& _obj);
     void _saveIF(JsonObject& _obj);
     void _saveWifiIF(JsonObject& _obj);
+    void _saveSoftAPIF(JsonObject& _obj);
+    void _saveMeshIF(JsonObject& _obj);
+
     void _savegi8RequestedOTAReboots(JsonObject& _obj);
     void _requestNetChange(JsonObject& _obj);
 
