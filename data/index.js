@@ -393,6 +393,7 @@ class dlgtdBtnEvt {
   // props: {parent: this, objAction: {action:"changeBox"}}
   constructor(props={}) {
     // console.log("dlgtdBtnEvt.constructor: STARTING");
+    // console.log("dlgtdBtnEvt.constructor: props.parent: ");console.log(props.parent);
     this.parent     = props.parent; 
     // console.log("dlgtdBtnEvt.constructor: props.objAction.action = " + (props.objAction && props.objAction.action || "no props._objAction passed"));
     this._objAction = Object.assign(Object.create(null), (props.objAction || {action:"changeBox"}));
@@ -1124,10 +1125,10 @@ const grpStrs = {
     grpStrs.mesh.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));  
   },
 
-  /** grpStrs._eventTargetSwitch(_grpSetter, _targt, _obj) checks whether the 
+  /** grpStrs._eventTargetSwitch(_targt, _obj) checks whether the 
    *  event.target HTML element (passed in _targt) matches with a selector composed of:
    * 
-   *  - the grpSetter button group selector; and 
+   *  - the relevant grpSetter (wifi, mesh, softAP, etc.) button group selector; and 
    *  - the relevant button id.
    * 
    *  - If so, it: 
@@ -1140,101 +1141,83 @@ const grpStrs = {
    *  @return: [the Json _obj ready to be sent, the relevant btnGrp] or [false, false]
    *  
    *  Gets called from dlgtdBtnEvent instance. */
-  _eventTargetSwitch(_grpSetter, _targt, _obj) {
-    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): starting");
-    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): _grpSetter.btnGrp.btnGpSelectorProto: " + _grpSetter.btnGrp.btnGpSelectorProto);
-    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): _grpSetter.btnGrp.btnGpSelectorProto" + "#saveWifiSettingsIF: " + _grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF");
-    // console.log("grpSetter._eventTargetSwitch(_grpSetter, _targt, _obj): _targt: ");console.log(_targt);
-    // console.log(_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF"));
+  _eventTargetSwitch(_targt, _obj) {
+    console.log("grpStrs._eventTargetSwitch(_targt, _obj): starting");
     /**  1. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsIF" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+    if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap);
       _obj.val    = "wifi";
-      _obj.lb     = 0;
-      _obj.action = "changeBox";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.wifi.btnGrp];
     }
     /**  2. checks whether the event.target HTML element matches with the selector 
-     * "button#saveWifiSettingsAll" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+     * "button#applyWifiSettingsAll" */
+    if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#applyWifiSettingsAll")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap, "apply");
       _obj.val    = "wifi";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.wifi.btnGrp];
     }
     /**  3. checks whether the event.target HTML element matches with the selector 
      * "button#saveMeshSettings" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+    if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.mesh.inputsMap);
       _obj.val    = "mesh";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.mesh.btnGrp];
     }
     /**  4. checks whether the event.target HTML element matches with the selector 
-     * "button#saveMeshSettings" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+     * "button#applyMeshSettings" */
+    if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#applyMeshSettings")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.mesh.inputsMap, "apply");
       _obj.val    = "mesh";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.mesh.btnGrp];
     }
+
     /**  5. checks whether the event.target HTML element matches with the selector 
      * "button#saveRootNodeNumb" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveRootNodeNumb")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+    if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#saveRootNodeNumb")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap);
       _obj.val    = "RoSet";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.rootIF.btnGrp];
     }
     /**  6. checks whether the event.target HTML element matches with the selector 
      * "button#applyRootNodeNumb" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applyRootNodeNumb")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap, "apply");
+    if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#applyRootNodeNumb")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap, "apply");
       _obj.val    = "RoSet";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.rootIF.btnGrp];
     }
     /**  7. checks whether the event.target HTML element matches with the selector 
      * "button#saveIFNodeNumb" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
+    if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
       _obj.key    = "save";
       _obj.val    = "IFSet";
-      _obj.lb     = (_grpSetter.inputsMap.get("IFNNA")).getValue();
+      _obj.lb     = (grpStrs.rootIF.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.rootIF.btnGrp];
     }
     /**  8. checks whether the event.target HTML element matches with the selector 
      * "button#applyIFNodeNumb" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
+    if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
       _obj.key    = "apply";
       _obj.val    = "IFSet";
-      _obj.lb     = (_grpSetter.inputsMap.get("IFNNA")).getValue();
+      _obj.lb     = (grpStrs.rootIF.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.rootIF.btnGrp];
     }
+
     /**  9. checks whether the event.target HTML element matches with the selector 
      * "button#saveSoftAPSettings" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#saveSoftAPSettings")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap);
+    if (_targt.matches(grpStrs.softAP.btnGrp.btnGpSelectorProto + "#saveSoftAPSettings")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.softAP.inputsMap);
       _obj.val    = "softAP";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.softAP.btnGrp];
     }
     /**  10. checks whether the event.target HTML element matches with the selector 
      * "button#applySoftAPSettings" */
-    if (_targt.matches(_grpSetter.btnGrp.btnGpSelectorProto + "#applySoftAPSettings")) {
-      _obj        = grpStrs._baseObj(_obj, _grpSetter.inputsMap, "apply");
+    if (_targt.matches(grpStrs.softAP.btnGrp.btnGpSelectorProto + "#applySoftAPSettings")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.softAP.nputsMap, "apply");
       _obj.val    = "softAP";
-      _obj.lb     = "all";
-      _obj.action = "changeNet";
-      return [_obj, _grpSetter.btnGrp];
+      return [_obj, grpStrs.softAP.btnGrp];
     }
     return [false, false];
   },
@@ -1252,7 +1235,9 @@ const grpStrs = {
       // console.log("grpSetter._baseObj: _obj.dataset[_k] = _inpt.getValue(): _obj.dataset[" + _k + "] = " + _inpt.getValue());
       _obj.dataset[_k] = _inpt.getValue();
     });
-    // console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
+    _obj.lb     = "all";
+    _obj.action = "changeNet";
+  // console.log("grpSetter._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
     return _obj;
   }
 };
