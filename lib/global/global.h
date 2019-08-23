@@ -25,7 +25,7 @@ extern const bool         MY_DEEP_DG_MESH;
 extern const short        VERSION;
 
 // BOX BY BOX
-extern const uint8_t      UI8_DEFAULT_MASTER_NODE_NAME;
+extern uint8_t            gui8DefaultMasterNodeName;
 
 extern uint16_t           gui16NodeName;
 extern bool               isInterface;
@@ -49,7 +49,7 @@ extern const char*        slaveReactionHtml[4];
 extern constexpr uint8_t  UI8_BOXES_COUNT                     = 10;
 extern uint16_t           gui16BoxesCount;
 
-extern const short        S_BOX_DEFAULT_STATE;
+extern int16_t            gi16BoxDefaultState;
 
 extern int8_t             gi8OTAReboot;
 extern int8_t             gi8RequestedOTAReboots;

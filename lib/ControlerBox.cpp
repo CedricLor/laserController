@@ -44,7 +44,7 @@ ControlerBox::ControlerBox()
 
   // ui16MasterBoxName
   // setters:
-  // - here; -> from the global.UI8_DEFAULT_MASTER_NODE_NAME
+  // - here; -> from the global.gui8DefaultMasterNodeName
   // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
   //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
   //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
@@ -54,7 +54,7 @@ ControlerBox::ControlerBox()
   // - here (printProperties)
   // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
   // - in mySavedPrefs::savePreferences()
-  ui16MasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
+  ui16MasterBoxName = gui8DefaultMasterNodeName;
 
   // bMasterBoxNameChangeHasBeenSignaled
   // setters:
@@ -68,7 +68,7 @@ ControlerBox::ControlerBox()
   // - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) (tests whether a change has been made and whether it needs to inform the browser)
   bMasterBoxNameChangeHasBeenSignaled = true;
 
-  sBoxDefaultState = S_BOX_DEFAULT_STATE;
+  sBoxDefaultState = gi16BoxDefaultState;
   sBoxDefaultStateChangeHasBeenSignaled = true;
 }
 
@@ -303,10 +303,15 @@ void ControlerBox::deleteBox() {
   boxDeletionHasBeenSignaled = false;
   Serial.println("ControlerBox::deleteBox(): boxDeletionHasBeenSignaled set to FALSE");
 
-  ui16MasterBoxName = UI8_DEFAULT_MASTER_NODE_NAME;
-  Serial.printf("ControlerBox::deleteBox(): ui16MasterBoxName set to %u\n", UI8_DEFAULT_MASTER_NODE_NAME);
+  ui16MasterBoxName = gui8DefaultMasterNodeName;
+  Serial.printf("ControlerBox::deleteBox(): ui16MasterBoxName set to %u\n", ui16MasterBoxName);
   bMasterBoxNameChangeHasBeenSignaled = true;
   Serial.printf("ControlerBox::deleteBox(): bMasterBoxNameChangeHasBeenSignaled set to true\n");
+
+  sBoxDefaultState = gi16BoxDefaultState;
+  Serial.printf("ControlerBox::deleteBox(): sBoxDefaultState set to %i\n", sBoxDefaultState);
+  sBoxDefaultStateChangeHasBeenSignaled = true;
+  Serial.printf("ControlerBox::deleteBox(): sBoxDefaultStateChangeHasBeenSignaled set to true\n");
 
   updateConnectedBoxCount(connectedBoxesCount - 1);
   Serial.printf("ControlerBox::deleteBox(): updated ConnectedBoxCount\n");

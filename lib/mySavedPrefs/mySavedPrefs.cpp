@@ -43,9 +43,9 @@ mySavedPrefs::mySavedPrefs() :
   *  ssid
   *  pass
 
-  *  sBoxDefaultState
+  *  gi16BoxDefaultState
   *  gui16NodeName
-  *  thisBox.ui16MasterBoxName;
+  *  gui8DefaultMasterNodeName;
   *  iSlaveOnOffReaction
   *  isInterface
   */
@@ -412,19 +412,19 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
 
 
 /*
-  thisBox.sBoxDefaultState
-  thisBox.ui16MasterBoxName
+  gi16BoxDefaultState
+  gui8DefaultMasterNodeName
 */
 void mySavedPrefs::_saveBoxBehaviorPreferences() {
-  // save value of sBoxDefaultState
+  // save value of gi16BoxDefaultState
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
-  _saveI16TypePrefs("sBoxDefSta", "sBoxDefaultState", thisBox.sBoxDefaultState);
+  _saveI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", gi16BoxDefaultState);
 
-  // save value of thisBox.ui16MasterBoxName
+  // save value of gui8DefaultMasterNodeName
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
-  _saveUi16ToUCharTypePrefs("bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
+  _saveUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", gui8DefaultMasterNodeName);
 }
 
 
@@ -721,14 +721,14 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
 
 
 /**
- * thisBox.sBoxDefaultState
- * thisBox.ui16MasterBoxName */
+ * gi16BoxDefaultState
+ * gui8DefaultMasterNodeName */
 void mySavedPrefs::_loadBoxBehaviorPreferences(){
-  // sBoxDefaultState
-  _loadI16TypePrefs("sBoxDefSta", "thisBox.sBoxDefaultState", thisBox.sBoxDefaultState);
+  // gi16BoxDefaultState
+  _loadI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", gi16BoxDefaultState);
 
-  // thisBox.ui16MasterBoxName
-  _loadUCharToUi16TypePrefs("bMasterNName", "thisBox.ui16MasterBoxName", thisBox.ui16MasterBoxName);
+  // gui8DefaultMasterNodeName
+  _loadUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", gui8DefaultMasterNodeName);
 }
 
 

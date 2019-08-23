@@ -35,7 +35,7 @@ const bool MY_DEEP_DG_MESH                    = false;
 const short VERSION                           = 0;
 
 
-/** UI8_DEFAULT_MASTER_NODE_NAME:
+/** gui8DefaultMasterNodeName:
  * 
  * All the ControlerBoxes() are initialized with default master at 254.
  * 254 shall mean no master. This value may be changed here (at compile time).
@@ -50,9 +50,9 @@ const short VERSION                           = 0;
  * the saved value will prevail over this one at start up.
  * 
  * !! infinite loop potential: do not set a box to be its own master!!
- * UI8_DEFAULT_MASTER_NODE_NAME shall never be equal to UI8_NODE_NAME
+ * gui8DefaultMasterNodeName shall never be equal to UI8_NODE_NAME
  * Todo: draft a security */
-const uint8_t UI8_DEFAULT_MASTER_NODE_NAME    = 254; // 254 means no one
+uint8_t gui8DefaultMasterNodeName                 = 254; // 254 means no one
 
 
 /** CONTROLLER BOX 201 
@@ -104,7 +104,8 @@ const char* slaveReactionHtml[4]              = {"syn", "opp", "aon", "aof"};
 /** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
 uint16_t gui16BoxesCount                      = UI8_BOXES_COUNT;
 
-const short S_BOX_DEFAULT_STATE               = 5;
+int16_t gi16BoxDefaultState                   = 5;
+
 
 // Used in mySavedPrefs, to reboot one or two times in OTA mode.
 // Rebooting twice may be usefull if you have to first upload a 
