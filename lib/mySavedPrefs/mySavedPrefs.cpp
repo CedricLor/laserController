@@ -144,18 +144,85 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
 
   // {"action":"changeBox","key":"save","val":"wifi","dataset":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":"192.168.43.1","wgwp":"0","wfip":"192.168.43.50","wnm":"255.255.255.0","wch":"6"},"lb":0}
+  // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
+  // {"action":"changeNet","key":"save","dataset":{"sIP":"192.168.5.1","sssid":"ESP32-Access-Point","spass":"123456789","sgw":"192.168.5.1","snm":"255.255.255.0","shi":"0","smc":"10"},"lb":"all","val":"softAP"}
   if (_obj["val"] == "wifi") {
     Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
     // load data from Json to memory
     JsonObject _joDataset = _obj["dataset"];
     
-    strlcpy(ssid,               _joDataset["wssid"] | ssid, 32);
-    strlcpy(pass,               _joDataset["wpass"] | pass, 32);
+    strlcpy(ssid,               _joDataset["wssid"] | ssid, 30);
+    strlcpy(pass,               _joDataset["wpass"] | pass, 30);
     gatewayIP.fromString(       _joDataset["wgw"].as<const char*>());
     ui16GatewayPort           = _joDataset["wgwp"];
     ui8WifiChannel            = _joDataset["wch"];
     fixedIP.fromString(         _joDataset["wfip"].as<const char*>());
     fixedNetmaskIP.fromString(  _joDataset["wnm"].as<const char*>());
+
+    mySavedPrefs _myPrefsRef;
+    _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
+    return;
+  }
+
+/**
+ * saved settings (declared and defined in secret singleton):
+ * char softApSsid[20]           = "ESP32-Access-Point";
+ * char softApPassword[20]       = "123456789";
+ * IPAddress softApMyIp          = {192, 168, 5, 1};
+ * IPAddress softApMeAsGatewayIp = {192, 168, 5, 1};
+ * IPAddress softApNetmask       = {255, 255, 255, 0};
+ * int8_t softApHidden           = 0;
+ * int8_t softApMaxConnection    = 10;
+ * 
+ *  __softAPSettings["sssid"]   = softApSsid;
+ *  __softAPSettings["spass"]   = softApPassword;
+ *  __softAPSettings["sIP"]     = softApMyIp.toString();
+ *  __softAPSettings["sgw"]     = softApMeAsGatewayIp.toString();
+ *  __softAPSettings["snm"]     = softApNetmask.toString();
+ *  __softAPSettings["shi"]     = softApHidden;
+ *  __softAPSettings["smc"]     = softApMaxConnection; */
+  if (_obj["val"] == "softAP") {
+    Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
+    // load data from Json to memory
+    JsonObject _joDataset = _obj["dataset"];
+    
+    strlcpy(softApSsid,             _joDataset["sssid"] | softApSsid, 20);
+    strlcpy(softApPassword,         _joDataset["spass"] | softApPassword, 20);
+    softApMyIp.fromString(          _joDataset["sIP"].as<const char*>());
+    softApMeAsGatewayIp.fromString( _joDataset["sgw"].as<const char*>());
+    softApNetmask.fromString(       _joDataset["snm"].as<const char*>());
+    softApHidden                  = _joDataset["shi"] | softApHidden;
+    softApMaxConnection           = _joDataset["smc"] | softApMaxConnection;
+
+    mySavedPrefs _myPrefsRef;
+    _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
+    return;
+  }
+
+
+/**
+ * saved settings (declared and defined in secret singleton):
+ * char meshPrefix[20]         = "laser_boxes";
+ * char meshPass[20]           = "somethingSneaky";
+ * uint16_t meshPort           = 5555;
+ * uint8_t meshHidden          = 0;
+ * uint8_t meshMaxConnection   = 10;
+ * 
+ * __meshSettings["mssid"]     = meshPrefix;
+ * __meshSettings["mpass"]     = meshPass;
+ * __meshSettings["mport"]     = meshPort;
+ * __meshSettings["mhi"]       = meshHidden;
+ * __meshSettings["mmc"]       = meshMaxConnection; */
+  if (_obj["val"] == "mesh") {
+    Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
+    // load data from Json to memory
+    JsonObject _joDataset = _obj["dataset"];
+    
+    strlcpy(meshPrefix,         _joDataset["mssid"] | meshPrefix, 20);
+    strlcpy(meshPass,           _joDataset["mpass"] | meshPass, 20);
+    meshPort                  = _joDataset["mport"];
+    meshHidden                = _joDataset["mhi"] | meshHidden;
+    meshMaxConnection         = _joDataset["mmc"] | meshMaxConnection;
 
     mySavedPrefs _myPrefsRef;
     _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
@@ -293,8 +360,7 @@ void mySavedPrefs::_saveMeshNetworkCredentials() {
  *  __softAPSettings["sgw"]     = softApMeAsGatewayIp.toString();
  *  __softAPSettings["snm"]     = softApNetmask.toString();
  *  __softAPSettings["shi"]     = softApHidden;
- *  __softAPSettings["smc"]     = softApMaxConnection;
-*/
+ *  __softAPSettings["smc"]     = softApMaxConnection; */
 void mySavedPrefs::_saveIfOnSoftAPCredentials() {
   // save value of soft AP ssid
   _saveStringTypePrefs("sssid", "soft AP ssid", softApSsid);
