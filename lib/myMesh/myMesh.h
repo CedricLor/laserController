@@ -30,7 +30,7 @@
 #include <painlessMesh.h>
 #include <global.h>
 #include <secret.h>
-#include <../ControlerBox.h>
+#include <ControlerBox.h>
 #include "./myMeshViews/myMeshViews.cpp"
 #include "./myMeshController/myMeshController.cpp"
 

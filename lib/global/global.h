@@ -8,6 +8,7 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
+#include <ESPAsyncWebServer.h>
 
 // BOX BY BOX
 extern constexpr short    PIN_COUNT                           = 4;                          

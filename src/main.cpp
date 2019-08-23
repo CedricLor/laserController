@@ -9,7 +9,7 @@
 #include <global.cpp>
 #include <secret.h>
 
-#include <../lib/ControlerBox.cpp>
+#include <ControlerBox.cpp>
 
 #include <mySavedPrefs.cpp>
 #include <myOta.cpp>

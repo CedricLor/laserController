@@ -34,7 +34,7 @@
 #include "Arduino.h"
 #include <painlessMesh.h>
 #include <global.h>
-#include <../ControlerBox.h>
+#include <ControlerBox.h>
 #include "../bar/bar.h"
 #include "../bar/bar.cpp"
 
