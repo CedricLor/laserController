@@ -317,14 +317,14 @@ class btnGrpForLBsStates {
     );
   }
 
-update(activeBtnNum) { this.btnGrp.update(activeBtnNum); }
+  update(activeBtnNum) { this.btnGrp.update(activeBtnNum); }
 
-setActiveBtn() {
-  this.btnGrp.activeBtnNum = this.activeBtnNum;
-  this.btnGrp.setActiveBtn(); 
-}
+  setActiveBtn() {
+    this.btnGrp.activeBtnNum = this.activeBtnNum;
+    this.btnGrp.setActiveBtn(); 
+  }
 
-markAllBtnsAsNonClicked() { this.btnGrp.markAllBtnsAsNonClicked(); }
+  markAllBtnsAsNonClicked() { this.btnGrp.markAllBtnsAsNonClicked(); }
 
   /** btnGrp.updateFB(_data) updates the local data and the btnGrp
    *  on feedback from a request of the type:
@@ -345,12 +345,13 @@ markAllBtnsAsNonClicked() { this.btnGrp.markAllBtnsAsNonClicked(); }
     // console.log("btnGrp.updateFB(_data): ");console.log(_data);
     // console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 1: " + (parseInt(_data.st, 10) === 1));
     if (parseInt(_data.st, 10) === 1) {
-        this.parent.boxStateChanging = this.parent.boxState;
-        this.parent.boxState         = parseInt(_data.val, 10);
-        // console.log("btnGrp.updateFB(_data): this.btnsArray: " + JSON.stringify(this.btnsArray));
-        // console.log("btnGrp.updateFB(_data): this.parent.boxState: " + this.parent.boxState);
-        this.btnsArray[this.parent.boxState].classList.add(this.changedRecvdBtnClass);
-        return;
+      // console.log("btnGrp.updateFB(_data): st: 1");
+      this.parent.boxStateChanging = this.parent.boxState;
+      this.parent.boxState         = parseInt(_data.val, 10);
+      // console.log("btnGrp.updateFB(_data): this.btnsArray: ");console.log(this.btnsArray);
+      // console.log("btnGrp.updateFB(_data): this.parent.boxState: " + this.parent.boxState);
+      this.btnsArray[this.parent.boxState].classList.add(this.changedRecvdBtnClass);
+      return;
     }
     /** 
      * _data.st === 2: the change request has been processed by the relevant 
@@ -361,12 +362,14 @@ markAllBtnsAsNonClicked() { this.btnGrp.markAllBtnsAsNonClicked(); }
      * */
     // console.log("btnGrp.updateFB(_data): parseInt(_data.st, 10) === 2: " + (parseInt(_data.st, 10) === 2));
     if (parseInt(_data.st, 10) === 2) {
-        this.parent.boxStateChanging = undefined;
-        // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
-        // _removeClassesOnButtonsGroupForRow(this.vElt, "button[data-" + _data.Key + "]");
-        this.markAllBtnsAsNonClicked();
-        // _setCurrentStateButton(this.vElt, _data.Key, _data.val);
-        this.btnsArray[parseInt(_data.val, 10)].classList.add(this.activeBtnClass);
+      // console.log("btnGrp.updateFB(_data): st: 2");
+      this.parent.boxState         = parseInt(_data.val, 10);
+      this.activeBtnNum            = this.parent.boxState;
+      this.parent.boxStateChanging = undefined;
+      // remove classes on all the others stateButtons/defaultStateButtons of this boxRow
+      this.markAllBtnsAsNonClicked();
+      this.setActiveBtn();
+      this.btnsArray[parseInt(_data.val, 10)].classList.add(this.activeBtnClass);
     }
   }
 }
@@ -574,6 +577,7 @@ class controlerBox {
     // console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxState\"): " + (_data.key === "boxState"));
     // console.log("controlerBox.updateStateFB(_data): (_data.key === \"boxDefstate\"): " + (_data.key === "boxDefstate"));
     if (_data.key === "boxState") {
+    // console.log("controlerBox.updateStateFB(_data): about to call this.boxStateBtnGrp.updateFB(_data)");      
       this.boxStateBtnGrp.updateFB(_data);
       return;
     }
