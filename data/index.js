@@ -1163,13 +1163,6 @@ const grpStrs = {
       _obj.val    = "wifi";
       return [_obj, grpStrs.wifi.btnGrp];
     }
-    /**  4. checks whether the event.target HTML element matches with the selector 
-     * "button#applyMeshSettings" */
-    if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#applyMeshSettings")) {
-      _obj        = grpStrs._baseObj(_obj, grpStrs.mesh.inputsMap, "apply");
-      _obj.val    = "mesh";
-      return [_obj, grpStrs.mesh.btnGrp];
-    }
 
     /************************ 
      * Special node setters *
@@ -1235,6 +1228,14 @@ const grpStrs = {
       _obj.val    = "mesh";
       return [_obj, grpStrs.mesh.btnGrp];
     }
+    // /**  4. checks whether the event.target HTML element matches with the selector 
+    //  * "button#applyMeshSettings" */
+    // if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#applyMeshSettings")) {
+    //   _obj        = grpStrs._baseObj(_obj, grpStrs.mesh.inputsMap, "apply");
+    //   _obj.val    = "mesh";
+    //   return [_obj, grpStrs.mesh.btnGrp];
+    // }
+
     /************************ 
      * Wifi setters         *
      ************************/
