@@ -1163,13 +1163,6 @@ const grpStrs = {
       _obj.val    = "wifi";
       return [_obj, grpStrs.wifi.btnGrp];
     }
-    /**  3. checks whether the event.target HTML element matches with the selector 
-     * "button#saveMeshSettings" */
-    if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
-      _obj        = grpStrs._baseObj(_obj, grpStrs.mesh.inputsMap);
-      _obj.val    = "mesh";
-      return [_obj, grpStrs.mesh.btnGrp];
-    }
     /**  4. checks whether the event.target HTML element matches with the selector 
      * "button#applyMeshSettings" */
     if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#applyMeshSettings")) {
@@ -1237,6 +1230,11 @@ const grpStrs = {
      ************************/
     /**  7. checks whether the event.target HTML element matches with the selector 
      * "button#saveMeshSettings" */
+    if (_targt.matches(grpStrs.mesh.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.mesh.inputsMap);
+      _obj.val    = "mesh";
+      return [_obj, grpStrs.mesh.btnGrp];
+    }
     /************************ 
      * Wifi setters         *
      ************************/
