@@ -154,8 +154,8 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     strlcpy(ssid,               _joDataset["wssid"] | ssid, 30);
     strlcpy(pass,               _joDataset["wpass"] | pass, 30);
     gatewayIP.fromString(       _joDataset["wgw"].as<const char*>());
-    ui16GatewayPort           = _joDataset["wgwp"];
-    ui8WifiChannel            = _joDataset["wch"];
+    ui16GatewayPort           = _joDataset["wgwp"] | ui16GatewayPort;
+    ui8WifiChannel            = _joDataset["wch"] | ui8WifiChannel;
     fixedIP.fromString(         _joDataset["wfip"].as<const char*>());
     fixedNetmaskIP.fromString(  _joDataset["wnm"].as<const char*>());
 
