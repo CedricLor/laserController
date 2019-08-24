@@ -59,7 +59,7 @@ class myMeshController
     void _rebootEsp();
 
     void _save();
-    void _saveWifi();
+    void _specificSave();
     void _savegi8RequestedOTAReboots();
 
     // static Task _tChangeBoxSendConfirmationMsg;
