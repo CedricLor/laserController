@@ -26,32 +26,8 @@
 #define myMesh_h
 
 #include "Arduino.h"
-#include <ESPmDNS.h>
 #include <painlessMesh.h>
-#include <global.h>
-#include <secret.h>
-#include <ControlerBox.h>
-#include "./myMeshViews/myMeshViews.cpp"
-#include "./myMeshController/myMeshController.cpp"
-
-class myMeshStarter
-{
-  public:
-    myMeshStarter();    // Variables for Interface on AP mode
-
-    void myMeshSetup();
-
-  private:
-    // setup subs
-    void _initAndConfigureMesh();
-    void _initMesh();
-    void _initStationManual();
-    void _rootTheMesh();
-    void _interfaceOnAPInit();
-    void _setMeshCallbacks();
-    void _setupMdns();
-
-};
+#include <myMeshController.h>
 
 class myMesh
 {
@@ -60,7 +36,6 @@ class myMesh
 
   private:
     friend class myMeshStarter;
-
 
     /** ----- receivedCallback stack -----
      **********************************************/
