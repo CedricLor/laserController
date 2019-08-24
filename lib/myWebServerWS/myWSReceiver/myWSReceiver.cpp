@@ -166,12 +166,16 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
   }
 
   // save the Wifi settings
-  if ((_obj["key"] == "save") && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet") )) {
+  if (( (_obj["key"] == "save") || (_obj["key"] == "apply") ) && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet") )) {
     if (MY_DG_WS) {
       Serial.printf("myWSReceiver::_requestIFChange(): This is a SAVE %s settings message.\n", _obj["val"].as<const char*>());
     }
     // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
     _specificSaveIF(_obj);
+
+    if (_obj["key"] == "apply") {
+      // myMeshStarter::tRestart.restartDelayed();
+    }
     return;
   }
 
@@ -286,10 +290,13 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   }
 
   // If this is a save Wifi, save softAP or save mesh message
-  if ((_obj["key"] == "save") && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet"))) {
+  if (((_obj["key"] == "save") || (_obj["key"] == "apply")) && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet"))) {
     // If save "all", IF shall be rebooted
     if (_obj["lb"] == "all") {
       _specificSaveIF(_obj);
+      if (_obj["key"] == "apply") {
+        // myMeshStarter::tRestart.restartDelayed();
+      }
     }
   }
 

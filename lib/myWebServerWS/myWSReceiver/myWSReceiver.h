@@ -44,8 +44,8 @@
 #include "Arduino.h"
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
-#include <myMeshViews/myMeshViews.h>
-#include <myWebServerWS.h>
+#include <myWSSender/myWSSender.h>
+#include <myMeshViews.h>
 
 class myWSReceiver
 {

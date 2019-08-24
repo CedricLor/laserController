@@ -32,7 +32,7 @@
 #include "Arduino.h"
 #include "AsyncTCP.h"
 #include <ESPAsyncWebServer.h>
-#include "../myWebServerWS/myWebServerWS.h"
+#include <myWebServerWS.h>
 
 class myWebServerBase
 {
