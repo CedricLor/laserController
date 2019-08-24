@@ -28,7 +28,7 @@
 #include "Arduino.h"
 #include <mySavedPrefs.h>
 #include <myMeshViews.h>
-#include <./myWSSender/myWSSender.h>
+#include <myWSSender.h>
 
 class myMeshController
 {

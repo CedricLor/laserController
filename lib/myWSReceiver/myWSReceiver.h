@@ -44,7 +44,7 @@
 #include "Arduino.h"
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
-#include <myWSSender/myWSSender.h>
+#include <myWSSender.h>
 #include <myMeshViews.h>
 
 class myWSReceiver
@@ -74,3 +74,5 @@ class myWSReceiver
 
 };
 #endif
+
+
