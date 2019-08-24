@@ -1157,6 +1157,7 @@ const grpStrs = {
       _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap);
       _obj.val    = "RoSet";
       return [_obj, grpStrs.rootIF.btnGrp];
+    // {"action":"changeNet","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
     }
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#applyRootNodeNumb" */
@@ -1164,6 +1165,7 @@ const grpStrs = {
       _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap, "apply");
       _obj.val    = "RoSet";
       return [_obj, grpStrs.rootIF.btnGrp];
+    // {"action":"changeNet","key":"apply","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
     }
     /**  3. checks whether the event.target HTML element matches with the selector 
      * "button#saveIFNodeNumb" */
@@ -1173,6 +1175,7 @@ const grpStrs = {
       _obj.lb     = (grpStrs.rootIF.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
       return [_obj, grpStrs.rootIF.btnGrp];
+    // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"IFSet"}
     }
     /**  4. checks whether the event.target HTML element matches with the selector 
      * "button#applyIFNodeNumb" */
@@ -1182,6 +1185,7 @@ const grpStrs = {
       _obj.lb     = (grpStrs.rootIF.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
       return [_obj, grpStrs.rootIF.btnGrp];
+    // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"IFSet"}
     }
 
     /************************ 
