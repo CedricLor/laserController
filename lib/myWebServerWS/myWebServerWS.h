@@ -36,7 +36,8 @@
 #define myWebServerWS_h
 
 #include "Arduino.h"
-#include <myWSReceiver.h>
+#include "./myWSReceiver/myWSReceiver.h"
+#include "./myWSSender/myWSSender.h"
 
 class myWebServerWS
 {

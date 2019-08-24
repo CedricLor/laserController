@@ -40,8 +40,8 @@
 
 #include "Arduino.h"
 #include "myWebServerWS.h"
-#include "myWSSender.cpp"
-#include "myWSReceiver.cpp"
+#include "./myWSReceiver/myWSReceiver.cpp"
+#include "./myWSSender/myWSSender.cpp"
 
 
 AsyncWebSocket myWebServerWS::ws("/"); // access at ws://[esp ip]/

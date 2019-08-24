@@ -39,7 +39,7 @@
 */
 
 #include "Arduino.h"
-#include <myWSSender.h>
+#include "./myWSSender.h"
 
 
 
