@@ -192,13 +192,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     
     
     mySavedPrefs _myPrefsRef;
-
-
-    
     _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveMeshNetworkCredentials, _myPrefsRef);
-    
-    
-    
     return;
   }
 
@@ -234,17 +228,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     softApMaxConnection           = _joDataset["smc"] | softApMaxConnection;
 
     mySavedPrefs _myPrefsRef;
-
-
     _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIfOnSoftAPCredentials, _myPrefsRef);
-
-
-
-
-
-
-
-
     return;
   }
 
@@ -255,23 +239,11 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     gi8RequestedOTAReboots = _obj["reboots"];
 
     mySavedPrefs _myPrefsRef;
-
-
-
-    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveBoxStartupTypePreferences, _myPrefsRef);
-    
+    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveBoxStartupTypePreferences, _myPrefsRef);    
     _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_resetOTASuccess, _myPrefsRef);
-    
-    
-    
     return;
-  }
-
-
-  
+  }  
 }
-
-
 
 
 
@@ -294,6 +266,19 @@ void mySavedPrefs::actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), m
 ///////////////////////////////////////////////////
 // SAVERS
 ///////////////////////////////////////////////////
+void mySavedPrefs::saveOTASuccess() {
+  // choose the location where to save the error code for this OTA update
+  Serial.println("myOta::_saveOTASuccess: starting.");
+  char __cOTASuccessErrorNVSKey[9] = "OTASucc";
+  snprintf(__cOTASuccessErrorNVSKey, 9, "%s%u", __cOTASuccessErrorNVSKey, (uint32_t)(gi8RequestedOTAReboots + 1));
+  
+  // save the success code in the relevant NVS location
+  size_t __iu8OTASuccessErrorCodeRet = _prefLib.putUChar(__cOTASuccessErrorNVSKey, ui8OTASuccessErrorCodeWitness);
+  Serial.printf("%s OTA update numb. %u success code == %i %s\"%s\"\n", debugSaveMsgStart, (gi8RequestedOTAReboots + 1), ui8OTASuccessErrorCodeWitness, (__iu8OTASuccessErrorCodeRet)?(debugSaveMsgEndSuccess):(debugSaveMsgEndFail), __cOTASuccessErrorNVSKey);
+}
+
+
+
 
 /*
   ssid
