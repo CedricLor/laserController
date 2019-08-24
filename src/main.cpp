@@ -11,6 +11,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
 #include <myOta.h>
+#include <myMesh.h>
 #include <myMeshStarter.h>
 #include <boxState.h>
 #include <pirController.h>
@@ -55,7 +56,7 @@ void setup() {
   
   myMeshStarter _myMeshStarter;
   _myMeshStarter.myMeshSetup();
-
+  myMesh::setMeshCallbacks();
 
   if (isInterface == false) {
     pirController::initPir(); // depends on ControlerBox and Mesh classes

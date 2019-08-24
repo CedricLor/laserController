@@ -32,7 +32,18 @@
 
 myMesh::myMesh()
 {
+}
 
+void myMesh::setMeshCallbacks() {
+  _tPrintMeshTopo.enable();
+  _tSaveNodeMap.restart();
+
+  laserControllerMesh.onReceive(&receivedCallback);
+  laserControllerMesh.onNewConnection(&newConnectionCallback);
+  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
+  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

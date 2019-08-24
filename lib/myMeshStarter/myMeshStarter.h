@@ -32,7 +32,7 @@
 #include <ESPmDNS.h>
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
-#include <myMesh.h>
+
 
 class myMeshStarter
 {
@@ -52,9 +52,7 @@ class myMeshStarter
     void _initStationManual();
     void _rootTheMesh();
     void _interfaceOnAPInit();
-    void _setMeshCallbacks();
     void _setupMdns();
-
 };
 
 #endif

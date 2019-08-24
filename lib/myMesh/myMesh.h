@@ -34,6 +34,8 @@ class myMesh
   public:
     myMesh();
 
+    static void setMeshCallbacks();
+
   private:
     friend class myMeshStarter;
 

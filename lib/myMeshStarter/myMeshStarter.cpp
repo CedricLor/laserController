@@ -40,9 +40,6 @@ void myMeshStarter::myMeshSetup()
 
   _initAndConfigureMesh();
 
-  myMesh::_tPrintMeshTopo.enable();
-  myMesh::_tSaveNodeMap.restart();
-
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
   thisBox.updateThisBoxProperties();
 
@@ -71,9 +68,6 @@ void myMeshStarter::_initAndConfigureMesh() {
 
   // 3. Root the mesh
   _rootTheMesh();
-
-  // 4. Set the callbacks
-  _setMeshCallbacks();
 }
 
 /* _initMesh()
@@ -146,16 +140,6 @@ void myMeshStarter::_interfaceOnAPInit() {
   } else {
     Serial.println("\nStarting AP failed.\n");
   }
-}
-
-
-void myMeshStarter::_setMeshCallbacks() {
-  laserControllerMesh.onReceive(&myMesh::receivedCallback);
-  laserControllerMesh.onNewConnection(&myMesh::newConnectionCallback);
-  laserControllerMesh.onChangedConnections(&myMesh::changedConnectionCallback);
-  // laserControllerMesh.onNodeTimeAdjusted(&myMesh::nodeTimeAdjustedCallback);
-  // laserControllerMesh.onNodeDelayReceived(&myMesh::delayReceivedCallback);
-  laserControllerMesh.onDroppedConnection(&myMesh::droppedConnectionCallback);
 }
 
 void myMeshStarter::_setupMdns() {
