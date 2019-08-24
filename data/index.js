@@ -1231,8 +1231,24 @@ const grpStrs = {
       _obj.val    = "softAP";
       return [_obj, grpStrs.softAP.btnGrp];
     }
+
+    /************************ 
+     * Mesh setters         *
+     ************************/
+    /**  7. checks whether the event.target HTML element matches with the selector 
+     * "button#saveMeshSettings" */
+    /************************ 
+     * Wifi setters         *
+     ************************/
+    /**  8. checks whether the event.target HTML element matches with the selector 
+     * "button#saveWifiSettingsIF" */
+    /**  9. checks whether the event.target HTML element matches with the selector 
+     * "button#saveWifiSettingsAll" */
     return [false, false];
+
   },
+
+
 
   /** grpStrs._baseObj(_obj, inputsMap)
    * 
