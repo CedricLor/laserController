@@ -31,6 +31,8 @@ class mySavedPrefs
 
     static uint8_t ui8OTA1SuccessErrorCode;
     static uint8_t ui8OTA2SuccessErrorCode;
+    // void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
+    void actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), mySavedPrefs &_myPrefsRef);
 
     void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
 
@@ -52,8 +54,8 @@ class mySavedPrefs
     void _saveNetworkEssentialPreferences();
     void _saveUselessPreferences();
 
-    static void _saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef);
-    static void _resetOTASuccess(mySavedPrefs * _myPrefsRef);
+    void _saveBoxStartupTypePreferences();
+    void _resetOTASuccess();
     void _saveBoxEssentialPreferences();
     void _saveBoxBehaviorPreferences();
 

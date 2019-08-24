@@ -130,7 +130,7 @@ void mySavedPrefs::_handleOTAReboots() {
     _prefLib.begin("savedSettingsNS", false);
     gi8OTAReboot = 1;
     gi8RequestedOTAReboots = gi8RequestedOTAReboots - 1;
-    actOnPrefsThroughCallback(_saveBoxStartupTypePreferences);
+    actOnPrefsThroughCallback(&mySavedPrefs::_saveBoxStartupTypePreferences, *this);
   }
 }
 
@@ -160,7 +160,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     fixedNetmaskIP.fromString(  _joDataset["wnm"].as<const char*>());
 
     mySavedPrefs _myPrefsRef;
-    _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
+    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveNetworkCredentials, _myPrefsRef);
     return;
   }
 
@@ -248,9 +248,9 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
 
 
-void mySavedPrefs::actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*)) {
+void mySavedPrefs::actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), mySavedPrefs &_myPrefsRef) {
   _openNamespace();
-  callBack(this);
+  (_myPrefsRef.*callBack)();
   _endPreferences();
 }
 
@@ -420,17 +420,17 @@ void mySavedPrefs::_saveUselessPreferences() {
  *
  *  dynamic reload: no need to reboo, but next (and following, as the case may 
  *  be) reboots will be OTA reboots */
-void mySavedPrefs::_saveBoxStartupTypePreferences(mySavedPrefs * _myPrefsRef) {
-  _myPrefsRef->_saveCharTypePrefs("OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
+void mySavedPrefs::_saveBoxStartupTypePreferences() {
+  _saveCharTypePrefs("OTARebReq", "gi8RequestedOTAReboots", gi8RequestedOTAReboots);
 }
 
 /** mySavedPrefs::_resetOTASuccess(): resets the values of ui8OTA1SuccessErrorCode 
 *  and ui8OTA2SuccessErrorCode when an OTA reboot is requested.
 *  
 *  dynamic reload: no need to reboot */
-void mySavedPrefs::_resetOTASuccess(mySavedPrefs * _myPrefsRef) {
-  _myPrefsRef->_saveUCharTypePrefs("OTASucc1", "OTA update numb. 1 success code", ui8OTA1SuccessErrorCode);
-  _myPrefsRef->_saveUCharTypePrefs("OTASucc2", "OTA update numb. 2 success code", ui8OTA2SuccessErrorCode);
+void mySavedPrefs::_resetOTASuccess() {
+  _saveUCharTypePrefs("OTASucc1", "OTA update numb. 1 success code", ui8OTADefaultSuccessErrorCode);
+  _saveUCharTypePrefs("OTASucc2", "OTA update numb. 2 success code", ui8OTADefaultSuccessErrorCode);
 }
 
 
