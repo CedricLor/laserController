@@ -1178,21 +1178,24 @@ const grpStrs = {
       return [_obj, grpStrs.mesh.btnGrp];
     }
 
-    /**  5. checks whether the event.target HTML element matches with the selector 
+    /************************ 
+     * Special node setters *
+     ************************/
+    /**  1. checks whether the event.target HTML element matches with the selector 
      * "button#saveRootNodeNumb" */
     if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#saveRootNodeNumb")) {
       _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap);
       _obj.val    = "RoSet";
       return [_obj, grpStrs.rootIF.btnGrp];
     }
-    /**  6. checks whether the event.target HTML element matches with the selector 
+    /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#applyRootNodeNumb" */
     if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#applyRootNodeNumb")) {
       _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap, "apply");
       _obj.val    = "RoSet";
       return [_obj, grpStrs.rootIF.btnGrp];
     }
-    /**  7. checks whether the event.target HTML element matches with the selector 
+    /**  3. checks whether the event.target HTML element matches with the selector 
      * "button#saveIFNodeNumb" */
     if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
       _obj.key    = "save";
@@ -1201,7 +1204,7 @@ const grpStrs = {
       _obj.action = "changeBox";
       return [_obj, grpStrs.rootIF.btnGrp];
     }
-    /**  8. checks whether the event.target HTML element matches with the selector 
+    /**  4. checks whether the event.target HTML element matches with the selector 
      * "button#applyIFNodeNumb" */
     if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
       _obj.key    = "apply";
@@ -1211,14 +1214,17 @@ const grpStrs = {
       return [_obj, grpStrs.rootIF.btnGrp];
     }
 
-    /**  9. checks whether the event.target HTML element matches with the selector 
+    /************************ 
+     * SoftAP setters       *
+     ************************/
+    /**  5. checks whether the event.target HTML element matches with the selector 
      * "button#saveSoftAPSettings" */
     if (_targt.matches(grpStrs.softAP.btnGrp.btnGpSelectorProto + "#saveSoftAPSettings")) {
       _obj        = grpStrs._baseObj(_obj, grpStrs.softAP.inputsMap);
       _obj.val    = "softAP";
       return [_obj, grpStrs.softAP.btnGrp];
     }
-    /**  10. checks whether the event.target HTML element matches with the selector 
+    /**  6. checks whether the event.target HTML element matches with the selector 
      * "button#applySoftAPSettings" */
     if (_targt.matches(grpStrs.softAP.btnGrp.btnGpSelectorProto + "#applySoftAPSettings")) {
       _obj        = grpStrs._baseObj(_obj, grpStrs.softAP.nputsMap, "apply");
