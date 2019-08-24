@@ -27,14 +27,17 @@ class mySavedPrefs
     void savePrefsWrapper();
     void loadPrefsWrapper();
 
-    static void saveFromNetRequest(JsonObject& _obj);
+    static void saveFromNetRequest(JsonObject &_obj);
 
+    static uint8_t ui8OTADefaultSuccessErrorCode;
     static uint8_t ui8OTA1SuccessErrorCode;
     static uint8_t ui8OTA2SuccessErrorCode;
+    static uint8_t ui8OTASuccessErrorCodeWitness;
+
     // void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
     void actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), mySavedPrefs &_myPrefsRef);
 
-    void actOnPrefsThroughCallback(void (&callBack)(mySavedPrefs*));
+    void saveOTASuccess();
 
   private:
     void _openNamespace(bool readOnly=false);
@@ -47,7 +50,6 @@ class mySavedPrefs
     // Save Prefs
     void _handleOTAReboots();
 
-    static void _stSaveNetworkCredentials(mySavedPrefs * _myPrefsRef);
     void _saveNetworkCredentials();
     void _saveMeshNetworkCredentials();
     void _saveIfOnSoftAPCredentials();

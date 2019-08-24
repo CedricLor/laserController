@@ -164,6 +164,45 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     return;
   }
 
+
+/**
+ * saved settings (declared and defined in secret singleton):
+ * char meshPrefix[20]         = "laser_boxes";
+ * char meshPass[20]           = "somethingSneaky";
+ * uint16_t meshPort           = 5555;
+ * uint8_t meshHidden          = 0;
+ * uint8_t meshMaxConnection   = 10;
+ * 
+ * __meshSettings["mssid"]     = meshPrefix;
+ * __meshSettings["mpass"]     = meshPass;
+ * __meshSettings["mport"]     = meshPort;
+ * __meshSettings["mhi"]       = meshHidden;
+ * __meshSettings["mmc"]       = meshMaxConnection; */
+  if (_obj["val"] == "mesh") {
+    Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
+    // load data from Json to memory
+    JsonObject _joDataset = _obj["dataset"];
+    
+    strlcpy(meshPrefix,         _joDataset["mssid"] | meshPrefix, 20);
+    strlcpy(meshPass,           _joDataset["mpass"] | meshPass, 20);
+    meshPort                  = _joDataset["mport"] | meshPort;
+    meshHidden                = _joDataset["mhi"] | meshHidden;
+    meshMaxConnection         = _joDataset["mmc"] | meshMaxConnection;
+
+    
+    
+    mySavedPrefs _myPrefsRef;
+
+
+    
+    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveMeshNetworkCredentials, _myPrefsRef);
+    
+    
+    
+    return;
+  }
+
+
 /**
  * saved settings (declared and defined in secret singleton):
  * char softApSsid[20]           = "ESP32-Access-Point";
@@ -195,37 +234,17 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     softApMaxConnection           = _joDataset["smc"] | softApMaxConnection;
 
     mySavedPrefs _myPrefsRef;
-    _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
-    return;
-  }
 
 
-/**
- * saved settings (declared and defined in secret singleton):
- * char meshPrefix[20]         = "laser_boxes";
- * char meshPass[20]           = "somethingSneaky";
- * uint16_t meshPort           = 5555;
- * uint8_t meshHidden          = 0;
- * uint8_t meshMaxConnection   = 10;
- * 
- * __meshSettings["mssid"]     = meshPrefix;
- * __meshSettings["mpass"]     = meshPass;
- * __meshSettings["mport"]     = meshPort;
- * __meshSettings["mhi"]       = meshHidden;
- * __meshSettings["mmc"]       = meshMaxConnection; */
-  if (_obj["val"] == "mesh") {
-    Serial.println("mySavedPrefs::saveFromNetRequest: going to save WIFI preferences.");
-    // load data from Json to memory
-    JsonObject _joDataset = _obj["dataset"];
-    
-    strlcpy(meshPrefix,         _joDataset["mssid"] | meshPrefix, 20);
-    strlcpy(meshPass,           _joDataset["mpass"] | meshPass, 20);
-    meshPort                  = _joDataset["mport"];
-    meshHidden                = _joDataset["mhi"] | meshHidden;
-    meshMaxConnection         = _joDataset["mmc"] | meshMaxConnection;
+    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIfOnSoftAPCredentials, _myPrefsRef);
 
-    mySavedPrefs _myPrefsRef;
-    _myPrefsRef.actOnPrefsThroughCallback(_stSaveNetworkCredentials);
+
+
+
+
+
+
+
     return;
   }
 
@@ -236,10 +255,20 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     gi8RequestedOTAReboots = _obj["reboots"];
 
     mySavedPrefs _myPrefsRef;
-    _myPrefsRef.actOnPrefsThroughCallback(_saveBoxStartupTypePreferences);
-    _myPrefsRef.actOnPrefsThroughCallback(_resetOTASuccess);
+
+
+
+    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveBoxStartupTypePreferences, _myPrefsRef);
+    
+    _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_resetOTASuccess, _myPrefsRef);
+    
+    
+    
     return;
   }
+
+
+  
 }
 
 
@@ -275,10 +304,6 @@ void mySavedPrefs::actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), m
   fixedIP
   fixedNetmaskIP
 */
-void mySavedPrefs::_stSaveNetworkCredentials(mySavedPrefs * _myPrefsRef) {
-  _myPrefsRef->_saveNetworkCredentials();
-}
-
 void mySavedPrefs::_saveNetworkCredentials() {
   Serial.println(String(debugSaveMsgStart) + " Saving External Wifi Credentials");
 
@@ -732,11 +757,14 @@ void mySavedPrefs::_loadBoxStartupTypePreferences() {
 /**
  * uint8_t ui8OTA1SuccessErrorCode
  * uint8_t ui8OTA2SuccessErrorCode */
+uint8_t mySavedPrefs::ui8OTADefaultSuccessErrorCode = 11;
 uint8_t mySavedPrefs::ui8OTA1SuccessErrorCode = 11;
 uint8_t mySavedPrefs::ui8OTA2SuccessErrorCode = 11;
+uint8_t mySavedPrefs::ui8OTASuccessErrorCodeWitness = 11;
 
 void mySavedPrefs::_loadOTASuccess() {
-  // save the success code in the relevant NVS location
+  // get the success code from the relevant NVS location
+
   _loadUCharTypePrefs("OTASucc1", "1st OTA Update Success", ui8OTA1SuccessErrorCode);
   _loadUCharTypePrefs("OTASucc2", "2nd OTA Update Success", ui8OTA2SuccessErrorCode);
 }
