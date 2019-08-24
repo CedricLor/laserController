@@ -6,17 +6,15 @@
 #include <SPIFFS.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
-#include <global.cpp>
-#include <secret.h>
+extern constexpr short    UI8_BOXES_COUNT                     = 10;
 
-#include <ControlerBox.cpp>
-
-#include <mySavedPrefs.cpp>
-#include <myOta.cpp>
-#include <myMesh.cpp>
-#include <boxState.cpp>
-#include <pirController.cpp>
-#include <myWebServerBase.cpp>
+#include <mySavedPrefs.h>
+#include <ControlerBox.h>
+#include <myOta.h>
+#include <myMesh.h>
+#include <boxState.h>
+#include <pirController.h>
+#include <myWebServerBase.h>
 
 
 

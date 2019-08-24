@@ -30,7 +30,6 @@
 */
 
 #include "Arduino.h"
-// #include <global.h>
 #include "note.h"
 
 

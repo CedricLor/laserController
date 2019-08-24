@@ -17,6 +17,8 @@
 #include "Arduino.h"
 #include "global.h"
 
+
+
 /** short relayPins[PIN_COUNT]: array of pins connected to the lasers
  * in ControlerBoxes */ 
 short relayPins[]                             = { 5, 17, 16, 4 };
@@ -102,7 +104,7 @@ uint16_t gui16InterfaceNodeName               = UI8_DEFAULT_INTERFACE_NODE_NAME;
 const char* slaveReactionHtml[4]              = {"syn", "opp", "aon", "aof"};
 
 /** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
-uint16_t gui16BoxesCount                      = UI8_BOXES_COUNT;
+uint16_t gui16BoxesCount                      = 10; // Former constexpr
 
 int16_t gi16BoxDefaultState                   = 5;
 

@@ -9,6 +9,8 @@
 #include "Arduino.h"
 #include <global.h>
 
+constexpr short    PIN_COUNT                           = 4;
+
 class laserPin
 {
   public:

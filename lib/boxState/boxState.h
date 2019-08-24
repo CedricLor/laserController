@@ -42,12 +42,9 @@ reverse dependency graph
 
 #include "Arduino.h"
 #include <painlessMesh.h>
-#include <global.h>
-#include "../mySpiffs/mySpiffs.cpp"
-#include <ControlerBox.h>
-#include <../myMesh/myMeshViews/myMeshViews.h>
-#include <../sequence/sequence.h>
-#include <../sequence/sequence.cpp>
+#include <mySpiffs.h>
+#include <myMeshViews.h>
+#include <sequence.h>
 
 class step
 {

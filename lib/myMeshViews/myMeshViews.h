@@ -26,8 +26,9 @@
 #define myMeshViews_h
 
 #include "Arduino.h"
-#include <global.h>
 #include <ControlerBox.h>
+
+constexpr short    MESH_REQUEST_CAPACITY               = 20;
 
 class myMeshViews
 {

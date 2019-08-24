@@ -35,8 +35,7 @@
 
 #include "Arduino.h"
 #include <global.h>
-#include "../laserPin/laserPin.h"
-#include "../laserPin/laserPin.cpp"
+#include <laserPin.h>
 
 class tone
 {

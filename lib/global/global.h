@@ -10,8 +10,6 @@
 #include <painlessMesh.h>
 #include <ESPAsyncWebServer.h>
 
-// BOX BY BOX
-extern constexpr short    PIN_COUNT                           = 4;                          
 /** an array of pin numbers to which relays are attached 
 BOX BY BOX */
 extern short              relayPins[]; 
@@ -33,10 +31,6 @@ extern bool               isInterface;
 extern bool               isRoot;
 extern uint32_t           ui32RootNodeId;
 
-/** Used for sizing of custom JSONDocuments received and sent via the mesh
- *  and in MeshViews and MeshController. */
-extern constexpr short    MESH_REQUEST_CAPACITY               = 20;
-
 extern const short        I_DEFAULT_SLAVE_ON_OFF_REACTION;
 
 extern uint16_t           gui16ControllerBoxPrefix;
@@ -46,8 +40,6 @@ extern uint16_t           gui16InterfaceNodeName;
 
 extern const char*        slaveReactionHtml[4];
 
-// NETWORK BY NETWORK
-extern constexpr uint8_t  UI8_BOXES_COUNT                     = 10;
 extern uint16_t           gui16BoxesCount;
 
 extern int16_t            gi16BoxDefaultState;
