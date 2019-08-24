@@ -28,7 +28,8 @@
 #include "Arduino.h"
 #include <mySavedPrefs.h>
 #include <myMeshViews.h>
-#include <myWSSender.h>
+#include <myMeshStarter.h>
+#include "../myWebServerWS/myWSSender/myWSSender.h"
 
 class myMeshController
 {

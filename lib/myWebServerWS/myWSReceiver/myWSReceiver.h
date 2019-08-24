@@ -46,6 +46,7 @@
 #include <ControlerBox.h>
 #include "../myWSSender/myWSSender.h"
 #include <myMeshViews.h>
+#include <myMeshStarter.h>
 
 class myWSReceiver
 {
