@@ -1147,15 +1147,6 @@ const grpStrs = {
    *  Gets called from dlgtdBtnEvent instance. */
   _eventTargetSwitch(_targt, _obj) {
     console.log("grpStrs._eventTargetSwitch(_targt, _obj): starting");
-    /**  1. checks whether the event.target HTML element matches with the selector 
-     * "button#saveWifiSettingsIF" */
-    if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
-      _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap);
-      _obj.val    = "wifi";
-      _obj.lb     = 0;
-      _obj.action = "changeBox";
-        return [_obj, grpStrs.wifi.btnGrp];
-    }
     /**  2. checks whether the event.target HTML element matches with the selector 
      * "button#applyWifiSettingsAll" */
     if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#applyWifiSettingsAll")) {
@@ -1241,6 +1232,13 @@ const grpStrs = {
      ************************/
     /**  8. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsIF" */
+    if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap);
+      _obj.val    = "wifi";
+      _obj.lb     = 0;
+      _obj.action = "changeBox";
+        return [_obj, grpStrs.wifi.btnGrp];
+    }
     /**  9. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsAll" */
     return [false, false];
