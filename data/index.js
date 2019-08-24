@@ -1147,13 +1147,6 @@ const grpStrs = {
    *  Gets called from dlgtdBtnEvent instance. */
   _eventTargetSwitch(_targt, _obj) {
     console.log("grpStrs._eventTargetSwitch(_targt, _obj): starting");
-    /**  2. checks whether the event.target HTML element matches with the selector 
-     * "button#applyWifiSettingsAll" */
-    if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#applyWifiSettingsAll")) {
-      _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap, "apply");
-      _obj.val    = "wifi";
-      return [_obj, grpStrs.wifi.btnGrp];
-    }
 
     /************************ 
      * Special node setters *
@@ -1241,6 +1234,12 @@ const grpStrs = {
     }
     /**  9. checks whether the event.target HTML element matches with the selector 
      * "button#saveWifiSettingsAll" */
+    if (_targt.matches(grpStrs.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
+      _obj        = grpStrs._baseObj(_obj, grpStrs.wifi.inputsMap);
+      _obj.val    = "wifi";
+      return [_obj, grpStrs.wifi.btnGrp];
+    }
+
     return [false, false];
 
   },
