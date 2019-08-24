@@ -201,8 +201,8 @@ void myMeshController::_changeBoxRequest() {
 
   // if this is a save wifi values request
   // _nsobj = {action: "changeBox"; key: "save"; lb: 1, val: "wifi"} // save the external wifi values
-  if ((_nsobj["key"] == "save") && ((_nsobj["val"] == "wifi")  || (_nsobj["val"] == "softAP") || (_nsobj["val"] == "mesh") || (_nsobj["val"] == "RoSet"))) {
-    Serial.println("------------------------------ THIS IS A SAVE WIFI REQUEST ---------------------------");
+  if ((_nsobj["key"] == "save") && ((_nsobj["val"] == "wifi")  || (_nsobj["val"] == "softAP") || (_nsobj["val"] == "mesh") || (_nsobj["val"] == "RoSet") || (_nsobj["val"] == "IFSet") )) {
+    Serial.printf("------------------------------ THIS IS A SAVE %s REQUEST ---------------------------\n", _nsobj["val"].as<const char*>());
     _specificSave();
     return;
   }

@@ -245,6 +245,20 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     }
   }
 
+
+  // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"IFSet"}
+  if (_obj["val"] == "IFSet") {
+
+    uint16_t _ui16receivedIFName = _obj["dataset"]["IFNNA"];
+    if (_ui16receivedIFName == gui16NodeName) {
+      isInterface = true;
+      mySavedPrefs _myPrefsRef;
+      _myPrefsRef._saveBoolTypePrefs("isIF", "isInterface", isInterface);
+      return;
+    }
+  }
+
+
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0, reboots: 2}
   if (_obj["val"] == "gi8RequestedOTAReboots") {
     Serial.println("mySavedPrefs::saveFromNetRequest: going to save gi8RequestedOTAReboots preferences.");
