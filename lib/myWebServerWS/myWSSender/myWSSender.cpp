@@ -55,23 +55,23 @@ myWSSender::myWSSender()
 
 // Web Socket Message Senders
 // Send WS message when I change Station IP
-Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false);
+Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, &userScheduler, false, NULL, NULL);
 
 void myWSSender::_tcbSendWSDataIfChangeStationIp() {
-  // if (!(laserControllerMesh.getStationIP() == thisBox.stationIP)) {
-    // if (MY_DG_WS) {
-    //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-    // }
-    // Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
-
-    myWSSender _myWSSender;
-    if (MY_DG_WS) {
-      Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
-    }
-    _myWSSender.prepareWSData(3); // 3 for message sent in case of change in station IP
-
-    thisBox.updateThisBoxProperties();
+  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
+  // if (MY_DG_WS) {
+  //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
+  //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   // }
+
+  myWSSender _myWSSender;
+  if (MY_DG_WS) {
+    Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
+  }
+  _myWSSender.prepareWSData(3); // 3 for message sent in case of change in station IP
+
+  thisBox.updateThisBoxProperties();
+  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
 }
 
 

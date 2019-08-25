@@ -39,7 +39,7 @@
 */
 
 #include "Arduino.h"
-#include "./myWSReceiver.h"
+#include "myWSReceiver.h"
 
 
 
@@ -96,7 +96,8 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   // disable the task sending the IP by WS to the browser
   if (_obj["action"] == "ReceivedIP") {
     if (MY_DG_WS) {
-      Serial.println("myWSReceiver::_actionSwitch(): Ending on received confirmation that new station IP has been received).");
+      Serial.println("myWSReceiver::_actionSwitch(): Ending on ReceivedIP (confirmation that new station IP has been received).");
+      Serial.println("myWSReceiver::_actionSwitch(): tSendWSDataIfChangeStationIp.disable()");
     }
     // disable the task sending the station IP
     myWSSender::tSendWSDataIfChangeStationIp.disable();
