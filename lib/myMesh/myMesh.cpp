@@ -34,7 +34,10 @@ myMesh::myMesh()
 {
 }
 
-void myMesh::setMeshCallbacks() {
+void myMesh::init() {
+  myMeshStarter _myMeshStarter;
+  _myMeshStarter.myMeshSetup();
+
   _tPrintMeshTopo.enable();
   _tSaveNodeMap.restart();
 
@@ -44,6 +47,23 @@ void myMesh::setMeshCallbacks() {
   // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
   // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
   laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
+
+  myMeshStarter::hasBeenStarted = true;
+}
+
+void myMesh::start() {
+  Serial.println("myMesh::start: starting");  
+  init();
+  Serial.println("myMesh::start: mesh started. Setting restart callback.");
+  myMeshStarter::tRestart.setCallback(
+    [](){
+      Serial.println("myMeshStarter::tRestart: mainCallback: starting");
+      myMesh::init();
+      Serial.println("myMeshStarter::tRestart: mainCallback: ending");
+}
+  );
+  Serial.println("myMesh::start: mesh started. Restart callback has been set.");
+  Serial.println("myMesh::start: ending");  
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

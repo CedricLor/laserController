@@ -27,17 +27,17 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
-#include <myMeshController.h>
+#include <myMeshController.h> // => includes myMeshStarter and myMeshViews
 
 class myMesh
 {
   public:
     myMesh();
 
-    static void setMeshCallbacks();
+    static void init();
+    static void start();
 
   private:
-    friend class myMeshStarter;
 
     /** ----- receivedCallback stack -----
      **********************************************/

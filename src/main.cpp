@@ -53,10 +53,7 @@ void setup() {
     return;
   }
 
-  
-  myMeshStarter _myMeshStarter;
-  _myMeshStarter.myMeshSetup();
-  myMesh::setMeshCallbacks();
+  myMesh::start();
 
   if (isInterface == false) {
     pirController::initPir(); // depends on ControlerBox and Mesh classes
@@ -69,9 +66,11 @@ void setup() {
   mySpiffs _mySpiffs;
   _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
 
+  Serial.println("AND THEREAFTER");
   if (isInterface) {
-    myWebServerBase _myWebServer;
+    // myWebServerBase _myWebServer;
   }
+  Serial.println("AND STILL FURTHER");
 
 
   if (isInterface == false) {
@@ -106,7 +105,7 @@ void loop() {
     return;
   }
   
-  userScheduler.execute();   // it will run mesh scheduler as well
+  userScheduler.execute();
   laserControllerMesh.update();
   pirController::pirCntrl();
 }
@@ -133,6 +132,6 @@ void enableTasks() {
   if (isInterface == false) {
     boxState::tPlayBoxStates.enable();
   } else {
-    myWSSender::tSendWSDataIfChangeBoxState.enable();
+    // myWSSender::tSendWSDataIfChangeBoxState.enable();
   }
 }

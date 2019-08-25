@@ -40,11 +40,13 @@ class myMeshStarter
     myMeshStarter();    // Variables for Interface on AP mode
 
     static Task tRestart;
+    static bool hasBeenStarted;
+    static bool oetcbRestart();
+    static void odtcbRestart();
 
     void myMeshSetup();
 
   private:
-    static void _tcbRestart();
 
     // setup subs
     void _initAndConfigureMesh();

@@ -174,7 +174,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     _specificSaveIF(_obj);
 
     if (_obj["key"] == "apply") {
-      myMeshStarter::tRestart.restartDelayed();
+      // myMeshStarter::tRestart.restartDelayed();
     }
     return;
   }

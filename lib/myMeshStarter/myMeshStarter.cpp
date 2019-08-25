@@ -27,12 +27,12 @@
 
 
 
-
+bool myMeshStarter::hasBeenStarted = false;
 
 myMeshStarter::myMeshStarter() {};
 
-void myMeshStarter::myMeshSetup()
-{
+
+void myMeshStarter::myMeshSetup() {
   if ( MY_DEBUG == true ) {
     // laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
@@ -43,18 +43,29 @@ void myMeshStarter::myMeshSetup()
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
   thisBox.updateThisBoxProperties();
 
-  _setupMdns();}
-
-
-Task myMeshStarter::tRestart(500, 1,&_tcbRestart, &userScheduler, false, NULL, NULL);
-
-
-void myMeshStarter::_tcbRestart() {
-  laserControllerMesh.stop();
-  myMeshStarter _myMeshStarter;
-  _myMeshStarter.myMeshSetup();
+  _setupMdns();
 }
 
+
+Task myMeshStarter::tRestart(500, 1, NULL, &userScheduler, false, &oetcbRestart, &odtcbRestart);
+
+
+bool myMeshStarter::oetcbRestart() {
+  Serial.println("myMeshStarter::oetcbRestart(): starting");
+  Serial.printf("myMeshStarter::oetcbRestart(): hasBeenStarted == %i\n", hasBeenStarted);
+  if (hasBeenStarted) {
+    Serial.printf("myMeshStarter::oetcbRestart(): stopping the mesh\n");
+    laserControllerMesh.stop();
+  }
+  Serial.println("myMeshStarter::oetcbRestart(): ending");
+  return true;
+}
+
+void myMeshStarter::odtcbRestart() {
+  Serial.println("myMeshStarter::odtcbRestart(): starting");
+  hasBeenStarted = true;
+  Serial.println("myMeshStarter::odtcbRestart(): ending");
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setup Helpers
