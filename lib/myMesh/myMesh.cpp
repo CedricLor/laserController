@@ -204,7 +204,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
     callback, this Task is reset by the onDroppedConnection callback to send a
     dropped box notification instead.
 */
-Task myMesh::_tChangedConnection(0, 1, NULL, &userScheduler, false, NULL, &_odtcbChangedConnection);
+Task myMesh::_tChangedConnection(0, 1, NULL, &mns::myScheduler, false, NULL, &_odtcbChangedConnection);
 
 void myMesh::_odtcbChangedConnection() {
     if (MY_DEEP_DG_MESH) Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
@@ -251,7 +251,7 @@ void myMesh::changedConnectionCallback() {
     Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", _tChangedConnection.isEnabled());
     Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", _tChangedConnection.getInterval());
     Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(_tChangedConnection.getIterations());
-    Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(userScheduler.timeUntilNextIteration(_tChangedConnection));
+    Serial.print("myMesh::changedConnectionCallback(): time until next iteration: ");Serial.println(mns::myScheduler.timeUntilNextIteration(_tChangedConnection));
   }
 }
 
@@ -325,7 +325,7 @@ bool myMesh::IamAlone() {
    Task enabled when the node detects that it is alone.
    If after 20 seconds, it is still alone, it will restart the mesh.
 */
-Task myMesh::_tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, &userScheduler, false);
+Task myMesh::_tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, &mns::myScheduler, false, NULL, NULL);
 
 /* _tcbIamAloneTimeOut()
    Restarts the mesh if the node is no longer connected.
@@ -347,7 +347,7 @@ void myMesh::_tcbIamAloneTimeOut() {
    Used for debug purposes.
    Calls _printNodeListAndTopology() every 30 seconds.
 */
-Task myMesh::_tPrintMeshTopo(60*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, &userScheduler, false);
+Task myMesh::_tPrintMeshTopo(60*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, &mns::myScheduler, false, NULL, NULL);
 
 /* _printNodeListAndTopology()
    Used for debug purposes.
@@ -377,7 +377,7 @@ void myMesh::_printNodeListAndTopology() {
   Each remaining node should know how to delete the subs.
   Upon such events, this Task does the job after 10 seconds.
 */
-Task myMesh::_tUpdateCBArrayOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnChangedConnections, &userScheduler, false, &_oetcbUpdateCBOnChangedConnections, &_odtcbUpdateCBOnChangedConnections);
+Task myMesh::_tUpdateCBArrayOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnChangedConnections, &mns::myScheduler, false, &_oetcbUpdateCBOnChangedConnections, &_odtcbUpdateCBOnChangedConnections);
 
 
 bool myMesh::_oetcbUpdateCBOnChangedConnections() {
@@ -509,7 +509,7 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   This Task is called on various occasions, to keep an 
   up-to-date vision of the mesh layout.
 */
-Task myMesh::_tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, &userScheduler, false);
+Task myMesh::_tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, &mns::myScheduler, false, NULL, NULL);
 
 void myMesh::_tcbSaveNodeMap() {
   if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(_tSaveNodeMap.getIterations()));

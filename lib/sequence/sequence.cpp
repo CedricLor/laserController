@@ -187,7 +187,7 @@ void sequence::initSequences() {
     Then the Task tPlaySequenceInLoop is enabled, until being disabled by the
     boxState::_tPlayBoxState onDisable callback.
 */
-Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &userScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
+Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &mns::myScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
 
 
 
@@ -307,7 +307,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
   Task _tPlaySequence.
   It plays a given sequence once.
 */
-Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &userScheduler, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
+Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &mns::myScheduler, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
 
 
 // onEnable callback for _tPlaySequence

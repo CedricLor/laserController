@@ -141,7 +141,7 @@ void bar::initBars() {
 
 
 
-Task bar::tPlayBar(0, 1, &_tcbPlayBar, &userScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, &mns::myScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
 
 
 

@@ -42,6 +42,7 @@ reverse dependency graph
 
 #include "Arduino.h"
 #include <painlessMesh.h>
+#include <mns.h>
 #include <mySpiffs.h>
 #include <myMeshViews.h>
 #include <sequence.h>

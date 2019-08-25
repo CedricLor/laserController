@@ -27,6 +27,7 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
+#include <mns.h>
 #include <myMeshController.h> // => includes myMeshStarter and myMeshViews
 
 class myMesh

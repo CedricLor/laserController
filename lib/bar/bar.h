@@ -36,6 +36,7 @@
 #define bar_h
 
 #include "Arduino.h"
+#include <mns.h>
 #include <note.h>
 
 class bar

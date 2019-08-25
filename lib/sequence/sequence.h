@@ -33,6 +33,7 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
+#include <mns.h>
 #include <ControlerBox.h>
 #include <bar.h>
 

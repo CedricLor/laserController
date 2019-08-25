@@ -337,7 +337,7 @@ void ControlerBox::deleteBoxByNodeId(uint32_t _ui32nodeId) {
 
 
 
-Task ControlerBox::tReboot(3000, TASK_ONCE, NULL, &userScheduler, false, NULL, &_reboot);
+Task ControlerBox::tReboot(3000, TASK_ONCE, NULL, &mns::myScheduler, false, NULL, &_reboot);
 
 void ControlerBox::_reboot() {
   if (MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }

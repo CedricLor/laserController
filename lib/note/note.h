@@ -33,6 +33,7 @@
 #define note_h
 
 #include "Arduino.h"
+#include <mns.h>
 #include <tone.h>
 
 class note

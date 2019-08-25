@@ -30,6 +30,7 @@
 
 #include <painlessMesh.h>
 #include <ESPmDNS.h>
+#include <mns.h>
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
 
