@@ -46,8 +46,8 @@ myWebServerBase::myWebServerBase()
   // respond to GET requests by sending index.htm to the browser
   _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     // Send a response (i.e. display a web page)
-    myWebServerViews(request, "/index.htm");
-  }); 
+    request->send(SPIFFS, "/index.htm", String(), false);
+  });
 
   // respond to GET requests requesting index.css by sending index.css to the browser
   _asyncServer.on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -72,52 +72,9 @@ myWebServerBase::myWebServerBase()
 
 
 
-void myWebServerBase::myWebServerViews(AsyncWebServerRequest *request, const char* url)
-{
-  // strcpy(cBoxArray, "");
-  // _loadBoxArray();
 
-  //  * Response Stream (You can print/write/printf to it, up to the contentLen bytes)
-  //  * */
-  // AsyncResponseStream::AsyncResponseStream(const String& contentType, size_t bufferSize){
-  // AsyncResponseStream * AsyncWebServerRequest::beginResponseStream(const String& contentType, size_t bufferSize){
-  //   return new AsyncResponseStream(contentType, bufferSize);
-  // }
+  
 
-   // AsyncResponseStream *__response = request->beginResponseStream("text/html");  // define a response stream
-   // __response->addHeader("Server","ESP Async Web Server");                       // append stuff to header
-   // __response->printf(__myWebServerView.returnTheResponse().c_str());            // converts the arduino String in C string (array of chars)
-   // request->send(__response);
-
-   // AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(FS &fs, const String& path, const String& contentType, bool download, AwsTemplateProcessor callback){
-   //   if(fs.exists(path) || (!download && fs.exists(path+".gz")))
-   //     return new AsyncFileResponse(fs, path, contentType, download, callback);
-   //   return NULL;
-   // }
-   // AsyncWebServerResponse *_response = request->beginResponse(SPIFFS, "/index.htm", "text/html", false, _processor);
-   // request->send(_response);
-
-   // void AsyncWebServerRequest::send(FS &fs, const String& path, const String& contentType, bool download, AwsTemplateProcessor callback){
-   //   if(fs.exists(path) || (!download && fs.exists(path+".gz"))){
-   //     send(beginResponse(fs, path, contentType, download, callback));
-   //   } else send(404);
-   // }
-
-  request->send(SPIFFS, url, String(), false, _processor);
-
-}
-
-
-// Template processor
-// Looks for placeholders in template
-// If it meets a placeholder, replace it with a given value
-String myWebServerBase::_processor(const String& var) {
-
-  if (MY_DG_WEB) {
-    Serial.print("myWebServerBase::_processor(): no condition met. Returning String()\n");
-  }
-  return String();
-}
 
 
 

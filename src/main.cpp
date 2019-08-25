@@ -66,11 +66,9 @@ void setup() {
   mySpiffs _mySpiffs;
   _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
 
-  Serial.println("AND THEREAFTER");
   if (isInterface) {
-    // myWebServerBase _myWebServer;
+    myWebServerBase _myWebServer;
   }
-  Serial.println("AND STILL FURTHER");
 
 
   if (isInterface == false) {
@@ -132,6 +130,6 @@ void enableTasks() {
   if (isInterface == false) {
     boxState::tPlayBoxStates.enable();
   } else {
-    // myWSSender::tSendWSDataIfChangeBoxState.enable();
+    myWSSender::tSendWSDataIfChangeBoxState.enable();
   }
 }
