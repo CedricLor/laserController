@@ -51,16 +51,38 @@ void myMesh::init() {
   myMeshStarter::hasBeenStarted = true;
 }
 
+/** myMesh::start()
+ *  
+ *  This method is the initial mesh starter. Its function is:
+ *  1. to call myMesh::init() which effectively setups and starts the mesh;
+ *  2. to set the main callback of Task myMeshStarter::tRestart, by passing it
+ *  a lambda with the local context. The reason for doing this is that 
+ *  (a) myMeshStarter does not have access to myMesh (myMesh includes
+ *  myMeshStarter, so myMeshStarter cannot include myMesh);
+ *  (b) the painlessmesh callbacks are located in myMesh;
+ *  (c) myMesh cannot be included into myMeshController and/or myWebReceiverWS 
+ *  where the mesh restart callers would be used/needed;
+ *  (d) myMeshStarter contains most of the procs required for a mesh restart;
+ *  (e) myMeshStarter can easily get included into (i) myMesh, (ii) myMeshController
+ *  and (iii) myWebReceiverWS;
+ *  (f) by passing the context in a lambda to set the callback of 
+ *  Task myMeshStarter::tRestart, I am hoping to give access to myMeshStarter
+ *  to the callback setters located in myMesh.
+ * 
+ *  BUT SO FAR IT DOES NOT WORK*/
 void myMesh::start() {
   Serial.println("myMesh::start: starting");  
+  // 1. call myMesh::init() to effectively start the mesh
   init();
   Serial.println("myMesh::start: mesh started. Setting restart callback.");
+  // 1. set the main callback for myMeshStarter::tRestart by passing it a lambda
+  // with the context in the capture initializer
   myMeshStarter::tRestart.setCallback(
-    [](){
+    [&](){
       Serial.println("myMeshStarter::tRestart: mainCallback: starting");
       myMesh::init();
       Serial.println("myMeshStarter::tRestart: mainCallback: ending");
-}
+    }
   );
   Serial.println("myMesh::start: mesh started. Restart callback has been set.");
   Serial.println("myMesh::start: ending");  
@@ -73,7 +95,9 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
     Serial.printf("\nmyMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
 
-  myMeshController myMeshController(from, msg);
+  /** &init params: trying to pass the static method init to myMeshController 
+   *  so that myMeshController can call init from there to restart the mesh.  */
+  myMeshController myMeshController(from, msg, &init);
 
   Serial.println(F("myMesh::receivedCallback(): ending"));
 }
