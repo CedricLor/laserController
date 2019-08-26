@@ -38,6 +38,12 @@ class myMesh
     static void init();
     static void start();
 
+    static Task tChangedConnection;
+    static Task tIamAloneTimeOut;
+    static Task tPrintMeshTopo;
+    static Task tUpdateCBArrayOnChangedConnections;
+    static Task tSaveNodeMap;
+
   private:
 
     /** ----- receivedCallback stack -----
@@ -52,7 +58,7 @@ class myMesh
      **********************************************/
 
     /** _tcbSendStatusOnNewConnection() is the default callback
-     *  of _tChangedConnection().
+     *  of tChangedConnection().
      * 
      *  It sends a statusMsg upon detecting a new connection. */
     static void _tcbSendStatusOnNewConnection();
@@ -65,9 +71,9 @@ class myMesh
      **********************************************/
 
     /** _tcbSendNotifOnDroppedConnection() is the alternative callback
-     *  of _tChangedConnection.
+     *  of tChangedConnection.
      * 
-     *  It is attached to _tChangedConnection, as a replacement of 
+     *  It is attached to tChangedConnection, as a replacement of 
      *  _tcbSendStatusOnNewConnection() when the droppedConnectionCallback
      *  is called a few seconds after the changedConnectionCallback().
      * 
@@ -80,7 +86,6 @@ class myMesh
 
     /** ----- changedConnectionCallback stack -----
      **********************************************/
-    static Task _tChangedConnection;
     static void _odtcbChangedConnection();
     /** --> painlessMesh changedConnectionCallback */
     static void changedConnectionCallback();
@@ -91,22 +96,19 @@ class myMesh
 
     // Helpers
     
-    /** _tIamAloneTimeOut() was implemented as a way to solve the weird
+    /** tIamAloneTimeOut() was implemented as a way to solve the weird
      * behavior of painlessMesh where subnodes stopped scanning after being 
      * disconnected and left alone. 
      * 
      * It was simply restarting the mesh. */
-    static Task _tIamAloneTimeOut;
     static void _tcbIamAloneTimeOut();
     /** static bool _IamAlone stores the state returned by IamAlone() */
     static bool IamAlone();
 
     // For debug purposes
-    static Task _tPrintMeshTopo;
     static void _printNodeListAndTopology();
 
     // To update the ControlerBoxes array
-    static Task _tUpdateCBArrayOnChangedConnections;
     static bool _oetcbUpdateCBOnChangedConnections();
     static void _tcbUpdateCBOnChangedConnections();
     static void _odtcbUpdateCBOnChangedConnections();
@@ -114,7 +116,6 @@ class myMesh
     static uint16_t _deleteBoxFromCBArray(uint32_t nodeId);
 
     // To keep track of the mesh layout
-    static Task _tSaveNodeMap;
     static void _tcbSaveNodeMap();
     static std::map<uint32_t, uint16_t> _nodeMap;
     static void _saveNodeMap();

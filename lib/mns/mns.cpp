@@ -2,7 +2,5 @@
 
 #include <mns.h>
 
-namespace mns {
-  Scheduler myScheduler;
-}
+Scheduler mns::myScheduler;
 

@@ -42,7 +42,7 @@ reverse dependency graph
   - _tPlayBoxStates detects boxState change request coming from the outside, depending
   on the settings (IR Trigger, Mesh Trigger) of the currently active boxState.
   - _setBoxTargetState stores the change requests from _tPlayBoxStates.
-  - _tPlayBoxState starts and stops the boxState and underlying sequence, depending
+  - tPlayBoxState starts and stops the boxState and underlying sequence, depending
   on the settings (duration, associated sequence number) of the currently active
   boxState, and upon request from its parent Task _tPlayBoxStates.
 */
@@ -135,7 +135,7 @@ step::step(int16_t __i16stepBoxStateNb,
 }
 
 
-Task step::_tPreloadNextStep(0, 1, &_tcbPreloadNextStep, &mns::myScheduler, false, NULL, NULL);
+Task step::tPreloadNextStep(0, 1, &_tcbPreloadNextStep, NULL/*&mns::myScheduler*/, false, NULL, NULL);
 
 void step::_tcbPreloadNextStep() {
   mySpiffs _mySpiffs;
@@ -210,7 +210,7 @@ void step::applyStep() {
   // _thisStepBoxState._ui16stepMasterBoxName = _ui16stepMasterBoxName;
 
   // preload the next step from memory
-  step::_tPreloadNextStep.enable();
+  step::tPreloadNextStep.enable();
 
   Serial.println("step::applyStep(). ending");
 }
@@ -409,12 +409,12 @@ void boxState::switchToStepControlled() {
     and if so, requests such boxState changes;
     2. it then resets the event catchers to their default values;
     3. finally, if a boxState change has been requested (by itself or
-    by _tPlayBoxState), it restarts _tPlayBoxState.
+    by tPlayBoxState), it restarts tPlayBoxState.
 
     onEnable, it puts the box into IR Startup boxState (which is
     set to last for 1 minute).
 */
-Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, &mns::myScheduler, false, &_oetcbPlayBoxStates, NULL);
+Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBoxStates, NULL);
 
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
@@ -546,10 +546,10 @@ void boxState::_resetSignalCatchers() {
       1. reset the witness _boxActiveStateHasBeenReset to 0;
       2. get the params for the new state in case we are in step controlled mode;
       3. set the duration to stay in the new boxState (by setting the
-      aInterval of the "children" Task _tPlayBoxState; _tPlayBoxState.setInterval), to
+      aInterval of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
       the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
       4. set the i16BoxActiveState property (and related properties) of this box;
-      5. restart/enable the "children" Task _tPlayBoxState.
+      5. restart/enable the "children" Task tPlayBoxState.
 */
 void boxState::_restart_tPlayBoxState() {
   // if the _boxActiveStateHasBeenReset,
@@ -563,19 +563,19 @@ void boxState::_restart_tPlayBoxState() {
       step::steps[ui16stepCounter].applyStep();
     }
 
-    // 3. Set the duration of Task _tPlayBoxState
+    // 3. Set the duration of Task tPlayBoxState
     // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
-    _tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
-    // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): "); Serial.println(_tPlayBoxState.getInterval());
+    tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
+    // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
     // 4. Set the i16BoxActiveState to the _boxTargetState
     thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
-    // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState about to be enabled");
+    // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState about to be enabled");
 
-    // 5. Restart/enable _tPlayBoxState
-    _tPlayBoxState.restartDelayed();
-    // Serial.println("void boxState::_tcbPlayBoxStates() _tPlayBoxState enabled");
-    // Serial.print("void boxState::_tcbPlayBoxStates() _tPlayBoxState.getInterval(): ");Serial.println(_tPlayBoxState.getInterval());
+    // 5. Restart/enable tPlayBoxState
+    tPlayBoxState.restartDelayed();
+    // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState enabled");
+    // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
     // Serial.println("*********************************************************");
   }
 }
@@ -669,7 +669,7 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
 
 
 /*
-  _tPlayBoxState starts and stops new boxStates.
+  tPlayBoxState starts and stops new boxStates.
   It iterates only once. It is enabled by tPlayBoxStates.
   Its main iteration is delayed until aInterval has expired. aInterval is set in
   the main callback of _tPlayBoxStates (the "parent" Task). Such interval is
@@ -694,11 +694,11 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   with the taskScheduler library.
   - Task sequence::tPlaySequenceInLoop is equivalent to
   Task tLED(TASK_IMMEDIATE, TASK_FOREVER, NULL, &ts, false, NULL, &LEDOff)
-  - Task _tPlayBoxState is equivalent to
+  - Task tPlayBoxState is equivalent to
   Task tBlink(5000, TASK_ONCE, NULL, &ts, false, &BlinkOnEnable, &BlinkOnDisable).
 
 */
-Task boxState::_tPlayBoxState(0, 1, NULL, &mns::myScheduler, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
+Task boxState::tPlayBoxState(0, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBoxState, &_odtcbPlayBoxState);
 
 
 bool boxState::_oetcbPlayBoxState(){
@@ -712,7 +712,7 @@ bool boxState::_oetcbPlayBoxState(){
   sequence::setActiveSequence(_currentBoxState.ui16AssociatedSequence);
 
   // 3. Enable the sequence player, to play the sequence in loop
-  // until _tPlayBoxState expires, for the duration mentionned in the activeState
+  // until tPlayBoxState expires, for the duration mentionned in the activeState
   // Serial.println("boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
   sequence::tPlaySequenceInLoop.enable();
 
@@ -725,7 +725,7 @@ bool boxState::_oetcbPlayBoxState(){
   // - enable the Task that will read the params for the next step
   if (ui16Mode == 1) {
     ui16stepCounter = ui16stepCounter + 1;
-    step::_tPreloadNextStep.restart();
+    step::tPreloadNextStep.restart();
   }
 
   Serial.println("boxState::_oetcbPlayBoxState(). Ending.");
@@ -740,8 +740,8 @@ bool boxState::_oetcbPlayBoxState(){
 */
 void boxState::_odtcbPlayBoxState(){
   Serial.println("boxState::_odtcbPlayBoxState(). Starting.");
-  // Serial.print("boxState::_odtcbPlayBoxState() _tPlayBoxState.getInterval(): ");
-  // Serial.println(_tPlayBoxState.getInterval());
+  // Serial.print("boxState::_odtcbPlayBoxState() tPlayBoxState.getInterval(): ");
+  // Serial.println(tPlayBoxState.getInterval());
 
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 

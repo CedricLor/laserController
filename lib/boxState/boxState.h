@@ -77,7 +77,7 @@ class step
 
     void applyStep();
 
-    static Task _tPreloadNextStep;
+    static Task tPreloadNextStep;
     static void _tcbPreloadNextStep();
     static void _preloadNextStepFromJSON(JsonObject& _joStep);
 
@@ -112,6 +112,8 @@ class boxState
     int16_t i16onExpire;
     // std::map stdMapMy;
 
+    static Task tPlayBoxState;
+
   private:
     static short int _boxTargetState;
     static bool _boxActiveStateHasBeenReset;
@@ -119,7 +121,6 @@ class boxState
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();
 
-    static Task _tPlayBoxState;
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
 

@@ -161,10 +161,10 @@ void sequence::initSequences() {
 // Loop Player
 ///////////////////////////////////
 /*
-    _tPlayBoxState plays once (unless restarted by tPlayBoxStates)
-      - _tPlayBoxState -> onEnable: enables tPlaySequenceInLoop
-      - _tPlayBoxState -> onDisable: disables tPlaySequenceInLoop
-    tPlaySequenceInLoop plays forever (until interrupt by _tPlayBoxState):
+    tPlayBoxState plays once (unless restarted by tPlayBoxStates)
+      - tPlayBoxState -> onEnable: enables tPlaySequenceInLoop
+      - tPlayBoxState -> onDisable: disables tPlaySequenceInLoop
+    tPlaySequenceInLoop plays forever (until interrupt by tPlayBoxState):
       - tPlaySequenceInLoop -> onEnable: calculates the sequence duration and
             sets the interval for tPlaySequenceInLoop
       - tPlaySequenceInLoop -> main callback: starts playing the active sequence
@@ -175,19 +175,19 @@ void sequence::initSequences() {
     tPlaySequenceInLoop
 
     tPlaySequenceInLoop plays a sequence in loop, for an unlimited number
-    of iterations, until it is disabled by _tPlayBoxState.
+    of iterations, until it is disabled by tPlayBoxState.
 
     tPlaySequenceInLoop is enabled and disabled by the onEnable and onDisable
-    callbacks of _tPlayBoxState.
+    callbacks of tPlayBoxState.
 
     Upon entering a new boxState (startup, IR signal received, etc.),
-    the onEnable callback of _tPlayBoxState task sets sequence::_activeSequence
+    the onEnable callback of tPlayBoxState task sets sequence::_activeSequence
     to the sequence index number associated with this boxState.
 
     Then the Task tPlaySequenceInLoop is enabled, until being disabled by the
-    boxState::_tPlayBoxState onDisable callback.
+    boxState::tPlayBoxState onDisable callback.
 */
-Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, &mns::myScheduler, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
+Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, NULL/*&mns::myScheduler*/, false, &_oetcbPlaySequenceInLoop, &_odtcbPlaySequenceInLoop);
 
 
 
@@ -226,7 +226,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
   /* Set the interval between each iteration of tPlaySequenceInLoop
-      (each iteration will restart the Task _tPlaySequence, so this interval
+      (each iteration will restart the Task tPlaySequence, so this interval
       shall be equal to the duration of the sequence). */
   tPlaySequenceInLoop.setInterval(_ulSequenceDuration(_activeSequence));
 
@@ -254,10 +254,10 @@ void sequence::_tcbPlaySequenceInLoop() {
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). userScheduler.timeUntilNextIteration(tPlaySequenceInLoop) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlaySequenceInLoop));
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
   //   Serial.println("sequence::_tcbPlaySequenceInLoop(). ******");
-  //   Serial.println("sequence::_tcbPlaySequenceInLoop(). about to enable _tPlaySequence.enable()");
+  //   Serial.println("sequence::_tcbPlaySequenceInLoop(). about to enable tPlaySequence.enable()");
   // }
-  Serial.println("sequence::_tcbPlaySequenceInLoop(). about to enable _tPlaySequence.enable()");
-  _tPlaySequence.enable();
+  Serial.println("sequence::_tcbPlaySequenceInLoop(). about to enable tPlaySequence.enable()");
+  tPlaySequence.enable();
 
   Serial.println("sequence::_tcbPlaySequenceInLoop(). Ending.");
 }
@@ -289,7 +289,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
     //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_activeSequence]._playSequence()");
     // }
   }
-  _tPlaySequence.enable();
+  tPlaySequence.enable();
   Serial.println("sequence::_odtcbPlaySequenceInLoop(). Ending.");
 };
 
@@ -304,33 +304,33 @@ void sequence::_odtcbPlaySequenceInLoop() {
 // Single Sequence Player
 ///////////////////////////////////
 /*
-  Task _tPlaySequence.
+  Task tPlaySequence.
   It plays a given sequence once.
 */
-Task sequence::_tPlaySequence(0, 0, &_tcbPlaySequence, &mns::myScheduler, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
+Task sequence::tPlaySequence(0, 0, &_tcbPlaySequence, NULL/*&mns::myScheduler*/, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
 
 
-// onEnable callback for _tPlaySequence
+// onEnable callback for tPlaySequence
 // 1. sets the interval for each iterations to duration of the bars (each iteration is a bar)
 // 2. sets the number of iterations to the bar count in this sequence
 bool sequence::_oetcbPlaySequence(){
-  // Serial.println("----------------------------on enable _tPlaySequence ------------------------------");
+  // Serial.println("----------------------------on enable tPlaySequence ------------------------------");
 
-  // 1. sets the interval of the _tPlaySequence task
-  _tPlaySequence.setInterval(_ulBarDuration(_activeSequence));
+  // 1. sets the interval of the tPlaySequence task
+  tPlaySequence.setInterval(_ulBarDuration(_activeSequence));
   // Serial.printf("void sequence::_oetcbPlaySequence(). Set interval: %lu ms.\n", _ulBarDuration(_activeSequence));
-  // Serial.printf("void sequence::_oetcbPlaySequence(). Get interval: %lu ms.\n", _tPlaySequence.getInterval());
+  // Serial.printf("void sequence::_oetcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
 
-  // 2. sets the number of iterations of the _tPlaySequence task from the
+  // 2. sets the number of iterations of the tPlaySequence task from the
   //    number of bars in the sequence
   // if (MY_DG_LASER) {
-  //   Serial.println("void sequence::_playSequence(). _tPlaySequence.setIterations() about to be called");
+  //   Serial.println("void sequence::_playSequence(). tPlaySequence.setIterations() about to be called");
   //   Serial.print("void sequence::_playSequence(). bars count in sequence: ");Serial.println(sequences[_activeSequence]._barCountInSequence);
-  //   Serial.print("void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
+  //   Serial.print("void sequence::_playSequence(). tPlaySequence.getIterations() = ");Serial.println(tPlaySequence.getIterations());
   // }
-  _tPlaySequence.setIterations(sequences[_activeSequence]._barCountInSequence);
+  tPlaySequence.setIterations(sequences[_activeSequence]._barCountInSequence);
   // if (MY_DG_LASER) {
-  //   Serial.print("void sequence::_playSequence(). _tPlaySequence.getIterations() = ");Serial.println(_tPlaySequence.getIterations());
+  //   Serial.print("void sequence::_playSequence(). tPlaySequence.getIterations() = ");Serial.println(tPlaySequence.getIterations());
   // }
 
   return true;
@@ -338,12 +338,12 @@ bool sequence::_oetcbPlaySequence(){
 
 
 
-// Main callback for _tPlaySequence
-// Each iteration of _tPlaySequence corresponds to a bar. Accordingly, each iteration
+// Main callback for tPlaySequence
+// Each iteration of tPlaySequence corresponds to a bar. Accordingly, each iteration
 // runs for an identical a fixed time -> interval.
 // The iterations and the interval of the Task have been set in its onEnable
 // callback and do not change on iterations.
-// At each iteration of _tPlaySequence:
+// At each iteration of tPlaySequence:
 // - we read in the sequence the number of the next bar <- from the iterator of the
 //   Task.
 // - we then apply the settings (tempo in BPM, base note for beats and the notes
@@ -356,7 +356,7 @@ void sequence::_tcbPlaySequence(){
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   // 1. Get the number of iterations (each iteration corresponds to one bar)
-  short _iter = _tPlaySequence.getRunCounter() - 1;
+  short _iter = tPlaySequence.getRunCounter() - 1;
   Serial.println("sequence::_tcbPlaySequence(). have set _iter: " + String(_iter));
 
   // 2. Select the bar number corresponding to this iteration
@@ -389,7 +389,7 @@ void sequence::_tcbPlaySequence(){
 // tPlaySequence disable callback
 void sequence::_odtcbPlaySequence(){
   // if (MY_DG_LASER) {
-  //   // Serial.println("----------------------------on disable _tPlaySequence ------------------------------");
+  //   // Serial.println("----------------------------on disable tPlaySequence ------------------------------");
   //   // Serial.print("sequence::_odtcbPlaySequence(). millis() = ");Serial.println(millis());
   //   // Serial.println("sequence::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
   // }
@@ -418,7 +418,7 @@ long unsigned int sequence::_ulSequenceDuration(const int16_t __i16activeSequenc
 
 
 
-// Helper function to _tPlaySequence
+// Helper function to tPlaySequence
 // returns the current bar effective duration
 long unsigned int sequence::_ulBarDuration(const int16_t __i16activeSequence) {
   Serial.println(F("void sequence::_ulBarDuration(). Starting."));

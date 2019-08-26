@@ -141,7 +141,7 @@ void bar::initBars() {
 
 
 
-Task bar::tPlayBar(0, 1, &_tcbPlayBar, &mns::myScheduler, false, &_oetcbPlayBar, &_odtcbPlayBar);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, &_odtcbPlayBar);
 
 
 
@@ -151,11 +151,11 @@ bool bar::_oetcbPlayBar(){
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). Before setting the iterations for this bar: *!*!*!*!*!");
-  //   Serial.println("bar::_oetcbPlayBar(). _tPlaySequence execution parameters:");
+  //   Serial.println("bar::_oetcbPlayBar(). tPlaySequence execution parameters:");
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
-  //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
+  //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
   //   Serial.print("bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
@@ -168,7 +168,7 @@ bool bar::_oetcbPlayBar(){
   //   Serial.print("bar::_oetcbPlayBar(). bars[_ui16activeBar].ui16NotesCountInBar = ");Serial.println(bars[_ui16activeBar].ui16NotesCountInBar);
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
-  //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(_tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
+  //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
   //   Serial.print("bar::_oetcbPlayBar(). millis() = ");Serial.println(millis());
   //   Serial.println("bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }

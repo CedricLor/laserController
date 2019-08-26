@@ -8,7 +8,7 @@
 
 extern constexpr short    UI8_BOXES_COUNT                     = 10;
 
-#include "mns.cpp"
+#include "mns.h"
 #include <mySavedPrefs.h>
 #include <ControlerBox.h>
 #include <myOta.h>
@@ -26,7 +26,6 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 painlessMesh            laserControllerMesh;
-
 ControlerBox            ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox = ControlerBoxes[0];
 
@@ -48,6 +47,28 @@ void setup() {
 
   mns::myScheduler.init();
   
+  mns::myScheduler.addTask(ControlerBox::tReboot);
+  mns::myScheduler.addTask(myMeshStarter::tRestart);
+  
+  mns::myScheduler.addTask(myMesh::tChangedConnection);
+  mns::myScheduler.addTask(myMesh::tIamAloneTimeOut);
+  mns::myScheduler.addTask(myMesh::tPrintMeshTopo);
+  mns::myScheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
+  mns::myScheduler.addTask(myMesh::tSaveNodeMap);
+
+  if (isInterface) {
+    mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
+    mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
+  } else {
+    mns::myScheduler.addTask(step::tPreloadNextStep);
+    mns::myScheduler.addTask(boxState::tPlayBoxStates);
+    mns::myScheduler.addTask(boxState::tPlayBoxState);
+    mns::myScheduler.addTask(sequence::tPlaySequenceInLoop);
+    mns::myScheduler.addTask(sequence::tPlaySequence);
+    mns::myScheduler.addTask(bar::tPlayBar);
+    mns::myScheduler.addTask(note::tPlayNote);
+  }
+
   // TRUE IS READONLY and FALSE IS RW!!!
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.loadPrefsWrapper();
@@ -86,8 +107,8 @@ void setup() {
   boxState::initBoxStates();
 
   enableTasks();
+  mns::myScheduler.startNow();
 
-  
   // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("Box number: %i\n", gui16NodeName);
   Serial.printf("Version: %i\n", VERSION);

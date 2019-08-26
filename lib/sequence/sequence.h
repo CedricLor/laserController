@@ -48,6 +48,7 @@ class sequence
     static void setActiveSequence(const short int activeSequence);
 
     static Task tPlaySequenceInLoop;
+    static Task tPlaySequence;
 
   private:
     static const short int _sequence_count;
@@ -71,7 +72,6 @@ class sequence
     static bool _oetcbPlaySequenceInLoop();
     static void _odtcbPlaySequenceInLoop();
 
-    static Task _tPlaySequence;
     static bool _oetcbPlaySequence();
     static void _tcbPlaySequence();
     static void _odtcbPlaySequence();
