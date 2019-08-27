@@ -33,8 +33,8 @@ Created by Cedric Lor, January 22, 2019.
  *  so that myMeshController can call myMesh::init() to restart the mesh.
  *  2. trying to save the method as non static member of myMesh ->
  *   _meshInit(meshInit) */
-myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg, void (*meshInit)())
-: _meshInit(meshInit), _ui32SenderNodeId(_ui32SenderNodeId)
+myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, void (*meshInit)()*/)
+: /*_meshInit(meshInit),*/ _ui32SenderNodeId(_ui32SenderNodeId)
 {
   if (MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
 
@@ -210,15 +210,14 @@ void myMeshController::_changeBoxRequest() {
     Serial.printf("------------------------------ THIS IS A SAVE %s REQUEST ---------------------------\n", _nsobj["val"].as<const char*>());
     _specificSave();
     if (_nsobj["key"] == "apply") {
-      /**
       // myMeshStarter::tRestart.setCallback(
       //   [this]() {
-      //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
+      //     if (MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");}
       //       this->_meshInit();
-      //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
+      //     if (MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");}
       //   }
-      // );*/
-      // myMeshStarter::tRestart.restartDelayed();
+      // );
+      myMeshStarter::tRestart.restartDelayed();
     }
     return;
   }

@@ -34,10 +34,10 @@
 class myMeshController
 {
   public:
-    myMeshController(uint32_t _ui32SenderNodeId, String &_msg, void (*meshInit)());
+    myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, void (*meshInit)()*/);
 
   private:
-    void (*_meshInit)();
+    // void (*_meshInit)();
 
     static constexpr int _capacity = JSON_OBJECT_SIZE(30);
     StaticJsonDocument<_capacity> _nsdoc;

@@ -61,6 +61,10 @@ class mySavedPrefs
     void _saveBoxEssentialPreferences();
     void _saveBoxBehaviorPreferences();
 
+    // Subs of _saveBoxEssentialPreferences()
+    void _saveIsInterface();
+    void _saveIsRoot();
+
     // Save Abstract
     void _saveStringTypePrefs(const char NVSVarName[], const char humanReadableVarName[], char* strEnvVar);
     void _saveIPTypePrefs(const char NVSVarName[], const char humanReadableVarName[], IPAddress& envIP);
@@ -85,6 +89,10 @@ class mySavedPrefs
     void _loadOTASuccess();
     void _loadBoxEssentialPreferences();
     void _loadBoxBehaviorPreferences();
+
+    // Subs of _loadBoxEssentialPreferences()
+    void _loadIsInterface();
+    void _loadIsRoot();
 
     // Load Abstract
     void _loadStringTypePrefs(const char NVSVarName[], const char humanReadableVarName[], char* strEnvVar);

@@ -175,7 +175,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     _specificSaveIF(_obj);
 
     if (_obj["key"] == "apply") {
-      // myMeshStarter::tRestart.restartDelayed();
+      myMeshStarter::tRestart.restartDelayed();
     }
     return;
   }
@@ -296,7 +296,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
     if (_obj["lb"] == "all") {
       _specificSaveIF(_obj);
       if (_obj["key"] == "apply") {
-        // myMeshStarter::tRestart.restartDelayed();
+        myMeshStarter::tRestart.restartDelayed();
       }
     }
   }

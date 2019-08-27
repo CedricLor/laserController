@@ -240,7 +240,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     if (_ui16receivedRootNodeName == gui16NodeName) {
       isRoot = true;
       mySavedPrefs _myPrefsRef;
-      _myPrefsRef._saveBoolTypePrefs("isRoot", "isRoot", isRoot);
+      _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
       return;
     }
   }
@@ -253,7 +253,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
     if (_ui16receivedIFName == gui16NodeName) {
       isInterface = true;
       mySavedPrefs _myPrefsRef;
-      _myPrefsRef._saveBoolTypePrefs("isIF", "isInterface", isInterface);
+      _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsInterface, _myPrefsRef);
       return;
     }
   }
@@ -490,13 +490,33 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
   // to set thisBox.ui16NodeName
   _saveUi16ToUCharTypePrefs("ui8NdeName", "gui16NodeName", gui16NodeName);
 
+ _saveIsInterface();
+_saveIsRoot();
+}
+
+
+
+
+
+/** _saveIsInterface: 
+ *  
+ *  dynamic reload: need restarting the mesh */
+void mySavedPrefs::_saveIsInterface() {
   /*
     Save value of isInterface
     -> runtime change possible; would require a restart of painlessMesh
     See below for possible implications with isRoot
   */
  _saveBoolTypePrefs("isIF", "isInterface", isInterface);
+}
 
+
+
+
+/** _saveIsRoot: 
+ * 
+ *  dynamic reload: need restarting the mesh */
+void mySavedPrefs::_saveIsRoot() {
   /*
     Save value of isRoot
     -> runtime change possible, but 
@@ -508,7 +528,6 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
   */
  _saveBoolTypePrefs("isRoot", "isRoot", isRoot);
 }
-
 
 
 
@@ -811,13 +830,40 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
   // gui16NodeName
   _loadUCharToUi16TypePrefs("ui8NdeName", "gui16NodeName", gui16NodeName);
 
+  _loadIsInterface();
+  _loadIsRoot();
+
+  Serial.println(String(debugLoadMsgStart) + " --- End Node Essential Preferences");
+}
+
+
+
+
+
+
+/** _loadIsInterface() */
+void mySavedPrefs::_loadIsInterface(){
+  Serial.println(String(debugLoadMsgStart) + " --- Loading isInterface Preferences");
+
   // isInterface
   _loadBoolTypePrefs("isIF", "isInterface", isInterface);
+
+  Serial.println(String(debugLoadMsgStart) + " --- End isInterface Preferences");
+}
+
+
+
+
+
+
+/** _loadIsRoot() */
+void mySavedPrefs::_loadIsRoot(){
+  Serial.println(String(debugLoadMsgStart) + " --- Loading isRoot Preferences");
 
   // isRoot
   _loadBoolTypePrefs("isRoot", "isRoot", isRoot);
 
-  Serial.println(String(debugLoadMsgStart) + " --- End Node Essential Preferences");
+  Serial.println(String(debugLoadMsgStart) + " --- End isRoot Preferences");
 }
 
 

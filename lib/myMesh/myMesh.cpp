@@ -102,7 +102,7 @@ void myMesh::receivedCallback(uint32_t from, String &msg ) {
 
   /** &init params: trying to pass the static method init to myMeshController 
    *  so that myMeshController can call init from there to restart the mesh.  */
-  myMeshController myMeshController(from, msg, &init);
+  myMeshController myMeshController(from, msg/*, &init*/);
 
   Serial.println(F("myMesh::receivedCallback(): ending"));
 }
