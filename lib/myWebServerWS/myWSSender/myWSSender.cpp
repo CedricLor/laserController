@@ -41,7 +41,7 @@
 #include "Arduino.h"
 #include "./myWSSender.h"
 
-
+AsyncWebSocket * myWSSender::server = nullptr;
 
 myWSSender::myWSSender()
 {
@@ -68,7 +68,21 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   if (MY_DG_WS) {
     Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
   }
-  _myWSSender.prepareWSData(3); // 3 for message sent in case of change in station IP
+  /** TO DO: treat the nullprt issue:
+    * This Task shall be enabled:
+    * (i) if one of the network parameter has changed, an array of all the clients shall be constructed,
+    *  the new data shall be broadcasted to all the clients, the clients shall be removed from the array
+    *  when their "received IP" message has been received and when the array is empty, the Task shall 
+    *  be disabled; 
+    * (ii) if a new client has connected and it shall send to the specific new client (make an 
+    *  array of new clients, send the data to the new clients only, and the received IP message
+    *  sent by the clients shall serve to remove clients from this array). Once all the clients have
+    *  received the data, the Task shall be disabled.
+    *  
+    *  Currently, the Task is enabled upon connection of a new client and it is disabled upon reception
+    *  of "Received IP" message from any client.
+    *   */
+  _myWSSender.prepareWSData(3, nullptr); // 3 for message sent in case of change in station IP
 
   thisBox.updateThisBoxProperties();
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
@@ -87,6 +101,14 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
 Task myWSSender::tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, NULL/*&mns::myScheduler*/, false, NULL, NULL);
 
 void myWSSender::_tcbSendWSDataIfChangeBoxState() {
+  // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): starting.");
+  // if no client has ever connected, just return
+  if (server == nullptr) { return; }
+  // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): WS has been started.");
+  // if no client is currently connected, just return
+  if (!(server->count())) { return; }
+  // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): WS has some client connected.");
+  // else check the relevant changes and inform the clients
   myWSSender _myWSSender;
   for (uint16_t _ui16BoxIndex = 1; _ui16BoxIndex < gui16BoxesCount; _ui16BoxIndex++) {
     // prepare a JSON document
@@ -162,7 +184,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       // expected _obj = {lb:1; action:"deleteBox"}
     }
 
-    // in each of the above cases, send a message to the browser
+    // in each of the above cases, send a message to the clients
     if (_obj["action"] != "-1") {
       if (MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
@@ -177,7 +199,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
 
 
-void myWSSender::prepareWSData(const int8_t _i8messageType) {
+void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client) {
   Serial.printf("- myWSSender::prepareWSData. Starting. Message type [%i]\n", _i8messageType);
   StaticJsonDocument<900> __doc;
   JsonObject __newObj = __doc.to<JsonObject>();
@@ -263,7 +285,8 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
     __meshSettings["mmc"]       = meshMaxConnection;
   }
 
-  sendWSData(__newObj);
+  // Send a message to the newly connected client
+  sendWSData(__newObj, _client);
 
   if (MY_DG_WS) {
     Serial.println("- myWSSender::prepareWSData. Ending.");
@@ -283,61 +306,42 @@ void myWSSender::prepareWSData(const int8_t _i8messageType) {
 
 
 
-void myWSSender::sendWSData(JsonObject& _joMsg) {
+void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
     if (MY_DG_WS) {
       Serial.println("- myWSSender::sendWSData. Starting.");
     }
 
-    size_t _len = measureJson(_joMsg);
-    AsyncWebSocketMessageBuffer * _buffer = myWebServerWS::ws.makeBuffer(_len); //  creates a buffer (len + 1) for you.
-
-    size_t _client_count = myWebServerWS::ws.count();
-
-    /** check that there are any client connected */
-    if (_client_count) {
-
-        // 
-        serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
-        Serial.print("- myWSSender::sendWSData. Serialized message: ");
-        serializeJson(_joMsg, Serial);
-        Serial.println();
-        
-        // Before sending anything, check if you have any client
-        if (size_t _client_count = myWebServerWS::ws.count()) {
-          /** Test whether we have:
-           * - the client_id;
-           * - the client with the client_id we have is not pointing to nothing;
-           * - the client is connected. */
-          
-          /** If so, send the message to this client. */
-          if (myWebServerWS::ws_client_id &&
-              myWebServerWS::ws.client(myWebServerWS::ws_client_id) != nullptr &&
-              myWebServerWS::ws.client(myWebServerWS::ws_client_id)->status() == WS_CONNECTED) {
-                if (MY_DG_WS) Serial.printf("- myWSSender::sendWSData. Sending the WS message to client [%i].\n", myWebServerWS::ws_client_id);
-                myWebServerWS::ws.client(myWebServerWS::ws_client_id)->text(_buffer);
-                if (MY_DG_WS) Serial.println("- myWSSender::sendWSData. Message sent\n");
-          }  // end if (myWebServerWS::ws_client_id && ...
-
-          /** If the ws_client_id we have does not match existing client
-           *  OR the corresponding client points to nothing
-           *  OR the client is no longer connected,
-           * 
-           *  send the message to all the clients */
-          else {
-              if (MY_DG_WS)  Serial.printf("- myWSSender::sendWSData. Client [%u] not found. Sending the WS message message to all %u clients.\n", myWebServerWS::ws_client_id, _client_count);
-              myWebServerWS::ws.textAll(_buffer);
-              if (MY_DG_WS) Serial.println(F("- myWSSender::sendWSData. Message broadcasted"));
-          } // end else
-
-        } // end if (size_t _client_count = myWebServerWS::ws.count()) {...}
-    
-    } // if _buffer and _client_count
-
-    else { // No client connected
-      if (MY_DG_WS) {
-        Serial.printf("- myWSSender::sendWSData: The message could not be sent. No client connected.");
-      }
+    // If no client has ever even tried to connect, the websocket server is not yet started. Return.
+    if (server == nullptr) {
+      Serial.println("- myWSSender::sendWSData. Websocket server not yet started. Not sending anything.");
+      return;
     }
+
+    // If no client is registered with the WebSocket, just return
+    if (!(server->count())) {
+      Serial.println("- myWSSender::sendWSData. No clients connected. Not sending anything.");
+      return;
+    }
+
+    // The message is addressed to a specific client or to any client
+    // Measure the size of the message
+    size_t _len = measureJson(_joMsg);
+    // Make a buffer to hold it
+    AsyncWebSocketMessageBuffer * _buffer = server->makeBuffer(_len); //  creates a buffer (len + 1) for you.
+    // Serialize the message into the buffer
+    serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
+    // Display the serialized message to the console
+    Serial.print("- myWSSender::sendWSData. Serialized message: ");serializeJson(_joMsg, Serial);Serial.println();
+
+    // If the message is addressed to any connected client, send it to all the clients
+    if (_client == nullptr) {
+      server->textAll(_buffer);
+      Serial.println("- myWSSender::sendWSData. The message was sent to all the clients.\n");
+      return;
+    }
+
+    // The message is addressed to a specific client, send it to the targeted client
+    _client->text(_buffer);
 
     if (MY_DG_WS) {
       Serial.println(F("- myWSSender::sendWSData. Ending."));

@@ -53,12 +53,14 @@ class myWSSender
   public:
     myWSSender();
 
-    void prepareWSData(const int8_t _i8messageType);
-    void sendWSData(JsonObject& _joMsg);
+    void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
+    void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 
     static Task tSendWSDataIfChangeStationIp;
     static Task tSendWSDataIfChangeBoxState;
 
+    static AsyncWebSocket * server;
+    
   private:
 
     static void _tcbSendWSDataIfChangeStationIp();

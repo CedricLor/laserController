@@ -45,7 +45,6 @@
 
 
 AsyncWebSocket myWebServerWS::ws("/"); // access at ws://[esp ip]/
-uint32_t myWebServerWS::ws_client_id = 0;
 
 
 myWebServerWS::myWebServerWS()
@@ -62,13 +61,16 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
         //client connected
-        ws_client_id = client->id();
         if (MY_DG_WS) {
           Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; server->url(): [%s], client->id(): [%i] connect\n", server->url(), client->id());
           Serial.println("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; About to call myWSSender::prepareWSData");
         }
+        // if no client has ever connected to the server, register the server in myWSSender
+        if (myWSSender::server == nullptr) {
+          myWSSender::server = server;
+        }
         myWSSender _myWSSender;
-        _myWSSender.prepareWSData(0); // 0 for messageType "handshake"
+        _myWSSender.prepareWSData(0, client); // 0 for messageType "handshake"
 
         client->ping();
     } else if(type == WS_EVT_DISCONNECT){
@@ -100,7 +102,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
 
                 // myWSSender _myWSSender;
                 // Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)\n");
-                // _myWSSender.prepareWSData(1); // text message confirmation
+                // _myWSSender.prepareWSData(1, client); // text message confirmation
 
             }
             else {
@@ -178,7 +180,7 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
                       Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA (2nd): about to call prepareWSData(1)\n");
                     }
                       myWSSender _myWSSender;
-                      _myWSSender.prepareWSData(1); // text message confirmation
+                      _myWSSender.prepareWSData(1, client); // text message confirmation
 
                       // client->text("I got your WS text message");
                   }
