@@ -29,7 +29,7 @@
 #include <mySavedPrefs.h>
 #include <myMeshViews.h>
 #include <myMeshStarter.h>
-#include "../myWebServerWS/myWSSender/myWSSender.h"
+#include <myWSSender.h>
 
 class myMeshController
 {
