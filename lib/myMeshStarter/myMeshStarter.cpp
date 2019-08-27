@@ -24,7 +24,7 @@
 
 #include "Arduino.h"
 #include "myMeshStarter.h"
-
+#include <esp_wifi.h>
 
 
 bool myMeshStarter::hasBeenStarted = false;
@@ -47,7 +47,7 @@ void myMeshStarter::myMeshSetup() {
 }
 
 
-Task myMeshStarter::tRestart(500, 1, NULL, NULL/*&mns::myScheduler*/, false, &oetcbRestart, &odtcbRestart);
+Task myMeshStarter::tRestart(0, 1, NULL, NULL/*&mns::myScheduler*/, false, &oetcbRestart, NULL);
 
 
 bool myMeshStarter::oetcbRestart() {
@@ -55,16 +55,12 @@ bool myMeshStarter::oetcbRestart() {
   Serial.printf("myMeshStarter::oetcbRestart(): hasBeenStarted == %i\n", hasBeenStarted);
   if (hasBeenStarted) {
     Serial.printf("myMeshStarter::oetcbRestart(): stopping the mesh\n");
+    MDNS.end();
     laserControllerMesh.stop();
   }
+  hasBeenStarted = true;
   Serial.println("myMeshStarter::oetcbRestart(): ending");
   return true;
-}
-
-void myMeshStarter::odtcbRestart() {
-  Serial.println("myMeshStarter::odtcbRestart(): starting");
-  hasBeenStarted = true;
-  Serial.println("myMeshStarter::odtcbRestart(): ending");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

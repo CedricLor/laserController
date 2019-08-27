@@ -43,7 +43,6 @@ class myMeshStarter
     static Task tRestart;
     static bool hasBeenStarted;
     static bool oetcbRestart();
-    static void odtcbRestart();
 
     void myMeshSetup();
 
