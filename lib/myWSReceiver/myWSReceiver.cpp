@@ -166,13 +166,13 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     return;
   }
 
-  // save the Wifi settings
+  //  If this is a save or apply message for Wifi, softAP, mesh, isRoot or isInterface settings
   if (( (_obj["key"] == "save") || (_obj["key"] == "apply") ) && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet") )) {
     if (MY_DG_WS) {
       Serial.printf("myWSReceiver::_requestIFChange(): This is a SAVE %s settings message.\n", _obj["val"].as<const char*>());
     }
     // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
-    _specificSaveIF(_obj);
+    mySavedPrefs::saveFromNetRequest(_obj);
 
     if (_obj["key"] == "apply") {
       myMeshStarter::tRestart.restartDelayed();
@@ -215,17 +215,6 @@ void myWSReceiver::_saveIF(JsonObject& _obj) {
   // save preferences
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.savePrefsWrapper();
-}
-
-
-
-
-
-void myWSReceiver::_specificSaveIF(JsonObject& _obj) {
-  // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_saveWifiIF(): About to save [%s] settings on IF.\n", _obj["val"].as<const char*>()); }
-  // save preferences
-  mySavedPrefs::saveFromNetRequest(_obj);
 }
 
 
@@ -290,11 +279,11 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
     }
   }
 
-  // If this is a save Wifi, save softAP or save mesh message
+  // If this is a save or apply message for Wifi, softAP, mesh, isRoot or isInterface settings
   if (((_obj["key"] == "save") || (_obj["key"] == "apply")) && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet"))) {
     // If save "all", IF shall be rebooted
     if (_obj["lb"] == "all") {
-      _specificSaveIF(_obj);
+      mySavedPrefs::saveFromNetRequest(_obj);;
       if (_obj["key"] == "apply") {
         myMeshStarter::tRestart.restartDelayed();
       }
