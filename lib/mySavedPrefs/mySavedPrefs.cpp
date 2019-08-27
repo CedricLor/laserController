@@ -237,11 +237,19 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   if (_obj["val"] == "RoSet") {
 
     uint16_t _ui16receivedRootNodeName = _obj["dataset"]["roNNa"];
-    if (_ui16receivedRootNodeName == gui16NodeName) {
+    if ( (isRoot && (_ui16receivedRootNodeName == gui16NodeName) ) || (!(isRoot) && (_ui16receivedRootNodeName != gui16NodeName) ) ) {
+      return;
+    }
+    if ( !(isRoot) && (_ui16receivedRootNodeName == gui16NodeName) ) {
       isRoot = true;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
       return;
+    }
+    if (isRoot && (_ui16receivedRootNodeName != gui16NodeName) ) {
+      isRoot = false;
+      mySavedPrefs _myPrefsRef;
+      _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
     }
   }
 
