@@ -1170,20 +1170,20 @@ const grpStrs = {
     /**  3. checks whether the event.target HTML element matches with the selector 
      * "button#saveIFNodeNumb" */
     if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
-      _obj.key    = "save";
+      _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap);
       _obj.val    = "IFSet";
-      _obj.lb     = (grpStrs.rootIF.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
+      _obj.lb     = parseInt((grpStrs.rootIF.inputsMap.get("IFNNA")).getValue(), 10) - 200;
       return [_obj, grpStrs.rootIF.btnGrp];
-    // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"IFSet"}
+    // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":0,"val":"IFSet"}
     }
     /**  4. checks whether the event.target HTML element matches with the selector 
      * "button#applyIFNodeNumb" */
     if (_targt.matches(grpStrs.rootIF.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
-      _obj.key    = "apply";
+      _obj        = grpStrs._baseObj(_obj, grpStrs.rootIF.inputsMap, "apply");
       _obj.val    = "IFSet";
-      _obj.lb     = (grpStrs.rootIF.inputsMap.get("IFNNA")).getValue();
       _obj.action = "changeBox";
+      _obj.lb     = parseInt((grpStrs.rootIF.inputsMap.get("IFNNA")).getValue(), 10) - 200;
       return [_obj, grpStrs.rootIF.btnGrp];
     // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"IFSet"}
     }
