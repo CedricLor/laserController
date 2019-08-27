@@ -47,6 +47,10 @@ void setup() {
 
   mns::myScheduler.init();
   
+  // TRUE IS READONLY and FALSE IS RW!!!
+  mySavedPrefs _myPrefsRef;
+  _myPrefsRef.loadPrefsWrapper();
+
   mns::myScheduler.addTask(ControlerBox::tReboot);
   mns::myScheduler.addTask(myMeshStarter::tRestart);
   
@@ -69,9 +73,7 @@ void setup() {
     mns::myScheduler.addTask(note::tPlayNote);
   }
 
-  // TRUE IS READONLY and FALSE IS RW!!!
-  mySavedPrefs _myPrefsRef;
-  _myPrefsRef.loadPrefsWrapper();
+
   thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
   thisBox.sBoxDefaultState = gi16BoxDefaultState;
   
@@ -98,7 +100,6 @@ void setup() {
     myWebServerBase _myWebServer;
   }
 
-
   if (isInterface == false) {
     tone::initTones(); // inits also laserPin class; note does not need init
     bar::initBars();
@@ -107,7 +108,6 @@ void setup() {
   boxState::initBoxStates();
 
   enableTasks();
-  mns::myScheduler.startNow();
 
   // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("Box number: %i\n", gui16NodeName);
@@ -156,6 +156,7 @@ void serialInit() {
 
 
 void enableTasks() {
+  
   if (isInterface == false) {
     boxState::tPlayBoxStates.enable();
   } else {
