@@ -83,9 +83,16 @@ class ControlerBox
      * 
      * Set via ControlerBox::setBoxActiveState.
      * 
-     * TODO: should be set for other boxes from status messages received from from the mesh. 
+     * TODO: should be set for other boxes from status messages received from the mesh. 
      * */
     uint32_t ui32BoxActiveStateStartTime;
+
+    /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
+     *  sent a PIR high signal. */
+    uint32_t ui32lastRecPirHighTime;
+    /** ui16hasLastRecPirHighTimeChanged records a new PIR high signal has been received
+     *  for this box. */
+    uint16_t ui16hasLastRecPirHighTimeChanged;
 
     /** bool boxDeletionHasBeenSignaled: 
      * 
@@ -124,8 +131,6 @@ class ControlerBox
 
     /** -------- Public Static Variables - Signal catchers -----------------
      * */
-    static bool bValFromPir;
-    static uint32_t ui32SettingTimeOfValFromPir;
     static short int valFromWeb;
 
     // -------- Public Static Methods -----------------

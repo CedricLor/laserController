@@ -68,7 +68,7 @@ void pirController::check() {
   // }
   if (digitalRead(_inputPin)) {
     Serial.println("pirController::check(): ---------- PIR Mouvement Detected ----------");
-    ControlerBox::bValFromPir                 = HIGH;
-    ControlerBox::ui32SettingTimeOfValFromPir = laserControllerMesh.getNodeTime();
+    thisBox.ui32lastRecPirHighTime = laserControllerMesh.getNodeTime();
+    thisBox.ui16hasLastRecPirHighTimeChanged = 1;
   }
 }

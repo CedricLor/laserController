@@ -419,7 +419,7 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, NULL/*&mns::mySched
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed (the catchers):
-  - ControlerBox::bValFromPir (when the current boxState is set to react to signals from the PIR);
+  - thisBox.ui16hasLastRecPirHighTimeChanged (when the current boxState is set to react to signals from the PIR);
   - ControlerBoxes[PARENT].i16BoxActiveState (when the current boxState is set to react to signals from the mesh);
   - _boxActiveStateHasBeenReset;
   - _boxTargetState;
@@ -490,7 +490,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
     // check whether both have been triggered
-    if (ControlerBox::bValFromPir == HIGH && _currentBoxState._meshHasBeenTriggered(thisBox)) {
+    if (thisBox.ui16hasLastRecPirHighTimeChanged && _currentBoxState._meshHasBeenTriggered(thisBox)) {
       // if so, resolve the conflict and return
       _currentBoxState._resolveTriggersConflict(thisBox);
       return;
@@ -526,8 +526,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 */
 void boxState::_resetSignalCatchers() {
   ControlerBox::valFromWeb = -1;
-  ControlerBox::bValFromPir = LOW;
-  ControlerBox::ui32SettingTimeOfValFromPir = 0;
+  thisBox.ui16hasLastRecPirHighTimeChanged = 0;
   if (thisBox.ui16MasterBoxName != 254) {
     uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
     ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
@@ -595,7 +594,7 @@ bool boxState::_hasBothTriggers() {
 void boxState::_checkIRTriggerAndAct() {
   // check whether IR has been triggered;
   // if so, set the boxTarget state accordingly
-  if (ControlerBox::bValFromPir == HIGH) {
+  if (thisBox.ui16hasLastRecPirHighTimeChanged) {
     Serial.println("--------------------- IR triggered ----------");
     _setBoxTargetState(i16onIRTrigger);
   }
@@ -655,7 +654,7 @@ void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
   uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
   // Serial.printf("boxState::_resolveTriggersConflict(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
   ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
-  if (ControlerBox::ui32SettingTimeOfValFromPir > _masterBox.ui32BoxActiveStateStartTime) {
+  if (thisBox.ui16hasLastRecPirHighTimeChanged > _masterBox.ui32BoxActiveStateStartTime) {
     _setBoxTargetState(i16onIRTrigger);
   } else {
     _setBoxTargetState(i16onMeshTrigger);

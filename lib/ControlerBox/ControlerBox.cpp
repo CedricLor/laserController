@@ -16,8 +16,6 @@
 
 
 // STATIC VARIABLES - SIGNAL CATCHERS
-bool ControlerBox::bValFromPir = LOW;
-uint32_t ControlerBox::ui32SettingTimeOfValFromPir = 0;
 short int ControlerBox::valFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
 short int ControlerBox::previousConnectedBoxesCount = 1;
@@ -38,6 +36,9 @@ ControlerBox::ControlerBox()
   ui32BoxActiveStateStartTime = 0;
   boxActiveStateHasBeenSignaled = true; // to the browser by the interface
   boxActiveStateHasBeenTakenIntoAccount = false; // by the boxState class
+
+  ui32lastRecPirHighTime = 0;
+  ui16hasLastRecPirHighTimeChanged = 0;
 
   isNewBoxHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
@@ -102,6 +103,9 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ui32BoxActiveStateStartTime);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, boxActiveStateHasBeenSignaled);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, boxActiveStateHasBeenTakenIntoAccount);
+
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui32lastRecPirHighTime: %u\n", __ui16BoxIndex, ui32lastRecPirHighTime);
+  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16hasLastRecPirHighTimeChanged: %u\n", __ui16BoxIndex, ui16hasLastRecPirHighTimeChanged);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
@@ -284,8 +288,6 @@ void ControlerBox::deleteBox() {
   Serial.println("ControlerBox::deleteBox(): APIP reset to 0.0.0.0");
   stationIP = {0,0,0,0};
   Serial.println("ControlerBox::deleteBox(): stationIP reset to 0.0.0.0");
-  ui16NodeName = 1;
-  Serial.println("ControlerBox::deleteBox(): ui16NodeName reset to 1");
   ui16NodeName = 0;
   Serial.println("ControlerBox::deleteBox(): ui16NodeName reset to 0");
 
@@ -297,6 +299,11 @@ void ControlerBox::deleteBox() {
   Serial.println("ControlerBox::deleteBox(): ui32BoxActiveStateStartTime reset to true");
   boxActiveStateHasBeenTakenIntoAccount = true;
   Serial.println("ControlerBox::deleteBox(): boxActiveStateHasBeenTakenIntoAccount reset to true");
+
+  Serial.println("ControlerBox::deleteBox(): ui32lastRecPirHighTime reset to 0");
+  ui32lastRecPirHighTime = 0;
+  Serial.println("ControlerBox::deleteBox(): ui16hasLastRecPirHighTimeChanged reset to 0");
+  ui16hasLastRecPirHighTimeChanged = 0;
 
   isNewBoxHasBeenSignaled = true;
   Serial.println("ControlerBox::deleteBox(): isNewBoxHasBeenSignaled reset to true");
