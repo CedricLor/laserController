@@ -85,7 +85,32 @@ void myMesh::start() {
   myMeshStarter::tRestart.setCallback(
     [&](){
       Serial.println("myMeshStarter::tRestart: mainCallback: starting");
-      myMesh::init();
+      if (myMeshStarter::hasBeenStarted == true) {
+        // disable all the tasks depending on network functions
+        tChangedConnection.disable();
+        tIamAloneTimeOut.disable();
+        tPrintMeshTopo.disable();
+        tUpdateCBArrayOnChangedConnections.disable();
+        tSaveNodeMap.disable();
+        myWSSender::tSendWSDataIfChangeStationIp.disable();
+        myWSSender::tSendWSDataIfChangeBoxState.disable();
+
+        // end the MDNS server
+        MDNS.end();
+
+        // restart the mesh
+        laserControllerMesh.stop();
+        myMesh::init();
+
+        // reset the node map and the controller boxes array
+        _saveNodeMap();
+        _tcbUpdateCBOnChangedConnections();
+
+        // enable the Task sending box state changes to connected browsers
+        if (isInterface) {
+          myWSSender::tSendWSDataIfChangeBoxState.enable();
+        }
+      }
       Serial.println("myMeshStarter::tRestart: mainCallback: ending");
     }
   );

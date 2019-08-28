@@ -51,6 +51,12 @@ void setup() {
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.loadPrefsWrapper();
 
+  // The ESP was restarted with an OTA request saved in mySavedPrefs
+  if (gi8OTAReboot) {
+    myOta::OTAConfig();
+    return;
+  }
+
   mns::myScheduler.addTask(ControlerBox::tReboot);
   mns::myScheduler.addTask(myMeshStarter::tRestart);
   
@@ -63,7 +69,8 @@ void setup() {
   if (isInterface) {
     mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
     mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
-  } else {
+  }
+  if ((isInterface == false) || (isRoot == false)) {
     mns::myScheduler.addTask(step::tPreloadNextStep);
     mns::myScheduler.addTask(boxState::tPlayBoxStates);
     mns::myScheduler.addTask(boxState::tPlayBoxState);
@@ -77,15 +84,9 @@ void setup() {
   thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
   thisBox.sBoxDefaultState = gi16BoxDefaultState;
   
-  // The ESP was restarted with an OTA request saved in mySavedPrefs
-  if (gi8OTAReboot) {
-    myOta::OTAConfig();
-    return;
-  }
-
   myMesh::start();
 
-  if (isInterface == false) {
+  if ((isInterface == false) || (isRoot == false)) {
     pirController::initPir(); // depends on ControlerBox and Mesh classes
   }
 
@@ -100,7 +101,7 @@ void setup() {
     myWebServerBase _myWebServer;
   }
 
-  if (isInterface == false) {
+  if ((isInterface == false) || (isRoot == false)) {
     tone::initTones(); // inits also laserPin class; note does not need init
     bar::initBars();
     sequence::initSequences();

@@ -51,16 +51,8 @@ Task myMeshStarter::tRestart(0, 1, NULL, NULL/*&mns::myScheduler*/, false, &oetc
 
 
 bool myMeshStarter::oetcbRestart() {
-  Serial.println("myMeshStarter::oetcbRestart(): starting");
-  Serial.printf("myMeshStarter::oetcbRestart(): hasBeenStarted == %i\n", hasBeenStarted);
-  if (hasBeenStarted) {
-    Serial.printf("myMeshStarter::oetcbRestart(): stopping the mesh\n");
-    MDNS.end();
-    laserControllerMesh.stop();
-  }
-  hasBeenStarted = true;
-  Serial.println("myMeshStarter::oetcbRestart(): ending");
-  return true;
+  Serial.println("myMeshStarter::oetcbRestart()");
+  return hasBeenStarted;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
