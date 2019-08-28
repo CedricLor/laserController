@@ -105,13 +105,13 @@ void myMeshViews::droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
 
 
 
-
-void myMeshViews::changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
+/** _changeBoxRequest(JsonObject& _obj, bool _bBroadcast) is  */
+void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
-    Serial.print("myMeshViews::changeBoxRequest(): Starting.\n");
+    Serial.print("myMeshViews::_changeBoxRequest(): Starting.\n");
   }
 
   // broadcast or send the message
@@ -127,7 +127,7 @@ void myMeshViews::changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changeBoxRequest(): Ending.");
+    Serial.println("myMeshViews::_changeBoxRequest(): Ending.");
   }
 }
 
