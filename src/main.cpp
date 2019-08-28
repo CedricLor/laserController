@@ -71,6 +71,8 @@ void setup() {
     mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
   if ((isInterface == false) || (isRoot == false)) {
+    mns::myScheduler.addTask(pirController::sendMsg);
+    mns::myScheduler.addTask(pirController::speedBumper);
     mns::myScheduler.addTask(step::tPreloadNextStep);
     mns::myScheduler.addTask(boxState::tPlayBoxStates);
     mns::myScheduler.addTask(boxState::tPlayBoxState);

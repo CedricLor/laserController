@@ -155,6 +155,23 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
 
 
 
+void myMeshViews::_IRHighMsg() {
+  thisBox.ui32lastRecPirHighTime = laserControllerMesh.getNodeTime();
+  constexpr int _capacity = JSON_OBJECT_SIZE(6);
+  StaticJsonDocument<_capacity> _jDoc;
+  JsonObject _joMsg = _jDoc.to<JsonObject>();
+
+  // load the JSON document with values
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "IR";
+  _joMsg["time"] = thisBox.ui32lastRecPirHighTime;
+  _joMsg["now"] = laserControllerMesh.getNodeTime();
+
+  // broadcast IR high message
+  _sendMsg(_joMsg);
+}
+
+
 /** _addIps(JsonObject& _joMsg) left unused for the moment. */
 void myMeshViews::_addIps(JsonObject& _joMsg) {
   // adding the APIP and the StationIP to the JSON to be sent to other boxes

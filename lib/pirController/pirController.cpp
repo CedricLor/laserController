@@ -6,6 +6,7 @@
 #include "Arduino.h"
 #include "pirController.h"
 
+
 const uint8_t INPUT_PIN = 12;               // choose the input pin (for PIR sensor) //
 // ESP32 Pin Layout
 // LEFT COLUMN
@@ -52,6 +53,8 @@ const uint8_t INPUT_PIN = 12;               // choose the input pin (for PIR sen
 
 pirController myPirController(INPUT_PIN);
 
+uint16_t pirController::_isSpeedBumperOff = 1;
+
 pirController::pirController(const uint8_t INPUT_PIN):_inputPin(INPUT_PIN)
 {
   Serial.print("SETUP: pirController::pirController(): starting\n");
@@ -67,8 +70,34 @@ void pirController::check() {
   //   Serial.println("pirController::check()");
   // }
   if (digitalRead(_inputPin)) {
-    Serial.println("pirController::check(): ---------- PIR Mouvement Detected ----------");
     thisBox.ui32lastRecPirHighTime = laserControllerMesh.getNodeTime();
     thisBox.ui16hasLastRecPirHighTimeChanged = 1;
+    sendMsg.enable();
   }
 }
+
+
+
+
+Task pirController::sendMsg(0, TASK_ONCE, [](){
+  Serial.println("pirController::check(): ---------- PIR Mouvement Detected ----------");
+  myMeshViews _myMeshViews;
+  _myMeshViews._IRHighMsg();
+}, NULL/*&mns::myScheduler*/, false, [](){
+  // save the current value of the speedbumper
+  uint16_t __isSpeedBumperOff = _isSpeedBumperOff;
+  // restart the speedbumper
+  speedBumper.enableIfNot();
+  // return 
+  return __isSpeedBumperOff;
+}, NULL);
+
+
+
+
+Task pirController::speedBumper(3000, TASK_ONCE, NULL, NULL/*&mns::myScheduler*/, false, [](){
+  _isSpeedBumperOff = 0;
+  return true;
+}, [](){
+  _isSpeedBumperOff = 1;
+});

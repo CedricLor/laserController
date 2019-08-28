@@ -8,6 +8,7 @@
 
 #include "Arduino.h"
 #include <ControlerBox.h>
+#include <myMeshViews.h>
 
 class pirController
 {
@@ -16,8 +17,13 @@ class pirController
     
     void check();
 
+    static Task sendMsg;
+    static Task speedBumper;
+
   private:
     const uint8_t _inputPin;
+
+    static uint16_t _isSpeedBumperOff;
 };
 
 extern pirController myPirController;

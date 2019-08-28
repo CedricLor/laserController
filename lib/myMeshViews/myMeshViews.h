@@ -41,10 +41,12 @@ class myMeshViews
     friend class myWSReceiver;
     friend class myMeshController;
     friend class myMesh;
+    friend class pirController;
 
     void _changedBoxConfirmation(JsonObject& obj);
     void _changeBoxRequest(JsonObject& _obj, bool _bBroadcast=false);
     void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
+    void _IRHighMsg();
 
     // Helpers
     void _addIps(JsonObject& _obj);
