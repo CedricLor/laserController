@@ -86,10 +86,6 @@ void setup() {
   
   myMesh::start();
 
-  if ((isInterface == false) || (isRoot == false)) {
-    pirController::initPir(); // depends on ControlerBox and Mesh classes
-  }
-
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
@@ -135,7 +131,9 @@ void loop() {
   
   mns::myScheduler.execute();
   laserControllerMesh.update();
-  pirController::pirCntrl();
+  if ((isInterface == false) || (isRoot == false)) {
+    myPirController.check();
+  }
 }
 
 
@@ -157,8 +155,7 @@ void serialInit() {
 
 
 void enableTasks() {
-  
-  if (isInterface == false) {
+  if ( (isInterface == false) || (isRoot == false) ) {
     boxState::tPlayBoxStates.enable();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();

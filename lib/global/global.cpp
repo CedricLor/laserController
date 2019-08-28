@@ -21,8 +21,8 @@
 
 /** short relayPins[PIN_COUNT]: array of pins connected to the lasers
  * in ControlerBoxes */ 
-short relayPins[]                             = { 5, 17, 16, 4 };
-// short relayPins[]                            = { 22, 21, 19, 18, 5, 17, 16, 4 };
+short relayPins[]                             = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
+// short relayPins[]                            = { 22, 21, 19, 18, 5, 17, 16, 4 }; SCL, SDA, MISO, SCK
 
 
 // Debug variables: setting them to true or false enables or disables more

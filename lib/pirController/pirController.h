@@ -12,16 +12,14 @@
 class pirController
 {
   public:
-    pirController();
-
-    static void initPir();
-
-    static void pirCntrl();
+    pirController(const uint8_t _INPUT_PIN);
+    
+    void check();
 
   private:
-    // PIR controller
-    static short const _INPUT_PIN;
-
+    const uint8_t _inputPin;
 };
+
+extern pirController myPirController;
 
 #endif
