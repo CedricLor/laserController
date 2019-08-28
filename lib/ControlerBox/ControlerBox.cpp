@@ -191,15 +191,16 @@ uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
 
 uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
   Serial.printf("ControlerBox::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
+  uint16_t __ui16BoxIndex = 254;
   for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
-      Serial.printf("ControlerBox::findIndexByNodeId(): found ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-      Serial.printf("ControlerBox::findIndexByNodeId(): ControlerBox with _ui32nodeId %u has index: %u\n", _ui32nodeId, _i);
-      return _i;
+      printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
+      __ui16BoxIndex = _i;
+      break;
     }
   }
   Serial.printf("ControlerBox::findIndexByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-  return 254;
+  return __ui16BoxIndex;
 }
 
 
@@ -215,8 +216,7 @@ uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
   Serial.printf("ControlerBox::findIndexByNodeName(): looking for ControlerBox with uint16_t ui16NodeName = %u\n", _ui16NodeName);
   for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
-      Serial.printf("ControlerBox::findIndexByNodeName(): found ControlerBox with _ui16NodeName = %u\n", _ui16NodeName);
-      Serial.printf("ControlerBox::findIndexByNodeName(): ControlerBox with _ui16NodeName %u has index: %u\n", _ui16NodeName, _i);
+      printSearchResults(_i, (uint32_t)_ui16NodeName, "_ui16NodeName");
       return _i;
     }
   }
