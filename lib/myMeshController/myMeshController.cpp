@@ -72,22 +72,41 @@ void myMeshController::_main()
 
 
 
-  // STATUS MESSAGE (received by all, sent by LBs only).
-  /* Upon receiving a status message from another box,
-     read and save the state of the other boxes */
-  const char* _s = "s";
-  if (strcmp(_action, _s) == 0) {
-
-    _statusMessage();
+  /** STATUS MESSAGE (received by all, sent by LBs only).
+   *  The boxState of another box has changed and is being
+   *  signalled to the mesh.
+   *  
+   *  Upon receiving a status message from another box,
+   *  read and save the state of the other boxes.
+   *  
+   *  This box shall update its ControlerBoxes[] array 
+   *  with the values received from the other box. */
+  if (strcmp(_action, "s") == 0) {
+    ControlerBox::updateOrCreate(_ui32SenderNodeId, _nsobj);
     return;
   }
 
-
-
-
-  // CHANGEBOX REQUEST AND CONFIRMATION (received by the destination laser boxes only on request and by all on confirmation)
-  const char* _actionChangeBox = "changeBox";
-  if (strcmp(_action, _actionChangeBox) == 0) {           // action 'changeBox' for this message relates to a change in active state, default state or master node number, that this box should update as the case may be
+  /** CHANGEBOX REQUEST AND CONFIRMATION:
+   *  
+   *  Two scenarii: 
+   *  (i) request: coming from the web, forwarded by the IF to the 
+   *  relevant LB only or broadcasted to all the LBs;
+   *  (ii) confirmation: always broadcasted to all the boxes (including
+   *  root or IF).
+   *  
+   *  All the messages always relates to requested or confirmed changes in
+   *  the active state, the default state or the master node number of one or several
+   *  boxes.
+   * 
+   *  Upon reception of such messages, this box should update its ControlerBoxes array
+   *  with the new values. 
+   * 
+   *  If the recipient (i.e. this box) is the IF, this change will be detected by 
+   *  myWSSender and a message will be sent to the browser.
+   * 
+   *  If the recipient (i.e. this box) is another LB, this change might be detected by 
+   *  boxStates and trigger a state change of this box. */
+  if (strcmp(_action, "changeBox") == 0) {
     // Serial.println("------------------------------ DETECTED A \"changeBox\" MESSAGE ---------------------------");
     _changeBox();
     return;
@@ -95,28 +114,6 @@ void myMeshController::_main()
 }
 
 
-
-
-
-
-// STATUS MESSAGE (received by all, sent by LBs only).
-void myMeshController::_statusMessage() {
-  /*
-    action 's': the boxState of another box has changed and is being
-    signalled to the mesh. This box shall update its ControlerBoxes[] array
-    with the values received from the other box.
-  */
-
-  // Setting nodeName, nodeId and IP properties
-  // extract the index of the relevant box from its senderNodeName in the JSON
-  uint16_t __ui16NodeName = _nsobj["NNa"]; // ex. 201
-  Serial.printf("myMeshController::_statusMessage(): __ui16NodeName = %u\n", __ui16NodeName);
-  uint16_t __ui16BoxIndex = ControlerBox::findIndexByNodeName(__ui16NodeName);
-
-  // update the box properties in my CB array
-  __ui16BoxIndex = ((__ui16BoxIndex == 254) ? ControlerBox::connectedBoxesCount : __ui16BoxIndex);
-  ControlerBoxes[__ui16BoxIndex].updateOtherBoxProperties(_ui32SenderNodeId, _nsobj, __ui16BoxIndex);
-}
 
 
 
