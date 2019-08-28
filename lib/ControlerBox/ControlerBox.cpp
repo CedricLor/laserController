@@ -30,7 +30,7 @@ ControlerBox::ControlerBox()
   nodeId = 0;
   APIP = {0,0,0,0};
   stationIP = {0,0,0,0};
-  ui16NodeName = 0;
+  ui16NodeName = 254;
 
   i16BoxActiveState = -1;
   ui32BoxActiveStateStartTime = 0;
@@ -346,9 +346,7 @@ void ControlerBox::deleteBox() {
   APIP = {0,0,0,0};
   Serial.println("ControlerBox::deleteBox(): APIP reset to 0.0.0.0");
   stationIP = {0,0,0,0};
-  Serial.println("ControlerBox::deleteBox(): stationIP reset to 0.0.0.0");
-  ui16NodeName = 0;
-  Serial.println("ControlerBox::deleteBox(): ui16NodeName reset to 0");
+  ui16NodeName = 254;
 
   i16BoxActiveState = -1;
   Serial.println("ControlerBox::deleteBox(): i16BoxActiveState reset to -1");
