@@ -87,7 +87,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
-void myMeshViews::droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
+void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
   constexpr int _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<_capacity> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();
@@ -135,12 +135,12 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
 
 
 
-void myMeshViews::changedBoxConfirmation(JsonObject& obj) {
+void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedBoxConfirmation(): Starting.");
+    Serial.println("myMeshViews::_changedBoxConfirmation(): Starting.");
   }
 
   // broadcast confirmation

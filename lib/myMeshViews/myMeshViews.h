@@ -37,13 +37,15 @@ class myMeshViews
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
-    void droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
-    void changedBoxConfirmation(JsonObject& obj);
 
   private:
     friend class myWSReceiver;
+    friend class myMeshController;
+    friend class myMesh;
 
+    void _changedBoxConfirmation(JsonObject& obj);
     void _changeBoxRequest(JsonObject& _obj, bool _bBroadcast=false);
+    void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
 
     // Helpers
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);

@@ -181,7 +181,7 @@ void myMesh::_tcbSendNotifOnDroppedConnection(uint32_t nodeId) {
     return; 
   }
   myMeshViews __myMeshViews;
-  __myMeshViews.droppedNodeNotif(_ui16droppedIndex);
+  __myMeshViews._droppedNodeNotif(_ui16droppedIndex);
   Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): sent message. ending."));
 };
 

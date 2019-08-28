@@ -437,7 +437,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   }
 
   myMeshViews __myMeshViews;
-  __myMeshViews.changedBoxConfirmation(_nsobj);
+  __myMeshViews._changedBoxConfirmation(_nsobj);
   // send back the received JSON object with its amended "st" key
   // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");
   // _tChangeBoxSendConfirmationMsg.setInterval(0);
@@ -446,7 +446,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   //   [&_obj]() {
   //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
   //     myMeshViews __myMeshViews;
-  //     __myMeshViews.changedBoxConfirmation(_obj);
+  //     __myMeshViews._changedBoxConfirmation(_obj);
   //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
   //   }
   // );
