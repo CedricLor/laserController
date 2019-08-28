@@ -213,41 +213,45 @@ void ControlerBox::printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm,
 
 
 uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
-  Serial.printf("ControlerBox::findIndexByNodeName(): looking for ControlerBox with uint16_t ui16NodeName = %u\n", _ui16NodeName);
+  const char * _subName = "ControlerBox::findIndexByNodeName():";
+  Serial.printf("%s looking for ControlerBox with uint16_t ui16NodeName = %u\n", _subName, _ui16NodeName);
   for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
       printSearchResults(_i, (uint32_t)_ui16NodeName, "_ui16NodeName");
       return _i;
     }
   }
-  Serial.printf("ControlerBox::findIndexByNodeName(): did not find ControlerBox with _ui16NodeName = %u\n", _ui16NodeName);
+  Serial.printf("%s did not find ControlerBox with _ui16NodeName = %u\n", _subName, _ui16NodeName);
   return 254;
 }
+
 
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
 void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
-  Serial.println("ControlerBox::updateOtherBoxProperties(): Starting");
+  const char * _subName = "ControlerBox::updateOtherBoxProperties():";
+  Serial.printf("%s Starting\n", _subName);
 
   // set the nodeId
   if (nodeId == 0) {
     updateConnectedBoxCount(connectedBoxesCount + 1);
     isNewBoxHasBeenSignaled = false;
-    Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
+    Serial.printf("%s ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", _subName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   }
   nodeId = _ui32SenderNodeId;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].nodeId = %u\n", __ui16BoxIndex, _ui32SenderNodeId);
+  // Serial.printf("%s ControlerBoxes[%u].nodeId = %u\n", __ui16BoxIndex, _ui32SenderNodeId);
 
   // set the IPs
   if  ( _obj.containsKey("APIP") || _obj.containsKey("StIP") ) {
-  APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
-  stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
+    APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
+    // Serial.printf("%s ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
+    stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
+    // Serial.print("%s ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
   }
 
   // set the ui16NodeName
   ui16NodeName = _obj["NNa"];
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui16NodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui16NodeName);
+  // Serial.printf("%s ControlerBoxes[%u].ui16NodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui16NodeName);
 
   // Setting activeState stack
   // need to send via myMeshViews and add to ControlerBox the time
@@ -266,10 +270,10 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 
   // Print out the updated properties
   if (MY_DEBUG == true) {
-    Serial.printf("ControlerBox::updateOtherBoxProperties(): Updated box index %u. Calling printProperties().\n", __ui16BoxIndex);
+    Serial.printf("%s Updated box index %u. Calling printProperties().\n", _subName, __ui16BoxIndex);
     printProperties(__ui16BoxIndex);
   }
-  Serial.println("ControlerBox::updateOtherBoxProperties(): Ending");
+  Serial.println("%s Ending");
 }
 
 
@@ -340,47 +344,50 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 
 void ControlerBox::deleteBox() {
-  Serial.println("ControlerBox::deleteBox(): Starting");
-  // Serial.printf("ControlerBox::deleteBox(): Received _ui16BoxIndex %u\n", );
+  const char * _subName = "ControlerBox::deleteBox():";
+  Serial.printf("%s Starting\n", _subName);
+  // Serial.printf("%s Received _ui16BoxIndex %u\n", );
   nodeId = 0;
-  Serial.println("ControlerBox::deleteBox(): NodeId reset to 0");
+  Serial.printf("%s NodeId reset to 0\n", _subName);
   APIP = {0,0,0,0};
-  Serial.println("ControlerBox::deleteBox(): APIP reset to 0.0.0.0");
+  Serial.printf("%s APIP reset to 0.0.0.0\n", _subName);
   stationIP = {0,0,0,0};
+  Serial.printf("%s stationIP reset to 0.0.0.0\n", _subName);
   ui16NodeName = 254;
+  Serial.printf("%s ui16NodeName reset to 0\n", _subName);
 
   i16BoxActiveState = -1;
-  Serial.println("ControlerBox::deleteBox(): i16BoxActiveState reset to -1");
+  Serial.printf("%s i16BoxActiveState reset to -1\n", _subName);
   ui32BoxActiveStateStartTime = 0;
-  Serial.println("ControlerBox::deleteBox(): ui32BoxActiveStateStartTime reset to 0");
+  Serial.printf("%s ui32BoxActiveStateStartTime reset to 0\n", _subName);
   boxActiveStateHasBeenSignaled = true;
-  Serial.println("ControlerBox::deleteBox(): ui32BoxActiveStateStartTime reset to true");
+  Serial.printf("%s ui32BoxActiveStateStartTime reset to true\n", _subName);
   boxActiveStateHasBeenTakenIntoAccount = true;
-  Serial.println("ControlerBox::deleteBox(): boxActiveStateHasBeenTakenIntoAccount reset to true");
+  Serial.printf("%s boxActiveStateHasBeenTakenIntoAccount reset to true\n", _subName);
 
-  Serial.println("ControlerBox::deleteBox(): ui32lastRecPirHighTime reset to 0");
+  Serial.printf("%s ui32lastRecPirHighTime reset to 0\n", _subName);
   ui32lastRecPirHighTime = 0;
-  Serial.println("ControlerBox::deleteBox(): ui16hasLastRecPirHighTimeChanged reset to 0");
+  Serial.printf("%s ui16hasLastRecPirHighTimeChanged reset to 0\n", _subName);
   ui16hasLastRecPirHighTimeChanged = 0;
 
   isNewBoxHasBeenSignaled = true;
-  Serial.println("ControlerBox::deleteBox(): isNewBoxHasBeenSignaled reset to true");
+  Serial.printf("%s isNewBoxHasBeenSignaled reset to true\n", _subName);
   boxDeletionHasBeenSignaled = false;
-  Serial.println("ControlerBox::deleteBox(): boxDeletionHasBeenSignaled set to FALSE");
+  Serial.printf("%s boxDeletionHasBeenSignaled set to FALSE\n", _subName);
 
   ui16MasterBoxName = gui8DefaultMasterNodeName;
-  Serial.printf("ControlerBox::deleteBox(): ui16MasterBoxName set to %u\n", ui16MasterBoxName);
+  Serial.printf("%s ui16MasterBoxName set to %u\n", _subName, ui16MasterBoxName);
   bMasterBoxNameChangeHasBeenSignaled = true;
-  Serial.printf("ControlerBox::deleteBox(): bMasterBoxNameChangeHasBeenSignaled set to true\n");
+  Serial.printf("%s bMasterBoxNameChangeHasBeenSignaled set to true\n", _subName);
 
   sBoxDefaultState = gi16BoxDefaultState;
-  Serial.printf("ControlerBox::deleteBox(): sBoxDefaultState set to %i\n", sBoxDefaultState);
+  Serial.printf("%s sBoxDefaultState set to %i\n", _subName, sBoxDefaultState);
   sBoxDefaultStateChangeHasBeenSignaled = true;
-  Serial.printf("ControlerBox::deleteBox(): sBoxDefaultStateChangeHasBeenSignaled set to true\n");
+  Serial.printf("%s sBoxDefaultStateChangeHasBeenSignaled set to true\n", _subName);
 
   updateConnectedBoxCount(connectedBoxesCount - 1);
-  Serial.printf("ControlerBox::deleteBox(): updated ConnectedBoxCount\n");
-  Serial.println("ControlerBox::deleteBox(): Ending");
+  Serial.printf("%s updated ConnectedBoxCount\n", _subName);
+  Serial.printf("%s Ending\n", _subName);
 }
 
 
