@@ -155,25 +155,8 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
 
 
 
-
-
-
-
-
-void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
-  if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): Starting.");
-    // Serial.println("myMeshViews::_sendMsg(): about to allote thisBox.ui16NodeName to _joMsg[\"senderNodeName\"]");
-  }
-
-
-  // adding my nodeName to the JSON to be sent to other boxes
-  _joMsg["NNa"] = thisBox.ui16NodeName;
-  // if (MY_DG_MESH) {
-  //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
-  // }
-
-
+/** _addIps(JsonObject& _joMsg) left unused for the moment. */
+void myMeshViews::_addIps(JsonObject& _joMsg) {
   // adding the APIP and the StationIP to the JSON to be sent to other boxes
   if (_joMsg.containsKey("APIP") && _joMsg.containsKey("StIP")) {
     for (short _i = 0; _i < 4; _i++) {
@@ -191,7 +174,24 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   // if (MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
   // }
+}
 
+
+
+
+
+
+void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
+  if (MY_DG_MESH) {
+    Serial.println("myMeshViews::_sendMsg(): Starting.");
+    // Serial.println("myMeshViews::_sendMsg(): about to allote thisBox.ui16NodeName to _joMsg[\"senderNodeName\"]");
+  }
+
+  // adding my nodeName to the JSON to be sent to other boxes
+  _joMsg["NNa"] = thisBox.ui16NodeName;
+  // if (MY_DG_MESH) {
+  //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
+  // }
 
   // JSON serialization
   int size_buff = 254;

@@ -37,7 +37,6 @@ class myMeshViews
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
-
   private:
     friend class myWSReceiver;
     friend class myMeshController;
@@ -48,6 +47,7 @@ class myMeshViews
     void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
 
     // Helpers
+    void _addIps(JsonObject& _obj);
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);
     JsonObject _createJsonobject();
 };
