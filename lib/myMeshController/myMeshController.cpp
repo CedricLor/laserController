@@ -86,6 +86,26 @@ void myMeshController::_main()
     return;
   }
 
+
+
+
+  /** STATUS MESSAGE (received by all, sent by LBs only).
+   *  The boxState of another box has changed and is being
+   *  signalled to the mesh.
+   *  
+   *  Upon receiving a status message from another box,
+   *  read and save the state of the other boxes.
+   *  
+   *  This box shall update its ControlerBoxes[] array 
+   *  with the values received from the other box. */
+  if (_nsobj["action"] == "usi") {
+    ControlerBox::updateOrCreate(_ui32SenderNodeId, _nsobj);
+    return;
+  }
+
+
+
+
   /** CHANGEBOX REQUEST AND CONFIRMATION:
    *  
    *  Two scenarii: 
