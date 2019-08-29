@@ -81,7 +81,7 @@ void myMeshController::_main()
    *  
    *  This box shall update its ControlerBoxes[] array 
    *  with the values received from the other box. */
-  if (strcmp(_action, "s") == 0) {
+  if (_nsobj["action"] == "s") {
     ControlerBox::updateOrCreate(_ui32SenderNodeId, _nsobj);
     return;
   }
@@ -126,7 +126,7 @@ void myMeshController::_main()
    * 
    *  If the recipient (i.e. this box) is another LB, this change might be detected by 
    *  boxStates and trigger a state change of this box. */
-  if (strcmp(_action, "changeBox") == 0) {
+  if (_nsobj["action"] == "changeBox") {
     // Serial.println("------------------------------ DETECTED A \"changeBox\" MESSAGE ---------------------------");
     _changeBox();
     return;
