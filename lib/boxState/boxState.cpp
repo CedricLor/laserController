@@ -489,6 +489,15 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
+
+
+    // if (_bothHaveBeenTriggered) {
+    //   return;
+    // }
+    /** If none or only one has been triggered, continue (we need to check
+     *  whether the IR only or the mesh only has been triggered) */
+
+
     /** look for the index number of the master box in the CB array, using  
      *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
     uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
