@@ -177,7 +177,13 @@ void myMeshController::_changeBox() {
 
 
 
-// CHANGEBOX REQUEST: emitted by the IF and received by the laser boxes only
+/** CHANGEBOX REQUEST: 
+ *  
+ *  Correspond to changes requested by the user through the web interface.
+ * 
+ *  In the mesh, changeBox request (_obj["action"] == "changeBox") are:
+ *  - emitted by the IF only; 
+ *  - received by the laser boxes only. */
 void myMeshController::_changeBoxRequest() {
 
   // if this is a change active state request
@@ -318,7 +324,14 @@ void myMeshController::_changedBoxConfirmation() {
 
 
 
-// HELPER FUNCTIONS _changeBoxRequest
+/** HELPER FUNCTIONS for _changeBoxRequest (on _obj["action"] = "changeBox"):
+ *  _updateMyValFromWeb();
+ *  _updateMyMasterBoxName();
+ *  _updateMyDefaultState();
+ *  _rebootEsp();
+ *  _save();
+ *  _specificSave();
+ *  _savegi8RequestedOTAReboots(); */
 void myMeshController::_updateMyValFromWeb() {
 // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   if (MY_DG_MESH) {
@@ -327,6 +340,8 @@ void myMeshController::_updateMyValFromWeb() {
 
   // update the valFromWeb
   ControlerBox::valFromWeb = _nsobj["val"].as<uint8_t>();
+  /** not sending any confirmation, as boxState will send an automatic
+   *  status message. */
 }
 
 
@@ -390,8 +405,6 @@ void myMeshController::_rebootEsp() {
 
 
 
-
-
 void myMeshController::_save() {
   // {action: "changeBox", key: "save", val: "all", lb: 1} // save all the values that can be saved
   mySavedPrefs _myPrefsRef;
@@ -401,6 +414,7 @@ void myMeshController::_save() {
   Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");
   _changeBoxSendConfirmationMsg();
 }
+
 
 
 void myMeshController::_specificSave() {
@@ -413,6 +427,7 @@ void myMeshController::_specificSave() {
   Serial.println("------------------------------ CONFIRMING SAVE WIFI ---------------------------");
   _changeBoxSendConfirmationMsg();
 }
+
 
 
 void myMeshController::_savegi8RequestedOTAReboots() {
