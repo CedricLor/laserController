@@ -137,9 +137,9 @@ class boxState
     void _initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     bool _hasBothTriggers();
     void _checkIRTriggerAndAct();
-    void _checkMeshTriggerAndAct(ControlerBox& _thisBox);
-    bool _meshHasBeenTriggered(ControlerBox& _thisBox);
-    void _resolveTriggersConflict(ControlerBox& _thisBox);
+    void _checkMeshTriggerAndAct();
+    bool _meshHasBeenTriggered(ControlerBox& _masterBox);
+    void _resolveTriggersConflictAndAct();
 
     void _changeBoxState(const int16_t _i16StepIxNb, const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
 
