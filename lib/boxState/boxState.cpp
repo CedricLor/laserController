@@ -484,22 +484,31 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     return;
   }
 
-  // give handy access to _thisBox and the _currentBoxState
+  // give handy access to thisBox and the _currentBoxState
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // 2. Check whether the current state has both IR and mesh triggers
   if (_currentBoxState._hasBothTriggers()) {
-    // check whether both have been triggered
-    if (thisBox.ui16hasLastRecPirHighTimeChanged && _currentBoxState._meshHasBeenTriggered(thisBox)) {
-      // if so, resolve the conflict and return
-      _currentBoxState._resolveTriggersConflict(thisBox);
-      return;
+    /** look for the index number of the master box in the CB array, using  
+     *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
+    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
+    /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
+     *  has not joined the mesh (or at least has not been in contact with thisBox).
+     *  If it is equal to something else than 254, it has been in contact with thisBox
+     *  and might have registered a given state to which thisBox is programmed to react. */
+    if (_ui16masterBoxIndex != 254) {
+      // select the relevant masterBox in the CB array
+      ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
+      /** check whether both triggers (IR and mesh) have been triggered (this will not catch the case 
+       * where only one of them has been triggered). */
+      if (thisBox.ui16hasLastRecPirHighTimeChanged && _currentBoxState._meshHasBeenTriggered(_masterBox)) {
+        // if both have been triggered, resolve the conflict and change the boxState accordingly.
+        _currentBoxState._resolveTriggersConflictAndAct(_masterBox);
+        return;
+      }
+      /** If none or only one has been triggered, continue (we need to check
+       *  whether the IR only or the mesh only has been triggered) */
     }
-    /*
-        if it has both triggers but none or only has been triggered,
-        keep going (maybe, the IR has been trigger or the mesh has been
-        triggered)
-    */
   }
 
   // 3. If the current boxState has IR trigger
@@ -512,7 +521,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
   if (_currentBoxState.i16onMeshTrigger != -1){
-    _currentBoxState._checkMeshTriggerAndAct(thisBox);
+    _currentBoxState._checkMeshTriggerAndAct();
   }
 }
 
@@ -529,7 +538,9 @@ void boxState::_resetSignalCatchers() {
   thisBox.ui16hasLastRecPirHighTimeChanged = 0;
   if (thisBox.ui16MasterBoxName != 254) {
     uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-    ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+    if (_ui16masterBoxIndex != 254) {
+      ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
+    }
   }
 }
 
@@ -602,28 +613,33 @@ void boxState::_checkIRTriggerAndAct() {
 
 
 
-void boxState::_checkMeshTriggerAndAct(ControlerBox& _thisBox) {
-  if (_meshHasBeenTriggered(_thisBox)) {
-    Serial.println("--------------------- Mesh triggered ----------");
-    _setBoxTargetState(i16onMeshTrigger);
+void boxState::_checkMeshTriggerAndAct() {
+  /** look for the index number of the master box in the CB array, using  
+   *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
+  /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
+   *  has not joined the mesh (or at least has not been in contact with thisBox).
+   *  If it is equal to something else than 254, it has been in contact with thisBox
+   *  and might have registered a given state to which thisBox is programmed to react. */
+  if (_ui16masterBoxIndex != 254) {
+    // select the relevant masterBox in the CB array
+    ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
+    if (_meshHasBeenTriggered(_masterBox)) {
+      Serial.println("--------------------- Mesh triggered ----------");
+      _setBoxTargetState(i16onMeshTrigger);
+    }
   }
 }
 
 
 
-bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
+bool boxState::_meshHasBeenTriggered(ControlerBox& _masterBox) {
   // check whether masterBox has been set (the masterBox
   // could have been disconnected, or forgotten to be set)
   // Serial.println("---------------- DEBUG ------------ BOX STATE ----------- DEBUG -------------");
-  // Serial.printf("boxState::_meshHasBeenTriggered(): _thisBox.ui16MasterBoxName: %u\n", _thisBox.ui16MasterBoxName);
-  // Serial.printf("boxState::_meshHasBeenTriggered(): (_thisBox.ui16MasterBoxName == 254): %i\n", _thisBox.ui16MasterBoxName == 254);
-  if (_thisBox.ui16MasterBoxName == 254) {
-    return false;
-  }
+  // Serial.printf("boxState::_meshHasBeenTriggered(): thisBox.ui16MasterBoxName: %u\n", thisBox.ui16MasterBoxName);
+  // Serial.printf("boxState::_meshHasBeenTriggered(): (thisBox.ui16MasterBoxName == 254): %i\n", thisBox.ui16MasterBoxName == 254);
 
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
-  // Serial.printf("boxState::_meshHasBeenTriggered(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
-  ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", (_masterBox.boxActiveStateHasBeenTakenIntoAccount ? "true" : "false"));
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.i16BoxActiveState: %i\n", _masterBox.i16BoxActiveState);
   // Serial.printf("boxState::_meshHasBeenTriggered(): _masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", ((_masterBox.boxActiveStateHasBeenTakenIntoAccount || _masterBox.i16BoxActiveState == -1) ? "true" : "false"));
@@ -646,14 +662,11 @@ bool boxState::_meshHasBeenTriggered(ControlerBox& _thisBox) {
 
 
 
-void boxState::_resolveTriggersConflict(ControlerBox& _thisBox) {
+void boxState::_resolveTriggersConflictAndAct(ControlerBox& _masterBox) {
   // check whether both IR and Mesh have been triggered
   Serial.println("--------------------- double trigger ----------");
   // if so, compare the times at which each signal catcher has been set
   // and give priority to the most recent one
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(_thisBox.ui16MasterBoxName);
-  // Serial.printf("boxState::_resolveTriggersConflict(): Master box index in ControlerBoxes[] -> _ui16masterBoxIndex: %u\n", _ui16masterBoxIndex);
-  ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
   if (thisBox.ui16hasLastRecPirHighTimeChanged > _masterBox.ui32BoxActiveStateStartTime) {
     _setBoxTargetState(i16onIRTrigger);
   } else {
@@ -702,7 +715,7 @@ Task boxState::tPlayBoxState(0, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oet
 
 bool boxState::_oetcbPlayBoxState(){
   Serial.println("boxState::_oetcbPlayBoxState(). Starting.");
-  // Serial.print("boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.i16BoxActiveState);
+  // Serial.print("boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(thisBox.i16BoxActiveState);
 
   // 1. select the currently active state
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
