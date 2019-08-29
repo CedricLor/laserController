@@ -141,6 +141,7 @@ class boxState
     bool _meshHasBeenTriggered(ControlerBox& _masterBox);
     void _resolveTriggersConflictAndAct(ControlerBox& _masterBox);
 
+
     void _changeBoxState(const int16_t _i16StepIxNb, const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
 
 };
