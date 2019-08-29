@@ -242,9 +242,11 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // Serial.printf("%s ControlerBoxes[%u].nodeId = %u\n", __ui16BoxIndex, _ui32SenderNodeId);
 
   // set the IPs
-  if  ( _obj.containsKey("APIP") || _obj.containsKey("StIP") ) {
+  if ( _obj.containsKey("APIP")){ 
     APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
     // Serial.printf("%s ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
+  }
+  if ( _obj.containsKey("StIP")) {
     stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
     // Serial.print("%s ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
   }
@@ -257,16 +259,25 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
-  const short int __senderBoxActiveState = _obj["actSt"];
-  const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
-  setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
-
+  if (_obj.containsKey("boxDefstate")) {
+    const short int __senderBoxActiveState = _obj["actSt"];
+    const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
+    setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
+  }
+  
   // Setting defaultState stack
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
-  const short int __senderBoxDefaultState = _obj["boxDefstate"];
-  setBoxDefaultState(__senderBoxDefaultState);
+  if (_obj.containsKey("boxDefstate")) {
+    const short int __senderBoxDefaultState = _obj["boxDefstate"];
+    setBoxDefaultState(__senderBoxDefaultState);
+  }
+
+  if (_obj["action"] == "usi" && _obj["key"] == "IR") {
+    ui32lastRecPirHighTime = _obj["time"];
+    ui16hasLastRecPirHighTimeChanged = true;
+  }
 
   // Print out the updated properties
   if (MY_DEBUG == true) {
