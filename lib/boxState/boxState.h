@@ -91,7 +91,7 @@ class step
 class boxState
 {
   public:
-    boxState(); // default constructor
+    boxState(ControlerBox * __masterBox = nullptr); // default constructor
     // boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 
     static void initBoxStates(); // initializer of the array of boxState
@@ -134,13 +134,16 @@ class boxState
     static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
     static uint16_t ui16mToS(uint16_t _minutes);
 
+    void _setMasterBox();
+    ControlerBox * _masterBox;
+
     void _initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     bool _hasBothTriggers();
-    bool _checkBothTriggersAndAct(ControlerBox& _masterBox);
-    void _checkMeshTriggerAndAct(ControlerBox& _masterBox);
+    bool _checkBothTriggersAndAct();
+    void _checkMeshTriggerAndAct();
     void _checkIRTriggerAndAct();
-    bool _meshHasBeenTriggered(ControlerBox& _masterBox);
-    void _resolveTriggersConflictAndAct(ControlerBox& _masterBox);
+    bool _meshHasBeenTriggered();
+    void _resolveTriggersConflictAndAct();
 
 
     void _changeBoxState(const int16_t _i16StepIxNb, const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
