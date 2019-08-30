@@ -450,15 +450,18 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
+    // give handy access to thisBox and the _currentBoxState
+  boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
+
   // A. Analyse the signal catchers and set the box target state accordingly
-  _setBoxTargetStateFromSignalCatchers();
+  _currentBoxState._setBoxTargetStateFromSignalCatchers(_currentBoxState);
 
   // B. Once read, reset all the signal catchers
-  _resetSignalCatchers();
+  _resetSignalCatchers(_currentBoxState);
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
-  _restart_tPlayBoxState();
+  _restart_tPlayBoxState(_currentBoxState);
   // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
 };
 
@@ -483,13 +486,12 @@ bool boxState::_oetcbPlayBoxStates() {
 
 
 
-/*
-    _setBoxTargetStateFromSignalCatchers:
-    1. reads whether the web, the IR or the mesh signal catchers 
-       have caught any signal
-    2. if so, requests a boxState change by calling _setBoxTargetState()
-*/
-void boxState::_setBoxTargetStateFromSignalCatchers() {
+/** _setBoxTargetStateFromSignalCatchers:
+ * 
+ *  1. reads whether the web, the IR or the mesh signal catchers 
+ *     have caught any signal
+ *  2. if so, requests a boxState change by calling _setBoxTargetState() */
+void boxState::_setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState) {
   // Read the signal catchers and change the targetState accordingly
 
   // 1--- Check the web signal catcher. If it has changed, set the new targetState
@@ -499,9 +501,6 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     _setBoxTargetState(ControlerBox::valFromWeb);
     return;
   }
-
-  // give handy access to thisBox and the _currentBoxState
-  boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   _currentBoxState._setMasterBox();
   if (_currentBoxState._masterBox != nullptr) {
@@ -535,7 +534,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   to their initial values, once the new _boxTargetState
   has been set by _setBoxTargetStateFromSignalCatchers
 */
-void boxState::_resetSignalCatchers() {
+void boxState::_resetSignalCatchers(boxState& _currentBoxState) {
   ControlerBox::valFromWeb = -1;
   thisBox.ui16hasLastRecPirHighTimeChanged = 0;
   if (thisBox.ui16MasterBoxName != 254) {
@@ -563,7 +562,7 @@ void boxState::_resetSignalCatchers() {
       4. set the i16BoxActiveState property (and related properties) of this box;
       5. restart/enable the "children" Task tPlayBoxState.
 */
-void boxState::_restart_tPlayBoxState() {
+void boxState::_restart_tPlayBoxState(boxState& _currentBoxState) {
   // if the _boxActiveStateHasBeenReset,
   if (_boxActiveStateHasBeenReset == 1) {
     // 1. Resets the witness to 0 (false)

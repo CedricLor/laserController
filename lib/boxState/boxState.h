@@ -127,9 +127,9 @@ class boxState
     static void _odtcbPlayBoxState();
 
     // _tcbPlayBoxStates() sub functions
-    static void _setBoxTargetStateFromSignalCatchers();
-    static void _resetSignalCatchers();
-    static void _restart_tPlayBoxState();
+    void _setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState);
+    static void _resetSignalCatchers(boxState& _currentBoxState);
+    static void _restart_tPlayBoxState(boxState& _currentBoxState);
 
     static void _setBoxTargetState(const short int targetBoxState);
 
