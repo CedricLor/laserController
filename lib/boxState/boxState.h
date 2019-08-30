@@ -136,6 +136,7 @@ class boxState
 
     void _initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     bool _hasBothTriggers();
+    bool _checkBothTriggersAndAct(ControlerBox& _masterBox);
     void _checkIRTriggerAndAct();
     void _checkMeshTriggerAndAct(ControlerBox& _masterBox);
     bool _meshHasBeenTriggered(ControlerBox& _masterBox);

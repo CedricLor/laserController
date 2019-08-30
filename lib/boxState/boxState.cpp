@@ -501,15 +501,9 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     // 2--- Check whether the current state has both IR and mesh triggers
     if (_currentBoxState._hasBothTriggers()) {
 
-      /** check whether both triggers (IR and mesh) have been triggered (this will not catch the case 
-       * where only one of them has been triggered). */
-      if (thisBox.ui16hasLastRecPirHighTimeChanged && _currentBoxState._meshHasBeenTriggered(_masterBox)) {
-        // if both have been triggered, resolve the conflict and change the boxState accordingly.
-        _currentBoxState._resolveTriggersConflictAndAct(_masterBox);
+      if (_currentBoxState._checkBothTriggersAndAct(_masterBox)) {
         return;
       }
-      /** If none or only one has been triggered, continue (we need to check
-       *  whether the IR only or the mesh only has been triggered) */
     }
 
     // 3--- If the current boxState has Mesh trigger
@@ -598,6 +592,21 @@ void boxState::_restart_tPlayBoxState() {
 bool boxState::_hasBothTriggers() {
   return (i16onIRTrigger != -1
     && i16onMeshTrigger != -1);
+}
+
+
+
+bool boxState::_checkBothTriggersAndAct(ControlerBox& _masterBox) {
+  /** check whether both triggers (IR and mesh) have been triggered (this will not catch the case 
+   * where only one of them has been triggered). */
+  if (thisBox.ui16hasLastRecPirHighTimeChanged && this->_meshHasBeenTriggered(_masterBox)) {
+    // if both have been triggered, resolve the conflict and change the boxState accordingly.
+    this->_resolveTriggersConflictAndAct(_masterBox);
+    return true;
+  }
+  return false;
+  /** If none or only one has been triggered, continue (we need to check
+   *  whether the IR only or the mesh only has been triggered) */
 }
 
 
