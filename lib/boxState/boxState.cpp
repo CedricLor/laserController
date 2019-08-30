@@ -469,14 +469,14 @@ bool boxState::_oetcbPlayBoxStates() {
 
 /*
     _setBoxTargetStateFromSignalCatchers:
-    1. reads whether the web, the IR or the mesh have been modified in a way
-    that could require a change of boxState;
+    1. reads whether the web, the IR or the mesh signal catchers 
+       have caught any signal
     2. if so, requests a boxState change by calling _setBoxTargetState()
 */
 void boxState::_setBoxTargetStateFromSignalCatchers() {
   // Read the signal catchers and change the targetState accordingly
 
-  // 1. Check the web signal catcher. If it has changed, set the new targetState
+  // 1--- Check the web signal catcher. If it has changed, set the new targetState
   // and return
   if (ControlerBox::valFromWeb != -1) {
     Serial.println("--------------------- valFromWeb ----------");
@@ -498,7 +498,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     // select the relevant masterBox in the CB array
     ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
 
-    // 2. Check whether the current state has both IR and mesh triggers
+    // 2--- Check whether the current state has both IR and mesh triggers
     if (_currentBoxState._hasBothTriggers()) {
 
       /** check whether both triggers (IR and mesh) have been triggered (this will not catch the case 
@@ -512,16 +512,16 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
        *  whether the IR only or the mesh only has been triggered) */
     }
 
-    // 3. If the current boxState has Mesh trigger
+    // 3--- If the current boxState has Mesh trigger
     if (_currentBoxState.i16onMeshTrigger != -1){
       _currentBoxState._checkMeshTriggerAndAct(_masterBox);
+      return;
     }
   }
 
-  // 4. If the current boxState has IR trigger
+  // 4--- If the current boxState has IR trigger
   if (_currentBoxState.i16onIRTrigger != -1){
     _currentBoxState._checkIRTriggerAndAct();
-    return;
   }
 }
 
