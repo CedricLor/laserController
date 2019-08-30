@@ -59,7 +59,8 @@ class step
       int16_t __i16onIRTrigger,
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
-      uint16_t __ui16stepMasterBoxNb // we are in step class
+      uint16_t __ui16stepMasterBoxName,
+      int16_t *__i16monitoredMasterStates
     );
 
     // boxState criteria (variables) setter
@@ -74,6 +75,7 @@ class step
     // int16_t i16onExpireNewMaster;
     uint16_t _ui16stepMasterBoxName;
     // int16_t masterStatesToWatch[];
+    int16_t *_i16monitoredMasterStates;
 
     void applyStep();
 
@@ -110,7 +112,7 @@ class boxState
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;
-    // std::map stdMapMy;
+    int16_t *_i16monitoredMasterStates;
 
     static Task tPlayBoxState;
 
