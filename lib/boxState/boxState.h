@@ -93,7 +93,7 @@ class step
 class boxState
 {
   public:
-    boxState(ControlerBox * __masterBox = nullptr); // default constructor
+    boxState(int16_t *__i16monitoredMasterStates={}, ControlerBox * __masterBox = nullptr); // default constructor
     // boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
 
     static void initBoxStates(); // initializer of the array of boxState
@@ -112,7 +112,7 @@ class boxState
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;
-    int16_t *_i16monitoredMasterStates;
+    int16_t *i16monitoredMasterStates;
 
     static Task tPlayBoxState;
 
@@ -145,6 +145,7 @@ class boxState
     void _checkMeshTriggerAndAct();
     void _checkIRTriggerAndAct();
     bool _meshHasBeenTriggered();
+    bool _testIfMasterIsInMonitoredState();
     void _resolveTriggersConflictAndAct();
 
 

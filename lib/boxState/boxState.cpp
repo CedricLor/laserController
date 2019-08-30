@@ -219,7 +219,7 @@ void step::applyStep() {
 
   // set the states of the master triggering mesh triggers
   // (mesh interrupt)
-  _thisStepBoxState._i16monitoredMasterStates = _i16monitoredMasterStates;
+  _thisStepBoxState.i16monitoredMasterStates = _i16monitoredMasterStates;
 
   // preload the next step from memory
   step::tPreloadNextStep.enable();
@@ -324,7 +324,9 @@ uint16_t boxState::ui16Mode = 0;
 
 
 // Constructors
-boxState::boxState(ControlerBox * __masterBox):_masterBox(__masterBox) {
+boxState::boxState(int16_t *__i16monitoredMasterStates, ControlerBox * __masterBox):
+  i16monitoredMasterStates(__i16monitoredMasterStates),
+  _masterBox(__masterBox) {
 }
 
 
@@ -689,13 +691,21 @@ bool boxState::_meshHasBeenTriggered() {
 
   // TO DO: check whether the parent box active state corresponds to one of
   // the state to which this box shall react
-  // if (this->_masterBox.i16BoxActiveState == _monitoredMasterStates()) {
-  //   return true;
-  // }
-  // return false
+  return (this->_testIfMasterIsInMonitoredState());
+}
 
-  // else, we have a mesh trigger!
-  return true;
+
+
+bool boxState::_testIfMasterIsInMonitoredState() {
+  if (i16monitoredMasterStates[0] == -1) {
+    return false;
+  }
+  for (uint16_t _i = 0; _i < sizeof(i16monitoredMasterStates) / sizeof(i16monitoredMasterStates[0]); _i++) {
+    if (i16monitoredMasterStates[_i] != this->_masterBox->i16BoxActiveState) {
+      return true;
+    }
+  }
+  return false;
 }
 
 
