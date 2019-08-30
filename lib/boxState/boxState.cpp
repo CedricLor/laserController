@@ -518,19 +518,22 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
       /** If none or only one has been triggered, continue (we need to check
        *  whether the IR only or the mesh only has been triggered) */
     }
+
+    
+
   }
 
-  // 3. If the current boxState has IR trigger
-  if (_currentBoxState.i16onIRTrigger != -1){
-    _currentBoxState._checkIRTriggerAndAct();
-    return;
-  }
-
-  // 4. If the current boxState has Mesh trigger and
+    // 3. If the current boxState has Mesh trigger and
   // its parent box has a state other than -1 and
   // its activeState has not been taken into account
   if (_currentBoxState.i16onMeshTrigger != -1){
     _currentBoxState._checkMeshTriggerAndAct();
+  }
+
+  // 4. If the current boxState has IR trigger
+  if (_currentBoxState.i16onIRTrigger != -1){
+    _currentBoxState._checkIRTriggerAndAct();
+    return;
   }
 }
 
