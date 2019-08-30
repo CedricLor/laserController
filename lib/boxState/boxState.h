@@ -94,7 +94,7 @@ class boxState
 {
   public:
     boxState(int16_t *__i16monitoredMasterStates={}, ControlerBox * __masterBox = nullptr); // default constructor
-    // boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire);
+    boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const uint16_t _ui16onMeshTrigger, const uint16_t _ui16onExpire, const int16_t *__i16monitoredMasterStates={}, ControlerBox * __masterBox = nullptr);
 
     static void initBoxStates(); // initializer of the array of boxState
 
