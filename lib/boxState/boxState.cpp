@@ -450,7 +450,7 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
-    // give handy access to thisBox and the _currentBoxState
+  // give handy access to thisBox and the _currentBoxState
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // A. Analyse the signal catchers and set the box target state accordingly

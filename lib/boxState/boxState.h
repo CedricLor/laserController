@@ -127,17 +127,11 @@ class boxState
     static void _odtcbPlayBoxState();
 
     // _tcbPlayBoxStates() sub functions
+    void _setMasterBox();
+    ControlerBox * _masterBox;
     void _setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState);
     void _resetSignalCatchers(boxState& _currentBoxState);
     void _restart_tPlayBoxState(boxState& _currentBoxState);
-
-    static void _setBoxTargetState(const short int targetBoxState);
-
-    static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
-    static uint16_t ui16mToS(uint16_t _minutes);
-
-    void _setMasterBox();
-    ControlerBox * _masterBox;
 
     void _initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     bool _hasBothTriggers();
@@ -147,6 +141,11 @@ class boxState
     bool _meshHasBeenTriggered();
     bool _testIfMasterIsInMonitoredState();
     void _resolveTriggersConflictAndAct();
+    static void _setBoxTargetState(const short int targetBoxState);
+
+    static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
+    static uint16_t ui16mToS(uint16_t _minutes);
+
 
 
     void _changeBoxState(const int16_t _i16StepIxNb, const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
