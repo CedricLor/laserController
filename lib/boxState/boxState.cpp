@@ -306,7 +306,7 @@ void step::initSteps() {
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 short int boxState::_boxTargetState = 0;
-bool boxState::_boxActiveStateHasBeenReset = 0;
+bool boxState::_boxTargetStateHasChanged = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 
@@ -437,7 +437,7 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, NULL/*&mns::mySched
   following values have changed (the catchers):
   - thisBox.ui16hasLastRecPirHighTimeChanged (when the current boxState is set to react to signals from the PIR);
   - ControlerBoxes[PARENT].i16BoxActiveState (when the current boxState is set to react to signals from the mesh);
-  - _boxActiveStateHasBeenReset;
+  - _boxTargetStateHasChanged;
   - _boxTargetState;
   Depending on the changes, it will:
   - either start a new boxState or extend the duration of the current boxState; or
@@ -550,11 +550,14 @@ void boxState::_resetSignalCatchers() {
 
 /*
     _restart_tPlayBoxState() starts a new boxState, if
-    the _boxActiveStateHasBeenReset has somehow been reset, and
-    accomplishes a couple of other technical tasks.
+     _boxTargetStateHasChanged signals a change in the box
+    active state (the _boxTargetStateHasChanged is marked as 
+    changed upon calls to _setBoxTargetState; _setBoxTargetState
+    is called (i) from the main loop of tPlayBoxStates upon events from the IR 
+    or the mesh and (ii) from the onDisable callback of tPlayBoxState).
 
-    If the _boxActiveStateHasBeenReset, it will:
-      1. reset the witness _boxActiveStateHasBeenReset to 0;
+    If the _boxTargetStateHasChanged, _restart_tPlayBoxState() will:
+      1. reset the witness _boxTargetStateHasChanged to 0;
       2. get the params for the new state in case we are in step controlled mode;
       3. set the duration to stay in the new boxState (by setting the
       aInterval of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
@@ -563,10 +566,10 @@ void boxState::_resetSignalCatchers() {
       5. restart/enable the "children" Task tPlayBoxState.
 */
 void boxState::_restart_tPlayBoxState() {
-  // if the _boxActiveStateHasBeenReset,
-  if (_boxActiveStateHasBeenReset == 1) {
+  // if the _boxTargetStateHasChanged,
+  if (_boxTargetStateHasChanged == 1) {
     // 1. Resets the witness to 0 (false)
-    _boxActiveStateHasBeenReset = 0;
+    _boxTargetStateHasChanged = 0;
 
     // 2. If we are in step controlled mode (mode 1),
     // configure the params of the new boxState.
@@ -830,7 +833,7 @@ void boxState::_odtcbPlayBoxState(){
 void boxState::_setBoxTargetState(const short __boxTargetState) {
   Serial.println("boxState::_setBoxTargetState(). Starting.");
   Serial.print("boxState::_setBoxTargetState(). __boxTargetState: ");Serial.println(__boxTargetState);
-  _boxActiveStateHasBeenReset = 1;
+  _boxTargetStateHasChanged = 1;
   _boxTargetState = __boxTargetState;
   // Serial.print("boxState::_setBoxTargetState(). _boxTargetState: "); Serial.println(_boxTargetState);
   Serial.println("boxState::_setBoxTargetState(). Ending.");

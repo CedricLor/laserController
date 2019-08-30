@@ -118,7 +118,7 @@ class boxState
 
   private:
     static short int _boxTargetState;
-    static bool _boxActiveStateHasBeenReset;
+    static bool _boxTargetStateHasChanged;
 
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();
