@@ -667,21 +667,9 @@ void boxState::_checkIRTriggerAndAct() {
 
 
 bool boxState::_meshHasBeenTriggered() {
-  // check whether masterBox has been set (the masterBox
-  // could have been disconnected, or forgotten to be set)
-  // Serial.println("---------------- DEBUG ------------ BOX STATE ----------- DEBUG -------------");
-  // Serial.printf("boxState::_meshHasBeenTriggered(): thisBox.ui16MasterBoxName: %u\n", thisBox.ui16MasterBoxName);
-  // Serial.printf("boxState::_meshHasBeenTriggered(): (thisBox.ui16MasterBoxName == 254): %i\n", thisBox.ui16MasterBoxName == 254);
-  if (this->_masterBox != nullptr) {
-  //   Serial.printf("boxState::_meshHasBeenTriggered(): this->_masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", (this->_masterBox.boxActiveStateHasBeenTakenIntoAccount ? "true" : "false"));
-  //   Serial.printf("boxState::_meshHasBeenTriggered(): this->_masterBox.i16BoxActiveState: %i\n", this->_masterBox.i16BoxActiveState);
-  //   Serial.printf("boxState::_meshHasBeenTriggered(): this->_masterBox.boxActiveStateHasBeenTakenIntoAccount: %s\n", ((this->_masterBox.boxActiveStateHasBeenTakenIntoAccount || this->_masterBox.i16BoxActiveState == -1) ? "true" : "false"));
-    return false;
-  }
-  // check whether the parent box active state
-  // has been taken into account
-
-  if ((this->_masterBox->boxActiveStateHasBeenTakenIntoAccount) || (this->_masterBox->i16BoxActiveState == -1)){
+  /** If the master _masterBox has NOT been set or the  
+   *  masterBox state has been taken into account, no mesh trigger has happened. */
+  if ((this->_masterBox == nullptr) || (this->_masterBox->boxActiveStateHasBeenTakenIntoAccount) || (this->_masterBox->i16BoxActiveState == -1)){
     return false;
   }
 

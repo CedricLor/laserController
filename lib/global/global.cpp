@@ -59,9 +59,9 @@ uint8_t gui8DefaultMasterNodeName                 = 254; // 254 means no one
 
 /** CONTROLLER BOX 201 
  *  node id in the current configuration 2760608337 */
-const uint8_t UI8_NODE_NAME                   = 201;                          // BOX BY BOX
-const bool IS_INTERFACE                       = false;                        // BOX BY BOX
-const bool IS_ROOT                            = false;                        // BOX BY BOX
+// const uint8_t UI8_NODE_NAME                   = 201;                          // BOX BY BOX
+// const bool IS_INTERFACE                       = false;                        // BOX BY BOX
+// const bool IS_ROOT                            = false;                        // BOX BY BOX
 
 /** CONTROLLER BOX 202 
  *  node id in the current configuration 2752898073 */
@@ -71,9 +71,9 @@ const bool IS_ROOT                            = false;                        //
 
 /** CONTROLLER BOX 200 - INTERFACE, ROOT NODE AND WEB SERVER 
  *  node id in the current configuration 2760139053 */
-// const uint8_t UI8_NODE_NAME                = 200;                          // BOX BY BOX
-// const bool IS_INTERFACE                    = true;                         // BOX BY BOX
-// const bool IS_ROOT                         = true;                         // BOX BY BOX
+const uint8_t UI8_NODE_NAME                = 200;                          // BOX BY BOX
+const bool IS_INTERFACE                    = true;                         // BOX BY BOX
+const bool IS_ROOT                         = true;                         // BOX BY BOX
 
 
 uint16_t gui16NodeName                        = UI8_NODE_NAME;
