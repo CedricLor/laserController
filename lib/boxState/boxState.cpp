@@ -611,17 +611,6 @@ bool boxState::_checkBothTriggersAndAct(ControlerBox& _masterBox) {
 
 
 
-void boxState::_checkIRTriggerAndAct() {
-  // check whether IR has been triggered;
-  // if so, set the boxTarget state accordingly
-  if (thisBox.ui16hasLastRecPirHighTimeChanged) {
-    Serial.println("--------------------- IR triggered ----------");
-    _setBoxTargetState(i16onIRTrigger);
-  }
-}
-
-
-
 /** boxState::_checkMeshTriggerAndAct(): 
  *  (1) checks whether:
  *    (i) the boxState of the parent box is other than -1; and 
@@ -631,6 +620,17 @@ void boxState::_checkMeshTriggerAndAct(ControlerBox& _masterBox) {
   if (_meshHasBeenTriggered(_masterBox)) {
     Serial.println("--------------------- Mesh triggered ----------");
     _setBoxTargetState(i16onMeshTrigger);
+  }
+}
+
+
+
+void boxState::_checkIRTriggerAndAct() {
+  // check whether IR has been triggered;
+  // if so, set the boxTarget state accordingly
+  if (thisBox.ui16hasLastRecPirHighTimeChanged) {
+    Serial.println("--------------------- IR triggered ----------");
+    _setBoxTargetState(i16onIRTrigger);
   }
 }
 
