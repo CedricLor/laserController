@@ -461,7 +461,7 @@ void boxState::_tcbPlayBoxStates() {
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
-  _restart_tPlayBoxState(_currentBoxState);
+  _currentBoxState._restart_tPlayBoxState(_currentBoxState);
   // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
 };
 

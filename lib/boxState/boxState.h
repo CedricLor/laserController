@@ -129,7 +129,7 @@ class boxState
     // _tcbPlayBoxStates() sub functions
     void _setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState);
     void _resetSignalCatchers(boxState& _currentBoxState);
-    static void _restart_tPlayBoxState(boxState& _currentBoxState);
+    void _restart_tPlayBoxState(boxState& _currentBoxState);
 
     static void _setBoxTargetState(const short int targetBoxState);
 
