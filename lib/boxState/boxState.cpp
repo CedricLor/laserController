@@ -203,7 +203,7 @@ void step::applyStep() {
   // (timer interrupt)
   _thisStepBoxState.i16onExpire = _i16onExpire;
 
-  // set the masterBoxName which state changes shall be watched over
+  // set the masterBoxName which state changes shall be monitored
   // Serial.println("step::applyStep(). debug master box name setter");
   // Serial.println(_ui16stepMasterBoxName);
   thisBox.updateMasterBoxName(_ui16stepMasterBoxName);
@@ -488,13 +488,6 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   _currentBoxState._setMasterBox();
-  /** look for the index number of the master box in the CB array, using  
-   *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-  /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
-   *  has not joined the mesh (or at least has not been in contact with thisBox).
-   *  If it is equal to something else than 254, it has been in contact with thisBox
-   *  and might have registered a given state to which thisBox is programmed to react. */
   if (_currentBoxState._masterBox != nullptr) {
 
     // 2--- Check whether the current state has both IR and mesh triggers
@@ -589,20 +582,39 @@ void boxState::_restart_tPlayBoxState() {
     The following subs are helpers for _setBoxTargetStateFromSignalCatchers
 */
 void  boxState::_setMasterBox() {
-  if (thisBox.ui16MasterBoxName != 254) {
-    /** look for the index number of the master box in the CB array, using  
-     *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
-    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-    /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
-     *  has not joined the mesh (or at least has not been in contact with thisBox).
-     *  If it is equal to something else than 254, it has been in contact with thisBox
-     *  and might have registered a given state to which thisBox is programmed to react. */
-    if (_ui16masterBoxIndex != 254) {
-      // select the relevant masterBox in the CB array
-      *_masterBox = ControlerBoxes[_ui16masterBoxIndex];
-
-    }
+  // if the change of master has already been taken into account, just return
+  if (thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount) {
+    return;
   }
+  // if the master box name of thisBox is set to 254, thisBox does not have a master
+  if (thisBox.ui16MasterBoxName == 254) {
+    // set the _masterBox pointer to nullptr
+    _masterBox = nullptr;
+    // mark the change has taken into account
+    thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount = true;
+    return;
+  }
+  /** If  the master box name of thisBox is set to anything else than 254,
+   *  look for the index number of the corresponding box in the CB array, using  
+   *  the master node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
+  /** If the masterBoxIndex is equal to 254, the masterBox registered in thisBox
+   *  was not found in the CB Array => it has not joined the mesh or has disconnected
+   *  (or at least has not been in contact with thisBox).*/
+  if (_ui16masterBoxIndex == 254) {
+    // set the _masterBox pointer to nullptr 
+    _masterBox = nullptr;
+    /** not setting thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount to true so 
+     *  if the targeted box joins the mesh later on, this boxState takes it into
+     *  account. */
+    return;
+  }
+  /**  If it is equal to something else than 254, it has been in contact with thisBox.
+   *   Select the relevant masterBox in the CB array and set the _masterBox pointer to it. */
+  _masterBox = &ControlerBoxes[_ui16masterBoxIndex];
+  /**  Set the change has having been taken into account by this boxState. */
+  thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount = true;
+  return;
 }
 
 
