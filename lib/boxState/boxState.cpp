@@ -512,11 +512,9 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
        *  whether the IR only or the mesh only has been triggered) */
     }
 
-    // 3. If the current boxState has Mesh trigger and
-    // its parent box has a state other than -1 and
-    // its activeState has not been taken into account
+    // 3. If the current boxState has Mesh trigger
     if (_currentBoxState.i16onMeshTrigger != -1){
-      _currentBoxState._checkMeshTriggerAndAct();
+      _currentBoxState._checkMeshTriggerAndAct(_masterBox);
     }
   }
 
@@ -615,21 +613,15 @@ void boxState::_checkIRTriggerAndAct() {
 
 
 
-void boxState::_checkMeshTriggerAndAct() {
-  /** look for the index number of the master box in the CB array, using  
-   *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-  /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
-   *  has not joined the mesh (or at least has not been in contact with thisBox).
-   *  If it is equal to something else than 254, it has been in contact with thisBox
-   *  and might have registered a given state to which thisBox is programmed to react. */
-  if (_ui16masterBoxIndex != 254) {
-    // select the relevant masterBox in the CB array
-    ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
-    if (_meshHasBeenTriggered(_masterBox)) {
-      Serial.println("--------------------- Mesh triggered ----------");
-      _setBoxTargetState(i16onMeshTrigger);
-    }
+/** boxState::_checkMeshTriggerAndAct(): 
+ *  (1) checks whether:
+ *    (i) the boxState of the parent box is other than -1; and 
+ *    (ii) such boxState has been taken into account
+ *  (2) sets thisBox targetState depending on the result of the test.*/
+void boxState::_checkMeshTriggerAndAct(ControlerBox& _masterBox) {
+  if (_meshHasBeenTriggered(_masterBox)) {
+    Serial.println("--------------------- Mesh triggered ----------");
+    _setBoxTargetState(i16onMeshTrigger);
   }
 }
 
