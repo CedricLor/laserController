@@ -454,14 +454,14 @@ void boxState::_tcbPlayBoxStates() {
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // A. Analyse the signal catchers and set the box target state accordingly
-  _currentBoxState._setBoxTargetStateFromSignalCatchers(_currentBoxState);
+  _currentBoxState._setBoxTargetStateFromSignalCatchers();
 
   // B. Once read, reset all the signal catchers
-  _currentBoxState._resetSignalCatchers(_currentBoxState);
+  _currentBoxState._resetSignalCatchers();
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
-  _currentBoxState._restart_tPlayBoxState(_currentBoxState);
+  _currentBoxState._restart_tPlayBoxState();
   // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
 };
 
@@ -491,7 +491,7 @@ bool boxState::_oetcbPlayBoxStates() {
  *  1. reads whether the web, the IR or the mesh signal catchers 
  *     have caught any signal
  *  2. if so, requests a boxState change by calling _setBoxTargetState() */
-void boxState::_setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState) {
+void boxState::_setBoxTargetStateFromSignalCatchers() {
   // Read the signal catchers and change the targetState accordingly
 
   // 1--- Check the web signal catcher. If it has changed, set the new targetState
@@ -502,27 +502,27 @@ void boxState::_setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState) 
     return;
   }
 
-  _currentBoxState._setMasterBox();
-  if (_currentBoxState._masterBox != nullptr) {
+  this->_setMasterBox();
+  if (this->_masterBox != nullptr) {
 
     // 2--- Check whether the current state has both IR and mesh triggers
-    if (_currentBoxState._hasBothTriggers()) {
+    if (this->_hasBothTriggers()) {
 
-      if (_currentBoxState._checkBothTriggersAndAct()) {
+      if (this->_checkBothTriggersAndAct()) {
         return;
       }
     }
 
     // 3--- If the current boxState has Mesh trigger
-    if (_currentBoxState.i16onMeshTrigger != -1){
-      _currentBoxState._checkMeshTriggerAndAct();
+    if (this->i16onMeshTrigger != -1){
+      this->_checkMeshTriggerAndAct();
       return;
     }
   }
 
   // 4--- If the current boxState has IR trigger
-  if (_currentBoxState.i16onIRTrigger != -1){
-    _currentBoxState._checkIRTriggerAndAct();
+  if (this->i16onIRTrigger != -1){
+    this->_checkIRTriggerAndAct();
   }
 }
 
@@ -534,7 +534,7 @@ void boxState::_setBoxTargetStateFromSignalCatchers(boxState& _currentBoxState) 
   to their initial values, once the new _boxTargetState
   has been set by _setBoxTargetStateFromSignalCatchers
 */
-void boxState::_resetSignalCatchers(boxState& _currentBoxState) {
+void boxState::_resetSignalCatchers() {
   ControlerBox::valFromWeb = -1;
   thisBox.ui16hasLastRecPirHighTimeChanged = 0;
   if (thisBox.ui16MasterBoxName != 254) {
@@ -562,7 +562,7 @@ void boxState::_resetSignalCatchers(boxState& _currentBoxState) {
       4. set the i16BoxActiveState property (and related properties) of this box;
       5. restart/enable the "children" Task tPlayBoxState.
 */
-void boxState::_restart_tPlayBoxState(boxState& _currentBoxState) {
+void boxState::_restart_tPlayBoxState() {
   // if the _boxActiveStateHasBeenReset,
   if (_boxActiveStateHasBeenReset == 1) {
     // 1. Resets the witness to 0 (false)
