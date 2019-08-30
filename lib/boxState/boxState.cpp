@@ -457,7 +457,7 @@ void boxState::_tcbPlayBoxStates() {
   _currentBoxState._setBoxTargetStateFromSignalCatchers(_currentBoxState);
 
   // B. Once read, reset all the signal catchers
-  _resetSignalCatchers(_currentBoxState);
+  _currentBoxState._resetSignalCatchers(_currentBoxState);
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
