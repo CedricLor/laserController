@@ -487,27 +487,20 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
   // give handy access to thisBox and the _currentBoxState
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
-  // 2. Check whether the current state has both IR and mesh triggers
-  if (_currentBoxState._hasBothTriggers()) {
+  /** look for the index number of the master box in the CB array, using  
+   *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
+  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
+  /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
+   *  has not joined the mesh (or at least has not been in contact with thisBox).
+   *  If it is equal to something else than 254, it has been in contact with thisBox
+   *  and might have registered a given state to which thisBox is programmed to react. */
+  if (_ui16masterBoxIndex != 254) {
+    // select the relevant masterBox in the CB array
+    ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
 
+    // 2. Check whether the current state has both IR and mesh triggers
+    if (_currentBoxState._hasBothTriggers()) {
 
-    // if (_bothHaveBeenTriggered) {
-    //   return;
-    // }
-    /** If none or only one has been triggered, continue (we need to check
-     *  whether the IR only or the mesh only has been triggered) */
-
-
-    /** look for the index number of the master box in the CB array, using  
-     *  the node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
-    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-    /** If the masterBoxIndex is equal to 254, the targeted masterBox registered in thisBox
-     *  has not joined the mesh (or at least has not been in contact with thisBox).
-     *  If it is equal to something else than 254, it has been in contact with thisBox
-     *  and might have registered a given state to which thisBox is programmed to react. */
-    if (_ui16masterBoxIndex != 254) {
-      // select the relevant masterBox in the CB array
-      ControlerBox& _masterBox = ControlerBoxes[_ui16masterBoxIndex];
       /** check whether both triggers (IR and mesh) have been triggered (this will not catch the case 
        * where only one of them has been triggered). */
       if (thisBox.ui16hasLastRecPirHighTimeChanged && _currentBoxState._meshHasBeenTriggered(_masterBox)) {
@@ -519,15 +512,12 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
        *  whether the IR only or the mesh only has been triggered) */
     }
 
-    
-
-  }
-
     // 3. If the current boxState has Mesh trigger and
-  // its parent box has a state other than -1 and
-  // its activeState has not been taken into account
-  if (_currentBoxState.i16onMeshTrigger != -1){
-    _currentBoxState._checkMeshTriggerAndAct();
+    // its parent box has a state other than -1 and
+    // its activeState has not been taken into account
+    if (_currentBoxState.i16onMeshTrigger != -1){
+      _currentBoxState._checkMeshTriggerAndAct();
+    }
   }
 
   // 4. If the current boxState has IR trigger
