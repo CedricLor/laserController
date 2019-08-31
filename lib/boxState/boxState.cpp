@@ -358,13 +358,14 @@ uint16_t boxState::ui16Mode = 0;
 
 
 // Constructors
+/** default constructor */
 boxState::boxState()
 {
   i16monitoredMasterStates = nullptr;
   _masterBox = nullptr;
 }
 
-
+/** "little" constructor */
 boxState::boxState(const int16_t _i16Duration, 
   const uint16_t _ui16AssociatedSequence, 
   const int16_t _i16onIRTrigger, 
@@ -381,7 +382,7 @@ boxState::boxState(const int16_t _i16Duration,
   _masterBox = nullptr;
 }
 
-
+/** "full blown" constructor */
 boxState::boxState(const int16_t _i16Duration, 
   const uint16_t _ui16AssociatedSequence, 
   const int16_t _i16onIRTrigger, 

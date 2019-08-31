@@ -111,7 +111,7 @@ class boxState
       const int16_t _i16onMeshTrigger, 
       const int16_t _i16onExpire, 
       const int16_t _i16monitoredMasterStatesSize, 
-      int16_t *__i16monitoredMasterStates={}, 
+      int16_t *_i16monitoredMasterStates, 
       ControlerBox * __masterBox = nullptr);
 
     // boxStates array
@@ -129,7 +129,7 @@ class boxState
     static Task tPlayBoxStates;
 
     // instance variables
-    int16_t i16Duration; // duration for which the status shall stay active before automatically returning to default
+    int16_t i16Duration; // duration for which the state shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
