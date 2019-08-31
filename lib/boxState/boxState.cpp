@@ -203,13 +203,14 @@ void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
 
 
 
-
+/** step::applyStep(): applies the values of this step to the relevant boxState */
 void step::applyStep() {
   Serial.println("step::applyStep(). starting");
-  // apply to the relevant boxState
+  
+
   // get handy access to boxState for this step
-    // Serial.print("step::applyStep(). debug _i16stepBoxStateNb = ");
-    // Serial.println(_i16stepBoxStateNb);
+  // Serial.print("step::applyStep(). debug _i16stepBoxStateNb = ");
+  // Serial.println(_i16stepBoxStateNb);
   boxState &_thisStepBoxState = boxState::boxStates[_i16stepBoxStateNb];
 
   // set the duration of the boxState for this step
@@ -226,8 +227,8 @@ void step::applyStep() {
   // (IR interrupt)
   _thisStepBoxState.i16onIRTrigger = _i16onIRTrigger;
 
-  // set the boxState in which to go upon detected a mesh relevant change
-  // (i.e. a change of the masterBox states)
+  // set the boxState in which to go upon detection of a mesh relevant change
+  // (i.e. a change of the state of the masterBox)
   // (mesh interrupt)
   _thisStepBoxState.i16onMeshTrigger = _i16onMeshTrigger;
 
@@ -240,7 +241,8 @@ void step::applyStep() {
   // Serial.println(_ui16stepMasterBoxName);
   thisBox.updateMasterBoxName(_ui16stepMasterBoxName);
 
-  // set the states of the master triggering mesh triggers
+  // set the boxStates of the masterBox that will be relevant to
+  //  trigger a mesh interrupt
   // (mesh interrupt)
   _thisStepBoxState.i16monitoredMasterStatesSize = _i16monitoredMasterStatesSize;
   _thisStepBoxState.i16monitoredMasterStates = _i16monitoredMasterStates;
