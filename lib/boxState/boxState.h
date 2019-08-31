@@ -93,21 +93,40 @@ class step
 class boxState
 {
   public:
-    boxState(); // default constructor
-    boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
-    boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire, uint16_t _ui16monitoredMasterStatesSize, int16_t *__i16monitoredMasterStates={}, ControlerBox * __masterBox = nullptr);
+    /** constructors*/
+    /** default constructor: used to define the boxStates array */
+    boxState();
+    /** "little constructor": used to initialize the default boxStates */
+    boxState(const int16_t _i16Duration, 
+      const uint16_t _ui16AssociatedSequence, 
+      const int16_t _i16onIRTrigger, 
+      const int16_t _i16onMeshTrigger, 
+      const int16_t _i16onExpire);
+    /** "full blown constructor": used to reinitialize the boxStates from the steps class */
+    boxState(const int16_t _i16Duration, 
+      const uint16_t _ui16AssociatedSequence, 
+      const int16_t _i16onIRTrigger, 
+      const int16_t _i16onMeshTrigger, 
+      const int16_t _i16onExpire, 
+      uint16_t _ui16monitoredMasterStatesSize, 
+      int16_t *__i16monitoredMasterStates={}, 
+      ControlerBox * __masterBox = nullptr);
 
-    static void initBoxStates(); // initializer of the array of boxState
+    // boxStates array
+    static const short int BOX_STATES_COUNT;
+    static boxState boxStates[];
+    static void initBoxStates();
 
+    // step mode switch stack
     static void switchToStepControlled();
     static uint16_t ui16stepCounter;
     static uint16_t ui16Mode;
 
+    /** main boxState Task: iterating all the time every 500 ms to monitor
+     *  the occurence of triggers */
     static Task tPlayBoxStates;
-    static const short int BOX_STATES_COUNT;
 
-    static boxState boxStates[];
-
+    // instance variables
     int16_t i16Duration; // duration for which the status shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
     int16_t i16onIRTrigger;
@@ -116,6 +135,8 @@ class boxState
     int16_t *i16monitoredMasterStates;
     uint16_t ui16monitoredMasterStatesSize;
 
+    /** individual boxState Task: iterating once (unless explicitly restarted) 
+     *  for the duration of a single boxState */
     static Task tPlayBoxState;
 
   private:
@@ -137,11 +158,14 @@ class boxState
 
     bool _hasBothTriggers();
     bool _checkBothTriggersAndAct();
+    void _resolveTriggersConflictAndAct();
+
     void _checkMeshTriggerAndAct();
-    void _checkIRTriggerAndAct();
     bool _meshHasBeenTriggered();
     bool _testIfMasterIsInMonitoredState();
-    void _resolveTriggersConflictAndAct();
+
+    void _checkIRTriggerAndAct();
+
     static void _setBoxTargetState(const short int targetBoxState);
 
     static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);

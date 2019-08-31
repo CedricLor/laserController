@@ -735,22 +735,32 @@ void boxState::_checkMeshTriggerAndAct() {
 
 bool boxState::_meshHasBeenTriggered() {
   /** If the master _masterBox has NOT been set or the  
-   *  masterBox state has been taken into account, no mesh trigger has happened. */
+   *  masterBox state has been taken into account or 
+   *  the masterBox state is equal to -1, 
+   * no mesh trigger has happened. */
   if ((this->_masterBox == nullptr) || (this->_masterBox->boxActiveStateHasBeenTakenIntoAccount) || (this->_masterBox->i16BoxActiveState == -1)){
     return false;
   }
 
-  // TO DO: check whether the parent box active state corresponds to one of
-  // the state to which this box shall react
+  /** If the masterBox has been set and
+   * the masterBox state has not been taken into account and
+   * the masterBox state is different than -1, 
+   * check whether the parent box active state corresponds to one of
+   * the state to which this box shall react */
   return (this->_testIfMasterIsInMonitoredState());
 }
 
 
 
 bool boxState::_testIfMasterIsInMonitoredState() {
+  /** If the first element of the array of monitored masterBox state is 
+   *  equal to -1, we are not monitoring any masterBox states: return false.
+   *  TO DO: This shall have been cleared way before calling _testIfMasterIsInMonitoredState(). */
   if (i16monitoredMasterStates[0] == -1) {
     return false;
   }
+  /** Else, iterate over the array of monitored masterBox states and find out whether
+   *  the currnt masterBox active state correponds to one of these states. */
   for (uint16_t _i = 0; _i < sizeof(i16monitoredMasterStates) / sizeof(i16monitoredMasterStates[0]); _i++) {
     if (i16monitoredMasterStates[_i] != this->_masterBox->i16BoxActiveState) {
       return true;
