@@ -94,7 +94,7 @@ class boxState
 {
   public:
     boxState(); // default constructor
-    boxState(int16_t *__i16monitoredMasterStates, uint16_t _ui16monitoredMasterStatesSize, ControlerBox * __masterBox = nullptr); // default constructor
+    boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire, uint16_t _ui16monitoredMasterStatesSize, int16_t *__i16monitoredMasterStates={}, ControlerBox * __masterBox = nullptr);
 
     static void initBoxStates(); // initializer of the array of boxState
@@ -135,7 +135,6 @@ class boxState
     void _resetSignalCatchers();
     void _restart_tPlayBoxState();
 
-    void _initBoxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire);
     bool _hasBothTriggers();
     bool _checkBothTriggersAndAct();
     void _checkMeshTriggerAndAct();
