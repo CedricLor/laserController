@@ -76,7 +76,7 @@ class step
     // int16_t i16onExpireNewMaster;
     uint16_t _ui16stepMasterBoxName;
     // int16_t masterStatesToWatch[];
-    int16_t i16monitoredMasterStatesSize;
+    int16_t _i16monitoredMasterStatesSize;
     int16_t *_i16monitoredMasterStates;
 
     void applyStep();

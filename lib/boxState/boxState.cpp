@@ -133,6 +133,7 @@ step::step(int16_t __i16stepBoxStateNb,
     _i16onMeshTrigger(__i16onMeshTrigger),
     _i16onExpire(__i16onExpire),
     _ui16stepMasterBoxName(__ui16stepMasterBoxName),
+    _i16monitoredMasterStatesSize(__i16monitoredMasterStatesSize),
     _i16monitoredMasterStates(__i16monitoredMasterStates)
 {
 }
@@ -161,19 +162,41 @@ void step::_tcbPreloadNextStep() {
 }
 
 void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
-  step &_nextStep = step::steps[boxState::ui16stepCounter];
-  _nextStep._i16stepBoxStateNb = _joStep["_i16stepBoxStateNb"];
-  _nextStep._i16StateDuration = _joStep["_i16StateDuration"];
-  _nextStep._ui16AssociatedSequence = _joStep["_ui16AssociatedSequence"];
-  _nextStep._i16onIRTrigger = _joStep["_i16onIRTrigger"];
-  _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
-  _nextStep._i16onExpire = _joStep["_i16onExpire"];
-  _nextStep._ui16stepMasterBoxName = _joStep["_ui16stepMasterBoxName"];
+  // step &_nextStep = step::steps[boxState::ui16stepCounter];
+  // _nextStep._i16stepBoxStateNb = _joStep["_i16stepBoxStateNb"];
+  // _nextStep._i16StateDuration = _joStep["_i16StateDuration"];
+  // _nextStep._ui16AssociatedSequence = _joStep["_ui16AssociatedSequence"];
+  // _nextStep._i16onIRTrigger = _joStep["_i16onIRTrigger"];
+  // _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
+  // _nextStep._i16onExpire = _joStep["_i16onExpire"];
+  // _nextStep._ui16stepMasterBoxName = _joStep["_ui16stepMasterBoxName"];
+  int16_t * _i16monitoredMasterStates;
   uint16_t _i = 0;
   for (int16_t _monitoredState : _joStep["_i16monitoredMasterStates"].as<JsonArray>()) {
-    _nextStep._i16monitoredMasterStates[_i] = _monitoredState;
+    // _nextStep._i16monitoredMasterStates[_i] = _monitoredState;
+    _i16monitoredMasterStates[_i] = _monitoredState;
     _i++;
   }
+  step::steps[boxState::ui16stepCounter] = {
+    // _i16stepBoxStateNb(__i16stepBoxStateNb),
+    _joStep["_i16stepBoxStateNb"].as<const int16_t>(),
+    // _i16StateDuration(__i16StateDuration),
+    _joStep["_i16StateDuration"].as<const int16_t>(),
+    // _ui16AssociatedSequence(__ui16AssociatedSequence),
+    _joStep["_ui16AssociatedSequence"].as<const uint16_t>(),
+    // _i16onIRTrigger(__i16onIRTrigger),
+    _joStep["_i16onIRTrigger"].as<const int16_t>(),
+    // _i16onMeshTrigger(__i16onMeshTrigger),
+    _joStep["_i16onMeshTrigger"].as<const int16_t>(),
+    // _i16onExpire(__i16onExpire),
+    _joStep["_i16onExpire"].as<const int16_t>(),
+    // _ui16stepMasterBoxName(__ui16stepMasterBoxName),
+    _joStep["_ui16stepMasterBoxName"].as<const uint16_t>(),
+    // _i16monitoredMasterStatesSize(__i16monitoredMasterStatesSize),
+    _i, 
+    // _i16monitoredMasterStates(__i16monitoredMasterStates)
+    _i16monitoredMasterStates
+  };
 }
 
 
@@ -219,7 +242,7 @@ void step::applyStep() {
 
   // set the states of the master triggering mesh triggers
   // (mesh interrupt)
-  // _thisStepBoxState.i16monitoredMasterStatesSize = _i16monitoredMasterStatesSize;
+  _thisStepBoxState.i16monitoredMasterStatesSize = _i16monitoredMasterStatesSize;
   _thisStepBoxState.i16monitoredMasterStates = _i16monitoredMasterStates;
 
   // preload the next step from memory
