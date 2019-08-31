@@ -61,20 +61,18 @@ void myMesh::init() {
  *  This method is the initial mesh starter. Its function is:
  *  1. to call myMesh::init() which effectively setups and starts the mesh;
  *  2. to set the main callback of Task myMeshStarter::tRestart, by passing it
- *  a lambda with the local context. The reason for doing this is that 
+ *     a lambda with the local context. The reason for doing this is that:
  *  (a) myMeshStarter does not have access to myMesh (myMesh includes
- *  myMeshStarter, so myMeshStarter cannot include myMesh);
+ *      myMeshStarter, so myMeshStarter cannot include myMesh);
  *  (b) the painlessmesh callbacks are located in myMesh;
  *  (c) myMesh cannot be included into myMeshController and/or myWebReceiverWS 
- *  where the mesh restart callers would be used/needed;
+ *      where the mesh restart callers would be used/needed;
  *  (d) myMeshStarter contains most of the procs required for a mesh restart;
  *  (e) myMeshStarter can easily get included into (i) myMesh, (ii) myMeshController
- *  and (iii) myWebReceiverWS;
- *  (f) by passing the context in a lambda to set the callback of 
- *  Task myMeshStarter::tRestart, I am hoping to give access to myMeshStarter
- *  to the callback setters located in myMesh.
- * 
- *  BUT SO FAR IT DOES NOT WORK*/
+ *      and (iii) myWebReceiverWS.
+ *  By passing the context in a lambda to set the callback of 
+ *  Task myMeshStarter::tRestart, I am giving access to myMeshStarter
+ *  to the Task starters located in myMesh. */
 void myMesh::start() {
   Serial.println("myMesh::start: starting");  
   // 1. call myMesh::init() to effectively start the mesh
@@ -106,7 +104,7 @@ void myMesh::start() {
         _saveNodeMap();
         _tcbUpdateCBOnChangedConnections();
 
-        // enable the Task sending box state changes to connected browsers
+        // enable the Task sending changes in ControlerBoxes states to connected browsers
         if (isInterface) {
           myWSSender::tSendWSDataIfChangeBoxState.enable();
         }
