@@ -310,6 +310,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
+  if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
   i16BoxActiveState = _sBoxActiveState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
 
@@ -333,6 +334,7 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
   // - to true (for this box only) by boxState.
   // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
   // It is used when the laserBox receives an order to change active state from the interface.
+  }
 
   // Serial.println("ControlerBox::setBoxActiveState(): Ending");
 }
