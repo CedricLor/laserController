@@ -290,8 +290,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   }
 
   if (_obj["action"] == "usi" && _obj["key"] == "IR") {
-    ui32lastRecPirHighTime = _obj["time"];
-    ui16hasLastRecPirHighTimeChanged = true;
+    thisBox.setBoxIRTimes(_obj["time"].as<uint32_t>(), 1);
   }
 
   // Print out the updated properties
@@ -354,6 +353,19 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
 
   // Serial.println("ControlerBox::setBoxDefaultState(): Ending");
+}
+
+
+
+
+
+// Setter for ui32lastRecPirHighTime and ui16hasLastRecPirHighTimeChanged
+// Called only from this class (for the other boxes).
+void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const uint16_t _ui16hasLastRecPirHighTimeChanged) {
+  if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
+    ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
+    ui16hasLastRecPirHighTimeChanged = _ui16hasLastRecPirHighTimeChanged;
+  }
 }
 
 

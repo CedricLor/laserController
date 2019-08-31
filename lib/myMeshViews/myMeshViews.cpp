@@ -156,7 +156,6 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
 
 
 void myMeshViews::_IRHighMsg() {
-  thisBox.ui32lastRecPirHighTime = laserControllerMesh.getNodeTime();
   constexpr int _capacity = JSON_OBJECT_SIZE(6);
   StaticJsonDocument<_capacity> _jDoc;
   JsonObject _joMsg = _jDoc.to<JsonObject>();

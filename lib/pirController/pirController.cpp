@@ -70,8 +70,7 @@ void pirController::check() {
   //   Serial.println("pirController::check()");
   // }
   if (digitalRead(_inputPin)) {
-    thisBox.ui32lastRecPirHighTime = laserControllerMesh.getNodeTime();
-    thisBox.ui16hasLastRecPirHighTimeChanged = 1;
+    thisBox.setBoxIRTimes(laserControllerMesh.getNodeTime(), 1);
     sendMsg.enable();
   }
 }

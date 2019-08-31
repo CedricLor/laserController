@@ -88,8 +88,8 @@ class ControlerBox
     /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
      *  sent a PIR high signal. */
     uint32_t ui32lastRecPirHighTime;
-    /** ui16hasLastRecPirHighTimeChanged records a new PIR high signal has been received
-     *  for this box. */
+    /** ui16hasLastRecPirHighTimeChanged records whether a new PIR high signal has been
+     *  received for this box. */
     uint16_t ui16hasLastRecPirHighTimeChanged;
 
 
@@ -123,6 +123,7 @@ class ControlerBox
     void updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);
+    void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const uint16_t _ui16hasLastRecPirHighTimeChanged);
     void deleteBox();
 
 
