@@ -324,16 +324,26 @@ uint16_t boxState::ui16Mode = 0;
 
 
 // Constructors
-boxState::boxState(int16_t *__i16monitoredMasterStates, ControlerBox * __masterBox):
-  i16monitoredMasterStates(__i16monitoredMasterStates),
-  _masterBox(__masterBox) {
+boxState::boxState()
+{
+  i16monitoredMasterStates = nullptr;
+  _masterBox = nullptr;
 }
 
 
-// boxState::boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire)
-//     : i16Duration(_i16Duration), ui16AssociatedSequence(_ui16AssociatedSequence), i16onIRTrigger(_i16onIRTrigger), i16onMeshTrigger(_i16onMeshTrigger), i16onExpire(_i16onExpire)
-// {
-// }
+boxState::boxState(int16_t *__i16monitoredMasterStates, ControlerBox * __masterBox)
+  // : i16monitoredMasterStates(__i16monitoredMasterStates),
+  // _masterBox(__masterBox) 
+{
+  i16monitoredMasterStates = __i16monitoredMasterStates;
+  _masterBox = __masterBox;
+}
+
+
+boxState::boxState(const int16_t _i16Duration, const uint16_t _ui16AssociatedSequence, const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire, const int16_t *__i16monitoredMasterStates={}, ControlerBox * __masterBox = nullptr)
+    : i16Duration(_i16Duration), ui16AssociatedSequence(_ui16AssociatedSequence), i16onIRTrigger(_i16onIRTrigger), i16onMeshTrigger(_i16onMeshTrigger), i16onExpire(_i16onExpire)
+{
+}
 
 
 
