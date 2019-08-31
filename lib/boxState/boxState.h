@@ -108,7 +108,7 @@ class boxState
       const int16_t _i16onIRTrigger, 
       const int16_t _i16onMeshTrigger, 
       const int16_t _i16onExpire, 
-      uint16_t _ui16monitoredMasterStatesSize, 
+      const uint16_t _ui16monitoredMasterStatesSize, 
       int16_t *__i16monitoredMasterStates={}, 
       ControlerBox * __masterBox = nullptr);
 
