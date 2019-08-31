@@ -123,7 +123,7 @@ step::step(int16_t __i16stepBoxStateNb,
   int16_t __i16onMeshTrigger,
   int16_t __i16onExpire,
   uint16_t __ui16stepMasterBoxName,
-  int16_t __i16monitoredMasterStatesSize,
+  uint16_t __ui16monitoredMasterStatesSize,
   int16_t *__i16monitoredMasterStates
 )
     : _i16stepBoxStateNb(__i16stepBoxStateNb),
@@ -133,7 +133,7 @@ step::step(int16_t __i16stepBoxStateNb,
     _i16onMeshTrigger(__i16onMeshTrigger),
     _i16onExpire(__i16onExpire),
     _ui16stepMasterBoxName(__ui16stepMasterBoxName),
-    _i16monitoredMasterStatesSize(__i16monitoredMasterStatesSize),
+    _ui16monitoredMasterStatesSize(__ui16monitoredMasterStatesSize),
     _i16monitoredMasterStates(__i16monitoredMasterStates)
 {
 }
@@ -170,7 +170,16 @@ void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
   // _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
   // _nextStep._i16onExpire = _joStep["_i16onExpire"];
   // _nextStep._ui16stepMasterBoxName = _joStep["_ui16stepMasterBoxName"];
-  int16_t * _i16monitoredMasterStates;
+
+  const int16_t _i16stepBoxStateNb = _joStep["_i16stepBoxStateNb"];
+  const int16_t _i16StateDuration = _joStep["_i16StateDuration"];
+  const uint16_t _ui16AssociatedSequence = _joStep["_ui16AssociatedSequence"];
+  const int16_t _i16onIRTrigger = _joStep["_i16onIRTrigger"];
+  const int16_t _i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
+  const int16_t _i16onExpire = _joStep["_i16onExpire"];
+  const uint16_t _ui16stepMasterBoxName = _joStep["_ui16stepMasterBoxName"];
+
+  int16_t * _i16monitoredMasterStates = {};
   uint16_t _i = 0;
   for (int16_t _monitoredState : _joStep["_i16monitoredMasterStates"].as<JsonArray>()) {
     // _nextStep._i16monitoredMasterStates[_i] = _monitoredState;
@@ -179,20 +188,20 @@ void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
   }
   step::steps[boxState::ui16stepCounter] = {
     // _i16stepBoxStateNb(__i16stepBoxStateNb),
-    _joStep["_i16stepBoxStateNb"].as<const int16_t>(),
+    _i16stepBoxStateNb,
     // _i16StateDuration(__i16StateDuration),
-    _joStep["_i16StateDuration"].as<const int16_t>(),
+    _i16StateDuration,
     // _ui16AssociatedSequence(__ui16AssociatedSequence),
-    _joStep["_ui16AssociatedSequence"].as<const uint16_t>(),
+    _ui16AssociatedSequence,
     // _i16onIRTrigger(__i16onIRTrigger),
-    _joStep["_i16onIRTrigger"].as<const int16_t>(),
+    _i16onIRTrigger,
     // _i16onMeshTrigger(__i16onMeshTrigger),
-    _joStep["_i16onMeshTrigger"].as<const int16_t>(),
+    _i16onMeshTrigger,
     // _i16onExpire(__i16onExpire),
-    _joStep["_i16onExpire"].as<const int16_t>(),
+    _i16onExpire,
     // _ui16stepMasterBoxName(__ui16stepMasterBoxName),
-    _joStep["_ui16stepMasterBoxName"].as<const uint16_t>(),
-    // _i16monitoredMasterStatesSize(__i16monitoredMasterStatesSize),
+    _ui16stepMasterBoxName,
+    // _ui16monitoredMasterStatesSize(__ui16monitoredMasterStatesSize),
     _i, 
     // _i16monitoredMasterStates(__i16monitoredMasterStates)
     _i16monitoredMasterStates
@@ -217,7 +226,7 @@ void step::applyStep() {
     _i16onIRTrigger,
     _i16onMeshTrigger,
     _i16onExpire,
-    _i16monitoredMasterStatesSize,
+    _ui16monitoredMasterStatesSize,
     _i16monitoredMasterStates
   };
 
@@ -252,7 +261,7 @@ void step::applyStep() {
   // // set the boxStates of the masterBox that will be relevant to
   // //  trigger a mesh interrupt
   // // (mesh interrupt)
-  // _thisStepBoxState.i16monitoredMasterStatesSize = _i16monitoredMasterStatesSize;
+  // _thisStepBoxState.ui16monitoredMasterStatesSize = _ui16monitoredMasterStatesSize;
   // _thisStepBoxState.i16monitoredMasterStates = _i16monitoredMasterStates;
 
   // preload the next step from memory
@@ -378,7 +387,7 @@ boxState::boxState(const int16_t _i16Duration,
     i16onExpire(_i16onExpire)
 {
   i16monitoredMasterStates = nullptr;
-  i16monitoredMasterStatesSize = 0;
+  ui16monitoredMasterStatesSize = 0;
   _masterBox = nullptr;
 }
 
@@ -388,7 +397,7 @@ boxState::boxState(const int16_t _i16Duration,
   const int16_t _i16onIRTrigger, 
   const int16_t _i16onMeshTrigger, 
   const int16_t _i16onExpire, 
-  const int16_t _i16monitoredMasterStatesSize, 
+  const uint16_t _ui16monitoredMasterStatesSize, 
   int16_t *__i16monitoredMasterStates, 
   ControlerBox * __masterBox)
     : i16Duration(_i16Duration), 
@@ -396,7 +405,7 @@ boxState::boxState(const int16_t _i16Duration,
     i16onIRTrigger(_i16onIRTrigger), 
     i16onMeshTrigger(_i16onMeshTrigger), 
     i16onExpire(_i16onExpire), 
-    i16monitoredMasterStatesSize(_i16monitoredMasterStatesSize),
+    ui16monitoredMasterStatesSize(_ui16monitoredMasterStatesSize),
     i16monitoredMasterStates(__i16monitoredMasterStates), 
     _masterBox(__masterBox) 
 {
@@ -800,7 +809,7 @@ bool boxState::_testIfMasterIsInMonitoredState() {
   }
   /** Else, iterate over the array of monitored masterBox states and find out whether
    *  the currnt masterBox active state correponds to one of these states. */
-  for (uint16_t _i = 0; _i < i16monitoredMasterStatesSize; _i++) {
+  for (uint16_t _i = 0; _i < ui16monitoredMasterStatesSize; _i++) {
     if (i16monitoredMasterStates[_i] == this->_masterBox->i16BoxActiveState) {
       return true;
     }

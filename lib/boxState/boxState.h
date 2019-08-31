@@ -60,7 +60,7 @@ class step
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
       uint16_t __ui16stepMasterBoxName,
-      int16_t __i16monitoredMasterStatesSize,
+      uint16_t __ui16monitoredMasterStatesSize,
       int16_t *__i16monitoredMasterStates
     );
 
@@ -76,7 +76,7 @@ class step
     // int16_t i16onExpireNewMaster;
     uint16_t _ui16stepMasterBoxName;
     // int16_t masterStatesToWatch[];
-    int16_t _i16monitoredMasterStatesSize;
+    uint16_t _ui16monitoredMasterStatesSize;
     int16_t *_i16monitoredMasterStates;
 
     void applyStep();
@@ -110,7 +110,7 @@ class boxState
       const int16_t _i16onIRTrigger, 
       const int16_t _i16onMeshTrigger, 
       const int16_t _i16onExpire, 
-      const int16_t _i16monitoredMasterStatesSize, 
+      const uint16_t _ui16monitoredMasterStatesSize, 
       int16_t *_i16monitoredMasterStates, 
       ControlerBox * __masterBox = nullptr);
 
@@ -134,8 +134,8 @@ class boxState
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;
+    uint16_t ui16monitoredMasterStatesSize;
     int16_t *i16monitoredMasterStates;
-    int16_t i16monitoredMasterStatesSize;
 
     /** individual boxState Task: iterating once (unless explicitly restarted) 
      *  for the duration of a single boxState */
