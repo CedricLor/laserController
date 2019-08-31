@@ -606,9 +606,9 @@ void boxState::_restart_tPlayBoxState() {
 
 
 
-/*
-    The following subs are helpers for _setBoxTargetStateFromSignalCatchers
-*/
+/******************************************************************************************
+ **************** SUBS OF _setBoxTargetStateFromSignalCatchers ****************************
+*******************************************************************************************/
 void  boxState::_setMasterBox() {
   // if the change of master has already been taken into account, just return
   if (thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount) {
@@ -646,7 +646,8 @@ void  boxState::_setMasterBox() {
 }
 
 
-
+/** DOUBLE TRIGGER **
+ ********************/
 bool boxState::_hasBothTriggers() {
   return (i16onIRTrigger != -1
     && i16onMeshTrigger != -1);
@@ -669,6 +670,22 @@ bool boxState::_checkBothTriggersAndAct() {
 
 
 
+void boxState::_resolveTriggersConflictAndAct() {
+  // check whether both IR and Mesh have been triggered
+  Serial.println("--------------------- double trigger ----------");
+  // if so, compare the times at which each signal catcher has been set
+  // and give priority to the most recent one
+  if (this->_masterBox->ui32BoxActiveStateStartTime > thisBox.ui16hasLastRecPirHighTimeChanged) {
+    _setBoxTargetState(i16onMeshTrigger);
+  }
+  _setBoxTargetState(i16onIRTrigger);
+
+}
+
+
+
+/** MESH TRIGGER ****
+ ********************/
 /** boxState::_checkMeshTriggerAndAct(): 
  *  (1) checks whether:
  *    (i) the boxState of the parent box is other than -1; and 
@@ -678,17 +695,6 @@ void boxState::_checkMeshTriggerAndAct() {
   if (_meshHasBeenTriggered()) {
     Serial.println("--------------------- Mesh triggered ----------");
     _setBoxTargetState(i16onMeshTrigger);
-  }
-}
-
-
-
-void boxState::_checkIRTriggerAndAct() {
-  // check whether IR has been triggered;
-  // if so, set the boxTarget state accordingly
-  if (thisBox.ui16hasLastRecPirHighTimeChanged) {
-    Serial.println("--------------------- IR triggered ----------");
-    _setBoxTargetState(i16onIRTrigger);
   }
 }
 
@@ -721,18 +727,19 @@ bool boxState::_testIfMasterIsInMonitoredState() {
 }
 
 
-
-void boxState::_resolveTriggersConflictAndAct() {
-  // check whether both IR and Mesh have been triggered
-  Serial.println("--------------------- double trigger ----------");
-  // if so, compare the times at which each signal catcher has been set
-  // and give priority to the most recent one
-  if (this->_masterBox->ui32BoxActiveStateStartTime > thisBox.ui16hasLastRecPirHighTimeChanged) {
-    _setBoxTargetState(i16onMeshTrigger);
+/** IR TRIGGER ******
+ ********************/
+void boxState::_checkIRTriggerAndAct() {
+  // check whether IR has been triggered;
+  // if so, set the boxTarget state accordingly
+  if (thisBox.ui16hasLastRecPirHighTimeChanged) {
+    Serial.println("--------------------- IR triggered ----------");
+    _setBoxTargetState(i16onIRTrigger);
   }
-  _setBoxTargetState(i16onIRTrigger);
-
 }
+/*********************************************************************
+ ********* END OF SUBS OF _setBoxTargetStateFromSignalCatchers *******
+**********************************************************************/
 
 
 
