@@ -7,7 +7,9 @@
 #define signal_h
 
 #include "Arduino.h"
-
+#include "ControlerBox.h"
+#include "boxState.h"
+#include "pirController.h"
 
 class signal
 {
