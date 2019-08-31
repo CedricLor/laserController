@@ -107,7 +107,7 @@ More information about PlatformIO Library Dependency Finder
 DONE:
 - rename ControlerBox::activeBoxState to ControlerBox::i16BoxActiveState
 - rename boxState::_targetActiveBoxState to boxState::_boxTargetState
-- rename boxState::_activeBoxStateHasBeenReset to boxState::_boxActiveStateHasBeenReset
+- rename boxState::_activeBoxStateHasBeenReset to boxState::_boxTargetStateHasChanged
 - rename boxState::_defaultBoxState to boxState::_boxDefaultState
 - ControlerBox::updateOtherBoxProperties
   - to be tested with a microcontroller
