@@ -330,7 +330,7 @@ uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
 
 
 
-
+Task ControlerBox::tSetBoxStateFromWeb(0, 1, NULL, NULL, false, NULL, NULL);
 
 /** Setter for i16boxStateRequestedFromWeb
  * 
