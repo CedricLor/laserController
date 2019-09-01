@@ -87,42 +87,34 @@ void signal::_tcbIsMeshHigh(const ControlerBox & _callingBox) {
 
 
 /** signal::_testIfMeshisHigh: tests, in the following order, whether:
- *  1. a masterBox has been defined and has connected to thisBox;
- *  2. the masterBox active state has been taken into account;
- *  3. the masterBox active state is different than -1; (??? why ???);
- *  4. thisBox in the currentBoxState is monitoring any states of its master;
- *  5. the masterBox active state corresponds to any monitored state of any of its masters.
+ *  1. the caller is monitored;
+ *  2. the masterBox new active state corresponds to state monitored by thisBox in its currentState;
+ *  3. if the masterBox new active state has been set more recently than the currentState of thisBox.
  *  
  *  TODO in next implementation:
- *  1. rethink the order of the tests (if this box is not monitoring 
- *     any master state, why test if there is a masterBox or its state 
- *     has been taken into account, for instance)
- *  2. adapt for multiple masterBoxes;
- *  3. reset signal catchers;
- *  4. test whether the timestamp of the active state of the masterBox 
- *     predates the starting timestamp of thisBox's current state. */
+ *  1. adapt for multiple masterBoxes;
+ *  2. reset signal catchers; */
 bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
-  // has a masterBox been defined and has it connected to thisBox?
-  if (_currentBoxState._masterBox == nullptr) {
+  // is calling box being monitored by thisBox in its current state?
+  if (!(_isCallerMonitored(_callingBox, thisBox.ui16MasterBoxName)) ) {
     return false;
   }
-  // has the masterBox active state been taken into account?
-  if (_currentBoxState._masterBox->boxActiveStateHasBeenTakenIntoAccount) {
-    return false;
-  }
-  // is the masterBox active state equal to -1 (how could it be)?
-  if (_currentBoxState._masterBox->i16BoxActiveState == -1) {
-    return false;
-  }
-  // is thisBox monitoring any state of its masters?
-  if (_currentBoxState.i16monitoredMasterStates[0] == -1) {
-    return false;
-  }
+  // is thisBox monitoring any state of its masters? 
+  /** Already tested (from the other side) in 
+   *  _tcbIsMeshHigh --> (_currentBoxState.i16onMeshTrigger == -1).
+   * 
+   *  Commented out! */
+  // if (_currentBoxState.i16monitoredMasterStates[0] == -1) {
+  //   return false;
+  // }
   // check whether the boxState of the masterBox matches with any of the monitored states
   for (uint16_t _i = 0; _i < _currentBoxState.ui16monitoredMasterStatesSize; _i++) {
     if (_currentBoxState._masterBox->i16BoxActiveState == 
       _currentBoxState.i16monitoredMasterStates[_i]) {
-      return true;
+      /** check whether the signal (new state of master box) is more
+       *  recent than the current boxState time stamp.
+       *  Return true if it is more recent and false otherwise. */
+      return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32BoxActiveStateStartTime));
     }
   }
   return false;
@@ -139,7 +131,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
 /** signal::_tcbIsIRHigh() tests whether:
  *  1. the current boxState is IR sensitive;
  *  2. IR shall be considered as high;
- *  and if both conditions are fullfilled, it sets
+ *  and if both conditions are fullfilled, it resets/changes
  *  thisBox targetState in boxState. 
  * 
  *  TO DO:
@@ -178,8 +170,8 @@ bool signal::_testIfIRisHigh(const boxState & _currentBoxState, const ControlerB
   if (_isCallerMonitored(_callingBox, thisBox.ui16MasterBoxName)) {
     return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32lastRecPirHighTime));
   }
-    return false;
-  }
+  return false;
+}
 
 
 
