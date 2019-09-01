@@ -79,7 +79,7 @@ signal::signal()
    *     Needed here:
    *     => a function:
    *     static void _tcbIsIRHigh(); */
-  ControlerBox::tIsIRHigh.setCallback(_tcbIsIRHigh);
+  ControlerBox::_tcbNsIsIRHigh = *_tcbIsIRHigh;
 
   /**  4. Define the callback of a Task located in boxState, to be enabled upon starting
    *     a new boxState (or before, if it can be anticipated), to pass the list of 

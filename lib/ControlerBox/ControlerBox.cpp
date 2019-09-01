@@ -19,6 +19,7 @@
 short int ControlerBox::valFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
 short int ControlerBox::previousConnectedBoxesCount = 1;
+void (*ControlerBox::_tcbNsIsIRHigh)() = nullptr;
 
 
 // PUBLIC
@@ -371,7 +372,14 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const u
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
     ui16hasLastRecPirHighTimeChanged = _ui16hasLastRecPirHighTimeChanged;
-    tIsIRHigh.restart();
+    // tIsIRHigh.restart();
+    tNsIsIRHigh.setInterval(0);
+    tNsIsIRHigh.setIterations(1);
+    tNsIsIRHigh.setCallback([](){
+      _tcbNsIsIRHigh();
+    });
+    mns::myScheduler.addTask(tNsIsIRHigh);
+    tNsIsIRHigh.restart();
   }
 }
 
