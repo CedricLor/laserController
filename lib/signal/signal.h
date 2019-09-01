@@ -15,11 +15,6 @@ class signal
   public:
     signal();
 
-    // uint16_t state;
-    // uint16_t type;
-    // uint16_t source;
-    // uint32_t startTime;
-
   private:
     static void _tcbIsMeshHigh(const ControlerBox & _callingBox);
     static bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
