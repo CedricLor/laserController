@@ -524,59 +524,18 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
+  // If the targetState has been reset, start playing the corresponding state
 
-  // A. Analyse the signal catchers and set the box target state accordingly
-  if (ControlerBox::valFromWeb != -1) {
-    Serial.println("--------------------- valFromWeb ----------");
-    _setBoxTargetState(ControlerBox::valFromWeb);
-    return;
-  }
+  /** If the _boxTargetStateHasChanged:
+   *  1. reset the witness _boxTargetStateHasChanged to 0;
+   *  2. get the params for the new state in case we are in step controlled mode;
+   *  3. set the duration to stay in the new boxState (by setting the aInterval
+   *     of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
+   *     the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
+   *  4. set the i16BoxActiveState property (and related properties) of this box;
+   *  5. restart/enable the "children" Task tPlayBoxState.*/
 
-  // B. Once read, reset all the signal catchers
-  ControlerBox::valFromWeb = -1;
-
-  // C. If the active state (actually, the targetState) has been reset, start playing
-  // the corresponding state
-  boxStates[thisBox.i16BoxActiveState]._restart_tPlayBoxState();
-  // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
-};
-
-
-// Upon tPlayBoxStates being enabled (at startup), the _boxTargetState is being
-// changed to 2 (pir Startup).
-bool boxState::_oetcbPlayBoxStates() {
-  // Serial.println("void boxState::_oetcbPlayBoxStates(). Starting.");
-  _setBoxTargetState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
-  // Serial.println("void boxState::_oetcbPlayBoxStates(). Ending.");
-  return true;
-}
-
-
-
-
-
-//////////////////////////////////////////////
-// _tcbPlayBoxStates() sub functions
-//////////////////////////////////////////////
-/*
-    _restart_tPlayBoxState() starts a new boxState, if
-     _boxTargetStateHasChanged signals a change in the box
-    active state (the _boxTargetStateHasChanged is marked as 
-    changed upon calls to _setBoxTargetState; _setBoxTargetState
-    is called (i) from the main loop of tPlayBoxStates upon events from the IR 
-    or the mesh and (ii) from the onDisable callback of tPlayBoxState).
-
-    If the _boxTargetStateHasChanged, _restart_tPlayBoxState() will:
-      1. reset the witness _boxTargetStateHasChanged to 0;
-      2. get the params for the new state in case we are in step controlled mode;
-      3. set the duration to stay in the new boxState (by setting the
-      aInterval of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
-      the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
-      4. set the i16BoxActiveState property (and related properties) of this box;
-      5. restart/enable the "children" Task tPlayBoxState.
-*/
-void boxState::_restart_tPlayBoxState() {
-  // if the _boxTargetStateHasChanged,
+  // 0. if the _boxTargetStateHasChanged has not changed, just return
   if (_boxTargetStateHasChanged == 0) {
     return;
   }
@@ -604,7 +563,25 @@ void boxState::_restart_tPlayBoxState() {
   // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState enabled");
   // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
   // Serial.println("*********************************************************");
+
+
+  // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
+};
+
+
+// Upon tPlayBoxStates being enabled (at startup), the _boxTargetState is being
+// changed to 2 (pir Startup).
+bool boxState::_oetcbPlayBoxStates() {
+  // Serial.println("void boxState::_oetcbPlayBoxStates(). Starting.");
+  _setBoxTargetState(2); // 2 for pir Startup; upon enabling the task tPlayBoxStates, play the pirStartup boxState
+  // Serial.println("void boxState::_oetcbPlayBoxStates(). Ending.");
+  return true;
 }
+
+
+
+
+
 
 
 

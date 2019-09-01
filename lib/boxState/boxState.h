@@ -152,9 +152,6 @@ class boxState
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();
 
-    // _tcbPlayBoxStates() sub functions
-    void _restart_tPlayBoxState();
-
     static void _setBoxTargetState(const short int targetBoxState);
 
     static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);

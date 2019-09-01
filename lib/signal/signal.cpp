@@ -29,7 +29,7 @@ signal::signal()
    *     static void _tcbIsNewBoxMonitored();
    *     => a storage structure: i.e. a ControlerBox refs array? */
 
-
+  ControlerBox::_tcbSetBoxStateFromWeb = *_tcbSetBoxStateFromWeb;
    /** 
    *  2. Define the callback of a Task located in ControlerBox, to be enabled upon
    *     receiving a change in the boxState of one of the ControlerBoxes.
@@ -65,6 +65,15 @@ signal::signal()
    *     static void _tcbPassControlerBoxListToSignal();
    *     => a storage structure: instance of signal?
    *    */
+}
+
+
+
+
+/** signal::_tcbSetBoxStateFromWeb() set the target boxState from
+ *  a changeBox request. */
+void signal::_tcbSetBoxStateFromWeb() {
+  boxState::_setBoxTargetState(ControlerBox::i16boxStateRequestedFromWeb);
 }
 
 

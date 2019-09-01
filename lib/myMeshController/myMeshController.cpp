@@ -334,11 +334,11 @@ void myMeshController::_changedBoxConfirmation() {
 void myMeshController::_updateMyValFromWeb() {
 // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   if (MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%u]\n", (_nsobj["val"].as<uint16_t>()));
+    Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%i]\n", (_nsobj["val"].as<int16_t>()));
   }
 
-  // update the valFromWeb
-  ControlerBox::valFromWeb = _nsobj["val"].as<uint8_t>();
+  // update the i16boxStateRequestedFromWeb
+  ControlerBox::setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
   /** not sending any confirmation, as boxState will send an automatic
    *  status message. */
 }

@@ -16,11 +16,12 @@
 
 
 // STATIC VARIABLES - SIGNAL CATCHERS
-short int ControlerBox::valFromWeb = -1;
+int16_t ControlerBox::i16boxStateRequestedFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
 short int ControlerBox::previousConnectedBoxesCount = 1;
 void (*ControlerBox::_tcbNsIsMeshHigh)(const ControlerBox & _callingBox) = nullptr;
 void (*ControlerBox::_tcbNsIsIRHigh)(const ControlerBox & _callingBox) = nullptr;
+void (*ControlerBox::_tcbSetBoxStateFromWeb)() = nullptr;
 
 
 // PUBLIC
@@ -379,6 +380,27 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
       mns::myScheduler.addTask(tNsIsIRHigh);
       tNsIsIRHigh.restart();
     }
+  }
+}
+
+
+
+
+
+/** Setter for i16boxStateRequestedFromWeb
+ * 
+ *  Called from: 
+ *  - myMeshController, upon receiving a changeBox request from the web. */
+void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
+  i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
+  /** Set the Task that will check whether this change shall have an impact
+   *  on thisBox boxState, add it to the Scheduler and restart it. */
+  if (_tcbSetBoxStateFromWeb != nullptr) {
+    tSetBoxStateFromWeb.setInterval(0);
+    tSetBoxStateFromWeb.setIterations(1);
+    tSetBoxStateFromWeb.setCallback(_tcbSetBoxStateFromWeb);
+    mns::myScheduler.addTask(tSetBoxStateFromWeb);
+    tSetBoxStateFromWeb.restart();
   }
 }
 

@@ -116,7 +116,8 @@ class ControlerBox
 
     /** -------- Public Static Variables - Signal catchers -----------------
      * */
-    static short int valFromWeb;
+    static int16_t i16boxStateRequestedFromWeb;
+    static void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
     // -------- Public Static Methods -----------------
 
@@ -134,10 +135,14 @@ class ControlerBox
 
     // Tasks
     static Task tReboot;
+
+    // boxState Setters Tasks
     Task tNsIsMeshHigh;
     static void (*_tcbNsIsMeshHigh)(const ControlerBox & _callingBox);
     Task tNsIsIRHigh;
     static void (*_tcbNsIsIRHigh)(const ControlerBox & _callingBox);
+    static Task tSetBoxStateFromWeb;
+    static void (*_tcbSetBoxStateFromWeb)();
 
   private:
     static void _reboot();
