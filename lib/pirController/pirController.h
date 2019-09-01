@@ -19,7 +19,7 @@ class pirController
 
     static void init();
 
-    static Task tSendMsg;
+    static Task tSetPirTimeStampAndBrdcstMsg;
     static Task tSpeedBumper;
 
   private:

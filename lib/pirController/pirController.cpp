@@ -77,8 +77,7 @@ void pirController::check() {
   // Serial.println("pirController::check(): starting");
   if (digitalRead(_inputPin)) {
     Serial.println("pirController::check(): digitalRead(_inputPin) is HIGH");
-    thisBox.setBoxIRTimes(laserControllerMesh.getNodeTime(), 1);
-    tSendMsg.enable();
+    tSetPirTimeStampAndBrdcstMsg.enable();
   }
   // Serial.println("pirController::check(): ending");
 }
@@ -86,12 +85,13 @@ void pirController::check() {
 
 
 
-Task pirController::tSendMsg(
+Task pirController::tSetPirTimeStampAndBrdcstMsg(
   0, 
   TASK_ONCE, 
   /** main callback */
   [](){
-    Serial.println("pirController::tSendMsg(): ---------- PIR Mouvement Detected ----------");
+    Serial.println("pirController::tSetPirTimeStampAndBrdcstMsg(): ---------- PIR Mouvement Detected ----------");
+    thisBox.setBoxIRTimes(laserControllerMesh.getNodeTime(), 1);
     myMeshViews _myMeshViews;
     _myMeshViews._IRHighMsg();
     }, 
@@ -101,16 +101,15 @@ Task pirController::tSendMsg(
   false, 
   /** onEnable callback */
   [](){
-    /** invert and save the current value of the speedbumper 
-     *  i.e. _speedBumper is a 0 when it is not on (at startup and once the Task 
-     *  tSpeedBumper is disabled). If I return 0, the Task tSendMsg will not start. 
-     *  
-     *  Once the speedbumper is started, it is at 1. If I return 1, this Task tSendMsg
-     *  will start again and again. */
-    // Serial.printf("pirController::tSendMsg(): onEnable callback: is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
+    /** Test whether tSpeedBumper.isEnabled().
+     * 
+     *  If it is, return false and disable this Task.
+     *  If it is not, restart tSpeedBumper for 3 seconds and return true
+     *  to execute the main callback. */
+    // Serial.printf("pirController::tSetPirTimeStampAndBrdcstMsg(): onEnable callback: is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
     if (tSpeedBumper.isEnabled()) { return false; }
     tSpeedBumper.restartDelayed(3000);
-    // Serial.printf("pirController::tSendMsg(): onEnable callback: tSpeedBumper.isEnabled() was not enabled. now, is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
+    // Serial.printf("pirController::tSetPirTimeStampAndBrdcstMsg(): onEnable callback: tSpeedBumper.isEnabled() was not enabled. now, is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
     return true;
   }, 
   /** onDisable callback */
