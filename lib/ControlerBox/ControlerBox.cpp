@@ -364,15 +364,12 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 
 
 
-Task ControlerBox::tIsIRHigh(0, 1, NULL, NULL, false, NULL, NULL);
-
 // Setter for ui32lastRecPirHighTime and ui16hasLastRecPirHighTimeChanged
 // Called only from this class (for the other boxes).
 void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const uint16_t _ui16hasLastRecPirHighTimeChanged) {
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
     ui16hasLastRecPirHighTimeChanged = _ui16hasLastRecPirHighTimeChanged;
-    // tIsIRHigh.restart();
     tNsIsIRHigh.setInterval(0);
     tNsIsIRHigh.setIterations(1);
     tNsIsIRHigh.setCallback([](){

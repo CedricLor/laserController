@@ -31,7 +31,7 @@ signal::signal()
 
 
   /**
-   * TO DO: turn tIsMeshHigh and tIsIRHigh into instance Tasks of
+   * TO DO: turn tIsMeshHigh into instance Tasks of
    *        the corresponding controlerBox
   */
    /** 
@@ -65,20 +65,7 @@ signal::signal()
    *     This callback shall test:
    *  (a). whether the ControlerBoxes pertains to one of the monitored ControlerBoxes 
    *       (i.e. is one of the masterBoxes);
-   *  (b). if so, it shall turn an IR HIGH switch (as instance property) in boxState.
-   * 
-   *     Needed in ControlerBox:
-   *     => Task:
-   *     Task tIsIRHigh;
-   *     Task ControlerBox::tIsIRHigh(0, 1, NULL, NULL, false, NULL, NULL);
-   * 
-   *     Needed in boxState:
-   *     => instance property:
-   *     uint16_t ui16IRHigh
-   * 
-   *     Needed here:
-   *     => a function:
-   *     static void _tcbIsIRHigh(); */
+   *  (b). if so, it shall set the relevant target boxState in boxState. */
   ControlerBox::_tcbNsIsIRHigh = *_tcbIsIRHigh;
 
   /**  4. Define the callback of a Task located in boxState, to be enabled upon starting

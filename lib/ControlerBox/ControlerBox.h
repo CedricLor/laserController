@@ -151,7 +151,6 @@ class ControlerBox
     // Tasks
     static Task tReboot;
     static Task tIsMeshHigh;
-    static Task tIsIRHigh;
     Task tNsIsIRHigh;
     static void (*_tcbNsIsIRHigh)();
 
