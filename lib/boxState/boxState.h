@@ -142,6 +142,8 @@ class boxState
     static Task tPlayBoxState;
 
   private:
+    friend class signal;
+
     static short int _boxTargetState;
     static bool _boxTargetStateHasChanged;
 
