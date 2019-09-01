@@ -30,10 +30,6 @@ signal::signal()
    *     => a storage structure: i.e. a ControlerBox refs array? */
 
 
-  /**
-   * TO DO: turn tIsMeshHigh into instance Tasks of
-   *        the corresponding controlerBox
-  */
    /** 
    *  2. Define the callback of a Task located in ControlerBox, to be enabled upon
    *     receiving a change in the boxState of one of the ControlerBoxes.
@@ -43,21 +39,8 @@ signal::signal()
    *  (b). whether the new boxState pertains to one of the monitored boxStates for this
    *       ControlerBox;
    *  (c). if both conditions are fullfiled, it shall turn a Mesh HIGH switch (as 
-   *       instance property) in boxState.
-   * 
-   *     Needed in ControlerBox:
-   *     => Task:
-   *     Task tIsMeshHigh;
-   *     Task ControlerBox::tIsMeshHigh(0, 1, NULL, NULL, false, NULL, NULL);
-   * 
-   *     Needed in boxState:
-   *     => instance property:
-   *     uint16_t ui16MeshHigh;
-   * 
-   *     Needed here:
-   *     => a function:
-   *     static void _tcbIsMeshHigh(); */
-  ControlerBox::tIsMeshHigh.setCallback(_tcbIsMeshHigh);
+   *       instance property) in boxState. */
+  ControlerBox::_tcbNsIsMeshHigh = *_tcbIsMeshHigh;
 
    /** 
    *  3. Define the callback of a Task located in ControlerBox, to be enabled upon

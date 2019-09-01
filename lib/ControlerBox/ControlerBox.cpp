@@ -19,6 +19,7 @@
 short int ControlerBox::valFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
 short int ControlerBox::previousConnectedBoxesCount = 1;
+void (*ControlerBox::_tcbNsIsMeshHigh)() = nullptr;
 void (*ControlerBox::_tcbNsIsIRHigh)() = nullptr;
 
 
@@ -304,8 +305,6 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 
 
 
-Task ControlerBox::tIsMeshHigh(0, 1, NULL, NULL, false, NULL, NULL);
-
 // Setter for the activeState and associated variables
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
@@ -337,7 +336,15 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
     // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
     // It is used when the laserBox receives an order to change active state from the interface.
 
-    tIsMeshHigh.restart();
+    /** Set the Task that will check whether this change shall have an impact
+     *  on thisBox boxState, add it to the Scheduler and restart it. */
+    tNsIsMeshHigh.setInterval(0);
+    tNsIsMeshHigh.setIterations(1);
+    tNsIsMeshHigh.setCallback([](){
+      _tcbNsIsMeshHigh();
+    });
+    mns::myScheduler.addTask(tNsIsMeshHigh);
+    tNsIsMeshHigh.restart();
   }
 
   // Serial.println("ControlerBox::setBoxActiveState(): Ending");
