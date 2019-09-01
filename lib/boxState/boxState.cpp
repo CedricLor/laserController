@@ -708,13 +708,9 @@ void boxState::_setBoxTargetState(const short __boxTargetState) {
 // helpers
 //////////////////////////////
 unsigned long boxState::_ulCalcInterval(int16_t _i16IntervalInS) {
-  if (boxStates[_boxTargetState].i16Duration == -1) {
+  if (_i16IntervalInS == -1) {
     return 4294967290;
   }
-  return boxStates[_boxTargetState].i16Duration * 1000;
+  return (_i16IntervalInS * 1000);
 }
 
-uint16_t boxState::ui16mToS(uint16_t _minutes) {
-  uint16_t _ui16seconds = _minutes * 60;
-  return _ui16seconds;
-}

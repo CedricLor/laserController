@@ -155,7 +155,6 @@ class boxState
     static void _setBoxTargetState(const short int targetBoxState);
 
     static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
-    static uint16_t ui16mToS(uint16_t _minutes);
 };
 
 #endif
