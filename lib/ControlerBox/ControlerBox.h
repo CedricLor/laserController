@@ -148,10 +148,13 @@ class ControlerBox
     static short int connectedBoxesCount;
     static short int previousConnectedBoxesCount;
 
+    // Tasks
     static Task tReboot;
-    static void _reboot();
+    static Task tIsMeshHigh;
+    static Task tIsIRHigh;
 
   private:
+    static void _reboot();
 };
 
 extern ControlerBox ControlerBoxes[];

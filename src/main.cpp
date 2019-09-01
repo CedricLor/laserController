@@ -71,6 +71,8 @@ void setup() {
     mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
   if ((isInterface == false) || (isRoot == false)) {
+    mns::myScheduler.addTask(ControlerBox::tIsMeshHigh);
+    mns::myScheduler.addTask(ControlerBox::tIsIRHigh);
     mns::myScheduler.addTask(pirController::sendMsg);
     mns::myScheduler.addTask(pirController::speedBumper);
     mns::myScheduler.addTask(step::tPreloadNextStep);

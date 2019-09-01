@@ -303,6 +303,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
 
 
 
+Task ControlerBox::tIsMeshHigh(0, 1, NULL, NULL, false, NULL, NULL);
 
 // Setter for the activeState and associated variables
 // Called only from this class (for the other boxes) and by
@@ -311,29 +312,31 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
   // Serial.println("ControlerBox::setBoxActiveState(): Starting");
 
   if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
-  i16BoxActiveState = _sBoxActiveState;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
+    i16BoxActiveState = _sBoxActiveState;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
 
-  boxActiveStateHasBeenSignaled = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
-  // setters:
-  // - by default to true upon init (controlerBox constructor);
-  // - to false here (usefull for the IF, for the received states of other boxes);
-  // - to true in myMeshViews (for this box only, upon sending a statusMsg);
-  // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
-  // used by the interface mostly
+    boxActiveStateHasBeenSignaled = false;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
+    // setters:
+    // - by default to true upon init (controlerBox constructor);
+    // - to false here (usefull for the IF, for the received states of other boxes);
+    // - to true in myMeshViews (for this box only, upon sending a statusMsg);
+    // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
+    // used by the interface mostly
 
-  ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
+    ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
 
-  boxActiveStateHasBeenTakenIntoAccount = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount);
-  // setters:
-  // - by default at true upon init (controlerBox constructor);
-  // - to false here (useful so that the boxState can check if a boxState change request has come);
-  // - to true (for this box only) by boxState.
-  // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
-  // It is used when the laserBox receives an order to change active state from the interface.
+    boxActiveStateHasBeenTakenIntoAccount = false;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount);
+    // setters:
+    // - by default at true upon init (controlerBox constructor);
+    // - to false here (useful so that the boxState can check if a boxState change request has come);
+    // - to true (for this box only) by boxState.
+    // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
+    // It is used when the laserBox receives an order to change active state from the interface.
+
+    tIsMeshHigh.restart();
   }
 
   // Serial.println("ControlerBox::setBoxActiveState(): Ending");
@@ -360,6 +363,7 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 
 
 
+Task ControlerBox::tIsIRHigh(0, 1, NULL, NULL, false, NULL, NULL);
 
 // Setter for ui32lastRecPirHighTime and ui16hasLastRecPirHighTimeChanged
 // Called only from this class (for the other boxes).
@@ -367,6 +371,7 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const u
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
     ui16hasLastRecPirHighTimeChanged = _ui16hasLastRecPirHighTimeChanged;
+    tIsIRHigh.restart();
   }
 }
 
