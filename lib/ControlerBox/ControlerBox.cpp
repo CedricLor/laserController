@@ -338,13 +338,15 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
-    tNsIsMeshHigh.setInterval(0);
-    tNsIsMeshHigh.setIterations(1);
-    tNsIsMeshHigh.setCallback([](){
-      _tcbNsIsMeshHigh();
-    });
-    mns::myScheduler.addTask(tNsIsMeshHigh);
-    tNsIsMeshHigh.restart();
+    if (_tcbNsIsMeshHigh != nullptr) {
+      tNsIsMeshHigh.setInterval(0);
+      tNsIsMeshHigh.setIterations(1);
+      tNsIsMeshHigh.setCallback([](){
+        _tcbNsIsMeshHigh();
+      });
+      mns::myScheduler.addTask(tNsIsMeshHigh);
+      tNsIsMeshHigh.restart();
+    }
   }
 
   // Serial.println("ControlerBox::setBoxActiveState(): Ending");
@@ -379,13 +381,15 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const u
     ui16hasLastRecPirHighTimeChanged = _ui16hasLastRecPirHighTimeChanged;
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
-    tNsIsIRHigh.setInterval(0);
-    tNsIsIRHigh.setIterations(1);
-    tNsIsIRHigh.setCallback([](){
-      _tcbNsIsIRHigh();
-    });
-    mns::myScheduler.addTask(tNsIsIRHigh);
-    tNsIsIRHigh.restart();
+    if (_tcbNsIsIRHigh != nullptr) {
+      tNsIsIRHigh.setInterval(0);
+      tNsIsIRHigh.setIterations(1);
+      tNsIsIRHigh.setCallback([](){
+        _tcbNsIsIRHigh();
+      });
+      mns::myScheduler.addTask(tNsIsIRHigh);
+      tNsIsIRHigh.restart();
+    }
   }
 }
 
