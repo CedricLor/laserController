@@ -29,6 +29,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 painlessMesh            laserControllerMesh;
 ControlerBox            ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox = ControlerBoxes[0];
+signal                  _signal;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
