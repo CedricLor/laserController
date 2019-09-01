@@ -152,6 +152,94 @@ uint16_t ControlerBox::getMasterBoxNameForWeb() {
 
 
 
+
+// Setter for the activeState and associated variables
+// Called only from this class (for the other boxes) and by
+// boxState (when an effective update has been made).
+void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+  // Serial.println("ControlerBox::setBoxActiveState(): Starting");
+
+  if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
+    i16BoxActiveState = _sBoxActiveState;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
+
+    boxActiveStateHasBeenSignaled = false;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
+    // setters:
+    // - by default to true upon init (controlerBox constructor);
+    // - to false here (usefull for the IF, for the received states of other boxes);
+    // - to true in myMeshViews (for this box only, upon sending a statusMsg);
+    // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
+    // used by the interface mostly
+
+    ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
+    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
+
+    /** Set the Task that will check whether this change shall have an impact
+     *  on thisBox boxState, add it to the Scheduler and restart it. */
+    if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) == std::addressof(thisBox) ) ) {
+      tNsIsMeshHigh.setInterval(0);
+      tNsIsMeshHigh.setIterations(1);
+      tNsIsMeshHigh.setCallback([this](){
+        _tcbNsIsMeshHigh(*this);
+      });
+      mns::myScheduler.addTask(tNsIsMeshHigh);
+      tNsIsMeshHigh.restart();
+    }
+  }
+
+  // Serial.println("ControlerBox::setBoxActiveState(): Ending");
+}
+
+
+
+
+
+// Setter for the defaultState and associated variables
+// Called only from this class (for the other boxes).
+void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
+  // Serial.println("ControlerBox::setBoxDefaultState(): Starting");
+
+  sBoxDefaultState = _sBoxDefaultState;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
+
+  sBoxDefaultStateChangeHasBeenSignaled = false;
+  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
+
+  // Serial.println("ControlerBox::setBoxDefaultState(): Ending");
+}
+
+
+
+
+/** Setter for ui32lastRecPirHighTime
+ * 
+ *  Called from: 
+ *  - this class, upon receiving an IR high message from the other boxes;
+ *  - the pirController, upon IR high. */
+void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
+  if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
+    ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
+    /** Set the Task that will check whether this change shall have an impact
+     *  on thisBox boxState, add it to the Scheduler and restart it. */
+    if (_tcbNsIsIRHigh != nullptr) {
+      tNsIsIRHigh.setInterval(0);
+      tNsIsIRHigh.setIterations(1);
+      tNsIsIRHigh.setCallback([this](){
+        _tcbNsIsIRHigh(*this);
+      });
+      mns::myScheduler.addTask(tNsIsIRHigh);
+      tNsIsIRHigh.restart();
+    }
+  }
+}
+
+
+
+
+
+
+
 // Static Methods
 
 
@@ -240,6 +328,32 @@ uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
 }
 
 
+
+
+
+
+/** Setter for i16boxStateRequestedFromWeb
+ * 
+ *  Called from: 
+ *  - myMeshController, upon receiving a changeBox request from the web. */
+void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
+  i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
+  /** Set the Task that will check whether this change shall have an impact
+   *  on thisBox boxState, add it to the Scheduler and restart it. */
+  if (_tcbSetBoxStateFromWeb != nullptr) {
+    tSetBoxStateFromWeb.setInterval(0);
+    tSetBoxStateFromWeb.setIterations(1);
+    tSetBoxStateFromWeb.setCallback(_tcbSetBoxStateFromWeb);
+    mns::myScheduler.addTask(tSetBoxStateFromWeb);
+    tSetBoxStateFromWeb.restart();
+  }
+}
+
+
+
+
+
+
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
 void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
@@ -300,109 +414,6 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   Serial.println("%s Ending");
 }
 
-
-
-// Setter for the activeState and associated variables
-// Called only from this class (for the other boxes) and by
-// boxState (when an effective update has been made).
-void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
-  // Serial.println("ControlerBox::setBoxActiveState(): Starting");
-
-  if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
-    i16BoxActiveState = _sBoxActiveState;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
-
-    boxActiveStateHasBeenSignaled = false;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
-    // setters:
-    // - by default to true upon init (controlerBox constructor);
-    // - to false here (usefull for the IF, for the received states of other boxes);
-    // - to true in myMeshViews (for this box only, upon sending a statusMsg);
-    // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
-    // used by the interface mostly
-
-    ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
-
-    /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it. */
-    if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) == std::addressof(thisBox) ) ) {
-      tNsIsMeshHigh.setInterval(0);
-      tNsIsMeshHigh.setIterations(1);
-      tNsIsMeshHigh.setCallback([this](){
-        _tcbNsIsMeshHigh(*this);
-      });
-      mns::myScheduler.addTask(tNsIsMeshHigh);
-      tNsIsMeshHigh.restart();
-    }
-  }
-
-  // Serial.println("ControlerBox::setBoxActiveState(): Ending");
-}
-
-
-
-
-
-// Setter for the defaultState and associated variables
-// Called only from this class (for the other boxes).
-void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
-  // Serial.println("ControlerBox::setBoxDefaultState(): Starting");
-
-  sBoxDefaultState = _sBoxDefaultState;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
-
-  sBoxDefaultStateChangeHasBeenSignaled = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
-
-  // Serial.println("ControlerBox::setBoxDefaultState(): Ending");
-}
-
-
-
-
-/** Setter for ui32lastRecPirHighTime
- * 
- *  Called from: 
- *  - this class, upon receiving an IR high message from the other boxes;
- *  - the pirController, upon IR high. */
-void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
-  if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
-    ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
-    /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it. */
-    if (_tcbNsIsIRHigh != nullptr) {
-      tNsIsIRHigh.setInterval(0);
-      tNsIsIRHigh.setIterations(1);
-      tNsIsIRHigh.setCallback([this](){
-        _tcbNsIsIRHigh(*this);
-      });
-      mns::myScheduler.addTask(tNsIsIRHigh);
-      tNsIsIRHigh.restart();
-    }
-  }
-}
-
-
-
-
-
-/** Setter for i16boxStateRequestedFromWeb
- * 
- *  Called from: 
- *  - myMeshController, upon receiving a changeBox request from the web. */
-void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
-  i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
-  /** Set the Task that will check whether this change shall have an impact
-   *  on thisBox boxState, add it to the Scheduler and restart it. */
-  if (_tcbSetBoxStateFromWeb != nullptr) {
-    tSetBoxStateFromWeb.setInterval(0);
-    tSetBoxStateFromWeb.setIterations(1);
-    tSetBoxStateFromWeb.setCallback(_tcbSetBoxStateFromWeb);
-    mns::myScheduler.addTask(tSetBoxStateFromWeb);
-    tSetBoxStateFromWeb.restart();
-  }
-}
 
 
 
