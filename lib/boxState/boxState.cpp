@@ -511,8 +511,6 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, NULL/*&mns::mySched
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed (the catchers):
-  - thisBox.ui16hasLastRecPirHighTimeChanged (when the current boxState is set to react to signals from the PIR);
-  - ControlerBoxes[PARENT].i16BoxActiveState (when the current boxState is set to react to signals from the mesh);
   - _boxTargetStateHasChanged;
   - _boxTargetState;
   Depending on the changes, it will:
@@ -589,13 +587,6 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
 */
 void boxState::_resetSignalCatchers() {
   ControlerBox::valFromWeb = -1;
-  thisBox.ui16hasLastRecPirHighTimeChanged = 0;
-  if (thisBox.ui16MasterBoxName != 254) {
-    uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-    if (_ui16masterBoxIndex != 254) {
-      ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
-}
-  }
 }
 
 
@@ -620,31 +611,33 @@ void boxState::_resetSignalCatchers() {
 */
 void boxState::_restart_tPlayBoxState() {
   // if the _boxTargetStateHasChanged,
-  if (_boxTargetStateHasChanged == 1) {
-    // 1. Resets the witness to 0 (false)
-    _boxTargetStateHasChanged = 0;
-
-    // 2. If we are in step controlled mode (mode 1),
-    // configure the params of the new boxState.
-    if (ui16Mode == 1) {
-      step::steps[ui16stepCounter].applyStep();
-    }
-
-    // 3. Set the duration of Task tPlayBoxState
-    // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
-    tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
-    // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
-
-    // 4. Set the i16BoxActiveState to the _boxTargetState
-    thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
-    // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState about to be enabled");
-
-    // 5. Restart/enable tPlayBoxState
-    tPlayBoxState.restartDelayed();
-    // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState enabled");
-    // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
-    // Serial.println("*********************************************************");
+  if (_boxTargetStateHasChanged == 0) {
+    return;
   }
+
+  // 1. Resets the witness to 0 (false)
+  _boxTargetStateHasChanged = 0;
+
+  // 2. If we are in step controlled mode (mode 1),
+  // configure the params of the new boxState.
+  if (ui16Mode == 1) {
+    step::steps[ui16stepCounter].applyStep();
+  }
+
+  // 3. Set the duration of Task tPlayBoxState
+  // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
+  tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
+  // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
+
+  // 4. Set the i16BoxActiveState to the _boxTargetState
+  thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
+  // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState about to be enabled");
+
+  // 5. Restart/enable tPlayBoxState
+  tPlayBoxState.restartDelayed();
+  // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState enabled");
+  // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
+  // Serial.println("*********************************************************");
 }
 
 

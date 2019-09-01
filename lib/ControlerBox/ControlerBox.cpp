@@ -37,10 +37,8 @@ ControlerBox::ControlerBox()
   i16BoxActiveState = -1;
   ui32BoxActiveStateStartTime = 0;
   boxActiveStateHasBeenSignaled = true; // to the browser by the interface
-  boxActiveStateHasBeenTakenIntoAccount = false; // by the boxState class
 
   ui32lastRecPirHighTime = 0;
-  ui16hasLastRecPirHighTimeChanged = 0;
 
   isNewBoxHasBeenSignaled = true;
   boxDeletionHasBeenSignaled = true;
@@ -117,10 +115,8 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, i16BoxActiveState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ui32BoxActiveStateStartTime);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, boxActiveStateHasBeenSignaled);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, boxActiveStateHasBeenTakenIntoAccount);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui32lastRecPirHighTime: %u\n", __ui16BoxIndex, ui32lastRecPirHighTime);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16hasLastRecPirHighTimeChanged: %u\n", __ui16BoxIndex, ui16hasLastRecPirHighTimeChanged);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
@@ -292,7 +288,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   }
 
   if (_obj["action"] == "usi" && _obj["key"] == "IR") {
-    thisBox.setBoxIRTimes(_obj["time"].as<uint32_t>(), 1);
+    thisBox.setBoxIRTimes(_obj["time"].as<uint32_t>());
   }
 
   // Print out the updated properties
@@ -326,15 +322,6 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
 
     ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
     // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
-
-    boxActiveStateHasBeenTakenIntoAccount = false;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenTakenIntoAccount);
-    // setters:
-    // - by default at true upon init (controlerBox constructor);
-    // - to false here (useful so that the boxState can check if a boxState change request has come);
-    // - to true (for this box only) by boxState.
-    // This variable has effect only in the laser box / boxState stack (i.e. not in the interface).
-    // It is used when the laserBox receives an order to change active state from the interface.
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
@@ -373,12 +360,14 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 
 
 
-/** Setter for ui32lastRecPirHighTime and ui16hasLastRecPirHighTimeChanged
- *  Called only from this class (for the other boxes). */
-void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime, const uint16_t _ui16hasLastRecPirHighTimeChanged) {
+/** Setter for ui32lastRecPirHighTime
+ * 
+ *  Called from: 
+ *  - this class, upon receiving an IR high message from the other boxes;
+ *  - the pirController, upon IR high. */
+void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
-    ui16hasLastRecPirHighTimeChanged = _ui16hasLastRecPirHighTimeChanged;
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
     if (_tcbNsIsIRHigh != nullptr) {
@@ -425,13 +414,9 @@ void ControlerBox::deleteBox() {
   Serial.printf("%s ui32BoxActiveStateStartTime reset to 0\n", _subName);
   boxActiveStateHasBeenSignaled = true;
   Serial.printf("%s ui32BoxActiveStateStartTime reset to true\n", _subName);
-  boxActiveStateHasBeenTakenIntoAccount = true;
-  Serial.printf("%s boxActiveStateHasBeenTakenIntoAccount reset to true\n", _subName);
 
   Serial.printf("%s ui32lastRecPirHighTime reset to 0\n", _subName);
   ui32lastRecPirHighTime = 0;
-  Serial.printf("%s ui16hasLastRecPirHighTimeChanged reset to 0\n", _subName);
-  ui16hasLastRecPirHighTimeChanged = 0;
 
   isNewBoxHasBeenSignaled = true;
   Serial.printf("%s isNewBoxHasBeenSignaled reset to true\n", _subName);

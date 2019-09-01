@@ -91,7 +91,7 @@ Task pirController::tSetPirTimeStampAndBrdcstMsg(
   /** main callback */
   [](){
     Serial.println("pirController::tSetPirTimeStampAndBrdcstMsg(): ---------- PIR Mouvement Detected ----------");
-    thisBox.setBoxIRTimes(laserControllerMesh.getNodeTime(), 1);
+    thisBox.setBoxIRTimes(laserControllerMesh.getNodeTime());
     myMeshViews _myMeshViews;
     _myMeshViews._IRHighMsg();
     }, 
