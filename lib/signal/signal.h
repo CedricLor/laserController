@@ -22,9 +22,9 @@ class signal
 
   private:
     static void _tcbIsMeshHigh(const ControlerBox & _callingBox);
-    static bool _testIfMeshisHigh(const boxState & _currentBoxState);
+    static bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
     static void _tcbIsIRHigh(const ControlerBox & _callingBox);
-    static bool _testIfIRisHigh(const boxState & _currentBoxState);
+    static bool _testIfIRisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
 };
 
 #endif

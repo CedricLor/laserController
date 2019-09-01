@@ -78,7 +78,7 @@ void signal::_tcbIsMeshHigh(const ControlerBox & _callingBox) {
     return;
   }
   // 2. if so, check whether mesh has been triggered and act
-  if (_testIfMeshisHigh(_currentBoxState)) {
+  if (_testIfMeshisHigh(_currentBoxState, _callingBox)) {
     boxState::_setBoxTargetState(_currentBoxState.i16onMeshTrigger);
   }
 }
@@ -101,7 +101,7 @@ void signal::_tcbIsMeshHigh(const ControlerBox & _callingBox) {
  *  3. reset signal catchers;
  *  4. test whether the timestamp of the active state of the masterBox 
  *     predates the starting timestamp of thisBox's current state. */
-bool signal::_testIfMeshisHigh(const boxState & _currentBoxState) {
+bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
   // has a masterBox been defined and has it connected to thisBox?
   if (_currentBoxState._masterBox == nullptr) {
     return false;
@@ -140,7 +140,7 @@ void signal::_tcbIsIRHigh(const ControlerBox & _callingBox) {
     return;
   }
   // 2. if so, check whether IR has been triggered
-  if (_testIfIRisHigh(_currentBoxState)) {
+  if (_testIfIRisHigh(_currentBoxState, _callingBox)) {
     boxState::_setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
 }
@@ -158,7 +158,7 @@ void signal::_tcbIsIRHigh(const ControlerBox & _callingBox) {
  *  3. reset signal catchers;
  *  4. compare whether the timestamp of the IR signals predate the starting
  *     timestamp of thisBox's current state. */
-bool signal::_testIfIRisHigh(const boxState & _currentBoxState) {
+bool signal::_testIfIRisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
   if (thisBox.ui16hasLastRecPirHighTimeChanged != 0) {
     return true;
   }
