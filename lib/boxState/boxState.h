@@ -123,10 +123,6 @@ class boxState
     static uint16_t ui16stepCounter;
     static uint16_t ui16Mode;
 
-    /** main boxState Task: iterating all the time every 500 ms to monitor
-     *  the occurence of triggers */
-    static Task tPlayBoxStates;
-
     // instance variables
     int16_t i16Duration; // duration for which the state shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
@@ -145,8 +141,7 @@ class boxState
 
     static short int _boxTargetState;
 
-    static void _tcbPlayBoxStates();
-    static bool _oetcbPlayBoxStates();
+    static void _restartPlayBoxState();
 
     static bool _oetcbPlayBoxState();
     static void _odtcbPlayBoxState();

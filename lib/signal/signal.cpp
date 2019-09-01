@@ -70,6 +70,19 @@ signal::signal()
 
 
 
+void signal::startup() {
+  boxState::_setBoxTargetState(2); 
+  /** 2 for pir Startup; at startUp, put the box in pirStartup state 
+   *  TODO for next implementation: 
+   *  - define a isIr bool in global;
+   *  - define a isLaser bool in global;
+   *  - if isIr and isLaser, block thisBox -> setPir for 60 seconds at startup */
+}
+
+
+
+
+
 /** signal::_tcbSetBoxStateFromWeb() set the target boxState from
  *  a changeBox request. */
 void signal::_tcbSetBoxStateFromWeb() {

@@ -15,6 +15,8 @@ class signal
   public:
     signal();
 
+    static void startup();
+
   private:
     static void _tcbSetBoxStateFromWeb();
     static void _tcbIsMeshHigh(const ControlerBox & _callingBox);

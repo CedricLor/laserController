@@ -76,7 +76,6 @@ void setup() {
     mns::myScheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
     mns::myScheduler.addTask(pirController::tSpeedBumper);
     mns::myScheduler.addTask(step::tPreloadNextStep);
-    mns::myScheduler.addTask(boxState::tPlayBoxStates);
     mns::myScheduler.addTask(boxState::tPlayBoxState);
     mns::myScheduler.addTask(sequence::tPlaySequenceInLoop);
     mns::myScheduler.addTask(sequence::tPlaySequence);
@@ -114,6 +113,7 @@ void setup() {
   Serial.printf("Box number: %i\n", gui16NodeName);
   Serial.printf("Version: %i\n", VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
+  
   // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
   //    digitalWrite(relayPins[__thisPin], LOW);
   //    Serial.print("\n------ PIN number: ");Serial.print(relayPins[__thisPin]);Serial.print("\n");
@@ -160,7 +160,7 @@ void serialInit() {
 
 void enableTasks() {
   if ( (isInterface == false) || (isRoot == false) ) {
-    boxState::tPlayBoxStates.enable();
+    signal::startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }
