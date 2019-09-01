@@ -363,7 +363,6 @@ uint16_t boxState::ui16Mode = 0;
 boxState::boxState()
 {
   i16monitoredMasterStates = nullptr;
-  _masterBox = nullptr;
 }
 
 /** "little" constructor */
@@ -380,7 +379,6 @@ boxState::boxState(const int16_t _i16Duration,
 {
   i16monitoredMasterStates = nullptr;
   ui16monitoredMasterStatesSize = 0;
-  _masterBox = nullptr;
 }
 
 /** "full blown" constructor */
@@ -390,20 +388,15 @@ boxState::boxState(const int16_t _i16Duration,
   const int16_t _i16onMeshTrigger, 
   const int16_t _i16onExpire, 
   const uint16_t _ui16monitoredMasterStatesSize, 
-  int16_t *__i16monitoredMasterStates, 
-  ControlerBox * __masterBox)
+  int16_t *__i16monitoredMasterStates)
     : i16Duration(_i16Duration), 
     ui16AssociatedSequence(_ui16AssociatedSequence), 
     i16onIRTrigger(_i16onIRTrigger), 
     i16onMeshTrigger(_i16onMeshTrigger), 
     i16onExpire(_i16onExpire), 
     ui16monitoredMasterStatesSize(_ui16monitoredMasterStatesSize),
-    i16monitoredMasterStates(__i16monitoredMasterStates), 
-    _masterBox(__masterBox) 
+    i16monitoredMasterStates(__i16monitoredMasterStates)
 {
-  if (_masterBox == nullptr) {
-    _setMasterBox();
-  }
 }
 
 
@@ -584,29 +577,6 @@ void boxState::_setBoxTargetStateFromSignalCatchers() {
     _setBoxTargetState(ControlerBox::valFromWeb);
     return;
   }
-
-  this->_setMasterBox();
-  if (this->_masterBox != nullptr) {
-
-    // 2--- Check whether the current state has both IR and mesh triggers
-    if (this->_hasBothTriggers()) {
-
-      if (this->_checkBothTriggersAndAct()) {
-        return;
-      }
-    }
-
-    // 3--- If the current boxState has Mesh trigger
-    if (this->i16onMeshTrigger != -1){
-      this->_checkMeshTriggerAndAct();
-      return;
-    }
-  }
-
-  // 4--- If the current boxState has IR trigger
-  if (this->i16onIRTrigger != -1){
-    this->_checkIRTriggerAndAct();
-  }
 }
 
 
@@ -624,7 +594,7 @@ void boxState::_resetSignalCatchers() {
     uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
     if (_ui16masterBoxIndex != 254) {
       ControlerBoxes[_ui16masterBoxIndex].boxActiveStateHasBeenTakenIntoAccount = true;
-    }
+}
   }
 }
 
@@ -679,150 +649,7 @@ void boxState::_restart_tPlayBoxState() {
 
 
 
-/******************************************************************************************
- **************** SUBS OF _setBoxTargetStateFromSignalCatchers ****************************
-*******************************************************************************************/
-void  boxState::_setMasterBox() {
-  // if the change of master has already been taken into account, just return
-  if (thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount) {
-    return;
-  }
-  // if the master box name of thisBox is set to 254, thisBox does not have a master
-  if (thisBox.ui16MasterBoxName == 254) {
-    // set the _masterBox pointer to nullptr
-    _masterBox = nullptr;
-    // mark the change has taken into account
-    thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount = true;
-    return;
-  }
-  /** If  the master box name of thisBox is set to anything else than 254,
-   *  look for the index number of the corresponding box in the CB array, using  
-   *  the master node name (201, for instance) registered in thisBox (thisBox.ui16MasterBoxName). */
-  uint16_t _ui16masterBoxIndex = ControlerBox::findIndexByNodeName(thisBox.ui16MasterBoxName);
-  /** If the masterBoxIndex is equal to 254, the masterBox registered in thisBox
-   *  was not found in the CB Array => it has not joined the mesh or has disconnected
-   *  (or at least has not been in contact with thisBox).*/
-  if (_ui16masterBoxIndex == 254) {
-    // set the _masterBox pointer to nullptr 
-    _masterBox = nullptr;
-    /** not setting thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount to true so 
-     *  if the targeted box joins the mesh later on, this boxState takes it into
-     *  account. */
-    return;
-  }
-  /**  If it is equal to something else than 254, it has been in contact with thisBox.
-   *   Select the relevant masterBox in the CB array and set the _masterBox pointer to it. */
-  _masterBox = &ControlerBoxes[_ui16masterBoxIndex];
-  /**  Set the change has having been taken into account by this boxState. */
-  thisBox.bMasterBoxNameChangeHasBeenTakenIntoAccount = true;
-  return;
-}
 
-
-/** DOUBLE TRIGGER **
- ********************/
-bool boxState::_hasBothTriggers() {
-  return (i16onIRTrigger != -1
-    && i16onMeshTrigger != -1);
-}
-
-
-
-bool boxState::_checkBothTriggersAndAct() {
-  /** check whether both triggers (IR and mesh) have been triggered (this will not catch the case 
-   * where only one of them has been triggered). */
-  if (thisBox.ui16hasLastRecPirHighTimeChanged && this->_meshHasBeenTriggered()) {
-    // if both have been triggered, resolve the conflict and change the boxState accordingly.
-    this->_resolveTriggersConflictAndAct();
-    return true;
-  }
-  return false;
-  /** If none or only one has been triggered, continue (we need to check
-   *  whether the IR only or the mesh only has been triggered) */
-}
-
-
-
-void boxState::_resolveTriggersConflictAndAct() {
-  // check whether both IR and Mesh have been triggered
-  Serial.println("--------------------- double trigger ----------");
-  // if so, compare the times at which each signal catcher has been set
-  // and give priority to the most recent one
-  if (this->_masterBox->ui32BoxActiveStateStartTime > thisBox.ui16hasLastRecPirHighTimeChanged) {
-    _setBoxTargetState(i16onMeshTrigger);
-  }
-  _setBoxTargetState(i16onIRTrigger);
-
-}
-
-
-
-/** MESH TRIGGER ****
- ********************/
-/** boxState::_checkMeshTriggerAndAct(): 
- *  (1) checks whether:
- *    (i) the boxState of the parent box is other than -1; and 
- *    (ii) such boxState has been taken into account
- *  (2) sets thisBox targetState depending on the result of the test.*/
-void boxState::_checkMeshTriggerAndAct() {
-  if (_meshHasBeenTriggered()) {
-    Serial.println("--------------------- Mesh triggered ----------");
-    _setBoxTargetState(i16onMeshTrigger);
-  }
-}
-
-
-
-bool boxState::_meshHasBeenTriggered() {
-  /** If the master _masterBox has NOT been set or the  
-   *  masterBox state has been taken into account or 
-   *  the masterBox state is equal to -1, 
-   * no mesh trigger has happened. */
-  if ((this->_masterBox == nullptr) || (this->_masterBox->boxActiveStateHasBeenTakenIntoAccount) || (this->_masterBox->i16BoxActiveState == -1)){
-    return false;
-  }
-
-  /** If the masterBox has been set and
-   * the masterBox state has not been taken into account and
-   * the masterBox state is different than -1, 
-   * check whether the parent box active state corresponds to one of
-   * the state to which this box shall react */
-  return (this->_testIfMasterIsInMonitoredState());
-}
-
-
-
-bool boxState::_testIfMasterIsInMonitoredState() {
-  /** If the first element of the array of monitored masterBox state is 
-   *  equal to -1, we are not monitoring any masterBox states: return false.
-   *  TO DO: This shall have been cleared way before calling _testIfMasterIsInMonitoredState(). */
-  if (i16monitoredMasterStates[0] == -1) {
-    return false;
-  }
-  /** Else, iterate over the array of monitored masterBox states and find out whether
-   *  the current masterBox active state correponds to one of these states. */
-  for (uint16_t _i = 0; _i < ui16monitoredMasterStatesSize; _i++) {
-    if (i16monitoredMasterStates[_i] == this->_masterBox->i16BoxActiveState) {
-      return true;
-    }
-  }
-  return false;
-}
-
-
-/** IR TRIGGER ******
- ********************/
-void boxState::_checkIRTriggerAndAct() {
-  // check whether IR has been triggered;
-  // if so, set the boxTarget state accordingly
-  if (thisBox.ui16hasLastRecPirHighTimeChanged) {
-    Serial.println("--------------------- IR triggered ----------");
-    _setBoxTargetState(i16onIRTrigger);
-  }
-}
-/*********************************************************************
- ********* END OF SUBS OF _setBoxTargetStateFromSignalCatchers *******
-**********************************************************************/
 
 
 

@@ -109,7 +109,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
   // }
   // check whether the boxState of the masterBox matches with any of the monitored states
   for (uint16_t _i = 0; _i < _currentBoxState.ui16monitoredMasterStatesSize; _i++) {
-    if (_currentBoxState._masterBox->i16BoxActiveState == 
+    if (_callingBox.i16BoxActiveState == 
       _currentBoxState.i16monitoredMasterStates[_i]) {
       /** check whether the signal (new state of master box) is more
        *  recent than the current boxState time stamp.
