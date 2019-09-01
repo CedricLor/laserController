@@ -524,18 +524,16 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
-  // give handy access to the _currentBoxState
-  boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // A. Analyse the signal catchers and set the box target state accordingly
-  _currentBoxState._setBoxTargetStateFromSignalCatchers();
+  boxStates[thisBox.i16BoxActiveState]._setBoxTargetStateFromSignalCatchers();
 
   // B. Once read, reset all the signal catchers
-  _currentBoxState._resetSignalCatchers();
+  boxStates[thisBox.i16BoxActiveState]._resetSignalCatchers();
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
-  _currentBoxState._restart_tPlayBoxState();
+  boxStates[thisBox.i16BoxActiveState]._restart_tPlayBoxState();
   // Serial.println("void boxState::_tcbPlayBoxStates(). Ending.");
 };
 
