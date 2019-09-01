@@ -17,13 +17,15 @@ class pirController
     
     void check();
 
-    static Task sendMsg;
-    static Task speedBumper;
+    static void init();
+
+    static Task tSendMsg;
+    static Task tSpeedBumper;
 
   private:
     const uint8_t _inputPin;
 
-    static uint16_t _isSpeedBumperOff;
+    static uint16_t _speedBumper;
 };
 
 extern pirController myPirController;

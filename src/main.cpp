@@ -74,8 +74,8 @@ void setup() {
   if ((isInterface == false) || (isRoot == false)) {
     mns::myScheduler.addTask(ControlerBox::tIsMeshHigh);
     mns::myScheduler.addTask(ControlerBox::tIsIRHigh);
-    mns::myScheduler.addTask(pirController::sendMsg);
-    mns::myScheduler.addTask(pirController::speedBumper);
+    mns::myScheduler.addTask(pirController::tSendMsg);
+    mns::myScheduler.addTask(pirController::tSpeedBumper);
     mns::myScheduler.addTask(step::tPreloadNextStep);
     mns::myScheduler.addTask(boxState::tPlayBoxStates);
     mns::myScheduler.addTask(boxState::tPlayBoxState);

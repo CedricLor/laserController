@@ -53,15 +53,20 @@ const uint8_t INPUT_PIN = 12;               // choose the input pin (for PIR sen
 
 pirController myPirController(INPUT_PIN);
 
-uint16_t pirController::_isSpeedBumperOff = 1;
+uint16_t pirController::_speedBumper = 0;
 
 pirController::pirController(const uint8_t INPUT_PIN):_inputPin(INPUT_PIN)
 {
-  Serial.print("SETUP: pirController::pirController(): starting\n");
-  pinMode(_inputPin, INPUT);                                // declare sensor as input
-  Serial.printf("SETUP: pirController::pirController(): pin number %u set as INPUT pin\n", _inputPin);
+  // Serial.print("SETUP: pirController::pirController(): starting\n");
+  init();
+  // Serial.printf("SETUP: pirController::pirController(): pin number %u set as INPUT pin\n", _inputPin);
 }
 
+
+
+void pirController::init() {
+  pinMode(myPirController._inputPin, INPUT);                                // declare sensor as input
+}
 
 void pirController::check() {
   // ui16touchSensorValue = touchRead(T3);
@@ -69,34 +74,50 @@ void pirController::check() {
   //   Serial.println( ui16touchSensorValue);
   //   Serial.println("pirController::check()");
   // }
+  // Serial.println("pirController::check(): starting");
   if (digitalRead(_inputPin)) {
+    Serial.println("pirController::check(): digitalRead(_inputPin) is HIGH");
     thisBox.setBoxIRTimes(laserControllerMesh.getNodeTime(), 1);
-    sendMsg.enable();
+    tSendMsg.enable();
   }
+  // Serial.println("pirController::check(): ending");
 }
 
 
 
 
-Task pirController::sendMsg(0, TASK_ONCE, [](){
-  Serial.println("pirController::check(): ---------- PIR Mouvement Detected ----------");
-  myMeshViews _myMeshViews;
-  _myMeshViews._IRHighMsg();
-}, NULL/*&mns::myScheduler*/, false, [](){
-  // save the current value of the speedbumper
-  uint16_t __isSpeedBumperOff = _isSpeedBumperOff;
-  // restart the speedbumper
-  speedBumper.enableIfNot();
-  // return 
-  return __isSpeedBumperOff;
-}, NULL);
+Task pirController::tSendMsg(
+  0, 
+  TASK_ONCE, 
+  /** main callback */
+  [](){
+    Serial.println("pirController::tSendMsg(): ---------- PIR Mouvement Detected ----------");
+    myMeshViews _myMeshViews;
+    _myMeshViews._IRHighMsg();
+    }, 
+  /** scheduler */
+  NULL/*&mns::myScheduler*/, 
+  /** enabled */
+  false, 
+  /** onEnable callback */
+  [](){
+    /** invert and save the current value of the speedbumper 
+     *  i.e. _speedBumper is a 0 when it is not on (at startup and once the Task 
+     *  tSpeedBumper is disabled). If I return 0, the Task tSendMsg will not start. 
+     *  
+     *  Once the speedbumper is started, it is at 1. If I return 1, this Task tSendMsg
+     *  will start again and again. */
+    // Serial.printf("pirController::tSendMsg(): onEnable callback: is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
+    if (tSpeedBumper.isEnabled()) { return false; }
+    tSpeedBumper.restartDelayed(3000);
+    // Serial.printf("pirController::tSendMsg(): onEnable callback: tSpeedBumper.isEnabled() was not enabled. now, is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
+    return true;
+  }, 
+  /** onDisable callback */
+  NULL
+);
 
 
 
 
-Task pirController::speedBumper(3000, TASK_ONCE, NULL, NULL/*&mns::myScheduler*/, false, [](){
-  _isSpeedBumperOff = 0;
-  return true;
-}, [](){
-  _isSpeedBumperOff = 1;
-});
+Task pirController::tSpeedBumper(0, TASK_ONCE, NULL, NULL/*&mns::myScheduler*/, false, NULL, NULL);
