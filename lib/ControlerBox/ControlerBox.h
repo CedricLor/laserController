@@ -68,8 +68,7 @@ class ControlerBox
      * 
      * Set via ControlerBox::setBoxActiveState.
      * 
-     * TODO: should be set for other boxes from status messages received from the mesh. 
-     * */
+     * TODO: should be set for other boxes from status messages received from the mesh. */
     uint32_t ui32BoxActiveStateStartTime;
 
 

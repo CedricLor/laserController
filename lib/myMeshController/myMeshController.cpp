@@ -77,10 +77,8 @@ void myMeshController::_main()
    *  signalled to the mesh.
    *  
    *  Upon receiving a status message from another box,
-   *  read and save the state of the other boxes.
-   *  
-   *  This box shall update its ControlerBoxes[] array 
-   *  with the values received from the other box. */
+   *  read and save the relevant information (on the other
+   *  box) in thisBox CB array. */
   if (_nsobj["action"] == "s") {
     ControlerBox::updateOrCreate(_ui32SenderNodeId, _nsobj);
     return;
@@ -89,15 +87,16 @@ void myMeshController::_main()
 
 
 
-  /** STATUS MESSAGE (received by all, sent by LBs only).
-   *  The boxState of another box has changed and is being
-   *  signalled to the mesh.
+  /** USI MESSAGE (received by all, sent by LBs only).
+   *  Another box is broadcasting "usi" (i.e. upstream 
+   *  information) to the mesh.
+   * 
+   *  For the moment, "usi" are limited to IR High 
+   *  information.
    *  
-   *  Upon receiving a status message from another box,
-   *  read and save the state of the other boxes.
-   *  
-   *  This box shall update its ControlerBoxes[] array 
-   *  with the values received from the other box. */
+   *  Upon receiving a "usi" message from another box,
+   *  read and save the relevant information (on the other
+   *  box) in thisBox CB array. */
   if (_nsobj["action"] == "usi") {
     ControlerBox::updateOrCreate(_ui32SenderNodeId, _nsobj);
     return;
