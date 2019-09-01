@@ -526,10 +526,14 @@ void boxState::_tcbPlayBoxStates() {
 
 
   // A. Analyse the signal catchers and set the box target state accordingly
-  boxStates[thisBox.i16BoxActiveState]._setBoxTargetStateFromSignalCatchers();
+  if (ControlerBox::valFromWeb != -1) {
+    Serial.println("--------------------- valFromWeb ----------");
+    _setBoxTargetState(ControlerBox::valFromWeb);
+    return;
+  }
 
   // B. Once read, reset all the signal catchers
-  boxStates[thisBox.i16BoxActiveState]._resetSignalCatchers();
+  ControlerBox::valFromWeb = -1;
 
   // C. If the active state (actually, the targetState) has been reset, start playing
   // the corresponding state
@@ -554,42 +558,6 @@ bool boxState::_oetcbPlayBoxStates() {
 //////////////////////////////////////////////
 // _tcbPlayBoxStates() sub functions
 //////////////////////////////////////////////
-
-
-
-
-/** _setBoxTargetStateFromSignalCatchers:
- * 
- *  1. reads whether the web, the IR or the mesh signal catchers 
- *     have caught any signal
- *  2. if so, requests a boxState change by calling _setBoxTargetState() */
-void boxState::_setBoxTargetStateFromSignalCatchers() {
-  // Read the signal catchers and change the targetState accordingly
-
-  // 1--- Check the web signal catcher. If it has changed, set the new targetState
-  // and return
-  if (ControlerBox::valFromWeb != -1) {
-    Serial.println("--------------------- valFromWeb ----------");
-    _setBoxTargetState(ControlerBox::valFromWeb);
-    return;
-  }
-}
-
-
-
-
-/*
-  _resetSignalCatchers resets all the signals catchers
-  to their initial values, once the new _boxTargetState
-  has been set by _setBoxTargetStateFromSignalCatchers
-*/
-void boxState::_resetSignalCatchers() {
-  ControlerBox::valFromWeb = -1;
-}
-
-
-
-
 /*
     _restart_tPlayBoxState() starts a new boxState, if
      _boxTargetStateHasChanged signals a change in the box
