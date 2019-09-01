@@ -800,7 +800,7 @@ bool boxState::_testIfMasterIsInMonitoredState() {
     return false;
   }
   /** Else, iterate over the array of monitored masterBox states and find out whether
-   *  the currnt masterBox active state correponds to one of these states. */
+   *  the current masterBox active state correponds to one of these states. */
   for (uint16_t _i = 0; _i < ui16monitoredMasterStatesSize; _i++) {
     if (i16monitoredMasterStates[_i] == this->_masterBox->i16BoxActiveState) {
       return true;
