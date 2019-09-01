@@ -9,17 +9,22 @@
 #include "Arduino.h"
 #include "ControlerBox.h"
 #include "boxState.h"
-#include "pirController.h"
 
 class signal
 {
   public:
     signal();
 
-    uint16_t state;
-    uint16_t type;
-    uint16_t source;
-    uint32_t startTime;
+    // uint16_t state;
+    // uint16_t type;
+    // uint16_t source;
+    // uint32_t startTime;
+
+  private:
+    static void _tcbIsMeshHigh();
+    static bool _testIfMeshisHigh(const boxState & _currentBoxState);
+    static void _tcbIsIRHigh();
+    static bool _testIfIRisHigh(const boxState & _currentBoxState);
 };
 
 #endif
