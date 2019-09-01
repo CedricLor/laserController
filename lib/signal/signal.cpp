@@ -71,7 +71,7 @@ signal::signal()
 
 
 /***/
-void signal::_tcbIsMeshHigh() {
+void signal::_tcbIsMeshHigh(const ControlerBox & _callingBox) {
   const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
@@ -132,7 +132,8 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState) {
 
 
 
-void signal::_tcbIsIRHigh() {
+void signal::_tcbIsIRHigh(const ControlerBox & _callingBox) {
+  Serial.println("+++++++++++++++++++++++++ _tcbIsIRHigh +++++++++++++++++++++++++");
   const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
   // 1. check whether the current boxState is IR sensitive
   if (_currentBoxState.i16onIRTrigger == -1) {

@@ -21,9 +21,9 @@ class signal
     // uint32_t startTime;
 
   private:
-    static void _tcbIsMeshHigh();
+    static void _tcbIsMeshHigh(const ControlerBox & _callingBox);
     static bool _testIfMeshisHigh(const boxState & _currentBoxState);
-    static void _tcbIsIRHigh();
+    static void _tcbIsIRHigh(const ControlerBox & _callingBox);
     static bool _testIfIRisHigh(const boxState & _currentBoxState);
 };
 
