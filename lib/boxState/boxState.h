@@ -144,7 +144,6 @@ class boxState
     friend class signal;
 
     static short int _boxTargetState;
-    static bool _boxTargetStateHasChanged;
 
     static void _tcbPlayBoxStates();
     static bool _oetcbPlayBoxStates();

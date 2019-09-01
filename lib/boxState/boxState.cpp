@@ -341,7 +341,6 @@ void step::initSteps() {
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 short int boxState::_boxTargetState = 0;
-bool boxState::_boxTargetStateHasChanged = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 
@@ -511,7 +510,6 @@ Task boxState::tPlayBoxStates(1000L, -1, &_tcbPlayBoxStates, NULL/*&mns::mySched
 /*
   At each pass of tPlayBoxStates, _tcbPlayBoxStates() will check whether the
   following values have changed (the catchers):
-  - _boxTargetStateHasChanged;
   - _boxTargetState;
   Depending on the changes, it will:
   - either start a new boxState or extend the duration of the current boxState; or
@@ -524,37 +522,26 @@ void boxState::_tcbPlayBoxStates() {
   // Serial.print("void boxState::_tcbPlayBoxStates(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
-  // If the targetState has been reset, start playing the corresponding state
-
-  /** If the _boxTargetStateHasChanged:
-   *  1. reset the witness _boxTargetStateHasChanged to 0;
-   *  2. get the params for the new state in case we are in step controlled mode;
+  /** If the targetState has been reset, start playing the corresponding state:
+   *  1. get the params for the new state in case we are in step controlled mode;
    *  3. set the duration to stay in the new boxState (by setting the aInterval
    *     of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
    *     the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
    *  4. set the i16BoxActiveState property (and related properties) of this box;
    *  5. restart/enable the "children" Task tPlayBoxState.*/
 
-  // 0. if the _boxTargetStateHasChanged has not changed, just return
-  if (_boxTargetStateHasChanged == 0) {
-    return;
-  }
-
-  // 1. Resets the witness to 0 (false)
-  _boxTargetStateHasChanged = 0;
-
-  // 2. If we are in step controlled mode (mode 1),
-  // configure the params of the new boxState.
+  /** 1. If we are in step controlled mode (mode 1),
+   *     configure the params of the new boxState. */
   if (ui16Mode == 1) {
     step::steps[ui16stepCounter].applyStep();
   }
 
-  // 3. Set the duration of Task tPlayBoxState
+  // 2. Set the duration of Task tPlayBoxState
   // Serial.print("void boxState::_tcbPlayBoxStates() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
   tPlayBoxState.setInterval(_ulCalcInterval(boxStates[_boxTargetState].i16Duration));
   // Serial.print("void boxState::_tcbPlayBoxStates() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
-  // 4. Set the i16BoxActiveState to the _boxTargetState
+  // 4. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
   thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
   // Serial.println("void boxState::_tcbPlayBoxStates() tPlayBoxState about to be enabled");
 
@@ -695,10 +682,10 @@ void boxState::_odtcbPlayBoxState(){
 // _setBoxTargetState is the central entry point to request a boxState change.
 void boxState::_setBoxTargetState(const short __boxTargetState) {
   Serial.println("boxState::_setBoxTargetState(). Starting.");
-  Serial.print("boxState::_setBoxTargetState(). __boxTargetState: ");Serial.println(__boxTargetState);
-  _boxTargetStateHasChanged = 1;
+  Serial.printf("boxState::_setBoxTargetState(). __boxTargetState: %u\n", __boxTargetState);
   _boxTargetState = __boxTargetState;
-  // Serial.print("boxState::_setBoxTargetState(). _boxTargetState: "); Serial.println(_boxTargetState);
+  _tcbPlayBoxStates();
+  Serial.printf("boxState::_setBoxTargetState(). _boxTargetState: %u\n", _boxTargetState);
   Serial.println("boxState::_setBoxTargetState(). Ending.");
 };
 
