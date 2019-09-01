@@ -338,8 +338,7 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
-    ControlerBox * _ptrThisBox = &thisBox;
-    if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof(this) == std::addressof((_ptrThisBox)) ) ) {
+    if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) == std::addressof(thisBox) ) ) {
       tNsIsMeshHigh.setInterval(0);
       tNsIsMeshHigh.setIterations(1);
       tNsIsMeshHigh.setCallback([this](){
