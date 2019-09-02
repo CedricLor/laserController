@@ -23,7 +23,8 @@ namespace laserInterface {
 
     // boxStates stack
     void initBoxStatesComm();
-    void setBoxState();
+    /** not being implemented for the moment; activeState set by direct call from meshController to ControlerBox */
+    // void setBoxState();
     void sendBoxState(const int16_t _currentStateNbr);
 
     // masterBoxes stack
