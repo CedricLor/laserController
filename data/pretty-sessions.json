@@ -12,14 +12,7 @@
             "__i16onMeshTrigger": -1,
             "__i16onExpire": 4,
             "__i16stepMasterBoxName": 254,
-            "step_number": 0,
-            "boxState": "4 - waiting IR, all Off",
-            "Duration": "-1 infinite",
-            "Sequence": "5 - allOff",
-            "onIRTrigger": "apply state 6",
-            "onMeshTrigger": "-1 (no mesh trigger)",
-            "onExpire": "4 (no expiration, repeat)",
-            "MasterBoxName": "254"
+            "step_number": 0
         },
         {
           "__i16stepBoxStateNb": 6,
@@ -29,14 +22,8 @@
           "__i16onMeshTrigger": 12,
           "__i16onExpire": 6,
           "__i16stepMasterBoxName": 202,
-          "step_number": 1,
-          "boxState": "6. PIR High, waiting both, relays",
-          "Duration": "60 seconds",
-          "Sequence": "0 - relays",
-          "onIRTrigger": "apply state 6 (repeat)",
-          "onMeshTrigger": "12 (Mesh High, waiting mesh)",
-          "onExpire": "6 (repeat)[-- TO BE IMPROVED: repeat once]",
-          "MasterBoxName": "202 [-- TO BE IMPROVED: and 203]"
+          "step_number": 1
+
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -46,14 +33,7 @@
           "__i16onMeshTrigger": 12,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 205,
-          "step_number": 2,
-          "boxState" : "12 - Mesh High, waiting mesh",
-          "Duration" : "60 seconds",
-          "Sequence" : "5 - all Off",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "12 (repeat Mesh High, waiting mesh)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "205 [-- TO BE IMPROVED: and 206]"
+          "step_number": 2
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -63,14 +43,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 202,
-          "step_number": 3,
-          "boxState" : "12 - Mesh High, waiting Mesh",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "11 (mesh high, waiting IR)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 3
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -80,14 +53,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 202,
-          "step_number": 4,
-          "boxState" : "12 - Mesh High, waiting Mesh",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "11 (mesh high, waiting IR)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 4
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -97,14 +63,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 202,
-          "step_number": 5,
-          "boxState" : "12 - Mesh High, waiting Mesh",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "11 (mesh high, waiting IR)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 5
         },
         {
           "__i16stepBoxStateNb": 11,
@@ -114,14 +73,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 11,
           "__i16stepMasterBoxName": 254,
-          "step_number": 6,
-          "boxState" : "11 - Mesh High, waiting IR",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "9 (IR high, no interrupt)",
-          "onMeshTrigger": "11 - Mesh High, waiting IR",
-          "onExpire": "11 (repeat once)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 6
         },
         {
           "__i16stepBoxStateNb": 9,
@@ -131,15 +83,8 @@
           "__i16onMeshTrigger": -1,
           "__i16onExpire": 9,
           "__i16stepMasterBoxName": 254,
-          "step_number": 7,
-          "boxState" : "9 - IR High, no interrupt",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "-1 no mesh trigger",
-          "onExpire": "9 (repeat once)",
-          "MasterBoxName": "254"
-        },
+          "step_number": 7
+        }
       ]
     },
     {
@@ -153,14 +98,7 @@
             "__i16onMeshTrigger": -1,
             "__i16onExpire": 4,
             "__i16stepMasterBoxName": 254,
-            "step_number": 0,
-            "boxState": "4 - waiting IR, all Off",
-            "Duration": "-1 infinite",
-            "Sequence": "5 - allOff",
-            "onIRTrigger": "apply state 6",
-            "onMeshTrigger": "-1 (no mesh trigger)",
-            "onExpire": "4 (no expiration, repeat)",
-            "MasterBoxName": "254"
+            "step_number": 0
         },
         {
           "__i16stepBoxStateNb": 6,
@@ -170,14 +108,7 @@
           "__i16onMeshTrigger": 12,
           "__i16onExpire": 6,
           "__i16stepMasterBoxName": 202,
-          "step_number": 1,
-          "boxState": "6. PIR High, waiting both, relays",
-          "Duration": "60 seconds",
-          "Sequence": "0 - relays",
-          "onIRTrigger": "apply state 6 (repeat)",
-          "onMeshTrigger": "12 (Mesh High, waiting mesh)",
-          "onExpire": "6 (repeat)[-- TO BE IMPROVED: repeat once]",
-          "MasterBoxName": "202 [-- TO BE IMPROVED: and 203]"
+          "step_number": 1
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -187,14 +118,7 @@
           "__i16onMeshTrigger": 12,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 205,
-          "step_number": 2,
-          "boxState" : "12 - Mesh High, waiting mesh",
-          "Duration" : "60 seconds",
-          "Sequence" : "5 - all Off",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "12 (repeat Mesh High, waiting mesh)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "205 [-- TO BE IMPROVED: and 206]"
+          "step_number": 2
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -204,14 +128,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 202,
-          "step_number": 3,
-          "boxState" : "12 - Mesh High, waiting Mesh",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "11 (mesh high, waiting IR)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 3
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -221,14 +138,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 202,
-          "step_number": 4,
-          "boxState" : "12 - Mesh High, waiting Mesh",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "11 (mesh high, waiting IR)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 4
         },
         {
           "__i16stepBoxStateNb": 12,
@@ -238,14 +148,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 12,
           "__i16stepMasterBoxName": 202,
-          "step_number": 5,
-          "boxState" : "12 - Mesh High, waiting Mesh",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "11 (mesh high, waiting IR)",
-          "onExpire": "12 (repeat until mesh trigger)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 5
         },
         {
           "__i16stepBoxStateNb": 11,
@@ -255,14 +158,7 @@
           "__i16onMeshTrigger": 11,
           "__i16onExpire": 11,
           "__i16stepMasterBoxName": 254,
-          "step_number": 6,
-          "boxState" : "11 - Mesh High, waiting IR",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "9 (IR high, no interrupt)",
-          "onMeshTrigger": "11 - Mesh High, waiting IR",
-          "onExpire": "11 (repeat once)",
-          "MasterBoxName": "202 [and 203]"
+          "step_number": 6
         },
         {
           "__i16stepBoxStateNb": 9,
@@ -272,16 +168,9 @@
           "__i16onMeshTrigger": -1,
           "__i16onExpire": 9,
           "__i16stepMasterBoxName": 254,
-          "step_number": 7,
-          "boxState" : "9 - IR High, no interrupt",
-          "Duration" : "-1 - infinite",
-          "Sequence" : "0 - relays",
-          "onIRTrigger": "-1 no IR trigger",
-          "onMeshTrigger": "-1 no mesh trigger",
-          "onExpire": "9 (repeat once)",
-          "MasterBoxName": "254"
-        },
+          "step_number": 7
+        }
       ]
-    },
+    }
   ]
 }
