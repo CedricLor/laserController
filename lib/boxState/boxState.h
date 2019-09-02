@@ -59,7 +59,6 @@ class step
       int16_t __i16onIRTrigger,
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
-      uint16_t __ui16stepMasterBoxName,
       std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames,
       const std::array<int16_t, 4> __i16monitoredMasterStates
     );
@@ -69,12 +68,8 @@ class step
     int16_t _i16StateDuration;
     uint16_t _ui16AssociatedSequence;
     int16_t _i16onIRTrigger;
-    // int16_t _i16onIRTriggerNewMaster;
     int16_t _i16onMeshTrigger;
-    // int16_t i16onMeshTriggerNewMaster;
     int16_t _i16onExpire;
-    // int16_t i16onExpireNewMaster;
-    uint16_t _ui16stepMasterBoxName;
     std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames;
     std::array<int16_t, 4> _i16monitoredMasterStates;
 
