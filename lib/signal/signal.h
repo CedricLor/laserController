@@ -28,6 +28,7 @@ class signal
     static bool _testIfMasterIRisHigh(const ControlerBox & _callingBox);
     static bool _isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName);
     static bool _isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    static bool _isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     static bool _isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime);
 
 };

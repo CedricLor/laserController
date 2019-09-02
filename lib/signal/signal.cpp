@@ -117,14 +117,8 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
   if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState)) ) {
     return false;
   }
-  // check whether the boxState of the masterBox matches with any of the monitored states
-  return (
-    std::find(
-     std::begin(_currentBoxState.i16monitoredMasterStates), 
-      std::end(_currentBoxState.i16monitoredMasterStates),
-      _callingBox.i16BoxActiveState) 
-    != std::end(_currentBoxState.i16monitoredMasterStates)
-  );
+  // check whether the boxState of the masterBox (_callingBox) matches with any of the monitored states
+  return _isCallerStateInMonitoredStates(_callingBox, _currentBoxState);
 }
 
 
@@ -212,6 +206,20 @@ bool signal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const b
     != std::end(_currentBoxState.ui16monitoredMasterBoxesNodeNames)
   );
 }
+
+
+
+
+bool signal::_isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+  return (
+    std::find(
+     std::begin(_currentBoxState.i16monitoredMasterStates), 
+      std::end(_currentBoxState.i16monitoredMasterStates),
+      _callingBox.i16BoxActiveState) 
+    != std::end(_currentBoxState.i16monitoredMasterStates)
+  );
+}
+
 
 
 
