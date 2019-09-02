@@ -60,7 +60,7 @@ class step
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
       uint16_t __ui16stepMasterBoxName,
-      std::array<int16_t, 4> __i16monitoredMasterStates
+      const std::array<int16_t, 4> __i16monitoredMasterStates
     );
 
     // boxState criteria (variables) setter
@@ -134,6 +134,11 @@ class boxState
 
   private:
     friend class signal;
+    friend class step;
+
+    static const std::array<int16_t, 4> _monitorNoStates;// {-1};
+    static const std::array<int16_t, 4> _IRStates;// {6, 7, 8, 9};
+    static const std::array<int16_t, 4> _MeshStates;// {10, 11, 12, 13};
 
     static short int _boxTargetState;
 

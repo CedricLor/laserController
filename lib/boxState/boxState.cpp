@@ -260,8 +260,7 @@ void step::initSteps() {
   Serial.println("step::initSteps(): starting");
   /* step 0: waiting IR, all Off
   - no passenger */
-  std::array<int16_t, 4> _monitorNoStates {-1};
-  steps[0] = {4, -1, 5, 6, -1, 4, 254, _monitorNoStates};
+  steps[0] = {4, -1, 5, 6, -1, 4, 254, boxState::_monitorNoStates};
   // Serial.println("step::initSteps():");
   // Serial.println(steps[0]._ui16stepMasterBoxName);
   /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
@@ -270,50 +269,49 @@ void step::initSteps() {
 
   /* step 1: PIR High, waiting both, relays
   - passenger at box 1 (this box) */
-  std::array<int16_t, 4> _statesToMonitor {6, 7, 8, 9};
-  steps[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, 202 /*and 203*/, _statesToMonitor};
+  steps[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, 202 /*and 203*/, boxState::_IRStates};
   /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, sequence: 0 - relays,
     onIRTrigger: apply state 6 (repeat), onMeshTrigger: 12 (Mesh High, waiting mesh),
     onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], _ui16stepMasterBoxName: 202 [-- TO BE IMPROVED: and 203] */
 
   /* step 2: Mesh High, waiting mesh, all Off
   - passenger at boxes 2 or 3, going to boxes 5 or 6 */
-  steps[2] = {12, 60, 5, -1, 12, 12, 205 /*and 206*/, _statesToMonitor};
+  steps[2] = {12, 60, 5, -1, 12, 12, 205 /*and 206*/, boxState::_IRStates};
   /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, sequence: 5 - all Off,
     onIRTrigger: -1, onMeshTrigger: 12 (repeat Mesh High, waiting mesh),
     onExpire: 12 (repeat), _ui16stepMasterBoxName: 205 [-- TO BE IMPROVED: and 203] */
 
   /* step 3: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going between boxes 5 and 6 */
-  steps[3] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/, _statesToMonitor};
+  steps[3] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/, boxState::_IRStates};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 4: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going to box 4 */
-  steps[4] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/, _statesToMonitor};
+  steps[4] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/, boxState::_IRStates};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 5: Mesh High, waiting mesh, relays
   - passenger at box 4, going to box 2 or 3 */
-  steps[5] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/, _statesToMonitor};
+  steps[5] = {12, -1, 0, -1, 11, 12, 202 /* and 203*/, boxState::_IRStates};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 6: Mesh High, IR interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
-  steps[6] = {11, -1, 0, 9, 11, 11, 254, _monitorNoStates};
+  steps[6] = {11, -1, 0, 9, 11, 11, 254, boxState::_monitorNoStates};
   /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: 11 (repeat),
     onExpire: 11 (repeat once), _ui16stepMasterBoxName: 202 [and 203] */
 
   /* step 7: IR High, no interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
-  steps[7] = {9, -1, 0, -1, -1, 9, 254, _monitorNoStates};
+  steps[7] = {9, -1, 0, -1, -1, 9, 254, boxState::_monitorNoStates};
   /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
     onExpire: 9 (repeat once), _ui16stepMasterBoxName: 254 */
@@ -335,6 +333,10 @@ void step::initSteps() {
 short int boxState::_boxTargetState = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
+
+const std::array<int16_t, 4> boxState::_monitorNoStates {-1};
+const std::array<int16_t, 4> boxState::_IRStates {6, 7, 8, 9};
+const std::array<int16_t, 4> boxState::_MeshStates {10, 11, 12, 13};
 
 // ui16stepCounter starts at 0; will be used to set
 // the params of the first step to be activated (after IR startup)
@@ -375,7 +377,7 @@ boxState::boxState(const int16_t _i16Duration,
   const uint16_t _ui16AssociatedSequence, 
   const int16_t _i16onIRTrigger, 
   const int16_t _i16onMeshTrigger, 
-  const int16_t _i16onExpire, 
+  const int16_t _i16onExpire,
   std::array<int16_t, 4> __i16monitoredMasterStates)
     : i16Duration(_i16Duration), 
     ui16AssociatedSequence(_ui16AssociatedSequence), 
@@ -384,6 +386,12 @@ boxState::boxState(const int16_t _i16Duration,
     i16onExpire(_i16onExpire), 
     i16monitoredMasterStates(__i16monitoredMasterStates)
 {
+  if (__i16monitoredMasterStates == boxState::_IRStates) {
+    // do sthg smart
+  }
+  if (__i16monitoredMasterStates == boxState::_MeshStates) {
+    // do sthg smart
+  }
 }
 
 
