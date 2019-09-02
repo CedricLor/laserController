@@ -45,8 +45,8 @@ class sequence
       const uint16_t __ui16BaseBeatInBpm, 
       const uint16_t __ui16BaseNoteForBeat, 
       const uint16_t __ui16BaseNotesCountPerBar, 
-      const int16_t __iNumberOfBeatsInSequence, 
-      const int16_t *__iAssociatedBars
+      const int16_t __i16BarCountInSequence, 
+      int16_t *__i16AssociatedBars
     );
 
     static sequence sequences[];
@@ -68,20 +68,12 @@ class sequence
     static long unsigned int _ulSequenceDuration();
     static long unsigned int _ulBarDuration();
 
-    void _initSequence(
-      const uint16_t __ui16BaseBeatInBpm, 
-      const uint16_t __ui16BaseNoteForBeat, 
-      const uint16_t __ui16BaseNotesCountPerBar, 
-      const int16_t __i16BarCountInSequence, 
-      const int16_t __i16AssociatedBars[]
-    );
-
     // instance properties
     uint16_t _ui16BaseBeatInBpm; // tempo in beats per minute
     uint16_t _ui16BaseNoteForBeat; // the 4 in 2/4, for instance
     uint16_t _ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
     int16_t _i16BarCountInSequence; // number of tempos required to execute one full sequence
-    int16_t _i16AssociatedBars[4];  // array containing the state of each laser at each tempo
+    int16_t *_i16AssociatedBars;  // array containing the state of each laser at each tempo
 
 
     static bool _oetcbPlaySequenceInLoop();
