@@ -182,7 +182,7 @@ bool signal::_testIfMyIRisHigh(const ControlerBox & _callingBox) {
 
 
 bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
-  std::addressof(_callingBox) == std::addressof((thisBox));
+  return (std::addressof(_callingBox) == std::addressof((thisBox)));
 }
 
 
