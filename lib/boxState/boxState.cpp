@@ -228,40 +228,6 @@ void step::applyStep() {
     _i16monitoredMasterStates
   };
 
-  // // get handy access to boxState for this step
-  // // Serial.print("step::applyStep(). debug _i16stepBoxStateNb = ");
-  // // Serial.println(_i16stepBoxStateNb);
-  // boxState &_thisStepBoxState = boxState::boxStates[_i16stepBoxStateNb];
-
-  // // set the duration of the boxState for this step
-  //   // Serial.print("step::applyStep(). debug _thisStepBoxState.i16Duration = ");
-  //   // Serial.println(_thisStepBoxState.i16Duration);
-  //   // Serial.print("step::applyStep(). debug _i16StateDuration = ");
-  //   // Serial.println(_i16StateDuration);
-  // _thisStepBoxState.i16Duration = _i16StateDuration;
-
-  // // set the sequence to play at this boxState
-  // _thisStepBoxState.ui16AssociatedSequence = _ui16AssociatedSequence;
-
-  // // set the boxState in which to go upon IR getting high
-  // // (IR interrupt)
-  // _thisStepBoxState.i16onIRTrigger = _i16onIRTrigger;
-
-  // // set the boxState in which to go upon detection of a mesh relevant change
-  // // (i.e. a change of the state of the masterBox)
-  // // (mesh interrupt)
-  // _thisStepBoxState.i16onMeshTrigger = _i16onMeshTrigger;
-
-  // // set the boxState in which to go upon expiration of the boxState
-  // // (timer interrupt)
-  // _thisStepBoxState.i16onExpire = _i16onExpire;
-
-  // // set the boxStates of the masterBox that will be relevant to
-  // //  trigger a mesh interrupt
-  // // (mesh interrupt)
-  // _thisStepBoxState.ui16monitoredMasterStatesSize = _ui16monitoredMasterStatesSize;
-  // _thisStepBoxState.i16monitoredMasterStates = _i16monitoredMasterStates;
-
   // preload the next step from memory
   step::tPreloadNextStep.enable();
 
