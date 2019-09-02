@@ -160,7 +160,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *     timestamp of thisBox's current state. */
 bool signal::_testIfIRisHigh(const ControlerBox & _callingBox) {
   return _testIfMyIRisHigh(_callingBox);
-  // _testIfMasterIRisHigh();
+  // _testIfMasterIRisHigh(_callingBox, _currentBoxState);
 }
 
 
@@ -181,8 +181,8 @@ bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
 
 
 
-bool signal::_testIfMasterIRisHigh(const ControlerBox & _callingBox) {
-  if (_isCallerMonitored(_callingBox, thisBox.ui16MasterBoxName)) {
+bool signal::_testIfMasterIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+  if (_isCallerInMonitoredArray(_callingBox, _currentBoxState)) {
     return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32lastRecPirHighTime));
   }
   return false;
