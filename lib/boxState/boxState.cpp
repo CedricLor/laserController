@@ -386,12 +386,18 @@ boxState::boxState(const int16_t _i16Duration,
     i16onExpire(_i16onExpire), 
     i16monitoredMasterStates(__i16monitoredMasterStates)
 {
-  if (__i16monitoredMasterStates == boxState::_IRStates) {
-    // do sthg smart
-  }
-  if (__i16monitoredMasterStates == boxState::_MeshStates) {
-    // do sthg smart
-  }
+  /** TODO: for the moment, not doing anything with the following tests.
+   *        in the future:
+   *        - add i16onMasterIRTrigger property to boxState to handle the 
+   *        masterBox(es) IR signals;
+   *        - think about what to do with the _MeshStates (for the moment, not in use) */
+  /**
+   * if (__i16monitoredMasterStates == boxState::_IRStates) {
+   *   // do sthg smart
+   *  }
+   *  if (__i16monitoredMasterStates == boxState::_MeshStates) {
+   *   // do sthg smart
+   *  } */
 }
 
 

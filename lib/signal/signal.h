@@ -22,7 +22,10 @@ class signal
     static void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
     static bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
     static void _tcbIfIRTriggered(const ControlerBox & _callingBox);
-    static bool _testIfIRisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
+    static bool _testIfIRisHigh(const ControlerBox & _callingBox);
+    static bool _testIfMyIRisHigh(const ControlerBox & _callingBox);
+    static bool _isCallerThisBox(const ControlerBox & _callingBox);
+    static bool _testIfMasterIRisHigh(const ControlerBox & _callingBox);
     static bool _isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName);
     static bool _isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime);
 

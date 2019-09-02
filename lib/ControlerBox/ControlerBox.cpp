@@ -223,8 +223,12 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
     /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it. */
-    if (_tcbIfIRTriggered != nullptr) {
+     *  on thisBox boxState, add it to the Scheduler and restart it. 
+     *  
+     *  TODO: for the moment, restricted to my own IR signal; 
+     *        in the future, add an i16onMasterIRTrigger property to boxState
+     *        to handle the masterBox(es) IR signals. */
+    if ( (_tcbIfIRTriggered != nullptr) && ( std::addressof((ControlerBox&)(*this)) == std::addressof(thisBox) ) ) {
       tSetBoxState.setInterval(0);
       tSetBoxState.setIterations(1);
       tSetBoxState.setCallback([this](){

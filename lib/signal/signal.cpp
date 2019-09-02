@@ -135,7 +135,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  *  thisBox targetState in boxState. 
  * 
  *  TODO:
- *  1. split this boxes IR signal and the masterBox(es) IR signals; */
+ *  1. add an i16onMasterIRTrigger property to boxState to handle the masterBox(es) IR signals; */
 void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
   const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
@@ -144,7 +144,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
     return;
   }
   // 2. if so, check whether IR has been triggered
-  if (_testIfIRisHigh(_currentBoxState, _callingBox)) {
+  if (_testIfIRisHigh(_callingBox)) {
     boxState::_setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
 }
@@ -155,18 +155,39 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
 /** signal::_testIfIRisHigh() tests, in the following order, whether:
  *  1. the caller is thisBox;
  *  2. thisBox IR sensor has received a new signal;
+ * 
+ * No longer testing:
  *  3. the callingBox is the masterBox;
- *  3. the masterBox has sent an IR high signal.
+ *  4. the masterBox has sent an IR high signal.
  *  
- *  TODO in next implementation:
- *  1. split this boxes IR signal and the masterBox IR signal;
+ *  TODO in future implementation:
+ *  1. test the masterBox IR signal;
  *  2. adapt for multiple masterBoxes;
  *     timestamp of thisBox's current state. */
-bool signal::_testIfIRisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
-  if ( std::addressof(_callingBox) == std::addressof((thisBox)) ) {
+bool signal::_testIfIRisHigh(const ControlerBox & _callingBox) {
+  return _testIfMyIRisHigh(_callingBox);
+  // _testIfMasterIRisHigh();
+}
+
+
+
+bool signal::_testIfMyIRisHigh(const ControlerBox & _callingBox) {
+  if ( _isCallerThisBox(_callingBox) ) {
     return (_isSignalFresherThanBoxStateStamp(thisBox.ui32lastRecPirHighTime));
   }
+  return false;
+}
 
+
+
+
+bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
+  std::addressof(_callingBox) == std::addressof((thisBox));
+}
+
+
+
+bool signal::_testIfMasterIRisHigh(const ControlerBox & _callingBox) {
   if (_isCallerMonitored(_callingBox, thisBox.ui16MasterBoxName)) {
     return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32lastRecPirHighTime));
   }
