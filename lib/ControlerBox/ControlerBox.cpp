@@ -72,16 +72,6 @@ ControlerBox::ControlerBox()
    *    (tests whether a change has been made and whether it needs to inform 
    *    the browser). */
   bMasterBoxNameChangeHasBeenSignaled = true;
-  /** bMasterBoxNameChangeHasBeenTakenIntoAccount
-   * 
-   *  Setters:
-   *  - here; 
-   *  - in updateMasterBoxName() below (called from from step::applyStep(),
-   *    from myMeshController::_updateMyMasterBoxName() and 
-   *    myMeshController::_changedBoxConfirmation());
-   *  Testers:
-   *  - boxState._setMasterBox() to determine whether it shall reset its masterBox pointer. */
-  bMasterBoxNameChangeHasBeenTakenIntoAccount = true;
 
   sBoxDefaultState = gi16BoxDefaultState;
   sBoxDefaultStateChangeHasBeenSignaled = true;
@@ -124,7 +114,6 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16MasterBoxName: %u\n", __ui16BoxIndex, ui16MasterBoxName);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxNameChangeHasBeenSignaled: %i\n", __ui16BoxIndex, bMasterBoxNameChangeHasBeenSignaled);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxNameChangeHasBeenTakenIntoAccount: %i\n", __ui16BoxIndex, bMasterBoxNameChangeHasBeenTakenIntoAccount);
 
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultState: %u\n", __ui16BoxIndex, sBoxDefaultState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
@@ -135,7 +124,6 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
 void ControlerBox::updateMasterBoxName(const uint16_t _ui16MasterBoxName) {
   ui16MasterBoxName = _ui16MasterBoxName;  // see in constructor for information on where this variable is set and read
   bMasterBoxNameChangeHasBeenSignaled = false; // see in constructor for information on where this variable is set and read
-  bMasterBoxNameChangeHasBeenTakenIntoAccount = false;
 }
 
 
@@ -464,8 +452,6 @@ void ControlerBox::deleteBox() {
   Serial.printf("%s ui16MasterBoxName set to %u\n", _subName, ui16MasterBoxName);
   bMasterBoxNameChangeHasBeenSignaled = true;
   Serial.printf("%s bMasterBoxNameChangeHasBeenSignaled set to true\n", _subName);
-  bMasterBoxNameChangeHasBeenTakenIntoAccount = true;
-  Serial.printf("%s bMasterBoxNameChangeHasBeenTakenIntoAccount set to true\n", _subName);
 
   sBoxDefaultState = gi16BoxDefaultState;
   Serial.printf("%s sBoxDefaultState set to %i\n", _subName, sBoxDefaultState);

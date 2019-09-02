@@ -87,7 +87,6 @@ class ControlerBox
 
     uint16_t ui16MasterBoxName;
     bool bMasterBoxNameChangeHasBeenSignaled;
-    bool bMasterBoxNameChangeHasBeenTakenIntoAccount;
 
     short int sBoxDefaultState;
     bool sBoxDefaultStateChangeHasBeenSignaled;
