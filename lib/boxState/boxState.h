@@ -130,7 +130,7 @@ class boxState
     static Task tPlayBoxState;
 
     /** interface to mesh */
-    static void (*sendCurrentBoxState)(const int16_t _currentStateNbr);
+    static void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
 
   private:
     friend class signal;

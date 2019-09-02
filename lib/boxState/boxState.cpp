@@ -318,7 +318,7 @@ const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 
 // pointer to functions to produce an interface for boxState
-void (*boxState::sendCurrentBoxState)(const int16_t _currentStateNbr) = nullptr;
+void (*boxState::sendCurrentBoxState)(const int16_t _i16CurrentStateNbr) = nullptr;
 
 
 // Various constant used both in step and boxState
