@@ -118,16 +118,13 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
     return false;
   }
   // check whether the boxState of the masterBox matches with any of the monitored states
-  for (uint16_t _i = 0; _i < _currentBoxState.ui16monitoredMasterStatesSize; _i++) {
-    if (_callingBox.i16BoxActiveState == 
-      _currentBoxState.i16monitoredMasterStates[_i]) {
-      /** check whether the signal (new state of master box) is more
-       *  recent than the current boxState time stamp.
-       *  Return true if it is more recent and false otherwise. */
-      return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32BoxActiveStateStartTime));
-    }
-  }
-  return false;
+  return (
+    std::find(
+     std::begin(_currentBoxState.i16monitoredMasterStates), 
+      std::end(_currentBoxState.i16monitoredMasterStates),
+      _callingBox.i16BoxActiveState) 
+    != std::end(_currentBoxState.i16monitoredMasterStates)
+  );
 }
 
 

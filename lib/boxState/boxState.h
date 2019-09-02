@@ -60,8 +60,7 @@ class step
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
       uint16_t __ui16stepMasterBoxName,
-      uint16_t __ui16monitoredMasterStatesSize,
-      int16_t *__i16monitoredMasterStates
+      std::array<int16_t, 4> __i16monitoredMasterStates
     );
 
     // boxState criteria (variables) setter
@@ -76,8 +75,7 @@ class step
     // int16_t i16onExpireNewMaster;
     uint16_t _ui16stepMasterBoxName;
     // int16_t masterStatesToWatch[];
-    uint16_t _ui16monitoredMasterStatesSize;
-    int16_t *_i16monitoredMasterStates;
+    std::array<int16_t, 4> _i16monitoredMasterStates;
 
     void applyStep();
 
@@ -109,9 +107,8 @@ class boxState
       const uint16_t _ui16AssociatedSequence, 
       const int16_t _i16onIRTrigger, 
       const int16_t _i16onMeshTrigger, 
-      const int16_t _i16onExpire, 
-      const uint16_t _ui16monitoredMasterStatesSize, 
-      int16_t *_i16monitoredMasterStates);
+      const int16_t _i16onExpire,
+      std::array<int16_t, 4> _i16monitoredMasterStates);
 
     // boxStates array
     static const short int BOX_STATES_COUNT;
@@ -129,8 +126,7 @@ class boxState
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;
-    uint16_t ui16monitoredMasterStatesSize;
-    int16_t *i16monitoredMasterStates;
+    std::array<int16_t, 4> i16monitoredMasterStates;
 
     /** individual boxState Task: iterating once (unless explicitly restarted) 
      *  for the duration of a single boxState */
