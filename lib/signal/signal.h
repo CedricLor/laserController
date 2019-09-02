@@ -23,9 +23,9 @@ class signal
     static bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
     static void _tcbIfIRTriggered(const ControlerBox & _callingBox);
     static bool _testIfIRisHigh(const ControlerBox & _callingBox);
-    static bool _testIfMyIRisHigh(const ControlerBox & _callingBox);
+    static bool _testIfIRisHighIsMine(const ControlerBox & _callingBox);
     static bool _isCallerThisBox(const ControlerBox & _callingBox);
-    static bool _testIfMasterIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    static bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     static bool _isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName);
     static bool _isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     static bool _isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState);

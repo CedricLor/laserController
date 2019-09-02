@@ -151,21 +151,20 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *  2. thisBox IR sensor has received a new signal;
  * 
  * No longer testing:
- *  3. the callingBox is the masterBox;
- *  4. the masterBox has sent an IR high signal.
+ *  3. the callingBox is a masterBox;
+ *  4. the masterBox has sent an IR high signal more recent than the boxState time stamp.
  *  
  *  TODO in future implementation:
- *  1. test the masterBox IR signal;
- *  2. adapt for multiple masterBoxes;
+ *  1. activate 3 and 4 re. _testIfIRHighIsAmongMasters;
  *     timestamp of thisBox's current state. */
 bool signal::_testIfIRisHigh(const ControlerBox & _callingBox) {
-  return _testIfMyIRisHigh(_callingBox);
-  // _testIfMasterIRisHigh(_callingBox, _currentBoxState);
+  return _testIfIRisHighIsMine(_callingBox);
+  // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState);
 }
 
 
 
-bool signal::_testIfMyIRisHigh(const ControlerBox & _callingBox) {
+bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
   if ( _isCallerThisBox(_callingBox) ) {
     return (_isSignalFresherThanBoxStateStamp(thisBox.ui32lastRecPirHighTime));
   }
@@ -181,7 +180,7 @@ bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
 
 
 
-bool signal::_testIfMasterIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+bool signal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
   if (_isCallerInMonitoredArray(_callingBox, _currentBoxState)) {
     return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32lastRecPirHighTime));
   }
