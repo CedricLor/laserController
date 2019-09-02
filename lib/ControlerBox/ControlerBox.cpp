@@ -181,13 +181,12 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
      *  the ControlerBox is not thisBox (thisBox does not read its own mesh high
      *  signals; it sends mesh high signals). */
     if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) != std::addressof(thisBox) ) ) {
-      tNsIsMeshHigh.setInterval(0);
-      tNsIsMeshHigh.setIterations(1);
-      tNsIsMeshHigh.setCallback([this](){
+      tSetBoxState.setInterval(0);
+      tSetBoxState.setIterations(1);
+      tSetBoxState.setCallback([this](){
         _tcbNsIsMeshHigh(*this);
       });
-      mns::myScheduler.addTask(tNsIsMeshHigh);
-      tNsIsMeshHigh.restart();
+      tSetBoxState.restart();
     }
   }
 
@@ -226,13 +225,12 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
     if (_tcbNsIsIRHigh != nullptr) {
-      tNsIsIRHigh.setInterval(0);
-      tNsIsIRHigh.setIterations(1);
-      tNsIsIRHigh.setCallback([this](){
+      tSetBoxState.setInterval(0);
+      tSetBoxState.setIterations(1);
+      tSetBoxState.setCallback([this](){
         _tcbNsIsIRHigh(*this);
       });
-      mns::myScheduler.addTask(tNsIsIRHigh);
-      tNsIsIRHigh.restart();
+      tSetBoxState.restart();
     }
   }
 }
