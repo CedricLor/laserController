@@ -217,10 +217,6 @@ void step::applyStep() {
     _ui16monitoredMasterBoxesNodeNames,
     _i16monitoredMasterStates
   };
-
-  // preload the next step from memory
-  step::tPreloadNextStep.enable();
-
   Serial.println("step::applyStep(). ending");
 }
 
@@ -572,6 +568,9 @@ void boxState::_restartPlayBoxState() {
    *     configure the params of the new boxState. */
   if (ui16Mode == 1) {
     step::steps[ui16stepCounter].applyStep();
+    ui16stepCounter = ui16stepCounter + 1;
+    // preload the next step from flash memory
+    step::tPreloadNextStep.enable();
   }
 
   // 2. Set the duration of Task tPlayBoxState
@@ -650,14 +649,6 @@ bool boxState::_oetcbPlayBoxState(){
   // 4. Signal the change of state to the mesh
   myMeshViews __myMeshViews;
   __myMeshViews.statusMsg();
-
-  // 5. If we are in step controlled mode (mode 1):
-  // - increment the step counter; and
-  // - enable the Task that will read the params for the next step
-  if (ui16Mode == 1) {
-    ui16stepCounter = ui16stepCounter + 1;
-    step::tPreloadNextStep.restart();
-  }
 
   Serial.println("boxState::_oetcbPlayBoxState(). Ending.");
   return true;
