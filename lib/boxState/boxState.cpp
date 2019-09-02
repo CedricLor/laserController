@@ -401,11 +401,15 @@ boxState::boxState(const int16_t _i16Duration,
 // boxState array initialiser
 void boxState::initBoxStates() {
   Serial.println("boxState::_initBoxStates(). Starting.");
+  /** Constructor signature (using "little constructor")
+   * _i16Duration, _ui16AssociatedSequence, _i16onIRTrigger, _i16onMeshTrigger, _i16onExpire */
 
-  // manual / off
-  boxStates[0] = {1000, 5, -1, -1, 0};
-  /** sequence "all of" for indefinite time, without "interrupt/restart"
-   *  triggers from mesh or IR */
+  // ********* TECHNICAL STATES ***********************************************
+  // ----- 0, 1, 2
+  // --> STATE 0: manual / off
+  /** {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = -1, onMeshTrigger = -1, onExpire = 0 (repeat)} */
+  boxStates[0] = {-1, 5, -1, -1, 0};
   // Serial.println("void boxState::_initBoxStates(). boxStates[0].cName: ");
   // Serial.println(boxStates[0].cName);
   // Serial.println("void boxState::_initBoxStates(). boxStates[0].i16Duration");
@@ -414,57 +418,123 @@ void boxState::initBoxStates() {
   // const uint16_t _i16Duration, const uint16_t _ui16AssociatedSequence
   // const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire
 
-  // align lasers
-  boxStates[1] = {1000, 1, -1, -1, 1}; 
-  /** sequence "twins" for indefinite time, without "interrupt/restart" 
-   * triggers from mesh or IR */
-  // pir startup waiting mesh
-  boxStates[2] = {60, 1, -1, 8/*0-1 8-9 with restriction*/, 3}; 
-  /** sequence "twins" for 60 seconds, without "interrupt/restart" triggers from IR, but triggers from mesh */
+  // --> STATE 1: align lasers
+  /** sequence "twins" for indefinite time, without interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 1 ("twins"), 
+   *   onIRTrigger = -1, 
+   *   onMeshTrigger = -1, 
+   *   onExpire = 1 (repeat)} */
+  boxStates[1] = {-1, 1, -1, -1, 1};
 
-  // waiting both
-  boxStates[3] = {1000, 5, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/}; 
-  /** sequence "all of" for indefinite time until trigger from either IR or mesh */
-  // waiting ir
-  boxStates[4] = {1000, 5, 6/*6-9*/, -1, 4/*0 3-13*/}; 
-  /** sequence "all of" for indefinite time until trigger from IR */
-  // waiting mesh
-  boxStates[5] = {1000, 5, -1, 10/*10-13*/, 5/*0 3-13*/}; 
-  /** sequence "all of" for indefinite time until trigger from mesh */
+  // --> STATE 2: pir startup waiting mesh
+  /** sequence "twins" for 60 seconds, no interrupt from IR, interrupts from mesh */
+  /** {Duration = 60 sec., AssocSeqce = 1 ("twins"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 12 (possible val: 0-2 12-13 with restrictions 
+   *   (restrictions --> no subsequent IR before expiration of 60 seconds startup delay)),
+   *   onExpire = 3 (repeat)} */
+  boxStates[2] = {60, 1, -1, 8, 3};
 
-  // pir High both interrupt
-  boxStates[6] = {120, 0, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
-   * from both IR and mesh */
-  // pir High ir interrupt
-  boxStates[7] = {120, 0, 6/*6-9*/, -1, 4/*0 3-13*/}; 
+
+  // ********* WAITING STATES (3 STATES + STATE 0) ****************************
+  // ----- 3, 4, 5, 0
+  // --> STATE 3: Waiting Both
+  /** sequence "all of" for indefinite time, IR and mesh interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 3 (repeat)(possible val: any except technical: 0 3-13)} */
+  boxStates[3] = {-1, 5, 6, 10, 3}; 
+
+  // --> STATE 4: Waiting IR
+  /** sequence "all of" for indefinite time, IR interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (repeat)(possible val: any except technical: 0 3-13)} */
+  boxStates[4] = {-1, 5, 6, -1, 4}; 
+
+  // --> STATE 5: Waiting Mesh
+  /** sequence "all of" for indefinite time, mesh interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 5 (repeat)(possible val: any except technical: 0 3-13)} */
+  boxStates[5] = {-1, 5, -1, 10, 5}; 
+
+
+  // ********* PIR HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) *******
+  // ----- 6, 7, 8, 9
+  // --> STATE 6: PIR High Both interrupt
+  /** sequence "relays" for 120 seconds, IR and mesh interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 3 (fall back to waiting both)(possible val: any except technical: 0 3-13)} */
+  boxStates[6] = {120, 0, 6, 10, 3}; 
+
+  // --> STATE 7: PIR High IR interrupt
+  /** sequence "relays" for 120 seconds, IR interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStates[7] = {120, 0, 6, -1, 4}; 
   /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
    * from IR only */
-  // pir High mesh interrupt
-  boxStates[8] = {120, 0, -1, 10/*10-13*/, 5/*0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
-   * from mesh only */
-  // pir High no interrupt
-  boxStates[9] = {120, 0, -1, -1, 4/*0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with no "interrupt/restart" 
-   * triggers from IR or mesh */
 
-  // mesh High both interrupt
-  boxStates[10] = {120, 0, 6/*6-9*/, 10/*10-13*/, 3/*0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
-   * from both IR and mesh */
-  // mesh High ir interrupt
-  boxStates[11] = {120, 0, 6/*6-9*/, -1, 4/*0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
-   * from IR only */
-  // mesh High mesh interrupt
-  boxStates[12] = {120, 0, -1, 10/*10-13*/, 5/*0 3-13*/}; 
+  // --> STATE 8: PIR High Mesh interrupt
+  /** sequence "relays" for 120 seconds, mesh interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
+  boxStates[8] = {120, 0, -1, 10, 5}; 
+
+  // --> STATE 9: PIR High no interrupt
+  /** sequence "relays" for 120 seconds, no interrupt.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStates[9] = {120, 0, -1, -1, 4}; 
+
+
+  // ********* MESH HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) ******
+  // ----- 10, 11, 12, 13
+  // --> STATE 10: Mesh High Both interrupt
+  /** sequence "relays" for 120 seconds, IR and mesh interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 3 (fall back to waiting both)(possible val: any except technical: 0 3-13)} */
+  boxStates[10] = {120, 0, 6, 10, 3}; 
+
+  // --> STATE 11: Mesh High IR interrupt
+  /** sequence "relays" for 120 seconds, IR interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStates[11] = {120, 0, 6, -1, 4}; 
+
+  // --> STATE 12: Mesh High Mesh interrupt
+  /** sequence "relays" for 120 seconds, mesh interrupt.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
+  boxStates[12] = {120, 0, -1, 10, 5/*possible val: 0 3-13*/}; 
   /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
    * from mesh only */
-  // mesh High no interrupt
-  boxStates[13] = {120, 0, -1, -1, 4/*0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with no "interrupt/restart" 
-   * triggers from IR or mesh */
+
+  // --> STATE 13: mesh High no interrupt
+  /** sequence "relays" for 120 seconds, no interrupt.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStates[13] = {120, 0, -1, -1, 4}; 
 
   Serial.println("boxState::_initBoxStates(). Ending.");
 }
