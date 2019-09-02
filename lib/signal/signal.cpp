@@ -114,7 +114,7 @@ void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
  *  2. reset signal catchers; */
 bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
   // is calling box being monitored by thisBox in its current state?
-  if (!(_isCallerMonitored(_callingBox, thisBox.ui16MasterBoxName)) ) {
+  if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState)) ) {
     return false;
   }
   // check whether the boxState of the masterBox matches with any of the monitored states
@@ -201,6 +201,17 @@ bool signal::_isCallerMonitored(const ControlerBox & _callingBox, const uint16_t
   return (_callingBox.ui16NodeName == _ui16MonitoredNodeName);
   }
 
+
+
+
+bool signal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+  return (std::find(
+    std::begin(_currentBoxState.ui16monitoredMasterBoxesNodeNames), 
+    std::end(_currentBoxState.ui16monitoredMasterBoxesNodeNames),
+    _callingBox.ui16NodeName) 
+    != std::end(_currentBoxState.ui16monitoredMasterBoxesNodeNames)
+  );
+}
 
 
 
