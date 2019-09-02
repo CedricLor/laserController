@@ -41,6 +41,8 @@ const int16_t sequence::_i16_sequence_count = 7;
 sequence sequence::sequences[_i16_sequence_count];
 
 
+// pointer to functions to produce an interface for boxState
+void (*sequence::sendCurrentSequence)(const int16_t _i16CurrentStateNbr) = nullptr;
 
 
 
@@ -344,6 +346,12 @@ bool sequence::_oetcbPlaySequence(){
   //   Serial.print("void sequence::_playSequence(). tPlaySequence.getIterations() = ");Serial.println(tPlaySequence.getIterations());
   // }
 
+  // 3. Signal the change of state to the mesh
+  if (sendCurrentSequence != nullptr) {
+    sendCurrentSequence(_i16ActiveSequence);
+  }
+
+
   return true;
 }
 
@@ -454,3 +462,10 @@ void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
   // Serial.print(F("-void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = "));Serial.println(_i16ActiveSequence);
   Serial.println(F("-void sequence::setActiveSequence(). Ending."));
 };
+
+
+
+// Get the active sequence
+int16_t sequence::getCurrentSequence() {
+  return _i16ActiveSequence;
+}

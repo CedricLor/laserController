@@ -25,7 +25,7 @@ namespace laserInterface {
     void initBoxStatesComm();
     /** not being implemented for the moment; activeState set by direct call from meshController to ControlerBox */
     // void setBoxState();
-    void sendCurrentBoxState(const int16_t _currentStateNbr);
+    void sendCurrentBoxState(const int16_t _i16CurrentStateNbr);
 
     // masterBoxes stack
     void initMonitoredMasterBoxComm();
@@ -43,8 +43,10 @@ namespace laserInterface {
 
     // sequence stack
     void initSequenceComm();
-    void setCurrentSequence();
-    void sendCurrentSequence();
+    void setCurrentSequence(const int16_t __i16ActiveSequence);
+    int16_t getCurrentSequence();
+    void sendCurrentSequence(const int16_t __i16ActiveSequence);
+    void playSequence(const int16_t __i16SequenceNb);
 
     // bar stack
     void initBarComm();

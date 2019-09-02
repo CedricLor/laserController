@@ -57,6 +57,10 @@ class sequence
     static Task tPlaySequenceInLoop;
     static Task tPlaySequence;
 
+    /** interface to mesh */
+    static void (*sendCurrentSequence)(const int16_t _i16ActiveSequence);
+    static int16_t getCurrentSequence();
+
   private:
     // static private constants to set stuffs
     static const int16_t _i16_sequence_count;
