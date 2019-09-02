@@ -40,7 +40,7 @@ signal::signal()
    *       ControlerBox;
    *  (c). if both conditions are fullfiled, it shall turn a Mesh HIGH switch (as 
    *       instance property) in boxState. */
-  ControlerBox::_tcbNsIsMeshHigh = *_tcbIsMeshHigh;
+  ControlerBox::_tcbIsMeshHigh = *_tcbIsMeshHigh;
 
    /** 
    *  3. Define the callback of a Task located in ControlerBox, to be enabled upon
@@ -49,7 +49,7 @@ signal::signal()
    *  (a). whether the ControlerBoxes pertains to one of the monitored ControlerBoxes 
    *       (i.e. is one of the masterBoxes);
    *  (b). if so, it shall set the relevant target boxState in boxState. */
-  ControlerBox::_tcbNsIsIRHigh = *_tcbIsIRHigh;
+  ControlerBox::_tcbIsIRHigh = *_tcbIsIRHigh;
 
   /**  4. Define the callback of a Task located in boxState, to be enabled upon starting
    *     a new boxState (or before, if it can be anticipated), to pass the list of 
