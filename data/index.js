@@ -409,7 +409,7 @@ class dlgtdBtnEvt {
     if (!(e.target)) { return; }
 
     // if the connection is closed, inform the user and return
-    // TO DO: maybe, should trigger a delete all the boxes
+    // TODO: maybe, should trigger a delete all the boxes
     if (connectionObj.checkConnect.closedVerb()) { return; }
 
     /** this = this dlgtdBtnEvt instance
@@ -1395,7 +1395,7 @@ var connectionObj = {
     if (connectionObj.checkConnect.retryCount === 10) {
       console.log("check(): Tried to reconnect 10 times. Stopping. Please reload or check the server.");
       clearInterval(connectionObj.checkConnect.intervalCode);
-      // TO DO: inform the user that he should try to reload
+      // TODO: inform the user that he should try to reload
       return;
     }
     // if the connection is inexistant or closed

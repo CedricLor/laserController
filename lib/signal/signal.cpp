@@ -143,7 +143,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
 }
 
 
-/**TO DO:
+/**TODO:
  * 1. get rid of the witnesses
  * 2. get rid of the corresonding stack in boxState
  * 3. rename _tcbIsIRHigh() (and stack, and same for mesh stack) to
@@ -156,7 +156,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  *  and if both conditions are fullfilled, it resets/changes
  *  thisBox targetState in boxState. 
  * 
- *  TO DO:
+ *  TODO:
  *  1. split this boxes IR signal and the masterBox(es) IR signals; */
 void signal::_tcbIsIRHigh(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIsIRHigh +++++++++++++++++++++++++");

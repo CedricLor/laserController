@@ -135,7 +135,7 @@ when I will have 10 laser boxes, this will overflow the mesh: add speed bumper
 C. Implement websockets
 
 
-TO DO:
+TODO:
 - manual state communication sequence
   - what shall the manual state enable me to do?
   - webServerViews: draft the manual state page

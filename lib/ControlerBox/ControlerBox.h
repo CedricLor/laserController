@@ -66,9 +66,7 @@ class ControlerBox
     /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
      *  by a call to meshNodeTime.
      * 
-     * Set via ControlerBox::setBoxActiveState.
-     * 
-     * TODO: should be set for other boxes from status messages received from the mesh. */
+     * Set via ControlerBox::setBoxActiveState. */
     uint32_t ui32BoxActiveStateStartTime;
 
 

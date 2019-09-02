@@ -68,7 +68,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   if (MY_DG_WS) {
     Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
   }
-  /** TO DO: treat the nullprt issue:
+  /** TODO: treat the nullprt issue:
     * This Task shall be enabled:
     * (i) if one of the network parameter has changed, an array of all the clients shall be constructed,
     *  the new data shall be broadcasted to all the clients, the clients shall be removed from the array

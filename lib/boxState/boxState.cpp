@@ -59,7 +59,7 @@ reverse dependency graph
 
 
 /*
-  DEBUG PROBLEMS:
+  TODO DEBUG PROBLEMS:
   VERY HIGH:
   II. SPIFFS: make the call to split files in main.cpp smarter: detect
   if there are any files to split (file which name would contain the special
@@ -76,18 +76,7 @@ reverse dependency graph
   - a lot of refactoring to do
 
   LOW:
-  I. Global
-    - setting and use of gui16ControllerBoxPrefix
-    -> make them two different values and adapt the whole code
-    -> this is a very long shot:
-      - gui16ControllerBoxPrefix: 47 results in 8 files
   II. BoxState and Steps
-    A. ui16MasterBoxName
-      - casting ui16MasterBoxName
-      - calculations of ui16MasterBoxName index which result in negative numbers
-      - initial setting of ControlerBox.ui16MasterBoxName
-      - empty class constructor for steps and boxStates -> should initialize
-      each parameter to avoid leaving dump values
     B. Implement array of masterBoxes
     C. Implement various reactions to various state of master
     D. Implement locking IRStartup mode to other IRless modes only
@@ -99,7 +88,6 @@ reverse dependency graph
     ultrasonic sensors providing data to the whole system
   VI. Hardware interrupt on the IR Pin
   VII. Deep sleep
-  VIII. mySavedPrefs: refacto -> mySavedPrefs shall be loaded before ControlerBox
 */
 
 #include "Arduino.h"
