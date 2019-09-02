@@ -60,24 +60,33 @@ reverse dependency graph
 
 /*
   TODO DEBUG PROBLEMS:
-  VERY HIGH:
-  II. SPIFFS: make the call to split files in main.cpp smarter: detect
+  HIGH:
+  I. Create the stack for steps, multiple masters and multiple monitored states:
+     - JSON
+     - Mesh
+     - Web
+  II. Create the stack for sequences:
+     - JSON
+     - Mesh
+     - Web
+  III. Create the stack for notes/tones:
+     - JSON
+     - Mesh
+     - Web
+  IV. Create the stack for steps mode switch:
+     - JSON
+     - Mesh
+     - Web
+  V. NTP for browser
+  VI.SPIFFS: make the call to split files in main.cpp smarter: detect
   if there are any files to split (file which name would contain the special
   '-' character).
+  VII.Create additional roles (isIrController, isRelay...)
 
   MEDIUM:
-  I. Create mesh and web stack for:
-  - sequences
-  - notes/tones
-  - steps
-  - steps mode switch
-  II. mySpiffs and steps and sequences:
-  - generalize mySpiffs step logic to sequences and notes
-  - a lot of refactoring to do
 
   LOW:
   II. BoxState and Steps
-    B. Implement array of masterBoxes
     C. Implement various reactions to various state of master
     D. Implement locking IRStartup mode to other IRless modes only
   III. WSSender: add a queue in the looped task
