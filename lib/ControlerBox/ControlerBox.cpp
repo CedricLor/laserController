@@ -176,8 +176,11 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
     // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
 
     /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it. */
-    if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) == std::addressof(thisBox) ) ) {
+     *  on thisBox boxState, add it to the Scheduler and restart it testing
+     *  whether the callback _tcbNsIsMeshHigh has been set and that 
+     *  the ControlerBox is not thisBox (thisBox does not read its own mesh high
+     *  signals; it sends mesh high signals). */
+    if ( (_tcbNsIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) != std::addressof(thisBox) ) ) {
       tNsIsMeshHigh.setInterval(0);
       tNsIsMeshHigh.setIterations(1);
       tNsIsMeshHigh.setCallback([this](){
