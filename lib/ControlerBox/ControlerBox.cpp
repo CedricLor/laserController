@@ -330,7 +330,7 @@ uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
 
 
 
-Task ControlerBox::tSetBoxStateFromWeb(0, 1, NULL, NULL, false, NULL, NULL);
+Task ControlerBox::tSetBoxState(0, 1, NULL, NULL, false, NULL, NULL);
 
 /** Setter for i16boxStateRequestedFromWeb
  * 
@@ -341,11 +341,10 @@ void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedF
   /** Set the Task that will check whether this change shall have an impact
    *  on thisBox boxState, add it to the Scheduler and restart it. */
   if (_tcbSetBoxStateFromWeb != nullptr) {
-    tSetBoxStateFromWeb.setInterval(0);
-    tSetBoxStateFromWeb.setIterations(1);
-    tSetBoxStateFromWeb.setCallback(_tcbSetBoxStateFromWeb);
-    mns::myScheduler.addTask(tSetBoxStateFromWeb);
-    tSetBoxStateFromWeb.restart();
+    tSetBoxState.setInterval(0);
+    tSetBoxState.setIterations(1);
+    tSetBoxState.setCallback(_tcbSetBoxStateFromWeb);
+    tSetBoxState.restart();
   }
 }
 

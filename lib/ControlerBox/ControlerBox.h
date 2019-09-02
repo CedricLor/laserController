@@ -137,11 +137,11 @@ class ControlerBox
     static Task tReboot;
 
     // boxState Setters Tasks
+    static Task tSetBoxState;
     Task tNsIsMeshHigh;
     static void (*_tcbNsIsMeshHigh)(const ControlerBox & _callingBox);
     Task tNsIsIRHigh;
     static void (*_tcbNsIsIRHigh)(const ControlerBox & _callingBox);
-    static Task tSetBoxStateFromWeb;
     static void (*_tcbSetBoxStateFromWeb)();
 
   private:
