@@ -112,24 +112,13 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16MasterBoxName: %u\n", __ui16BoxIndex, ui16MasterBoxName);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].bMasterBoxNameChangeHasBeenSignaled: %i\n", __ui16BoxIndex, bMasterBoxNameChangeHasBeenSignaled);
-
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultState: %u\n", __ui16BoxIndex, sBoxDefaultState);
   Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
 
 
-void ControlerBox::updateMasterBoxName(const uint16_t _ui16MasterBoxName) {
-  ui16MasterBoxName = _ui16MasterBoxName;  // see in constructor for information on where this variable is set and read
-  bMasterBoxNameChangeHasBeenSignaled = false; // see in constructor for information on where this variable is set and read
-}
-
-
-
 void ControlerBox::updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxNameFromWeb) {
-  updateMasterBoxName(_ui16MasterBoxNameFromWeb + gui16ControllerBoxPrefix);
 }
 
 
