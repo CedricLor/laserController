@@ -144,9 +144,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
 
 
 /**TODO:
- * 1. get rid of the witnesses
- * 2. get rid of the corresonding stack in boxState
- * 3. rename _tcbIsIRHigh() (and stack, and same for mesh stack) to
+ * 1. rename _tcbIsIRHigh() (and stack, and same for mesh stack) to
  *    sthg like _changeBoxTargetStateIfIRHigh()
 */
 
