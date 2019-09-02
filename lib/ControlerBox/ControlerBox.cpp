@@ -19,8 +19,8 @@
 int16_t ControlerBox::i16boxStateRequestedFromWeb = -1;
 short int ControlerBox::connectedBoxesCount = 1;
 short int ControlerBox::previousConnectedBoxesCount = 1;
-void (*ControlerBox::_tcbIsMeshHigh)(const ControlerBox & _callingBox) = nullptr;
-void (*ControlerBox::_tcbIsIRHigh)(const ControlerBox & _callingBox) = nullptr;
+void (*ControlerBox::_tcbIfMeshTriggered)(const ControlerBox & _callingBox) = nullptr;
+void (*ControlerBox::_tcbIfIRTriggered)(const ControlerBox & _callingBox) = nullptr;
 void (*ControlerBox::_tcbSetBoxStateFromWeb)() = nullptr;
 
 
@@ -177,14 +177,14 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it testing
-     *  whether the callback _tcbIsMeshHigh has been set and that 
+     *  whether the callback _tcbIfMeshTriggered has been set and that 
      *  the ControlerBox is not thisBox (thisBox does not read its own mesh high
      *  signals; it sends mesh high signals). */
-    if ( (_tcbIsMeshHigh != nullptr) && ( std::addressof((ControlerBox&)(*this)) != std::addressof(thisBox) ) ) {
+    if ( (_tcbIfMeshTriggered != nullptr) && ( std::addressof((ControlerBox&)(*this)) != std::addressof(thisBox) ) ) {
       tSetBoxState.setInterval(0);
       tSetBoxState.setIterations(1);
       tSetBoxState.setCallback([this](){
-        _tcbIsMeshHigh(*this);
+        _tcbIfMeshTriggered(*this);
       });
       tSetBoxState.restart();
     }
@@ -224,11 +224,11 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it. */
-    if (_tcbIsIRHigh != nullptr) {
+    if (_tcbIfIRTriggered != nullptr) {
       tSetBoxState.setInterval(0);
       tSetBoxState.setIterations(1);
       tSetBoxState.setCallback([this](){
-        _tcbIsIRHigh(*this);
+        _tcbIfIRTriggered(*this);
       });
       tSetBoxState.restart();
     }

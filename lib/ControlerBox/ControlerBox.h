@@ -136,8 +136,8 @@ class ControlerBox
 
     // boxState Setters Tasks
     static Task tSetBoxState;
-    static void (*_tcbIsMeshHigh)(const ControlerBox & _callingBox);
-    static void (*_tcbIsIRHigh)(const ControlerBox & _callingBox);
+    static void (*_tcbIfMeshTriggered)(const ControlerBox & _callingBox);
+    static void (*_tcbIfIRTriggered)(const ControlerBox & _callingBox);
     static void (*_tcbSetBoxStateFromWeb)();
 
   private:

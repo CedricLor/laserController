@@ -40,7 +40,7 @@ signal::signal()
    *       ControlerBox;
    *  (c). if both conditions are fullfiled, it shall turn a Mesh HIGH switch (as 
    *       instance property) in boxState. */
-  ControlerBox::_tcbIsMeshHigh = *_tcbIsMeshHigh;
+  ControlerBox::_tcbIfMeshTriggered = *_tcbIfMeshTriggered;
 
    /** 
    *  3. Define the callback of a Task located in ControlerBox, to be enabled upon
@@ -49,7 +49,7 @@ signal::signal()
    *  (a). whether the ControlerBoxes pertains to one of the monitored ControlerBoxes 
    *       (i.e. is one of the masterBoxes);
    *  (b). if so, it shall set the relevant target boxState in boxState. */
-  ControlerBox::_tcbIsIRHigh = *_tcbIsIRHigh;
+  ControlerBox::_tcbIfIRTriggered = *_tcbIfIRTriggered;
 
   /**  4. Define the callback of a Task located in boxState, to be enabled upon starting
    *     a new boxState (or before, if it can be anticipated), to pass the list of 
@@ -93,7 +93,7 @@ void signal::_tcbSetBoxStateFromWeb() {
 
 
 /***/
-void signal::_tcbIsMeshHigh(const ControlerBox & _callingBox) {
+void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
   const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
@@ -123,7 +123,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
   }
   // is thisBox monitoring any state of its masters? 
   /** Already tested (from the other side) in 
-   *  _tcbIsMeshHigh --> (_currentBoxState.i16onMeshTrigger == -1).
+   *  _tcbIfMeshTriggered --> (_currentBoxState.i16onMeshTrigger == -1).
    * 
    *  Commented out! */
   // if (_currentBoxState.i16monitoredMasterStates[0] == -1) {
@@ -143,12 +143,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
 }
 
 
-/**TODO:
- * 1. rename _tcbIsIRHigh() (and stack, and same for mesh stack) to
- *    sthg like _changeBoxTargetStateIfIRHigh()
-*/
-
-/** signal::_tcbIsIRHigh() tests whether:
+/** signal::_tcbIfIRTriggered() tests whether:
  *  1. the current boxState is IR sensitive;
  *  2. IR shall be considered as high;
  *  and if both conditions are fullfilled, it resets/changes
@@ -156,8 +151,8 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  * 
  *  TODO:
  *  1. split this boxes IR signal and the masterBox(es) IR signals; */
-void signal::_tcbIsIRHigh(const ControlerBox & _callingBox) {
-  Serial.println("+++++++++++++++++++++++++ _tcbIsIRHigh +++++++++++++++++++++++++");
+void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
+  Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
   const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
   // 1. check whether the current boxState is IR sensitive
   if (_currentBoxState.i16onIRTrigger == -1) {
