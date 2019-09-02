@@ -44,7 +44,6 @@ reverse dependency graph
 #include <painlessMesh.h>
 #include <mns.h>
 #include <mySpiffs.h>
-#include <myMeshViews.h>
 #include <sequence.h>
 
 class step
@@ -131,7 +130,7 @@ class boxState
     static Task tPlayBoxState;
 
     /** interface to mesh */
-    static void (*sendBoxState)(const int16_t _currentStateNbr);
+    static void (*sendCurrentBoxState)(const int16_t _currentStateNbr);
 
   private:
     friend class signal;

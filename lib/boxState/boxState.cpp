@@ -318,7 +318,7 @@ const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 
 // pointer to functions to produce an interface for boxState
-void (*boxState::sendBoxState)(const int16_t _currentStateNbr) = nullptr;
+void (*boxState::sendCurrentBoxState)(const int16_t _currentStateNbr) = nullptr;
 
 
 // Various constant used both in step and boxState
@@ -652,8 +652,8 @@ bool boxState::_oetcbPlayBoxState(){
   sequence::tPlaySequenceInLoop.enable();
 
   // 4. Signal the change of state to the mesh
-  if (sendBoxState != nullptr) {
-    sendBoxState(thisBox.i16BoxActiveState);
+  if (sendCurrentBoxState != nullptr) {
+    sendCurrentBoxState(thisBox.i16BoxActiveState);
   }
 
   Serial.println("boxState::_oetcbPlayBoxState(). Ending.");

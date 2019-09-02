@@ -9,10 +9,11 @@
 
 // boxStates stack
 void laserInterface::initBoxStatesComm() {
-    boxState::sendBoxState = sendBoxState;
+    boxState::sendCurrentBoxState = sendCurrentBoxState;
 }
 
-void laserInterface::sendBoxState(const int16_t _currentStateNbr) {
+
+void laserInterface::sendCurrentBoxState(const int16_t _currentStateNbr) {
     myMeshViews _myMeshViews;
     _myMeshViews.statusMsg();
 }
