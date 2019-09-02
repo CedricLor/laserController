@@ -22,7 +22,7 @@ class signal
     static void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
     static bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
     static void _tcbIfIRTriggered(const ControlerBox & _callingBox);
-    static bool _testIfIRisHigh(const ControlerBox & _callingBox);
+    static bool _testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     static bool _testIfIRisHighIsMine(const ControlerBox & _callingBox);
     static bool _isCallerThisBox(const ControlerBox & _callingBox);
     static bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState);

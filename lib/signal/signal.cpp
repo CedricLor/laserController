@@ -46,21 +46,6 @@ signal::signal()
   ControlerBox::_tcbSetBoxStateFromWeb = *_tcbSetBoxStateFromWeb;
   ControlerBox::_tcbIfMeshTriggered = *_tcbIfMeshTriggered;
   ControlerBox::_tcbIfIRTriggered = *_tcbIfIRTriggered;
-
-  /**  4. Define the callback of a Task located in boxState, to be enabled upon starting
-   *     a new boxState (or before, if it can be anticipated), to pass the list of 
-   *     ControlerBoxes and the corresponding boxStates to be monitored
-   *     to this "signal" class.
-   * 
-   *     Needed in boxState:
-   *     => Task:
-   *     Task boxState::tPassControlerBoxListToSignal
-   * 
-   *     Needed here:
-   *     => a function: 
-   *     static void _tcbPassControlerBoxListToSignal();
-   *     => a storage structure: instance of signal?
-   *    */
 }
 
 
@@ -105,13 +90,10 @@ void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
 
 
 /** signal::_testIfMeshisHigh: tests, in the following order, whether:
- *  1. the caller is monitored;
- *  2. the masterBox new active state corresponds to state monitored by thisBox in its currentState;
- *  3. if the masterBox new active state has been set more recently than the currentState of thisBox.
- *  
- *  TODO in next implementation:
- *  1. adapt for multiple masterBoxes;
- *  2. reset signal catchers; */
+ *  1. the caller is among the monitored masters;
+ *  2. the masterBox new active state corresponds to one of the states
+ *     monitored by thisBox in its currentState;
+ *  3. if the masterBox new active state has been set more recently than the currentState of thisBox.*/
 bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
   // is calling box being monitored by thisBox in its current state?
   if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState)) ) {
@@ -138,7 +120,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
     return;
   }
   // 2. if so, check whether IR has been triggered
-  if (_testIfIRisHigh(_callingBox)) {
+  if (_testIfIRisHigh(_callingBox, _currentBoxState)) {
     boxState::_setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
 }
@@ -157,7 +139,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *  TODO in future implementation:
  *  1. activate 3 and 4 re. _testIfIRHighIsAmongMasters;
  *     timestamp of thisBox's current state. */
-bool signal::_testIfIRisHigh(const ControlerBox & _callingBox) {
+bool signal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
   return _testIfIRisHighIsMine(_callingBox);
   // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState);
 }
