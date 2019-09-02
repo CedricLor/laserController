@@ -60,6 +60,7 @@ class step
       int16_t __i16onMeshTrigger,
       int16_t __i16onExpire,
       uint16_t __ui16stepMasterBoxName,
+      std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames,
       const std::array<int16_t, 4> __i16monitoredMasterStates
     );
 
@@ -74,7 +75,7 @@ class step
     int16_t _i16onExpire;
     // int16_t i16onExpireNewMaster;
     uint16_t _ui16stepMasterBoxName;
-    // int16_t masterStatesToWatch[];
+    std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames;
     std::array<int16_t, 4> _i16monitoredMasterStates;
 
     void applyStep();
@@ -108,6 +109,7 @@ class boxState
       const int16_t _i16onIRTrigger, 
       const int16_t _i16onMeshTrigger, 
       const int16_t _i16onExpire,
+      std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames,
       std::array<int16_t, 4> _i16monitoredMasterStates);
 
     // boxStates array
@@ -126,6 +128,7 @@ class boxState
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;
+    std::array<uint16_t, 4> ui16monitoredMasterBoxesNodeNames;
     std::array<int16_t, 4> i16monitoredMasterStates;
 
     /** individual boxState Task: iterating once (unless explicitly restarted) 
@@ -136,6 +139,7 @@ class boxState
     friend class signal;
     friend class step;
 
+    static const std::array<uint16_t, 4> _monitorNoMaster; // {254}
     static const std::array<int16_t, 4> _monitorNoStates;// {-1};
     static const std::array<int16_t, 4> _IRStates;// {6, 7, 8, 9};
     static const std::array<int16_t, 4> _MeshStates;// {10, 11, 12, 13};
