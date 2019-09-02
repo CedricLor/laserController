@@ -378,13 +378,13 @@ boxState::boxState(const int16_t _i16Duration,
   const int16_t _i16onIRTrigger, 
   const int16_t _i16onMeshTrigger, 
   const int16_t _i16onExpire,
-  std::array<int16_t, 4> __i16monitoredMasterStates)
+  std::array<int16_t, 4> _i16monitoredMasterStates)
     : i16Duration(_i16Duration), 
     ui16AssociatedSequence(_ui16AssociatedSequence), 
     i16onIRTrigger(_i16onIRTrigger), 
     i16onMeshTrigger(_i16onMeshTrigger), 
     i16onExpire(_i16onExpire), 
-    i16monitoredMasterStates(__i16monitoredMasterStates)
+    i16monitoredMasterStates(_i16monitoredMasterStates)
 {
   /** TODO: for the moment, not doing anything with the following tests.
    *        in the future:
