@@ -130,6 +130,9 @@ class boxState
      *  for the duration of a single boxState */
     static Task tPlayBoxState;
 
+    /** interface to mesh */
+    static void (*sendBoxState)(const int16_t _currentStateNbr);
+
   private:
     friend class signal;
     friend class step;

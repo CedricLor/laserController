@@ -16,6 +16,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <myMeshStarter.h>
 #include <boxState.h>
 #include <signal.h>
+#include <laserInterface.h>
 #include <pirController.h>
 #include <myWebServerBase.h>
 

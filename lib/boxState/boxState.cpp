@@ -317,6 +317,11 @@ short int boxState::_boxTargetState = 0;
 const short int boxState::BOX_STATES_COUNT = 14;
 boxState boxState::boxStates[BOX_STATES_COUNT];
 
+// pointer to functions to produce an interface for boxState
+void (*boxState::sendBoxState)(const int16_t _currentStateNbr) = nullptr;
+
+
+// Various constant used both in step and boxState
 const std::array<uint16_t, 4> _monitorNoMaster {254};
 const std::array<int16_t, 4> boxState::_monitorNoStates {-1};
 const std::array<int16_t, 4> boxState::_IRStates {6, 7, 8, 9};
@@ -647,12 +652,15 @@ bool boxState::_oetcbPlayBoxState(){
   sequence::tPlaySequenceInLoop.enable();
 
   // 4. Signal the change of state to the mesh
-  myMeshViews __myMeshViews;
-  __myMeshViews.statusMsg();
+  if (sendBoxState != nullptr) {
+    sendBoxState(thisBox.i16BoxActiveState);
+  }
 
   Serial.println("boxState::_oetcbPlayBoxState(). Ending.");
   return true;
 }
+
+
 
 
 /* Upon disabling the task which plays a given boxState,
