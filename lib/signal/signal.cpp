@@ -12,7 +12,7 @@ signal::signal()
   /** 
    *  --> NOT SURE 1. will be needed
    *  1. Define the callback of a Task located in ControlerBox, to be enabled upon
-   *     receiving the registration of a new ControlerBox.
+   *     receiving the registration of/connection with a new ControlerBox.
    *     This callback shall test:
    *  (a). whether the ControlerBoxes pertains to one of the monitored ControlerBoxes 
    *       (i.e. is one of the masterBoxes);
@@ -29,26 +29,22 @@ signal::signal()
    *     static void _tcbIsNewBoxMonitored();
    *     => a storage structure: i.e. a ControlerBox refs array? */
 
+  /** The three following lines each associate a function defined here to 
+   *  a pointer to function declared in ControlerBox.
+   *  
+   *  These functions correspond to the three sources of signal:
+   *  - from web;
+   *  - from mesh;
+   *  - from IR. 
+   * 
+   *  Upon receiving one of these signals, the ControlerBox class:
+   *  1- declare the relevant function as callback of a Task tSetBoxState;
+   *  2- enable Task tSetBoxState.
+   * 
+   *  Each of these functions will then check whether the signal is a trigger to change
+   *  a boxState. If so, they reset the boxState. */
   ControlerBox::_tcbSetBoxStateFromWeb = *_tcbSetBoxStateFromWeb;
-   /** 
-   *  2. Define the callback of a Task located in ControlerBox, to be enabled upon
-   *     receiving a change in the boxState of one of the ControlerBoxes.
-   *     This callback shall test:
-   *  (a). whether the ControlerBoxes pertains to one of the monitored ControlerBoxes 
-   *       (i.e. is one of the masterBoxes);
-   *  (b). whether the new boxState pertains to one of the monitored boxStates for this
-   *       ControlerBox;
-   *  (c). if both conditions are fullfiled, it shall turn a Mesh HIGH switch (as 
-   *       instance property) in boxState. */
   ControlerBox::_tcbIfMeshTriggered = *_tcbIfMeshTriggered;
-
-   /** 
-   *  3. Define the callback of a Task located in ControlerBox, to be enabled upon
-   *     receiving a change in IR of one of the ControlerBoxes (including thisBox).
-   *     This callback shall test:
-   *  (a). whether the ControlerBoxes pertains to one of the monitored ControlerBoxes 
-   *       (i.e. is one of the masterBoxes);
-   *  (b). if so, it shall set the relevant target boxState in boxState. */
   ControlerBox::_tcbIfIRTriggered = *_tcbIfIRTriggered;
 
   /**  4. Define the callback of a Task located in boxState, to be enabled upon starting
@@ -121,14 +117,6 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
   if (!(_isCallerMonitored(_callingBox, thisBox.ui16MasterBoxName)) ) {
     return false;
   }
-  // is thisBox monitoring any state of its masters? 
-  /** Already tested (from the other side) in 
-   *  _tcbIfMeshTriggered --> (_currentBoxState.i16onMeshTrigger == -1).
-   * 
-   *  Commented out! */
-  // if (_currentBoxState.i16monitoredMasterStates[0] == -1) {
-  //   return false;
-  // }
   // check whether the boxState of the masterBox matches with any of the monitored states
   for (uint16_t _i = 0; _i < _currentBoxState.ui16monitoredMasterStatesSize; _i++) {
     if (_callingBox.i16BoxActiveState == 
