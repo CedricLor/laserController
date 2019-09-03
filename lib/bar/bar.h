@@ -59,6 +59,10 @@ class bar
 
     static Task tPlayBar;
 
+    /** interface to mesh */
+    static void (*sendCurrentBar)(const int16_t __ui16ActiveBar);
+    static int16_t getCurrentBar();
+
   private:
     static const uint16_t _ui16bar_count;
     static uint16_t _ui16activeBar;

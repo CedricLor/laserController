@@ -47,6 +47,11 @@ const uint16_t bar::_ui16_char_count_in_name = 7;
 
 
 
+// pointer to functions to produce an interface for boxState
+void (*bar::sendCurrentBar)(const int16_t __ui16ActiveBar) = nullptr;
+
+
+
 
 ///////////////////////////////////
 // Constructors
@@ -271,3 +276,10 @@ void bar::setActiveBar(const uint16_t __ui16activeBar) {
   // }
   // Serial.println("bar::setActiveBar(). Ending.");
 };
+
+
+
+// Get the active sequence
+int16_t bar::getCurrentBar() {
+  return _ui16activeBar;
+}
