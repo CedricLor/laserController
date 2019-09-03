@@ -93,15 +93,17 @@ void bar::initBars() {
    *  b. which one is the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance)
    *  c. how many base notes does the bar count (the 2 in 2/4, for instance)
    *  d. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
-   *  e. the array of references to the notes (i.e. duration of each
-   *     note (in base note)) and the tones to be played in the 
-   *     bar {relDuration, tone} */
+   *  e. the array of references to the notes taking the form of a bidimensional array.
+   *     Each item in the first dimension represent a note. Each note is composed 
+   *     of (i) the duration of each note (expressed in base note - full, half, quarter, etc.)
+   *     and (ii) its tone. Each note takes the form of a two-item array (second dimension of
+   *     the bidimensional array): {duration, tone}. */
 
-  uint16_t _ui16noteCountForThisBar = 2;
-  const short int aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
 
   /** relays
    * => 2 / 1 */
+  uint16_t _ui16noteCountForThisBar = 2;
+  const short int aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
   bars[0]._initBar(2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/);
   // => 2 / 1
   // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
