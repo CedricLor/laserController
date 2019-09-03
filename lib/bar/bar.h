@@ -44,7 +44,6 @@ class bar
   public:
     bar(); // default constructor
     bar(
-      const char __cName[], 
       const uint16_t __ui16BaseBeatInBpm, 
       const uint16_t _ui16BaseNoteForBeat, 
       const uint16_t _ui16BaseNotesCountInBar, 
@@ -74,16 +73,14 @@ class bar
   private:
     static const uint16_t _ui16_bar_count;
     static uint16_t _ui16ActiveBar;
-    static const uint16_t _ui16_char_count_in_name;
 
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
     static void _odtcbPlayBar();
 
     // non-static
-    void _initBar(const char __cName[], const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int iNoteTone[][2]);
+    void _initBar(const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int iNoteTone[][2]);
 
-    char _cName[7];  // array of character to hold the name of each bars
     uint16_t _note[16][2];  // array containing the state of each laser at each tempo
 };
 

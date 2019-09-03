@@ -43,7 +43,6 @@ Traductions en anglais:
 uint16_t bar::_ui16ActiveBar = 0;
 const uint16_t bar::_ui16_bar_count = 7;
 bar bar::bars[_ui16_bar_count];
-const uint16_t bar::_ui16_char_count_in_name = 7;
 
 
 
@@ -68,9 +67,8 @@ bar::bar() {
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void bar::_initBar(const char __cName[_ui16_char_count_in_name], const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int __iNoteTone[4][2]){
+void bar::_initBar(const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int __iNoteTone[4][2]){
   // Serial.println("void bar::initBar(). Starting.");
-  strcpy(_cName, __cName);  // give its name to the bar
 
   ui16BaseBeatInBpm = __ui16BaseBeatInBpm; // give its base beat to the bar (1000ms would be 60 beats per minutes)
   ui16BaseNoteForBeat = _ui16BaseNoteForBeat; // give its base note to the bar (the 4 in 2/4, for instance)
@@ -90,45 +88,54 @@ void bar::initBars() {
   Serial.println("void bar::_initBars(). Starting.");
   // define an array containing references to the note type and tones to be played in the bar
 
+  /** Signature of a bar:
+   *  a. the beat in bpm (i.e. the tempo)
+   *  b. which one is the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance)
+   *  c. how many base notes does the bar count (the 2 in 2/4, for instance)
+   *  d. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
+   *  e. the array of references to the notes (i.e. duration of each
+   *     note (in base note)) and the tones to be played in the 
+   *     bar {relDuration, tone} */
+
   uint16_t _ui16noteCountForThisBar = 2;
   const short int aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
-  // load values into bars[0]:
-  // a. the bar's name
-  // b. the beat in bpm (i.e. the tempo)
-  // c. which one is the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance)
-  // d. how many base notes does the bar count (the 2 in 2/4, for instance)
-  // e. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
-  // f. the array of references to the notes (i.e. duration of each
-  // note (in base note)) and the tones to be played in the bar {relDuration, tone}
-  bars[0]._initBar("relays" /*a.*/, 2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/);
+
+  /** relays
+   * => 2 / 1 */
+  bars[0]._initBar(2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/);
   // => 2 / 1
   // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
+  /** twins
+   * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
-  // => 2 / 1
   const short int aTwins[_ui16noteCountForThisBar][2] = {{1, 5},{1, 6}};
-  bars[1]._initBar("twins", 2/*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar, aTwins);
+  bars[1]._initBar(2/*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar, aTwins);
 
+  /** all 
+   * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
-  // => 2 / 1
   const short int aAll[_ui16noteCountForThisBar][2] = {{1, 15},{1, 0}};
-  bars[2]._initBar("all", 2/*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar, aAll);
+  bars[2]._initBar(2/*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar, aAll);
 
+  /** swipeRight
+   * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  // => 4 / 1
   const short int aSwipeR[_ui16noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
-  bars[3]._initBar("swipeR", 120/*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar, aSwipeR);
+  bars[3]._initBar(120/*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar, aSwipeR);
 
+  /** swipeLeft
+   * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  // => 4 / 1
   const short int aSwipeL[_ui16noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
-  bars[4]._initBar("swipeL", 120/*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar, aSwipeL);
+  bars[4]._initBar(120/*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar, aSwipeL);
 
+  /** all off
+   * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
-  // => 1 / 1
   const short int aAllOff[_ui16noteCountForThisBar][2] = {{1,0}};
-  bars[5]._initBar("all of", 2/*bpm*/, 1/*base note*/, 1/*base note count*/, _ui16noteCountForThisBar, aAllOff);
+  bars[5]._initBar(2/*bpm*/, 1/*base note*/, 1/*base note count*/, _ui16noteCountForThisBar, aAllOff);
 
   Serial.println("void bar::_initBars(). Ending.");
 }
