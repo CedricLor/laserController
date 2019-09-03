@@ -66,7 +66,7 @@ void laserInterface::initBarComm() {
 }
 
 
-void laserInterface::setCurrentBar(const int16_t __ui16ActiveBar) {
+void laserInterface::setCurrentBar(const uint16_t __ui16ActiveBar) {
     bar::setActiveBar(__ui16ActiveBar);
 }
 
@@ -76,12 +76,12 @@ void laserInterface::getCurrentBar() {
 }
 
 
-void laserInterface::sendCurrentBar(const int16_t __ui16ActiveBar) {
+void laserInterface::sendCurrentBar(const uint16_t __ui16ActiveBar) {
     /** TODO: draft a call to myMeshViews.  */
 }
 
 
-void laserInterface::playBar(const int16_t __ui16ActiveBar) {
+void laserInterface::playBar(const uint16_t __ui16ActiveBar) {
   ControlerBox::setBoxActiveStateFromWeb(0);
   // TODO: lock bar to avoid getting signal from a manually started sequence player
   setCurrentBar(__ui16ActiveBar);

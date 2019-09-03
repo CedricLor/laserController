@@ -46,8 +46,8 @@ bar bar::bars[_ui16_bar_count];
 
 
 
-// pointer to functions to produce an interface for boxState
-void (*bar::sendCurrentBar)(const int16_t __ui16_active_bar) = nullptr;
+// pointer to functions to produce an interface for bar
+void (*bar::sendCurrentBar)(const uint16_t __ui16_active_bar) = nullptr;
 
 
 
@@ -314,7 +314,7 @@ void bar::setActiveBar(const uint16_t __ui16_active_bar) {
 
 
 
-// Get the active sequence
+// Get the active bar
 int16_t bar::getCurrentBar() {
   return _ui16ActiveBar;
 }
