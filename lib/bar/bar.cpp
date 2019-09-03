@@ -72,51 +72,76 @@ void bar::initBars() {
   // define an array containing references to the note type and tones to be played in the bar
 
   /** Signature of a bar:
-   *  a. the beat in bpm (i.e. the tempo)
-   *  b. which one is the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance)
-   *  c. how many base notes does the bar count (the 2 in 2/4, for instance)
-   *  d. the number of effective notes in the bar (all the full, half, etc. effectively in the bar)
-   *  e. the array of references to the notes taking the form of a bidimensional array.
-   *     Each item in the first dimension represent a note. Each note is composed 
-   *     of (i) the duration of each note (expressed in base note - full, half, quarter, etc.)
-   *     and (ii) its tone. Each note takes the form of a two-item array (second dimension of
-   *     the bidimensional array): {duration, tone}. */
+   *  a. the duration of a beat in bpm (i.e. the tempo);
+   *  b. the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance);
+   *  c. the count of base notes per bar (the 2 in 2/4, for instance);
+   *  d. the number of effective notes in the bar (all the full, half, etc. effectively in the bar);
+   *  e. a bidimensional array of references to the notes.
+   *     1. The first dimension represents the sequence of notes: {...},{...},{...} 
+   *     2. The second dimension represents each note. Each note is composed of:
+   *     (i) its duration (expressed in base note - full, half, quarter, etc.) and;
+   *     (ii) its tone.
+   *     ex.: { 2, 1, 2, 2, {{1,7},{1,8}}}
+   *     a. 2: the bar shall be played at 2 beats per minutes => the base note last 30 seconds.
+   *     b. 1: the base note is a white
+   *     c. 2: we have two notes per bar;
+   *     d. 2: we have two effective notes in this specific bar;
+   *     e. the two notes are:
+   *        - {1,7} -> a white with tone 7.
+   *        - {1,8} -> a white with tone 8. */
 
 
   /** relays
+   * duration of a beat in bpm: 2
+   * base note: 1 (a full)
+   * count of base notes per bar: 2
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
   const short int aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
   bars[0] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/};
-  // => 2 / 1
   // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
   /** twins
+   * duration of a beat in bpm: 2
+   * base note: 1 (a full)
+   * count of base notes per bar: 2
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   const short int aTwins[_ui16noteCountForThisBar][2] = {{1, 5},{1, 6}};
   bars[1] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aTwins/*f.*/};
 
   /** all 
+   * duration of a beat in bpm: 2
+   * base note: 1 (a full)
+   * count of base notes per bar: 2
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   const short int aAll[_ui16noteCountForThisBar][2] = {{1, 15},{1, 0}};
   bars[2] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aAll/*f.*/};
 
   /** swipeRight
+   * duration of a beat in bpm: 120
+   * base note: 1 (a full)
+   * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   const short int aSwipeR[_ui16noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
   bars[3] = {120 /*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar/*e.*/, aSwipeR/*f.*/};
 
   /** swipeLeft
+   * duration of a beat in bpm: 120
+   * base note: 1 (a full)
+   * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   const short int aSwipeL[_ui16noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
   bars[4] = {120 /*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar/*e.*/, aSwipeL/*f.*/};
 
   /** all off
+   * duration of a beat in bpm: 2
+   * base note: 1 (a full)
+   * count of base notes per bar: 1
    * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
   const short int aAllOff[_ui16noteCountForThisBar][2] = {{1,0}};
