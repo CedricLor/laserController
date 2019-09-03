@@ -43,6 +43,14 @@ class bar
 {
   public:
     bar(); // default constructor
+    bar(
+      const char __cName[], 
+      const uint16_t __ui16BaseBeatInBpm, 
+      const uint16_t _ui16BaseNoteForBeat, 
+      const uint16_t _ui16BaseNotesCountInBar, 
+      const uint16_t __ui16NotesCountInBar, 
+      const short int iNoteTone[][2]
+    );
 
     // static
     static bar bars[];
