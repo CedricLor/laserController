@@ -79,9 +79,7 @@ class bar
     static void _odtcbPlayBar();
 
     // non-static
-    void _initBar(const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int iNoteTone[][2]);
-
-    uint16_t _note[16][2];  // array containing the state of each laser at each tempo
+    uint16_t _note[16][2];  // array containing the note and duration of each note
 };
 
 #endif

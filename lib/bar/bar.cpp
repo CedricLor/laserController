@@ -67,23 +67,6 @@ bar::bar() {
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void bar::_initBar(const uint16_t __ui16BaseBeatInBpm, const uint16_t _ui16BaseNoteForBeat, const uint16_t _ui16BaseNotesCountInBar, const uint16_t __ui16NotesCountInBar, const short int __iNoteTone[4][2]){
-  // Serial.println("void bar::initBar(). Starting.");
-
-  ui16BaseBeatInBpm = __ui16BaseBeatInBpm; // give its base beat to the bar (1000ms would be 60 beats per minutes)
-  ui16BaseNoteForBeat = _ui16BaseNoteForBeat; // give its base note to the bar (the 4 in 2/4, for instance)
-  ui16BaseNotesCountInBar = _ui16BaseNotesCountInBar; // give the count of base notes in the bar (the 2 in 2/4, for instance)
-
-  ui16NotesCountInBar = __ui16NotesCountInBar;
-  // fill the bar with the actual notes
-  for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
-    _note[__thisNote][0] = __iNoteTone[__thisNote][0]; // the note duration (in base note)
-    _note[__thisNote][1] = __iNoteTone[__thisNote][1]; // the tone (the height of the note)
-  }
-  // Serial.println("void bar::initBar(). Ending.");
-};
-
-
 void bar::initBars() {
   Serial.println("void bar::_initBars(). Starting.");
   // define an array containing references to the note type and tones to be played in the bar
