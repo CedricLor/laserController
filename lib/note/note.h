@@ -41,11 +41,13 @@ class note
   public:
     note(); // default constructor
 
-    static short int activeTone;
 
     static Task tPlayNote;
 
+    static void setActiveTone(uint16_t _ui16ActiveTone);
   private:
+
+    static uint16_t _ui16ActiveTone;
 
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();

@@ -37,10 +37,17 @@
   The active tone is initially set at 0 (all off).
   It is then set in the bar class, upon reading the bars.
 */
-short int note::activeTone = 0; //
+uint16_t note::_ui16ActiveTone = 0; //
 
 // constructor
 note::note() {
+}
+
+
+
+
+void note::setActiveTone(uint16_t __ui16ActiveTone) {
+  _ui16ActiveTone = __ui16ActiveTone;
 }
 
 /*
@@ -51,7 +58,7 @@ note::note() {
   to finish.
   It does not need any mainCallback, as it does not iterate.
 
-  task tPlaynote plays a given tone (set in note::activeTone)
+  task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
   for a given note type (--> full, half, ..., set in the bar) at a given
   beat rate.
 */
@@ -61,9 +68,9 @@ Task note::tPlayNote(30000, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oetcbPl
 bool note::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.print("note::_oetcbPlayNote(). Going to play tone number ");Serial.println(activeTone);
+    Serial.print("note::_oetcbPlayNote(). Going to play tone number ");Serial.println(_ui16ActiveTone);
   }
-  tone::tones[activeTone].playTone();
+  tone::tones[_ui16ActiveTone].playTone();
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
@@ -74,7 +81,7 @@ void note::_odtcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
-  activeTone = 0; // tones[0] means turn off all the lasers
-  tone::tones[activeTone].playTone();
+  _ui16ActiveTone = 0; // tones[0] means turn off all the lasers
+  tone::tones[_ui16ActiveTone].playTone();
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
