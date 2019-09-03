@@ -41,8 +41,8 @@ const int16_t sequence::_i16_sequence_count = 7;
 sequence sequence::sequences[_i16_sequence_count];
 
 
-// pointer to functions to produce an interface for boxState
-void (*sequence::sendCurrentSequence)(const int16_t __i16CurrentStateNbr) = nullptr;
+// pointer to functions to produce an interface for sequence
+void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullptr;
 
 
 
