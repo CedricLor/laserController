@@ -55,10 +55,28 @@ void (*bar::sendCurrentBar)(const int16_t __ui16_active_bar) = nullptr;
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
-bar::bar() {
-  ui16BaseBeatInBpm = -1;
+bar::bar(const uint16_t __ui16_base_beat_in_bpm):
+  ui16BaseBeatInBpm(__ui16_base_beat_in_bpm)
+{
 }
 
+bar::bar(
+  const uint16_t __ui16_base_beat_in_bpm, 
+  const uint16_t __ui16_base_note_for_beat, 
+  const uint16_t __ui16_base_notes_count_in_bar, 
+  const uint16_t __ui16_notes_count_in_bar,
+  const uint16_t __ui16_note_tone[][2]
+):
+  ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
+  ui16BaseNoteForBeat(__ui16_base_note_for_beat), 
+  ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
+  ui16NotesCountInBar(__ui16_notes_count_in_bar)
+{
+  for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
+    _ui16NoteTone[__thisNote][0] = __ui16_note_tone[__thisNote][0]; // the note duration (in base note)
+    _ui16NoteTone[__thisNote][1] = __ui16_note_tone[__thisNote][1]; // the tone (the height of the note)
+  }
+}
 
 
 
@@ -97,8 +115,8 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
-  const short int aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
-  bars[0] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/};
+  const uint16_t _i16aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
+  bars[0] = { 2, 1, 2, _ui16noteCountForThisBar, _i16aRelays};
   // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
@@ -108,8 +126,8 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
-  const short int aTwins[_ui16noteCountForThisBar][2] = {{1, 5},{1, 6}};
-  bars[1] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aTwins/*f.*/};
+  const uint16_t _i16aTwins[_ui16noteCountForThisBar][2] = {{1, 5},{1, 6}};
+  bars[1] = { 2, 1, 2, _ui16noteCountForThisBar, _i16aTwins};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -117,8 +135,8 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
-  const short int aAll[_ui16noteCountForThisBar][2] = {{1, 15},{1, 0}};
-  bars[2] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aAll/*f.*/};
+  const uint16_t _i16aAll[_ui16noteCountForThisBar][2] = {{1, 15},{1, 0}};
+  bars[2] = { 2, 1, 2, _ui16noteCountForThisBar, _i16aAll};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -126,8 +144,8 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  const short int aSwipeR[_ui16noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
-  bars[3] = {120 /*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar/*e.*/, aSwipeR/*f.*/};
+  const uint16_t _i16aSwipeR[_ui16noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
+  bars[3] = { 120, 1, 4, _ui16noteCountForThisBar, _i16aSwipeR};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -135,8 +153,8 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  const short int aSwipeL[_ui16noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
-  bars[4] = {120 /*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar/*e.*/, aSwipeL/*f.*/};
+  const uint16_t _i16aSwipeL[_ui16noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
+  bars[4] = { 120, 1, 4, _ui16noteCountForThisBar, _i16aSwipeL};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -144,8 +162,8 @@ void bar::initBars() {
    * count of base notes per bar: 1
    * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
-  const short int aAllOff[_ui16noteCountForThisBar][2] = {{1,0}};
-  bars[5] = {2 /*bpm*/, 1/*base note*/, 1/*base note count*/, _ui16noteCountForThisBar/*e.*/, aAllOff/*f.*/};
+  const uint16_t _i16aAllOff[_ui16noteCountForThisBar][2] = {{1,0}};
+  bars[5] = { 2, 1, 1, _ui16noteCountForThisBar, _i16aAllOff};
 
   Serial.println("void bar::_initBars(). Ending.");
 }
@@ -221,9 +239,9 @@ void bar::_tcbPlayBar(){
   // 2. Disable the Task tPlayNote (just in case)
   note::tPlayNote.disable();
 
-  // 3. Set the relevant note in the note class (note::activeTone)
-  //    using the iterator
-  note::activeTone = bars[_ui16ActiveBar]._note[_ui16_iter][1];
+  // 3. Set the relevant tone in the note class (note::activeTone)
+  //    using the Task iterator
+  note::activeTone = bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][1];
 
   // 4. Reenable the tPlayNote Task
   /*
@@ -268,7 +286,7 @@ unsigned long bar::getNoteDuration(const uint16_t _ui16_iter){
   // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
   // Serial.println("bar::getNoteDuration(). bars[" + String(_ui16ActiveBar) + "]._note[" + String(_ui16_iter) + "][0] = "+ String(bars[_ui16ActiveBar]._note[_ui16_iter][0]));
   // Serial.println("bar::getNoteDuration(). bars["+ String(_ui16ActiveBar) + "].ui16BaseBeatInBpm = "+ String(bars[_ui16ActiveBar].ui16BaseBeatInBpm));
-  unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._note[_ui16_iter][0])
+  unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][0])
                                   *(60 / bars[_ui16ActiveBar].ui16BaseBeatInBpm * 1000);
   if (__ulDurationInMs > 30000) {
     __ulDurationInMs = 30000;

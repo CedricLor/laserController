@@ -42,13 +42,13 @@
 class bar
 {
   public:
-    bar(); // default constructor
+    bar(const uint16_t __ui16_base_beat_in_bpm=1); // default constructor
     bar(
   const uint16_t __ui16_base_beat_in_bpm, 
   const uint16_t __ui16_base_note_for_beat, 
   const uint16_t __ui16_base_notes_count_in_bar, 
   const uint16_t __ui16_notes_count_in_bar, 
-  const int16_t __i16_note_tone[][2]
+      const uint16_t __ui16_note_tone[][2]
     );
 
     // static
@@ -78,8 +78,8 @@ class bar
     static bool _oetcbPlayBar();
     static void _odtcbPlayBar();
 
-    // non-static
-    uint16_t _note[16][2];  // array containing the note and duration of each note
+    // instance property
+    uint16_t _ui16NoteTone[16][2];  // array containing the note and duration of each note
 };
 
 #endif
