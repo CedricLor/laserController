@@ -44,7 +44,7 @@ namespace laserInterface {
     // sequence stack
     void initSequenceComm();
     void setCurrentSequence(const int16_t __i16ActiveSequence);
-    int16_t getCurrentSequence();
+    void getCurrentSequence();
     void sendCurrentSequence(const int16_t __i16ActiveSequence);
     void playSequence(const int16_t __i16SequenceNb);
 
