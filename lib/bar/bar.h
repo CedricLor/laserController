@@ -44,16 +44,16 @@ class bar
   public:
     bar(const uint16_t __ui16_base_beat_in_bpm=1); // default constructor
     bar(
-  const uint16_t __ui16_base_beat_in_bpm, 
-  const uint16_t __ui16_base_note_for_beat, 
-  const uint16_t __ui16_base_notes_count_in_bar, 
-  const uint16_t __ui16_notes_count_in_bar, 
+      const uint16_t __ui16_base_beat_in_bpm, 
+      const uint16_t __ui16_base_note_for_beat, 
+      const uint16_t __ui16_base_notes_count_in_bar, 
+      const uint16_t __ui16_notes_count_in_bar,
       const uint16_t __ui16_note_tone[][2]
     );
 
     // static
     static bar bars[];
-    static void initBars(); // initializer of the array of bas
+    static void initBars(); // initializer of the array of bars
 
     static void setActiveBar(const uint16_t __ui16_active_bar);
 
@@ -67,11 +67,12 @@ class bar
 
     /** interface to mesh */
     static void (*sendCurrentBar)(const int16_t __ui16_active_bar);
-    static int16_t getCurrentBar();
+    static int16_t getCurrentBar(); // returns _ui16ActiveBar
 
   private:
-    static const uint16_t _ui16_bar_count;
+    static const uint16_t _ui16_bar_count; // number of bar instances to be created in the array of bars
     static uint16_t _ui16ActiveBar;
+
 
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
