@@ -58,7 +58,7 @@ class sequence
     static Task tPlaySequence;
 
     /** interface to mesh */
-    static void (*sendCurrentSequence)(const int16_t _i16ActiveSequence);
+    static void (*sendCurrentSequence)(const int16_t __i16ActiveSequence);
     static int16_t getCurrentSequence();
 
   private:
