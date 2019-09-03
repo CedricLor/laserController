@@ -88,8 +88,8 @@ void sequence::initSequences() {
     c. _ui16BaseNoteForBeat: the base note for each beat (1 -> full, 2 -> white,
                           4 -> black, etc.; the 4 in 2/4)
     d. _ui16BaseNotesCountPerBar: the number of base notes per bar (the 2 in 2/4)
-    e. the number of beats in the sequence __iNumberOfBeatsInSequence
-    f. the array of references to the bars to be played in the sequence (__iAssociatedBars) */
+    e. the number of bars in the sequence _i16BarCountForThisSequence
+    f. the array of references to the bars to be played in the sequence (_i16AssociatedBars) */
   
 
   // --> Sequence 0: "Relays"
