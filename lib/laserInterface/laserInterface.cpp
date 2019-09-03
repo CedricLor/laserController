@@ -10,7 +10,9 @@ using namespace laserInterface;
 
 
 
+/*******************/
 // boxStates stack
+/*******************/
 void laserInterface::initBoxStatesComm() {
     boxState::sendCurrentBoxState = sendCurrentBoxState;
 }
@@ -22,8 +24,9 @@ void laserInterface::sendCurrentBoxState(const int16_t _i16CurrentStateNbr) {
 }
 
 
-
+/*******************/
 // sequences stack
+/*******************/
 void laserInterface::initSequenceComm() {
     sequence::sendCurrentSequence = sendCurrentSequence;
 }
@@ -40,12 +43,48 @@ void laserInterface::getCurrentSequence() {
 
 
 void laserInterface::sendCurrentSequence(const int16_t _i16CurrentStateNbr) {
-    // TODO: draft a call to myMeshViews
+    /** TODO: either draft a call to myMeshViews, or include
+     *  sending sequence with statusMsg (since one single sequence
+     *  is associated to one single boxState).  */
 }
 
 
 void laserInterface::playSequence(const int16_t __i16SequenceNb) {
-  // TODO: switch to a manual boxState first
+  ControlerBox::setBoxActiveStateFromWeb(0);
   setCurrentSequence(__i16SequenceNb);
   sequence::tPlaySequence.restartDelayed();
 }
+
+
+
+
+/*******************/
+// bars stack
+/*******************/
+void laserInterface::initBarComm() {
+    bar::sendCurrentBar = sendCurrentBar;
+}
+
+
+void laserInterface::setCurrentBar(const int16_t __ui16ActiveBar) {
+    bar::setActiveBar(__ui16ActiveBar);
+}
+
+
+void laserInterface::getCurrentBar() {
+    sendCurrentBar(bar::getCurrentBar());
+}
+
+
+void laserInterface::sendCurrentBar(const int16_t __ui16ActiveBar) {
+    /** TODO: draft a call to myMeshViews.  */
+}
+
+
+void laserInterface::playBar(const int16_t __ui16ActiveBar) {
+  ControlerBox::setBoxActiveStateFromWeb(0);
+  // TODO: lock bar to avoid getting signal from a manually started sequence player
+  setCurrentBar(__ui16ActiveBar);
+  bar::tPlayBar.restartDelayed();
+}
+

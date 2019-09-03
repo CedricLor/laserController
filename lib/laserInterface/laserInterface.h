@@ -50,13 +50,17 @@ namespace laserInterface {
 
     // bar stack
     void initBarComm();
-    void setCurrentBar();
-    void sendCurrentBar();
+    void setCurrentBar(const int16_t __ui16ActiveBar);
+    void getCurrentBar();
+    void sendCurrentBar(const int16_t __ui16ActiveBar);
+    void playBar(const int16_t __ui16ActiveBar);
 
     // note stack
     void initNoteComm();
     void setCurrentNote();
+    void getCurrentNote();
     void sendCurrentNote();
+    void playNote(const int16_t __i16SequenceNb);
 }
 
 #endif
