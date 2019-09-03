@@ -259,7 +259,7 @@ void bar::_tcbPlayBar(){
   // At each pass, reset the interval before the next iteration of the Task bar::tPlayBar
   // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
   // Serial.printf("bar::_tcbPlayBar(). calling bars[%i].getNoteDuration(%i)\n", _ui16ActiveBar, _ui16_iter);
-  tPlayBar.setInterval(bars[_ui16ActiveBar].getNoteDuration(_ui16_iter));
+  tPlayBar.setInterval(bars[_ui16ActiveBar]._getNoteDuration(_ui16_iter));
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
@@ -278,7 +278,7 @@ void bar::_odtcbPlayBar(){
 
 
 
-unsigned long bar::getNoteDuration(const uint16_t _ui16_iter){
+unsigned long bar::_getNoteDuration(const uint16_t _ui16_iter) const {
   // Serial.println("bar::getNoteDuration(). Starting.");
   // Serial.print("bar::getNoteDuration(). _ui16ActiveBar = ");Serial.println(_ui16ActiveBar);
   // Serial.print("bar::getNoteDuration(). bars[_ui16ActiveBar].ui16BaseNoteForBeat = ");Serial.println(bars[_ui16ActiveBar].ui16BaseNoteForBeat);

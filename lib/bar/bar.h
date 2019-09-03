@@ -57,8 +57,7 @@ class bar
 
     static void setActiveBar(const uint16_t __ui16_active_bar);
 
-    // non-static
-    unsigned long getNoteDuration(const uint16_t _ui16_iter);
+    // instance property
     uint16_t ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
     uint16_t ui16BaseNoteForBeat; // base note for the beat
     uint16_t ui16BaseNotesCountInBar;
@@ -77,6 +76,8 @@ class bar
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
     static void _odtcbPlayBar();
+
+    unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
 
     // instance property
     uint16_t _ui16NoteTone[16][2];  // array containing the note and duration of each note
