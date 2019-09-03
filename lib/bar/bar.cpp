@@ -104,7 +104,7 @@ void bar::initBars() {
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
   const short int aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
-  bars[0]._initBar(2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/);
+  bars[0] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aRelays/*f.*/};
   // => 2 / 1
   // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
@@ -113,31 +113,31 @@ void bar::initBars() {
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   const short int aTwins[_ui16noteCountForThisBar][2] = {{1, 5},{1, 6}};
-  bars[1]._initBar(2/*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar, aTwins);
+  bars[1] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aTwins/*f.*/};
 
   /** all 
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   const short int aAll[_ui16noteCountForThisBar][2] = {{1, 15},{1, 0}};
-  bars[2]._initBar(2/*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar, aAll);
+  bars[2] = {2 /*bpm*/, 1/*base note*/, 2/*base note count*/, _ui16noteCountForThisBar/*e.*/, aAll/*f.*/};
 
   /** swipeRight
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   const short int aSwipeR[_ui16noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
-  bars[3]._initBar(120/*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar, aSwipeR);
+  bars[3] = {120 /*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar/*e.*/, aSwipeR/*f.*/};
 
   /** swipeLeft
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   const short int aSwipeL[_ui16noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
-  bars[4]._initBar(120/*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar, aSwipeL);
+  bars[4] = {120 /*bpm*/, 1/*base note*/, 4/*base note count*/, _ui16noteCountForThisBar/*e.*/, aSwipeL/*f.*/};
 
   /** all off
    * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
   const short int aAllOff[_ui16noteCountForThisBar][2] = {{1,0}};
-  bars[5]._initBar(2/*bpm*/, 1/*base note*/, 1/*base note count*/, _ui16noteCountForThisBar, aAllOff);
+  bars[5] = {2 /*bpm*/, 1/*base note*/, 1/*base note count*/, _ui16noteCountForThisBar/*e.*/, aAllOff/*f.*/};
 
   Serial.println("void bar::_initBars(). Ending.");
 }
