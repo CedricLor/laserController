@@ -85,6 +85,15 @@ uint16_t note::getNote() const {
   return _ui16Note;
 }
 
+// Get the active note
+const note &note::getCurrentNote() {
+  const note _note(_ui16ActiveTone, _ui16ActiveNote);
+  return _note;
+}
+
+
+
+
 /*
   task tPlayNote is enabled upon instanciating a note in the bar class.
   It is disabled:
