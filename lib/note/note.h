@@ -72,6 +72,7 @@ class note
 
     uint16_t _ui16Tone;
     uint16_t _ui16Note;
+    tone & _tone;
 };
 
 #endif
