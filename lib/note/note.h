@@ -54,6 +54,7 @@ class note
 
 
 
+    static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
     static const note &getCurrentNote();
 
     uint16_t getTone() const;

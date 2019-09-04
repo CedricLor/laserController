@@ -44,6 +44,13 @@ uint16_t note::_ui16ActiveTone = 0; //
 */
 uint16_t note::_ui16ActiveNote = 0; //
 
+
+
+// pointer to functions to produce an interface for note
+void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note) = nullptr;
+
+
+
 // constructor
 note::note() {
 }
@@ -74,6 +81,9 @@ void note::setActiveTone(const uint16_t __ui16_active_tone) {
 void note::setActiveNote(const uint16_t __ui16_active_note) {
   _ui16ActiveNote = __ui16_active_note;
 }
+
+
+
 
 uint16_t note::getTone() const {
   return _ui16Tone;
