@@ -52,9 +52,13 @@ class note
   private:
 
     static uint16_t _ui16ActiveTone;
+    static uint16_t _ui16ActiveNote;
 
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
+
+    uint16_t _ui16Tone;
+    uint16_t _ui16Note;
 };
 
 #endif

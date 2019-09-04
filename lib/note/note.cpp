@@ -38,6 +38,11 @@
   It is then set in the bar class, upon reading the bars.
 */
 uint16_t note::_ui16ActiveTone = 0; //
+/*
+  The active note is initially set to 0 (no note).
+  It is then set in the bar class, upon reading the bars.
+*/
+uint16_t note::_ui16ActiveNote = 0; //
 
 // constructor
 note::note() {
