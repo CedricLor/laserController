@@ -53,16 +53,15 @@ class note
 
     static void setActiveNote(const uint16_t _ui16_active_tone, const uint16_t _ui16_active_note);
 
-
+    static void playNote();
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
     static const note &getCurrentNote();
 
     uint16_t getTone() const;
     uint16_t getNote() const;
-
+    
   private:
     static note &_activeNote;
-
 
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();

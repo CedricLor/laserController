@@ -55,21 +55,6 @@ note::note(
 
 
 
-void note::_setTone(const uint16_t __ui16_target_tone) {
-  _ui16Note = __ui16_target_tone;
-  _tone = tone::tones[_ui16Tone];
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 uint16_t note::getTone() const {
@@ -83,6 +68,8 @@ uint16_t note::getTone() const {
 uint16_t note::getNote() const {
   return _ui16Note;
 }
+
+
 
 
 
@@ -128,4 +115,13 @@ void note::_odtcbPlayNote() {
   _activeNote._setTone(0); // tones[0] means turn off all the lasers
   _activeNote._tone.playTone(_activeNote._ui16Tone);
   Serial.println("note::_odtcbPlayNote(). Ending");
+}
+
+
+
+
+
+void note::_setTone(const uint16_t __ui16_target_tone) {
+  _ui16Note = __ui16_target_tone;
+  _tone = tone::tones[_ui16Tone];
 }
