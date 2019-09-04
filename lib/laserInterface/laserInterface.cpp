@@ -110,3 +110,10 @@ void laserInterface::sendCurrentNote(const uint16_t __ui16ActiveTone, const uint
 }
 
 
+void laserInterface::playNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
+  ControlerBox::setBoxActiveStateFromWeb(0);
+  // TODO: lock note to avoid getting signal from a manually started sequence or bar player
+  setCurrentNote(__ui16_target_tone, __ui16_target_note);
+  // TODO: tPlayNote shall read its parameters in an instance of note
+  note::tPlayNote.restartDelayed();
+}
