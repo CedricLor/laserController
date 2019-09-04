@@ -50,9 +50,8 @@ class note
     static Task tPlayNote;
 
     /** interface to mesh */
-    static void setActiveTone(const uint16_t _ui16_active_tone);
-    static void setActiveNote(const uint16_t _ui16_active_note);
 
+    static void setActiveNote(const uint16_t _ui16_active_tone, const uint16_t _ui16_active_note);
 
 
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
@@ -64,8 +63,6 @@ class note
   private:
     static note &_activeNote;
 
-    static uint16_t _ui16ActiveTone;
-    static uint16_t _ui16ActiveNote;
 
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
