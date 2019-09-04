@@ -88,9 +88,13 @@ uint16_t note::getTone() const {
 
 
 
+
+
 uint16_t note::getNote() const {
   return _ui16Note;
 }
+
+
 
 // Get the active note
 const note &note::getCurrentNote() {
