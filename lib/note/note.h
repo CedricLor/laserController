@@ -67,6 +67,7 @@ class note
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
 
+    void _setTone(const uint16_t __ui16_target_tone);
     uint16_t _ui16Tone;
     uint16_t _ui16Note;
     tone & _tone;
