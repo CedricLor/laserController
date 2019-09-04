@@ -35,7 +35,7 @@
 
 
 const uint16_t tone::_ui16_tone_count = 16;
-tone tone::tones[_tone_count];
+tone tone::tones[_ui16_tone_count];
 
 // constructor
 tone::tone() {}
