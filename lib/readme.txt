@@ -102,6 +102,53 @@ include paths and build them.
 More information about PlatformIO Library Dependency Finder
 - https://docs.platformio.org/page/librarymanager/ldf.html
 
+Ideally:
+|--main
+|  |
+|  |--node (relay)
+|  |  |--savedPrefs
+|  |  |--mesh
+|  |
+|  |--node (PIR, not interface)
+|  |  |--savedPrefs
+|  |  |--mesh
+|  |  |
+|  |  |--pirController
+|  |
+|  |--node (interface)
+|  |  |--savedPrefs
+|  |  |--SPIFFS
+|  |  |--mesh
+|  |  |
+|  |  |--ControllerBoxDB
+|  |  |--webServer
+|  |
+|  |--node (LaserController, not interface)
+|  |  |--savedPrefs
+|  |  |--SPIFFS
+|  |  |--mesh
+|  |  |
+|  |  |--ControllerBoxDB
+|  |  |--laserController
+|  |
+|  |--node (PIR and LaserController, not interface)
+|  |  |--savedPrefs
+|  |  |--SPIFFS
+|  |  |--mesh
+|  |  |
+|  |  |--ControllerBoxDB
+|  |  |--laserController
+|  |  |--pirController
+
+
+
+
+
+
+
+
+
+
 // DONE AND TODO
 
 DONE:
