@@ -48,7 +48,8 @@ class note
 
     static Task tPlayNote;
 
-    static void setActiveTone(uint16_t _ui16ActiveTone);
+    /** interface to mesh */
+    static void setActiveTone(const uint16_t _ui16_active_tone);
   private:
 
     static uint16_t _ui16ActiveTone;
