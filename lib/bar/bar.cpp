@@ -241,6 +241,7 @@ void bar::_tcbPlayBar(){
 
   // 3. Set the relevant tone in the note class (note::_ui16ActiveTone)
   //    using the Task iterator
+  note::setActiveNote(bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][0]);
   note::setActiveTone(bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][1]);
 
   // 4. Reenable the tPlayNote Task

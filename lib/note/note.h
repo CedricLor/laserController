@@ -50,6 +50,10 @@ class note
 
     /** interface to mesh */
     static void setActiveTone(const uint16_t _ui16_active_tone);
+    static void setActiveNote(const uint16_t _ui16_active_note);
+
+
+
 
     uint16_t getTone() const;
     uint16_t getNote() const;
