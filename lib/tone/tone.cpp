@@ -35,17 +35,15 @@
 
 
 const uint16_t tone::_ui16_tone_count = 16;
-tone tone::tones[_ui16_tone_count];
+std::array<tone, 16> tone::tones;
 
 // constructor
 tone::tone() {}
 
-tone::tone(const bool *__bLaserPinsStatus)
+tone::tone(std::array<bool, 4> __bLaserPinsStatus):
+  _bLaserPinStatus(__bLaserPinsStatus)
 {
-    for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    _bLaserPinStatus[__thisPin] = __bLaserPinsStatus[__thisPin];
   }
-}
 
 
 void tone::initTones() {
@@ -56,58 +54,58 @@ void tone::initTones() {
 
   // Initialize the tones
   /** "all off" */
-  const bool _aAllOff[4] = {HIGH, HIGH, HIGH, HIGH};
+  std::array<bool, 4> _aAllOff = {HIGH, HIGH, HIGH, HIGH};
   tones[0] = {_aAllOff};
   Serial.printf("tone::initTones(). tones[0]._bLaserPinStatus[0] = %i\n", tones[0]._bLaserPinStatus[0]);
 
   /**"first on"*/
-  const bool _aFirstOn[4] = {LOW, HIGH, HIGH, HIGH};
+  std::array<bool, 4> _aFirstOn = {LOW, HIGH, HIGH, HIGH};
   tones[1] = {_aFirstOn};
   /**"second on*/
-  const bool _aSecondOn[4] = {HIGH, LOW, HIGH, HIGH};
+  std::array<bool, 4> _aSecondOn = {HIGH, LOW, HIGH, HIGH};
   tones[2] = {_aSecondOn};
   /**"third on"*/
-  const bool _aThirdOn[4] = {HIGH, HIGH, LOW, HIGH};
+  std::array<bool, 4> _aThirdOn = {HIGH, HIGH, LOW, HIGH};
   tones[3] = {_aThirdOn};
   /**"fourth on"*/
-  const bool _aFourthOn[4] = {HIGH, HIGH, HIGH, LOW};
+  std::array<bool, 4> _aFourthOn = {HIGH, HIGH, HIGH, LOW};
   tones[4] = {_aFourthOn};
 
   /**"first pair on"*/
-  const bool _aFirstPairOn[4] = {LOW, LOW, HIGH, HIGH};
+  std::array<bool, 4> _aFirstPairOn = {LOW, LOW, HIGH, HIGH};
   tones[5] = {_aFirstPairOn};
   /**"second pair on*/
-  const bool _aSecondPairOn[4] = {HIGH, HIGH, LOW, LOW};
+  std::array<bool, 4> _aSecondPairOn = {HIGH, HIGH, LOW, LOW};
   tones[6] = {_aSecondPairOn};
 
   /**"on off on off"*/
-  const bool _aOnOffOnOff[4] = {LOW, HIGH, LOW, HIGH};
+  std::array<bool, 4> _aOnOffOnOff = {LOW, HIGH, LOW, HIGH};
   tones[7] = {_aOnOffOnOff};
   /**"off on off on"*/
-  const bool _aOffOnOffOn[4] = {HIGH, LOW, HIGH, LOW};
+  std::array<bool, 4> _aOffOnOffOn = {HIGH, LOW, HIGH, LOW};
   tones[8] = {_aOffOnOffOn};
 
   /**"external on"*/
-  const bool _aExtOnIntOff[4] = {LOW, HIGH, HIGH, LOW};
+  std::array<bool, 4> _aExtOnIntOff = {LOW, HIGH, HIGH, LOW};
   tones[9] = {_aExtOnIntOff};
   /**"external off*/
-  const bool _aExtOffIntOn[4] = {HIGH, LOW, LOW, HIGH};
+  std::array<bool, 4> _aExtOffIntOn = {HIGH, LOW, LOW, HIGH};
   tones[10] = {_aExtOffIntOn};
   /**"last off"*/
-  const bool _aLastOff[4] = {LOW, LOW, LOW, HIGH};
+  std::array<bool, 4> _aLastOff = {LOW, LOW, LOW, HIGH};
   tones[11] = {_aLastOff};
   /**"third off"*/
-  const bool _aThirdOff[4] = {LOW, LOW, HIGH, LOW};
+  std::array<bool, 4> _aThirdOff = {LOW, LOW, HIGH, LOW};
   tones[12] = {_aThirdOff};
   /**"second off"*/
-  const bool _aSecondOff[4] = {LOW, HIGH, LOW, LOW};
+  std::array<bool, 4> _aSecondOff = {LOW, HIGH, LOW, LOW};
   tones[13] = {_aSecondOff};
   /**"first off"*/
-  const bool _aFirstOff[4] = {HIGH, LOW, LOW, LOW};
+  std::array<bool, 4> _aFirstOff = {HIGH, LOW, LOW, LOW};
   tones[14] = {_aFirstOff};
 
   /**"all on"*/
-  const bool _aAllOn[4] = {LOW, LOW, LOW, LOW};
+  std::array<bool, 4> _aAllOn = {LOW, LOW, LOW, LOW};
   tones[15] = {_aAllOn};
 
   Serial.println("tone::initTones(). Ending.");
