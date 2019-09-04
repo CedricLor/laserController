@@ -76,7 +76,6 @@ class bar
 
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
-    static void _odtcbPlayBar();
 
     unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
 

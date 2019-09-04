@@ -181,7 +181,7 @@ void bar::initBars() {
 
 
 
-Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, &_odtcbPlayBar);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, NULL);
 
 
 
@@ -264,17 +264,6 @@ void bar::_tcbPlayBar(){
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
-
-
-
-
-void bar::_odtcbPlayBar(){
-  // if (MY_DG_LASER) {
-  //   Serial.print("bar::_odtcbPlayBar(). millis() = ");Serial.println(millis());
-  //   Serial.println(F("bar::_odtcbPlayBar(). Task tPlayBar BYE BYE"));
-  // }
-}
-
 
 
 
