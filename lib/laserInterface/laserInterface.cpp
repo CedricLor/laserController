@@ -88,3 +88,20 @@ void laserInterface::playBar(const uint16_t __ui16ActiveBar) {
   bar::tPlayBar.restartDelayed();
 }
 
+
+
+
+/*******************/
+// notes stack
+/*******************/
+void laserInterface::initNoteComm() {
+    note::sendCurrentNote = sendCurrentNote;
+}
+
+
+
+void laserInterface::sendCurrentNote(const uint16_t __ui16ActiveTone, const uint16_t __ui16ActiveNote) {
+    /** TODO: draft a call to myMeshViews.  */
+}
+
+
