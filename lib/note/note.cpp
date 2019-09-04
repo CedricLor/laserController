@@ -34,7 +34,7 @@
 
 
 /*
-  The active tone is initially set at 0 (all off).
+  The active tone is initially set to 0 (all off).
   It is then set in the bar class, upon reading the bars.
 */
 uint16_t note::_ui16ActiveTone = 0; //
