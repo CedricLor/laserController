@@ -73,6 +73,16 @@ void note::setActiveTone(const uint16_t __ui16_active_tone) {
 
 }
 
+uint16_t note::getTone() const {
+  return _ui16Tone;
+}
+
+
+
+uint16_t note::getNote() const {
+  return _ui16Note;
+}
+
 /*
   task tPlayNote is enabled upon instanciating a note in the bar class.
   It is disabled:
