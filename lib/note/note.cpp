@@ -50,6 +50,18 @@ note::note() {
 
 
 
+note::note(
+  const uint16_t __ui16_tone,
+  const uint16_t __ui16_note
+) :
+  _ui16Tone(__ui16_tone),
+  _ui16Note(__ui16_note)
+{
+
+}
+
+
+
 
 void note::setActiveTone(uint16_t __ui16ActiveTone) {
   _ui16ActiveTone = __ui16ActiveTone;
