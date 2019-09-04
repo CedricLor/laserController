@@ -62,6 +62,7 @@ class note
     uint16_t getNote() const;
 
   private:
+    static note &_activeNote;
 
     static uint16_t _ui16ActiveTone;
     static uint16_t _ui16ActiveNote;

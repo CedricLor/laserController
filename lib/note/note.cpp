@@ -32,6 +32,8 @@
 #include "Arduino.h"
 #include "note.h"
 
+note _note;
+note &note::_activeNote = _note;
 
 /*
   The active tone is initially set to 0 (all off).
