@@ -40,6 +40,10 @@ class note
 {
   public:
     note(); // default constructor
+    note(
+      const uint16_t __ui16_tone,
+      const uint16_t __ui16_duration
+    ); // default constructor
 
 
     static Task tPlayNote;
