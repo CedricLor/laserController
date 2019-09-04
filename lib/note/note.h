@@ -39,12 +39,13 @@
 class note
 {
   public:
-    note(); // default constructor
+    /** default constructor
+     *  ui16tone initially set to 0 (all off).
+     *  ui16note  initially set to 0 (no note). */
     note(
-      const uint16_t __ui16_tone,
-      const uint16_t __ui16_duration
-    ); // default constructor
-
+      const uint16_t __ui16_tone=0,
+      const uint16_t __ui16_note=0
+    );
 
     static Task tPlayNote;
 
