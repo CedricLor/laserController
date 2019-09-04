@@ -112,7 +112,7 @@ void laserInterface::getCurrentNote() {
 }
 
 
-void laserInterface::sendCurrentNote(const uint16_t __ui16ActiveTone, const uint16_t __ui16ActiveNote) {
+void laserInterface::sendCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
     /** TODO: draft a call to myMeshViews.  */
 }
 

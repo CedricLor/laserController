@@ -59,7 +59,7 @@ namespace laserInterface {
     void initNoteComm();
     void setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
     void getCurrentNote();
-    void sendCurrentNote(const uint16_t __ui16ActiveTone, const uint16_t __ui16ActiveNote);
+    void sendCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
     void playNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
 }
 
