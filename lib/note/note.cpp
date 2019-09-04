@@ -64,9 +64,9 @@ note::note(
   const uint16_t __ui16_note
 ) :
   _ui16Tone(__ui16_tone),
-  _ui16Note(__ui16_note)
+  _ui16Note(__ui16_note),
+  _tone(tone::tones[_ui16Tone])
 {
-
 }
 
 
