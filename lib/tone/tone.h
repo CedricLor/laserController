@@ -41,20 +41,18 @@ class tone
 {
   public:
     tone(); // default constructor
+    tone(const bool *__bLaserPinsStatus);
 
     static tone tones[];
     static void initTones(); // initializer of the array of tones
 
-    void playTone();
+    void playTone(const uint16_t _ui16_active_tone);
 
   private:
-    static const short int _tone_count;
-    static const short int _char_count_in_name;
+    static const uint16_t _ui16_tone_count;
 
-    void _initTone(const char cName[], const bool iLaserPinsStatus[PIN_COUNT]);
-
-    char _cName[15];  // array of character to hold the name of each sequences
     bool _bLaserPinStatus[4];  // array containing the state of each laser at each tempo
 };
 
 #endif
+

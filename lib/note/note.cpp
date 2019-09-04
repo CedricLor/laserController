@@ -124,7 +124,7 @@ bool note::_oetcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Going to play tone number ");Serial.println(_ui16ActiveTone);
   }
-  tone::tones[_ui16ActiveTone].playTone();
+  tone::tones[_ui16ActiveTone].playTone(_ui16ActiveTone);
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
@@ -136,6 +136,6 @@ void note::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _ui16ActiveTone = 0; // tones[0] means turn off all the lasers
-  tone::tones[_ui16ActiveTone].playTone();
+  tone::tones[_ui16ActiveTone].playTone(_ui16ActiveTone);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
