@@ -43,14 +43,14 @@ tone::tone() {}
 tone::tone(std::array<bool, 4> __bLaserPinsStatus):
   _bLaserPinStatus(__bLaserPinsStatus)
 {
-  }
+}
 
 
 void tone::initTones() {
   Serial.println("tone::initTones(). Starting.");
 
   // Initialize the pins
-  laserPin::initLaserPins();
+  laserPin::_initLaserPins();
 
   // Initialize the tones
   /** "all off" */
@@ -125,10 +125,8 @@ void tone::playTone(const uint16_t _ui16_active_tone){
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     // Serial.print("void tone::playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
-    short _physical_pin_number = relayPins[__thisPin]; // look for the physical number of the pin in the array of pin
-    const bool _target_state = _bLaserPinStatus[__thisPin]; // look for the desired status in the array of the sequence
+    laserPin::_laserPins[__thisPin]._switchPin(_bLaserPinStatus[__thisPin]);
     // Serial.print("void tone::playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
-    digitalWrite(_physical_pin_number, _target_state); // instruct the MC to turn the desired pin to the desired status
   }
   Serial.printf("void tone::playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
 };
