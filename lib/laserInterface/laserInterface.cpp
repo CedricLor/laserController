@@ -105,6 +105,13 @@ void laserInterface::setCurrentNote(const uint16_t __ui16_target_tone, const uin
     // set the note duration
 }
 
+
+void laserInterface::getCurrentNote() {
+    const note &_note = note::getCurrentNote();
+    sendCurrentNote(_note.getTone(), _note.getNote());
+}
+
+
 void laserInterface::sendCurrentNote(const uint16_t __ui16ActiveTone, const uint16_t __ui16ActiveNote) {
     /** TODO: draft a call to myMeshViews.  */
 }
