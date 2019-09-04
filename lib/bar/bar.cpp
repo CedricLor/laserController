@@ -221,15 +221,15 @@ bool bar::_oetcbPlayBar(){
 
 
 
-// Task tPlayBar main callback
-// Each pass corresponds to a note in the notes array property of the
-// currently active bar.
-// We leverage that to reset the interval of tPlayBar to the duration
-// of the note.
-// - At this iteration of tPlayBar, _tcbPlayBar enables tPlayNote (for a
-//  default duration of 30s. -> in the definition of tPlayNote, in class note.)
-// - At the next iteration, which will occur after the interval corresponding
-// to duration of the current note, tPlayBar will disable tPlayNote.
+/** _tcbPlayBar(): Task tPlayBar main callback
+ *  Each pass corresponds to a note in the notes array property of the
+ *  currently active bar.
+ *   We leverage that to reset the interval of tPlayBar to the duration
+ *   of the note.
+ *   - At this iteration of tPlayBar, _tcbPlayBar enables tPlayNote (for a
+ *     default duration of 30s. -> in the definition of tPlayNote, in class note.)
+ *   - At the next iteration, which will occur after the interval corresponding
+ *     to duration of the current note, tPlayBar will disable tPlayNote. */
 void bar::_tcbPlayBar(){
   Serial.println("bar::_tcbPlayBar(). Starting.");
 
