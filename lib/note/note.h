@@ -39,10 +39,12 @@
 class note
 {
   public:
-    /** default constructor
-     *  ui16tone initially set to 0 (all off).
-     *  ui16note  initially set to 0 (no note). */
+    /** sender to mesh */
+    static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
+
+    /** default empty constructor */
     note();
+    /** main parameterized constructor */
     note(
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
@@ -52,31 +54,32 @@ class note
     // assignement operator
     note& operator=(const note& );
 
-    static Task tPlayNote;
-
-    /** interface to mesh */
-
+    /** setters */
     static void setActiveNoteFromNote(const note & _target_note);
 
-    static void playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note);
-    static uint16_t _ui16BaseNoteForBeat; 
-    static uint16_t _ui16BaseBeatInBpm;
-    static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
-
+    /** getters */
     static const note &getCurrentNote();
     uint16_t getTone() const;
     uint16_t getNote() const;
     unsigned long ulGetNoteDurationInMs() const;
-    
+
+    /** player */
+    static void playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note);
+    static Task tPlayNote;
+
   private:
     friend class bar;
 
     // private static variables
     static note &_activeNote;
+    static uint16_t _ui16BaseNoteForBeat; 
+    static uint16_t _ui16BaseBeatInBpm;
 
+    /** player accessories */
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
 
+    /** setters */
     // instance setter
     void _setTone(const uint16_t __ui16_target_tone);
 

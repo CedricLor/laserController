@@ -286,10 +286,7 @@ void bar::_tcbPlayBar(){
 
 
 void bar::_odtcbPlayBar() {
-  note::_setTimeParams(
-    0, 
-    0
-  );
+  note::_setTimeParams(0, 0);
 }
 
 
