@@ -49,6 +49,8 @@ class note
     );
     // copy constructor
     note( const note& );
+    // assignement operator
+    note& operator=(const note& );
 
     static Task tPlayNote;
 

@@ -67,6 +67,10 @@ note::note( const note& )
 {
 }
 
+// assignement operator
+note& note::operator=(const note& )
+{
+}
 
 
 void note::setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note) {
@@ -79,7 +83,7 @@ void note::setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui1
 
 
 void note::setActiveNoteFromNote(const note & _target_note) {
-  // _activeNote = _target_note;
+  _activeNote = _target_note;
 }
 
 
