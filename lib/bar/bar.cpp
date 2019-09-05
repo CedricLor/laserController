@@ -191,7 +191,7 @@ void bar::initBars() {
 
 
 
-Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, NULL);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, &_odtcbPlayBar);
 
 
 
@@ -210,7 +210,14 @@ bool bar::_oetcbPlayBar(){
   //   Serial.println("bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
 
+  /**1. set the number of iterations base of the effective number of notes in the bar*/
   tPlayBar.setIterations(bars[_ui16ActiveBar]._ui16NotesCountInBar);
+
+  /**2. set the static time parameters in the note class to enable the calculation of note duration*/
+  note::_setTimeParams(
+    bars[_ui16ActiveBar].ui16BaseNoteForBeat, 
+    bars[_ui16ActiveBar].ui16BaseBeatInBpm
+  );
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
@@ -281,6 +288,12 @@ void bar::_tcbPlayBar(){
 };
 
 
+void bar::_odtcbPlayBar() {
+  note::_setTimeParams(
+    0, 
+    0
+  );
+}
 
 
 void bar::setActiveBar(const uint16_t __ui16_active_bar) {

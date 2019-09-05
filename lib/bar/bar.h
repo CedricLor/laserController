@@ -79,6 +79,7 @@ class bar
 
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
+    static void _odtcbPlayBar();
 
     // instance properties
     uint16_t _ui16NotesCountInBar; // number of actual notes in the bar

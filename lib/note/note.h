@@ -80,9 +80,9 @@ class note
 
     // instance setter
     void _setTone(const uint16_t __ui16_target_tone);
-    
+
     // static setter
-    void _setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm);
+    static void _setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm);
 
     // private instance properties
     uint16_t _ui16Tone;

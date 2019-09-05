@@ -120,7 +120,7 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 }
 
 
-/** note::setActiveNote(): private static setter method
+/** note::_setTimeParams(): private static setter method
  * 
  *  sets the parameters required to calculate the duration of a note
  *  (i.e. the bpm and the base note per beat). */
