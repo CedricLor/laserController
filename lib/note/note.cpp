@@ -32,6 +32,9 @@
 #include "Arduino.h"
 #include "note.h"
 
+///////////////////////////////////
+// Static variables
+///////////////////////////////////
 note _note;
 note &note::_activeNote = _note;
 
@@ -42,7 +45,9 @@ void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t
 
 
 
-// constructors
+///////////////////////////////////
+// Constructors
+///////////////////////////////////
 // default
 note::note() :
   _ui16Tone(0),
@@ -74,6 +79,10 @@ note& note::operator=(const note& )
 }
 
 
+
+///////////////////////////////////
+// Setters
+///////////////////////////////////
 void note::setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note) {
   _activeNote._setTone(__ui16_active_tone);
   _activeNote._ui16Note = __ui16_active_note;
@@ -91,23 +100,28 @@ void note::setActiveNoteFromNote(const note & _target_note) {
 
 
 
+///////////////////////////////////
+// Getters
+///////////////////////////////////
+/** note &note::getCurrentNote(): instance getter
+ * 
+ *  Returns the tone of a note instance. */
 uint16_t note::getTone() const {
   return _ui16Tone;
 }
 
 
-
-
-
+/** note &note::getCurrentNote(): instance getter
+ *  
+ *  Returns the note of a note instance. */
 uint16_t note::getNote() const {
   return _ui16Note;
 }
 
 
-
-
-
-// Get the active note
+/** note &note::getCurrentNote(): static getter
+ *  
+ *  returns the note that is currently active. */
 const note &note::getCurrentNote() {
   return _activeNote;
 }
@@ -115,21 +129,25 @@ const note &note::getCurrentNote() {
 
 
 
-/*
-  task tPlayNote is enabled upon instanciating a note in the bar class.
-  It is disabled:
-  - by the expiration of the interval set in the Task declaration; or
-  - by _tcbPlayBar, the main callback of tPlayBar, when the note is supposed
-  to finish.
-  It does not need any mainCallback, as it does not iterate.
-
-  task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
-  for a given note type (--> full, half, ..., set in the bar) at a given
-  beat rate.
-*/
+///////////////////////////////////
+// Task - Player
+///////////////////////////////////
+/** task tPlayNote:
+ * 
+ *   The Task is enabled upon instanciating a note in the bar class.
+ *   It is disabled:
+ *   - by the expiration of the interval set in the Task declaration; or
+ *   - by _tcbPlayBar, the main callback of tPlayBar, when the note is supposed
+ *     to finish.
+ *   It does not need any mainCallback, as it does not iterate.
+ * 
+ *   task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
+ *   for a given note type (--> full, half, ..., set in the bar) at a given
+ *   beat rate. */
 Task note::tPlayNote(30000, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oetcbPlayNote, &_odtcbPlayNote);
 
-// On enable Task _tNote, turn the lasers to a given tone
+/** note::_oetcbPlayNote()
+ *  On enable Task _tNote, turn the lasers to a given tone */
 bool note::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
@@ -140,7 +158,8 @@ bool note::_oetcbPlayNote() {
   return true;
 }
 
-// On disable Task _tNote, turn off all the lasers
+/** note::_oetcbPlayNote()
+ *  On disable Task _tNote, turn off all the lasers */
 void note::_odtcbPlayNote() {
   Serial.println("note::_odtcbPlayNote(). Starting");
   if (MY_DG_LASER) {
