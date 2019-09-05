@@ -42,7 +42,7 @@
 class bar
 {
   public:
-    bar()=default; // default empty constructor
+    bar(); // default empty constructor
     bar(
       const uint16_t __ui16_base_beat_in_bpm, 
       const uint16_t __ui16_base_note_for_beat, 
@@ -50,10 +50,10 @@ class bar
       const uint16_t __ui16_notes_count_in_bar,
       std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
     ); 
-    // copy constructor
-    bar( const bar& );
-    // assignement operator
-    bar& operator=(const bar& );
+    // // copy constructor
+    // bar( const bar& );
+    // // assignement operator
+    // bar& operator=(const bar& );
 
     // static
     static std::array<bar, 5> bars;
@@ -84,9 +84,7 @@ class bar
     unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
 
     // instance property
-    note *_mynotes;
-    // note _otherNote;
-    // const std::array<note, 16> &_notesArray;
+    std::array<note, 16> _notesArray;
     std::array<std::array<uint16_t, 2>, 16> _ui16NoteTone;  // array containing the note and duration of each note
 };
 

@@ -75,10 +75,20 @@ bar::bar(
  _ui16NoteTone(__ui16NoteTone)
 {
   for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
-    _mynotes[__thisNote]._setTone(_ui16NoteTone[__thisNote][1]); // the tone (the height of the note)
-    _mynotes[__thisNote]._ui16Note = _ui16NoteTone[__thisNote][0]; // the note duration (in base note)
+    _notesArray[__thisNote] = {_ui16NoteTone[__thisNote][1], _ui16NoteTone[__thisNote][0]};
   }
 }
+
+// // copy constructor
+// bar::bar( const bar& )
+//  // _tone(tone::_tones[_ui16Tone])
+// {
+// }
+
+// // assignement operator
+// bar& bar::operator=(const bar& )
+// {
+// }
 
 
 
@@ -245,7 +255,7 @@ void bar::_tcbPlayBar(){
   //    using the Task iterator
   
   // note::setActiveNote(bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][1], bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][0]);
-  note::setActiveNoteFromNote(bars[_ui16ActiveBar]._mynotes[_ui16_iter]);
+  note::setActiveNoteFromNote(bars[_ui16ActiveBar]._notesArray[_ui16_iter]);
 
   // 4. Reenable the tPlayNote Task
   /*
@@ -281,7 +291,7 @@ unsigned long bar::_getNoteDuration(const uint16_t _ui16_iter) const {
   // Serial.println("bar::getNoteDuration(). bars["+ String(_ui16ActiveBar) + "].ui16BaseBeatInBpm = "+ String(bars[_ui16ActiveBar].ui16BaseBeatInBpm));
 
   // unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][0])
-  unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._mynotes[_ui16_iter]._ui16Note)
+  unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._notesArray[_ui16_iter]._ui16Note)
                                   *(60 / bars[_ui16ActiveBar].ui16BaseBeatInBpm * 1000);
   if (__ulDurationInMs > 30000) {
     __ulDurationInMs = 30000;
