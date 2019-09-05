@@ -161,12 +161,12 @@ uint16_t note::getNote() const {
 
 /** note &note::getNote(): public instance getter method
  *  
- *  Returns the duration in ms of a note instance. */
-unsigned long note::ulGetNoteDuration() const {
-  // Serial.println("note::ulGetNoteDuration(). Starting.");
+ *  Returns the duration of a note instance in ms. */
+unsigned long note::ulGetNoteDurationInMs() const {
+  // Serial.println("note::ulGetNoteDurationInMs(). Starting.");
   // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
-  // Serial.print("note::ulGetNoteDuration(). _ui16BaseNoteForBeat = ");Serial.println(_ui16BaseNoteForBeat);
-  // Serial.println("note::ulGetNoteDuration(). _ui16BaseBeatInBpm = "+ String(_ui16BaseBeatInBpm);
+  // Serial.print("note::ulGetNoteDurationInMs(). _ui16BaseNoteForBeat = ");Serial.println(_ui16BaseNoteForBeat);
+  // Serial.println("note::ulGetNoteDurationInMs(). _ui16BaseBeatInBpm = "+ String(_ui16BaseBeatInBpm);
 
   if ((_ui16Note == 0) && (_ui16BaseBeatInBpm == 0)) {
     return 0;
@@ -180,8 +180,8 @@ unsigned long note::ulGetNoteDuration() const {
   if (__ulDurationInMs > 30000) {
     return 30000;
   }
-  // Serial.print("note::ulGetNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
-  // Serial.println("note::ulGetNoteDuration(). Ending.");
+  // Serial.print("note::ulGetNoteDurationInMs(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  // Serial.println("note::ulGetNoteDurationInMs(). Ending.");
   return __ulDurationInMs;
 }
 

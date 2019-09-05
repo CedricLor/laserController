@@ -67,7 +67,7 @@ class note
     static const note &getCurrentNote();
     uint16_t getTone() const;
     uint16_t getNote() const;
-    unsigned long ulGetNoteDuration() const;
+    unsigned long ulGetNoteDurationInMs() const;
     
   private:
     friend class bar;
