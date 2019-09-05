@@ -42,7 +42,7 @@ Traductions en anglais:
 
 uint16_t bar::_ui16ActiveBar = 0;
 const uint16_t bar::_ui16_bar_count = 7;
-bar bar::bars[_ui16_bar_count];
+std::array<bar, 4> bar::bars;
 
 
 

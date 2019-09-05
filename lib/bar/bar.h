@@ -52,7 +52,7 @@ class bar
     );
 
     // static
-    static bar bars[];
+    static std::array<bar, 4> bars;
     static void initBars(); // initializer of the array of bars
 
     static void setActiveBar(const uint16_t __ui16_active_bar);
