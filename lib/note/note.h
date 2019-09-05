@@ -59,7 +59,7 @@ class note
     static void setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note);
     static void setActiveNoteFromNote(const note & _target_note);
 
-    static void playNote();
+    static void playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note);
     static uint16_t _ui16BaseNoteForBeat; 
     static uint16_t _ui16BaseBeatInBpm;
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
@@ -82,6 +82,7 @@ class note
     void _setTone(const uint16_t __ui16_target_tone);
 
     // static setter
+    static void _setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note);
     static void _setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm);
 
     // private instance properties

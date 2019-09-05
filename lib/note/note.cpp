@@ -120,6 +120,15 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 }
 
 
+/** note::_setTPlayNote(): public static setter method
+ * 
+ *  sets the parameters of the Task tPlayNote. */
+void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
+  _setTimeParams(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  tPlayNote.setInterval(__target_note.ulGetNoteDurationInMs());
+}
+
+
 /** note::_setTimeParams(): private static setter method
  * 
  *  sets the parameters required to calculate the duration of a note
@@ -195,6 +204,25 @@ unsigned long note::ulGetNoteDurationInMs() const {
 ///////////////////////////////////
 // Task - Player
 ///////////////////////////////////
+/**note::playNoteStandAlone:
+ *  
+ *  play a single note for a given duration.
+ * 
+ *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base note 
+ *             for a given beat
+ *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
+ *             in bpm
+ *  {@ params} uint16_t const __ui16_base_note_for_beat: pass a target note 
+ *             reference 
+ *             ex. note(8,1): tone 8 for the duration of a white (1)
+*/
+void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
+  tPlayNote.disable();
+  _setTPlayNote(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, __target_note);
+  tPlayNote.setIterations(1);
+  tPlayNote.restartDelayed();
+}
+
 /** task tPlayNote:
  * 
  *   The Task is enabled upon instanciating a note in the bar class.
