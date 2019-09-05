@@ -55,8 +55,7 @@ void (*bar::sendCurrentBar)(const uint16_t __ui16_active_bar) = nullptr;
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
-bar::bar(const uint16_t __ui16_base_beat_in_bpm):
-  ui16BaseBeatInBpm(__ui16_base_beat_in_bpm)
+bar::bar()
 {
 }
 

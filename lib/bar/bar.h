@@ -42,7 +42,7 @@
 class bar
 {
   public:
-    bar(const uint16_t __ui16_base_beat_in_bpm=1); // default constructor
+    bar();
     bar(
       const uint16_t __ui16_base_beat_in_bpm, 
       const uint16_t __ui16_base_note_for_beat, 
