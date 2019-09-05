@@ -45,6 +45,9 @@ void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t
 
 
 
+
+
+
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
@@ -77,6 +80,7 @@ note& note::operator=(const note& )
 {
   return *this;
 }
+
 
 
 
@@ -145,6 +149,28 @@ uint16_t note::getNote() const {
 }
 
 
+/** note &note::getNote(): public instance getter method
+ *  
+ *  Returns the duration in ms of a note instance. */
+unsigned long note::ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) const {
+  // Serial.println("note::ulGetNoteDuration(). Starting.");
+  // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
+  // Serial.print("note::ulGetNoteDuration(). __ui16_base_note_for_beat = ");Serial.println(__ui16_base_note_for_beat);
+  // Serial.println("note::ulGetNoteDuration(). __ui16_base_beat_in_bpm = "+ String(__ui16_base_beat_in_bpm);
+
+  unsigned long __ulDurationInMs = (__ui16_base_note_for_beat / _ui16Note)
+                                  *(60 / _ui16_base_beat_in_bpm * 1000);
+  if (__ulDurationInMs > 30000) {
+    __ulDurationInMs = 30000;
+  }
+  // Serial.print("note::ulGetNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
+  // Serial.println("note::ulGetNoteDuration(). Ending.");
+  return __ulDurationInMs;
+}
+
+
+
+
 
 
 ///////////////////////////////////
@@ -186,28 +212,4 @@ void note::_odtcbPlayNote() {
   _activeNote._setTone(0); // tones[0] means turn off all the lasers
   _activeNote._tone._playTone(_activeNote._ui16Tone);
   Serial.println("note::_odtcbPlayNote(). Ending");
-}
-
-
-
-
-
-unsigned long note::ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) const {
-  // Serial.println("bar::getNoteDuration(). Starting.");
-  // Serial.print("bar::getNoteDuration(). _ui16ActiveBar = ");Serial.println(_ui16ActiveBar);
-  // Serial.print("bar::getNoteDuration(). __ui16BaseNoteForBeat = ");Serial.println(__ui16BaseNoteForBeat);
-  // Serial.print("bar::getNoteDuration(). _ui16_iter = ");Serial.println(_ui16_iter);
-  // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  // Serial.println("bar::getNoteDuration(). bars[" + String(_ui16ActiveBar) + "]._note[" + String(_ui16_iter) + "][0] = "+ String(bars[_ui16ActiveBar]._note[_ui16_iter][0]));
-  // Serial.println("bar::getNoteDuration(). bars["+ String(_ui16ActiveBar) + "].ui16BaseBeatInBpm = "+ String(bars[_ui16ActiveBar].ui16BaseBeatInBpm));
-
-  // unsigned long __ulDurationInMs = (__ui16BaseNoteForBeat / bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][0])
-  unsigned long __ulDurationInMs = (__ui16_base_note_for_beat / _ui16Note)
-                                  *(60 / _ui16_base_beat_in_bpm * 1000);
-  if (__ulDurationInMs > 30000) {
-    __ulDurationInMs = 30000;
-  }
-  // Serial.print("unsigned long bar::getNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
-  // Serial.println("unsigned long bar::getNoteDuration(). Ending.");
-  return __ulDurationInMs;
 }

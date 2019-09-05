@@ -61,8 +61,8 @@ class note
 
     static void playNote();
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
-    static const note &getCurrentNote();
 
+    static const note &getCurrentNote();
     uint16_t getTone() const;
     uint16_t getNote() const;
     unsigned long ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) const;
