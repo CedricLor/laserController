@@ -77,7 +77,6 @@ class bar
     static const uint16_t _ui16_bar_count; // number of bar instances to be created in the array of bars
     static uint16_t _ui16ActiveBar;
 
-
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
 
