@@ -72,13 +72,9 @@ bar::bar(
   ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
   ui16BaseNoteForBeat(__ui16_base_note_for_beat), 
   ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
-  ui16NotesCountInBar(__ui16_notes_count_in_bar),
+  _ui16NotesCountInBar(__ui16_notes_count_in_bar),
   _notesArray(__notesArray)
-//  _ui16NoteTone(__ui16NoteTone)
 {
-  // for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
-  //   _notesArray[__thisNote] = {_ui16NoteTone[__thisNote][1], _ui16NoteTone[__thisNote][0]};
-  // }
 }
 
 // // copy constructor
@@ -214,12 +210,12 @@ bool bar::_oetcbPlayBar(){
   //   Serial.println("bar::_oetcbPlayBar(). *!*!*!*!*!");
   // }
 
-  tPlayBar.setIterations(bars[_ui16ActiveBar].ui16NotesCountInBar);
+  tPlayBar.setIterations(bars[_ui16ActiveBar]._ui16NotesCountInBar);
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
-  //   Serial.print("bar::_oetcbPlayBar(). bars[_ui16ActiveBar].ui16NotesCountInBar = ");Serial.println(bars[_ui16ActiveBar].ui16NotesCountInBar);
+  //   Serial.print("bar::_oetcbPlayBar(). bars[_ui16ActiveBar]._ui16NotesCountInBar = ");Serial.println(bars[_ui16ActiveBar]._ui16NotesCountInBar);
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
   //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));

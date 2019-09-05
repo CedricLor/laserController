@@ -66,7 +66,6 @@ class bar
     uint16_t ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
     uint16_t ui16BaseNoteForBeat; // base note for the beat
     uint16_t ui16BaseNotesCountInBar;
-    uint16_t ui16NotesCountInBar; // number of actual notes in the bar
 
     static Task tPlayBar;
 
@@ -84,7 +83,8 @@ class bar
 
     unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
 
-    // instance property
+    // instance properties
+    uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
     std::array<note, 16> _notesArray;
 };
 
