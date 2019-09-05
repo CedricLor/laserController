@@ -384,15 +384,15 @@ void sequence::_tcbPlaySequence(){
   // Serial.println("sequence::_tcbPlaySequence(). have _i16ActiveBar: " + String(_i16ActiveBar));
 
   // 3. Configure the bar
-  bar::bars[_i16ActiveBar].ui16BaseBeatInBpm = sequences[_i16ActiveSequence]._ui16BaseBeatInBpm; // tempo in beats per minute
+  bar::bars[_i16ActiveBar]._ui16BaseBeatInBpm = sequences[_i16ActiveSequence]._ui16BaseBeatInBpm; // tempo in beats per minute
   // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseBeatInBpm = " + String(sequences[_i16ActiveSequence]._ui16BaseBeatInBpm));
-  // Serial.println("sequence::_tcbPlaySequence(). have bar::bars[" + String(_i16ActiveBar) + "]._ui16BaseBeatInBpm = " + String(bar::bars[_i16ActiveBar].ui16BaseBeatInBpm));
-  bar::bars[_i16ActiveBar].ui16BaseNoteForBeat = sequences[_i16ActiveSequence]._ui16BaseNoteForBeat; // the 4 in 2/4, for instance
+  // Serial.println("sequence::_tcbPlaySequence(). have bar::bars[" + String(_i16ActiveBar) + "]._ui16BaseBeatInBpm = " + String(bar::bars[_i16ActiveBar]._ui16BaseBeatInBpm));
+  bar::bars[_i16ActiveBar]._ui16BaseNoteForBeat = sequences[_i16ActiveSequence]._ui16BaseNoteForBeat; // the 4 in 2/4, for instance
   // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNoteForBeat = " + String(sequences[_i16ActiveSequence]._ui16BaseNoteForBeat));
-  // Serial.println("sequence::_tcbPlaySequence(). have bar::bars[" + String(_i16ActiveBar) + "]._ui16BaseNoteForBeat = " + String(bar::bars[_i16ActiveBar].ui16BaseNoteForBeat));
-  bar::bars[_i16ActiveBar].ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
+  // Serial.println("sequence::_tcbPlaySequence(). have bar::bars[" + String(_i16ActiveBar) + "]._ui16BaseNoteForBeat = " + String(bar::bars[_i16ActiveBar]._ui16BaseNoteForBeat));
+  bar::bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
   // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNotesCountPerBar = " + String(sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar));
-  // Serial.println("sequence::_tcbPlaySequence(). have bar::bars[" + String(_i16ActiveBar) + "].ui16BaseNotesCountInBar = " + String(bar::bars[_i16ActiveBar].ui16BaseNotesCountInBar));
+  // Serial.println("sequence::_tcbPlaySequence(). have bar::bars[" + String(_i16ActiveBar) + "]._ui16BaseNotesCountInBar = " + String(bar::bars[_i16ActiveBar]._ui16BaseNotesCountInBar));
 
   // 4. Play the corresponding bar
   // Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBar(" + String(_i16ActiveBar) + ")");

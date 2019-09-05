@@ -86,9 +86,9 @@ class bar
     static void _odtcbPlayBar();
 
     // private instance properties
-    uint16_t ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
-    uint16_t ui16BaseNoteForBeat; // base note for the beat
-    uint16_t ui16BaseNotesCountInBar;
+    uint16_t _ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
+    uint16_t _ui16BaseNoteForBeat; // base note for the beat
+    uint16_t _ui16BaseNotesCountInBar;
     uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
     std::array<note, 16> _notesArray;
 };

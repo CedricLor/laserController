@@ -69,9 +69,9 @@ bar::bar(
   std::array<note, 16> __notesArray
   // std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
 ):
-  ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
-  ui16BaseNoteForBeat(__ui16_base_note_for_beat), 
-  ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
+  _ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
+  _ui16BaseNoteForBeat(__ui16_base_note_for_beat), 
+  _ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
   _ui16NotesCountInBar(__ui16_notes_count_in_bar),
   _notesArray(__notesArray)
 {
@@ -127,7 +127,7 @@ void bar::initBars() {
   uint16_t _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
   bars[0] = { 2, 1, 2, _ui16noteCountForThisBar, _aRelays};
-  // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
+  // Serial.println("bar::_initBars(). bars[0]._ui16BaseBeatInBpm: ");Serial.println(bars[0]._ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
   /** twins
@@ -215,8 +215,8 @@ bool bar::_oetcbPlayBar(){
 
   /**2. set the static time parameters in the note class to enable the calculation of note duration*/
   note::_setTimeParams(
-    bars[_ui16ActiveBar].ui16BaseNoteForBeat, 
-    bars[_ui16ActiveBar].ui16BaseBeatInBpm
+    bars[_ui16ActiveBar]._ui16BaseNoteForBeat, 
+    bars[_ui16ActiveBar]._ui16BaseBeatInBpm
   );
 
   // if (MY_DG_LASER) {
