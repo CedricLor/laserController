@@ -91,16 +91,6 @@ note& note::operator=(const note& )
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** note::setActiveNote(): public static setter method
- * 
- *  sets the parameters of the static variable &note::_activeNote 
- *  from detailled params passed to the method. */
-void note::setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note) {
-  _activeNote._setTone(__ui16_active_tone);
-  _activeNote._ui16Note = __ui16_active_note;
-}
-
-
 /** note::setActiveNoteFromNote(): public static setter method
  * 
  *  sets the parameters of the static variable &note::_activeNote 
@@ -110,7 +100,7 @@ void note::setActiveNoteFromNote(const note & _target_note) {
 }
 
 
-/** note::setActiveNote(): private instance setter method
+/** note::_setTone(): private instance setter method
  * 
  *  sets the instance reference to the tone associated with
  *  the note from a passed in tone number. */
@@ -123,9 +113,10 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 /** note::_setTPlayNote(): public static setter method
  * 
  *  sets the parameters of the Task tPlayNote. */
-void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
+void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, uint16_t const __ui16_iterations) {
   _setTimeParams(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
-  tPlayNote.setInterval(__target_note.ulGetNoteDurationInMs());
+  tPlayNote.setInterval(_activeNote.ulGetNoteDurationInMs());
+  tPlayNote.setIterations(__ui16_iterations);
 }
 
 
@@ -218,8 +209,8 @@ unsigned long note::ulGetNoteDurationInMs() const {
 */
 void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
   tPlayNote.disable();
-  _setTPlayNote(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, __target_note);
-  tPlayNote.setIterations(1);
+  setActiveNoteFromNote(__target_note);
+  _setTPlayNote(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, 1);
   tPlayNote.restartDelayed();
 }
 
