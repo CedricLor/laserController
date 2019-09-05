@@ -81,8 +81,6 @@ class bar
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
 
-    unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
-
     // instance properties
     uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
     std::array<note, 16> _notesArray;

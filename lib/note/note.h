@@ -65,7 +65,7 @@ class note
 
     uint16_t getTone() const;
     uint16_t getNote() const;
-    unsigned long _getNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const _ui16_base_beat_in_bpm) const;
+    unsigned long ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const _ui16_base_beat_in_bpm) const;
     
   private:
     friend class bar;

@@ -272,34 +272,13 @@ void bar::_tcbPlayBar(){
    *    of this Task bar::tPlayBar. This marks the duration of each note. */
   // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
   // Serial.printf("bar::_tcbPlayBar(). calling bars[%i].getNoteDuration(%i)\n", _ui16ActiveBar, _ui16_iter);
-  tPlayBar.setInterval(bars[_ui16ActiveBar]._getNoteDuration(_ui16_iter));
+  tPlayBar.setInterval(bars[_ui16ActiveBar]._notesArray[_ui16_iter].ulGetNoteDuration(
+    bars[_ui16ActiveBar].ui16BaseNoteForBeat, 
+    bars[_ui16ActiveBar].ui16BaseBeatInBpm)
+  );
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
-
-
-
-
-unsigned long bar::_getNoteDuration(const uint16_t _ui16_iter) const {
-  // Serial.println("bar::getNoteDuration(). Starting.");
-  // Serial.print("bar::getNoteDuration(). _ui16ActiveBar = ");Serial.println(_ui16ActiveBar);
-  // Serial.print("bar::getNoteDuration(). bars[_ui16ActiveBar].ui16BaseNoteForBeat = ");Serial.println(bars[_ui16ActiveBar].ui16BaseNoteForBeat);
-  // Serial.print("bar::getNoteDuration(). _ui16_iter = ");Serial.println(_ui16_iter);
-  // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  // Serial.println("bar::getNoteDuration(). bars[" + String(_ui16ActiveBar) + "]._note[" + String(_ui16_iter) + "][0] = "+ String(bars[_ui16ActiveBar]._note[_ui16_iter][0]));
-  // Serial.println("bar::getNoteDuration(). bars["+ String(_ui16ActiveBar) + "].ui16BaseBeatInBpm = "+ String(bars[_ui16ActiveBar].ui16BaseBeatInBpm));
-
-  // unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._ui16NoteTone[_ui16_iter][0])
-  unsigned long __ulDurationInMs = (bars[_ui16ActiveBar].ui16BaseNoteForBeat / bars[_ui16ActiveBar]._notesArray[_ui16_iter]._ui16Note)
-                                  *(60 / bars[_ui16ActiveBar].ui16BaseBeatInBpm * 1000);
-  if (__ulDurationInMs > 30000) {
-    __ulDurationInMs = 30000;
-  }
-  // Serial.print("unsigned long bar::getNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
-  // Serial.println("unsigned long bar::getNoteDuration(). Ending.");
-  return __ulDurationInMs;
-}
-
 
 
 
