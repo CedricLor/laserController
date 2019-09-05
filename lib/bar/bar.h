@@ -80,7 +80,7 @@ class bar
     unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
 
     // instance property
-    uint16_t _ui16NoteTone[16][2];  // array containing the note and duration of each note
+    std::array<uint16_t, 16> _ui16NoteTone[2];  // array containing the note and duration of each note
 };
 
 #endif
