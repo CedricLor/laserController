@@ -162,16 +162,23 @@ uint16_t note::getNote() const {
 /** note &note::getNote(): public instance getter method
  *  
  *  Returns the duration in ms of a note instance. */
-unsigned long note::ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) const {
+unsigned long note::ulGetNoteDuration() const {
   // Serial.println("note::ulGetNoteDuration(). Starting.");
   // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
-  // Serial.print("note::ulGetNoteDuration(). __ui16_base_note_for_beat = ");Serial.println(__ui16_base_note_for_beat);
-  // Serial.println("note::ulGetNoteDuration(). __ui16_base_beat_in_bpm = "+ String(__ui16_base_beat_in_bpm);
+  // Serial.print("note::ulGetNoteDuration(). _ui16BaseNoteForBeat = ");Serial.println(_ui16BaseNoteForBeat);
+  // Serial.println("note::ulGetNoteDuration(). _ui16BaseBeatInBpm = "+ String(_ui16BaseBeatInBpm);
 
-  unsigned long __ulDurationInMs = (__ui16_base_note_for_beat / _ui16Note)
-                                  *(60 / __ui16_base_beat_in_bpm * 1000);
+  if ((_ui16Note == 0) && (_ui16BaseBeatInBpm == 0)) {
+    return 0;
+  }
+  uint16_t _ui16BaseNoteForBeatInMinute = _ui16BaseNoteForBeat * 60;
+  uint16_t _ui16NoteInBpm = _ui16Note * _ui16BaseBeatInBpm;
+  // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
+  uint64_t __ulDurationInMs = ((_ui16BaseNoteForBeatInMinute + _ui16NoteInBpm - 1) / _ui16NoteInBpm) * 1000;
+  // unsigned long __ulDurationInMs = (_ui16BaseNoteForBeat / _ui16Note)
+  //                                 *(60 / _ui16BaseBeatInBpm) * 1000;
   if (__ulDurationInMs > 30000) {
-    __ulDurationInMs = 30000;
+    return 30000;
   }
   // Serial.print("note::ulGetNoteDuration(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   // Serial.println("note::ulGetNoteDuration(). Ending.");
