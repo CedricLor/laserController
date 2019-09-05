@@ -48,7 +48,8 @@ class bar
       const uint16_t __ui16_base_note_for_beat, 
       const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
-      std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
+      std::array<note, 16> __notesArray
+      // std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
     ); 
     // // copy constructor
     // bar( const bar& );
@@ -85,7 +86,6 @@ class bar
 
     // instance property
     std::array<note, 16> _notesArray;
-    std::array<std::array<uint16_t, 2>, 16> _ui16NoteTone;  // array containing the note and duration of each note
 };
 
 #endif
