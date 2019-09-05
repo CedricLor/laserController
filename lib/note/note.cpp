@@ -80,21 +80,39 @@ note& note::operator=(const note& )
 
 
 
+
+
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
+/** note::setActiveNote(): public static setter method
+ * 
+ *  sets the parameters of the static variable &note::_activeNote 
+ *  from detailled params passed to the method. */
 void note::setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note) {
   _activeNote._setTone(__ui16_active_tone);
   _activeNote._ui16Note = __ui16_active_note;
 }
 
 
-
-
-
+/** note::setActiveNoteFromNote(): public static setter method
+ * 
+ *  sets the parameters of the static variable &note::_activeNote 
+ *  from a passed in note reference. */
 void note::setActiveNoteFromNote(const note & _target_note) {
   _activeNote = _target_note;
 }
+
+
+/** note::setActiveNote(): private instance setter method
+ * 
+ *  sets the instance reference to the tone associated with
+ *  the note from a passed in tone number. */
+void note::_setTone(const uint16_t __ui16_target_tone) {
+  _ui16Note = __ui16_target_tone;
+  _tone = tone::_tones[_ui16Tone];
+}
+
 
 
 
@@ -103,7 +121,15 @@ void note::setActiveNoteFromNote(const note & _target_note) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** note &note::getCurrentNote(): instance getter
+/** note &note::getCurrentNote(): public static getter method
+ *  
+ *  returns a reference to the note instance that is currently active. */
+const note &note::getCurrentNote() {
+  return _activeNote;
+}
+
+
+/** note &note::getTone(): public instance getter method
  * 
  *  Returns the tone of a note instance. */
 uint16_t note::getTone() const {
@@ -111,19 +137,11 @@ uint16_t note::getTone() const {
 }
 
 
-/** note &note::getCurrentNote(): instance getter
+/** note &note::getNote(): public instance getter method
  *  
  *  Returns the note of a note instance. */
 uint16_t note::getNote() const {
   return _ui16Note;
-}
-
-
-/** note &note::getCurrentNote(): static getter
- *  
- *  returns the note that is currently active. */
-const note &note::getCurrentNote() {
-  return _activeNote;
 }
 
 
@@ -171,13 +189,6 @@ void note::_odtcbPlayNote() {
 }
 
 
-
-
-
-void note::_setTone(const uint16_t __ui16_target_tone) {
-  _ui16Note = __ui16_target_tone;
-  _tone = tone::_tones[_ui16Tone];
-}
 
 
 
