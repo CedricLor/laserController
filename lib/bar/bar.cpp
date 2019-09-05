@@ -55,10 +55,12 @@ void (*bar::sendCurrentBar)(const uint16_t __ui16_active_bar) = nullptr;
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
+// default
 bar::bar()
 {
 }
 
+// parameterized
 bar::bar(
   const uint16_t __ui16_base_beat_in_bpm, 
   const uint16_t __ui16_base_note_for_beat, 
