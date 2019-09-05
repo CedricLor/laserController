@@ -46,9 +46,9 @@ class bar
     bar(
       const uint16_t __ui16_base_beat_in_bpm, 
       const uint16_t __ui16_base_note_for_beat, 
-      const uint16_t __ui16_base_notes_count_in_bar, 
+      const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
-      const uint16_t __ui16_note_tone[][2]
+      std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
     );
 
     // static
@@ -80,7 +80,7 @@ class bar
     unsigned long _getNoteDuration(const uint16_t __ui16_iter) const;
 
     // instance property
-    std::array<uint16_t, 16> _ui16NoteTone[2];  // array containing the note and duration of each note
+    std::array<std::array<uint16_t, 2>, 16> _ui16NoteTone;  // array containing the note and duration of each note
 };
 
 #endif

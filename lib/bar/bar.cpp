@@ -65,17 +65,14 @@ bar::bar(
   const uint16_t __ui16_base_note_for_beat, 
   const uint16_t __ui16_base_notes_count_in_bar, 
   const uint16_t __ui16_notes_count_in_bar,
-  const uint16_t __ui16_note_tone[][2]
+  std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
 ):
   ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
   ui16BaseNoteForBeat(__ui16_base_note_for_beat), 
   ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
-  ui16NotesCountInBar(__ui16_notes_count_in_bar)
+  ui16NotesCountInBar(__ui16_notes_count_in_bar),
+ _ui16NoteTone(__ui16NoteTone)
 {
-  for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
-    _ui16NoteTone[__thisNote][0] = __ui16_note_tone[__thisNote][0]; // the note duration (in base note)
-    _ui16NoteTone[__thisNote][1] = __ui16_note_tone[__thisNote][1]; // the tone (the height of the note)
-  }
 }
 
 
@@ -115,7 +112,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
-  const uint16_t _i16aRelays[_ui16noteCountForThisBar][2] = {{1,7},{1,8}};
+  std::array<std::array<uint16_t, 2>, 16> _i16aRelays {std::array<uint16_t, 2> {1,7},std::array<uint16_t, 2> {1,8}};
   bars[0] = { 2, 1, 2, _ui16noteCountForThisBar, _i16aRelays};
   // Serial.println("bar::_initBars(). bars[0].ui16BaseBeatInBpm: ");Serial.println(bars[0].ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
@@ -126,7 +123,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
-  const uint16_t _i16aTwins[_ui16noteCountForThisBar][2] = {{1, 5},{1, 6}};
+  std::array<std::array<uint16_t, 2>, 16> _i16aTwins {std::array<uint16_t, 2> {1, 5},std::array<uint16_t, 2> {1, 6}};
   bars[1] = { 2, 1, 2, _ui16noteCountForThisBar, _i16aTwins};
 
   /** all 
@@ -135,7 +132,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
-  const uint16_t _i16aAll[_ui16noteCountForThisBar][2] = {{1, 15},{1, 0}};
+  std::array<std::array<uint16_t, 2>, 16> _i16aAll {std::array<uint16_t, 2> {1, 15}, std::array<uint16_t, 2> {1, 0}};
   bars[2] = { 2, 1, 2, _ui16noteCountForThisBar, _i16aAll};
 
   /** swipeRight
@@ -144,7 +141,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  const uint16_t _i16aSwipeR[_ui16noteCountForThisBar][2] = {{1,1},{1,2},{1,3},{1,4}};
+  std::array<std::array<uint16_t, 2>, 16> _i16aSwipeR {std::array<uint16_t, 2> {1,1}, std::array<uint16_t, 2> {1,2}, std::array<uint16_t, 2> {1,3}, std::array<uint16_t, 2> {1,4}};
   bars[3] = { 120, 1, 4, _ui16noteCountForThisBar, _i16aSwipeR};
 
   /** swipeLeft
@@ -153,7 +150,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  const uint16_t _i16aSwipeL[_ui16noteCountForThisBar][2] = {{1,4},{1,3},{1,2},{1,1}};
+  std::array<std::array<uint16_t, 2>, 16> _i16aSwipeL {std::array<uint16_t, 2> {1,4}, std::array<uint16_t, 2> {1,3}, std::array<uint16_t, 2> {1,2}, std::array<uint16_t, 2> {1,1}};
   bars[4] = { 120, 1, 4, _ui16noteCountForThisBar, _i16aSwipeL};
 
   /** all off
@@ -162,7 +159,7 @@ void bar::initBars() {
    * count of base notes per bar: 1
    * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
-  const uint16_t _i16aAllOff[_ui16noteCountForThisBar][2] = {{1,0}};
+  std::array<std::array<uint16_t, 2>, 16> _i16aAllOff {std::array<uint16_t, 2> {1,0}};
   bars[5] = { 2, 1, 1, _ui16noteCountForThisBar, _i16aAllOff};
 
   Serial.println("void bar::_initBars(). Ending.");
