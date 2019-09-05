@@ -60,6 +60,8 @@ class note
     static void setActiveNoteFromNote(const note & _target_note);
 
     static void playNote();
+    static uint16_t const _ui16_base_note_for_beat; 
+    static uint16_t const _ui16_base_beat_in_bpm;
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
     static const note &getCurrentNote();

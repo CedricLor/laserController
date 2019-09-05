@@ -37,6 +37,8 @@
 ///////////////////////////////////
 note _note;
 note &note::_activeNote = _note;
+uint16_t const note::_ui16_base_note_for_beat = 0; 
+uint16_t const note::_ui16_base_beat_in_bpm = 0;
 
 
 
