@@ -132,6 +132,8 @@ void note::_setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t con
 
 
 
+
+
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
