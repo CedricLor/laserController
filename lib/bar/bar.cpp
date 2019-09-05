@@ -72,6 +72,10 @@ bar::bar(
   ui16NotesCountInBar(__ui16_notes_count_in_bar),
  _ui16NoteTone(__ui16NoteTone)
 {
+  for (short __thisNote = 0; __thisNote < ui16NotesCountInBar; __thisNote++) {
+    _mynotes[__thisNote]._setTone(_ui16NoteTone[__thisNote][1]); // the tone (the height of the note)
+    _mynotes[__thisNote]._ui16Note = _ui16NoteTone[__thisNote][0]; // the note duration (in base note)
+  }
 }
 
 
