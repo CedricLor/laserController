@@ -60,8 +60,8 @@ class note
     static void setActiveNoteFromNote(const note & _target_note);
 
     static void playNote();
-    static uint16_t const _ui16_base_note_for_beat; 
-    static uint16_t const _ui16_base_beat_in_bpm;
+    static uint16_t _ui16BaseNoteForBeat; 
+    static uint16_t _ui16BaseBeatInBpm;
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
     static const note &getCurrentNote();
@@ -72,12 +72,19 @@ class note
   private:
     friend class bar;
 
+    // private static variables
     static note &_activeNote;
 
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
 
+    // instance setter
     void _setTone(const uint16_t __ui16_target_tone);
+    
+    // static setter
+    void _setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm);
+
+    // private instance properties
     uint16_t _ui16Tone;
     uint16_t _ui16Note;
     tone & _tone;

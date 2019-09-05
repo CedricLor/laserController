@@ -37,8 +37,8 @@
 ///////////////////////////////////
 note _note;
 note &note::_activeNote = _note;
-uint16_t const note::_ui16_base_note_for_beat = 0; 
-uint16_t const note::_ui16_base_beat_in_bpm = 0;
+uint16_t note::_ui16BaseNoteForBeat = 0; 
+uint16_t note::_ui16BaseBeatInBpm = 0;
 
 
 
@@ -120,6 +120,14 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 }
 
 
+/** note::setActiveNote(): private instance setter method
+ * 
+ *  sets the instance reference to the tone associated with
+ *  the note from a passed in tone number. */
+void note::_setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
+  _ui16BaseNoteForBeat = __ui16_base_note_for_beat; 
+  _ui16BaseBeatInBpm = __ui16_base_beat_in_bpm;
+}
 
 
 
@@ -161,7 +169,7 @@ unsigned long note::ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, 
   // Serial.println("note::ulGetNoteDuration(). __ui16_base_beat_in_bpm = "+ String(__ui16_base_beat_in_bpm);
 
   unsigned long __ulDurationInMs = (__ui16_base_note_for_beat / _ui16Note)
-                                  *(60 / _ui16_base_beat_in_bpm * 1000);
+                                  *(60 / __ui16_base_beat_in_bpm * 1000);
   if (__ulDurationInMs > 30000) {
     __ulDurationInMs = 30000;
   }
