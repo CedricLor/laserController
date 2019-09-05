@@ -120,10 +120,10 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 }
 
 
-/** note::setActiveNote(): private instance setter method
+/** note::setActiveNote(): private static setter method
  * 
- *  sets the instance reference to the tone associated with
- *  the note from a passed in tone number. */
+ *  sets the parameters required to calculate the duration of a note
+ *  (i.e. the bpm and the base note per beat). */
 void note::_setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
   _ui16BaseNoteForBeat = __ui16_base_note_for_beat; 
   _ui16BaseBeatInBpm = __ui16_base_beat_in_bpm;
