@@ -42,7 +42,7 @@ class note
     /** default constructor
      *  ui16tone initially set to 0 (all off).
      *  ui16note  initially set to 0 (no note). */
-    note()=default;
+    note();
     note(
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note

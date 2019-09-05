@@ -70,6 +70,7 @@ note::note( const note& )
 // assignement operator
 note& note::operator=(const note& )
 {
+  return *this;
 }
 
 
