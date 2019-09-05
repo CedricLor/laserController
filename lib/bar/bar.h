@@ -49,7 +49,11 @@ class bar
       const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
       std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
-    ); // copy constructor
+    ); 
+    // copy constructor
+    bar( const bar& );
+    // assignement operator
+    bar& operator=(const bar& );
 
     // static
     static std::array<bar, 4> bars;
