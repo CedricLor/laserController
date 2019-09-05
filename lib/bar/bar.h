@@ -56,7 +56,7 @@ class bar
     bar& operator=(const bar& );
 
     // static
-    static std::array<bar, 4> bars;
+    static std::array<bar, 5> bars;
     static void initBars(); // initializer of the array of bars
 
     static void setActiveBar(const uint16_t __ui16_active_bar);
