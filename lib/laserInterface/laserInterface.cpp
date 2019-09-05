@@ -82,9 +82,13 @@ void laserInterface::sendCurrentBar(const uint16_t __ui16ActiveBar) {
 
 
 void laserInterface::playBar(const uint16_t __ui16ActiveBar) {
+  // 1. lock bar to avoid getting signal from a boxState or sequence player
   ControlerBox::setBoxActiveStateFromWeb(0);
-  // TODO: lock bar to avoid getting signal from a manually started sequence player
+  sequence::tPlaySequenceInLoop.disable();
+  sequence::tPlaySequence.disable();
+  // 2. set the current bar
   setCurrentBar(__ui16ActiveBar);
+  // 3. restart the tPlayBar task
   bar::tPlayBar.restartDelayed();
 }
 
@@ -116,7 +120,7 @@ void laserInterface::sendCurrentNote(const uint16_t __ui16_target_tone, const ui
 
 
 void laserInterface::playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-  // 1. lock notes to avoid getting signal from a manually started sequence or bar player
+  // 1. lock notes to avoid getting signal from a boxState, sequence or bar player
   ControlerBox::setBoxActiveStateFromWeb(0);
   sequence::tPlaySequenceInLoop.disable();
   sequence::tPlaySequence.disable();
