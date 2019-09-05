@@ -61,6 +61,8 @@ class note
     uint16_t getNote() const;
     
   private:
+    friend class bar;
+
     static note &_activeNote;
 
     static bool _oetcbPlayNote();
