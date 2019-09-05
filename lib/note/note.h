@@ -47,12 +47,15 @@ class note
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
     );
+    // copy constructor
+    note( const note& );
 
     static Task tPlayNote;
 
     /** interface to mesh */
 
     static void setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note);
+    static void setActiveNoteFromNote(const note & _target_note);
 
     static void playNote();
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);

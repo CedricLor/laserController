@@ -42,14 +42,15 @@ void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t
 
 
 
-// constructor
+// constructors
+// default
 note::note() :
   _ui16Tone(0),
   _ui16Note(0),
   _tone(tone::_tones[0])
 {}
 
-
+// parameterized
 note::note(
   const uint16_t __ui16_tone,
   const uint16_t __ui16_note
@@ -60,13 +61,25 @@ note::note(
 {
 }
 
-
+// copy constructor
+note::note( const note& ) 
+: _tone(tone::_tones[_ui16Tone])
+{
+}
 
 
 
 void note::setActiveNote(const uint16_t __ui16_active_tone, const uint16_t __ui16_active_note) {
   _activeNote._setTone(__ui16_active_tone);
   _activeNote._ui16Note = __ui16_active_note;
+}
+
+
+
+
+
+void note::setActiveNoteFromNote(const note & _target_note) {
+  // _activeNote = _target_note;
 }
 
 
