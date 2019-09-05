@@ -43,6 +43,11 @@ void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t
 
 
 // constructor
+note::note() :
+  _tone(tone::_tones[0])
+{}
+
+
 note::note(
   const uint16_t __ui16_tone,
   const uint16_t __ui16_note
