@@ -162,7 +162,7 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 
 
 
-unsigned long note::ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const _ui16_base_beat_in_bpm) const {
+unsigned long note::ulGetNoteDuration(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) const {
   // Serial.println("bar::getNoteDuration(). Starting.");
   // Serial.print("bar::getNoteDuration(). _ui16ActiveBar = ");Serial.println(_ui16ActiveBar);
   // Serial.print("bar::getNoteDuration(). __ui16BaseNoteForBeat = ");Serial.println(__ui16BaseNoteForBeat);
