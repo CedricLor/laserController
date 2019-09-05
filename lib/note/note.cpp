@@ -49,7 +49,7 @@ note::note(
 ) :
   _ui16Tone(__ui16_tone),
   _ui16Note(__ui16_note),
-  _tone(tone::tones[_ui16Tone])
+  _tone(tone::_tones[_ui16Tone])
 {
 }
 
@@ -110,7 +110,7 @@ bool note::_oetcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number %u\n", _activeNote._ui16Tone);
   }
-  _activeNote._tone.playTone(_activeNote._ui16Tone);
+  _activeNote._tone._playTone(_activeNote._ui16Tone);
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
@@ -122,7 +122,7 @@ void note::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(0); // tones[0] means turn off all the lasers
-  _activeNote._tone.playTone(_activeNote._ui16Tone);
+  _activeNote._tone._playTone(_activeNote._ui16Tone);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
 
@@ -132,5 +132,5 @@ void note::_odtcbPlayNote() {
 
 void note::_setTone(const uint16_t __ui16_target_tone) {
   _ui16Note = __ui16_target_tone;
-  _tone = tone::tones[_ui16Tone];
+  _tone = tone::_tones[_ui16Tone];
 }

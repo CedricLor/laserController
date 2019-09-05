@@ -39,16 +39,17 @@
 
 class tone
 {
+  friend class note;
   public:
     tone(); // default constructor
-    tone(std::array<bool , 4> __bLaserPinsStatus);
+    tone(std::array<bool, 4> const __bLaserPinsStatus);
 
-    static std::array<tone, 16> tones;
     static void initTones(); // initializer of the array of tones
 
-    void playTone(const uint16_t _ui16_active_tone);
-
   private:
+    static std::array<tone, 16> _tones;
+    void _playTone(const uint16_t _ui16_active_tone);
+
     static const uint16_t _ui16_tone_count;
 
     std::array<bool, 4> _bLaserPinStatus;  // array containing the state of each laser at each tempo
