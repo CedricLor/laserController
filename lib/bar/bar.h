@@ -32,9 +32,6 @@ class bar
     // // assignement operator
     // bar& operator=(const bar& );
 
-    // static properties
-    static std::array<bar, 7> bars;
-
     // objects array initializer
     static void initBars(); // initializer of the array of bars
 
@@ -49,6 +46,9 @@ class bar
 
   private:
     friend class sequence;
+
+    // static properties
+    static std::array<bar, 7> bars;
 
     // private static variables
     static uint16_t _ui16ActiveBar;
