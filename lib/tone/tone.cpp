@@ -13,12 +13,13 @@ const uint16_t tone::_ui16_tone_count = 16;
 std::array<tone, 16> tone::_tones;
 
 // constructor
-tone::tone() {}
+tone::tone():
+  _bLaserPinStatus({})
+{}
 
 tone::tone(std::array<bool, 4> const __bLaserPinsStatus):
   _bLaserPinStatus(__bLaserPinsStatus)
-{
-}
+{}
 
 
 void tone::initTones() {
