@@ -24,7 +24,13 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullp
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
-sequence::sequence() {
+sequence::sequence():
+  _ui16BaseBeatInBpm(0), 
+  _ui16BaseNoteForBeat(0), 
+  _ui16BaseNotesCountPerBar(0), 
+  _i16BarCountInSequence(0), 
+  _i16AssociatedBars(nullptr)
+{
 }
 
 
