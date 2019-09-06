@@ -148,10 +148,10 @@ unsigned long note::ulGetNoteDurationInMs() const {
   if ((_ui16Note == 0) && (_ui16BaseBeatInBpm == 0)) {
     return 0;
   }
-  uint16_t _ui16BaseNoteForBeatInMinute = _ui16BaseNoteForBeat * 60;
+  uint32_t _ui32BaseNoteForBeatInMs = _ui16BaseNoteForBeat * 60 * 1000;
   uint16_t _ui16NoteInBpm = _ui16Note * _ui16BaseBeatInBpm;
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
-  uint64_t __ulDurationInMs = ((_ui16BaseNoteForBeatInMinute + _ui16NoteInBpm - 1) / _ui16NoteInBpm) * 1000;
+  uint64_t __ulDurationInMs = ((_ui32BaseNoteForBeatInMs + _ui16NoteInBpm - 1) / _ui16NoteInBpm);
   // unsigned long __ulDurationInMs = (_ui16BaseNoteForBeat / _ui16Note)
   //                                 *(60 / _ui16BaseBeatInBpm) * 1000;
   if (__ulDurationInMs > 30000) {
