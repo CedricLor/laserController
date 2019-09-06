@@ -27,7 +27,10 @@ void (*bar::sendCurrentBar)(const uint16_t __ui16_active_bar) = nullptr;
 // Constructors
 ///////////////////////////////////
 // default
-bar::bar()
+bar::bar() :
+  _ui16BaseNotesCountInBar(0), 
+  _ui16NotesCountInBar(0),
+  _notesArray(std::array<note, 16> {})
 {
 }
 
