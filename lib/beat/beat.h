@@ -1,8 +1,6 @@
 /*
-  bar.h - bars are two beats to four beats, precoded sequences of notes
-  Created by Cedric Lor, June 4, 2019.
-
-
+  beat.h - beat handles the beat timing at which notes, bars and sequences shall be played
+  Created by Cedric Lor, September 6, 2019.
 */
 #ifndef bar_h
 #define bar_h

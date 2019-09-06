@@ -1,6 +1,6 @@
 /*
-  bar.cpp - bars are two beats to four beats, precoded sequences of notes
-  Created by Cedric Lor, June 4, 2019.
+  beat.cpp - beat handles the beat timing at which notes, bars and sequences shall be played
+  Created by Cedric Lor, September 6, 2019.
 
 
 Traductions en anglais:
