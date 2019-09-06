@@ -2,64 +2,53 @@
   beat.h - beat handles the beat timing at which notes, bars and sequences shall be played
   Created by Cedric Lor, September 6, 2019.
 */
-#ifndef bar_h
-#define bar_h
+#ifndef beat_h
+#define beat_h
 
 #include "Arduino.h"
-#include <mns.h>
-#include <note.h>
+#include <global.h>
 
-class bar
+class beat
 {
   public:
     /** sender to mesh */
-    static void (*sendCurrentBar)(const uint16_t __ui16_active_bar);
+    static void (*sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
 
     /** default empty constructor */
-    bar();
+    beat();
     /** main parameterized constructor */
-    bar(
+    beat(
       const uint16_t __ui16_base_beat_in_bpm, 
-      const uint16_t __ui16_base_note_for_beat, 
-      const uint16_t __ui16_base_notes_count_in_bar,
-      const uint16_t __ui16_notes_count_in_bar,
-      std::array<note, 16> __notesArray
+      const uint16_t __ui16_base_note_for_beat
     ); 
     // // copy constructor
-    // bar( const bar& );
+    // beat( const beat& );
     // // assignement operator
-    // bar& operator=(const bar& );
+    // beat& operator=(const beat& );
 
     // objects array initializer
-    static void initBars(); // initializer of the array of bars
+    // static void initBeats(); // initializer of the array of beats
 
     /** setters */
-    static void setActiveBar(const uint16_t __ui16_active_bar);
+    static void setActiveBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
+    static void setActiveBeatFromBeat(const beat & __target_beat);
 
     /** getters */
-    static int16_t getCurrentBar(); // returns _ui16ActiveBar
-
-    /** player */
-    static Task tPlayBar;
+    static int16_t getCurrentBeat(); // return a ref to a beat instance
+    uint16_t getBaseBeatInBpm() const;
+    uint16_t getBaseNoteForBeat() const;
+    unsigned long ulGetBaseNoteDurationInMs() const;
 
   private:
     friend class sequence;
 
     // static properties
-    static std::array<bar, 7> _bars;
-    static uint16_t _ui16ActiveBar;
-
-    /** player callbackss */
-    static void _tcbPlayBar();
-    static bool _oetcbPlayBar();
-    static void _odtcbPlayBar();
+    static std::array<beat, 7> _beats;
+    static beat &_activeBeat;
 
     // private instance properties
     uint16_t _ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
     uint16_t _ui16BaseNoteForBeat; // base note for the beat
-    uint16_t _ui16BaseNotesCountInBar;
-    uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
-    std::array<note, 16> _notesArray;
 };
 
 #endif
