@@ -61,7 +61,7 @@ class bar
     // bar& operator=(const bar& );
 
     // static properties
-    static std::array<bar, 5> bars;
+    static std::array<bar, 7> bars;
 
     // objects array initializer
     static void initBars(); // initializer of the array of bars

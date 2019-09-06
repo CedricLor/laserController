@@ -41,7 +41,7 @@ Traductions en anglais:
 #include "bar.h"
 
 uint16_t bar::_ui16ActiveBar = 0;
-std::array<bar, 5> bar::bars;
+std::array<bar, 7> bar::bars;
 
 
 
