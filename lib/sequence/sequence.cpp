@@ -24,17 +24,15 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullp
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
+// default constructor
 sequence::sequence():
   _beat(beat(0, 0)),
   _ui16BaseNotesCountPerBar(0), 
   _i16BarCountInSequence(0), 
   _i16AssociatedBars(nullptr)
-{
-}
+{ }
 
-
-
-
+// parameterized constructor
 sequence::sequence(
   const beat __beat,
   const uint16_t __ui16BaseNotesCountPerBar, 
@@ -45,9 +43,21 @@ sequence::sequence(
   _ui16BaseNotesCountPerBar(__ui16BaseNotesCountPerBar), 
   _i16BarCountInSequence(__i16BarCountInSequence), 
   _i16AssociatedBars(__i16AssociatedBars)
- {
+{ }
 
+// copy constructor
+sequence::sequence( const sequence& ) 
+{ }
+
+// assignement operator
+sequence& sequence::operator=(const sequence& )
+{
+  return *this;
 }
+
+
+
+
 
 
 

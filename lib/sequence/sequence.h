@@ -15,6 +15,7 @@
 class sequence
 {
   public:
+    /** constructors */
     sequence(); // default constructor
     sequence(
       const beat __beat,
@@ -22,12 +23,21 @@ class sequence
       const int16_t __i16BarCountInSequence, 
       int16_t *__i16AssociatedBars
     );
+    // copy constructor
+    sequence( const sequence& );
+    // assignement operator
+    sequence& operator=(const sequence& );
 
+    /** public static array of sequences */
     static sequence sequences[];
+
+    /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
 
+    /** static setter */
     static void setActiveSequence(const int16_t __i16ActiveSequence);
 
+    /** Task - sequence players */
     static Task tPlaySequenceInLoop;
     static Task tPlaySequence;
 
@@ -47,7 +57,7 @@ class sequence
     static long unsigned int _ulBarDuration();
 
     // instance properties
-    beat _beat;
+    const beat _beat;
     uint16_t _ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
     int16_t _i16BarCountInSequence; // number of tempos required to execute one full sequence
     int16_t *_i16AssociatedBars;  // array containing the state of each laser at each tempo
