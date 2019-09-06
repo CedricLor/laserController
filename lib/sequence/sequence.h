@@ -17,6 +17,7 @@ class sequence
   public:
     sequence(); // default constructor
     sequence(
+      const beat __beat,
       const uint16_t __ui16BaseBeatInBpm, 
       const uint16_t __ui16BaseNoteForBeat, 
       const uint16_t __ui16BaseNotesCountPerBar, 
