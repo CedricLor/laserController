@@ -31,7 +31,7 @@ class note
     note& operator=(const note& );
 
     /** setters */
-    static void setActiveNoteFromNote(const note & _target_note);
+    static void setActiveNoteFromNote(const note & __target_note);
 
     /** getters */
     static const note &getCurrentNote();
@@ -49,7 +49,7 @@ class note
     // private static variables
     static note &_activeNote;
 
-    /** player accessories */
+    /** player callbacks */
     static bool _oetcbPlayNote();
     static void _odtcbPlayNote();
 

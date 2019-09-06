@@ -68,8 +68,8 @@ note& note::operator=(const note& )
  * 
  *  sets the parameters of the static variable &note::_activeNote 
  *  from a passed in note reference. */
-void note::setActiveNoteFromNote(const note & _target_note) {
-  _activeNote = _target_note;
+void note::setActiveNoteFromNote(const note & __target_note) {
+  _activeNote = __target_note;
 }
 
 
@@ -165,8 +165,7 @@ unsigned long note::ulGetNoteDurationInMs() const {
  *             for a given beat
  *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
  *             in bpm
- *  {@ params} uint16_t const __ui16_base_note_for_beat: pass a target note 
- *             reference 
+ *  {@ params} note const & __target_note: pass a target note ref to const
  *             ex. note(8,1): tone 8 for the duration of a white (1)
 */
 void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
