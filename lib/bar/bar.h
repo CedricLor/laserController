@@ -38,8 +38,10 @@ class bar
     // objects array initializer
     static void initBars(); // initializer of the array of bars
 
-    // static setter and getter for activeBar index number
+    /** setters */
     static void setActiveBar(const uint16_t __ui16_active_bar);
+
+    /** getters */
     static int16_t getCurrentBar(); // returns _ui16ActiveBar
 
     /** player */
