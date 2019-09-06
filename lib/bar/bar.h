@@ -49,10 +49,11 @@ class bar
     static std::array<bar, 7> _bars;
     static uint16_t _ui16ActiveBar;
 
-    /** player callbackss */
+    /** player callbacks */
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
-    static void _odtcbPlayBar();
+
+    // static setter
 
     // private instance properties
     uint16_t _ui16BaseNotesCountInBar;
