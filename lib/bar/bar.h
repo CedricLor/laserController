@@ -48,7 +48,7 @@ class bar
     friend class sequence;
 
     // static properties
-    static std::array<bar, 7> bars;
+    static std::array<bar, 7> _bars;
 
     // private static variables
     static uint16_t _ui16ActiveBar;

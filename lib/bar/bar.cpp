@@ -13,7 +13,7 @@ Traductions en anglais:
 #include "bar.h"
 
 uint16_t bar::_ui16ActiveBar = 0;
-std::array<bar, 7> bar::bars;
+std::array<bar, 7> bar::_bars;
 
 
 
@@ -97,9 +97,9 @@ void bar::initBars() {
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
-  bars[0] = { 2, 1, 2, _ui16noteCountForThisBar, _aRelays};
-  // Serial.println("bar::_initBars(). bars[0]._ui16BaseBeatInBpm: ");Serial.println(bars[0]._ui16BaseBeatInBpm);
-  // Serial.println("bar::_initBars(). bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(bars[0]._iLaserPinStatusAtEachBeat[0][1]);
+  _bars[0] = { 2, 1, 2, _ui16noteCountForThisBar, _aRelays};
+  // Serial.println("bar::_initBars(). _bars[0]._ui16BaseBeatInBpm: ");Serial.println(_bars[0]._ui16BaseBeatInBpm);
+  // Serial.println("bar::_initBars(). _bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
   /** twins
    * duration of a beat in bpm: 2
@@ -108,7 +108,7 @@ void bar::initBars() {
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
-  bars[1] = { 2, 1, 2, _ui16noteCountForThisBar, _aTwins};
+  _bars[1] = { 2, 1, 2, _ui16noteCountForThisBar, _aTwins};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -117,7 +117,7 @@ void bar::initBars() {
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
-  bars[2] = { 2, 1, 2, _ui16noteCountForThisBar, _aAll};
+  _bars[2] = { 2, 1, 2, _ui16noteCountForThisBar, _aAll};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -126,7 +126,7 @@ void bar::initBars() {
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   std::array<note, 16> _aSwipeR {note(1,1), note(1,2), note(1,3), note(1,4)};
-  bars[3] = { 120, 1, 4, _ui16noteCountForThisBar, _aSwipeR};
+  _bars[3] = { 120, 1, 4, _ui16noteCountForThisBar, _aSwipeR};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -135,7 +135,7 @@ void bar::initBars() {
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   std::array<note, 16> _aSwipeL {note(1,4), note(1,3), note(1,2), note(1,1)};
-  bars[4] = { 120, 1, 4, _ui16noteCountForThisBar, _aSwipeL};
+  _bars[4] = { 120, 1, 4, _ui16noteCountForThisBar, _aSwipeL};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -144,7 +144,7 @@ void bar::initBars() {
    * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
   std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
-  bars[5] = { 2, 1, 1, _ui16noteCountForThisBar, _aAllOff};
+  _bars[5] = { 2, 1, 1, _ui16noteCountForThisBar, _aAllOff};
 
   Serial.println("void bar::_initBars(). Ending.");
 }
@@ -182,18 +182,18 @@ bool bar::_oetcbPlayBar(){
   // }
 
   /**1. set the number of iterations base of the effective number of notes in the bar*/
-  tPlayBar.setIterations(bars[_ui16ActiveBar]._ui16NotesCountInBar);
+  tPlayBar.setIterations(_bars[_ui16ActiveBar]._ui16NotesCountInBar);
 
   /**2. set the static time parameters in the note class to enable the calculation of note duration*/
   note::_setTimeParams(
-    bars[_ui16ActiveBar]._ui16BaseNoteForBeat, 
-    bars[_ui16ActiveBar]._ui16BaseBeatInBpm
+    _bars[_ui16ActiveBar]._ui16BaseNoteForBeat, 
+    _bars[_ui16ActiveBar]._ui16BaseBeatInBpm
   );
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
-  //   Serial.print("bar::_oetcbPlayBar(). bars[_ui16ActiveBar]._ui16NotesCountInBar = ");Serial.println(bars[_ui16ActiveBar]._ui16NotesCountInBar);
+  //   Serial.print("bar::_oetcbPlayBar(). _bars[_ui16ActiveBar]._ui16NotesCountInBar = ");Serial.println(_bars[_ui16ActiveBar]._ui16NotesCountInBar);
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
   //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
@@ -230,7 +230,7 @@ void bar::_tcbPlayBar(){
   /**3. Set the static activeNote of the note class (note::_activeNote)
    *    using the Task iterator to select the relevant note in the _notesArray
    *    of the currently activeBar. */
-  note::setActiveNoteFromNote(bars[_ui16ActiveBar]._notesArray[_ui16_iter]);
+  note::setActiveNoteFromNote(_bars[_ui16ActiveBar]._notesArray[_ui16_iter]);
 
   /**4.Reenable the tPlayNote Task
    *   Upon enabling the Task, the onEnable callback of tPlayNote will be
@@ -249,8 +249,8 @@ void bar::_tcbPlayBar(){
    *    At each pass, reset the interval before the next iteration 
    *    of this Task bar::tPlayBar. This marks the duration of each note. */
   // Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  // Serial.printf("bar::_tcbPlayBar(). calling bars[%i].getNoteDuration(%i)\n", _ui16ActiveBar, _ui16_iter);
-  tPlayBar.setInterval(bars[_ui16ActiveBar]._notesArray[_ui16_iter].ulGetNoteDurationInMs());
+  // Serial.printf("bar::_tcbPlayBar(). calling _bars[%i].getNoteDuration(%i)\n", _ui16ActiveBar, _ui16_iter);
+  tPlayBar.setInterval(_bars[_ui16ActiveBar]._notesArray[_ui16_iter].ulGetNoteDurationInMs());
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
