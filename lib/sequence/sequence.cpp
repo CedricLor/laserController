@@ -25,8 +25,7 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullp
 // Constructors
 ///////////////////////////////////
 sequence::sequence():
-  _ui16BaseBeatInBpm(0), 
-  _ui16BaseNoteForBeat(0), 
+  _beat(beat(0, 0)),
   _ui16BaseNotesCountPerBar(0), 
   _i16BarCountInSequence(0), 
   _i16AssociatedBars(nullptr)
@@ -38,14 +37,11 @@ sequence::sequence():
 
 sequence::sequence(
   const beat __beat,
-  const uint16_t __ui16BaseBeatInBpm, 
-  const uint16_t __ui16BaseNoteForBeat, 
   const uint16_t __ui16BaseNotesCountPerBar, 
   const int16_t __i16BarCountInSequence, 
   int16_t *__i16AssociatedBars
 ):
-  _ui16BaseBeatInBpm(__ui16BaseBeatInBpm), 
-  _ui16BaseNoteForBeat(__ui16BaseNoteForBeat), 
+  _beat(__beat),
   _ui16BaseNotesCountPerBar(__ui16BaseNotesCountPerBar), 
   _i16BarCountInSequence(__i16BarCountInSequence), 
   _i16AssociatedBars(__i16AssociatedBars)
@@ -66,8 +62,9 @@ void sequence::initSequences() {
 
   /** Signature for calls:
     a. the sequence's name
-    b. _ui16BaseBeatInBpm: the base beat in bpm
-    c. _ui16BaseNoteForBeat: the base note for each beat (1 -> full, 2 -> white,
+    b. a beat instance, composed of:
+       1. _ui16BaseBeatInBpm: the base beat in bpm
+       2. _ui16BaseNoteForBeat: the base note for each beat (1 -> full, 2 -> white,
                           4 -> black, etc.; the 4 in 2/4)
     d. _ui16BaseNotesCountPerBar: the number of base notes per bar (the 2 in 2/4)
     e. the number of bars in the sequence _i16BarCountForThisSequence
@@ -80,12 +77,12 @@ void sequence::initSequences() {
    *  0 is a reference to _bars[0]
    */
   int16_t _i16Relays[_i16BarCountForThisSequence] = {0}; // _bars[0]
-  /**
-   * _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
-   * _ui16BaseNoteForBeat = 1; a white */
+  /** const beat _beat_2_1(2,1): an instance of beat
+   *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
+   *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
   /** _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[0] = {_beat_2_1, 2, 1, 2, _i16BarCountForThisSequence, _i16Relays};
+  sequences[0] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16Relays};
   // Serial.println("void sequence::_initSequences(). sequences[0]._ui16BaseBeatInBpm: ");
   // Serial.println(sequences[0]._ui16BaseBeatInBpm);
   // Serial.println("void sequence::_initSequences(). sequences[0]._i16AssociatedBars[0][1]");
@@ -97,10 +94,8 @@ void sequence::initSequences() {
   // array of references to the bars to be played in the sequence
   int16_t _i16Twins[_i16BarCountForThisSequence] = {1};
   /**
-   * _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
-   * _ui16BaseNoteForBeat = 1; a white
    * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[1] = {_beat_2_1, 2, 1, 2, _i16BarCountForThisSequence, _i16Twins};
+  sequences[1] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16Twins};
 
 
   // --> Sequence 2: "All"
@@ -108,22 +103,20 @@ void sequence::initSequences() {
   // array of references to the bars to be played in the sequence
   int16_t _i16All[_i16BarCountForThisSequence] = {2};
   /**
-   * _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
-   * _ui16BaseNoteForBeat = 1; a white
    * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[2] = {_beat_2_1, 2, 1, 2, _i16BarCountForThisSequence, _i16All};
+  sequences[2] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16All};
 
 
   // --> Sequence 3: "Swipe Right"
   _i16BarCountForThisSequence = 1;
   // array of references to the bars to be played in the sequence
   int16_t _i16SwipeR[_i16BarCountForThisSequence] = {3};
-  /**
-   * _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
-   * _ui16BaseNoteForBeat = 1; a white
-   * _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
-  const beat _beat_120_1(2,1);
-  sequences[3] = {_beat_120_1, 120, 1, 4, _i16BarCountForThisSequence, _i16SwipeR};
+  /** const beat _beat_120_1(120,1): an instance of beat
+   *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
+   *    _ui16BaseNoteForBeat = 1; a white */
+  const beat _beat_120_1(120,1);
+  /** _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
+  sequences[3] = {_beat_120_1, 4, _i16BarCountForThisSequence, _i16SwipeR};
 
 
   // --> Sequence 4: "Swipe Left"
@@ -131,10 +124,8 @@ void sequence::initSequences() {
   // array of references to the bars to be played in the sequence
   int16_t _i16SwipeL[_i16BarCountForThisSequence] = {4};
   /**
-   * _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
-   * _ui16BaseNoteForBeat = 1; a white
    * _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
-  sequences[4] = {_beat_120_1, 120, 1, 4, _i16BarCountForThisSequence, _i16SwipeL};
+  sequences[4] = {_beat_120_1, 4, _i16BarCountForThisSequence, _i16SwipeL};
 
 
   // --> Sequence 5: "All Off"
@@ -142,10 +133,8 @@ void sequence::initSequences() {
   // array of references to the bars to be played in the sequence
   int16_t _i16AllOff[_i16BarCountForThisSequence] = {5};
   /**
-   * _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
-   * _ui16BaseNoteForBeat = 1; a white
    * _ui16BaseNotesCountPerBar = 1;  => partition en 1/1*/
-  sequences[5] = {_beat_2_1, 2, 1, 1, _i16BarCountForThisSequence, _i16AllOff};
+  sequences[5] = {_beat_2_1, 1, _i16BarCountForThisSequence, _i16AllOff};
 
   Serial.println("sequence::_initSequences(). Ending.");
 }
@@ -370,11 +359,11 @@ void sequence::_tcbPlaySequence(){
   // Serial.println("sequence::_tcbPlaySequence(). have _i16ActiveBar: " + String(_i16ActiveBar));
 
   // 3. Configure the bar
-  bar::_bars[_i16ActiveBar]._ui16BaseBeatInBpm = sequences[_i16ActiveSequence]._ui16BaseBeatInBpm; // tempo in beats per minute
-  // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseBeatInBpm = " + String(sequences[_i16ActiveSequence]._ui16BaseBeatInBpm));
+  bar::_bars[_i16ActiveBar]._ui16BaseBeatInBpm = sequences[_i16ActiveSequence]._beat.getBaseBeatInBpm(); // tempo in beats per minute
+  // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._beat.getBaseBeatInBpm() = " + String(sequences[_i16ActiveSequence]._beat.getBaseBeatInBpm()));
   // Serial.println("sequence::_tcbPlaySequence(). have bar::_bars[" + String(_i16ActiveBar) + "]._ui16BaseBeatInBpm = " + String(bar::_bars[_i16ActiveBar]._ui16BaseBeatInBpm));
-  bar::_bars[_i16ActiveBar]._ui16BaseNoteForBeat = sequences[_i16ActiveSequence]._ui16BaseNoteForBeat; // the 4 in 2/4, for instance
-  // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNoteForBeat = " + String(sequences[_i16ActiveSequence]._ui16BaseNoteForBeat));
+  bar::_bars[_i16ActiveBar]._ui16BaseNoteForBeat = sequences[_i16ActiveSequence]._beat.getBaseNoteForBeat(); // the 4 in 2/4, for instance
+  // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._beat.getBaseNoteForBeat() = " + String(sequences[_i16ActiveSequence]._beat.getBaseNoteForBeat()));
   // Serial.println("sequence::_tcbPlaySequence(). have bar::_bars[" + String(_i16ActiveBar) + "]._ui16BaseNoteForBeat = " + String(bar::_bars[_i16ActiveBar]._ui16BaseNoteForBeat));
   bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
   // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNotesCountPerBar = " + String(sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar));
@@ -429,7 +418,7 @@ long unsigned int sequence::_ulBarDuration() {
   Serial.println(F("void sequence::_ulBarDuration(). Starting."));
   // Serial.printf("void sequence::_ulBarDuration(). __i16ActiveSequence = %i", __i16activeSequence);
   unsigned long __ulDurationInMs = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar *
-                              (60 / sequences[_i16ActiveSequence]._ui16BaseBeatInBpm * 1000);
+                              (60 / sequences[_i16ActiveSequence]._beat.getBaseBeatInBpm() * 1000);
   Serial.println(F("void sequence::_ulBarDuration(). Ending."));
   return __ulDurationInMs;
 }
