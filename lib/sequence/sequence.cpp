@@ -416,11 +416,11 @@ long unsigned int sequence::_ulSequenceDuration() {
 // returns the current bar effective duration
 long unsigned int sequence::_ulBarDuration() {
   Serial.println(F("void sequence::_ulBarDuration(). Starting."));
-  // Serial.printf("void sequence::_ulBarDuration(). __i16ActiveSequence = %i", __i16activeSequence);
-  unsigned long __ulDurationInMs = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar *
-                              (60 / sequences[_i16ActiveSequence]._beat.getBaseBeatInBpm() * 1000);
-  Serial.println(F("void sequence::_ulBarDuration(). Ending."));
-  return __ulDurationInMs;
+  // Serial.printf("void sequence::_ulBarDuration(). __i16ActiveSequence = %i\n", __i16activeSequence);
+  // Serial.printf("void sequence::_ulBarDuration(). sequences[%i]._ui16BaseNotesCountPerBar = %u\n", __i16activeSequence, sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar);
+  // Serial.printf("void sequence::_ulBarDuration(). sequences[%i]._beat.ui16GetBaseNoteDurationInMs() = %u\n", __i16activeSequence, sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
+  // Serial.printf("void sequence::_ulBarDuration(). about to return %u\n": ,sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
+  return (sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
 }
 
 
