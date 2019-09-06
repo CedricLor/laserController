@@ -45,6 +45,8 @@ class sequence
     static void (*sendCurrentSequence)(const int16_t __i16ActiveSequence);
     static int16_t getCurrentSequence();
 
+
+
   private:
     // static private constants to set stuffs
     static const int16_t _i16_sequence_count;

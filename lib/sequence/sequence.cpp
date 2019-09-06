@@ -430,7 +430,7 @@ long unsigned int sequence::_ulBarDuration() {
   // Serial.printf("void sequence::_ulBarDuration(). sequences[%i]._ui16BaseNotesCountPerBar = %u\n", __i16activeSequence, sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar);
   // Serial.printf("void sequence::_ulBarDuration(). sequences[%i]._beat.ui16GetBaseNoteDurationInMs() = %u\n", __i16activeSequence, sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
   // Serial.printf("void sequence::_ulBarDuration(). about to return %u\n": ,sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
-  return (sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
+  return (sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
 }
 
 
@@ -443,6 +443,7 @@ long unsigned int sequence::_ulBarDuration() {
 void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
   Serial.println(F("-void sequence::setActiveSequence(). Starting."));
   // Serial.print(F("-void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = "));Serial.println(_i16ActiveSequence);
+  sequences[_i16ActiveSequence]._beat.setActiveBeatFromBeat(sequences[_i16ActiveSequence]._beat);
   _i16ActiveSequence = __i16ActiveSequence;
   // Serial.print(F("-void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = "));Serial.println(_i16ActiveSequence);
   Serial.println(F("-void sequence::setActiveSequence(). Ending."));
