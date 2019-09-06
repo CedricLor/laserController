@@ -27,17 +27,17 @@ class beat
     // beat& operator=(const beat& );
 
     // objects array initializer
-    // static void initBeats(); // initializer of the array of beats
+    static void initBeats(); // initializer of the array of beats
 
     /** setters */
     static void setActiveBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
     static void setActiveBeatFromBeat(const beat & __target_beat);
 
     /** getters */
-    static int16_t getCurrentBeat(); // return a ref to a beat instance
+    static const beat &getCurrentBeat(); // return a ref to a beat instance
     uint16_t getBaseBeatInBpm() const;
     uint16_t getBaseNoteForBeat() const;
-    unsigned long ulGetBaseNoteDurationInMs() const;
+    uint16_t ui16GetBaseNoteDurationInMs() const;
 
   private:
     friend class sequence;
