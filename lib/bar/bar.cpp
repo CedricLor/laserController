@@ -124,7 +124,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  std::array<note, 16> _aSwipeR {note(1,1), note(1,2), note(1,3), note(1,4)};
+  std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
   _bars[3] = { 4, _ui16noteCountForThisBar, _aSwipeR};
 
   /** swipeLeft
@@ -133,7 +133,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
-  std::array<note, 16> _aSwipeL {note(1,4), note(1,3), note(1,2), note(1,1)};
+  std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
   _bars[4] = { 4, _ui16noteCountForThisBar, _aSwipeL};
 
   /** all off
@@ -161,7 +161,7 @@ void bar::initBars() {
 
 
 
-Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, &_odtcbPlayBar);
+Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, NULL);
 
 
 
