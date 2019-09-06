@@ -48,8 +48,6 @@ class note
 
     // private static variables
     static note &_activeNote;
-    static uint16_t _ui16BaseNoteForBeat; 
-    static uint16_t _ui16BaseBeatInBpm;
 
     /** player accessories */
     static bool _oetcbPlayNote();
@@ -61,7 +59,6 @@ class note
 
     // static setter
     static void _setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, uint16_t const __ui16_iterations);
-    static void _setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm);
 
     // private instance properties
     uint16_t _ui16Tone;

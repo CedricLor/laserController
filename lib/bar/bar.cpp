@@ -36,15 +36,11 @@ bar::bar() :
 
 // parameterized
 bar::bar(
-  const uint16_t __ui16_base_beat_in_bpm, 
-  const uint16_t __ui16_base_note_for_beat, 
   const uint16_t __ui16_base_notes_count_in_bar, 
   const uint16_t __ui16_notes_count_in_bar,
   std::array<note, 16> __notesArray
   // std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
 ):
-  _ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
-  _ui16BaseNoteForBeat(__ui16_base_note_for_beat), 
   _ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
   _ui16NotesCountInBar(__ui16_notes_count_in_bar),
   _notesArray(__notesArray)
@@ -100,7 +96,7 @@ void bar::initBars() {
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
-  _bars[0] = { 2, 1, 2, _ui16noteCountForThisBar, _aRelays};
+  _bars[0] = { 2, _ui16noteCountForThisBar, _aRelays};
   // Serial.println("bar::_initBars(). _bars[0]._ui16BaseBeatInBpm: ");Serial.println(_bars[0]._ui16BaseBeatInBpm);
   // Serial.println("bar::_initBars(). _bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
@@ -111,7 +107,7 @@ void bar::initBars() {
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
-  _bars[1] = { 2, 1, 2, _ui16noteCountForThisBar, _aTwins};
+  _bars[1] = { 2, _ui16noteCountForThisBar, _aTwins};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -120,7 +116,7 @@ void bar::initBars() {
    * => 2 / 1 */
   _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
-  _bars[2] = { 2, 1, 2, _ui16noteCountForThisBar, _aAll};
+  _bars[2] = { 2, _ui16noteCountForThisBar, _aAll};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -129,7 +125,7 @@ void bar::initBars() {
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   std::array<note, 16> _aSwipeR {note(1,1), note(1,2), note(1,3), note(1,4)};
-  _bars[3] = { 120, 1, 4, _ui16noteCountForThisBar, _aSwipeR};
+  _bars[3] = { 4, _ui16noteCountForThisBar, _aSwipeR};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -138,7 +134,7 @@ void bar::initBars() {
    * => 4 / 1 */
   _ui16noteCountForThisBar = 4;
   std::array<note, 16> _aSwipeL {note(1,4), note(1,3), note(1,2), note(1,1)};
-  _bars[4] = { 120, 1, 4, _ui16noteCountForThisBar, _aSwipeL};
+  _bars[4] = { 4, _ui16noteCountForThisBar, _aSwipeL};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -147,7 +143,7 @@ void bar::initBars() {
    * => 1 / 1 */
   _ui16noteCountForThisBar = 1;
   std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
-  _bars[5] = { 2, 1, 1, _ui16noteCountForThisBar, _aAllOff};
+  _bars[5] = { 1, _ui16noteCountForThisBar, _aAllOff};
 
   Serial.println("void bar::_initBars(). Ending.");
 }
@@ -169,8 +165,13 @@ Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcb
 
 
 
+/** bar::_oetcbPlayBar(): enable callback for Task tPlayBar.
+ *  
+ *  Upon enabling, set the number of iterations. 
+ *  Each iteration stops and starts the tPlayNote Task.
+ *  Accordingly, the number of iterations shall be equal to 
+ *  the effective number of notes in the bar.  */
 bool bar::_oetcbPlayBar(){
-  // onEnable, set the number of iterations for the task to the number of notes to play
   // Serial.println("bar::_oetcbPlayBar(). Starting.");
 
   // if (MY_DG_LASER) {
@@ -186,12 +187,6 @@ bool bar::_oetcbPlayBar(){
 
   /**1. set the number of iterations base of the effective number of notes in the bar*/
   tPlayBar.setIterations(_bars[_ui16ActiveBar]._ui16NotesCountInBar);
-
-  /**2. set the static time parameters in the note class to enable the calculation of note duration*/
-  note::_setTimeParams(
-    _bars[_ui16ActiveBar]._ui16BaseNoteForBeat, 
-    _bars[_ui16ActiveBar]._ui16BaseBeatInBpm
-  );
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
@@ -258,10 +253,6 @@ void bar::_tcbPlayBar(){
   Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
 
-
-void bar::_odtcbPlayBar() {
-  note::_setTimeParams(0, 0);
-}
 
 
 void bar::setActiveBar(const uint16_t __ui16_active_bar) {

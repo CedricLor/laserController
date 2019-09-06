@@ -21,8 +21,6 @@ class bar
     bar();
     /** main parameterized constructor */
     bar(
-      const uint16_t __ui16_base_beat_in_bpm, 
-      const uint16_t __ui16_base_note_for_beat, 
       const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
       std::array<note, 16> __notesArray
@@ -57,8 +55,6 @@ class bar
     static void _odtcbPlayBar();
 
     // private instance properties
-    uint16_t _ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
-    uint16_t _ui16BaseNoteForBeat; // base note for the beat
     uint16_t _ui16BaseNotesCountInBar;
     uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
     std::array<note, 16> _notesArray;

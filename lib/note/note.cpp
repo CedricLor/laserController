@@ -12,8 +12,6 @@
 ///////////////////////////////////
 note _note;
 note &note::_activeNote = _note;
-uint16_t note::_ui16BaseNoteForBeat = 0; 
-uint16_t note::_ui16BaseBeatInBpm = 0;
 
 
 
@@ -89,20 +87,12 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
  * 
  *  sets the parameters of the Task tPlayNote. */
 void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, uint16_t const __ui16_iterations) {
-  _setTimeParams(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  beat::setActiveBeat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
   tPlayNote.setInterval(_activeNote.ulGetNoteDurationInMs());
   tPlayNote.setIterations(__ui16_iterations);
 }
 
 
-/** note::_setTimeParams(): private static setter method
- * 
- *  sets the parameters required to calculate the duration of a note
- *  (i.e. the bpm and the base note per beat). */
-void note::_setTimeParams(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
-  _ui16BaseNoteForBeat = __ui16_base_note_for_beat; 
-  _ui16BaseBeatInBpm = __ui16_base_beat_in_bpm;
-}
 
 
 
@@ -142,22 +132,19 @@ uint16_t note::getNote() const {
 unsigned long note::ulGetNoteDurationInMs() const {
   // Serial.println("note::ulGetNoteDurationInMs(). Starting.");
   // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
-  // Serial.print("note::ulGetNoteDurationInMs(). _ui16BaseNoteForBeat = ");Serial.println(_ui16BaseNoteForBeat);
-  // Serial.println("note::ulGetNoteDurationInMs(). _ui16BaseBeatInBpm = "+ String(_ui16BaseBeatInBpm);
 
-  if ((_ui16Note == 0) && (_ui16BaseBeatInBpm == 0)) {
+  if ((_ui16Note == 0) && (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
     return 0;
   }
-  uint32_t _ui32BaseNoteForBeatInMs = _ui16BaseNoteForBeat * 60 * 1000;
-  uint16_t _ui16NoteInBpm = _ui16Note * _ui16BaseBeatInBpm;
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
-  uint64_t __ulDurationInMs = ((_ui32BaseNoteForBeatInMs + _ui16NoteInBpm - 1) / _ui16NoteInBpm);
-  // unsigned long __ulDurationInMs = (_ui16BaseNoteForBeat / _ui16Note)
-  //                                 *(60 / _ui16BaseBeatInBpm) * 1000;
+  uint64_t __ulDurationInMs =
+  ((beat::getCurrentBeat().getBaseNoteForBeat() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs()) + _ui16Note - 1)
+  / _ui16Note; 
+
+  // Serial.print("note::ulGetNoteDurationInMs(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   if (__ulDurationInMs > 30000) {
     return 30000;
   }
-  // Serial.print("note::ulGetNoteDurationInMs(). __ulDurationInMs = ");Serial.println(__ulDurationInMs);
   // Serial.println("note::ulGetNoteDurationInMs(). Ending.");
   return __ulDurationInMs;
 }
