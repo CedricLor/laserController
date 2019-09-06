@@ -120,7 +120,7 @@ const note &note::getCurrentNote() {
 }
 
 
-/** note &note::getTone(): public instance getter method
+/** uint16_t note::getTone(): public instance getter method
  * 
  *  Returns the tone of a note instance. */
 uint16_t note::getTone() const {
@@ -128,7 +128,7 @@ uint16_t note::getTone() const {
 }
 
 
-/** note &note::getNote(): public instance getter method
+/** uint16_t note::getNote(): public instance getter method
  *  
  *  Returns the note of a note instance. */
 uint16_t note::getNote() const {
@@ -136,7 +136,7 @@ uint16_t note::getNote() const {
 }
 
 
-/** note &note::getNote(): public instance getter method
+/** ul note::ulGetNoteDurationInMs(): public instance getter method
  *  
  *  Returns the duration of a note instance in ms. */
 unsigned long note::ulGetNoteDurationInMs() const {
