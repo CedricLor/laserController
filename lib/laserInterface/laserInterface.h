@@ -47,6 +47,7 @@ namespace laserInterface {
     void getCurrentSequence();
     void sendCurrentSequence(const int16_t __i16ActiveSequence);
     void playSequence(const int16_t __i16SequenceNb);
+    void lockSequenceStack();
 
     // bar stack
     void initBarComm();
@@ -54,6 +55,7 @@ namespace laserInterface {
     void getCurrentBar();
     void sendCurrentBar(const uint16_t __ui16ActiveBar);
     void playBar(const uint16_t __ui16ActiveBar);
+    void lockBarStack();
 
     // note stack
     void initNoteComm();
@@ -61,6 +63,7 @@ namespace laserInterface {
     void getCurrentNote();
     void sendCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
     void playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void lockNoteStack();
 }
 
 #endif
