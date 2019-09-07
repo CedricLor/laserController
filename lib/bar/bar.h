@@ -41,7 +41,7 @@ class bar
     static int16_t getCurrentBar(); // returns _ui16ActiveBar
 
     /** player */
-    static void playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, bar const & __target_note);
+    static void playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, bar const & __target_bar);
     static Task tPlayBar;
 
   private:
