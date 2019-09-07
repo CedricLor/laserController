@@ -107,6 +107,10 @@ void setup() {
     bar::initBars();
     sequence::initSequences();
   }
+  Serial.printf("main: sequence::sequences[1].ui16GetBaseNotesCountPerBar() = %u\n", sequence::sequences[1].ui16GetBaseNotesCountPerBar());
+  Serial.printf("main: sequence::sequences[1].i16GetBarCountInSequence() = %i\n", sequence::sequences[1].i16GetBarCountInSequence());
+  Serial.printf("main: sequence::sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequence::sequences[1].getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("main: sequence::sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequence::sequences[1].getAssociatedBeat().getBaseBeatInBpm());
   boxState::initBoxStates();
 
   enableTasks();

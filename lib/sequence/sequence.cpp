@@ -106,6 +106,10 @@ void sequence::initSequences() {
   /**
    * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
   sequences[1] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16Twins};
+  Serial.printf("sequence::initSequences(). sequences[1].ui16GetBaseNotesCountPerBar() = %u\n", sequences[1].ui16GetBaseNotesCountPerBar());
+  Serial.printf("sequence::initSequences(). sequences[1].i16GetBarCountInSequence() = %i\n", sequences[1].i16GetBarCountInSequence());
+  Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[1].getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[1].getAssociatedBeat().getBaseBeatInBpm());
 
 
   // --> Sequence 2: "All"
@@ -403,26 +407,27 @@ bool sequence::_oetcbPlaySequence(){
 //   the Task tPlayBar in the bar class.
 void sequence::_tcbPlaySequence(){
   Serial.println("sequence::_tcbPlaySequence(). Starting.");
-  // Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
+  Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   // 1. Get the number of iterations (each iteration corresponds to one bar)
   int16_t _i16Iter = tPlaySequence.getRunCounter() - 1;
-  // Serial.println("sequence::_tcbPlaySequence(). have set _iter: " + String(_iter));
+  Serial.printf("sequence::_tcbPlaySequence(). have set _i16Iter: %i \n", _i16Iter);
 
   // 2. Select the bar number corresponding to this iteration
+  Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
   int16_t _i16ActiveBar = sequences[_i16ActiveSequence]._i16AssociatedBars[_i16Iter];
-  // Serial.println("sequence::_tcbPlaySequence(). got _i16ActiveBar: sequences[" + String(_i16ActiveSequence) + "]._i16AssociatedBars[" + String(_iter) + "]");
-  // Serial.println("sequence::_tcbPlaySequence(). have _i16ActiveBar: " + String(_i16ActiveBar));
+  Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveSequence, _i16Iter);
+  Serial.printf("sequence::_tcbPlaySequence(). have _i16ActiveBar: %i", _i16ActiveBar);
 
   // 3. Configure the bar
   bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
-  // Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNotesCountPerBar = " + String(sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar));
-  // Serial.println("sequence::_tcbPlaySequence(). have bar::_bars[" + String(_i16ActiveBar) + "]._ui16BaseNotesCountInBar = " + String(bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar));
+  Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNotesCountPerBar = " + String(sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar));
+  Serial.println("sequence::_tcbPlaySequence(). have bar::_bars[" + String(_i16ActiveBar) + "]._ui16BaseNotesCountInBar = " + String(bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar));
 
   // 4. Play the corresponding bar
-  // Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBar(" + String(_i16ActiveBar) + ")");
+  Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBar(" + String(_i16ActiveBar) + ")");
   bar::setActiveBar(_i16ActiveBar);
-  // Serial.println("sequence::_tcbPlaySequence(). enabling tPlayBar");
+  Serial.println("sequence::_tcbPlaySequence(). enabling tPlayBar");
   bar::tPlayBar.enable();
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
@@ -454,8 +459,10 @@ void sequence::_odtcbPlaySequence(){
 // Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
 long unsigned int sequence::_ulSequenceDuration() {
   Serial.println(F("sequence::_ulSequenceDuration(). Starting."));
-  // Serial.printf("void sequence::_ulBarDuration(). __i16activeSequence = %u", __i16activeSequence);
+  Serial.printf("sequence::_ulSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
+  Serial.printf("sequence::_ulSequenceDuration(). sequences[_i16ActiveSequence].i16GetBarCountInSequence() = %i\n", sequences[_i16ActiveSequence].i16GetBarCountInSequence());
   unsigned long __ulDurationInMs = sequences[_i16ActiveSequence]._i16BarCountInSequence * _ulBarDuration();
+  Serial.printf("sequence::_ulSequenceDuration(). __ulDurationInMs = %lu\n", __ulDurationInMs);
   Serial.println(F("sequence::_ulSequenceDuration(). Ending."));
   return __ulDurationInMs;
 }
@@ -465,11 +472,11 @@ long unsigned int sequence::_ulSequenceDuration() {
 // Helper function to tPlaySequence
 // returns the current bar effective duration
 long unsigned int sequence::_ulBarDuration() {
-  Serial.println(F("void sequence::_ulBarDuration(). Starting."));
-  // Serial.printf("void sequence::_ulBarDuration(). __i16ActiveSequence = %i\n", __i16activeSequence);
-  // Serial.printf("void sequence::_ulBarDuration(). sequences[%i]._ui16BaseNotesCountPerBar = %u\n", __i16activeSequence, sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar);
-  // Serial.printf("void sequence::_ulBarDuration(). sequences[%i]._beat.ui16GetBaseNoteDurationInMs() = %u\n", __i16activeSequence, sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
-  // Serial.printf("void sequence::_ulBarDuration(). about to return %u\n": ,sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * sequences[_i16ActiveSequence]._beat.ui16GetBaseNoteDurationInMs());
+  Serial.println(F("sequence::_ulBarDuration(). Starting."));
+  Serial.printf("sequence::_ulBarDuration(). _i16ActiveSequence = %i\n", _i16ActiveSequence);
+  Serial.printf("sequence::_ulBarDuration(). sequences[%i].ui16GetBaseNotesCountPerBar() = %u\n", _i16ActiveSequence, sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar());
+  Serial.printf("sequence::_ulBarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  Serial.printf("sequence::_ulBarDuration(). about to return the following value: %u\n", sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
   return (sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
 }
 
