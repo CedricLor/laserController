@@ -153,6 +153,32 @@ void sequence::initSequences() {
 
 
 
+///////////////////////////////////
+// Getters
+///////////////////////////////////
+/**uint16_t sequence::ui16GetBaseNotesCountPerBar()
+ * 
+ * Instance getter.
+ *  
+ * Returns the base note count per bar in a given sequence 
+ * (the 2 in a 2/4 tempo). */
+uint16_t sequence::ui16GetBaseNotesCountPerBar() {
+  return _ui16BaseNotesCountPerBar;  
+}
+
+
+
+/**uint16_t sequence::ui16GetBaseNotesCountPerBar()
+ *  
+ * Instance getter.
+ *  
+ * Returns the bar count in a given sequence. */
+int16_t sequence::i16GetBarCountInSequence() {
+  return _i16BarCountInSequence;
+}
+
+
+
 
 
 

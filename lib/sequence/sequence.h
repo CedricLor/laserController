@@ -34,6 +34,10 @@ class sequence
     /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
 
+    /** getters */
+    uint16_t ui16GetBaseNotesCountPerBar();
+    int16_t i16GetBarCountInSequence();
+
     /** static setter */
     static void setActiveSequence(const int16_t __i16ActiveSequence);
 
