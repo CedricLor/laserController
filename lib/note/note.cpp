@@ -90,6 +90,10 @@ void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t cons
   beat::setActiveBeat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
   tPlayNote.setInterval(_activeNote.ulGetNoteDurationInMs());
   tPlayNote.setIterations(__ui16_iterations);
+  tPlayNote.setOnDisable([](){
+    beat::setActiveBeat(0, 0);
+    tPlayNote.setOnDisable(NULL);
+  });
 }
 
 
