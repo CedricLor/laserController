@@ -88,13 +88,21 @@ void laserInterface::sendCurrentBar(const uint16_t __ui16ActiveBar) {
 }
 
 
-void laserInterface::playBar(const uint16_t __ui16ActiveBar) {
+void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_target_bar) {
   // 1. lock bar to avoid getting signal from a boxState or sequence player
   lockBarStack();
-  // 2. set the current bar
-  setCurrentBar(__ui16ActiveBar);
-  // 3. restart the tPlayBar task
-  bar::tPlayBar.restartDelayed();
+  // two ways ---> 
+  // TODO: see which way is more coherent from an interface stand point and either remove one of them or split functions
+  // 2. create a bar and play it
+  std::array<note, 16> _arrayOfNotes;
+  _arrayOfNotes.fill(note(0,0));
+  _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
+  bar __target_bar(4, 8, _arrayOfNotes);
+  bar::playBarStandAlone(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, __target_bar);
+  // 2. set the current bar and play it
+  setCurrentBar(__ui16_target_bar);
+  const bar & _bar_ref = bar::getCurrentBarAsBar();
+  bar::playBarStandAlone(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, _bar_ref);
 }
 
 
