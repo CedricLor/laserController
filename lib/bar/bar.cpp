@@ -279,6 +279,16 @@ void bar::setActiveBarFromBar(const bar & __target_bar) {
 }
 
 
+/** bar::_setTPlayBar(): public static setter method
+ * 
+ *  sets the parameters of the Task tPlayNote. */
+void bar::_setTPlayBar(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
+  beat::setActiveBeat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  tPlayBar.setOnDisable([](){
+    beat::setActiveBeat(0, 0);
+  });
+}
+
 
 // Get the active bar
 int16_t bar::getCurrentBar() {
