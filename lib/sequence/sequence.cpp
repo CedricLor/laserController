@@ -56,6 +56,13 @@ sequence& sequence::operator=(const sequence& __sequence)
   _ui16BaseNotesCountPerBar = __sequence.ui16GetBaseNotesCountPerBar();
   _i16BarCountInSequence = __sequence.i16GetBarCountInSequence();
   _i16AssociatedBars = _i16AssociatedBars;
+  Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
+  Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
+  Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
+  Serial.printf("sequence::operator=(const sequence& ): ui16GetBaseNotesCountPerBar(): %u\n", ui16GetBaseNotesCountPerBar());
+  Serial.printf("sequence::operator=(const sequence& ): i16GetBarCountInSequence(): %i\n", i16GetBarCountInSequence());
+  Serial.printf("sequence::operator=(const sequence& ): _beat.getBaseBeatInBpm(): %u\n", _beat.getBaseBeatInBpm());
+  Serial.printf("sequence::operator=(const sequence& ): _beat.getBaseBeatInBpm(): %u\n", _beat.getBaseNoteForBeat());
   return *this;
 }
 
