@@ -162,7 +162,7 @@ void sequence::initSequences() {
  *  
  * Returns the base note count per bar in a given sequence 
  * (the 2 in a 2/4 tempo). */
-uint16_t sequence::ui16GetBaseNotesCountPerBar() {
+const uint16_t sequence::ui16GetBaseNotesCountPerBar() const {
   return _ui16BaseNotesCountPerBar;  
 }
 
@@ -173,11 +173,31 @@ uint16_t sequence::ui16GetBaseNotesCountPerBar() {
  * Instance getter.
  *  
  * Returns the bar count in a given sequence. */
-int16_t sequence::i16GetBarCountInSequence() {
+const int16_t sequence::i16GetBarCountInSequence() const {
   return _i16BarCountInSequence;
 }
 
 
+
+/**const beat & getAssociatedBeat() const
+ * 
+ * Instance getter.
+ * 
+ * Returns the associated beat */
+const beat & sequence::getAssociatedBeat() const {
+  return _beat;
+}
+
+
+
+/**const beat & getAssociatedBars() const
+ * 
+ * Instance getter.
+ * 
+ * Returns a pointer to the associated bars */
+const int16_t * sequence::getAssociatedBars() const {
+  return _i16AssociatedBars;
+}
 
 
 
