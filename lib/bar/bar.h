@@ -35,6 +35,7 @@ class bar
 
     /** setters */
     static void setActiveBar(const uint16_t __ui16_active_bar);
+    static void setActiveBarFromBar(const bar & __target_bar);
 
     /** getters */
     static int16_t getCurrentBar(); // returns _ui16ActiveBar
@@ -48,6 +49,7 @@ class bar
     // static properties
     static std::array<bar, 7> _bars;
     static uint16_t _ui16ActiveBar;
+    static bar &_activeBar;
 
     /** player callbacks */
     static void _tcbPlayBar();

@@ -12,6 +12,8 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "bar.h"
 
+bar _bar;
+bar &bar::_activeBar = _bar;
 uint16_t bar::_ui16ActiveBar = 0;
 std::array<bar, 7> bar::_bars;
 
@@ -266,6 +268,15 @@ void bar::setActiveBar(const uint16_t __ui16_active_bar) {
   // }
   // Serial.println("bar::setActiveBar(). Ending.");
 };
+
+
+/** bar::setActiveBarFromBar(): public static setter method
+ * 
+ *  sets the parameters of the static variable &note::_activeNote 
+ *  from a passed in note reference. */
+void bar::setActiveBarFromBar(const bar & __target_bar) {
+  _activeBar = __target_bar;
+}
 
 
 
