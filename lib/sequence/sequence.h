@@ -24,9 +24,9 @@ class sequence
       int16_t *__i16AssociatedBars
     );
     // copy constructor
-    sequence( const sequence& );
+    sequence( const sequence& __sequence);
     // assignement operator
-    sequence& operator=(const sequence& );
+    sequence& operator=(const sequence& __sequence);
 
     /** public static array of sequences */
     static sequence sequences[];
@@ -65,7 +65,7 @@ class sequence
     static long unsigned int _ulBarDuration();
 
     // instance properties
-    const beat _beat;
+    beat _beat;
     uint16_t _ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
     int16_t _i16BarCountInSequence; // number of tempos required to execute one full sequence
     int16_t *_i16AssociatedBars;  // array containing the state of each laser at each tempo

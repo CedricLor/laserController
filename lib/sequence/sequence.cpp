@@ -46,12 +46,16 @@ sequence::sequence(
 { }
 
 // copy constructor
-sequence::sequence( const sequence& ) 
+sequence::sequence( const sequence& __sequence) 
 { }
 
 // assignement operator
-sequence& sequence::operator=(const sequence& )
+sequence& sequence::operator=(const sequence& __sequence)
 {
+  _beat = __sequence._beat;
+  _ui16BaseNotesCountPerBar = __sequence.ui16GetBaseNotesCountPerBar();
+  _i16BarCountInSequence = __sequence.i16GetBarCountInSequence();
+  _i16AssociatedBars = _i16AssociatedBars;
   return *this;
 }
 
@@ -415,6 +419,7 @@ void sequence::_tcbPlaySequence(){
 
   // 2. Select the bar number corresponding to this iteration
   Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
+  sequences[_i16ActiveSequence].getAssociatedBars();
   int16_t _i16ActiveBar = sequences[_i16ActiveSequence]._i16AssociatedBars[_i16Iter];
   Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveSequence, _i16Iter);
   Serial.printf("sequence::_tcbPlaySequence(). have _i16ActiveBar: %i", _i16ActiveBar);
