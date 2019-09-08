@@ -94,26 +94,6 @@ void beat::initBeats() {
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-void beat::setActiveBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat) {
-  // Serial.println("beat::setActiveBeat(). Starting.");
-  // if (MY_DG_LASER) {
-  //   Serial.print("beat::setActiveBeat(). (before setting) _activeBeat._ui16BaseBeatInBpm = ");Serial.println(_activeBeat._ui16BaseBeatInBpm);
-  // }
-  _activeBeat._ui16BaseBeatInBpm = __ui16_base_beat_in_bpm;
-  // if (MY_DG_LASER) {
-  //   Serial.print("beat::setActiveBeat(). (after setting) _activeBeat._ui16BaseBeatInBpm = ");Serial.println(_activeBeat._ui16BaseBeatInBpm);
-  // }
-  // if (MY_DG_LASER) {
-  //   Serial.print("beat::setActiveBeat(). (before setting) _activeBeat._ui16BaseNoteForBeat = ");Serial.println(_activeBeat._ui16BaseNoteForBeat);
-  // }
-  _activeBeat._ui16BaseNoteForBeat = __ui16_base_note_for_beat;
-  // if (MY_DG_LASER) {
-  //   Serial.print("beat::setActiveBeat(). (after setting) _activeBeat._ui16BaseNoteForBeat = ");Serial.println(_activeBeat._ui16BaseNoteForBeat);
-  // }
-  // Serial.println("beat::setActiveBeat(). Ending.");
-};
-
-
 /** note::setActiveBeatFromBeat(): public static setter method
  * 
  *  sets the parameters of the static variable &beat::_activeBeat
@@ -130,7 +110,8 @@ void beat::setActiveBeatFromBeat(const beat & __target_beat) {
 ///////////////////////////////////
 /** const beat &beat::getCurrentBeat(): public static getter method
  *  
- *  returns a reference to the beat instance that is currently active. */
+ *  returns a reference to the beat instance that is currently active,
+ *  stored in the static variable beat::_activeBeat. */
 const beat &beat::getCurrentBeat() {
   return _activeBeat;
 }

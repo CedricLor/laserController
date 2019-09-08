@@ -87,11 +87,11 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
  * 
  *  sets the parameters of the Task tPlayNote. */
 void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, uint16_t const __ui16_iterations) {
-  beat::setActiveBeat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  beat::setActiveBeatFromBeat(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   tPlayNote.setInterval(_activeNote.ui16GetNoteDurationInMs());
   tPlayNote.setIterations(__ui16_iterations);
   tPlayNote.setOnDisable([](){
-    beat::setActiveBeat(0, 0);
+    beat::setActiveBeatFromBeat(beat(0, 0));
     tPlayNote.setOnDisable(NULL);
   });
 }

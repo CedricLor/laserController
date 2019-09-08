@@ -30,11 +30,10 @@ class beat
     static void initBeats(); // initializer of the array of beats
 
     /** setters */
-    static void setActiveBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
     static void setActiveBeatFromBeat(const beat & __target_beat);
 
     /** getters */
-    static const beat &getCurrentBeat(); // return a ref to a beat instance
+    static const beat &getCurrentBeat(); // return a ref to the _activeBeat instance
     uint16_t const getBaseBeatInBpm() const;
     uint16_t const getBaseNoteForBeat() const;
     uint16_t const ui16GetBaseNoteDurationInMs() const;
