@@ -29,15 +29,15 @@ sequence::sequence():
   _beat(beat(0, 0)),
   _ui16BaseNotesCountPerBar(0), 
   _i16BarCountInSequence(0), 
-  _i16AssociatedBars(nullptr)
+  _i16AssociatedBars(std::array<int16_t, 8> {})
 { }
 
 // parameterized constructor
 sequence::sequence(
-  const beat __beat,
-  const uint16_t __ui16BaseNotesCountPerBar, 
-  const int16_t __i16BarCountInSequence, 
-  int16_t *__i16AssociatedBars
+  const beat & __beat,
+  const uint16_t & __ui16BaseNotesCountPerBar, 
+  const int16_t & __i16BarCountInSequence, 
+  const std::array<int16_t, 8> & __i16AssociatedBars
 ):
   _beat(__beat),
   _ui16BaseNotesCountPerBar(__ui16BaseNotesCountPerBar), 
@@ -93,17 +93,18 @@ void sequence::initSequences() {
   
 
   // --> Sequence 0: "Relays"
-  int16_t _i16BarCountForThisSequence = 1;
+  const int16_t _i16OneBarInThisSequence = 1;
   /** array of references to the bars to be played in the sequence.
    *  0 is a reference to _bars[0]
    */
-  int16_t _i16Relays[_i16BarCountForThisSequence] = {0}; // _bars[0]
+  const std::array<int16_t, 8> & _i16Relays {0}; // _bars[0]
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
   /** _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[0] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16Relays};
+  const uint16_t & _ui16TwoBaseNotesPerBar = 2;
+  sequences[0] = {_beat_2_1, _ui16TwoBaseNotesPerBar, _i16OneBarInThisSequence, _i16Relays};
   // Serial.println("void sequence::_initSequences(). sequences[0]._ui16BaseBeatInBpm: ");
   // Serial.println(sequences[0]._ui16BaseBeatInBpm);
   // Serial.println("void sequence::_initSequences(). sequences[0]._i16AssociatedBars[0][1]");
@@ -111,12 +112,11 @@ void sequence::initSequences() {
 
 
   // --> Sequence 1: "Twins"
-  _i16BarCountForThisSequence = 1;
   // array of references to the bars to be played in the sequence
-  int16_t _i16Twins[_i16BarCountForThisSequence] = {1};
+  std::array<int16_t, 8> _i16Twins {1}; // _bars[1]
   /**
    * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[1] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16Twins};
+  sequences[1] = {_beat_2_1, _ui16TwoBaseNotesPerBar, _i16OneBarInThisSequence, _i16Twins};
   Serial.printf("sequence::initSequences(). sequences[1].ui16GetBaseNotesCountPerBar() = %u\n", sequences[1].ui16GetBaseNotesCountPerBar());
   Serial.printf("sequence::initSequences(). sequences[1].i16GetBarCountInSequence() = %i\n", sequences[1].i16GetBarCountInSequence());
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[1].getAssociatedBeat().getBaseNoteForBeat());
@@ -124,42 +124,40 @@ void sequence::initSequences() {
 
 
   // --> Sequence 2: "All"
-  _i16BarCountForThisSequence = 1;
   // array of references to the bars to be played in the sequence
-  int16_t _i16All[_i16BarCountForThisSequence] = {2};
+  std::array<int16_t, 8> _i16All {2}; // _bars[2]
   /**
    * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[2] = {_beat_2_1, 2, _i16BarCountForThisSequence, _i16All};
+  sequences[2] = {_beat_2_1, _ui16TwoBaseNotesPerBar, _i16OneBarInThisSequence, _i16All};
 
 
   // --> Sequence 3: "Swipe Right"
-  _i16BarCountForThisSequence = 1;
   // array of references to the bars to be played in the sequence
-  int16_t _i16SwipeR[_i16BarCountForThisSequence] = {3};
+  std::array<int16_t, 8> _i16SwipeR {3}; // _bars[3]
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_120_1(120,1);
   /** _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
-  sequences[3] = {_beat_120_1, 4, _i16BarCountForThisSequence, _i16SwipeR};
+  const uint16_t & _ui16FourBaseNotesPerBar = 4;
+  sequences[3] = {_beat_120_1, _ui16FourBaseNotesPerBar, _i16OneBarInThisSequence, _i16SwipeR};
 
 
   // --> Sequence 4: "Swipe Left"
-  _i16BarCountForThisSequence = 1;
   // array of references to the bars to be played in the sequence
-  int16_t _i16SwipeL[_i16BarCountForThisSequence] = {4};
+  std::array<int16_t, 8> _i16SwipeL {4}; // _bars[4]
   /**
    * _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
-  sequences[4] = {_beat_120_1, 4, _i16BarCountForThisSequence, _i16SwipeL};
+  sequences[4] = {_beat_120_1, _ui16FourBaseNotesPerBar, _i16OneBarInThisSequence, _i16SwipeL};
 
 
   // --> Sequence 5: "All Off"
-  _i16BarCountForThisSequence = 1;
   // array of references to the bars to be played in the sequence
-  int16_t _i16AllOff[_i16BarCountForThisSequence] = {5};
+  std::array<int16_t, 8> _i16AllOff {5}; // _bars[5]
   /**
    * _ui16BaseNotesCountPerBar = 1;  => partition en 1/1*/
-  sequences[5] = {_beat_2_1, 1, _i16BarCountForThisSequence, _i16AllOff};
+  const uint16_t & _ui16OneBaseNotesPerBar = 1;
+  sequences[5] = {_beat_2_1, _ui16OneBaseNotesPerBar, _i16OneBarInThisSequence, _i16AllOff};
 
   Serial.println("sequence::_initSequences(). Ending.");
 }
@@ -210,7 +208,7 @@ const beat & sequence::getAssociatedBeat() const {
  * Instance getter.
  * 
  * Returns a pointer to the associated bars */
-const int16_t * sequence::getAssociatedBars() const {
+const std::array<int16_t, 8> sequence::getAssociatedBars() const {
   return _i16AssociatedBars;
 }
 
@@ -426,8 +424,7 @@ void sequence::_tcbPlaySequence(){
 
   // 2. Select the bar number corresponding to this iteration
   Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
-  sequences[_i16ActiveSequence].getAssociatedBars();
-  int16_t _i16ActiveBar = sequences[_i16ActiveSequence]._i16AssociatedBars[_i16Iter];
+  int16_t _i16ActiveBar = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
   Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveSequence, _i16Iter);
   Serial.printf("sequence::_tcbPlaySequence(). have _i16ActiveBar: %i", _i16ActiveBar);
 

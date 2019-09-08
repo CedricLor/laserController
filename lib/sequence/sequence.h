@@ -18,10 +18,10 @@ class sequence
     /** constructors */
     sequence(); // default constructor
     sequence(
-      const beat __beat,
-      const uint16_t __ui16BaseNotesCountPerBar, 
-      const int16_t __i16BarCountInSequence, 
-      int16_t *__i16AssociatedBars
+      const beat & __beat,
+      const uint16_t & __ui16BaseNotesCountPerBar, 
+      const int16_t & __i16BarCountInSequence, 
+      const std::array<int16_t, 8> & __i16AssociatedBars
     );
     // copy constructor
     sequence( const sequence& __sequence);
@@ -38,7 +38,7 @@ class sequence
     const uint16_t ui16GetBaseNotesCountPerBar() const;
     const int16_t i16GetBarCountInSequence() const;
     const beat & getAssociatedBeat() const;
-    const int16_t * getAssociatedBars() const;
+    const std::array<int16_t, 8> getAssociatedBars() const;
 
     /** static setter */
     static void setActiveSequence(const int16_t __i16ActiveSequence);
@@ -68,7 +68,7 @@ class sequence
     beat _beat;
     uint16_t _ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
     int16_t _i16BarCountInSequence; // number of tempos required to execute one full sequence
-    int16_t *_i16AssociatedBars;  // array containing the state of each laser at each tempo
+    std::array<int16_t, 8> _i16AssociatedBars;  // array containing the state of each laser at each tempo
 
 
     static bool _oetcbPlaySequenceInLoop();
