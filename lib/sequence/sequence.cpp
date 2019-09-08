@@ -13,7 +13,7 @@ Traductions en anglais:
 
 int16_t sequence::_i16ActiveSequence = 0;
 const int16_t sequence::_i16_sequence_count = 7;
-sequence sequence::sequences[_i16_sequence_count];
+std::array<sequence, 7> sequence::sequences;
 
 
 // pointer to functions to produce an interface for sequence
@@ -511,6 +511,6 @@ void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
 
 
 // Get the active sequence
-int16_t sequence::getCurrentSequence() {
+int16_t const sequence::getCurrentSequence() {
   return _i16ActiveSequence;
 }

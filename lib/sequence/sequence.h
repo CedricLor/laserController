@@ -29,7 +29,7 @@ class sequence
     sequence& operator=(const sequence& __sequence);
 
     /** public static array of sequences */
-    static sequence sequences[];
+    static std::array<sequence, 7> sequences;
 
     /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
@@ -49,7 +49,7 @@ class sequence
 
     /** interface to mesh */
     static void (*sendCurrentSequence)(const int16_t __i16ActiveSequence);
-    static int16_t getCurrentSequence();
+    static const int16_t getCurrentSequence();
 
 
 
