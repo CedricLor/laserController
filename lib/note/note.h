@@ -35,9 +35,9 @@ class note
 
     /** getters */
     static const note &getCurrentNote();
-    uint16_t getTone() const;
-    uint16_t getNote() const;
-    unsigned long ulGetNoteDurationInMs() const;
+    uint16_t const getTone() const;
+    uint16_t const getNote() const;
+    uint16_t const ui16GetNoteDurationInMs() const;
 
     /** player */
     static void playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note);

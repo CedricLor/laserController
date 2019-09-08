@@ -35,9 +35,9 @@ class beat
 
     /** getters */
     static const beat &getCurrentBeat(); // return a ref to a beat instance
-    uint16_t getBaseBeatInBpm() const;
-    uint16_t getBaseNoteForBeat() const;
-    uint16_t ui16GetBaseNoteDurationInMs() const;
+    uint16_t const getBaseBeatInBpm() const;
+    uint16_t const getBaseNoteForBeat() const;
+    uint16_t const ui16GetBaseNoteDurationInMs() const;
 
   private:
     friend class sequence;

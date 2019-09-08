@@ -139,7 +139,7 @@ const beat &beat::getCurrentBeat() {
 /** uint16_t beat::getBaseBeatInBpm(): public instance getter method
  * 
  *  Returns the base beat in bpm of a beat instance. */
-uint16_t beat::getBaseBeatInBpm() const {
+uint16_t const beat::getBaseBeatInBpm() const {
   return _ui16BaseBeatInBpm;
 }
 
@@ -148,7 +148,7 @@ uint16_t beat::getBaseBeatInBpm() const {
  *  
  *  Returns the base note (the base note corresponding to one beat) 
  *  of a beat instance. */
-uint16_t beat::getBaseNoteForBeat() const {
+uint16_t const beat::getBaseNoteForBeat() const {
   return _ui16BaseNoteForBeat;
 }
 
@@ -156,10 +156,7 @@ uint16_t beat::getBaseNoteForBeat() const {
 /** uint16_t beat::ui16GetBaseNoteDurationInMs(): public instance getter method
  *  
  *  Returns the duration, in ms, of the base note of a beat instance. */
-uint16_t beat::ui16GetBaseNoteDurationInMs() const {
-  // Serial.println("beat::ui16GetBaseNoteDurationInMs(). Starting.");
-  // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
-  // Serial.printf("beat::ui16GetBaseNoteDurationInMs(). _ui16BaseBeatInBpm = %u\n, _ui16BaseBeatInBpm);
+uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
 
   if (_ui16BaseBeatInBpm == 0) {
     return 0;

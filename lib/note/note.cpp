@@ -88,7 +88,7 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
  *  sets the parameters of the Task tPlayNote. */
 void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, uint16_t const __ui16_iterations) {
   beat::setActiveBeat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
-  tPlayNote.setInterval(_activeNote.ulGetNoteDurationInMs());
+  tPlayNote.setInterval(_activeNote.ui16GetNoteDurationInMs());
   tPlayNote.setIterations(__ui16_iterations);
   tPlayNote.setOnDisable([](){
     beat::setActiveBeat(0, 0);
@@ -117,7 +117,7 @@ const note &note::getCurrentNote() {
 /** uint16_t note::getTone(): public instance getter method
  * 
  *  Returns the tone of a note instance. */
-uint16_t note::getTone() const {
+uint16_t const note::getTone() const {
   return _ui16Tone;
 }
 
@@ -125,17 +125,15 @@ uint16_t note::getTone() const {
 /** uint16_t note::getNote(): public instance getter method
  *  
  *  Returns the note of a note instance. */
-uint16_t note::getNote() const {
+uint16_t const note::getNote() const {
   return _ui16Note;
 }
 
 
-/** ul note::ulGetNoteDurationInMs(): public instance getter method
+/** ul note::ui16GetNoteDurationInMs(): public instance getter method
  *  
  *  Returns the duration of a note instance in ms. */
-unsigned long note::ulGetNoteDurationInMs() const {
-  // Serial.println("note::ulGetNoteDurationInMs(). Starting.");
-  // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
+uint16_t const note::ui16GetNoteDurationInMs() const {
 
   if ((_ui16Note == 0) && (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
     return 0;

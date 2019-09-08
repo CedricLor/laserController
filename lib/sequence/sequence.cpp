@@ -429,7 +429,7 @@ void sequence::_tcbPlaySequence(){
   Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
   int16_t _i16ActiveBar = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
   Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveSequence, _i16Iter);
-  Serial.printf("sequence::_tcbPlaySequence(). have _i16ActiveBar: %i", _i16ActiveBar);
+  Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveBar: %i\n", _i16ActiveBar);
 
   // 3. Configure the bar
   bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
