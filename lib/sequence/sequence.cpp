@@ -437,8 +437,8 @@ void sequence::_tcbPlaySequence(){
   Serial.println("sequence::_tcbPlaySequence(). have bar::_bars[" + String(_i16ActiveBar) + "]._ui16BaseNotesCountInBar = " + String(bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar));
 
   // 4. Play the corresponding bar
-  Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBar(" + String(_i16ActiveBar) + ")");
-  bar::setActiveBar(_i16ActiveBar);
+  Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBarFromBar(bar(bar::_bars[" + String(_i16ActiveBar) + "]));");
+  bar::setActiveBarFromBar(bar(bar::_bars[_i16ActiveBar]));
   Serial.println("sequence::_tcbPlaySequence(). enabling tPlayBar");
   bar::tPlayBar.enable();
 

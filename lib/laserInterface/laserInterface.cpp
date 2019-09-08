@@ -73,8 +73,8 @@ void laserInterface::initBarComm() {
 }
 
 
-void laserInterface::setCurrentBar(const uint16_t __ui16ActiveBar) {
-    bar::setActiveBar(__ui16ActiveBar);
+void laserInterface::setCurrentBar(const uint16_t __ui_16_target_bar_ix_numb) {
+  bar::setActiveBarFromBar(bar::getBar(__ui_16_target_bar_ix_numb));
 }
 
 

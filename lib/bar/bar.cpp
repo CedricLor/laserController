@@ -236,12 +236,12 @@ bool bar::_oetcbPlayBar(){
   // }
 
   /**1. set the number of iterations base of the effective number of notes in the bar*/
-  tPlayBar.setIterations(_bars[_ui16ActiveBar]._ui16NotesCountInBar);
+  tPlayBar.setIterations(_activeBar._ui16NotesCountInBar);
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
-  //   Serial.print("bar::_oetcbPlayBar(). _bars[_ui16ActiveBar]._ui16NotesCountInBar = ");Serial.println(_bars[_ui16ActiveBar]._ui16NotesCountInBar);
+  //   Serial.print("bar::_oetcbPlayBar(). _activeBar._ui16NotesCountInBar = ");Serial.println(_activeBar._ui16NotesCountInBar);
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getIterations() = ");Serial.println(tPlayBar.getIterations());
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.getInterval() = ");Serial.println(tPlayBar.getInterval());
   //   Serial.print("bar::_oetcbPlayBar(). userScheduler.timeUntilNextIteration(tPlaySequence) = ");Serial.println(userScheduler.timeUntilNextIteration(tPlayBar));
@@ -278,7 +278,7 @@ void bar::_tcbPlayBar(){
   /**3. Set the static activeNote of the note class (note::_activeNote)
    *    using the Task iterator to select the relevant note in the _notesArray
    *    of the currently activeBar. */
-  note::setActiveNoteFromNote(_bars[_ui16ActiveBar]._notesArray[_ui16_iter]);
+  note::setActiveNoteFromNote(_activeBar._notesArray[_ui16_iter]);
 
   /**4.Reenable the tPlayNote Task
    *   Upon enabling the Task, the onEnable callback of tPlayNote will be
@@ -297,27 +297,19 @@ void bar::_tcbPlayBar(){
    *    At each pass, reset the interval before the next iteration 
    *    of this Task bar::tPlayBar. This marks the duration of each note. */
   Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  Serial.printf("bar::_tcbPlayBar(). calling _bars[%u].ui16GetNoteDurationInMs(%u)\n", _ui16ActiveBar, _ui16_iter);
-  tPlayBar.setInterval(_bars[_ui16ActiveBar]._notesArray[_ui16_iter].ui16GetNoteDurationInMs());
+  Serial.printf("bar::_tcbPlayBar(). calling _activeBar.ui16GetNoteDurationInMs(%u)\n", _ui16_iter);
+  tPlayBar.setInterval(_activeBar._notesArray[_ui16_iter].ui16GetNoteDurationInMs());
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));
 };
 
 
 
-void bar::setActiveBar(const uint16_t __ui16_active_bar) {
-  // Serial.println("bar::setActiveBar(). Starting.");
-  // if (MY_DG_LASER) {
-  //   Serial.print("bar::setActiveBar(). (before setting) _ui16ActiveBar = ");Serial.println(_ui16ActiveBar);
-  // }
-  _ui16ActiveBar = __ui16_active_bar;
-  // if (MY_DG_LASER) {
-  //   Serial.print("bar::setActiveBar(). (after setting) _ui16ActiveBar = ");Serial.println(_ui16ActiveBar);
-  // }
-  // Serial.println("bar::setActiveBar(). Ending.");
-};
 
 
+///////////////////////////////////
+// Setters
+///////////////////////////////////
 /** bar::setActiveBarFromBar(): public static setter method
  * 
  *  sets the parameters of the static variable &note::_activeBar 
@@ -346,4 +338,11 @@ int16_t bar::getCurrentBar() {
 // Return the active bar as a bar
 bar & bar::getCurrentBarAsBar() {
   return _activeBar;
+}
+
+/** bar const & bar::getBar(const uint16_t __ui16_bar_index_number) 
+ * 
+ * Returns a const ref to one of the hard coded bars given its index number */
+bar const & bar::getBar(const uint16_t __ui16_bar_index_number) {
+  return _bars[__ui16_bar_index_number];
 }

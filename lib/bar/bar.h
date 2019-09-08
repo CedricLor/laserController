@@ -34,12 +34,10 @@ class bar
     static void initBars(); // initializer of the array of bars
 
     /** setters */
-    static void setActiveBar(const uint16_t __ui16_active_bar);
     static void setActiveBarFromBar(const bar & __target_bar);
 
     /** getters */
-    static int16_t getCurrentBar(); // returns _ui16ActiveBar
-    static bar & getCurrentBarAsBar();
+    static bar const & getBar(const uint16_t __ui16_active_bar);
 
     /** player */
     static void playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, bar const & __target_bar);
