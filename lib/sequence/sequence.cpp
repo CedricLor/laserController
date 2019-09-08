@@ -59,10 +59,12 @@ sequence& sequence::operator=(const sequence& __sequence)
   Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
   Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
   Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
+  Serial.printf("sequence::operator=(const sequence& ): __sequence.getAssociatedBars()[0]: %i\n", __sequence.getAssociatedBars()[0]);
   Serial.printf("sequence::operator=(const sequence& ): ui16GetBaseNotesCountPerBar(): %u\n", ui16GetBaseNotesCountPerBar());
   Serial.printf("sequence::operator=(const sequence& ): i16GetBarCountInSequence(): %i\n", i16GetBarCountInSequence());
-  Serial.printf("sequence::operator=(const sequence& ): _beat.getBaseBeatInBpm(): %u\n", _beat.getBaseBeatInBpm());
-  Serial.printf("sequence::operator=(const sequence& ): _beat.getBaseBeatInBpm(): %u\n", _beat.getBaseNoteForBeat());
+  Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("sequence::operator=(const sequence& ): getAssociatedBars()[0]: %i\n", getAssociatedBars()[0]);
   return *this;
 }
 
@@ -121,6 +123,7 @@ void sequence::initSequences() {
   Serial.printf("sequence::initSequences(). sequences[1].i16GetBarCountInSequence() = %i\n", sequences[1].i16GetBarCountInSequence());
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[1].getAssociatedBeat().getBaseNoteForBeat());
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[1].getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("sequence::initSequences(). getAssociatedBars()[0]: %i\n", sequences[1].getAssociatedBars()[0]);
 
 
   // --> Sequence 2: "All"
