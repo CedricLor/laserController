@@ -139,7 +139,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
   Serial.printf("note::ui16GetNoteDurationInMs(). beat::getCurrentBeat().getBaseNoteForBeat() == %u\n", beat::getCurrentBeat().getBaseNoteForBeat());
 
-  if ((_ui16Note == 0) && (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
+  if ((_ui16Note == 0) || (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
     return 0;
   }
   Serial.printf("note::ui16GetNoteDurationInMs(). Passed the 0 tests.\n");
