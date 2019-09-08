@@ -114,7 +114,7 @@ void beat::setActiveBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t 
 };
 
 
-/** note::setActiveNoteFromNote(): public static setter method
+/** note::setActiveBeatFromBeat(): public static setter method
  * 
  *  sets the parameters of the static variable &beat::_activeBeat
  *  from a passed in beat reference. */

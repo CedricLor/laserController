@@ -294,7 +294,7 @@ void bar::setActiveBar(const uint16_t __ui16_active_bar) {
 
 /** bar::setActiveBarFromBar(): public static setter method
  * 
- *  sets the parameters of the static variable &note::_activeNote 
+ *  sets the parameters of the static variable &note::_activeBar 
  *  from a passed in note reference. */
 void bar::setActiveBarFromBar(const bar & __target_bar) {
   _activeBar = __target_bar;
