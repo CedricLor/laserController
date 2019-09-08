@@ -49,9 +49,11 @@ class bar
     friend class sequence;
 
     // static properties
-    static std::array<bar, 7> _bars;
-    static uint16_t _ui16ActiveBar;
+    static bar _emptyBar;
     static bar &_activeBar;
+    static uint16_t _ui16ActiveBar;
+    static std::array<bar, 7> _bars;
+    static std::array<note, 16> _emptyNotesArray;
 
     /** player callbacks */
     static void _tcbPlayBar();

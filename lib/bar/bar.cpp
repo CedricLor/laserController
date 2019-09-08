@@ -12,11 +12,12 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "bar.h"
 
-bar _bar;
-bar &bar::_activeBar = _bar;
+bar bar::_emptyBar;
+bar &bar::_activeBar = _emptyBar;
 uint16_t bar::_ui16ActiveBar = 0;
 std::array<bar, 7> bar::_bars;
 
+std::array<note, 16> bar::_emptyNotesArray;
 
 
 // pointer to functions to produce an interface for bar
