@@ -500,12 +500,19 @@ long unsigned int sequence::_ulBarDuration() {
 
 // Set the active sequence
 void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
-  Serial.println(F("-void sequence::setActiveSequence(). Starting."));
-  // Serial.print(F("-void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = "));Serial.println(_i16ActiveSequence);
-  sequences[_i16ActiveSequence]._beat.setActiveBeatFromBeat(sequences[_i16ActiveSequence]._beat);
+  Serial.println(F("void sequence::setActiveSequence(). Starting."));
+  // Serial.print("void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
   _i16ActiveSequence = __i16ActiveSequence;
-  // Serial.print(F("-void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = "));Serial.println(_i16ActiveSequence);
-  Serial.println(F("-void sequence::setActiveSequence(). Ending."));
+  beat::setActiveBeatFromBeat(sequences[_i16ActiveSequence]._beat);
+  // Serial.println(F("void sequence::--------------------- checking beat equality ---------------"));
+  // const beat & _sequenceBeat = sequences[_i16ActiveSequence]._beat;
+  // const beat & _globalBeat = beat::getCurrentBeat();
+  // Serial.printf("void sequence::setActiveSequence(). &_sequenceBeat == &_globalBeat ? %i\n", &_sequenceBeat == &_globalBeat);
+  // Serial.println(F("void sequence::--------------------- checking beat identity ---------------"));
+  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm() ? %i\n", _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm());
+  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat() ? %i\n", _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat());
+  // Serial.print("void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = %i", _i16ActiveSequence);
+  Serial.println(F("void sequence::setActiveSequence(). Ending."));
 };
 
 
