@@ -112,7 +112,7 @@ void beat::setActiveBeatFromBeat(const beat & __target_beat) {
  *  
  *  returns a reference to the beat instance that is currently active,
  *  stored in the static variable beat::_activeBeat. */
-const beat &beat::getCurrentBeat() {
+beat const & beat::getCurrentBeat() {
   return _activeBeat;
 }
 

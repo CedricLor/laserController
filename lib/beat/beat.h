@@ -33,7 +33,7 @@ class beat
     static void setActiveBeatFromBeat(const beat & __target_beat);
 
     /** getters */
-    static const beat &getCurrentBeat(); // return a ref to the _activeBeat instance
+    static beat const & getCurrentBeat(); // return a ref to the _activeBeat instance
     uint16_t const getBaseBeatInBpm() const;
     uint16_t const getBaseNoteForBeat() const;
     uint16_t const ui16GetBaseNoteDurationInMs() const;
