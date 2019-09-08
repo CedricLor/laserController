@@ -23,12 +23,12 @@ class bar
     bar(
       const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
-      std::array<note, 16> __notesArray
+      std::array<note, 16> & __notesArray
     ); 
-    // // copy constructor
-    // bar( const bar& );
-    // // assignement operator
-    // bar& operator=(const bar& );
+    // copy constructor
+    bar( const bar& __bar);
+    // assignement operator
+    bar& operator=(const bar& __bar);
 
     // objects array initializer
     static void initBars(); // initializer of the array of bars
@@ -65,7 +65,7 @@ class bar
     // private instance properties
     uint16_t _ui16BaseNotesCountInBar;
     uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
-    std::array<note, 16> _notesArray;
+    std::array<note, 16> & _notesArray;
 };
 
 #endif

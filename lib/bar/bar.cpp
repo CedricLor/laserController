@@ -33,7 +33,7 @@ void (*bar::sendCurrentBar)(const uint16_t __ui16_active_bar) = nullptr;
 bar::bar() :
   _ui16BaseNotesCountInBar(0), 
   _ui16NotesCountInBar(0),
-  _notesArray(std::array<note, 16> {})
+  _notesArray(_emptyNotesArray)
 {
 }
 
@@ -41,8 +41,7 @@ bar::bar() :
 bar::bar(
   const uint16_t __ui16_base_notes_count_in_bar, 
   const uint16_t __ui16_notes_count_in_bar,
-  std::array<note, 16> __notesArray
-  // std::array<std::array<uint16_t, 2>, 16> __ui16NoteTone
+  std::array<note, 16> & __notesArray
 ):
   _ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
   _ui16NotesCountInBar(__ui16_notes_count_in_bar),
@@ -50,16 +49,41 @@ bar::bar(
 {
 }
 
-// // copy constructor
-// bar::bar( const bar& )
-//  // _tone(tone::_tones[_ui16Tone])
-// {
-// }
+// copy constructor
+bar::bar(const bar& __bar):
+  _ui16BaseNotesCountInBar(__bar._ui16BaseNotesCountInBar), 
+  _ui16NotesCountInBar(__bar._ui16NotesCountInBar),
+  _notesArray(__bar._notesArray)
+{
+}
 
-// // assignement operator
-// bar& bar::operator=(const bar& )
-// {
-// }
+// assignement operator
+bar& bar::operator=(const bar& __bar)
+{
+  // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- Before assignment ---------------");
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._ui16BaseNotesCountInBar = %u\n", __bar._ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._ui16NotesCountInBar = %u\n", __bar._ui16NotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getTone() = %u\n", __bar._notesArray[0].getTone());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getNote() = %u\n", __bar._notesArray[0].getNote());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._ui16BaseNotesCountInBar = %u\n", _bars[0]._ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._ui16NotesCountInBar = %u\n", _bars[0]._ui16NotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._notesArray[0].getTone() = %u\n", _bars[0]._notesArray[0].getTone());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._notesArray[0].getNote() = %u\n", _bars[0]._notesArray[0].getNote());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _ui16BaseNotesCountInBar = %u\n", _ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _ui16NotesCountInBar = %u\n", _ui16NotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getTone() = %u\n", _notesArray[0].getTone());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
+  // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- End before assignment ---------------");
+  _ui16BaseNotesCountInBar = __bar._ui16BaseNotesCountInBar;
+  _ui16NotesCountInBar = __bar._ui16NotesCountInBar;
+  _notesArray = __bar._notesArray;
+  // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- After assignment ---------------");
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _ui16BaseNotesCountInBar = %u\n", _ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _ui16NotesCountInBar = %u\n", _ui16NotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getTone() = %u\n", _notesArray[0].getTone());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
+  return *this;
+}
 
 
 
