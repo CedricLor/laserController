@@ -45,14 +45,17 @@ note::note(
 }
 
 // copy constructor
-note::note( const note& ) 
+note::note( const note& __note) 
 : _tone(tone::_tones[_ui16Tone])
 {
 }
 
 // assignement operator
-note& note::operator=(const note& )
+note& note::operator=(const note& __note)
 {
+  _ui16Tone = __note._ui16Tone;
+  _ui16Note = __note._ui16Note;
+  _tone = tone::_tones[_ui16Tone];
   return *this;
 }
 
