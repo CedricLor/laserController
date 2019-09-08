@@ -165,9 +165,7 @@ uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
     Serial.println("beat::ui16GetBaseNoteDurationInMs(). Returning 0.");
     return 0;
   }
-  // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
-  uint16_t __ui16DurationInMs = ((60 * 1000) + _ui16BaseBeatInBpm - 1) / _ui16BaseBeatInBpm;
-  // Serial.print("beat::ui16GetBaseNoteDurationInMs(). __ui16DurationInMs = ");Serial.println(__ui16DurationInMs);
+  const uint16_t __ui16DurationInMs = (uint16_t)ceil(60000 / _ui16BaseBeatInBpm);
   if (__ui16DurationInMs > 30000) {
     return 30000;
   }
