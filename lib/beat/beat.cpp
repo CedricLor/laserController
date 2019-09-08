@@ -157,8 +157,12 @@ uint16_t const beat::getBaseNoteForBeat() const {
  *  
  *  Returns the duration, in ms, of the base note of a beat instance. */
 uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
+  Serial.println("beat::ui16GetBaseNoteDurationInMs(). Starting.");
+  Serial.println(F("------------- DEBUG --------- beat --------- DEBUG -------------"));
+  Serial.printf("beat::ui16GetBaseNoteDurationInMs(). _ui16BaseBeatInBpm = %u\n", _ui16BaseBeatInBpm);
 
   if (_ui16BaseBeatInBpm == 0) {
+    Serial.println("beat::ui16GetBaseNoteDurationInMs(). Returning 0.");
     return 0;
   }
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
@@ -167,7 +171,7 @@ uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
   if (__ui16DurationInMs > 30000) {
     return 30000;
   }
-  // Serial.println("beat::ui16GetBaseNoteDurationInMs(). Ending.");
+  Serial.println("beat::ui16GetBaseNoteDurationInMs(). Ending.");
   return __ui16DurationInMs;
 }
 

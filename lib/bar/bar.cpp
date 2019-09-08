@@ -270,6 +270,8 @@ void bar::_tcbPlayBar(){
    *   
    *    At each pass, reset the interval before the next iteration 
    *    of this Task bar::tPlayBar. This marks the duration of each note. */
+  Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
+  Serial.printf("bar::_tcbPlayBar(). calling _bars[%u].ui16GetNoteDurationInMs(%u)\n", _ui16ActiveBar, _ui16_iter);
   tPlayBar.setInterval(_bars[_ui16ActiveBar]._notesArray[_ui16_iter].ui16GetNoteDurationInMs());
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));

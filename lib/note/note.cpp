@@ -134,10 +134,16 @@ uint16_t const note::getNote() const {
  *  
  *  Returns the duration of a note instance in ms. */
 uint16_t const note::ui16GetNoteDurationInMs() const {
+  Serial.println("note::ui16GetNoteDurationInMs(). Starting.");
+  Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
+  Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
+  Serial.printf("note::ui16GetNoteDurationInMs(). beat::getCurrentBeat().getBaseNoteForBeat() == %u\n", beat::getCurrentBeat().getBaseNoteForBeat());
 
   if ((_ui16Note == 0) && (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
     return 0;
   }
+  Serial.printf("note::ui16GetNoteDurationInMs(). Passed the 0 tests.\n");
+
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
   uint64_t __ulDurationInMs =
   ((beat::getCurrentBeat().getBaseNoteForBeat() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs()) + _ui16Note - 1)
@@ -147,8 +153,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   if (__ulDurationInMs > 30000) {
     return 30000;
   }
-  // Serial.println("note::ulGetNoteDurationInMs(). Ending.");
-  return __ulDurationInMs;
+  Serial.println("note::ui16GetNoteDurationInMs(). Ending.");
 }
 
 
