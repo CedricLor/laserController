@@ -21,7 +21,7 @@ class bar
     bar();
     /** main parameterized constructor */
     bar(
-     const uint16_t __ui16_base_notes_count_in_bar,
+      const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
       std::array<note, 16> & __notesArray
     ); 
@@ -37,6 +37,8 @@ class bar
     static void setActiveBarFromBar(const bar & __target_bar);
 
     /** getters */
+    static int16_t const getCurrentBar(); // returns _ui16ActiveBar
+    static bar const & getCurrentBarAsBar();
     static bar const & getBar(const uint16_t __ui16_active_bar);
 
     /** player */

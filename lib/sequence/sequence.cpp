@@ -56,15 +56,15 @@ sequence& sequence::operator=(const sequence& __sequence)
   _ui16BaseNotesCountPerBar = __sequence.ui16GetBaseNotesCountPerBar();
   _i16BarCountInSequence = __sequence.i16GetBarCountInSequence();
   _i16AssociatedBars = _i16AssociatedBars;
-  Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
-  Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
-  Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
-  Serial.printf("sequence::operator=(const sequence& ): __sequence.getAssociatedBars()[0]: %i\n", __sequence.getAssociatedBars()[0]);
-  Serial.printf("sequence::operator=(const sequence& ): ui16GetBaseNotesCountPerBar(): %u\n", ui16GetBaseNotesCountPerBar());
-  Serial.printf("sequence::operator=(const sequence& ): i16GetBarCountInSequence(): %i\n", i16GetBarCountInSequence());
-  Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseBeatInBpm());
-  Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("sequence::operator=(const sequence& ): getAssociatedBars()[0]: %i\n", getAssociatedBars()[0]);
+  // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
+  // Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
+  // Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
+  // Serial.printf("sequence::operator=(const sequence& ): __sequence.getAssociatedBars()[0]: %i\n", __sequence.getAssociatedBars()[0]);
+  // Serial.printf("sequence::operator=(const sequence& ): ui16GetBaseNotesCountPerBar(): %u\n", ui16GetBaseNotesCountPerBar());
+  // Serial.printf("sequence::operator=(const sequence& ): i16GetBarCountInSequence(): %i\n", i16GetBarCountInSequence());
+  // Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseBeatInBpm());
+  // Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseNoteForBeat());
+  // Serial.printf("sequence::operator=(const sequence& ): getAssociatedBars()[0]: %i\n", getAssociatedBars()[0]);
   return *this;
 }
 
@@ -404,19 +404,24 @@ bool sequence::_oetcbPlaySequence(){
 
 
 
-// Main callback for tPlaySequence
-// Each iteration of tPlaySequence corresponds to a bar. Accordingly, each iteration
-// runs for an identical a fixed time -> interval.
-// The iterations and the interval of the Task have been set in its onEnable
-// callback and do not change on iterations.
-// At each iteration of tPlaySequence:
-// - we read in the sequence the number of the next bar <- from the iterator of the
-//   Task.
-// - we then apply the settings (tempo in BPM, base note for beats and the notes
-//   count in each bar) of this sequence to the bar, which might have other
-//   settings.
-// - we then inform the bar class of the active bar number, before enabling
-//   the Task tPlayBar in the bar class.
+/** void sequence::_tcbPlaySequence(): 
+ * 
+ *  Main callback for tPlaySequence
+ *  Each iteration of tPlaySequence corresponds to a bar. 
+ *  Accordingly, each iteration runs for an identical a fixed time -> interval.
+ * 
+ *  The iterations and the interval of the Task have been set in its onEnable 
+ *  callback and do not change on iterations.
+ * 
+ *  At each iteration of tPlaySequence:
+ *  - using the Task iterator, we select in the associatedBars array
+ *    the index number of the next bar <- from the iterator of the Task.
+ *  - we then apply the settings (tempo in BPM, base note for beats and the notes
+ *    count in each bar) of this sequence to the bar, which might have other
+ *    settings.
+ *  - we then inform the bar class of the active bar number, before enabling
+ *    the Task tPlayBar in the bar class.
+ * */
 void sequence::_tcbPlaySequence(){
   Serial.println("sequence::_tcbPlaySequence(). Starting.");
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));

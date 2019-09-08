@@ -330,13 +330,22 @@ void bar::_setTPlayBar(uint16_t const __ui16_base_note_for_beat, uint16_t const 
 }
 
 
-// Get the active bar
-int16_t bar::getCurrentBar() {
+
+
+///////////////////////////////////
+// Getters
+///////////////////////////////////
+/** int16_t const bar::getCurrentBar()
+ * 
+ * Returns the active bar index number */
+int16_t const bar::getCurrentBar() {
   return _ui16ActiveBar;
 }
 
-// Return the active bar as a bar
-bar & bar::getCurrentBarAsBar() {
+/** bar const & bar::getCurrentBarAsBar()
+ * 
+ * Returns the active bar as a bar */
+bar const & bar::getCurrentBarAsBar() {
   return _activeBar;
 }
 
