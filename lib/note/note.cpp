@@ -144,6 +144,12 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   }
   Serial.printf("note::ui16GetNoteDurationInMs(). Passed the 0 tests.\n");
 
+  // const uint16_t __ui16baseNoteDuration = beat::getCurrentBeat().ui16GetBaseNoteDurationInMs();
+  // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16baseNoteDuration == %u\n", __ui16baseNoteDuration);
+  // const uint16_t __ui16BaseNoteForBeat = beat::getCurrentBeat().getBaseNoteForBeat();
+  // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16BaseNoteForBeat == %u\n", __ui16BaseNoteForBeat);
+  // const uint16_t __num = __ui16baseNoteDuration * __ui16BaseNoteForBeat;
+  // Serial.printf("note::ui16GetNoteDurationInMs(). __num == %u\n", __num);
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
   uint16_t __ui16DurationInMs =
   (uint16_t)ceil(((beat::getCurrentBeat().getBaseNoteForBeat() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs()))

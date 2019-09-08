@@ -165,8 +165,11 @@ uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
     Serial.println("beat::ui16GetBaseNoteDurationInMs(). Returning 0.");
     return 0;
   }
+  Serial.println("beat::ui16GetBaseNoteDurationInMs(). Passed the 0 test.");
   const uint16_t __ui16DurationInMs = (uint16_t)ceil(60000 / _ui16BaseBeatInBpm);
+  Serial.printf("beat::ui16GetBaseNoteDurationInMs(). __ui16DurationInMs = %u\n", __ui16DurationInMs);
   if (__ui16DurationInMs > 30000) {
+    Serial.println("beat::ui16GetBaseNoteDurationInMs(). __ui16DurationInMs is > 30000.");
     return 30000;
   }
   Serial.println("beat::ui16GetBaseNoteDurationInMs(). Ending.");
