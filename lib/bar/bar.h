@@ -21,7 +21,7 @@ class bar
     bar();
     /** main parameterized constructor */
     bar(
-      const uint16_t __ui16_base_notes_count_in_bar,
+     const uint16_t __ui16_base_notes_count_in_bar,
       const uint16_t __ui16_notes_count_in_bar,
       std::array<note, 16> & __notesArray
     ); 
@@ -29,7 +29,7 @@ class bar
     bar( const bar& __bar);
     // assignement operator
     bar& operator=(const bar& __bar);
-
+ 
     // objects array initializer
     static void initBars(); // initializer of the array of bars
 

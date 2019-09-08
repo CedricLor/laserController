@@ -123,16 +123,19 @@ void bar::initBars() {
    * => 2 / 1 */
   uint16_t _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
-  _bars[0] = { 2, _ui16noteCountForThisBar, _aRelays};
-  // Serial.println("bar::_initBars(). _bars[0]._ui16BaseBeatInBpm: ");Serial.println(_bars[0]._ui16BaseBeatInBpm);
-  // Serial.println("bar::_initBars(). _bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_bars[0]._iLaserPinStatusAtEachBeat[0][1]);
+  _bars[0] = { 2, _ui16noteCountForThisBar, _aRelays};  
+  // Serial.printf("bar::_initBars(). _bars[0]._ui16BaseNotesCountInBar == 2 ? %i\n", _bars[0]._ui16BaseNotesCountInBar == 2);
+  // Serial.printf("bar::_initBars(). _bars[0]._ui16NotesCountInBar == _ui16noteCountForThisBar ? %i\n", _bars[0]._ui16NotesCountInBar == _ui16noteCountForThisBar);
+  // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getTone() = %u\n", _bars[0]._notesArray[0].getTone());
+  // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getTone() == 7 ? %i\n", _bars[0]._notesArray[0].getTone() == 7);
+  // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getNote() = %u\n", _bars[0]._notesArray[0].getNote());
+  // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getNote() == 1 ? %i\n", _bars[0]._notesArray[0].getNote() == 1);
 
   /** twins
    * duration of a beat in bpm: 2
    * base note: 1 (a full)
    * count of base notes per bar: 2
    * => 2 / 1 */
-  _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
   _bars[1] = { 2, _ui16noteCountForThisBar, _aTwins};
 
@@ -141,7 +144,6 @@ void bar::initBars() {
    * base note: 1 (a full)
    * count of base notes per bar: 2
    * => 2 / 1 */
-  _ui16noteCountForThisBar = 2;
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
   _bars[2] = { 2, _ui16noteCountForThisBar, _aAll};
 
@@ -159,7 +161,6 @@ void bar::initBars() {
    * base note: 1 (a full)
    * count of base notes per bar: 4
    * => 4 / 1 */
-  _ui16noteCountForThisBar = 4;
   std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
   _bars[4] = { 4, _ui16noteCountForThisBar, _aSwipeL};
 
