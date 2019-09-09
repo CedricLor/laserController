@@ -167,11 +167,10 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 ///////////////////////////////////
 /**note::playNoteStandAlone:
  *  
- *  play a single note for a given duration (set by the passed-in beat).
+ *  play a single note for a given duration (calculated using the passed-in beat).
  * 
  *  {@ params} beat const & __beat: pass a beat to be taken into account
- *             to calculate the notes duration
-*/
+ *             to calculate the notes duration */
 void note::playNoteStandAlone(beat const & __beat) {
   this->setActive();
   beat(__beat).setActive();
