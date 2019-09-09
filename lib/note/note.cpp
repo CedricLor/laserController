@@ -185,9 +185,9 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
  *  {@ params} note const & __target_note: pass a target note ref to const
  *             ex. note(8,1): tone 8 for the duration of a white (1)
 */
-void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
+void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
   tPlayNote.disable();
-  note(__target_note).setActive();
+  this->setActive();
   _setTPlayNote(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, 1);
   tPlayNote.restartDelayed();
 }

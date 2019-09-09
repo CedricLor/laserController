@@ -40,7 +40,7 @@ class note
     uint16_t const ui16GetNoteDurationInMs() const;
 
     /** player */
-    static void playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note);
+    void playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm);
     static Task tPlayNote;
 
   private:
