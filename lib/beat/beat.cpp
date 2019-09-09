@@ -14,7 +14,7 @@ Traductions en anglais:
 
 beat _beat;
 beat &beat::_activeBeat = _beat;
-std::array<beat, 7> beat::_beats;
+// std::array<beat, 7> beat::_beats;
 
 
 
@@ -44,13 +44,13 @@ beat::beat(
 {
 }
 
-// // copy constructor
-// beat::beat( const beat& )
+// copy constructor
+// beat::beat( const beat& _beat )
 // {
 // }
 
-// // assignement operator
-// bar& bar::operator=(const bar& )
+// assignement operator
+// beat& beat::operator=(const beat& _beat)
 // {
 //    return *this;
 // }
@@ -62,28 +62,28 @@ beat::beat(
 ///////////////////////////////////
 // Initialisers
 ///////////////////////////////////
-void beat::initBeats() {
-  Serial.println("void beat::_initBars(). Starting.");
-  // define an array containing predefined beats
+// void beat::initBeats() {
+//   Serial.println("void beat::_initBars(). Starting.");
+//   // define an array containing predefined beats
 
-  /** Signature of a beat:
-   *  a. the duration of a beat in bpm (i.e. the tempo);
-   *  b. the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance) */
+//   /** Signature of a beat:
+//    *  a. the duration of a beat in bpm (i.e. the tempo);
+//    *  b. the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance) */
 
-  /** 2 per minute
-   * duration of a beat in bpm: 2
-   * base note: 1 (a full) */
-  _beats[0] = { 2, 1 };
-  // Serial.println("bar::_initBars(). _bars[0]._ui16BaseBeatInBpm: ");Serial.println(_bars[0]._ui16BaseBeatInBpm);
-  // Serial.println("bar::_initBars(). _bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_bars[0]._iLaserPinStatusAtEachBeat[0][1]);
+//   /** 2 per minute
+//    * duration of a beat in bpm: 2
+//    * base note: 1 (a full) */
+//   _beats[0] = { 2, 1 };
+//   // Serial.println("bar::_initBars(). _bars[0]._ui16BaseBeatInBpm: ");Serial.println(_bars[0]._ui16BaseBeatInBpm);
+//   // Serial.println("bar::_initBars(). _bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_bars[0]._iLaserPinStatusAtEachBeat[0][1]);
 
-  /** 120 per minute
-   * duration of a beat in bpm: 120
-   * base note: 1 (a full) */
-  _beats[1] = { 120, 1 };
+//   /** 120 per minute
+//    * duration of a beat in bpm: 120
+//    * base note: 1 (a full) */
+//   _beats[1] = { 120, 1 };
 
-  Serial.println("void bar::_initBars(). Ending.");
-}
+//   Serial.println("void bar::_initBars(). Ending.");
+// }
 
 
 
