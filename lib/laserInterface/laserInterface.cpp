@@ -109,12 +109,12 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
    *      - 8 stands for 8 effective notes in the bar; and
    *      - the array of notes contained in the bar. */
   bar __target_bar(4, 8, _arrayOfNotes);
-  __target_bar.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  __target_bar.playBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   // 2. Or set the active bar
   setCurrentBar(__ui16_target_bar);
   bar & __bar_ref = bar::getCurrentBarAsBar();
   // 3. play the bar
-  __bar_ref.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  __bar_ref.playBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
 
 

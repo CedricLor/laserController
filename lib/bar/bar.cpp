@@ -199,7 +199,7 @@ void bar::initBars() {
  *  play a single bar for a given duration.
  * 
 */
-void bar::playBarStandAlone(beat const & __beat) {
+void bar::playBar(beat const & __beat) {
   tPlayBar.disable();
   setActive();
   _activeBar._setTPlayBar(__beat);
