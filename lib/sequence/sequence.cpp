@@ -46,7 +46,11 @@ sequence::sequence(
 { }
 
 // copy constructor
-sequence::sequence( const sequence& __sequence) 
+sequence::sequence( const sequence& __sequence):
+  _beat(__sequence._beat),
+  _ui16BaseNotesCountPerBar(__sequence._ui16BaseNotesCountPerBar), 
+  _i16BarCountInSequence(__sequence._i16BarCountInSequence), 
+  _i16AssociatedBars(__sequence._i16AssociatedBars)
 { }
 
 // assignement operator
