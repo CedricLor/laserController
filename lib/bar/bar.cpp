@@ -193,9 +193,52 @@ void bar::initBars() {
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
+/** bar::playBarStandAlone():
+ *  
+ *  play a single bar calculating the durations
+ *  on the basis of the passed-in beat.
+ * 
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration */
+void bar::playBarStandAlone(beat const & __beat) {
+  tPlayBar.disable(); // <-- TODO: incorporate into setActive()
+  this->setActive();
+  beat(__beat).setActive();
+  tPlayBar.setOnDisable([](){
+    beat(0, 0).setActive();
+    tPlayBar.setOnDisable(NULL);
+  });
+  tPlayBar.restart();
+}
+
+
+/** bar::playBarInSequence():
+ *  
+ *  play a single bar calculating the durations
+ *  on the basis of the beat set by tPlaySequence. */
+void bar::playBarInSequence() {
+  tPlayBar.disable(); // <-- TODO: incorporate into setActive()
+  this->setActive();
+  // TODO: in sequence, set the active beat
+  // TODO: in sequence, when starting 
+  //        tPlaySequence (or tPlaySequenceInLoop) 
+  //        reset the onDisable callback to NULL
+  // tPlayBar.setOnDisable([](){
+  //   beat(0, 0).setActive();
+  //   tPlayBar.setOnDisable(NULL);
+  // });
+
+  tPlayBar.restart();
+}
+
+
 /** bar::playBar():
  *  
- *  play a single bar for a given duration. */
+ *  play a single bar for a given duration 
+ * (calculated using the passed-in beat).
+ * 
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration */
 void bar::playBar(beat const & __beat) {
   tPlayBar.disable();
   this->setActive();
