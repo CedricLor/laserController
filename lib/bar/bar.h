@@ -60,7 +60,7 @@ class bar
     static bool _oetcbPlayBar();
 
     // static setter
-    static void _setTPlayBar(beat const & __beat);
+    void _setTPlayBar(beat const & __beat);
 
     // private instance properties
     uint16_t _ui16BaseNotesCountInBar;

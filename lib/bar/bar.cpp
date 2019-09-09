@@ -213,7 +213,7 @@ void bar::playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t c
 // void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
   tPlayBar.disable();
   setActiveBarFromBar(__target_bar);
-  _setTPlayBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  _activeBar._setTPlayBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   tPlayBar.restartDelayed();
 }
 
