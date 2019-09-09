@@ -42,6 +42,8 @@ class bar
     static bar & getBarFromBarArray(const uint16_t __ui16_active_bar);
 
     /** player */
+    void playBarStandAlone(beat const & __beat=beat::_activeBeat);
+    void playBarInSequence();
     void playBar(beat const & __beat=beat::_activeBeat);
     static Task tPlayBar;
 
