@@ -58,9 +58,6 @@ class note
     // instance setter
     void _setTone(const uint16_t __ui16_target_tone);
 
-    // static setter
-    void _setTPlayNote(beat const & __beat=beat::_activeBeat, uint16_t const __ui16_iterations=1);
-
     // private instance properties
     uint16_t _ui16Tone;
     uint16_t _ui16Note;

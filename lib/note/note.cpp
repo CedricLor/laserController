@@ -87,18 +87,6 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 }
 
 
-/** note::_setTPlayNote(): public static setter method
- * 
- *  sets the parameters of the Task tPlayNote. */
-void note::_setTPlayNote(beat const & __beat, uint16_t const __ui16_iterations) {
-  beat(__beat).setActive();
-  tPlayNote.setInterval(ui16GetNoteDurationInMs());
-  tPlayNote.setIterations(__ui16_iterations);
-  tPlayNote.setOnDisable([](){
-    beat(0, 0).setActive();
-    tPlayNote.setOnDisable(NULL);
-  });
-}
 
 
 
@@ -184,7 +172,13 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 */
 void note::playNoteStandAlone(beat const & __beat) {
   this->setActive();
-  _setTPlayNote(__beat, 1);
+  beat(__beat).setActive();
+  tPlayNote.setInterval(ui16GetNoteDurationInMs());
+  tPlayNote.setOnDisable([](){
+    beat(0, 0).setActive();
+    _odtcbPlayNote();
+    tPlayNote.setOnDisable(_odtcbPlayNote);
+  });
   tPlayNote.restartDelayed();
 }
 
