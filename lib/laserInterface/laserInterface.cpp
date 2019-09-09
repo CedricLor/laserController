@@ -133,7 +133,7 @@ void laserInterface::initNoteComm() {
 
 
 void laserInterface::setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    note::setActiveNoteFromNote(note(__ui16_target_tone, __ui16_target_note));
+    note(__ui16_target_tone, __ui16_target_note).setActive();
 }
 
 

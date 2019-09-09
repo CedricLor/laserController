@@ -276,7 +276,7 @@ void bar::_tcbPlayBar(){
   /**3. Set the static activeNote of the note class (note::_activeNote)
    *    using the Task iterator to select the relevant note in the _notesArray
    *    of the currently activeBar. */
-  note::setActiveNoteFromNote(_activeBar._notesArray[_ui16_iter]);
+  _activeBar._notesArray[_ui16_iter].setActive();
 
   /**4.Reenable the tPlayNote Task
    *   Upon enabling the Task, the onEnable callback of tPlayNote will be

@@ -31,7 +31,7 @@ class note
     note& operator=(const note& );
 
     /** setters */
-    static void setActiveNoteFromNote(const note & __target_note);
+    void setActive();
 
     /** getters */
     static const note &getCurrentNote();

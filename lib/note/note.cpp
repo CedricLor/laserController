@@ -67,12 +67,12 @@ note& note::operator=(const note& __note)
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** note::setActiveNoteFromNote(): public static setter method
+/** note::setActive(): public static setter method
  * 
  *  sets the parameters of the static variable &note::_activeNote 
  *  from a passed in note reference. */
-void note::setActiveNoteFromNote(const note & __target_note) {
-  _activeNote = __target_note;
+void note::setActive() {
+  _activeNote = *this;
 }
 
 
@@ -187,7 +187,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 */
 void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
   tPlayNote.disable();
-  setActiveNoteFromNote(__target_note);
+  note(__target_note).setActive();
   _setTPlayNote(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, 1);
   tPlayNote.restartDelayed();
 }
