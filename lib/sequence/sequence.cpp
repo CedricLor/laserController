@@ -223,6 +223,22 @@ const std::array<int16_t, 8> sequence::getAssociatedBars() const {
 
 
 
+
+///////////////////////////////////
+// Sequence Players
+///////////////////////////////////
+void sequence::playSequenceStandAlone() {
+
+}
+
+void sequence::playSequenceInBoxState() {
+
+}
+
+
+
+
+
 ///////////////////////////////////
 // Loop Player
 ///////////////////////////////////
