@@ -190,7 +190,8 @@ void note::playNoteStandAlone(beat const & __beat) {
 
 /**note::playNoteInBar:
  *  
- *  play a single note for a given duration.
+ *  play a single note for its maximum duration.
+ *  _tcbPlayBar manages the real duration (and the beat). 
 */
 void note::playNoteInBar() {
   this->setActive();
