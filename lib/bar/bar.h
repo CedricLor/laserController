@@ -43,7 +43,6 @@ class bar
 
     /** player */
     static void playBarStandAlone(beat const & __beat, bar const & __target_bar);
-    static void playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, bar const & __target_bar);
     static Task tPlayBar;
 
   private:
