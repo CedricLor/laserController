@@ -112,7 +112,7 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   __target_bar.playBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   // 2. Or set the active bar
   setCurrentBar(__ui16_target_bar);
-  bar & __bar_ref = bar::getCurrentBarAsBar();
+  bar & __bar_ref = bar::getCurrentBar();
   // 3. play the bar
   __bar_ref.playBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }

@@ -38,7 +38,7 @@ class bar
 
     /** getters */
     static int16_t const i16GetCurrentBarId(); // returns _ui16ActiveBar
-    static bar & getCurrentBarAsBar();
+    static bar & getCurrentBar();
     static bar & getBarFromBarArray(const uint16_t __ui16_active_bar);
 
     /** player */

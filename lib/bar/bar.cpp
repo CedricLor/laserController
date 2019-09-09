@@ -341,10 +341,10 @@ int16_t const bar::i16GetCurrentBarId() {
   return _ui16ActiveBar;
 }
 
-/** bar & bar::getCurrentBarAsBar()
+/** bar & bar::getCurrentBar()
  * 
  * Returns the active bar as a bar */
-bar & bar::getCurrentBarAsBar() {
+bar & bar::getCurrentBar() {
   return _activeBar;
 }
 
