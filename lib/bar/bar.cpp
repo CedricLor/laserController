@@ -16,7 +16,6 @@ bar bar::_emptyBar;
 bar &bar::_activeBar = _emptyBar;
 uint16_t bar::_ui16ActiveBar = 0;
 std::array<bar, 7> bar::_bars;
-
 std::array<note, 16> bar::_emptyNotesArray;
 
 
@@ -194,16 +193,14 @@ void bar::initBars() {
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
-/**note::playNoteStandAlone:
+/** bar::playBar():
  *  
- *  play a single bar for a given duration.
- * 
-*/
+ *  play a single bar for a given duration. */
 void bar::playBar(beat const & __beat) {
   tPlayBar.disable();
-  setActive();
+  this->setActive();
   _activeBar._setTPlayBar(beat(__beat));
-  tPlayBar.restartDelayed();
+  tPlayBar.enable();
 }
 
 
