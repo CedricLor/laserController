@@ -327,6 +327,7 @@ void bar::_setTPlayBar(beat const & __beat) {
   beat::setActiveBeatFromBeat(__beat);
   tPlayBar.setOnDisable([](){
     beat::setActiveBeatFromBeat(beat(0, 0));
+    tPlayBar.setOnDisable(NULL);
   });
 }
 
