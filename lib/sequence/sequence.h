@@ -44,8 +44,8 @@ class sequence
     static void setActiveSequence(const int16_t __i16ActiveSequence);
 
     /** Task - sequence players */
-    void playSequenceStandAlone();
-    void playSequenceInBoxState();
+    void playSequenceStandAlone(beat const & __beat);
+    void playSequenceInBoxState(const uint16_t __ui16_associated_sequence_idx_number);
     static Task tPlaySequenceInLoop;
     static Task tPlaySequence;
 
