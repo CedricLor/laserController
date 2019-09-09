@@ -59,7 +59,7 @@ class note
     void _setTone(const uint16_t __ui16_target_tone);
 
     // static setter
-    static void _setTPlayNote(beat const & __beat=beat::_activeBeat, uint16_t const __ui16_iterations=1);
+    void _setTPlayNote(beat const & __beat=beat::_activeBeat, uint16_t const __ui16_iterations=1);
 
     // private instance properties
     uint16_t _ui16Tone;

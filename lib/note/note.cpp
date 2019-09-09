@@ -91,7 +91,7 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
  *  sets the parameters of the Task tPlayNote. */
 void note::_setTPlayNote(beat const & __beat, uint16_t const __ui16_iterations) {
   beat(__beat).setActive();
-  tPlayNote.setInterval(_activeNote.ui16GetNoteDurationInMs());
+  tPlayNote.setInterval(ui16GetNoteDurationInMs());
   tPlayNote.setIterations(__ui16_iterations);
   tPlayNote.setOnDisable([](){
     beat(0, 0).setActive();
