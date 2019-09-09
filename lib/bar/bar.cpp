@@ -201,7 +201,6 @@ void bar::initBars() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
 void bar::playBarStandAlone(beat const & __beat) {
-  tPlayBar.disable(); // <-- TODO: incorporate into setActive()
   this->setActive();
   beat(__beat).setActive();
   tPlayBar.setOnDisable([](){
@@ -217,7 +216,6 @@ void bar::playBarStandAlone(beat const & __beat) {
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
 void bar::playBarInSequence() {
-  tPlayBar.disable(); // <-- TODO: incorporate into setActive()
   this->setActive();
   // TODO: in sequence, set the active beat
   // TODO: in sequence, when starting 
@@ -240,7 +238,6 @@ void bar::playBarInSequence() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
 void bar::playBar(beat const & __beat) {
-  tPlayBar.disable();
   this->setActive();
   _activeBar._setTPlayBar(beat(__beat));
   tPlayBar.enable();
@@ -353,6 +350,7 @@ void bar::_tcbPlayBar(){
  * 
  *  sets the caller bar as the static variable &bar::_activeBar. */
 void bar::setActive() {
+  tPlayBar.disable();
   _activeBar = *this;
 }
 
