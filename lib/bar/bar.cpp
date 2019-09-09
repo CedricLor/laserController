@@ -236,6 +236,14 @@ bool bar::_oetcbPlayBar(){
   /**1. set the number of iterations base of the effective number of notes in the bar*/
   tPlayBar.setIterations(_activeBar._ui16NotesCountInBar);
 
+  /**2. tPlayNote will be managed from tPlayBar => set tPlayNote to play each note (in the bar)
+   *    for one single iteration and with the maximum available interval (30000).
+   */
+  //    TODO: no need to call this repetitively if the bar is played within a sequence. Adopt the same 
+  //          approach as in playNoteStandAlone and playNoteInBar
+  note::tPlayNote.setInterval(30000);
+  note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
+
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
   //   Serial.print("bar::_oetcbPlayBar(). tPlayBar.isEnabled() = ");Serial.println(tPlayBar.isEnabled());
@@ -270,32 +278,22 @@ void bar::_tcbPlayBar(){
   // 1. get the run counter
   const uint16_t _ui16_iter = tPlayBar.getRunCounter() - 1;
 
-  // 2. Disable the Task tPlayNote (just in case)
-  note::tPlayNote.disable();
-
-  /**3. Set the static activeNote of the note class (note::_activeNote)
-   *    using the Task iterator to select the relevant note in the _notesArray
-   *    of the currently activeBar. */
-  _activeBar._notesArray[_ui16_iter].setActive();
-
-  /**4.Reenable the tPlayNote Task
-   *   Upon enabling the Task, the onEnable callback of tPlayNote will be
-   *   immediately executed, starting to play the note.
+  /**2. Call playNoteInBar() on the current note in the bar.
    * 
-   *   After expiration of the default interval of 30s. (or if disabled
-   *   from this callback _tcbPlayBar (at the following iteration), the
-   *   tPlayNote Task will be disabled.
-   * 
-   *   tPlayNote onDisable callback will then turn off all the lasers, marking
-   *   the passing from one note to the other. */
-  note::tPlayNote.restartDelayed();
+   *    playNoteInBar():
+   *    a. disable tPlayNote;
+   *    b. set the current note in the bar (_activeBar._notesArray[_ui16_iter]) 
+   *       as _activeNote in the note class;
+   *    c. restartDelayed tPlayNote. */
+  _activeBar._notesArray[_ui16_iter].playNoteInBar();
 
-  /**5. Set the interval for next iteration
-   *   
-   *    At each pass, reset the interval before the next iteration 
-   *    of this Task bar::tPlayBar. This marks the duration of each note. */
+  /**3. Set the interval for next iteration of tPlayBar
+   * 
+   *    At each pass, reset the interval before the next iteration of this 
+   *    Task bar::tPlayBar. This marks the duration of each note played in the
+   *    context of a bar. */
   Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  Serial.printf("bar::_tcbPlayBar(). calling _activeBar.ui16GetNoteDurationInMs(%u)\n", _ui16_iter);
+  Serial.printf("bar::_tcbPlayBar(). calling _activeBar._notesArray[_ui16_iter].ui16GetNoteDurationInMs(%u)\n", _ui16_iter);
   tPlayBar.setInterval(_activeBar._notesArray[_ui16_iter].ui16GetNoteDurationInMs());
 
   Serial.println(F("bar::_tcbPlayBar(). Ending."));

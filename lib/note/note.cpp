@@ -189,8 +189,6 @@ void note::playNoteStandAlone(beat const & __beat) {
 */
 void note::playNoteInBar() {
   this->setActive();
-  tPlayNote.setIterations(1);
-  tPlayNote.setInterval(ui16GetNoteDurationInMs());
   tPlayNote.restartDelayed();
 }
 
