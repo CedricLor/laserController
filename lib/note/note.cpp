@@ -69,7 +69,7 @@ note& note::operator=(const note& __note)
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** note::setActive(): public static setter method
+/** note::setActive(): public instance setter method
  * 
  *  sets the parameters of the static variable &note::_activeNote 
  *  from a passed in note reference. */
@@ -78,6 +78,15 @@ void note::setActive() {
   _activeNote = *this;
 }
 
+/** note::resetTPlayNoteToPlayNotesInBar(): public static setter method
+ * 
+ *  resets the parameters of the static Task tPlayNote to  
+ *  play notes read from a bar. */
+void note::resetTPlayNoteToPlayNotesInBar() {
+  tPlayNote.disable();
+  tPlayNote.setInterval(30000);
+  tPlayNote.setOnDisable(_odtcbPlayNote);
+}
 
 /** note::_setTone(): private instance setter method
  * 

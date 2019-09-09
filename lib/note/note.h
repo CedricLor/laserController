@@ -32,6 +32,7 @@ class note
 
     /** setters */
     void setActive();
+    static void resetTPlayNoteToPlayNotesInBar();
 
     /** getters */
     static const note &getCurrentNote();
