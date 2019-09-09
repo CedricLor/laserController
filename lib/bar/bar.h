@@ -38,11 +38,11 @@ class bar
 
     /** getters */
     static int16_t const getCurrentBar(); // returns _ui16ActiveBar
-    static bar const & getCurrentBarAsBar();
+    static bar & getCurrentBarAsBar();
     static bar const & getBar(const uint16_t __ui16_active_bar);
 
     /** player */
-    static void playBarStandAlone(beat const & __beat, bar const & __target_bar);
+    void playBarStandAlone(beat const & __beat, bar const & __target_bar);
     static Task tPlayBar;
 
   private:
