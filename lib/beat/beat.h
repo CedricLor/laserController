@@ -40,6 +40,8 @@ class beat
 
   private:
     friend class sequence;
+    friend class bar;
+    friend class note;
 
     // static properties
     static std::array<beat, 7> _beats;
