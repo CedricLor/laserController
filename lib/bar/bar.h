@@ -35,7 +35,6 @@ class bar
 
     /** setters */
     void setActive();
-    static void setActiveBarFromBar(const bar & __target_bar);
 
     /** getters */
     static int16_t const getCurrentBar(); // returns _ui16ActiveBar

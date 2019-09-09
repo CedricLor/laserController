@@ -201,7 +201,7 @@ void bar::initBars() {
 */
 void bar::playBarStandAlone(beat const & __beat) {
   tPlayBar.disable();
-  setActiveBarFromBar(*this);
+  setActive();
   _activeBar._setTPlayBar(__beat);
   tPlayBar.restartDelayed();
 }
@@ -318,12 +318,6 @@ void bar::setActive() {
   _activeBar = *this;
 }
 
-/** bar::setActiveBarFromBar(): public static setter method
- * 
- *  sets the passed in bar as the static variable &bar::_activeBar. */
-void bar::setActiveBarFromBar(const bar & __target_bar) {
-  _activeBar = __target_bar;
-}
 
 
 /** bar::_setTPlayBar(): public static setter method
