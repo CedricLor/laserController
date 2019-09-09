@@ -442,7 +442,7 @@ void sequence::_tcbPlaySequence(){
   // 3. Play the corresponding bar
   // TODO: I am missing here setting tPlayBar: incorporate sthing similar to a 
   //       a call to bar::playBarStandAlone;
-  Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBarFromBar(bar(bar::_bars[" + String(_i16ActiveBar) + "]));");
+  Serial.printf("sequence::_tcbPlaySequence(). setting bar::_activeBar as bar::_bars[%i].\n", _i16ActiveBar);
   bar::_activeBar = bar::_bars[_i16ActiveBar];
   Serial.println("sequence::_tcbPlaySequence(). enabling tPlayBar");
   bar::tPlayBar.enable();
