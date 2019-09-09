@@ -89,8 +89,8 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
 /** note::_setTPlayNote(): public static setter method
  * 
  *  sets the parameters of the Task tPlayNote. */
-void note::_setTPlayNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, uint16_t const __ui16_iterations) {
-  beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm).setActive();
+void note::_setTPlayNote(beat const & __beat, uint16_t const __ui16_iterations) {
+  beat(__beat).setActive();
   tPlayNote.setInterval(_activeNote.ui16GetNoteDurationInMs());
   tPlayNote.setIterations(__ui16_iterations);
   tPlayNote.setOnDisable([](){
@@ -185,10 +185,10 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
  *  {@ params} note const & __target_note: pass a target note ref to const
  *             ex. note(8,1): tone 8 for the duration of a white (1)
 */
-void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
+void note::playNoteStandAlone(beat const & __beat) {
   tPlayNote.disable();
   this->setActive();
-  _setTPlayNote(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, 1);
+  _setTPlayNote(__beat, 1);
   tPlayNote.restartDelayed();
 }
 
