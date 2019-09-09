@@ -217,10 +217,13 @@ void bar::playBarStandAlone(beat const & __beat) {
  *  on the basis of the beat set by tPlaySequence. */
 void bar::playBarInSequence() {
   this->setActive();
-  // TODO: in sequence, set the active beat
-  // TODO: in sequence, when starting 
-  //        tPlaySequence (or tPlaySequenceInLoop) 
-  //        reset the onDisable callback to NULL
+  /** TODO: in sequence, when starting 
+   *        tPlaySequence (or tPlaySequenceInLoop) 
+   *        1. set the active beat;
+   *        2. reset the onDisable callback
+   *           of tPlayBar to NULL.
+  */
+  // beat(__beat).setActive();
   // tPlayBar.setOnDisable([](){
   //   beat(0, 0).setActive();
   //   tPlayBar.setOnDisable(NULL);
