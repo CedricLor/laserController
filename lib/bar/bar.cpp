@@ -213,7 +213,7 @@ void bar::playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t c
 // void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
   tPlayBar.disable();
   setActiveBarFromBar(__target_bar);
-  _setTPlayBar(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  _setTPlayBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   tPlayBar.restartDelayed();
 }
 
@@ -332,8 +332,8 @@ void bar::setActiveBarFromBar(const bar & __target_bar) {
 /** bar::_setTPlayBar(): public static setter method
  * 
  *  sets the parameters of the Task tPlayNote. */
-void bar::_setTPlayBar(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm) {
-  beat::setActiveBeatFromBeat(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+void bar::_setTPlayBar(beat const & __beat) {
+  beat::setActiveBeatFromBeat(__beat);
   tPlayBar.setOnDisable([](){
     beat::setActiveBeatFromBeat(beat(0, 0));
   });
