@@ -414,13 +414,10 @@ bool sequence::_oetcbPlaySequence(){
  *  callback and do not change on iterations.
  * 
  *  At each iteration of tPlaySequence:
- *  - using the Task iterator, we select in the associatedBars array
- *    the index number of the next bar <- from the iterator of the Task.
- *  - we then apply the settings (tempo in BPM, base note for beats and the notes
- *    count in each bar) of this sequence to the bar, which might have other
- *    settings.
- *  - we then inform the bar class of the active bar number, before enabling
- *    the Task tPlayBar in the bar class.
+ *  - using the Task iterator (step 1. below), we get, from this sequence's 
+ *    array of associatedBars, the index number of the bar to be played (step 2 below).
+ *  - we then set the active bar in the bar class from the array of hard coded bars 
+ *    provided by the class bar, before enabling the Task tPlayBar in the bar class.
  * */
 void sequence::_tcbPlaySequence(){
   Serial.println("sequence::_tcbPlaySequence(). Starting.");
@@ -433,15 +430,16 @@ void sequence::_tcbPlaySequence(){
   // 2. Select the bar number corresponding to this iteration
   Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
   int16_t _i16ActiveBar = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
-  Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveSequence, _i16Iter);
-  Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveBar: %i\n", _i16ActiveBar);
+  Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar idx number [%i] from _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveBar, _i16ActiveSequence, _i16Iter);
 
-  // 3. Configure the bar
-  bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
-  Serial.println("sequence::_tcbPlaySequence(). got sequences[" + String(_i16ActiveSequence) + "]._ui16BaseNotesCountPerBar = " + String(sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar));
-  Serial.println("sequence::_tcbPlaySequence(). have bar::_bars[" + String(_i16ActiveBar) + "]._ui16BaseNotesCountInBar = " + String(bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar));
+  /** // 3. Configure the bar
+   *     TO DO: the way here described to configure the bar has no effect.
+   *     Find a way to adjust bar of a given length to sequence of a different length. */
+  // bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
+  // Serial.printf("sequence::_tcbPlaySequence(). got sequences[%i]._ui16BaseNotesCountPerBar = %u", _i16ActiveSequence, sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar);
+  // Serial.printf("sequence::_tcbPlaySequence(). have set bar::_bars[%i]._ui16BaseNotesCountInBar = %u", _i16ActiveBar, bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar);
 
-  // 4. Play the corresponding bar
+  // 3. Play the corresponding bar
   Serial.println("sequence::_tcbPlaySequence(). calling bar::setActiveBarFromBar(bar(bar::_bars[" + String(_i16ActiveBar) + "]));");
   bar::setActiveBarFromBar(bar(bar::_bars[_i16ActiveBar]));
   Serial.println("sequence::_tcbPlaySequence(). enabling tPlayBar");

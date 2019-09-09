@@ -97,13 +97,16 @@ void bar::initBars() {
   // define an array containing references to the note type and tones to be played in the bar
 
   /** Signature of a bar:
-   *  a. the duration of a beat in bpm (i.e. the tempo);
-   *  b. the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance);
-   *  c. the count of base notes per bar (the 2 in 2/4, for instance);
-   *  d. the number of effective notes in the bar (all the full, half, etc. effectively in the bar);
-   *  e. a bidimensional array of references to the notes.
-   *     1. The first dimension represents the sequence of notes: {...},{...},{...} 
-   *     2. The second dimension represents each note. Each note is composed of:
+   *  a. _ui16BaseNotesCountInBar: the count of base notes per bar (the 2 in 2/4, 
+   *     for instance);
+   *     TODO: this parameter is never used. It is only kept because it would be usefull
+   *     to have it when incorporating bars of a given time length (n1 base notes) into
+   *     sequence requiring bars of another time length (n2 base notes).
+   *     ex. sequence 
+   *  b. _ui16NotesCountInBar: the number of effective notes in the bar (all the full,
+   *      half, etc. effectively in the bar);
+   *  c. std::array<note, 16> & _notesArray: a reference to an array of notes. Each note
+   *     is composed of:
    *     (i) its duration (expressed in base note - full, half, quarter, etc.) and;
    *     (ii) its tone.
    *     ex.: { 2, 1, 2, 2, {{1,7},{1,8}}}
@@ -113,7 +116,14 @@ void bar::initBars() {
    *     d. 2: we have two effective notes in this specific bar;
    *     e. the two notes are:
    *        - {1,7} -> a white with tone 7.
-   *        - {1,8} -> a white with tone 8. */
+   *        - {1,8} -> a white with tone 8. 
+   * 
+   *  It used to include:
+   *  a. a beat object, which contains:
+   *     1. the duration of a beat in bpm (i.e. the tempo);
+   *     2. the base note for each beat (full, half, quarter, etc.) 
+   *        (the 4 in 2/4, for instance; the 2 is defined at the sequence level);
+   * */
 
 
   /** relays
