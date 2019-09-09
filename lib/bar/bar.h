@@ -44,7 +44,6 @@ class bar
     /** player */
     void playBarStandAlone(beat const & __beat=beat::_activeBeat);
     void playBarInSequence();
-    void playBar(beat const & __beat=beat::_activeBeat);
     static Task tPlayBar;
 
   private:
