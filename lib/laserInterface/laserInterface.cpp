@@ -87,7 +87,12 @@ void laserInterface::sendCurrentBar(const uint16_t __ui16_active_bar_ix_numb) {
     /** TODO: draft a call to myMeshViews.  */
 }
 
-
+/** laserInterface::playBar():
+ * 
+ *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base note 
+ *             for a given beat. ex. 4, a black
+ *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
+ *             in bpm. ex. 120 bpm (500 ms) */
 void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_target_bar) {
   // 1. lock bar to avoid getting signal from a boxState or sequence player
   lockBarStack();
@@ -97,6 +102,12 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   std::array<note, 16> _arrayOfNotes;
   _arrayOfNotes.fill(note(0,0));
   _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
+  /**  bar __target_bar(4, 8, _arrayOfNotes)
+   *      ex. bar(4, 8, std::array<note, 16> {note(4,8), note(3,8), note(2,8), note(1,8)}, note(2,8), note(3,8), note(4,8), note(0,8))
+   *      where:
+   *      - 4 stands for 4 blacks per bar;
+   *      - 8 stands for 8 effective notes in the bar; and
+   *      - the array of notes contained in the bar. */
   bar __target_bar(4, 8, _arrayOfNotes);
   __target_bar.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   // 2. Or set the active bar

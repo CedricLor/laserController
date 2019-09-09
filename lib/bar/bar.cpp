@@ -196,18 +196,8 @@ void bar::initBars() {
 ///////////////////////////////////
 /**note::playNoteStandAlone:
  *  
- *  play a single note for a given duration.
+ *  play a single bar for a given duration.
  * 
- *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base note 
- *             for a given beat. ex. 4, a black
- *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
- *             in bpm. ex. 120 bpm (500 ms)
- *  {@ params} bar const & __target_bar: pass a target bar reference to const
- *             ex. bar(4, 8, std::array<note, 16> _aSwipeL {note(4,8), note(3,8), note(2,8), note(1,8)}, note(2,8), note(3,8), note(4,8), note(0,8))
- *             where:
- *             - 4 stands for 4 blacks per bar;
- *             - 8 stands for 8 effective notes in the bar; and
- *             - the array of notes contained in the bar.
 */
 void bar::playBarStandAlone(beat const & __beat) {
   tPlayBar.disable();
