@@ -43,7 +43,6 @@ class bar
 
     /** player */
     void playBarStandAlone(beat const & __beat);
-    void playBarStandAlone(beat const & __beat, bar const & __target_bar);
     static Task tPlayBar;
 
   private:
