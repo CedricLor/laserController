@@ -432,20 +432,16 @@ void sequence::_tcbPlaySequence(){
   int16_t _i16ActiveBar = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
   Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar idx number [%i] from _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveBar, _i16ActiveSequence, _i16Iter);
 
-  /** // 3. Configure the bar
-   *     TODO: the way here described to configure the bar has no effect.
-   *     Find a way to adjust bar of a given length to sequence of a different length. */
-  // bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar = sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
-  // Serial.printf("sequence::_tcbPlaySequence(). got sequences[%i]._ui16BaseNotesCountPerBar = %u", _i16ActiveSequence, sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar);
-  // Serial.printf("sequence::_tcbPlaySequence(). have set bar::_bars[%i]._ui16BaseNotesCountInBar = %u", _i16ActiveBar, bar::_bars[_i16ActiveBar]._ui16BaseNotesCountInBar);
-
   // 3. Play the corresponding bar
-  // TODO: I am missing here setting tPlayBar: incorporate sthing similar to a 
-  //       a call to bar::playBar;
-  Serial.printf("sequence::_tcbPlaySequence(). setting bar::_activeBar as bar::_bars[%i].\n", _i16ActiveBar);
-  bar::_bars[_i16ActiveBar].setActive();
-  Serial.println("sequence::_tcbPlaySequence(). enabling tPlayBar");
-  bar::tPlayBar.enable();
+  /**TODO: The call to playBarInSequence() here inserted does not take into account 
+   *       any differences between bar length requirement at sequence level (3/4: 3 blacks per bar)
+   *       and the effective bar length (ex. a bar that would have two whites, for instance.)
+   * 
+   *       1. Find a way to adjust bar of a given length to sequence of a different length.
+   *       2. Create a mode, in sequence, that plays the bars according to their own 
+   *          length, at the tempo (beat), defined by the sequence. */
+  Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBar);
+  bar::_bars[_i16ActiveBar].playBarInSequence();
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
