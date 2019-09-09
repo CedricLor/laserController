@@ -176,14 +176,10 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 ///////////////////////////////////
 /**note::playNoteStandAlone:
  *  
- *  play a single note for a given duration.
+ *  play a single note for a given duration (set by the passed-in beat).
  * 
- *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base note 
- *             for a given beat
- *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
- *             in bpm
- *  {@ params} note const & __target_note: pass a target note ref to const
- *             ex. note(8,1): tone 8 for the duration of a white (1)
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration
 */
 void note::playNoteStandAlone(beat const & __beat) {
   tPlayNote.disable();
