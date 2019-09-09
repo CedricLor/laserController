@@ -201,12 +201,25 @@ void bar::initBars() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
 void bar::playBarStandAlone(beat const & __beat) {
+  // 1. set the bar as active
   this->setActive();
+  // 2. set the active beat from the passed in beat
   beat(__beat).setActive();
+  /**3. set the tPlayNote Task to its default when playing notes read from a bar.
+   *    tPlayNote will be managed from tPlayBar => set tPlayNote to play each note (in the bar)
+   *    for one single iteration and with the maximum available interval (30000).
+   * 
+   *    TODO: make the same call upon starting a sequence, if playing from sequences. */
+  note::resetTPlayNoteToPlayNotesInBar();
+  /**4. set the onDisable callback of tPlayBar to reset the active beat to (0,0) once
+   *    the stand alone bar has been read, so that (i) bar can be read again as part of a
+   *    sequence and (ii) any other class that may depend on beat finds a clean beat to start
+   *    with, as required. */
   tPlayBar.setOnDisable([](){
     beat(0, 0).setActive();
     tPlayBar.setOnDisable(NULL);
   });
+  // 5. once all the setting have been done, play the bar
   tPlayBar.restart();
 }
 
@@ -267,13 +280,6 @@ bool bar::_oetcbPlayBar(){
   /**1. set the number of iterations base of the effective number of notes in the bar*/
   tPlayBar.setIterations(_activeBar._ui16NotesCountInBar);
 
-  /**2. tPlayNote will be managed from tPlayBar => set tPlayNote to play each note (in the bar)
-   *    for one single iteration and with the maximum available interval (30000).
-   */
-  //    TODO: no need to call this repetitively if the bar is played within a sequence. Adopt the same 
-  //          approach as in playNoteStandAlone and playNoteInBar
-  note::tPlayNote.setInterval(30000);
-  note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
 
   // if (MY_DG_LASER) {
   //   Serial.println("bar::_oetcbPlayBar(). After setting the iterations for this bar: *!*!*!*!*!");
