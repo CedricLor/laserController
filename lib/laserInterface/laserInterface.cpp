@@ -79,7 +79,7 @@ void laserInterface::setCurrentBar(const uint16_t __ui16_target_bar_ix_numb) {
 
 
 void laserInterface::getCurrentBar() {
-    sendCurrentBar(bar::getCurrentBar());
+    sendCurrentBar(bar::i16GetCurrentBarId());
 }
 
 

@@ -337,10 +337,10 @@ void bar::_setTPlayBar(beat const & __beat) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** int16_t const bar::getCurrentBar()
+/** int16_t const bar::i16GetCurrentBarId()
  * 
  * Returns the active bar index number */
-int16_t const bar::getCurrentBar() {
+int16_t const bar::i16GetCurrentBarId() {
   return _ui16ActiveBar;
 }
 
