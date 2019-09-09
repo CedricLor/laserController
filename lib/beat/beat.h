@@ -22,9 +22,9 @@ class beat
       const uint16_t __ui16_base_note_for_beat
     ); 
     // // copy constructor
-    // beat( const beat& _beat);
+    // beat( const beat& __beat);
     // // assignement operator
-    // beat& operator=(const beat& _beat);
+    // beat& operator=(const beat& __beat);
 
     // objects array initializer
     // static void initBeats(); // initializer of the array of beats
@@ -45,6 +45,7 @@ class beat
 
     // static properties
     // static std::array<beat, 7> _beats;
+    static beat _beat;
     static beat &_activeBeat;
 
     // private instance properties

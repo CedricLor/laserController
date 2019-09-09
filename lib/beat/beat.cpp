@@ -12,7 +12,7 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "beat.h"
 
-beat _beat;
+beat beat::_beat;
 beat &beat::_activeBeat = _beat;
 // std::array<beat, 7> beat::_beats;
 
@@ -45,12 +45,12 @@ beat::beat(
 }
 
 // copy constructor
-// beat::beat( const beat& _beat )
+// beat::beat( const beat& __beat )
 // {
 // }
 
 // assignement operator
-// beat& beat::operator=(const beat& _beat)
+// beat& beat::operator=(const beat& __beat)
 // {
 //    return *this;
 // }
