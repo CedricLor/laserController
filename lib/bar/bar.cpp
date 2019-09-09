@@ -311,10 +311,16 @@ void bar::_tcbPlayBar(){
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
+/** bar::setActive(): public instance setter method
+ * 
+ *  sets the caller bar as the static variable &bar::_activeBar. */
+void bar::setActive() {
+  _activeBar = *this;
+}
+
 /** bar::setActiveBarFromBar(): public static setter method
  * 
- *  sets the parameters of the static variable &note::_activeBar 
- *  from a passed in note reference. */
+ *  sets the passed in bar as the static variable &bar::_activeBar. */
 void bar::setActiveBarFromBar(const bar & __target_bar) {
   _activeBar = __target_bar;
 }
@@ -354,6 +360,6 @@ bar & bar::getCurrentBarAsBar() {
 /** bar const & bar::getBar(const uint16_t __ui16_bar_index_number) 
  * 
  * Returns a const ref to one of the hard coded bars given its index number */
-bar const & bar::getBar(const uint16_t __ui16_bar_index_number) {
+bar & bar::getBar(const uint16_t __ui16_bar_index_number) {
   return _bars[__ui16_bar_index_number];
 }
