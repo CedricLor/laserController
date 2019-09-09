@@ -288,7 +288,7 @@ void bar::_tcbPlayBar(){
    * 
    *   tPlayNote onDisable callback will then turn off all the lasers, marking
    *   the passing from one note to the other. */
-  note::tPlayNote.enableDelayed();
+  note::tPlayNote.restartDelayed();
 
   /**5. Set the interval for next iteration
    *   
