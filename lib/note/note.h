@@ -41,6 +41,7 @@ class note
 
     /** player */
     void playNoteStandAlone(beat const & __beat=beat::_activeBeat);
+    void playNoteInBar();
     static Task tPlayNote;
 
   private:

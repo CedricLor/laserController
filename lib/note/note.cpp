@@ -188,6 +188,18 @@ void note::playNoteStandAlone(beat const & __beat) {
   tPlayNote.restartDelayed();
 }
 
+/**note::playNoteInBar:
+ *  
+ *  play a single note for a given duration.
+*/
+void note::playNoteInBar() {
+  tPlayNote.disable();
+  this->setActive();
+  tPlayNote.setIterations(1);
+  tPlayNote.setInterval(ui16GetNoteDurationInMs());
+  tPlayNote.restartDelayed();
+}
+
 /** task tPlayNote:
  * 
  *   The Task is enabled upon instanciating a note in the bar class.
