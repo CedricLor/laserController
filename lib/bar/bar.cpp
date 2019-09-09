@@ -209,8 +209,14 @@ void bar::initBars() {
  *             - 8 stands for 8 effective notes in the bar; and
  *             - the array of notes contained in the bar.
 */
+void bar::playBarStandAlone(beat const & __beat, bar const & __target_bar) {
+  tPlayBar.disable();
+  setActiveBarFromBar(__target_bar);
+  _activeBar._setTPlayBar(__beat);
+  tPlayBar.restartDelayed();
+}
+
 void bar::playBarStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, bar const & __target_bar) {
-// void note::playNoteStandAlone(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, note const & __target_note) {
   tPlayBar.disable();
   setActiveBarFromBar(__target_bar);
   _activeBar._setTPlayBar(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));

@@ -93,16 +93,16 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   lockBarStack();
   // two ways ---> 
   // TODO: see which way is more coherent from an interface stand point and either remove one of them or split functions
-  // 2. create a bar and play it
+  // 2. create a bar
   std::array<note, 16> _arrayOfNotes;
   _arrayOfNotes.fill(note(0,0));
   _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
   bar __target_bar(4, 8, _arrayOfNotes);
-  bar::playBarStandAlone(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, __target_bar);
-  // 2. set the current bar and play it
+  // 2. Or set the active bar
   setCurrentBar(__ui16_target_bar);
   const bar & __bar_ref = bar::getCurrentBarAsBar();
-  bar::playBarStandAlone(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm, __bar_ref);
+  // 3. play the bar
+  bar::playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm), __bar_ref);
 }
 
 
