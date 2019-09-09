@@ -30,7 +30,7 @@ class beat
     static void initBeats(); // initializer of the array of beats
 
     /** setters */
-    static void setActiveBeatFromBeat(const beat & __target_beat);
+    void setActive();
 
     /** getters */
     static beat const & getCurrentBeat(); // return a ref to the _activeBeat instance

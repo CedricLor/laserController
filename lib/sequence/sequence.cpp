@@ -508,7 +508,7 @@ void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
   Serial.println(F("void sequence::setActiveSequence(). Starting."));
   // Serial.print("void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
   _i16ActiveSequence = __i16ActiveSequence;
-  beat::setActiveBeatFromBeat(sequences[_i16ActiveSequence]._beat);
+  sequences[_i16ActiveSequence]._beat.setActive();
   // Serial.println(F("void sequence::--------------------- checking beat equality ---------------"));
   // const beat & _sequenceBeat = sequences[_i16ActiveSequence]._beat;
   // const beat & _globalBeat = beat::getCurrentBeat();

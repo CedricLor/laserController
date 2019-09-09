@@ -94,12 +94,12 @@ void beat::initBeats() {
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** note::setActiveBeatFromBeat(): public static setter method
+/** note::setActive(): public instance setter method
  * 
  *  sets the parameters of the static variable &beat::_activeBeat
  *  from a passed in beat reference. */
-void beat::setActiveBeatFromBeat(const beat & __target_beat) {
-  _activeBeat = __target_beat;
+void beat::setActive() {
+  beat::_activeBeat = *this;
 }
 
 

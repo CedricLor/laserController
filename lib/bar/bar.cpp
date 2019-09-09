@@ -202,7 +202,7 @@ void bar::initBars() {
 void bar::playBar(beat const & __beat) {
   tPlayBar.disable();
   setActive();
-  _activeBar._setTPlayBar(__beat);
+  _activeBar._setTPlayBar(beat(__beat));
   tPlayBar.restartDelayed();
 }
 
@@ -323,10 +323,10 @@ void bar::setActive() {
 /** bar::_setTPlayBar(): public static setter method
  * 
  *  sets the parameters of the Task tPlayNote. */
-void bar::_setTPlayBar(beat const & __beat) {
-  beat::setActiveBeatFromBeat(__beat);
+void bar::_setTPlayBar(const beat & __beat) {
+  beat(__beat).setActive();
   tPlayBar.setOnDisable([](){
-    beat::setActiveBeatFromBeat(beat(0, 0));
+    beat(0, 0).setActive();
     tPlayBar.setOnDisable(NULL);
   });
 }
