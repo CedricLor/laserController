@@ -72,6 +72,7 @@ note& note::operator=(const note& __note)
  *  sets the parameters of the static variable &note::_activeNote 
  *  from a passed in note reference. */
 void note::setActive() {
+  tPlayNote.disable();
   _activeNote = *this;
 }
 
@@ -182,7 +183,6 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
  *             to calculate the notes duration
 */
 void note::playNoteStandAlone(beat const & __beat) {
-  tPlayNote.disable();
   this->setActive();
   _setTPlayNote(__beat, 1);
   tPlayNote.restartDelayed();
@@ -193,7 +193,6 @@ void note::playNoteStandAlone(beat const & __beat) {
  *  play a single note for a given duration.
 */
 void note::playNoteInBar() {
-  tPlayNote.disable();
   this->setActive();
   tPlayNote.setIterations(1);
   tPlayNote.setInterval(ui16GetNoteDurationInMs());
