@@ -42,7 +42,7 @@ class bar
     static bar & getBar(const uint16_t __ui16_active_bar);
 
     /** player */
-    void playBar(beat const & __beat);
+    void playBar(beat const & __beat=beat::_activeBeat);
     static Task tPlayBar;
 
   private:
