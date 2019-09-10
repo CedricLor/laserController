@@ -32,8 +32,8 @@ void laserInterface::initSequenceComm() {
 }
 
 
-void laserInterface::setCurrentSequence(const int16_t __i16ActiveSequence) {
-    sequence::setActiveSequenceNb(__i16ActiveSequence);
+void laserInterface::setCurrentSequence(const int16_t __i16ActiveSequenceNb) {
+    sequence::setActiveSequenceNb(__i16ActiveSequenceNb);
 }
 
 

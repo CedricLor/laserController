@@ -18,7 +18,7 @@ std::array<bar, 8> sequence::_emptyBarsArray;
 
 
 // pointer to functions to produce an interface for sequence
-void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullptr;
+void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequenceNb) = nullptr;
 
 
 
@@ -149,17 +149,17 @@ void sequence::initSequences() {
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** sequence::setActiveSequenceNb(const int16_t __i16ActiveSequence)
+/** sequence::setActiveSequenceNb(const int16_t __i16ActiveSequenceNb)
  * 
  *  public static setter 
  * 
  *  Sets _i16ActiveSequence, the static index number of the currently 
  *  active sequence.
  * */
-void sequence::setActiveSequenceNb(const int16_t __i16ActiveSequence) {
+void sequence::setActiveSequenceNb(const int16_t __i16ActiveSequenceNb) {
   Serial.println(F("void sequence::setActiveSequenceNb(). Starting."));
   // Serial.print("void sequence::setActiveSequenceNb(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
-  _i16ActiveSequence = __i16ActiveSequence;
+  _i16ActiveSequence = __i16ActiveSequenceNb;
   sequences[_i16ActiveSequence]._beat.setActive();
   // Serial.println(F("void sequence::--------------------- checking beat equality ---------------"));
   // const beat & _sequenceBeat = sequences[_i16ActiveSequence]._beat;
