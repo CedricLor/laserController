@@ -107,7 +107,7 @@ void setup() {
     bar::initBars();
     sequence::initSequences();
   }
-  Serial.printf("main: sequence::sequences[1].i16GetBarCountInSequence() = %i\n", sequence::sequences[1].i16GetBarCountInSequence());
+  Serial.printf("main: sequence::sequences[1].i16GetBarCountInSequence() = %u\n", sequence::sequences[1].ui16GetBarCountInSequence());
   Serial.printf("main: sequence::sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequence::sequences[1].getAssociatedBeat().getBaseNoteForBeat());
   Serial.printf("main: sequence::sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequence::sequences[1].getAssociatedBeat().getBaseBeatInBpm());
   Serial.printf("main: __sequence.getAssociatedBars()[0]: %i\n", sequence::sequences[1].getAssociatedBars()[0]);
