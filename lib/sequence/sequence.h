@@ -33,7 +33,7 @@ class sequence
     static void initSequences(); // initializer of the array of sequences
 
     /** static setter */
-    static void setActiveSequence(const int16_t __i16ActiveSequence);
+    static void setActiveSequenceNbNb(const int16_t __i16ActiveSequence);
 
     /** getters */
     const uint16_t ui16GetBarCountInSequence() const;

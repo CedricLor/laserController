@@ -17,8 +17,14 @@ std::array<sequence, 7> sequence::sequences;
 std::array<bar, 8> sequence::_emptyBarsArray;
 
 
+
+
+
 // pointer to functions to produce an interface for sequence
 void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullptr;
+
+
+
 
 
 
@@ -146,31 +152,35 @@ void sequence::initSequences() {
 
 
 
+
+
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** sequence::setActiveSequence(const int16_t __i16ActiveSequence)
+/** sequence::setActiveSequenceNb(const int16_t __i16ActiveSequence)
  * 
  *  public static setter 
  * 
  *  Sets _i16ActiveSequence, the static index number of the currently 
  *  active sequence.
  * */
-void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
-  Serial.println(F("void sequence::setActiveSequence(). Starting."));
-  // Serial.print("void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
+void sequence::setActiveSequenceNb(const int16_t __i16ActiveSequence) {
+  Serial.println(F("void sequence::setActiveSequenceNb(). Starting."));
+  // Serial.print("void sequence::setActiveSequenceNb(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
   _i16ActiveSequence = __i16ActiveSequence;
   sequences[_i16ActiveSequence]._beat.setActive();
   // Serial.println(F("void sequence::--------------------- checking beat equality ---------------"));
   // const beat & _sequenceBeat = sequences[_i16ActiveSequence]._beat;
   // const beat & _globalBeat = beat::getCurrentBeat();
-  // Serial.printf("void sequence::setActiveSequence(). &_sequenceBeat == &_globalBeat ? %i\n", &_sequenceBeat == &_globalBeat);
+  // Serial.printf("void sequence::setActiveSequenceNb(). &_sequenceBeat == &_globalBeat ? %i\n", &_sequenceBeat == &_globalBeat);
   // Serial.println(F("void sequence::--------------------- checking beat identity ---------------"));
-  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm() ? %i\n", _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm());
-  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat() ? %i\n", _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat());
-  // Serial.print("void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = %i", _i16ActiveSequence);
-  Serial.println(F("void sequence::setActiveSequence(). Ending."));
+  // Serial.printf("void sequence::setActiveSequenceNb(). _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm() ? %i\n", _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm());
+  // Serial.printf("void sequence::setActiveSequenceNb(). _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat() ? %i\n", _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat());
+  // Serial.print("void sequence::setActiveSequenceNb(). (after setting) _i16ActiveSequence = %i", _i16ActiveSequence);
+  Serial.println(F("void sequence::setActiveSequenceNb(). Ending."));
 };
+
+
 
 
 
@@ -295,7 +305,7 @@ void sequence::playSequenceStandAlone(beat const & __beat, const uint16_t __ui16
 
   // 4. set the active sequence
   // TODO: Draft a flexible way to set the active sequence
-  setActiveSequence(__ui16_associated_sequence_idx_number);
+  setActiveSequenceNb(__ui16_associated_sequence_idx_number);
  
   // 5. set the beat
   // sequences[_i16ActiveSequence]._beat.setActive(); <-- this shall not be called.
@@ -450,12 +460,12 @@ void sequence::_odtcbPlaySequenceInLoop() {
     // if (MY_DG_LASER) {
     //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). _i16ActiveSequence is != 5");
     //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). _i16ActiveSequence is going to be set to 5");
-    //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). about to call setActiveSequence(5)");
-    //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). (before calling setActiveSequence(5)) _i16ActiveSequence: ");Serial.println(_i16ActiveSequence);
+    //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). about to call setActiveSequenceNb(5)");
+    //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). (before calling setActiveSequenceNb(5)) _i16ActiveSequence: ");Serial.println(_i16ActiveSequence);
     // }
-    setActiveSequence(5);
+    setActiveSequenceNb(5);
     // if (MY_DG_LASER) {
-    //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). (just after calling setActiveSequence(5)) _i16ActiveSequence: ");Serial.println(_i16ActiveSequence);
+    //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). (just after calling setActiveSequenceNb(5)) _i16ActiveSequence: ");Serial.println(_i16ActiveSequence);
     //   Serial.println("sequence::_odtcbPlaySequenceInLoop(). about to call sequences[_i16ActiveSequence]._playSequence()");
     // }
   }
