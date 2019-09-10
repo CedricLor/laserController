@@ -19,7 +19,6 @@ class sequence
     sequence(); // default constructor
     sequence(
       const beat & __beat,
-      const uint16_t & __ui16BaseNotesCountPerBar, 
       const int16_t & __i16BarCountInSequence, 
       const std::array<int16_t, 8> & __i16AssociatedBars
     );
@@ -35,7 +34,6 @@ class sequence
     static void initSequences(); // initializer of the array of sequences
 
     /** getters */
-    const uint16_t ui16GetBaseNotesCountPerBar() const;
     const int16_t i16GetBarCountInSequence() const;
     const beat & getAssociatedBeat() const;
     const std::array<int16_t, 8> getAssociatedBars() const;
@@ -64,11 +62,9 @@ class sequence
 
     // helper functions
     uint32_t const _ui32SequenceDuration();
-    uint32_t const _ui32TheoreticalBarDuration();
 
     // instance properties
     beat _beat;
-    uint16_t _ui16BaseNotesCountPerBar; // the 2 in 2/4, for instance
     int16_t _i16BarCountInSequence; // number of tempos required to execute one full sequence
     std::array<int16_t, 8> _i16AssociatedBars;  // array containing the state of each laser at each tempo
 

@@ -27,7 +27,6 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullp
 // default constructor
 sequence::sequence():
   _beat(beat(0, 0)),
-  _ui16BaseNotesCountPerBar(0), 
   _i16BarCountInSequence(0), 
   _i16AssociatedBars(std::array<int16_t, 8> {})
 { 
@@ -37,12 +36,10 @@ sequence::sequence():
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
-  const uint16_t & __ui16BaseNotesCountPerBar, 
   const int16_t & __i16BarCountInSequence, 
   const std::array<int16_t, 8> & __i16AssociatedBars
 ):
   _beat(__beat),
-  _ui16BaseNotesCountPerBar(__ui16BaseNotesCountPerBar), 
   _i16BarCountInSequence(__i16BarCountInSequence), 
   _i16AssociatedBars(__i16AssociatedBars)
 { }
@@ -50,7 +47,6 @@ sequence::sequence(
 // copy constructor
 sequence::sequence( const sequence& __sequence):
   _beat(__sequence._beat),
-  _ui16BaseNotesCountPerBar(__sequence.ui16GetBaseNotesCountPerBar()), 
   _i16BarCountInSequence(__sequence.i16GetBarCountInSequence()), 
   _i16AssociatedBars(__sequence._i16AssociatedBars)
 { }
@@ -59,7 +55,6 @@ sequence::sequence( const sequence& __sequence):
 sequence& sequence::operator=(const sequence& __sequence)
 {
   _beat = __sequence._beat;
-  _ui16BaseNotesCountPerBar = __sequence.ui16GetBaseNotesCountPerBar();
   _i16BarCountInSequence = __sequence.i16GetBarCountInSequence();
   _i16AssociatedBars = _i16AssociatedBars;
   // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
@@ -110,9 +105,7 @@ void sequence::initSequences() {
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
-  /** _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  const uint16_t & _ui16TwoBaseNotesPerBar = 2;
-  sequences[0] = {_beat_2_1, _ui16TwoBaseNotesPerBar, _i16OneBarInThisSequence, _i16Relays};
+  sequences[0] = {_beat_2_1, _i16OneBarInThisSequence, _i16Relays};
   // Serial.println("void sequence::_initSequences(). sequences[0]._ui16BaseBeatInBpm: ");
   // Serial.println(sequences[0]._ui16BaseBeatInBpm);
   // Serial.println("void sequence::_initSequences(). sequences[0]._i16AssociatedBars[0][1]");
@@ -122,10 +115,7 @@ void sequence::initSequences() {
   // --> Sequence 1: "Twins"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16Twins {1}; // _bars[1]
-  /**
-   * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[1] = {_beat_2_1, _ui16TwoBaseNotesPerBar, _i16OneBarInThisSequence, _i16Twins};
-  Serial.printf("sequence::initSequences(). sequences[1].ui16GetBaseNotesCountPerBar() = %u\n", sequences[1].ui16GetBaseNotesCountPerBar());
+  sequences[1] = {_beat_2_1, _i16OneBarInThisSequence, _i16Twins};
   Serial.printf("sequence::initSequences(). sequences[1].i16GetBarCountInSequence() = %i\n", sequences[1].i16GetBarCountInSequence());
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[1].getAssociatedBeat().getBaseNoteForBeat());
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[1].getAssociatedBeat().getBaseBeatInBpm());
@@ -135,9 +125,7 @@ void sequence::initSequences() {
   // --> Sequence 2: "All"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16All {2}; // _bars[2]
-  /**
-   * _ui16BaseNotesCountPerBar = 2;  => partition en 2/1 */
-  sequences[2] = {_beat_2_1, _ui16TwoBaseNotesPerBar, _i16OneBarInThisSequence, _i16All};
+  sequences[2] = {_beat_2_1, _i16OneBarInThisSequence, _i16All};
 
 
   // --> Sequence 3: "Swipe Right"
@@ -147,26 +135,19 @@ void sequence::initSequences() {
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_120_1(120,1);
-  /** _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
-  const uint16_t & _ui16FourBaseNotesPerBar = 4;
-  sequences[3] = {_beat_120_1, _ui16FourBaseNotesPerBar, _i16OneBarInThisSequence, _i16SwipeR};
+  sequences[3] = {_beat_120_1, _i16OneBarInThisSequence, _i16SwipeR};
 
 
   // --> Sequence 4: "Swipe Left"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16SwipeL {4}; // _bars[4]
-  /**
-   * _ui16BaseNotesCountPerBar = 4;  => partition en 4/1 */
-  sequences[4] = {_beat_120_1, _ui16FourBaseNotesPerBar, _i16OneBarInThisSequence, _i16SwipeL};
+  sequences[4] = {_beat_120_1, _i16OneBarInThisSequence, _i16SwipeL};
 
 
   // --> Sequence 5: "All Off"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16AllOff {5}; // _bars[5]
-  /**
-   * _ui16BaseNotesCountPerBar = 1;  => partition en 1/1*/
-  const uint16_t & _ui16OneBaseNotesPerBar = 1;
-  sequences[5] = {_beat_2_1, _ui16OneBaseNotesPerBar, _i16OneBarInThisSequence, _i16AllOff};
+  sequences[5] = {_beat_2_1, _i16OneBarInThisSequence, _i16AllOff};
 
   Serial.println("sequence::_initSequences(). Ending.");
 }
@@ -178,22 +159,6 @@ void sequence::initSequences() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/**uint16_t sequence::ui16GetBaseNotesCountPerBar()
- * 
- *  Instance getter.
- *  
- *  Returns the base note count per bar in a given sequence 
- *  (the 2 in a 2/4 tempo).
- * 
- *  Used by sequence::_ui32TheoreticalBarDuration() to set the intervals of
- *  tPlaySequence and tPlaySequenceInLoop.
- *  */
-const uint16_t sequence::ui16GetBaseNotesCountPerBar() const {
-  return _ui16BaseNotesCountPerBar;  
-}
-
-
-
 /**uint16_t sequence::i16GetBarCountInSequence()
  *  
  * Instance getter.
@@ -540,20 +505,6 @@ uint32_t const sequence::_ui32SequenceDuration() {
 
 
 
-/** Helper function to tPlaySequence
- * 
- *  Returns the current bar theoretical duration.
- *  Used by sequence::_ui32SequenceDuration() to set the interval of Task tPlaySequenceInLoop.
- *  Used by sequence::_oetcbPlaySequence() to set the interval of Task tPlaySequence.
- * */
-uint32_t const sequence::_ui32TheoreticalBarDuration() {
-  Serial.println(F("sequence::_ui32TheoreticalBarDuration(). Starting."));
-  Serial.printf("sequence::_ui32TheoreticalBarDuration(). _i16ActiveSequence = %i\n", _i16ActiveSequence);
-  Serial.printf("sequence::_ui32TheoreticalBarDuration(). sequences[%i].ui16GetBaseNotesCountPerBar() = %u\n", _i16ActiveSequence, sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar());
-  Serial.printf("sequence::_ui32TheoreticalBarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  Serial.printf("sequence::_ui32TheoreticalBarDuration(). about to return the following value: %u\n", sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  return (sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-}
 
 
 
