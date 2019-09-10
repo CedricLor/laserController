@@ -37,15 +37,16 @@ sequence::sequence():
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
+  const std::array<bar, 8> & __barsArray,
   const std::array<int16_t, 8> & __i16AssociatedBars
 ):
   _beat(__beat),
-  _barsArray(_emptyBarsArray), // <-- TODO: replace by initializer
+  _barsArray(__barsArray),
   _i16AssociatedBars(__i16AssociatedBars)
 { }
 
 // copy constructor
-sequence::sequence( const sequence& __sequence):
+sequence::sequence(const sequence& __sequence):
   _beat(__sequence._beat),
   _barsArray(__sequence._barsArray),
   _i16AssociatedBars(__sequence._i16AssociatedBars)
@@ -100,11 +101,12 @@ void sequence::initSequences() {
    *  0 is a reference to _bars[0]
    */
   const std::array<int16_t, 8> & _i16Relays {0}; // _bars[0]
+  const std::array<bar, 8> & _relaysBarsArray {bar::_bars[0]};
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
-  sequences[0] = {_beat_2_1, _i16Relays};
+  sequences[0] = {_beat_2_1, _relaysBarsArray, _i16Relays};
   // Serial.println("void sequence::_initSequences(). sequences[0]._ui16BaseBeatInBpm: ");
   // Serial.println(sequences[0]._ui16BaseBeatInBpm);
   // Serial.println("void sequence::_initSequences(). sequences[0]._i16AssociatedBars[0][1]");
@@ -114,7 +116,8 @@ void sequence::initSequences() {
   // --> Sequence 1: "Twins"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16Twins {1}; // _bars[1]
-  sequences[1] = {_beat_2_1, _i16Twins};
+  const std::array<bar, 8> & _twinsBarsArray {bar::_bars[1]};
+  sequences[1] = {_beat_2_1, _twinsBarsArray, _i16Twins};
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[1].getAssociatedBeat().getBaseNoteForBeat());
   Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[1].getAssociatedBeat().getBaseBeatInBpm());
   Serial.printf("sequence::initSequences(). getAssociatedBars()[0]: %i\n", sequences[1].getAssociatedBars()[0]);
@@ -123,29 +126,33 @@ void sequence::initSequences() {
   // --> Sequence 2: "All"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16All {2}; // _bars[2]
-  sequences[2] = {_beat_2_1, _i16All};
+  const std::array<bar, 8> & _allBarsArray {bar::_bars[1]};
+  sequences[2] = {_beat_2_1, _allBarsArray, _i16All};
 
 
   // --> Sequence 3: "Swipe Right"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16SwipeR {3}; // _bars[3]
+  const std::array<bar, 8> & _swipeRBarsArray {bar::_bars[3]};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_120_1(120,1);
-  sequences[3] = {_beat_120_1, _i16SwipeR};
+  sequences[3] = {_beat_120_1, _swipeRBarsArray, _i16SwipeR};
 
 
   // --> Sequence 4: "Swipe Left"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16SwipeL {4}; // _bars[4]
-  sequences[4] = {_beat_120_1, _i16SwipeL};
+  const std::array<bar, 8> & _swipeLBarsArray {bar::_bars[4]};
+  sequences[4] = {_beat_120_1, _swipeLBarsArray, _i16SwipeL};
 
 
   // --> Sequence 5: "All Off"
   // array of references to the bars to be played in the sequence
   std::array<int16_t, 8> _i16AllOff {5}; // _bars[5]
-  sequences[5] = {_beat_2_1, _i16AllOff};
+  const std::array<bar, 8> & _allOffBarsArray {bar::_bars[5]};
+  sequences[5] = {_beat_2_1, _allOffBarsArray, _i16AllOff};
 
   Serial.println("sequence::_initSequences(). Ending.");
 }
