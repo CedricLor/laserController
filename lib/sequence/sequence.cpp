@@ -47,7 +47,7 @@ sequence::sequence(
 // copy constructor
 sequence::sequence( const sequence& __sequence):
   _beat(__sequence._beat),
-  _barsArray(_emptyBarsArray), // <-- TODO: replace by initializer
+  _barsArray(__sequence._barsArray),
   _i16AssociatedBars(__sequence._i16AssociatedBars)
 { }
 
@@ -55,6 +55,7 @@ sequence::sequence( const sequence& __sequence):
 sequence& sequence::operator=(const sequence& __sequence)
 {
   _beat = __sequence._beat;
+  _barsArray = __sequence._barsArray;
   _i16AssociatedBars = _i16AssociatedBars;
   // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
   // Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
