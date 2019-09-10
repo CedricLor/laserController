@@ -22,7 +22,6 @@ class bar
     /** main parameterized constructor */
     bar(
       const uint16_t __ui16_base_notes_count_in_bar,
-      const uint16_t __ui16_notes_count_in_bar,
       std::array<note, 16> & __notesArray
     ); 
     // copy constructor
@@ -40,6 +39,7 @@ class bar
     static int16_t const i16GetCurrentBarId(); // returns _i16ActiveBarId
     static bar & getCurrentBar();
     static bar & getBarFromBarArray(const int16_t __i16_bar_id);
+    uint16_t const ui16GetNotesCountInBar() const;
     uint32_t const ui32BarDuration() const;
 
     /** player */
@@ -66,7 +66,6 @@ class bar
 
     // private instance properties
     uint16_t _ui16BaseNotesCountInBar;
-    uint16_t _ui16NotesCountInBar; // number of actual notes in the bar
     std::array<note, 16> & _notesArray;
 };
 

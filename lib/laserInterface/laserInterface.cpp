@@ -102,13 +102,13 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   std::array<note, 16> _arrayOfNotes;
   _arrayOfNotes.fill(note(0,0));
   _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
-  /**  bar __target_bar(4, 8, _arrayOfNotes)
-   *      ex. bar(4, 8, std::array<note, 16> {note(4,8), note(3,8), note(2,8), note(1,8)}, note(2,8), note(3,8), note(4,8), note(0,8))
+  /**  bar __target_bar(4, _arrayOfNotes)
+   *      ex. bar(4, std::array<note, 16> {note(4,8), note(3,8), note(2,8), note(1,8)}, note(2,8), note(3,8), note(4,8), note(0,8))
    *      where:
    *      - 4 stands for 4 blacks per bar;
    *      - 8 stands for 8 effective notes in the bar; and
    *      - the array of notes contained in the bar. */
-  bar __target_bar(4, 8, _arrayOfNotes);
+  bar __target_bar(4, _arrayOfNotes);
   __target_bar.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   // 2. Or set the active bar
   setCurrentBar(__ui16_target_bar);
