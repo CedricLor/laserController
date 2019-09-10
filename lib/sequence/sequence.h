@@ -27,7 +27,7 @@ class sequence
     sequence& operator=(const sequence& __sequence);
 
     /** public static array of sequences */
-    static std::array<sequence, 7> sequences;
+    static std::array<sequence, 7> sequences; // <-- TODO: make it private at some point
 
     /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
@@ -55,10 +55,12 @@ class sequence
   private:
     // static private constants to set stuffs
     static const int16_t _i16_sequence_count;
-    static std::array<bar, 8> _emptyBarsArray;
 
     // static variable: currently played active sequence
+    static sequence _emptySequence;
+    static sequence & _activeSequence;
     static int16_t _i16ActiveSequenceNb;
+    static std::array<bar, 8> _emptyBarsArray;
 
     // instance getters
     uint32_t const _ui32GetSequenceDuration() const;
