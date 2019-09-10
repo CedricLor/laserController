@@ -519,8 +519,6 @@ void sequence::_odtcbPlaySequence(){
 uint32_t const sequence::_ui32SequenceDuration() {
   Serial.println(F("sequence::_ui32SequenceDuration(). Starting."));
   Serial.printf("sequence::_ui32SequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
-  Serial.printf("sequence::_ui32SequenceDuration(). sequences[_i16ActiveSequence].i16GetBarCountInSequence() = %i\n", sequences[_i16ActiveSequence].i16GetBarCountInSequence());
-  Serial.printf("sequence::_ui32SequenceDuration(). about to return the following value = %u\n", (sequences[_i16ActiveSequence].i16GetBarCountInSequence() * sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration()));
   uint16_t __ui = 0;
   uint32_t __ui32SequenceDuration = 0;
   while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui] != -1) {
