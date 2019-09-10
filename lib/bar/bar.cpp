@@ -366,3 +366,14 @@ bar & bar::getCurrentBar() {
 bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_index_number) {
   return _bars[__ui16_bar_index_number];
 }
+
+/** bar const & bar::getBarFromBarArray(const uint16_t __ui16_bar_index_number) 
+ * 
+ * Returns the current bar effective duration in ms */
+uint32_t const bar::ui32BarDuration() const {
+  // Serial.println(F("bar::ui32BarDuration(). Starting."));
+  // Serial.printf("bar::ui32BarDuration(). ui16GetBaseNotesCountPerBar() = %u\n", _ui16BaseNotesCountInBar);
+  // Serial.printf("bar::ui32BarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32BarDuration(). about to return the following value: %u\n", _ui16BaseNotesCountInBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  return (_ui16BaseNotesCountInBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+}

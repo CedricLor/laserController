@@ -318,13 +318,13 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // }
 
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");}
-  // if (MY_DG_LASER) {Serial.printf("sequence::_oetcbPlaySequenceInLoop(). _ulSequenceDuration(_i16ActiveSequence): %i \n", _ulSequenceDuration(_i16ActiveSequence));}
+  // if (MY_DG_LASER) {Serial.printf("sequence::_oetcbPlaySequenceInLoop(). sequences[_i16ActiveSequence]._ui32SequenceDuration(): %u \n", sequences[_i16ActiveSequence]._ui32SequenceDuration());}
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
   /* Set the interval between each iteration of tPlaySequenceInLoop
       (each iteration will restart the Task tPlaySequence, so this interval
       shall be equal to the duration of the sequence). */
-  tPlaySequenceInLoop.setInterval(_ulSequenceDuration());
+  tPlaySequenceInLoop.setInterval(sequences[_i16ActiveSequence]._ui32SequenceDuration());
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
@@ -412,8 +412,8 @@ bool sequence::_oetcbPlaySequence(){
   // Serial.println("----------------------------on enable tPlaySequence ------------------------------");
 
   // 1. sets the interval of the tPlaySequence task
-  tPlaySequence.setInterval(_ulBarDuration());
-  // Serial.printf("void sequence::_oetcbPlaySequence(). Set interval: %lu ms.\n", _ulBarDuration(_i16ActiveSequence));
+  tPlaySequence.setInterval(sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration());
+  // Serial.printf("void sequence::_oetcbPlaySequence(). Set interval: %u ms.\n", sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration());
   // Serial.printf("void sequence::_oetcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
 
   // 2. sets the number of iterations of the tPlaySequence task from the
@@ -505,26 +505,24 @@ void sequence::_odtcbPlaySequence(){
 
 // Helper function to _oetcbPlaySequenceInLoop
 // Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
-long unsigned int sequence::_ulSequenceDuration() {
-  Serial.println(F("sequence::_ulSequenceDuration(). Starting."));
-  Serial.printf("sequence::_ulSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
-  Serial.printf("sequence::_ulSequenceDuration(). sequences[_i16ActiveSequence].i16GetBarCountInSequence() = %i\n", sequences[_i16ActiveSequence].i16GetBarCountInSequence());
-  unsigned long __ulDurationInMs = sequences[_i16ActiveSequence]._i16BarCountInSequence * _ulBarDuration();
-  Serial.printf("sequence::_ulSequenceDuration(). __ulDurationInMs = %lu\n", __ulDurationInMs);
-  Serial.println(F("sequence::_ulSequenceDuration(). Ending."));
-  return __ulDurationInMs;
+uint32_t const sequence::_ui32SequenceDuration() {
+  Serial.println(F("sequence::_ui32SequenceDuration(). Starting."));
+  Serial.printf("sequence::_ui32SequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
+  Serial.printf("sequence::_ui32SequenceDuration(). sequences[_i16ActiveSequence].i16GetBarCountInSequence() = %i\n", sequences[_i16ActiveSequence].i16GetBarCountInSequence());
+  Serial.printf("sequence::_ui32SequenceDuration(). about to return the following value = %lu\n", (sequences[_i16ActiveSequence].i16GetBarCountInSequence() * sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration()));
+  return (sequences[_i16ActiveSequence].i16GetBarCountInSequence() * sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration());
 }
 
 
 
 // Helper function to tPlaySequence
 // returns the current bar effective duration
-long unsigned int sequence::_ulBarDuration() {
-  Serial.println(F("sequence::_ulBarDuration(). Starting."));
-  Serial.printf("sequence::_ulBarDuration(). _i16ActiveSequence = %i\n", _i16ActiveSequence);
-  Serial.printf("sequence::_ulBarDuration(). sequences[%i].ui16GetBaseNotesCountPerBar() = %u\n", _i16ActiveSequence, sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar());
-  Serial.printf("sequence::_ulBarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  Serial.printf("sequence::_ulBarDuration(). about to return the following value: %u\n", sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+uint32_t const sequence::_ui32TheoreticalBarDuration() {
+  Serial.println(F("sequence::_ui32BarDuration(). Starting."));
+  Serial.printf("sequence::_ui32BarDuration(). _i16ActiveSequence = %i\n", _i16ActiveSequence);
+  Serial.printf("sequence::_ui32BarDuration(). sequences[%i].ui16GetBaseNotesCountPerBar() = %u\n", _i16ActiveSequence, sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar());
+  Serial.printf("sequence::_ui32BarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  Serial.printf("sequence::_ui32BarDuration(). about to return the following value: %u\n", sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
   return (sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
 }
 

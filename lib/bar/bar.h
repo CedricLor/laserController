@@ -40,6 +40,7 @@ class bar
     static int16_t const i16GetCurrentBarId(); // returns _ui16ActiveBar
     static bar & getCurrentBar();
     static bar & getBarFromBarArray(const uint16_t __ui16_active_bar);
+    uint32_t const ui32BarDuration() const;
 
     /** player */
     void playBarStandAlone(beat const & __beat=beat::_activeBeat);

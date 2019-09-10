@@ -63,8 +63,8 @@ class sequence
     static int16_t _i16ActiveSequence;
 
     // helper functions
-    static long unsigned int _ulSequenceDuration();
-    static long unsigned int _ulBarDuration();
+    uint32_t const _ui32SequenceDuration();
+    uint32_t const _ui32TheoreticalBarDuration();
 
     // instance properties
     beat _beat;
