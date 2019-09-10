@@ -14,6 +14,7 @@ Traductions en anglais:
 int16_t sequence::_i16ActiveSequence = 0;
 const int16_t sequence::_i16_sequence_count = 7;
 std::array<sequence, 7> sequence::sequences;
+std::array<bar, 8> sequence::_emptyBarsArray;
 
 
 // pointer to functions to produce an interface for sequence
@@ -27,6 +28,7 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullp
 // default constructor
 sequence::sequence():
   _beat(beat(0, 0)),
+  _barsArray(_emptyBarsArray),
   _i16AssociatedBars(std::array<int16_t, 8> {})
 { 
   _i16AssociatedBars.fill(-1);
@@ -38,12 +40,14 @@ sequence::sequence(
   const std::array<int16_t, 8> & __i16AssociatedBars
 ):
   _beat(__beat),
+  _barsArray(_emptyBarsArray), // <-- TODO: replace by initializer
   _i16AssociatedBars(__i16AssociatedBars)
 { }
 
 // copy constructor
 sequence::sequence( const sequence& __sequence):
   _beat(__sequence._beat),
+  _barsArray(_emptyBarsArray), // <-- TODO: replace by initializer
   _i16AssociatedBars(__sequence._i16AssociatedBars)
 { }
 

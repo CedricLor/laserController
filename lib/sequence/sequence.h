@@ -55,6 +55,7 @@ class sequence
   private:
     // static private constants to set stuffs
     static const int16_t _i16_sequence_count;
+    static std::array<bar, 8> _emptyBarsArray;
 
     // static variable: currently played active sequence
     static int16_t _i16ActiveSequence;
@@ -64,6 +65,7 @@ class sequence
 
     // instance properties
     beat _beat;
+    std::array<bar, 8> & _barsArray;
     std::array<int16_t, 8> _i16AssociatedBars;  // array containing the state of each laser at each tempo
 
 
