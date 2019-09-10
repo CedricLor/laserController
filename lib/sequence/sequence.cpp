@@ -191,7 +191,7 @@ const uint16_t sequence::ui16GetBarCountInSequence() const {
   uint16_t __ui16BarCountInSequence = 0;
   while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui16BarCountInSequence] != -1) {
     __ui16BarCountInSequence++;
-}
+  }
   return __ui16BarCountInSequence + 1;
 }
 
@@ -261,8 +261,50 @@ int16_t const sequence::getCurrentSequence() {
 ///////////////////////////////////
 // Sequence Players
 ///////////////////////////////////
-void sequence::playSequenceStandAlone() {
+/** bar::playSequenceStandAlone():
+ *  
+ *  play a single sequence calculating the durations
+ *  on the basis of the passed-in beat.
+ * 
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration */
+void sequence::playSequenceStandAlone(beat const & __beat, const uint16_t __ui16_associated_sequence_idx_number) {
+  tPlaySequenceInLoop.disable();
+  tPlaySequence.disable();
+  bar::tPlayBar.disable();
+  bar::tPlayBar.setOnDisable(NULL);
+  note::tPlayNote.disable();
 
+  // 1. reset tPlayNote to play notes read from a bar
+  note::resetTPlayNoteToPlayNotesInBar();
+
+  /**2. set the tPlayBar Task to its default when reading bars from a sequence.
+   *    tPlayBar will be managed from tPlaySequence => tPlayBar will not need to reset
+   *    the beat upon being disabled (tPlaySequence will do it).
+   *    
+   *    tPlaySequence and tPlayBar will rely on the beat set in sequence
+   *    to make the duration calculations.
+   *  */
+  bar::tPlayBar.setOnDisable(NULL);
+  // TODO: drafting
+
+  /**3. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
+   *    the stand alone sequence has been read, so that any other object that may 
+   *    thereafter depend on beat finds a clean beat to start with, as required. */
+  tPlaySequence.setOnDisable([](){
+    beat(0, 0).setActive();
+    tPlaySequence.setOnDisable(_odtcbPlaySequence);
+  });
+
+  // 4. set the active sequence
+  // TODO: Draft a flexible way to set the active sequence
+  setActiveSequence(__ui16_associated_sequence_idx_number);
+ 
+  // 5. set the beat
+  // sequences[_i16ActiveSequence]._beat.setActive(); <-- this shall not be called.
+  beat(__beat).setActive();
+
+  tPlaySequence.enable();
 }
 
 void sequence::playSequenceInBoxState(const uint16_t __ui16_associated_sequence_idx_number) {
@@ -276,6 +318,8 @@ void sequence::playSequenceInBoxState(const uint16_t __ui16_associated_sequence_
   note::resetTPlayNoteToPlayNotesInBar();
   bar::tPlayBar.setOnDisable(NULL);
 
+  tPlaySequence.setOnDisable(_odtcbPlaySequence);
+  
   // TODO: the following line shall be refactored, and get rid of _i16ActiveSequence;
   // to be replaced by a reference _activeSequence
   _i16ActiveSequence = __ui16_associated_sequence_idx_number;
@@ -500,26 +544,26 @@ void sequence::_tcbPlaySequence(){
   Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from bar::_bars[%i].ui32BarDuration()\n", _i16ActiveBarId, __ui32ThisBarDuration);
 
   if (_i16ActiveBarId != -1) {
-  // 4. Play the corresponding bar
-  /**TODO: The call to playBarInSequence() here inserted does not take into account 
-   *       any differences between bar length requirement at sequence level (3/4: 3 blacks per bar)
-   *       and the effective bar length (ex. a bar that would have two whites, for instance.)
-   * 
-   *       1. Find a way to adjust bar of a given length to sequence of a different length.
-   *       2. Create a mode, in sequence, that plays the bars according to their own 
-   *          length, at the tempo (beat), defined by the sequence. */
-  Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBarId);
-  bar::_bars[_i16ActiveBarId].playBarInSequence();
-
-  /**5. Set the interval for next iteration of tPlaySequence
-   * 
-   *    At each pass, reset the interval before the next iteration of this 
-   *    Task sequence::tPlaySequence. This marks the duration of each bar played in the
-   *    context of a sequence. */
-  Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
-  tPlaySequence.setInterval(__ui32ThisBarDuration);
-  // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
-  // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
+    // 4. Play the corresponding bar
+    /**TODO: The call to playBarInSequence() here inserted does not take into account 
+     *       any differences between bar length requirement at sequence level (3/4: 3 blacks per bar)
+     *       and the effective bar length (ex. a bar that would have two whites, for instance.)
+     * 
+     *       1. Find a way to adjust bar of a given length to sequence of a different length.
+     *       2. Create a mode, in sequence, that plays the bars according to their own 
+     *          length, at the tempo (beat), defined by the sequence. */
+    Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBarId);
+    bar::_bars[_i16ActiveBarId].playBarInSequence();
+  
+    /**5. Set the interval for next iteration of tPlaySequence
+     * 
+     *    At each pass, reset the interval before the next iteration of this 
+     *    Task sequence::tPlaySequence. This marks the duration of each bar played in the
+     *    context of a sequence. */
+    Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
+    tPlaySequence.setInterval(__ui32ThisBarDuration);
+    // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
+    // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
   }
 
   Serial.println("sequence::_tcbPlaySequence(). Ending.");

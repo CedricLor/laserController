@@ -41,7 +41,7 @@ class sequence
     const std::array<int16_t, 8> getAssociatedBars() const;
 
     /** Task - sequence players */
-    void playSequenceStandAlone(beat const & __beat);
+    void playSequenceStandAlone(beat const & __beat, const uint16_t __ui16_associated_sequence_idx_number);
     void playSequenceInBoxState(const uint16_t __ui16_associated_sequence_idx_number);
     static Task tPlaySequenceInLoop;
     static Task tPlaySequence;
