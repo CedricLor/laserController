@@ -58,7 +58,7 @@ class sequence
     static std::array<bar, 8> _emptyBarsArray;
 
     // static variable: currently played active sequence
-    static int16_t _i16ActiveSequence;
+    static int16_t _i16ActiveSequenceNb;
 
     // instance getters
     uint32_t const _ui32GetSequenceDuration() const;
