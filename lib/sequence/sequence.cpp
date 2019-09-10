@@ -521,7 +521,14 @@ uint32_t const sequence::_ui32SequenceDuration() {
   Serial.printf("sequence::_ui32SequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
   Serial.printf("sequence::_ui32SequenceDuration(). sequences[_i16ActiveSequence].i16GetBarCountInSequence() = %i\n", sequences[_i16ActiveSequence].i16GetBarCountInSequence());
   Serial.printf("sequence::_ui32SequenceDuration(). about to return the following value = %u\n", (sequences[_i16ActiveSequence].i16GetBarCountInSequence() * sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration()));
-  return (sequences[_i16ActiveSequence].i16GetBarCountInSequence() * sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration());
+  uint16_t __ui = 0;
+  uint32_t __ui32SequenceDuration = 0;
+  while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui] != -1) {
+    int16_t __barIndexNumber = sequences[_i16ActiveSequence].getAssociatedBars()[__ui];
+    __ui32SequenceDuration += bar::_bars[__barIndexNumber].ui32BarDuration();
+    __ui++;
+  }
+  return __ui32SequenceDuration;
 }
 
 
