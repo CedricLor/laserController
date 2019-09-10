@@ -30,7 +30,9 @@ sequence::sequence():
   _ui16BaseNotesCountPerBar(0), 
   _i16BarCountInSequence(0), 
   _i16AssociatedBars(std::array<int16_t, 8> {})
-{ }
+{ 
+  _i16AssociatedBars.fill(-1);
+}
 
 // parameterized constructor
 sequence::sequence(
@@ -480,7 +482,9 @@ void sequence::_tcbPlaySequence(){
    *       2. Create a mode, in sequence, that plays the bars according to their own 
    *          length, at the tempo (beat), defined by the sequence. */
   Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBarId);
+  if (_i16ActiveBarId != -1) {
   bar::_bars[_i16ActiveBarId].playBarInSequence();
+  }
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };
