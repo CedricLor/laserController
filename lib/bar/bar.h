@@ -15,7 +15,7 @@ class bar
 {
   public:
     /** sender to mesh */
-    static void (*sendCurrentBar)(const uint16_t __ui16_active_bar);
+    static void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
     /** default empty constructor */
     bar();
@@ -34,12 +34,12 @@ class bar
     static void initBars(); // initializer of the array of bars
 
     /** setters */
-    void setActive();
+    void setActive(const int16_t __i16_active_bar_id=-1);
 
     /** getters */
-    static int16_t const i16GetCurrentBarId(); // returns _ui16ActiveBar
+    static int16_t const i16GetCurrentBarId(); // returns _i16ActiveBarId
     static bar & getCurrentBar();
-    static bar & getBarFromBarArray(const uint16_t __ui16_active_bar);
+    static bar & getBarFromBarArray(const int16_t __i16_bar_id);
     uint32_t const ui32BarDuration() const;
 
     /** player */
@@ -53,7 +53,7 @@ class bar
     // static properties
     static bar _emptyBar;
     static bar &_activeBar;
-    static uint16_t _ui16ActiveBar;
+    static int16_t _i16ActiveBarId;
     static std::array<bar, 7> _bars;
     static std::array<note, 16> _emptyNotesArray;
 

@@ -73,8 +73,8 @@ void laserInterface::initBarComm() {
 }
 
 
-void laserInterface::setCurrentBar(const uint16_t __ui16_target_bar_ix_numb) {
-  bar::getBarFromBarArray(__ui16_target_bar_ix_numb).setActive();
+void laserInterface::setCurrentBar(const int16_t __i16_target_bar_id) {
+  bar::getBarFromBarArray(__i16_target_bar_id).setActive();
 }
 
 
@@ -83,7 +83,7 @@ void laserInterface::getCurrentBar() {
 }
 
 
-void laserInterface::sendCurrentBar(const uint16_t __ui16_active_bar_ix_numb) {
+void laserInterface::sendCurrentBar(const int16_t __i16_current_bar_id) {
     /** TODO: draft a call to myMeshViews.  */
 }
 

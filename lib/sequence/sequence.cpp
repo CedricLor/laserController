@@ -464,8 +464,8 @@ void sequence::_tcbPlaySequence(){
 
   // 2. Select the bar number corresponding to this iteration
   Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
-  int16_t _i16ActiveBar = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
-  Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBar idx number [%i] from _i16ActiveBar: sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveBar, _i16ActiveSequence, _i16Iter);
+  int16_t _i16ActiveBarId = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
+  Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBarId [%i] from sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveBarId, _i16ActiveSequence, _i16Iter);
 
   // 3. Play the corresponding bar
   /**TODO: The call to playBarInSequence() here inserted does not take into account 
@@ -475,8 +475,8 @@ void sequence::_tcbPlaySequence(){
    *       1. Find a way to adjust bar of a given length to sequence of a different length.
    *       2. Create a mode, in sequence, that plays the bars according to their own 
    *          length, at the tempo (beat), defined by the sequence. */
-  Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBar);
-  bar::_bars[_i16ActiveBar].playBarInSequence();
+  Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBarId);
+  bar::_bars[_i16ActiveBarId].playBarInSequence();
 
   Serial.println("void sequence::_tcbPlaySequence(). Ending.");
 };

@@ -14,13 +14,13 @@ Traductions en anglais:
 
 bar bar::_emptyBar;
 bar &bar::_activeBar = _emptyBar;
-uint16_t bar::_ui16ActiveBar = 0;
+int16_t bar::_i16ActiveBarId = -1;
 std::array<bar, 7> bar::_bars;
 std::array<note, 16> bar::_emptyNotesArray;
 
 
 // pointer to functions to produce an interface for bar
-void (*bar::sendCurrentBar)(const uint16_t __ui16_active_bar) = nullptr;
+void (*bar::sendCurrentBar)(const int16_t __i16_current_bar_id) = nullptr;
 
 
 
@@ -332,9 +332,10 @@ void bar::_tcbPlayBar(){
 /** bar::setActive(): public instance setter method
  * 
  *  sets the caller bar as the static variable &bar::_activeBar. */
-void bar::setActive() {
+void bar::setActive(const int16_t __i16_active_bar_id) {
   tPlayBar.disable();
   _activeBar = *this;
+  _i16ActiveBarId = __i16_active_bar_id;
 }
 
 
@@ -350,7 +351,7 @@ void bar::setActive() {
  * 
  * Returns the active bar index number */
 int16_t const bar::i16GetCurrentBarId() {
-  return _ui16ActiveBar;
+  return _i16ActiveBarId;
 }
 
 /** bar & bar::getCurrentBar()
@@ -360,14 +361,14 @@ bar & bar::getCurrentBar() {
   return _activeBar;
 }
 
-/** bar const & bar::getBarFromBarArray(const uint16_t __ui16_bar_index_number) 
+/** bar const & bar::getBarFromBarArray(const int16_t __i16_bar_id) 
  * 
  * Returns a const ref to one of the hard coded bars given its index number */
-bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_index_number) {
-  return _bars[__ui16_bar_index_number];
+bar & bar::getBarFromBarArray(const int16_t __i16_bar_id) {
+  return _bars[__i16_bar_id];
 }
 
-/** bar const & bar::getBarFromBarArray(const uint16_t __ui16_bar_index_number) 
+/** uint32_t const bar::ui32BarDuration() const
  * 
  * Returns the current bar effective duration in ms */
 uint32_t const bar::ui32BarDuration() const {
