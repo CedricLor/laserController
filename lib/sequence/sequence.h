@@ -60,8 +60,8 @@ class sequence
     // static variable: currently played active sequence
     static int16_t _i16ActiveSequence;
 
-    // helper functions
-    uint32_t const _ui32SequenceDuration();
+    // instance getters
+    uint32_t const _ui32GetSequenceDuration();
 
     // instance properties
     beat _beat;

@@ -289,13 +289,13 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // }
 
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). about to calculate the duration of the interval for tPlaySequenceinLoop.");}
-  // if (MY_DG_LASER) {Serial.printf("sequence::_oetcbPlaySequenceInLoop(). sequences[_i16ActiveSequence]._ui32SequenceDuration(): %u \n", sequences[_i16ActiveSequence]._ui32SequenceDuration());}
+  // if (MY_DG_LASER) {Serial.printf("sequence::_oetcbPlaySequenceInLoop(). sequences[_i16ActiveSequence]._ui32GetSequenceDuration(): %u \n", sequences[_i16ActiveSequence]._ui32GetSequenceDuration());}
   // if (MY_DG_LASER) {Serial.println("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(_duration) ******");}
 
   /* Set the interval between each iteration of tPlaySequenceInLoop
       (each iteration will restart the Task tPlaySequence, so this interval
       shall be equal to the duration of the sequence). */
-  tPlaySequenceInLoop.setInterval(sequences[_i16ActiveSequence]._ui32SequenceDuration());
+  tPlaySequenceInLoop.setInterval(sequences[_i16ActiveSequence]._ui32GetSequenceDuration());
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
@@ -485,14 +485,14 @@ void sequence::_odtcbPlaySequence(){
 ///////////////////////////////////
 
 
-/** Helper function to _oetcbPlaySequenceInLoop
+/** uint32_t const sequence::_ui32GetSequenceDuration()
  * 
  *  Returns the sequence theoretical duration. 
  *  Used to set the interval for tPlaySequenceInLoop.
  * */
-uint32_t const sequence::_ui32SequenceDuration() {
-  Serial.println(F("sequence::_ui32SequenceDuration(). Starting."));
-  Serial.printf("sequence::_ui32SequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
+uint32_t const sequence::_ui32GetSequenceDuration() {
+  Serial.println(F("sequence::_ui32GetSequenceDuration(). Starting."));
+  Serial.printf("sequence::_ui32GetSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
   uint16_t __ui = 0;
   uint32_t __ui32SequenceDuration = 0;
   while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui] != -1) {
