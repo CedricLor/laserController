@@ -48,8 +48,8 @@ sequence::sequence(
 // copy constructor
 sequence::sequence( const sequence& __sequence):
   _beat(__sequence._beat),
-  _ui16BaseNotesCountPerBar(__sequence._ui16BaseNotesCountPerBar), 
-  _i16BarCountInSequence(__sequence._i16BarCountInSequence), 
+  _ui16BaseNotesCountPerBar(__sequence.ui16GetBaseNotesCountPerBar()), 
+  _i16BarCountInSequence(__sequence.i16GetBarCountInSequence()), 
   _i16AssociatedBars(__sequence._i16AssociatedBars)
 { }
 
@@ -178,17 +178,21 @@ void sequence::initSequences() {
 ///////////////////////////////////
 /**uint16_t sequence::ui16GetBaseNotesCountPerBar()
  * 
- * Instance getter.
+ *  Instance getter.
  *  
- * Returns the base note count per bar in a given sequence 
- * (the 2 in a 2/4 tempo). */
+ *  Returns the base note count per bar in a given sequence 
+ *  (the 2 in a 2/4 tempo).
+ * 
+ *  Used by sequence::_ui32TheoreticalBarDuration() to set the intervals of
+ *  tPlaySequence and tPlaySequenceInLoop.
+ *  */
 const uint16_t sequence::ui16GetBaseNotesCountPerBar() const {
   return _ui16BaseNotesCountPerBar;  
 }
 
 
 
-/**uint16_t sequence::ui16GetBaseNotesCountPerBar()
+/**uint16_t sequence::i16GetBarCountInSequence()
  *  
  * Instance getter.
  *  
@@ -503,8 +507,11 @@ void sequence::_odtcbPlaySequence(){
 ///////////////////////////////////
 
 
-// Helper function to _oetcbPlaySequenceInLoop
-// Get the sequence duration, to set the correct interval for tPlaySequenceInLoop
+/** Helper function to _oetcbPlaySequenceInLoop
+ * 
+ *  Returns the sequence theoretical duration. 
+ *  Used to set the interval for tPlaySequenceInLoop.
+ * */
 uint32_t const sequence::_ui32SequenceDuration() {
   Serial.println(F("sequence::_ui32SequenceDuration(). Starting."));
   Serial.printf("sequence::_ui32SequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
@@ -515,15 +522,19 @@ uint32_t const sequence::_ui32SequenceDuration() {
 
 
 
-// Helper function to tPlaySequence
-// returns the current bar effective duration
+/** Helper function to tPlaySequence
+ * 
+ *  Returns the current bar theoretical duration.
+ *  Used by sequence::_ui32SequenceDuration() to set the interval of Task tPlaySequenceInLoop.
+ *  Used by sequence::_oetcbPlaySequence() to set the interval of Task tPlaySequence.
+ * */
 uint32_t const sequence::_ui32TheoreticalBarDuration() {
-  Serial.println(F("sequence::_ui32BarDuration(). Starting."));
-  Serial.printf("sequence::_ui32BarDuration(). _i16ActiveSequence = %i\n", _i16ActiveSequence);
-  Serial.printf("sequence::_ui32BarDuration(). sequences[%i].ui16GetBaseNotesCountPerBar() = %u\n", _i16ActiveSequence, sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar());
-  Serial.printf("sequence::_ui32BarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  Serial.printf("sequence::_ui32BarDuration(). about to return the following value: %u\n", sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  return (sequences[_i16ActiveSequence]._ui16BaseNotesCountPerBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  Serial.println(F("sequence::_ui32TheoreticalBarDuration(). Starting."));
+  Serial.printf("sequence::_ui32TheoreticalBarDuration(). _i16ActiveSequence = %i\n", _i16ActiveSequence);
+  Serial.printf("sequence::_ui32TheoreticalBarDuration(). sequences[%i].ui16GetBaseNotesCountPerBar() = %u\n", _i16ActiveSequence, sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar());
+  Serial.printf("sequence::_ui32TheoreticalBarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  Serial.printf("sequence::_ui32TheoreticalBarDuration(). about to return the following value: %u\n", sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  return (sequences[_i16ActiveSequence].ui16GetBaseNotesCountPerBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
 }
 
 
