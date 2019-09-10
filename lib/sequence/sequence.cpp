@@ -157,6 +157,36 @@ void sequence::initSequences() {
 
 
 ///////////////////////////////////
+// Setters
+///////////////////////////////////
+/** sequence::setActiveSequence(const int16_t __i16ActiveSequence)
+ * 
+ *  public static setter 
+ * 
+ *  Sets _i16ActiveSequence, the static index number of the currently 
+ *  active sequence.
+ * */
+void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
+  Serial.println(F("void sequence::setActiveSequence(). Starting."));
+  // Serial.print("void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
+  _i16ActiveSequence = __i16ActiveSequence;
+  sequences[_i16ActiveSequence]._beat.setActive();
+  // Serial.println(F("void sequence::--------------------- checking beat equality ---------------"));
+  // const beat & _sequenceBeat = sequences[_i16ActiveSequence]._beat;
+  // const beat & _globalBeat = beat::getCurrentBeat();
+  // Serial.printf("void sequence::setActiveSequence(). &_sequenceBeat == &_globalBeat ? %i\n", &_sequenceBeat == &_globalBeat);
+  // Serial.println(F("void sequence::--------------------- checking beat identity ---------------"));
+  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm() ? %i\n", _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm());
+  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat() ? %i\n", _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat());
+  // Serial.print("void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = %i", _i16ActiveSequence);
+  Serial.println(F("void sequence::setActiveSequence(). Ending."));
+};
+
+
+
+
+
+///////////////////////////////////
 // Getters
 ///////////////////////////////////
 /**uint16_t sequence::i16GetBarCountInSequence()
@@ -185,10 +215,46 @@ const beat & sequence::getAssociatedBeat() const {
  * 
  * Instance getter.
  * 
- * Returns a pointer to the associated bars */
+ * Returns a pointer to the associated bars array */
 const std::array<int16_t, 8> sequence::getAssociatedBars() const {
   return _i16AssociatedBars;
 }
+
+
+
+/** uint32_t const sequence::_ui32GetSequenceDuration()
+ * 
+ * Instance getter.
+ * 
+ * Returns the sequence theoretical duration. 
+ * Used to set the interval for tPlaySequenceInLoop. */
+uint32_t const sequence::_ui32GetSequenceDuration() {
+  Serial.println(F("sequence::_ui32GetSequenceDuration(). Starting."));
+  Serial.printf("sequence::_ui32GetSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
+  uint16_t __ui = 0;
+  uint32_t __ui32SequenceDuration = 0;
+  while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui] != -1) {
+    int16_t __barIndexNumber = sequences[_i16ActiveSequence].getAssociatedBars()[__ui];
+    __ui32SequenceDuration += bar::_bars[__barIndexNumber].ui32BarDuration();
+    __ui++;
+  }
+  return __ui32SequenceDuration;
+}
+
+
+
+/** int16_t const sequence::getCurrentSequence()
+ * 
+ *  Static getter
+ * 
+ *  Returns the active sequence index number. */
+int16_t const sequence::getCurrentSequence() {
+  return _i16ActiveSequence;
+}
+
+
+
+
 
 
 
@@ -472,66 +538,4 @@ void sequence::_odtcbPlaySequence(){
   //   // Serial.print("sequence::_odtcbPlaySequence(). millis() = ");Serial.println(millis());
   //   // Serial.println("sequence::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
   // }
-}
-
-
-
-
-
-
-
-///////////////////////////////////
-// Helpers
-///////////////////////////////////
-
-
-/** uint32_t const sequence::_ui32GetSequenceDuration()
- * 
- *  Returns the sequence theoretical duration. 
- *  Used to set the interval for tPlaySequenceInLoop.
- * */
-uint32_t const sequence::_ui32GetSequenceDuration() {
-  Serial.println(F("sequence::_ui32GetSequenceDuration(). Starting."));
-  Serial.printf("sequence::_ui32GetSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
-  uint16_t __ui = 0;
-  uint32_t __ui32SequenceDuration = 0;
-  while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui] != -1) {
-    int16_t __barIndexNumber = sequences[_i16ActiveSequence].getAssociatedBars()[__ui];
-    __ui32SequenceDuration += bar::_bars[__barIndexNumber].ui32BarDuration();
-    __ui++;
-  }
-  return __ui32SequenceDuration;
-}
-
-
-
-
-
-
-
-
-
-
-// Set the active sequence
-void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
-  Serial.println(F("void sequence::setActiveSequence(). Starting."));
-  // Serial.print("void sequence::setActiveSequence(). (before setting) _i16ActiveSequence = %i", _i16ActiveSequence);
-  _i16ActiveSequence = __i16ActiveSequence;
-  sequences[_i16ActiveSequence]._beat.setActive();
-  // Serial.println(F("void sequence::--------------------- checking beat equality ---------------"));
-  // const beat & _sequenceBeat = sequences[_i16ActiveSequence]._beat;
-  // const beat & _globalBeat = beat::getCurrentBeat();
-  // Serial.printf("void sequence::setActiveSequence(). &_sequenceBeat == &_globalBeat ? %i\n", &_sequenceBeat == &_globalBeat);
-  // Serial.println(F("void sequence::--------------------- checking beat identity ---------------"));
-  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm() ? %i\n", _sequenceBeat.getBaseBeatInBpm() == _globalBeat.getBaseBeatInBpm());
-  // Serial.printf("void sequence::setActiveSequence(). _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat() ? %i\n", _sequenceBeat.getBaseNoteForBeat() == _globalBeat.getBaseNoteForBeat());
-  // Serial.print("void sequence::setActiveSequence(). (after setting) _i16ActiveSequence = %i", _i16ActiveSequence);
-  Serial.println(F("void sequence::setActiveSequence(). Ending."));
-};
-
-
-
-// Get the active sequence
-int16_t const sequence::getCurrentSequence() {
-  return _i16ActiveSequence;
 }

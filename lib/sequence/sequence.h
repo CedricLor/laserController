@@ -33,13 +33,13 @@ class sequence
     /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
 
+    /** static setter */
+    static void setActiveSequence(const int16_t __i16ActiveSequence);
+
     /** getters */
     const int16_t i16GetBarCountInSequence() const;
     const beat & getAssociatedBeat() const;
     const std::array<int16_t, 8> getAssociatedBars() const;
-
-    /** static setter */
-    static void setActiveSequence(const int16_t __i16ActiveSequence);
 
     /** Task - sequence players */
     void playSequenceStandAlone(beat const & __beat);
