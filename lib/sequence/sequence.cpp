@@ -411,18 +411,12 @@ void sequence::_odtcbPlaySequenceInLoop() {
 Task sequence::tPlaySequence(0, 0, &_tcbPlaySequence, NULL/*&mns::myScheduler*/, false, &_oetcbPlaySequence, &_odtcbPlaySequence);
 
 
-// onEnable callback for tPlaySequence
-// 1. sets the interval for each iterations to duration of the bars (each iteration is a bar)
-// 2. sets the number of iterations to the bar count in this sequence
+/** onEnable callback for tPlaySequence
+ *  sets the number of iterations to the bar count in this sequence */
 bool sequence::_oetcbPlaySequence(){
   // Serial.println("----------------------------on enable tPlaySequence ------------------------------");
 
-  // 1. sets the interval of the tPlaySequence task
-  tPlaySequence.setInterval(sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration());
-  // Serial.printf("void sequence::_oetcbPlaySequence(). Set interval: %u ms.\n", sequences[_i16ActiveSequence]._ui32TheoreticalBarDuration());
-  // Serial.printf("void sequence::_oetcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
-
-  // 2. sets the number of iterations of the tPlaySequence task from the
+  // 1. Set the number of iterations of the tPlaySequence task from the
   //    number of bars in the sequence
   // if (MY_DG_LASER) {
   //   Serial.println("void sequence::_playSequence(). tPlaySequence.setIterations() about to be called");
@@ -434,7 +428,7 @@ bool sequence::_oetcbPlaySequence(){
   //   Serial.print("void sequence::_playSequence(). tPlaySequence.getIterations() = ");Serial.println(tPlaySequence.getIterations());
   // }
 
-  // 3. Signal the change of state to the mesh
+  // 2. Signal the change of sequence to the mesh
   if (sendCurrentSequence != nullptr) {
     sendCurrentSequence(_i16ActiveSequence);
   }
@@ -473,7 +467,13 @@ void sequence::_tcbPlaySequence(){
   int16_t _i16ActiveBarId = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
   Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBarId [%i] from sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveBarId, _i16ActiveSequence, _i16Iter);
 
-  // 3. Play the corresponding bar
+  // 3. Calculate the bar duration
+  Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].ui32BarDuration().\n", _i16ActiveBarId);
+  uint32_t __ui32ThisBarDuration = bar::_bars[_i16ActiveBarId].ui32BarDuration();
+  Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from bar::_bars[%i].ui32BarDuration()\n", _i16ActiveBarId, __ui32ThisBarDuration);
+
+  if (_i16ActiveBarId != -1) {
+  // 4. Play the corresponding bar
   /**TODO: The call to playBarInSequence() here inserted does not take into account 
    *       any differences between bar length requirement at sequence level (3/4: 3 blacks per bar)
    *       and the effective bar length (ex. a bar that would have two whites, for instance.)
@@ -482,11 +482,20 @@ void sequence::_tcbPlaySequence(){
    *       2. Create a mode, in sequence, that plays the bars according to their own 
    *          length, at the tempo (beat), defined by the sequence. */
   Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBarId);
-  if (_i16ActiveBarId != -1) {
   bar::_bars[_i16ActiveBarId].playBarInSequence();
+
+  /**5. Set the interval for next iteration of tPlaySequence
+   * 
+   *    At each pass, reset the interval before the next iteration of this 
+   *    Task sequence::tPlaySequence. This marks the duration of each bar played in the
+   *    context of a sequence. */
+  Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
+  tPlaySequence.setInterval(__ui32ThisBarDuration);
+  // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
+  // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
   }
 
-  Serial.println("void sequence::_tcbPlaySequence(). Ending.");
+  Serial.println("sequence::_tcbPlaySequence(). Ending.");
 };
 
 
