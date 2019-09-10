@@ -11,8 +11,10 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "sequence.h"
 
-int16_t sequence::_i16ActiveSequenceNb = 0;
 const int16_t sequence::_i16_sequence_count = 7;
+sequence sequence::_emptySequence;
+sequence &sequence::_activeSequence = _emptySequence;
+int16_t sequence::_i16ActiveSequenceNb = 0;
 std::array<sequence, 7> sequence::sequences;
 std::array<bar, 8> sequence::_emptyBarsArray;
 
