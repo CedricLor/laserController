@@ -19,8 +19,7 @@ class sequence
     sequence(); // default constructor
     sequence(
       const beat & __beat,
-      const std::array<bar, 8> & __barsArray,
-      const std::array<int16_t, 8> & __i16AssociatedBars
+      const std::array<bar, 8> & __barsArray
     );
     // copy constructor
     sequence( const sequence& __sequence);
@@ -39,7 +38,7 @@ class sequence
     /** getters */
     const uint16_t ui16GetBarCountInSequence() const;
     const beat & getAssociatedBeat() const;
-    const std::array<int16_t, 8> getAssociatedBars() const;
+    const std::array<bar, 8> & getBarsArray() const;
 
     /** Task - sequence players */
     void playSequenceStandAlone(beat const & __beat, const uint16_t __ui16_associated_sequence_idx_number);
@@ -67,9 +66,8 @@ class sequence
     // instance properties
     beat _beat;
     std::array<bar, 8> _barsArray;
-    std::array<int16_t, 8> _i16AssociatedBars;  // array containing the state of each laser at each tempo
 
-
+    // tasks callbacks
     static bool _oetcbPlaySequenceInLoop();
     static void _tcbPlaySequenceInLoop();
     static void _odtcbPlaySequenceInLoop();

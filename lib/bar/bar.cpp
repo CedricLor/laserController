@@ -387,13 +387,13 @@ uint16_t const bar::ui16GetBaseNotesCountInBar() const {
   return (__ui16TotalNotesIn16th / beat::getCurrentBeat().getBaseNoteForBeat());
 }
 
-/** uint32_t const bar::ui32BarDuration() const
+/** uint32_t const bar::ui32GetBarDuration() const
  * 
  * Returns the current bar effective duration in ms */
-uint32_t const bar::ui32BarDuration() const {
-  // Serial.println(F("bar::ui32BarDuration(). Starting."));
-  // Serial.printf("bar::ui32BarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar::ui32BarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  // Serial.printf("bar::ui32BarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+uint32_t const bar::ui32GetBarDuration() const {
+  // Serial.println(F("bar::ui32GetBarDuration(). Starting."));
+  // Serial.printf("bar::ui32GetBarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
+  // Serial.printf("bar::ui32GetBarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
   return (ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
 }

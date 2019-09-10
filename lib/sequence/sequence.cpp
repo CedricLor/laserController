@@ -28,28 +28,23 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequence) = nullp
 // default constructor
 sequence::sequence():
   _beat(beat(0, 0)),
-  _barsArray(_emptyBarsArray),
-  _i16AssociatedBars(std::array<int16_t, 8> {})
+  _barsArray(_emptyBarsArray)
 { 
-  _i16AssociatedBars.fill(-1);
 }
 
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
-  const std::array<bar, 8> & __barsArray,
-  const std::array<int16_t, 8> & __i16AssociatedBars
+  const std::array<bar, 8> & __barsArray
 ):
   _beat(__beat),
-  _barsArray(__barsArray),
-  _i16AssociatedBars(__i16AssociatedBars)
+  _barsArray(__barsArray)
 { }
 
 // copy constructor
 sequence::sequence(const sequence& __sequence):
   _beat(__sequence._beat),
-  _barsArray(__sequence._barsArray),
-  _i16AssociatedBars(__sequence._i16AssociatedBars)
+  _barsArray(__sequence._barsArray)
 { }
 
 // assignement operator
@@ -57,7 +52,6 @@ sequence& sequence::operator=(const sequence& __sequence)
 {
   _beat = __sequence._beat;
   _barsArray = __sequence._barsArray;
-  _i16AssociatedBars = _i16AssociatedBars;
   // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
   // Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
   // Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
@@ -86,73 +80,64 @@ void sequence::initSequences() {
   Serial.println("sequence::_initSequences(). Starting.");
 
   /** Signature for calls:
-    a. the sequence's name
-    b. a beat instance, composed of:
+    a. a beat instance, composed of:
        1. _ui16BaseBeatInBpm: the base beat in bpm
        2. _ui16BaseNoteForBeat: the base note for each beat (1 -> full, 2 -> white,
                           4 -> black, etc.; the 4 in 2/4)
-    d. _ui16BaseNotesCountPerBar: the number of base notes per bar (the 2 in 2/4)
-    e. the number of bars in the sequence _i16BarCountForThisSequence
-    f. the array of references to the bars to be played in the sequence (_i16AssociatedBars) */
+    b. the array of bars to be played in the sequence (_barsArray).
+    
+    There used to be an additional param/member:
+    - _ui16BaseNotesCountPerBar: the number of base notes per bar (the 2 in 2/4)
+    But this param/member has been removed. This comment is kept to make the link with traditional
+    musical notation.
+    As a consequence of the removal of this param, bars sized to any number of base notes
+    can be inserted in sequence, and the sequence will just adapt its tPlaySequence and
+    tPlaySequenceInLoop interval to the various bars durations.
+    */
   
 
   // --> Sequence 0: "Relays"
-  /** array of references to the bars to be played in the sequence.
-   *  0 is a reference to _bars[0]
-   */
-  const std::array<int16_t, 8> & _i16Relays {0}; // _bars[0]
+  /** array of bars to be played in the sequence. */
   const std::array<bar, 8> & _relaysBarsArray {bar::_bars[0]};
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
-  sequences[0] = {_beat_2_1, _relaysBarsArray, _i16Relays};
-  // Serial.println("void sequence::_initSequences(). sequences[0]._ui16BaseBeatInBpm: ");
-  // Serial.println(sequences[0]._ui16BaseBeatInBpm);
+  sequences[0] = {_beat_2_1, _relaysBarsArray};
   // Serial.println("void sequence::_initSequences(). sequences[0]._i16AssociatedBars[0][1]");
   // Serial.println(sequences[0]._i16AssociatedBars[0][1]);
+  Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[0].getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0]._notesArray[0].getTone() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray()[0]._notesArray[0].getTone());
 
 
   // --> Sequence 1: "Twins"
-  // array of references to the bars to be played in the sequence
-  std::array<int16_t, 8> _i16Twins {1}; // _bars[1]
   const std::array<bar, 8> & _twinsBarsArray {bar::_bars[1]};
-  sequences[1] = {_beat_2_1, _twinsBarsArray, _i16Twins};
-  Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[1].getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("sequence::initSequences(). sequences[1].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[1].getAssociatedBeat().getBaseBeatInBpm());
-  Serial.printf("sequence::initSequences(). getAssociatedBars()[0]: %i\n", sequences[1].getAssociatedBars()[0]);
+  sequences[1] = {_beat_2_1, _twinsBarsArray};
 
 
   // --> Sequence 2: "All"
-  // array of references to the bars to be played in the sequence
-  std::array<int16_t, 8> _i16All {2}; // _bars[2]
   const std::array<bar, 8> & _allBarsArray {bar::_bars[1]};
-  sequences[2] = {_beat_2_1, _allBarsArray, _i16All};
+  sequences[2] = {_beat_2_1, _allBarsArray};
 
 
   // --> Sequence 3: "Swipe Right"
-  // array of references to the bars to be played in the sequence
-  std::array<int16_t, 8> _i16SwipeR {3}; // _bars[3]
   const std::array<bar, 8> & _swipeRBarsArray {bar::_bars[3]};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_120_1(120,1);
-  sequences[3] = {_beat_120_1, _swipeRBarsArray, _i16SwipeR};
+  sequences[3] = {_beat_120_1, _swipeRBarsArray};
 
 
   // --> Sequence 4: "Swipe Left"
-  // array of references to the bars to be played in the sequence
-  std::array<int16_t, 8> _i16SwipeL {4}; // _bars[4]
   const std::array<bar, 8> & _swipeLBarsArray {bar::_bars[4]};
-  sequences[4] = {_beat_120_1, _swipeLBarsArray, _i16SwipeL};
+  sequences[4] = {_beat_120_1, _swipeLBarsArray};
 
 
   // --> Sequence 5: "All Off"
-  // array of references to the bars to be played in the sequence
-  std::array<int16_t, 8> _i16AllOff {5}; // _bars[5]
   const std::array<bar, 8> & _allOffBarsArray {bar::_bars[5]};
-  sequences[5] = {_beat_2_1, _allOffBarsArray, _i16AllOff};
+  sequences[5] = {_beat_2_1, _allOffBarsArray};
 
   Serial.println("sequence::_initSequences(). Ending.");
 }
@@ -201,10 +186,10 @@ void sequence::setActiveSequence(const int16_t __i16ActiveSequence) {
  * Returns the bar count in a given sequence. */
 const uint16_t sequence::ui16GetBarCountInSequence() const {
   uint16_t __ui16BarCountInSequence = 0;
-  while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui16BarCountInSequence] != -1) {
+  while (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() > 0) {
     __ui16BarCountInSequence++;
   }
-  return __ui16BarCountInSequence + 1;
+  return __ui16BarCountInSequence;
 }
 
 
@@ -220,13 +205,13 @@ const beat & sequence::getAssociatedBeat() const {
 
 
 
-/**const beat & getAssociatedBars() const
+/**const beat & getBarsArray() const
  * 
  * Instance getter.
  * 
  * Returns a pointer to the associated bars array */
-const std::array<int16_t, 8> sequence::getAssociatedBars() const {
-  return _i16AssociatedBars;
+const std::array<bar, 8> & sequence::getBarsArray() const {
+  return _barsArray;
 }
 
 
@@ -239,14 +224,14 @@ const std::array<int16_t, 8> sequence::getAssociatedBars() const {
  * Used to set the interval for tPlaySequenceInLoop. */
 uint32_t const sequence::_ui32GetSequenceDuration() const {
   Serial.println(F("sequence::_ui32GetSequenceDuration(). Starting."));
-  Serial.printf("sequence::_ui32GetSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
-  uint16_t __ui = 0;
+
   uint32_t __ui32SequenceDuration = 0;
-  while (sequences[_i16ActiveSequence].getAssociatedBars()[__ui] != -1) {
-    int16_t __barIndexNumber = sequences[_i16ActiveSequence].getAssociatedBars()[__ui];
-    __ui32SequenceDuration += bar::_bars[__barIndexNumber].ui32BarDuration();
-    __ui++;
+  uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
+  for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
+    __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration();
+    Serial.printf("sequence::_ui32GetSequenceDuration(). __ui32SequenceDuration at _barsArray[%u] == [%u]\n", __ui, __ui32SequenceDuration);
   }
+
   return __ui32SequenceDuration;
 }
 
@@ -545,38 +530,23 @@ void sequence::_tcbPlaySequence(){
   int16_t _i16Iter = tPlaySequence.getRunCounter() - 1;
   Serial.printf("sequence::_tcbPlaySequence(). have set _i16Iter: %i \n", _i16Iter);
 
-  // 2. Select the bar number corresponding to this iteration
-  Serial.printf("sequence::_tcbPlaySequence(). _i16ActiveSequence: %i \n", _i16ActiveSequence);
-  int16_t _i16ActiveBarId = sequences[_i16ActiveSequence].getAssociatedBars()[_i16Iter];
-  Serial.printf("sequence::_tcbPlaySequence(). got _i16ActiveBarId [%i] from sequences[%i]._i16AssociatedBars[%i]\n", _i16ActiveBarId, _i16ActiveSequence, _i16Iter);
+  // 2. Calculate the bar duration
+  uint32_t __ui32ThisBarDuration = sequences[_i16ActiveSequence].getBarsArray().at(_i16Iter).ui32GetBarDuration();
+  Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from sequences[%i].getBarsArray().at(%i).ui32BarDuration()\n", __ui32ThisBarDuration, _i16ActiveSequence, _i16Iter);
 
-  // 3. Calculate the bar duration
-  Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].ui32BarDuration().\n", _i16ActiveBarId);
-  uint32_t __ui32ThisBarDuration = bar::_bars[_i16ActiveBarId].ui32BarDuration();
-  Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from bar::_bars[%i].ui32BarDuration()\n", _i16ActiveBarId, __ui32ThisBarDuration);
+  // 3. Play the corresponding bar
+  Serial.printf("sequence::_tcbPlaySequence(). about to call sequences[%i].getBarsArray()[%i].playBarInSequence()\n", _i16ActiveSequence, _i16Iter);
+  bar(sequences[_i16ActiveSequence].getBarsArray().at(_i16Iter)).playBarInSequence();
 
-  if (_i16ActiveBarId != -1) {
-    // 4. Play the corresponding bar
-    /**TODO: The call to playBarInSequence() here inserted does not take into account 
-     *       any differences between bar length requirement at sequence level (3/4: 3 blacks per bar)
-     *       and the effective bar length (ex. a bar that would have two whites, for instance.)
-     * 
-     *       1. Find a way to adjust bar of a given length to sequence of a different length.
-     *       2. Create a mode, in sequence, that plays the bars according to their own 
-     *          length, at the tempo (beat), defined by the sequence. */
-    Serial.printf("sequence::_tcbPlaySequence(). about to call bar::_bars[%i].playBarInSequence()\n", _i16ActiveBarId);
-    bar::_bars[_i16ActiveBarId].playBarInSequence();
-  
-    /**5. Set the interval for next iteration of tPlaySequence
-     * 
-     *    At each pass, reset the interval before the next iteration of this 
-     *    Task sequence::tPlaySequence. This marks the duration of each bar played in the
-     *    context of a sequence. */
-    Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
-    tPlaySequence.setInterval(__ui32ThisBarDuration);
-    // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
-    // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
-  }
+  /**5. Set the interval for next iteration of tPlaySequence
+   * 
+   *    At each pass, reset the interval before the next iteration of this 
+   *    Task sequence::tPlaySequence. This marks the duration of each bar played in the
+   *    context of a sequence. */
+  Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
+  tPlaySequence.setInterval(__ui32ThisBarDuration);
+  // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
+  // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
 
   Serial.println("sequence::_tcbPlaySequence(). Ending.");
 };
