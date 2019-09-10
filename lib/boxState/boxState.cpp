@@ -592,7 +592,7 @@ void boxState::_restartPlayBoxState() {
   i16BoxActiveState property and set by _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState:
   2. in the currently active boxState, it reads the associated sequence number in its properties;
-  3. sets the new sequence to be played (by calling sequence::setActiveSequence());
+  3. sets the new sequence to be played (by calling sequence::setActiveSequenceNb());
   4. starts playing the sequence (by enabling the task sequence::tPlaySequenceInLoop.
 
   It iterates only once and does not have a main callback.
