@@ -237,9 +237,13 @@ void sequence::playSequenceInBoxState(const uint16_t __ui16_associated_sequence_
   bar::tPlayBar.disable();
   note::tPlayNote.disable();
 
+  // TODO: the two following lines shall be defined at the beginning of entering 
+  //       an automated boxState or even the stepControllerMode
   note::resetTPlayNoteToPlayNotesInBar();
   bar::tPlayBar.setOnDisable(NULL);
 
+  // TODO: the following line shall be refactored, and get rid of _i16ActiveSequence;
+  // to be replaced by a reference _activeSequence
   _i16ActiveSequence = __ui16_associated_sequence_idx_number;
   sequences[_i16ActiveSequence]._beat.setActive();
 
