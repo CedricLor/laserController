@@ -17,8 +17,14 @@ std::array<sequence, 7> sequence::sequences;
 std::array<bar, 8> sequence::_emptyBarsArray;
 
 
+
+
+
 // pointer to functions to produce an interface for sequence
 void (*sequence::sendCurrentSequence)(const int16_t __i16ActiveSequenceNb) = nullptr;
+
+
+
 
 
 
@@ -146,6 +152,8 @@ void sequence::initSequences() {
 
 
 
+
+
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
@@ -171,6 +179,8 @@ void sequence::setActiveSequenceNb(const int16_t __i16ActiveSequenceNb) {
   // Serial.print("void sequence::setActiveSequenceNb(). (after setting) _i16ActiveSequence = %i", _i16ActiveSequence);
   Serial.println(F("void sequence::setActiveSequenceNb(). Ending."));
 };
+
+
 
 
 
