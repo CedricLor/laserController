@@ -231,8 +231,19 @@ void sequence::playSequenceStandAlone() {
 
 }
 
-void sequence::playSequenceInBoxState() {
+void sequence::playSequenceInBoxState(const uint16_t __ui16_associated_sequence_idx_number) {
+  tPlaySequenceInLoop.disable();
+  tPlaySequence.disable();
+  bar::tPlayBar.disable();
+  note::tPlayNote.disable();
 
+  note::resetTPlayNoteToPlayNotesInBar();
+  bar::tPlayBar.setOnDisable(NULL);
+
+  _i16ActiveSequence = __ui16_associated_sequence_idx_number;
+  sequences[_i16ActiveSequence]._beat.setActive();
+
+  tPlaySequenceInLoop.enable();
 }
 
 

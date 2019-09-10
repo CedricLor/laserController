@@ -610,15 +610,11 @@ bool boxState::_oetcbPlayBoxState(){
   // 1. select the currently active state
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
-  // 2. Set the active sequence
-  sequence::setActiveSequence(_currentBoxState.ui16AssociatedSequence);
+  // 2. Select the desired sequence and play it in loop
+  //    until tPlayBoxState expires, for the duration mentionned in the activeState
+  sequence::sequences[_currentBoxState.ui16AssociatedSequence].playSequenceInBoxState(_currentBoxState.ui16AssociatedSequence);
 
-  // 3. Enable the sequence player, to play the sequence in loop
-  // until tPlayBoxState expires, for the duration mentionned in the activeState
-  // Serial.println("boxState::_oetcbPlayBoxState() sequence::tPlaySequenceInLoop about to be enabled");
-  sequence::tPlaySequenceInLoop.enable();
-
-  // 4. Signal the change of state to the mesh
+  // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
     sendCurrentBoxState(thisBox.i16BoxActiveState);
   }
