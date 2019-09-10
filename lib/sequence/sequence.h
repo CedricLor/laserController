@@ -32,8 +32,9 @@ class sequence
     /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
 
-    /** static setter */
-    static void setActiveSequenceNb(const int16_t __i16ActiveSequenceNb);
+    /** setters */
+    void setActive(const int16_t __i16_active_sequence_nb=-1);
+    static void setActiveSequenceNb(const int16_t __i16_active_sequence_nb);
 
     /** getters */
     const uint16_t ui16GetBarCountInSequence() const;
@@ -47,7 +48,7 @@ class sequence
     static Task tPlaySequence;
 
     /** interface to mesh */
-    static void (*sendCurrentSequence)(const int16_t __i16ActiveSequenceNb);
+    static void (*sendCurrentSequence)(const int16_t __i16_active_sequence_nb);
     static const int16_t getCurrentSequence();
 
 
