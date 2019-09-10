@@ -61,7 +61,7 @@ class sequence
     static int16_t _i16ActiveSequence;
 
     // instance getters
-    uint32_t const _ui32GetSequenceDuration();
+    uint32_t const _ui32GetSequenceDuration() const;
 
     // instance properties
     beat _beat;

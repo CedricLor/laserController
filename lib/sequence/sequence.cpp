@@ -226,9 +226,9 @@ const std::array<int16_t, 8> sequence::getAssociatedBars() const {
  * 
  * Instance getter.
  * 
- * Returns the sequence theoretical duration. 
+ * Returns the sequence duration. 
  * Used to set the interval for tPlaySequenceInLoop. */
-uint32_t const sequence::_ui32GetSequenceDuration() {
+uint32_t const sequence::_ui32GetSequenceDuration() const {
   Serial.println(F("sequence::_ui32GetSequenceDuration(). Starting."));
   Serial.printf("sequence::_ui32GetSequenceDuration(). __i16activeSequence = %i\n", _i16ActiveSequence);
   uint16_t __ui = 0;
