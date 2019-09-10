@@ -30,24 +30,20 @@ void (*bar::sendCurrentBar)(const int16_t __i16_current_bar_id) = nullptr;
 ///////////////////////////////////
 // default
 bar::bar() :
-  _ui16BaseNotesCountInBar(0), 
   _notesArray(_emptyNotesArray)
 {
 }
 
 // parameterized
 bar::bar(
-  const uint16_t __ui16_base_notes_count_in_bar,
   std::array<note, 16> & __notesArray
 ):
-  _ui16BaseNotesCountInBar(__ui16_base_notes_count_in_bar), 
   _notesArray(__notesArray)
 {
 }
 
 // copy constructor
 bar::bar(const bar& __bar):
-  _ui16BaseNotesCountInBar(__bar._ui16BaseNotesCountInBar), 
   _notesArray(__bar._notesArray)
 {
 }
@@ -56,20 +52,19 @@ bar::bar(const bar& __bar):
 bar& bar::operator=(const bar& __bar)
 {
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- Before assignment ---------------");
-  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._ui16BaseNotesCountInBar = %u\n", __bar._ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar.ui16GetBaseNotesCountInBar() = %u\n", __bar.ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getTone() = %u\n", __bar._notesArray[0].getTone());
   // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getNote() = %u\n", __bar._notesArray[0].getNote());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._ui16BaseNotesCountInBar = %u\n", _bars[0]._ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0].ui16GetBaseNotesCountInBar() = %u\n", _bars[0].ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._notesArray[0].getTone() = %u\n", _bars[0]._notesArray[0].getTone());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._notesArray[0].getNote() = %u\n", _bars[0]._notesArray[0].getNote());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _ui16BaseNotesCountInBar = %u\n", _ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getTone() = %u\n", _notesArray[0].getTone());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- End before assignment ---------------");
-  _ui16BaseNotesCountInBar = __bar._ui16BaseNotesCountInBar;
   _notesArray = __bar._notesArray;
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- After assignment ---------------");
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _ui16BaseNotesCountInBar = %u\n", _ui16BaseNotesCountInBar);
+  // Serial.printf("bar& bar::operator=(const bar& __bar). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getTone() = %u\n", _notesArray[0].getTone());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
   return *this;
@@ -87,13 +82,7 @@ void bar::initBars() {
   // define an array containing references to the note type and tones to be played in the bar
 
   /** Signature of a bar:
-   *  a. _ui16BaseNotesCountInBar: the count of base notes per bar (the 2 in 2/4, 
-   *     for instance);
-   *     TODO: this parameter is never used. It is only kept because it would be usefull
-   *     to have it when incorporating bars of a given time length (n1 base notes) into
-   *     sequence requiring bars of another time length (n2 base notes).
-   *     ex. sequence 
-   *  b. std::array<note, 16> & _notesArray: a reference to an array of notes. Each note
+   *  a. std::array<note, 16> & _notesArray: a reference to an array of notes. Each note
    *     is composed of:
    *     (i) its duration (expressed in base note - full, half, quarter, etc.) and;
    *     (ii) its tone.
@@ -120,8 +109,8 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
-  _bars[0] = { 2, _aRelays};  
-  // Serial.printf("bar::_initBars(). _bars[0]._ui16BaseNotesCountInBar == 2 ? %i\n", _bars[0]._ui16BaseNotesCountInBar == 2);
+  _bars[0] = { _aRelays};  
+  // Serial.printf("bar::_initBars(). _bars[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _bars[0].ui16GetBaseNotesCountInBar() == 2);
   // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getTone() = %u\n", _bars[0]._notesArray[0].getTone());
   // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getTone() == 7 ? %i\n", _bars[0]._notesArray[0].getTone() == 7);
   // Serial.printf("bar::_initBars(). _bars[0]._notesArray[0].getNote() = %u\n", _bars[0]._notesArray[0].getNote());
@@ -133,7 +122,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
-  _bars[1] = { 2, _aTwins};
+  _bars[1] = { _aTwins};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -141,7 +130,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
-  _bars[2] = { 2, _aAll};
+  _bars[2] = { _aAll};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -149,7 +138,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
-  _bars[3] = { 4, _aSwipeR};
+  _bars[3] = { _aSwipeR};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -157,7 +146,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
-  _bars[4] = { 4, _aSwipeL};
+  _bars[4] = { _aSwipeL};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -165,7 +154,7 @@ void bar::initBars() {
    * count of base notes per bar: 1
    * => 1 / 1 */
   std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
-  _bars[5] = { 1, _aAllOff};
+  _bars[5] = { _aAllOff};
 
   Serial.println("void bar::_initBars(). Ending.");
 }
@@ -364,13 +353,47 @@ uint16_t const bar::ui16GetNotesCountInBar() const {
   return __ui;
 }
 
+/** uint16_t const ui16GetBaseNotesCountInBar() const
+ * 
+ * Returns the base note count (as opposed to the effective
+ * number of notes) in a bar */
+uint16_t const bar::ui16GetBaseNotesCountInBar() const {
+  uint16_t __ui = 0;
+  uint16_t __ui16TotalNotesIn16th = 0;
+  /**
+   * 1. ronde                   : 16 : 16 / 1
+   * 2. blanche                 : 8  : 16 / 2
+   * 3. noire + croche          : 6  : 16 / 4 + (1/2)*(16 / 4) : 16 modulo 3 = 1
+   * 4. noire                   : 4  : 16 / 4
+   * 6. croche + double croche  : 3  : 16 / 8 + (1/2)*(16 / 8) : 16 modulo 6 = 4
+   * 8. croche                  : 2  : 16 / 8
+   * 16. double croche          : 1  : 16 / 16
+  */
+  while (_notesArray[__ui].getNote() != 0) {
+    uint16_t __note = _notesArray[__ui].getNote();
+      __ui++;
+    // 3; noire + croche
+    if (__note == 3) { 
+      __ui16TotalNotesIn16th += 6; // 4 + 2;
+      continue;
+    }
+    // 6; croche + double croche
+    if (__note == 6) {
+      __ui16TotalNotesIn16th += 3; // 2 + 1
+      continue;
+    }
+    __ui16TotalNotesIn16th += 16 / __note;
+  }
+  return (__ui16TotalNotesIn16th / beat::getCurrentBeat().getBaseNoteForBeat());
+}
+
 /** uint32_t const bar::ui32BarDuration() const
  * 
  * Returns the current bar effective duration in ms */
 uint32_t const bar::ui32BarDuration() const {
   // Serial.println(F("bar::ui32BarDuration(). Starting."));
-  // Serial.printf("bar::ui32BarDuration(). ui16GetBaseNotesCountPerBar() = %u\n", _ui16BaseNotesCountInBar);
+  // Serial.printf("bar::ui32BarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar::ui32BarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  // Serial.printf("bar::ui32BarDuration(). about to return the following value: %u\n", _ui16BaseNotesCountInBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  return (_ui16BaseNotesCountInBar * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32BarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  return (ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
 }
