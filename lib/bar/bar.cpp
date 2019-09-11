@@ -344,18 +344,18 @@ bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) {
   return _bars.at(__ui16_bar_id);
 }
 
+
 /** uint16_t const bar::ui16GetNotesCountInBar() const
  * 
  * Returns the effective number of notes (as opposed to 
  * the base note count) in a bar */
 uint16_t const bar::ui16GetNotesCountInBar() const {
-  Serial.println("bar::ui16GetNotesCountInBar(): starting.");
+  // Serial.println("bar::ui16GetNotesCountInBar(): starting.");
   uint16_t __ui = 0;
   while (_notesArray[__ui].getNote() != 0) {
-    Serial.printf("bar::ui16GetNotesCountInBar(): _notesArray[%u].getNote() = [%u]\n", __ui, _notesArray[__ui].getNote());
     __ui++;
   }
-  Serial.println("bar::ui16GetNotesCountInBar(): about to return");
+  // Serial.printf("bar::ui16GetNotesCountInBar(): about to return [%u]\n", __ui);
   return __ui;
 }
 
