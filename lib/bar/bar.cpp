@@ -203,7 +203,7 @@ void bar::playBarStandAlone(beat const & __beat) {
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
 void bar::playBarInSequence() {
-  this->setActive();
+  setActive();
   tPlayBar.restart();
 }
 
