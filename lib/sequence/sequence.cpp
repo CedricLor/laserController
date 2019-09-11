@@ -35,7 +35,7 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16_active_sequence_id) = 
 ///////////////////////////////////
 // default constructor
 sequence::sequence():
-  _beat(beat(0, 0)),
+  _beat(beat{0, 0}),
   _barsArray(_emptyBarsArray)
 { 
 }
@@ -43,7 +43,7 @@ sequence::sequence():
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
-  const std::array<bar, 8> & __barsArray
+  std::array<bar, 8> & __barsArray
 ):
   _beat(__beat),
   _barsArray(__barsArray)
@@ -58,19 +58,17 @@ sequence::sequence(const sequence& __sequence):
 // assignement operator
 sequence& sequence::operator=(const sequence& __sequence)
 {
-  if (&__sequence != this) {
-    _beat = __sequence._beat;
-    _barsArray = __sequence._barsArray;
-  }
   // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
-  // Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
-  // Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
-  // Serial.printf("sequence::operator=(const sequence& ): __sequence.getAssociatedBars()[0]: %i\n", __sequence.getAssociatedBars()[0]);
-  // Serial.printf("sequence::operator=(const sequence& ): ui16GetBaseNotesCountPerBar(): %u\n", ui16GetBaseNotesCountPerBar());
-  // Serial.printf("sequence::operator=(const sequence& ): i16GetBarCountInSequence(): %i\n", i16GetBarCountInSequence());
-  // Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseBeatInBpm());
-  // Serial.printf("sequence::operator=(const sequence& ): getAssociatedBeat().getBaseBeatInBpm(): %u\n", getAssociatedBeat().getBaseNoteForBeat());
-  // Serial.printf("sequence::operator=(const sequence& ): getAssociatedBars()[0]: %i\n", getAssociatedBars()[0]);
+  if (&__sequence != this) {
+    // Serial.printf("sequence::operator=(const sequence& ): self assignmenttest passed\n");
+    // Serial.printf("sequence::operator=(const sequence& ): __sequence._beat.getBaseBeatInBpm(): [%u]\n", __sequence._beat.getBaseBeatInBpm());
+    _beat = __sequence._beat;
+    // Serial.printf("sequence::operator=(const sequence& ): _beat.getBaseBeatInBpm(): [%u]\n", __sequence._beat.getBaseBeatInBpm());
+    // Serial.printf("sequence::operator=(const sequence& ): __sequence._barsArray.at(0)._notesArray.at(0).getNote(): [%u]\n", __sequence._barsArray.at(0)._notesArray.at(0).getNote());
+    _barsArray = __sequence._barsArray;
+    // Serial.printf("sequence::operator=(const sequence& ): __sequence._barsArray.at(0)._notesArray.at(0).getNote(): [%u]\n", __sequence._barsArray.at(0)._notesArray.at(0).getNote());
+  }
+  // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting. About to return this.\n");
   return *this;
 }
 
@@ -108,31 +106,32 @@ void sequence::initSequences() {
 
   // --> Sequence 0: "Relays"
   /** array of bars to be played in the sequence. */
-  const std::array<bar, 8> & _relaysBarsArray {bar::_bars[0]};
+  std::array<bar, 8> _relaysBarsArray {bar::_bars[0]};
+  Serial.printf("sequence::initSequences(). Passed building _relaysBarsArray.\n");
+  Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0)._notesArray.at(0).getNote() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0)._notesArray.at(0).getNote());
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
+  Serial.printf("sequence::initSequences(). Passed building _beat_2_1.\n");
+  Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
   sequences[0] = {_beat_2_1, _relaysBarsArray};
-  // Serial.println("void sequence::_initSequences(). sequences[0]._i16AssociatedBars[0][1]");
-  // Serial.println(sequences[0]._i16AssociatedBars[0][1]);
-  Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequences[0].getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
   Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0]._notesArray[0].getTone() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray()[0]._notesArray[0].getTone());
+  Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
 
 
   // --> Sequence 1: "Twins"
-  const std::array<bar, 8> & _twinsBarsArray {bar::_bars[1]};
+  std::array<bar, 8> _twinsBarsArray {bar::_bars[1]};
   sequences[1] = {_beat_2_1, _twinsBarsArray};
 
 
   // --> Sequence 2: "All"
-  const std::array<bar, 8> & _allBarsArray {bar::_bars[1]};
+  std::array<bar, 8> _allBarsArray {bar::_bars[1]};
   sequences[2] = {_beat_2_1, _allBarsArray};
 
 
   // --> Sequence 3: "Swipe Right"
-  const std::array<bar, 8> & _swipeRBarsArray {bar::_bars[3]};
+  std::array<bar, 8> _swipeRBarsArray {bar::_bars[3]};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
@@ -141,12 +140,12 @@ void sequence::initSequences() {
 
 
   // --> Sequence 4: "Swipe Left"
-  const std::array<bar, 8> & _swipeLBarsArray {bar::_bars[4]};
+  std::array<bar, 8> _swipeLBarsArray {bar::_bars[4]};
   sequences[4] = {_beat_120_1, _swipeLBarsArray};
 
 
   // --> Sequence 5: "All Off"
-  const std::array<bar, 8> & _allOffBarsArray {bar::_bars[5]};
+  std::array<bar, 8> _allOffBarsArray {bar::_bars[5]};
   sequences[5] = {_beat_2_1, _allOffBarsArray};
 
   Serial.println("sequence::_initSequences(). Ending.");

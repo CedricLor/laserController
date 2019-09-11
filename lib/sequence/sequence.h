@@ -19,7 +19,7 @@ class sequence
     sequence(); // default constructor
     sequence(
       const beat & __beat,
-      const std::array<bar, 8> & __barsArray
+      std::array<bar, 8> & __barsArray
     );
     // copy constructor
     sequence( const sequence& __sequence);
@@ -68,7 +68,7 @@ class sequence
 
     // instance properties
     beat _beat;
-    std::array<bar, 8> _barsArray;
+    std::array<bar, 8> & _barsArray;
 
     // tasks callbacks
     static bool _oetcbPlaySequenceInLoop();
