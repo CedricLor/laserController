@@ -34,7 +34,6 @@ class sequence
 
     /** setters */
     void setActive(const int16_t __i16_active_sequence_id=-1);
-    static void setActiveSequenceNb(const int16_t __i16_active_sequence_nb);
 
     /** getters */
     const uint16_t ui16GetBarCountInSequence() const;
@@ -42,8 +41,8 @@ class sequence
     const std::array<bar, 8> & getBarsArray() const;
 
     /** Task - sequence players */
-    void playSequenceStandAlone(beat const & __beat, const uint16_t __ui16_associated_sequence_idx_number);
-    void playSequenceInBoxState(const uint16_t __ui16_associated_sequence_idx_number);
+    void playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id=-1);
+    void playSequenceInBoxState(const int16_t __i16_sequence_id);
     static Task tPlaySequenceInLoop;
     static Task tPlaySequence;
 
