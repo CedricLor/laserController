@@ -206,17 +206,17 @@ sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence
 uint16_t const sequence::ui16GetBarCountInSequence() const {
   Serial.println("sequence::ui16GetBarCountInSequence(): starting");
   uint16_t __ui16BarCountInSequence = 0;
-  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
-  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", getBarsArray().at(0).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", getBarsArray().at(0).getNotesArray().at(0).getTone());
+  Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
+  Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
+  Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(0).getNotesArray().at(0).getNote() is equal to [%i]\n", getBarsArray().at(0).getNotesArray().at(0).getNote());
+  Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(0).getNotesArray().at(0).getTone() is equal to [%i]\n", getBarsArray().at(0).getNotesArray().at(0).getTone());
 
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 0, getBarsArray().at(0).ui16GetNotesCountInBar());
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 1, getBarsArray().at(1).ui16GetNotesCountInBar());
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 2, getBarsArray().at(2).ui16GetNotesCountInBar());
 
-  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote() is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone() is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone());
+  Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote() is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
+  Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone() is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone());
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(2).getNotesArray().at(0).getNote() is equal to [%i]\n", getBarsArray().at(2).getNotesArray().at(0).getNote());
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(2).getNotesArray().at(0).getTone() is equal to [%i]\n", getBarsArray().at(2).getNotesArray().at(0).getTone());
 
@@ -224,10 +224,11 @@ uint16_t const sequence::ui16GetBarCountInSequence() const {
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 4, getBarsArray().at(4).ui16GetNotesCountInBar());
   // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 5, getBarsArray().at(5).ui16GetNotesCountInBar());
   for (uint16_t __ui16BarCountInSequence = 0; __ui16BarCountInSequence < 8; __ui16BarCountInSequence++) {
-    // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = in the loop\n", __ui16BarCountInSequence);
-    // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", __ui16BarCountInSequence, getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar());
+    Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = in the loop\n", __ui16BarCountInSequence);
+    Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", __ui16BarCountInSequence, getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar());
     if (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() == 0) {
-      break;
+      Serial.printf("sequence::ui16GetBarCountInSequence(): Note count in bar[%u] == 0. About to return\n", __ui16BarCountInSequence);
+      return __ui16BarCountInSequence;
     }
   }
   // while (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() > 0); {
