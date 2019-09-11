@@ -37,7 +37,7 @@ class bar
     /** getters */
     static int16_t const i16GetCurrentBarId(); // returns _i16ActiveBarId
     static bar & getCurrentBar();
-    static bar & getBarFromBarArray(const int16_t __i16_bar_id);
+    static bar & getBarFromBarArray(const uint16_t __ui16_bar_id);
     uint16_t const ui16GetNotesCountInBar() const;
     uint16_t const ui16GetBaseNotesCountInBar() const;
     uint32_t const ui32GetBarDuration() const;

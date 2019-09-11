@@ -184,6 +184,15 @@ void sequence::setActive(const int16_t __i16_active_sequence_id) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
+/** sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) 
+ * 
+ * Returns a const ref to one of the hard coded bars given its index number */
+sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) {
+  return sequences.at(__ui16_sequence_id);
+}
+
+
+
 /**uint16_t sequence::i16GetBarCountInSequence()
  *  
  * Instance getter.

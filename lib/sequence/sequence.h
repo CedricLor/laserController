@@ -36,6 +36,7 @@ class sequence
     void setActive(const int16_t __i16_active_sequence_id=-1);
 
     /** getters */
+    static sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
     const uint16_t ui16GetBarCountInSequence() const;
     const beat & getAssociatedBeat() const;
     const std::array<bar, 8> & getBarsArray() const;

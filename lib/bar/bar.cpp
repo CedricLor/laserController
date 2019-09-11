@@ -336,11 +336,11 @@ bar & bar::getCurrentBar() {
   return _activeBar;
 }
 
-/** bar const & bar::getBarFromBarArray(const int16_t __i16_bar_id) 
+/** bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) 
  * 
  * Returns a const ref to one of the hard coded bars given its index number */
-bar & bar::getBarFromBarArray(const int16_t __i16_bar_id) {
-  return _bars[__i16_bar_id];
+bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) {
+  return _bars.at(__ui16_bar_id);
 }
 
 /** uint16_t const bar::ui16GetNotesCountInBar() const
