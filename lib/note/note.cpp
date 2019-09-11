@@ -139,15 +139,15 @@ uint16_t const note::getNote() const {
  *  
  *  Returns the duration of a note instance in ms. */
 uint16_t const note::ui16GetNoteDurationInMs() const {
-  Serial.println("note::ui16GetNoteDurationInMs(). Starting.");
-  Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
-  Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
-  Serial.printf("note::ui16GetNoteDurationInMs(). beat::getCurrentBeat().getBaseNoteForBeat() == %u\n", beat::getCurrentBeat().getBaseNoteForBeat());
+  // Serial.println("note::ui16GetNoteDurationInMs(). Starting.");
+  // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
+  // Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
+  // Serial.printf("note::ui16GetNoteDurationInMs(). beat::getCurrentBeat().getBaseNoteForBeat() == %u\n", beat::getCurrentBeat().getBaseNoteForBeat());
 
   if ((_ui16Note == 0) || (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
     return 0;
   }
-  Serial.printf("note::ui16GetNoteDurationInMs(). Passed the 0 tests.\n");
+  // Serial.printf("note::ui16GetNoteDurationInMs(). Passed the 0 tests.\n");
 
   // const uint16_t __ui16baseNoteDuration = beat::getCurrentBeat().ui16GetBaseNoteDurationInMs();
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16baseNoteDuration == %u\n", __ui16baseNoteDuration);
@@ -160,11 +160,11 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   (uint16_t)ceil(((beat::getCurrentBeat().getBaseNoteForBeat() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs()))
   / _ui16Note);
 
-  Serial.printf("note::ui16GetNoteDurationInMs(). __ulDurationInM == %u\n", __ui16DurationInMs);
+  // Serial.printf("note::ui16GetNoteDurationInMs(). __ulDurationInM == %u\n", __ui16DurationInMs);
   if (__ui16DurationInMs > 30000) {
     return 30000;
   }
-  Serial.println("note::ui16GetNoteDurationInMs(). Ending.");
+  // Serial.println("note::ui16GetNoteDurationInMs(). Ending.");
   return __ui16DurationInMs;
 }
 
