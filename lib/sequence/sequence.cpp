@@ -23,7 +23,7 @@ std::array<bar, 8> sequence::_emptyBarsArray;
 
 
 // pointer to functions to produce an interface for sequence
-void (*sequence::sendCurrentSequence)(const int16_t __i16_active_sequence_nb) = nullptr;
+void (*sequence::sendCurrentSequence)(const int16_t __i16_active_sequence_id) = nullptr;
 
 
 
@@ -167,11 +167,11 @@ void sequence::initSequences() {
  * 
  *  sets the caller sequence as the static variable &sequence::_sequence.
  * */
-void sequence::setActive(const int16_t __i16_active_sequence_nb) {
+void sequence::setActive(const int16_t __i16_active_sequence_id) {
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
   _activeSequence = *this;
-  _i16ActiveSequenceNb = __i16_active_sequence_nb;
+  _i16ActiveSequenceNb = __i16_active_sequence_id;
 }
 
 
@@ -297,7 +297,6 @@ void sequence::playSequenceStandAlone(beat const & __beat, const uint16_t __ui16
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
   bar::tPlayBar.disable();
-  bar::tPlayBar.setOnDisable(NULL);
   note::tPlayNote.disable();
 
   // 1. reset tPlayNote to play notes read from a bar
@@ -311,7 +310,6 @@ void sequence::playSequenceStandAlone(beat const & __beat, const uint16_t __ui16
    *    to make the duration calculations.
    *  */
   bar::tPlayBar.setOnDisable(NULL);
-  // TODO: drafting
 
   /**3. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
    *    the stand alone sequence has been read, so that any other object that may 
@@ -321,12 +319,8 @@ void sequence::playSequenceStandAlone(beat const & __beat, const uint16_t __ui16
     tPlaySequence.setOnDisable(_odtcbPlaySequence);
   });
 
-  // 4. set the active sequence
-  // TODO: Draft a flexible way to set the active sequence
-  setActiveSequenceNb(__ui16_associated_sequence_idx_number);
+  // 4. set the active sequence and associated beat
  
-  // 5. set the beat
-  // sequences[_i16ActiveSequenceNb]._beat.setActive(); <-- this shall not be called.
   beat(__beat).setActive();
 
   tPlaySequence.enable();
@@ -338,11 +332,14 @@ void sequence::playSequenceInBoxState(const uint16_t __ui16_associated_sequence_
   bar::tPlayBar.disable();
   note::tPlayNote.disable();
 
-  // TODO: the two following lines shall be defined at the beginning of entering 
-  //       an automated boxState or even the stepControllerMode
+  // 2. set the underlying laser Tasks for a sequence -> bar -> note -> tone chain
+  //    TODO: the two following lines shall be defined at the beginning of entering 
+  //          an automated boxState or even the stepControllerMode
   note::resetTPlayNoteToPlayNotesInBar();
   bar::tPlayBar.setOnDisable(NULL);
 
+  // 3. set this Task for a regular step -> boxState -> sequence -> bar -> note -> tone chain 
+  //    (as opposed to a standAlone play of the sequence)
   tPlaySequence.setOnDisable(_odtcbPlaySequence);
   
   // TODO: the following line shall be refactored, and get rid of _i16ActiveSequenceNb;
