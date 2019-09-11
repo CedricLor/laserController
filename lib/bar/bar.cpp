@@ -62,7 +62,9 @@ bar& bar::operator=(const bar& __bar)
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getTone() = %u\n", _notesArray[0].getTone());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- End before assignment ---------------");
+  if (&__bar != this) {
   _notesArray = __bar._notesArray;
+  }
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- After assignment ---------------");
   // Serial.printf("bar& bar::operator=(const bar& __bar). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getTone() = %u\n", _notesArray[0].getTone());
