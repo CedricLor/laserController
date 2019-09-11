@@ -9,7 +9,6 @@
 #include "tone.h"
 
 
-const uint16_t tone::_ui16_tone_count = 16;
 std::array<tone, 16> tone::_tones;
 
 // constructor

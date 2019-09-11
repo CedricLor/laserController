@@ -3,16 +3,16 @@
   Created by Cedric Lor, June 10, 2019.
 
 */
-
-#ifndef tone_h
-#define tone_h
-
 #include "Arduino.h"
 #include <global.h>
 #include <laserPin.h>
 
+#ifndef tone_h
+#define tone_h
+
 class tone
 {
+  friend class tones;
   friend class note;
   public:
     tone(); // default constructor
@@ -24,10 +24,20 @@ class tone
     static std::array<tone, 16> _tones;
     void _playTone(const uint16_t _ui16_active_tone);
 
-    static const uint16_t _ui16_tone_count;
-
     std::array<bool, 4> _bLaserPinStatus;  // array containing the state of each laser at each tempo
 };
 
 #endif
 
+#ifndef tones_h
+#define tones_h
+class tones {
+  public:
+    tones(); // default constructor
+    tones(std::array<tone, 16> const __array);
+    void initTones(); // initializer of the array of tones
+  friend class note;
+  private:
+    std::array<tone, 16> _array;
+};
+#endif
