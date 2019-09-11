@@ -20,8 +20,8 @@ laserPin::laserPin() { }
 
 
 laserPin::laserPin(const short __s_index_number, const short __s_physical_pin_number):
-  _sIndexNumber(__s_index_number),
-  _sPhysicalPinNumber(__s_physical_pin_number)
+  _sIndexNumber{__s_index_number},
+  _sPhysicalPinNumber{__s_physical_pin_number}
 { 
   pinMode(_sPhysicalPinNumber, OUTPUT);  // initialization of the pin connected to each of the relay as output
   _switchPin(HIGH);                       // setting default value of the pins at HIGH (relay closed)

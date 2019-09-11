@@ -13,6 +13,8 @@ constexpr short    PIN_COUNT                           = 4;
 
 class laserPin
 {
+  friend class tone;
+  friend class tones;
   public:
     laserPin();
     laserPin(const short __s_index_number, const short __s_physical_pin_number);

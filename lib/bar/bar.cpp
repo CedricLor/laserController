@@ -30,7 +30,7 @@ void (*bar::sendCurrentBar)(const int16_t __i16_current_bar_id) = nullptr;
 ///////////////////////////////////
 // default
 bar::bar() :
-  _notesArray(_emptyNotesArray)
+  _notesArray{_emptyNotesArray}
 {
 }
 
@@ -38,13 +38,13 @@ bar::bar() :
 bar::bar(
   std::array<note, 16> & __notesArray
 ):
-  _notesArray(__notesArray)
+  _notesArray{__notesArray}
 {
 }
 
 // copy constructor
 bar::bar(const bar& __bar):
-  _notesArray(__bar._notesArray)
+  _notesArray{__bar._notesArray}
 {
 }
 
