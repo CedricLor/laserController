@@ -235,20 +235,18 @@ std::array<bar, 8> const & sequence::getBarsArray() const {
 
 
 
-/** uint32_t const sequence::_ui32GetSequenceDuration()
+/** uint32_t const sequence::ui32GetSequenceDuration()
  * 
  * Instance getter.
  * 
  * Returns the sequence duration. 
  * Used to set the interval for tPlaySequenceInLoop. */
-uint32_t const sequence::_ui32GetSequenceDuration() const {
-  Serial.println(F("sequence::_ui32GetSequenceDuration(). Starting."));
+uint32_t const sequence::ui32GetSequenceDuration() const {
 
   uint32_t __ui32SequenceDuration = 0;
   uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
   for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
     __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration();
-    Serial.printf("sequence::_ui32GetSequenceDuration(). __ui32SequenceDuration at _barsArray[%u] == [%u]\n", __ui, __ui32SequenceDuration);
   }
 
   return __ui32SequenceDuration;
@@ -424,13 +422,13 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // }
 
   // if (MY_DG_LASER) {
-  //   Serial.printf("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(%u)", _activeSequence._ui32GetSequenceDuration());
+  //   Serial.printf("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(%u)", _activeSequence.ui32GetSequenceDuration());
   // }
 
   /* Set the interval between each iteration of tPlaySequenceInLoop
       (each iteration will restart the Task tPlaySequence, so this interval
       shall be equal to the duration of the sequence). */
-  tPlaySequenceInLoop.setInterval(_activeSequence._ui32GetSequenceDuration());
+  tPlaySequenceInLoop.setInterval(_activeSequence.ui32GetSequenceDuration());
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());

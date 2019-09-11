@@ -38,6 +38,7 @@ class sequence
     /** getters */
     static sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
     uint16_t const ui16GetBarCountInSequence() const;
+    uint32_t const ui32GetSequenceDuration() const;
     beat const & getAssociatedBeat() const;
     std::array<bar, 8> const & getBarsArray() const;
 
@@ -62,9 +63,6 @@ class sequence
     static sequence & _activeSequence;
     static int16_t _i16ActiveSequenceNb;
     static std::array<bar, 8> _emptyBarsArray;
-
-    // instance getters
-    uint32_t const _ui32GetSequenceDuration() const;
 
     // instance properties
     beat _beat;
