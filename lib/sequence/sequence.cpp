@@ -58,8 +58,10 @@ sequence::sequence(const sequence& __sequence):
 // assignement operator
 sequence& sequence::operator=(const sequence& __sequence)
 {
+  if (&__sequence != this) {
   _beat = __sequence._beat;
   _barsArray = __sequence._barsArray;
+  }
   // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
   // Serial.printf("sequence::operator=(const sequence& ): __sequence.ui16GetBaseNotesCountPerBar(): %u\n", __sequence.ui16GetBaseNotesCountPerBar());
   // Serial.printf("sequence::operator=(const sequence& ): __sequence.i16GetBarCountInSequence(): %i\n", __sequence.i16GetBarCountInSequence());
