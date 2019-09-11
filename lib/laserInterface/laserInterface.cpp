@@ -31,7 +31,10 @@ void laserInterface::initSequenceComm() {
     sequence::sendCurrentSequence = sendCurrentSequence;
 }
 
-
+// TODO: for the moment, setCurrentSequence can only be called with a sequence_id
+// no way to dynamically pass an ad hoc sequence. Refacto to give possibility to
+// pass non static sequences
+// Same issue with setCurrentBar
 void laserInterface::setCurrentSequence(const int16_t __i16_sequence_id) {
     sequence::getSequenceFromSequenceArray(__i16_sequence_id).setActive(__i16_sequence_id);
 }
@@ -51,7 +54,7 @@ void laserInterface::sendCurrentSequence(const int16_t _i16CurrentStateNbr) {
 
 void laserInterface::playSequence(const int16_t __i16SequenceNb) {
   lockSequenceStack();
-  setCurrentSequence(__i16SequenceNb);
+  setCurrentSequence(__i16SequenceNb); // <-- TODO: this does not do anything. Draft sthing similar to playBar
   sequence::tPlaySequence.restartDelayed();
 }
 
