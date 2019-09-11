@@ -364,8 +364,10 @@ uint16_t const bar::ui16GetNotesCountInBar() const {
  * Returns the base note count (as opposed to the effective
  * number of notes) in a bar */
 uint16_t const bar::ui16GetBaseNotesCountInBar() const {
+  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): starting\n");
   uint16_t __ui = 0;
   uint16_t __ui16TotalNotesIn16th = 0;
+  uint16_t __ui16Note;
   /**
    * 1. ronde                   : 16 : 16 / 1
    * 2. blanche                 : 8  : 16 / 2
@@ -375,22 +377,26 @@ uint16_t const bar::ui16GetBaseNotesCountInBar() const {
    * 8. croche                  : 2  : 16 / 8
    * 16. double croche          : 1  : 16 / 16
   */
-  while (_notesArray[__ui].getNote() != 0) {
-    uint16_t __note = _notesArray[__ui].getNote();
-      __ui++;
+  while ((__ui16Note = _notesArray[__ui].getNote()) != 0) {
+    // Serial.printf("bar::ui16GetBaseNotesCountInBar: __ui16Note = [%u]\n", __ui16Note);
+    // Serial.printf("bar::ui16GetBaseNotesCountInBar: __ui = [%u]\n", __ui);
+    __ui++;
     // 3; noire + croche
-    if (__note == 3) { 
+    if (__ui16Note == 3) { 
       __ui16TotalNotesIn16th += 6; // 4 + 2;
       continue;
     }
     // 6; croche + double croche
-    if (__note == 6) {
+    if (__ui16Note == 6) {
       __ui16TotalNotesIn16th += 3; // 2 + 1
       continue;
     }
-    __ui16TotalNotesIn16th += 16 / __note;
-  }
-  return (__ui16TotalNotesIn16th / beat::getCurrentBeat().getBaseNoteForBeat());
+    __ui16TotalNotesIn16th += 16 / __ui16Note;
+  };
+  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): __ui16TotalNotesIn16th = [%u]\n", __ui16TotalNotesIn16th);
+  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): beat::getCurrentBeat().getBaseNoteForBeat() = [%u]\n", beat::getCurrentBeat().getBaseNoteForBeat());
+  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): about to return [%u]\n", (__ui16TotalNotesIn16th / 16 * beat::getCurrentBeat().getBaseNoteForBeat()));
+  return (__ui16TotalNotesIn16th / 16 * beat::getCurrentBeat().getBaseNoteForBeat());
 }
 
 
