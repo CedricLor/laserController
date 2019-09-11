@@ -107,7 +107,7 @@ void setup() {
     bar::initBars();
     sequence::initSequences();
   }
-  Serial.printf("main: Passed inits.\n");
+  Serial.printf("\nmain: Passed laser stack inits.\n");
   Serial.printf("main: sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
   Serial.printf("main: sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
 
@@ -115,9 +115,9 @@ void setup() {
   Serial.printf("main: sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone() shall be equal to 0. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone());
 
   Serial.printf("main: sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm());
-  Serial.printf("main: sequence::sequences[0].i16GetBarCountInSequence() = %u\n", sequence::sequences[0].ui16GetBarCountInSequence());
+  Serial.printf("main: sequence::sequences[0].i16GetBarCountInSequence() shall be equal to 1. Is equal to [%u]\n", sequence::sequences[0].ui16GetBarCountInSequence());
   Serial.printf("main: sequence::sequences[0].getAssociatedBeat().getBaseNoteForBeat() = %u\n", sequence::sequences[0].getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("main: sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm() = %i\n", sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("main: sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm() = %i\n\n", sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm());
   boxState::initBoxStates();
 
   enableTasks();
