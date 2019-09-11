@@ -13,18 +13,19 @@ constexpr short    PIN_COUNT                           = 4;
 
 class laserPin
 {
-  friend class tone;
-  laserPin();
-  laserPin(const short __s_index_number, const short __s_physical_pin_number);
+  public:
+    laserPin();
+    laserPin(const short __s_index_number, const short __s_physical_pin_number);
 
-  static void _initLaserPins();
+  private:
+    static void _initLaserPins();
 
-  static laserPin _laserPins[];
+    static laserPin _laserPins[];
 
-  void _switchPin(const bool __b_target_state);
+    void _switchPin(const bool __b_target_state);
 
-  short _sIndexNumber;          // index number in the array of _laserPins
-  short _sPhysicalPinNumber;   // physical number of the pin controlling the relay
+    short _sIndexNumber;          // index number in the array of _laserPins
+    short _sPhysicalPinNumber;   // physical number of the pin controlling the relay
 };
 
 #endif

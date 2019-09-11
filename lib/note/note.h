@@ -50,6 +50,7 @@ class note
 
     // private static variables
     static note &_activeNote;
+    static tones &_tones;
 
     /** player callbacks */
     static bool _oetcbPlayNote();

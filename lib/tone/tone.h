@@ -34,10 +34,8 @@ class tone
 class tones {
   public:
     tones(); // default constructor
-    tones(std::array<tone, 16> const __array);
-    void initTones(); // initializer of the array of tones
-  friend class note;
   private:
+    std::array<laserPin, 4> _laserPins;
     std::array<tone, 16> _array;
 };
 #endif
