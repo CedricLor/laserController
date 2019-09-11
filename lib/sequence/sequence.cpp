@@ -106,18 +106,24 @@ void sequence::initSequences() {
 
   // --> Sequence 0: "Relays"
   /** array of bars to be played in the sequence. */
+  // Serial.printf("\nsequence::initSequences(). Before building _relaysBarsArray.\n");
+  // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getTone() should be equal to 7. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getTone());
+
   std::array<bar, 8> _relaysBarsArray {bar::_bars[0]};
-  Serial.printf("sequence::initSequences(). Passed building _relaysBarsArray.\n");
-  Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0)._notesArray.at(0).getNote() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0)._notesArray.at(0).getNote());
+  // Serial.printf("\nsequence::initSequences(). Passed building _relaysBarsArray.\n");
+  // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getTone() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getTone());
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
   const beat _beat_2_1(2,1);
-  Serial.printf("sequence::initSequences(). Passed building _beat_2_1.\n");
-  Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
+  // Serial.printf("\nsequence::initSequences(). Passed building _beat_2_1.\n");
+  // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
   sequences[0] = {_beat_2_1, _relaysBarsArray};
-  Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0]._notesArray[0].getTone() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray()[0]._notesArray[0].getTone());
-  Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
+  // Serial.printf("\nsequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
+  // Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
 
 
   // --> Sequence 1: "Twins"
@@ -192,38 +198,65 @@ sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence
 
 
 
-/**uint16_t sequence::i16GetBarCountInSequence()
+/**uint16_t const sequence::ui16GetBarCountInSequence() const 
  *  
  * Instance getter.
  *  
  * Returns the bar count in a given sequence. */
-const uint16_t sequence::ui16GetBarCountInSequence() const {
+uint16_t const sequence::ui16GetBarCountInSequence() const {
+  Serial.println("sequence::ui16GetBarCountInSequence(): starting");
   uint16_t __ui16BarCountInSequence = 0;
-  while (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() > 0) {
-    __ui16BarCountInSequence++;
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", getBarsArray().at(0).getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", getBarsArray().at(0).getNotesArray().at(0).getTone());
+
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 0, getBarsArray().at(0).ui16GetNotesCountInBar());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 1, getBarsArray().at(1).ui16GetNotesCountInBar());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 2, getBarsArray().at(2).ui16GetNotesCountInBar());
+
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote() is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone() is equal to [%i]\n", sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(2).getNotesArray().at(0).getNote() is equal to [%i]\n", getBarsArray().at(2).getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(2).getNotesArray().at(0).getTone() is equal to [%i]\n", getBarsArray().at(2).getNotesArray().at(0).getTone());
+
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 3, getBarsArray().at(3).ui16GetNotesCountInBar());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 4, getBarsArray().at(4).ui16GetNotesCountInBar());
+  // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", 5, getBarsArray().at(5).ui16GetNotesCountInBar());
+  for (uint16_t __ui16BarCountInSequence = 0; __ui16BarCountInSequence < 8; __ui16BarCountInSequence++) {
+    // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = in the loop\n", __ui16BarCountInSequence);
+    // Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", __ui16BarCountInSequence, getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar());
+    if (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() == 0) {
+      break;
+    }
   }
+  // while (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() > 0); {
+  //   Serial.printf("sequence::ui16GetBarCountInSequence(): getBarsArray().at(%u).ui16GetNotesCountInBar() = [%u]\n", __ui16BarCountInSequence, getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar());
+  //   __ui16BarCountInSequence++;
+  // }
+  Serial.println("sequence::ui16GetBarCountInSequence(): about to return");
   return __ui16BarCountInSequence;
 }
 
 
 
-/**const beat & getAssociatedBeat() const
+/**beat const & sequence::getAssociatedBeat() const 
  * 
  * Instance getter.
  * 
  * Returns the associated beat */
-const beat & sequence::getAssociatedBeat() const {
+beat const & sequence::getAssociatedBeat() const {
   return _beat;
 }
 
 
 
-/**const beat & getBarsArray() const
+/**std::array<bar, 8> const & sequence::getBarsArray() const
  * 
  * Instance getter.
  * 
  * Returns a pointer to the associated bars array */
-const std::array<bar, 8> & sequence::getBarsArray() const {
+std::array<bar, 8> const & sequence::getBarsArray() const {
   return _barsArray;
 }
 

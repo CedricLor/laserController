@@ -37,9 +37,9 @@ class sequence
 
     /** getters */
     static sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
-    const uint16_t ui16GetBarCountInSequence() const;
-    const beat & getAssociatedBeat() const;
-    const std::array<bar, 8> & getBarsArray() const;
+    uint16_t const ui16GetBarCountInSequence() const;
+    beat const & getAssociatedBeat() const;
+    std::array<bar, 8> const & getBarsArray() const;
 
     /** Task - sequence players */
     void playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id=-1);
@@ -68,7 +68,7 @@ class sequence
 
     // instance properties
     beat _beat;
-    std::array<bar, 8> & _barsArray;
+    std::array<bar, 8> _barsArray;
 
     // tasks callbacks
     static bool _oetcbPlaySequenceInLoop();

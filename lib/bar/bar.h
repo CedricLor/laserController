@@ -41,6 +41,7 @@ class bar
     uint16_t const ui16GetNotesCountInBar() const;
     uint16_t const ui16GetBaseNotesCountInBar() const;
     uint32_t const ui32GetBarDuration() const;
+    const std::array<note, 16> & getNotesArray() const;
 
     /** player */
     void playBarStandAlone(beat const & __beat=beat::_activeBeat, const int16_t __i16_active_bar_id=-1);
@@ -65,7 +66,7 @@ class bar
     void _setTPlayBar(beat const & __beat);
 
     // private instance properties
-    std::array<note, 16> & _notesArray;
+    std::array<note, 16> _notesArray;
 };
 
 #endif
