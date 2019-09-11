@@ -55,9 +55,11 @@ note::note( const note& __note) :
 // assignement operator
 note& note::operator=(const note& __note)
 {
-  _ui16Tone = __note._ui16Tone;
-  _ui16Note = __note._ui16Note;
-  _tone = tone::_tones[_ui16Tone];
+  if (&__note != this) {
+    _ui16Tone = __note._ui16Tone;
+    _ui16Note = __note._ui16Note;
+    _tone = tone::_tones[_ui16Tone];
+  }
   return *this;
 }
 
@@ -198,7 +200,7 @@ void note::playNoteStandAlone(beat const & __beat) {
  *  _tcbPlayBar manages the real duration (and the beat). 
 */
 void note::playNoteInBar() {
-  this->setActive();
+  setActive();
   tPlayNote.restartDelayed();
 }
 
