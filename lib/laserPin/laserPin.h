@@ -13,7 +13,6 @@ class laserPin
 {
   friend class test;
   friend class tone;
-  friend class tones;
   public:
     laserPin();
     laserPin(const short __s_index_number, const short __s_physical_pin_number);
