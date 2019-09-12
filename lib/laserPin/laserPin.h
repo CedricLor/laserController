@@ -16,6 +16,8 @@ class laserPin
   public:
     laserPin();
     laserPin(const short __s_index_number, const short __s_physical_pin_number);
+    laserPin(const laserPin& __laserPin);
+    laserPin& operator=(const laserPin& __laserPin);
     ~laserPin();
 
   private:
