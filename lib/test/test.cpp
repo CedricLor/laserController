@@ -11,7 +11,7 @@
 test::test() { }
 
 void test::laserPinStack() {
-  Serial.println("\n\ntest::laserPinStack: starting");
+  Serial.println("\ntest::laserPinStack: starting");
 
   Serial.println("test::laserPinStack: testing laserPin constructor: laserPin _laserPin{-1, 21}.");
   laserPin _laserPin{1, 21};
@@ -28,14 +28,14 @@ void test::laserPinStack() {
   Serial.println("test::laserPinStack: testing laserPin destructor: _laserPin.~laserPin().");
   _laserPin.~laserPin();
 
-  Serial.println("test::laserPinStack: laserPin test over. \n");
+  Serial.println("test::laserPinStack: over. \n");
 }
 
 
 void test::laserPinsStack() {
   Serial.println("\n\ntest::laserPinsStack: starting");
 
-  Serial.println("\ntest::laserPinsStack: laserPins test.");
+  Serial.println("test::laserPinsStack: laserPins test.");
   // Serial.println("test::laserPinsStack: destroying tone::_laserPins.~laserPins().");
   // tone::_laserPins.~laserPins();
   Serial.println("test::laserPinsStack: testing laserPins constructor: laserPins _laserPins{}.");
@@ -46,10 +46,10 @@ void test::laserPinsStack() {
     _laserPins._array.at(0)._sIndexNumber);
   Serial.printf("test::laserPinsStack: _laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%u]\n", 
     _laserPins._array.at(0)._sPhysicalPinNumber);
+  Serial.printf("test::laserPinsStack: _laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
+    _laserPins._array.at(0)._switchPin(LOW));
   Serial.printf("test::laserPinsStack: _laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
     _laserPins._array.at(0)._switchPin(HIGH));
-  Serial.printf("test::laserPinsStack: _laserPins._array.at(0)._switchPin(LOW) should be equal to 1. Is equal to [%i]\n", 
-    _laserPins._array.at(0)._switchPin(LOW));
 
   Serial.println("test::laserPinsStack: testing laserPins destructor: _laserPins.~laserPins().");
   _laserPins.~laserPins();
@@ -57,11 +57,11 @@ void test::laserPinsStack() {
   // tone::_laserPins = ;
   Serial.println("test::laserPinsStack: laserPins test over.");
 
-  Serial.println("\ntest::laserPinsStack: ending\n\n");
+  Serial.println("test::laserPinsStack: over\n");
 }
 
 void test::sequenceStack() { 
-  Serial.println("\n\ntest::sequenceStack: starting\n");
+  Serial.println("\ntest::sequenceStack: starting");
   beat _beat{sequence::sequences[0].getAssociatedBeat()};
   _beat.setActive();
 
@@ -109,5 +109,5 @@ void test::sequenceStack() {
 
   beat _defaultBeat{};
   _defaultBeat.setActive();
-  Serial.println("\ntest::sequenceStack: ending\n\n");
+  Serial.println("\ntest::sequenceStack: over\n\n");
 }
