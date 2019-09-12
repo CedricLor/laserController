@@ -80,6 +80,27 @@ void test::implementedLaserPinsStack() {
 
 
 
+void test::toneStack() {
+  Serial.println("\ntest::toneStack: starting");
+
+  Serial.println("test::toneStack: testing tone constructor: tone _tone{{HIGH, HIGH, LOW, LOW}}.");
+  std::array<bool, 4> const _aSecondPairOn = {HIGH, HIGH, LOW, LOW};
+  tone _tone{_aSecondPairOn};
+
+  Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _tone._bLaserPinStatus.at(0));
+  Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(4) should be equal to 0. Is equal to [%u]\n", 
+    _tone._bLaserPinStatus.at(0));
+  _tone._playTone(10);
+  Serial.printf("test::toneStack: _laserPin._sPhysicalPinNumber should be equal to 10. Is equal to [%u]\n", 
+    _tone._playTone(0));
+
+  Serial.println("test::toneStack: over. \n");
+}
+
+
+
+
 void test::sequenceStack() { 
   Serial.println("\ntest::sequenceStack: starting");
   beat _beat{sequence::sequences[0].getAssociatedBeat()};
