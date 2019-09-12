@@ -219,7 +219,7 @@ void test::rawNotesStack() {
   Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
     _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(LOW));
   Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
-    _tones._laserPins._array.at(0)._switchPin(HIGH));
+    _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(HIGH));
 
 
   Serial.println("test::rawNotesStack: over\n");
