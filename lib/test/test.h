@@ -13,7 +13,7 @@ class test
 {
   public:
     test();
-    void run();
+    void sequence_stack();
 };
 
 #endif
