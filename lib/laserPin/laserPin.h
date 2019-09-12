@@ -18,6 +18,7 @@ class laserPin
   public:
     laserPin();
     laserPin(const short __s_index_number, const short __s_physical_pin_number);
+    ~laserPin();
 
   private:
     static void _initLaserPins();
@@ -41,6 +42,6 @@ class laserPins
   public:
     laserPins();
   private:
-    laserPin _laserPins[];
+    std::array<laserPin, PIN_COUNT> _laserPins;
 };
 #endif
