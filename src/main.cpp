@@ -19,7 +19,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <laserInterface.h>
 #include <pirController.h>
 #include <myWebServerBase.h>
-
+#include <test.h>
 
 
 
