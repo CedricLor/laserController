@@ -41,6 +41,7 @@ class beat
   private:
     friend class sequence;
     friend class bar;
+    friend class notes;
     friend class note;
 
     // static properties

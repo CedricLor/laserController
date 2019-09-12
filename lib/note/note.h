@@ -4,13 +4,13 @@
 
 */
 
-#ifndef note_h
-#define note_h
-
 #include "Arduino.h"
 #include <mns.h>
 #include <beat.h>
 #include <tone.h>
+
+#ifndef note_h
+#define note_h
 
 class note
 {
@@ -48,6 +48,7 @@ class note
     static Task tPlayNote;
 
   private:
+    friend class notes;
     friend class bar;
 
     // private static variables
@@ -69,4 +70,47 @@ class note
     tone & _tone;
 };
 
+#endif
+
+#ifndef notes_h
+#define notes_h
+
+class notes
+{
+  public:
+    /** default empty constructor */
+    notes();
+    /** main parameterized constructor */
+    notes(
+      const uint16_t __ui16_tone,
+      const uint16_t __ui16_note
+    );
+
+    /** setter */
+    void resetTPlayNoteToPlayNotesInBar();
+
+    /** getter */
+    const note &getCurrentNote();
+
+    /** player */
+    void playNoteStandAlone(beat const & __beat=beat::_activeBeat);
+    void playNoteInBar();
+
+    /** member */
+    Task tPlayNote;
+
+    /** sender to mesh */
+    void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
+
+  private:
+    friend class bar;
+
+    /** private members */
+    note &_activeNote;
+    tones _tones;
+
+    /** player callbacks */
+    bool _oetcbPlayNote();
+    void _odtcbPlayNote();
+};
 #endif
