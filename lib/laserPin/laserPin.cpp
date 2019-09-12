@@ -46,3 +46,14 @@ void laserPin::_initLaserPins() {
 void laserPin::_switchPin(const bool __b_target_state) {
   digitalWrite(_sPhysicalPinNumber, __b_target_state);
 }
+
+
+
+
+laserPins::laserPins() 
+{ 
+  for (short __i = 0; __i < PIN_COUNT; __i++) {
+    _laserPins[__i] = {__i, relayPins[__i]};
+  }
+}
+

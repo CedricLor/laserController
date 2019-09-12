@@ -41,7 +41,6 @@ class laserPins
   public:
     laserPins();
   private:
-    void _initLaserPins();
     laserPin _laserPins[];
 };
 #endif
