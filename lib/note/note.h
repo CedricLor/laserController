@@ -25,11 +25,8 @@ class note
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
     );
-    // copy constructor
     note( const note& __note);
-    // assignement operator
     note& operator=(const note& __note);
-    // destructor
     ~note();
 
     /** setters */

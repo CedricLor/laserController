@@ -57,8 +57,7 @@ note::note( const note& __note) :
   _ui16Tone(__note._ui16Tone),
   _ui16Note(__note._ui16Note),
   _tone(_tones._array.at(_ui16Tone))
-{
-}
+{ }
 
 // assignement operator
 note& note::operator=(const note& __note)
@@ -72,8 +71,7 @@ note& note::operator=(const note& __note)
 }
 
 // destructor
-note::~note()
-{ }
+note::~note() { }
 
 
 
