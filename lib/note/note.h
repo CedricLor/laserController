@@ -51,6 +51,7 @@ class note
     // private static variables
     static note &_activeNote;
     static tones &_tones;
+    static std::array<tone, 16> _tonesArr;
 
     /** player callbacks */
     static bool _oetcbPlayNote();
