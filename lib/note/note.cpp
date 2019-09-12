@@ -67,11 +67,13 @@ note& note::operator=(const note& __note)
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
     _tone = _tones._array.at(_ui16Tone);
-    _validNote();
   }
   return *this;
 }
 
+// destructor
+note::~note()
+{ }
 
 
 

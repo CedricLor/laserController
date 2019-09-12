@@ -29,6 +29,8 @@ class note
     note( const note& __note);
     // assignement operator
     note& operator=(const note& __note);
+    // destructor
+    ~note();
 
     /** setters */
     void setActive();
