@@ -56,7 +56,7 @@ uint16_t const tone::_playTone(const uint16_t _ui16_active_tone){
 
 // default constructor
 tones::tones() :
-  _laserPins(tone::_laserPins)
+  _laserPins(laserPins{})
 {
 
   // Initialize the tones' _array
