@@ -20,9 +20,7 @@
 ///////////////////////////////////
 note _note;
 note &note::_activeNote = _note;
-tones _tones;
-tones &note::_tones = _tones;
-std::array<tone, 16> note::_tones;
+tones note::_tones;
 
 // pointer to functions to produce an interface for note
 void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note) = nullptr;
