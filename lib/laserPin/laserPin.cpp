@@ -38,9 +38,9 @@ laserPin::~laserPin()
 
 
 
-
-void laserPin::_switchPin(const bool __b_target_state) {
+bool const laserPin::_switchPin(const bool __b_target_state) const {
   digitalWrite(_sPhysicalPinNumber, __b_target_state);
+  return __b_target_state;
 }
 
 
