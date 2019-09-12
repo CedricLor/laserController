@@ -42,6 +42,6 @@ class laserPins
     laserPins();
     ~laserPins();
   private:
-    std::array<laserPin, PIN_COUNT> _laserPins;
+    std::array<laserPin, PIN_COUNT> _array;
 };
 #endif

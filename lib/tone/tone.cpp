@@ -98,7 +98,7 @@ void tone::_playTone(const uint16_t _ui16_active_tone){
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     // Serial.print("tone::_playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
-    _laserPins._laserPins[__thisPin]._switchPin(_bLaserPinStatus[__thisPin]);
+    _laserPins._array.at(__thisPin)._switchPin(_bLaserPinStatus[__thisPin]);
     // Serial.print("tone::_playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
   }
   Serial.printf("tone::_playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
