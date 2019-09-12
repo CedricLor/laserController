@@ -106,6 +106,7 @@ void setup() {
     _test.laserPinStack();
     _test.rawLaserPinsStack();
     _test.implementedLaserPinsStack();
+    _test.toneStack();
     bar::initBars();
     sequence::initSequences();
     _test.sequenceStack();
