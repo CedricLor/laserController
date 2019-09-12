@@ -3,11 +3,11 @@
   Created by Cedric Lor, July 19, 2019.
 */
 
-#ifndef laserPin_h
-#define laserPin_h
-
 #include "Arduino.h"
 #include <global.h>
+
+#ifndef laserPin_h
+#define laserPin_h
 
 constexpr short    PIN_COUNT                           = 4;
 
@@ -30,4 +30,18 @@ class laserPin
     short _sPhysicalPinNumber;   // physical number of the pin controlling the relay
 };
 
+#endif
+
+#ifndef laserPins_h
+#define laserPins_h
+class laserPins
+{
+  friend class tone;
+  friend class tones;
+  public:
+    laserPins();
+  private:
+    void _initLaserPins();
+    laserPin _laserPins[];
+};
 #endif
