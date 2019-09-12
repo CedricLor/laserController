@@ -11,7 +11,7 @@
 test::test() { }
 
 
-void test::sequence_stack() { 
+void test::sequenceStack() { 
   beat _beat{sequence::sequences[0].getAssociatedBeat()};
   _beat.setActive();
 

@@ -46,7 +46,7 @@ void enableTasks();
 void setup() {
   delay(2000);
   serialInit();
-
+  test _test;
 
   mns::myScheduler.init();
   
@@ -106,13 +106,9 @@ void setup() {
     tone::initTones(); // inits also laserPin class; note does not need init
     bar::initBars();
     sequence::initSequences();
+    _test.sequenceStack();
   }
 
-  Serial.printf("\n\nmain: Passed laser stack inits. Starting tests on laser stack.\n");
-
-
-
-  Serial.printf("\nmain: Laser stack tests ended.\n");
   
   boxState::initBoxStates();
 
