@@ -162,9 +162,3 @@ uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
   // Serial.println("beat::ui16GetBaseNoteDurationInMs(). Ending.");
   return __ui16DurationInMs;
 }
-
-
-
-
-
-
