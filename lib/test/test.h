@@ -13,10 +13,26 @@ class test
 {
   public:
     test();
+
     void laserPinStack();
     void rawLaserPinsStack();
     void implementedLaserPinsStack();
+
+    void toneStack();
+    void rawTonesStack();
+    void implementedTonesStack();
+
+    void noteStack();
+    void rawNotesStack();
+    void implementedNotesStack();
+
+    void barStack();
+    void rawBarsStack();
+    void implementedBarsStack();
+
     void sequenceStack();
+    void rawSequencesStack();
+    void implementedSequencesStack();
 };
 
 #endif
