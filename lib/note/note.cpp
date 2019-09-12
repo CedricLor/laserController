@@ -227,6 +227,8 @@ void note::playNoteInBar() {
   tPlayNote.restartDelayed();
 }
 
+
+
 /** task tPlayNote:
  * 
  *   The Task is enabled upon instanciating a note in the bar class.
@@ -241,6 +243,8 @@ void note::playNoteInBar() {
  *   beat rate. */
 Task note::tPlayNote(30000, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oetcbPlayNote, &_odtcbPlayNote);
 
+
+
 /** note::_oetcbPlayNote()
  *  On enable Task _tNote, turn the lasers to a given tone */
 bool note::_oetcbPlayNote() {
@@ -248,12 +252,13 @@ bool note::_oetcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number %u\n", _activeNote._ui16Tone);
   }
-  _activeNote._tone._playTone(_activeNote._ui16Tone);
+  _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
 
-/** note::_oetcbPlayNote()
+
+/** note::_odtcbPlayNote()
  *  On disable Task _tNote, turn off all the lasers */
 void note::_odtcbPlayNote() {
   Serial.println("note::_odtcbPlayNote(). Starting");
@@ -261,6 +266,6 @@ void note::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(0); // tones[0] means turn off all the lasers
-  _activeNote._tone._playTone(_activeNote._ui16Tone);
+  _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }

@@ -12,8 +12,6 @@
 // Tone //********************************************************//
 //****************************************************************//
 
-laserPins tone::_laserPins;
-
 // constructor
 tone::tone():
   _bLaserPinStatus({})
@@ -25,22 +23,19 @@ tone::tone(std::array<bool, 4> const __bLaserPinsStatus):
 
 
 
-
-
-
 /* _playTone()
 
   tone::_tones[_activeTone]._playTone();
 
   _playTone() is called as a member of an instance of _tones[index].
 */
-uint16_t const tone::_playTone(const uint16_t _ui16_active_tone){
+uint16_t const tone::_playTone(const uint16_t _ui16_active_tone, const laserPins & __laser_pins){
   Serial.printf("tone::_playTone(). Starting. Tone about to be played: %i\n", _ui16_active_tone);
   // Direct access to the pins.
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     // Serial.print("tone::_playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
-    _laserPins._array.at(__thisPin)._switchPin(_bLaserPinStatus[__thisPin]);
+    __laser_pins._array.at(__thisPin)._switchPin(_bLaserPinStatus[__thisPin]);
     // Serial.print("tone::_playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
   }
   Serial.printf("tone::_playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
