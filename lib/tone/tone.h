@@ -39,7 +39,6 @@ class tones {
   public:
     tones(); // default constructor
   private:
-    std::array<laserPin, 4> _laserPins;
     std::array<tone, 16> _array;
 };
 #endif
