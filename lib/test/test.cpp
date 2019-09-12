@@ -121,6 +121,42 @@ void test::rawTonesStack() {
 
 
 
+void test::implementedTonesStack() {
+  Serial.println("\n\ntest::implementedTonesStack: starting");
+
+  Serial.println("test::implementedTonesStack: testing tones constructor: tones _tones{}.");
+  laserPins _laserPins;
+  tones _tones{};
+
+  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _tones._array.at(0)._bLaserPinStatus.at(0));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._bLaserPinStatus.at(3) should be equal to 1. Is equal to [%u]\n", 
+    _tones._array.at(0)._bLaserPinStatus.at(3));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._playTone(10) return 10. Returns [%u]\n", 
+    _tones._array.at(0)._playTone(10, _laserPins));
+
+  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._bLaserPinStatus.at(0) should be equal to 0. Is equal to [%u]\n", 
+    _tones._array.at(15)._bLaserPinStatus.at(0));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _tones._array.at(15)._bLaserPinStatus.at(3));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._playTone(7) return 7. Returns [%u]\n", 
+    _tones._array.at(15)._playTone(7, _laserPins));
+
+  Serial.printf("test::implementedTonesStack: _tones._laserPins._array.at(0)._sIndexNumber should be equal to 0. Is equal to [%i]\n", 
+    _tones._laserPins._array.at(0)._sIndexNumber);
+  Serial.printf("test::implementedTonesStack: _tones._laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
+    _tones._laserPins._array.at(0)._sPhysicalPinNumber);
+  Serial.printf("test::implementedTonesStack: _tones._laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
+    _tones._laserPins._array.at(0)._switchPin(LOW));
+  Serial.printf("test::implementedTonesStack: _tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
+    _tones._laserPins._array.at(0)._switchPin(HIGH));
+
+  Serial.println("test::implementedTonesStack: over\n");
+}
+
+
+
+
 void test::sequenceStack() { 
   Serial.println("\ntest::sequenceStack: starting");
   beat _beat{sequence::sequences[0].getAssociatedBeat()};
