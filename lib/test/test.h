@@ -16,7 +16,6 @@ class test
 
     void laserPinStack();
     void rawLaserPinsStack();
-    void implementedLaserPinsStack();
 
     void toneStack();
     void rawTonesStack();
