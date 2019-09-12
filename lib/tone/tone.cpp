@@ -55,10 +55,12 @@ uint16_t const tone::_playTone(const uint16_t _ui16_active_tone){
 //****************************************************************//
 
 // default constructor
-tones::tones() {
+tones::tones() :
+  _laserPins(tone::_laserPins)
+{
   Serial.println("tones::tones(). Starting.");
 
-  // Initialize the tones
+  // Initialize the tones' _array
   /** "all off" */
   std::array<bool, 4> const _aAllOff = {HIGH, HIGH, HIGH, HIGH};
   _array[0] = {_aAllOff};
