@@ -43,6 +43,7 @@ class beat
     friend class bar;
     friend class notes;
     friend class note;
+    friend class test;
 
     // static properties
     // static std::array<beat, 7> _beats;

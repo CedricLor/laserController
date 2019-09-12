@@ -19,13 +19,8 @@ class bar
 
     /** default empty constructor */
     bar();
-    /** main parameterized constructor */
-    bar(
-      std::array<note, 16> & __notesArray
-    ); 
-    // copy constructor
+    bar(std::array<note, 16> & __notesArray); 
     bar( const bar& __bar);
-    // assignement operator
     bar& operator=(const bar& __bar);
  
     // objects array initializer
