@@ -24,6 +24,20 @@ laserPin::laserPin(const short __s_index_number, const short __s_physical_pin_nu
   _switchPin(HIGH);                       // setting default value of the pins at HIGH (relay closed)
 }
 
+laserPin::laserPin(const laserPin& __laserPin):
+  _sIndexNumber{__laserPin._sIndexNumber},
+  _sPhysicalPinNumber{__laserPin._sPhysicalPinNumber}
+{ }
+
+laserPin& laserPin::operator=(const laserPin& __laserPin)
+{
+    if (this != &__laserPin)
+    {
+      _sIndexNumber = __laserPin._sIndexNumber;
+      _sPhysicalPinNumber = __laserPin._sPhysicalPinNumber;
+    }
+    return *this;
+}
 ///////////////////////////////////
 // Destructor
 ///////////////////////////////////
