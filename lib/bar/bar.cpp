@@ -185,7 +185,7 @@ void bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_
   /**3. set the tPlayNote Task to its default when playing notes read from a bar.
    *    tPlayNote will be managed from tPlayBar => set tPlayNote to play each note (in the bar)
    *    for one single iteration and with the maximum available interval (30000). */
-  note::resetTPlayNoteToPlayNotesInBar();
+  notes{}.resetTPlayNoteToPlayNotesInBar();
   /**4. set the onDisable callback of tPlayBar to reset the active beat to (0,0) once
    *    the stand alone bar has been read, so that (i) bar can be read again as part of a
    *    sequence and (ii) any other class that may depend on beat finds a clean beat to start

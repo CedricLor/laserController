@@ -15,6 +15,14 @@
 #include "Arduino.h"
 #include "note.h"
 
+
+
+//****************************************************************//
+// Note //********************************************************//
+//****************************************************************//
+
+
+
 ///////////////////////////////////
 // Static variables
 ///////////////////////////////////
@@ -86,16 +94,6 @@ note& note::operator=(const note& __note)
 void note::setActive() {
   tPlayNote.disable();
   _activeNote = *this;
-}
-
-/** note::resetTPlayNoteToPlayNotesInBar(): public static setter method
- * 
- *  resets the parameters of the static Task tPlayNote to  
- *  play notes read from a bar. */
-void note::resetTPlayNoteToPlayNotesInBar() {
-  tPlayNote.disable();
-  tPlayNote.setInterval(30000);
-  tPlayNote.setOnDisable(_odtcbPlayNote);
 }
 
 /** note::_setTone(): private instance setter method
@@ -268,3 +266,33 @@ void note::_odtcbPlayNote() {
   _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
+
+
+
+
+//****************************************************************//
+// Notes //*******************************************************//
+//****************************************************************//
+
+notes::notes():
+  _activeNote(note::_activeNote),
+  _tones(note::_tones)
+{}
+
+notes::notes(note & __activeNote, tones & __tones):
+  _activeNote(__activeNote),
+  _tones(__tones)
+{}
+
+
+
+/** notes::resetTPlayNoteToPlayNotesInBar(): public static setter method
+ * 
+ *  resets the parameters of the static Task tPlayNote to  
+ *  play notes read from a bar. */
+void notes::resetTPlayNoteToPlayNotesInBar() {
+  note::tPlayNote.disable();
+  note::tPlayNote.setInterval(30000);
+  note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
+}
+

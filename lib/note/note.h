@@ -30,7 +30,6 @@ class note
 
     /** setters */
     void setActive();
-    static void resetTPlayNoteToPlayNotesInBar();
 
     /** getters */
     static const note &getCurrentNote();
@@ -77,7 +76,7 @@ class notes
     /** default empty constructor */
     notes();
     /** main parameterized constructor */
-    notes(note & _activeNote, tones & _tones);
+    notes(note & __activeNote, tones & __tones);
 
     /** setter */
     void resetTPlayNoteToPlayNotesInBar();
