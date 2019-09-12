@@ -14,7 +14,8 @@ class test
   public:
     test();
     void laserPinStack();
-    void laserPinsStack();
+    void rawLaserPinsStack();
+    void implementedLaserPinsStack();
     void sequenceStack();
 };
 

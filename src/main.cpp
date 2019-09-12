@@ -104,8 +104,9 @@ void setup() {
 
   if ((isInterface == false) || (isRoot == false)) {
     _test.laserPinStack();
-    _test.laserPinsStack();
+    _test.rawLaserPinsStack();
     tone::initTones(); // inits also laserPin class; note does not need init
+    _test.implementedLaserPinsStack();
     bar::initBars();
     sequence::initSequences();
     _test.sequenceStack();
