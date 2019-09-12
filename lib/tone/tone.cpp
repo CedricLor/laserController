@@ -92,7 +92,7 @@ void tone::initTones() {
 
   _playTone() is called as a member of an instance of _tones[index].
 */
-void tone::_playTone(const uint16_t _ui16_active_tone){
+uint16_t const tone::_playTone(const uint16_t _ui16_active_tone){
   Serial.printf("tone::_playTone(). Starting. Tone about to be played: %i\n", _ui16_active_tone);
   // Direct access to the pins.
   // For each pin
@@ -102,6 +102,7 @@ void tone::_playTone(const uint16_t _ui16_active_tone){
     // Serial.print("tone::_playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
   }
   Serial.printf("tone::_playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
+  return _ui16_active_tone;
 };
 
 

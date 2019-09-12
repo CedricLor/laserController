@@ -24,7 +24,7 @@ class tone
 
   private:
     static std::array<tone, 16> _tones;
-    void _playTone(const uint16_t _ui16_active_tone);
+    uint16_t const _playTone(const uint16_t _ui16_active_tone);
 
     std::array<bool, 4> _bLaserPinStatus;  // array containing the state of each laser at each tempo
 };
