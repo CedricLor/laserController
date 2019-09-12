@@ -12,6 +12,7 @@
 
 class tone
 {
+  friend class test;
   friend class tones;
   friend class note;
   public:
@@ -33,6 +34,8 @@ class tone
 #ifndef tones_h
 #define tones_h
 class tones {
+  friend class test;
+  friend class note;
   public:
     tones(); // default constructor
   private:
