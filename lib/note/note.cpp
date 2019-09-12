@@ -2,6 +2,14 @@
   note.cpp - notes are tones for a given length (in base beat)
   Created by Cedric Lor, June 28, 2019.
 
+  * 1. ronde                   : 16 : 16 / 1
+  * 2. blanche                 : 8  : 16 / 2
+  * 3. noire + croche          : 6  : 16 / 4 + (1/2)*(16 / 4) : 16 modulo 3 = 1
+  * 4. noire                   : 4  : 16 / 4
+  * 6. croche + double croche  : 3  : 16 / 8 + (1/2)*(16 / 8) : 16 modulo 6 = 4
+  * 8. croche                  : 2  : 16 / 8
+  * 16. double croche          : 1  : 16 / 16
+
 */
 
 #include "Arduino.h"
@@ -42,6 +50,7 @@ note::note(
   _ui16Note(__ui16_note),
   _tone(tone::_tones[_ui16Tone])
 {
+  _validNote();
 }
 
 // copy constructor
@@ -59,6 +68,7 @@ note& note::operator=(const note& __note)
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
     _tone = tone::_tones[_ui16Tone];
+    _validNote();
   }
   return *this;
 }
@@ -99,6 +109,20 @@ void note::_setTone(const uint16_t __ui16_target_tone) {
   _tone = tone::_tones[_ui16Tone];
 }
 
+/** note::_validNote(): private instance setter method
+ * 
+ *  validates the passed in-notes. */
+void note::_validNote() {
+  if (_ui16Note == 5) {
+    _ui16Note = 6;
+  }
+  if (_ui16Note == 7) {
+    _ui16Note = 8;
+  }
+  if (_ui16Note > 8) {
+    _ui16Note = 16;
+  }
+}
 
 
 
