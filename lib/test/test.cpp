@@ -10,10 +10,39 @@
 
 test::test() { }
 
-void test::laserPins() {
-  Serial.println("\n\ntest::laserPins: starting\n");
+void test::laserPinsStack() {
+  Serial.println("\n\ntest::laserPinsStack: starting");
 
-  Serial.println("\n\ntest::laserPins: ending\n\n");
+  Serial.println("test::laserPinsStack: laserPin test.");
+  Serial.println("test::laserPinsStack: testing laserPin constructor: laserPin _laserPin{-1, 21}.");
+  laserPin _laserPin{1, 21};
+
+  Serial.printf("test::laserPinsStack: _laserPin._sIndexNumber should be equal to 1. Is equal to [%u]\n", 
+    _laserPin._sIndexNumber);
+  Serial.printf("test::laserPinsStack: _laserPin._sPhysicalPinNumber should be equal to 21. Is equal to [%u]\n", 
+    _laserPin._sPhysicalPinNumber);
+  Serial.printf("test::laserPinsStack: _laserPin._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
+    _laserPin._switchPin(LOW));
+  Serial.printf("test::laserPinsStack: _laserPin._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
+    _laserPin._switchPin(HIGH));
+  Serial.println("test::laserPinsStack: testing laserPin destructor: _laserPin.~laserPin().");
+  _laserPin.~laserPin();
+  Serial.println("test::laserPinsStack: laserPin test over. \n");
+
+  Serial.println("\ntest::laserPinsStack: laserPins test.");
+  // Serial.println("test::laserPinsStack: destroying tone::_laserPins.~laserPins().");
+  // tone::_laserPins.~laserPins();
+  Serial.println("test::laserPinsStack: testing laserPins constructor: laserPins _laserPins{}.");
+  laserPins _laserPins{};
+  Serial.println("test::laserPinsStack: testing laserPins constructor: laserPins _laserPins{}.");
+
+  Serial.println("test::laserPinsStack: testing laserPins destructor: _laserPins.~laserPins().");
+  _laserPins.~laserPins();
+  // Serial.println("test::laserPinsStack: reinitializing tone::_laserPin: _laserPins.~laserPins().");
+  // tone::_laserPins = ;
+  Serial.println("test::laserPinsStack: laserPins test over.");
+
+  Serial.println("\ntest::laserPinsStack: ending\n\n");
 }
 
 void test::sequenceStack() { 
