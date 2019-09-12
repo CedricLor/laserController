@@ -105,7 +105,6 @@ void setup() {
   if ((isInterface == false) || (isRoot == false)) {
     _test.laserPinStack();
     _test.rawLaserPinsStack();
-    _test.implementedLaserPinsStack();
     _test.toneStack();
     _test.rawTonesStack();
     bar::initBars();

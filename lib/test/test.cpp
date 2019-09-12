@@ -61,23 +61,6 @@ void test::rawLaserPinsStack() {
 
 
 
-void test::implementedLaserPinsStack() {
-  Serial.println("\n\ntest::implementedLaserPinsStack: starting");
-
-  Serial.printf("test::implementedLaserPinsStack: tone::_laserPins._array.at(0)._sIndexNumber should be equal to 0. Is equal to [%u]\n", 
-    tone::_laserPins._array.at(0)._sIndexNumber);
-  Serial.printf("test::implementedLaserPinsStack: tone::_laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%u]\n", 
-    tone::_laserPins._array.at(0)._sPhysicalPinNumber);
-  Serial.printf("test::implementedLaserPinsStack: tone::_laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
-    tone::_laserPins._array.at(0)._switchPin(LOW));
-  Serial.printf("test::implementedLaserPinsStack: tone::_laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
-    tone::_laserPins._array.at(0)._switchPin(HIGH));
-
-
-  Serial.println("test::implementedLaserPinsStack: over\n");
-}
-
-
 
 
 void test::toneStack() {
