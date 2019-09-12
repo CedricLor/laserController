@@ -365,6 +365,9 @@ uint16_t const bar::ui16GetNotesCountInBar() const {
  * number of notes) in a bar */
 uint16_t const bar::ui16GetBaseNotesCountInBar() const {
   // Serial.printf("bar::ui16GetBaseNotesCountInBar(): starting\n");
+  if (beat::getCurrentBeat().getBaseNoteForBeat() == 0) {
+    return 0;
+  }
   uint16_t __ui = 0;
   uint16_t __ui16TotalNotesIn16th = 0;
   uint16_t __ui16Note;
