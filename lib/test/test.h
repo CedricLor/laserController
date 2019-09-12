@@ -13,6 +13,7 @@ class test
 {
   public:
     test();
+    void laserPins();
     void sequenceStack();
 };
 
