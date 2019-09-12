@@ -25,9 +25,7 @@ class note
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
     );
-    // copy constructor
     note( const note& __note);
-    // assignement operator
     note& operator=(const note& __note);
 
     /** setters */
@@ -79,10 +77,7 @@ class notes
     /** default empty constructor */
     notes();
     /** main parameterized constructor */
-    notes(
-      const uint16_t __ui16_tone,
-      const uint16_t __ui16_note
-    );
+    notes(note & _activeNote, tones & _tones);
 
     /** setter */
     void resetTPlayNoteToPlayNotesInBar();
@@ -101,6 +96,7 @@ class notes
     void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
   private:
+    friend class test;
     friend class bar;
 
     /** private members */
