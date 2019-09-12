@@ -89,11 +89,10 @@ void test::toneStack() {
 
   Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
     _tone._bLaserPinStatus.at(0));
-  Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(4) should be equal to 0. Is equal to [%u]\n", 
-    _tone._bLaserPinStatus.at(0));
-  _tone._playTone(10);
+  Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _tone._bLaserPinStatus.at(3));
   Serial.printf("test::toneStack: _laserPin._sPhysicalPinNumber should be equal to 10. Is equal to [%u]\n", 
-    _tone._playTone(0));
+    _tone._playTone(10));
 
   Serial.println("test::toneStack: over. \n");
 }
