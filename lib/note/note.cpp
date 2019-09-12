@@ -37,7 +37,7 @@ void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t
 note::note() :
   _ui16Tone(0),
   _ui16Note(0),
-  _tone(tone::_tones[0])
+  _tone(_tones._array.at(0))
 {}
 
 // parameterized
@@ -47,7 +47,7 @@ note::note(
 ) :
   _ui16Tone(__ui16_tone),
   _ui16Note(__ui16_note),
-  _tone(tone::_tones[_ui16Tone])
+  _tone(_tones._array.at(_ui16Tone))
 {
   _validNote();
 }
@@ -56,7 +56,7 @@ note::note(
 note::note( const note& __note) :   
   _ui16Tone(__note._ui16Tone),
   _ui16Note(__note._ui16Note),
-  _tone(tone::_tones[_ui16Tone])
+  _tone(_tones._array.at(_ui16Tone))
 {
 }
 
@@ -66,7 +66,7 @@ note& note::operator=(const note& __note)
   if (&__note != this) {
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
-    _tone = tone::_tones[_ui16Tone];
+    _tone = _tones._array.at(_ui16Tone);
     _validNote();
   }
   return *this;
@@ -105,7 +105,7 @@ void note::resetTPlayNoteToPlayNotesInBar() {
  *  the note from a passed in tone number. */
 void note::_setTone(const uint16_t __ui16_target_tone) {
   _ui16Note = __ui16_target_tone;
-  _tone = tone::_tones[_ui16Tone];
+  _tone = _tones._array.at(_ui16Tone);
 }
 
 /** note::_validNote(): private instance setter method
