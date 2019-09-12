@@ -7,10 +7,9 @@
 #include "laserPin.h"
 
 
-
-laserPin laserPin::_laserPins[PIN_COUNT];
-
-
+//****************************************************************//
+// LaserPin //****************************************************//
+//****************************************************************//
 
 ///////////////////////////////////
 // Constructors
@@ -36,13 +35,6 @@ laserPin::~laserPin()
 
 
 
-void laserPin::_initLaserPins() {
-  Serial.print("SETUP: _initLaserPins(): starting\n");
-  for (short __i = 0; __i < PIN_COUNT; __i++) {
-    _laserPins[__i] = {__i, relayPins[__i]};
-  }
-  Serial.print("SETUP: _initLaserPins(): done.\n");
-}
 
 
 
@@ -53,11 +45,23 @@ void laserPin::_switchPin(const bool __b_target_state) {
 
 
 
+//****************************************************************//
+// LaserPins //***************************************************//
+//****************************************************************//
 
+///////////////////////////////////
+// Constructor
+///////////////////////////////////
 laserPins::laserPins() 
 { 
   for (short __i = 0; __i < PIN_COUNT; __i++) {
     _laserPins[__i] = {__i, relayPins[__i]}; // relayPins = { 5, 17, 16, 4 }
+  }
+}
+
+laserPins::~laserPins() {
+  for (short __i = 0; __i < PIN_COUNT; __i++) {
+    _laserPins[__i].~laserPin(); // relayPins = { 5, 17, 16, 4 }
   }
 }
 

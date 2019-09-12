@@ -10,6 +10,7 @@
 
 
 std::array<tone, 16> tone::_tones;
+laserPins tone::_laserPins;
 
 // constructor
 tone::tone():
@@ -23,9 +24,6 @@ tone::tone(std::array<bool, 4> const __bLaserPinsStatus):
 
 void tone::initTones() {
   Serial.println("tone::initTones(). Starting.");
-
-  // Initialize the pins
-  laserPin::_initLaserPins();
 
   // Initialize the tones
   /** "all off" */
@@ -100,7 +98,7 @@ void tone::_playTone(const uint16_t _ui16_active_tone){
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     // Serial.print("tone::_playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
-    laserPin::_laserPins[__thisPin]._switchPin(_bLaserPinStatus[__thisPin]);
+    _laserPins._laserPins[__thisPin]._switchPin(_bLaserPinStatus[__thisPin]);
     // Serial.print("tone::_playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
   }
   Serial.printf("tone::_playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
@@ -113,9 +111,6 @@ void tone::_playTone(const uint16_t _ui16_active_tone){
 // default constructor
 tones::tones() {
   Serial.println("tones::tones(). Starting.");
-
-  // Initialize the pins
-  laserPin::_initLaserPins();
 
   // Initialize the tones
   /** "all off" */

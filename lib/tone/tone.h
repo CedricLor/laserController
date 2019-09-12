@@ -18,6 +18,7 @@ class tone
     tone(); // default constructor
     tone(std::array<bool, 4> const __bLaserPinsStatus);
 
+    static laserPins _laserPins;
     static void initTones(); // initializer of the array of tones
 
   private:

@@ -9,8 +9,6 @@
 #ifndef laserPin_h
 #define laserPin_h
 
-constexpr short    PIN_COUNT                           = 4;
-
 class laserPin
 {
   friend class tone;
@@ -21,10 +19,6 @@ class laserPin
     ~laserPin();
 
   private:
-    static void _initLaserPins();
-
-    static laserPin _laserPins[];
-
     void _switchPin(const bool __b_target_state);
 
     short _sIndexNumber;          // index number in the array of _laserPins
@@ -35,12 +29,16 @@ class laserPin
 
 #ifndef laserPins_h
 #define laserPins_h
+
+constexpr short    PIN_COUNT                           = 4;
+
 class laserPins
 {
   friend class tone;
   friend class tones;
   public:
     laserPins();
+    ~laserPins();
   private:
     std::array<laserPin, PIN_COUNT> _laserPins;
 };
