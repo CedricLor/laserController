@@ -58,13 +58,11 @@ uint16_t const tone::_playTone(const uint16_t _ui16_active_tone){
 tones::tones() :
   _laserPins(tone::_laserPins)
 {
-  Serial.println("tones::tones(). Starting.");
 
   // Initialize the tones' _array
   /** "all off" */
   std::array<bool, 4> const _aAllOff = {HIGH, HIGH, HIGH, HIGH};
   _array[0] = {_aAllOff};
-  Serial.printf("tones::tones(). _array[0]._bLaserPinStatus[0] = %i\n", _array[0]._bLaserPinStatus[0]);
 
   /**"first on"*/
   std::array<bool, 4> const _aFirstOn = {LOW, HIGH, HIGH, HIGH};
@@ -115,7 +113,5 @@ tones::tones() :
   /**"all on"*/
   std::array<bool, 4> const _aAllOn = {LOW, LOW, LOW, LOW};
   _array[15] = {_aAllOn};
-
-  Serial.println("tones::tones(). Ending.");
 }
 
