@@ -73,6 +73,8 @@ bar& bar::operator=(const bar& __bar)
   return *this;
 }
 
+// destructor
+bar::~bar() { }
 
 
 

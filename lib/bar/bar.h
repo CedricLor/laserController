@@ -17,16 +17,12 @@ class bar
     /** sender to mesh */
     static void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
-    /** default empty constructor */
+    /** constructors - destructor */
     bar();
-    /** main parameterized constructor */
-    bar(
-      std::array<note, 16> & __notesArray
-    ); 
-    // copy constructor
+    bar(std::array<note, 16> & __notesArray); 
     bar( const bar& __bar);
-    // assignement operator
     bar& operator=(const bar& __bar);
+    ~bar();
  
     // objects array initializer
     static void initBars(); // initializer of the array of bars
@@ -49,6 +45,7 @@ class bar
     static Task tPlayBar;
 
   private:
+    friend class test;
     friend class sequence;
 
     // static properties
