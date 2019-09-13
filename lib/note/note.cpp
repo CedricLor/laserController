@@ -87,15 +87,6 @@ note& note::operator=(const note& __note)
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** note::setActive(): public instance setter method
- * 
- *  sets the parameters of the static variable &note::_activeNote 
- *  from a passed in note reference. */
-void note::setActive() {
-  tPlayNote.disable();
-  _activeNote = *this;
-}
-
 /** note::_setTone(): private instance setter method
  * 
  *  sets the instance reference to the tone associated with
@@ -196,36 +187,6 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 ///////////////////////////////////
 // Task - Player
 ///////////////////////////////////
-/**note::playNoteStandAlone:
- *  
- *  play a single note for a given duration (calculated using the passed-in beat).
- * 
- *  {@ params} beat const & __beat: pass a beat to be taken into account
- *             to calculate the notes duration */
-void note::playNoteStandAlone(beat const & __beat) {
-  this->setActive();
-  beat(__beat).setActive();
-  tPlayNote.setInterval(ui16GetNoteDurationInMs());
-  tPlayNote.setOnDisable([](){
-    beat(0, 0).setActive();
-    _odtcbPlayNote();
-    tPlayNote.setOnDisable(_odtcbPlayNote);
-  });
-  tPlayNote.restartDelayed();
-}
-
-/**note::playNoteInBar:
- *  
- *  play a single note for its maximum duration.
- *  _tcbPlayBar manages the real duration (and the beat). 
-*/
-void note::playNoteInBar() {
-  setActive();
-  tPlayNote.restartDelayed();
-}
-
-
-
 /** task tPlayNote:
  * 
  *   The Task is enabled upon instanciating a note in the bar class.
@@ -275,14 +236,28 @@ void note::_odtcbPlayNote() {
 //****************************************************************//
 
 notes::notes():
-  _activeNote(note::_activeNote),
-  _tones(note::_tones)
+  _activeNote(_note),
+  _tones(tones{})
 {}
 
-notes::notes(note & __activeNote, tones & __tones):
-  _activeNote(__activeNote),
-  _tones(__tones)
-{}
+// notes::notes(note & __activeNote):
+//   _activeNote(__activeNote),
+//   _tones(tones{})
+// {}
+
+
+
+///////////////////////////////////
+// Setters
+///////////////////////////////////
+/** notes::setActive(const note & __activeNote): public instance setter method
+ * 
+ *  sets the instance variable _activeNote 
+ *  from a passed in note reference. */
+void notes::setActive(const note & __activeNote) {
+  note::tPlayNote.disable();
+  _activeNote = __activeNote;
+}
 
 
 
@@ -295,4 +270,39 @@ void notes::resetTPlayNoteToPlayNotesInBar() {
   note::tPlayNote.setInterval(30000);
   note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
 }
+
+
+
+///////////////////////////////////
+// Task - Player
+///////////////////////////////////
+/**note::playNoteStandAlone:
+ *  
+ *  play a single note for a given duration (calculated using the passed-in beat).
+ * 
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration */
+void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
+  setActive(__note);
+  beat(__beat).setActive();
+  note::tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
+  note::tPlayNote.setOnDisable([](){
+    beat(0, 0).setActive();
+    note::_odtcbPlayNote();
+    note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
+  });
+  note::tPlayNote.restartDelayed();
+}
+
+/**note::playNoteInBar:
+ *  
+ *  play a single note for its maximum duration.
+ *  _tcbPlayBar manages the real duration (and the beat). 
+*/
+void notes::playNoteInBar(const note & __note) {
+  setActive(__note);
+  note::tPlayNote.restartDelayed();
+}
+
+
 

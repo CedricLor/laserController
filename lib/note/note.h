@@ -25,11 +25,8 @@ class note
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
     );
-    note( const note& __note);
+    note(const note & __note);
     note& operator=(const note& __note);
-
-    /** setters */
-    void setActive();
 
     /** getters */
     static const note &getCurrentNote();
@@ -38,8 +35,6 @@ class note
     uint16_t const ui16GetNoteDurationInMs() const;
 
     /** player */
-    void playNoteStandAlone(beat const & __beat=beat::_activeBeat);
-    void playNoteInBar();
     static Task tPlayNote;
 
   private:
@@ -75,18 +70,19 @@ class notes
   public:
     /** default empty constructor */
     notes();
-    /** main parameterized constructor */
-    notes(note & __activeNote, tones & __tones);
+    // /** main parameterized constructor */
+    // notes(note & __activeNote);
 
     /** setter */
+    void setActive(const note & __activeNote);
     void resetTPlayNoteToPlayNotesInBar();
 
     /** getter */
     const note &getCurrentNote();
 
     /** player */
-    void playNoteStandAlone(beat const & __beat=beat::_activeBeat);
-    void playNoteInBar();
+    void playNoteStandAlone(const note & __note, beat const & __beat=beat::_activeBeat);
+    void playNoteInBar(const note & __note);
 
     /** member */
     Task tPlayNote;
@@ -99,7 +95,7 @@ class notes
     friend class bar;
 
     /** private members */
-    note &_activeNote;
+    note & _activeNote;
     tones _tones;
 
     /** player callbacks */
