@@ -56,7 +56,7 @@ note::note(
   _ui16Note(__ui16_note),
   _tone(_tones._array.at(_ui16Tone))
 {
-  _validNote();
+  _ui16ValidNote();
 }
 
 // copy constructor
@@ -73,7 +73,7 @@ note& note::operator=(const note& __note)
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
     _tone = _tones._array.at(_ui16Tone);
-    _validNote();
+    _ui16ValidNote();
   }
   return *this;
 }
@@ -97,8 +97,8 @@ tone & note::_setTone(const tone & _target_tone) {
 
 /** note::_validNote(): private instance setter method
  * 
- *  validates the passed in-notes. */
-void note::_validNote() {
+ *  changes passed-in notes to the valid notes. */
+uint16_t note::_ui16ValidNote() {
   if (_ui16Note == 5) {
     _ui16Note = 6;
   }
@@ -108,6 +108,7 @@ void note::_validNote() {
   if (_ui16Note > 8) {
     _ui16Note = 16;
   }
+  return _ui16Note;
 }
 
 
