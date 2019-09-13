@@ -62,10 +62,10 @@ note::note(
   const uint16_t __ui16_note,
   tone & __tone
 ) :
-  _ui16Tone(-1),
   _ui16Note(__ui16_note),
   _tone(__tone)
 {
+  _ui16Tone = _tone.i16IndexNumber;
   _ui16ValidNote();
 }
 
@@ -82,7 +82,7 @@ note& note::operator=(const note& __note)
   if (&__note != this) {
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
-    _tone = globalTones._array.at(_ui16Tone);
+    _tone = __note._tone;
     _ui16ValidNote();
   }
   return *this;
