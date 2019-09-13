@@ -134,8 +134,7 @@ void laserInterface::initNoteComm() {
 
 
 void laserInterface::setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    notes _notes;
-    _notes.setActive(note(__ui16_target_tone, __ui16_target_note));
+    bar::getNotes().setActive(note(__ui16_target_tone, __ui16_target_note));
 }
 
 

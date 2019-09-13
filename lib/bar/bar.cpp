@@ -339,10 +339,20 @@ bar & bar::getCurrentBar() {
 
 /** bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) 
  * 
- * Returns a const ref to one of the hard coded bars given its index number */
+ * Returns a ref to one of the hard coded bars given its index number */
 bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) {
   return _bars.at(__ui16_bar_id);
 }
+
+
+
+/** notes & bar::getNotes()
+ * 
+ * Returns a ref to the static notes instance store in bars */
+notes & bar::getNotes() {
+  return _notes;
+}
+
 
 
 /** uint16_t const bar::ui16GetNotesCountInBar() const
