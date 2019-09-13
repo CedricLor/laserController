@@ -52,6 +52,7 @@ class bar
     static int16_t _i16ActiveBarId;
     static std::array<bar, 7> _bars;
     static std::array<note, 16> _emptyNotesArray;
+    static notes _notes;
 
     /** player callbacks */
     static void _tcbPlayBar();
