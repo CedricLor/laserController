@@ -62,6 +62,7 @@ note::note(
   const uint16_t __ui16_note,
   tone & __tone
 ) :
+  _ui16Tone(-1),
   _ui16Note(__ui16_note),
   _tone(__tone)
 {
@@ -299,7 +300,7 @@ void notes::playNoteInBar(const note & __note) {
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %u\n", _activeNote._ui16Tone);
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", _activeNote._tone.i16IndexNumber);
   }
   _activeNote._tone._playTone(_tones._laserPins);
   Serial.println("note::_oetcbPlayNote(). Ending");
