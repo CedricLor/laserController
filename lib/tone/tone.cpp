@@ -24,23 +24,20 @@ tone::tone(std::array<bool, 4> const __laser_pins_states_arr, const int16_t _i16
 
 
 
-/* _playTone()
-
-  tone::_tones[_activeTone]._playTone();
-
-  _playTone() is called as a member of an instance of _tones[index].
+/** _playTone()
+ *   
+ *  _playTone() is an instance method of a tone instance. A tone instance
+ *  stores in its _laserPinsStatesArr the state of each pin for this tone.
+ *  
+ *  _playTone() iterates over the __laser_pins array passed as parameters 
+ *  and switches each pin to the corresponding state (HIGH or LOW) stored in 
+ *  _laserPinsStatesArr.
 */
-uint16_t const tone::_playTone(const uint16_t _ui16_active_tone, const laserPins & __laser_pins){
-  Serial.printf("tone::_playTone(). Starting. Tone about to be played: %i\n", _ui16_active_tone);
-  // Direct access to the pins.
-  // For each pin
+int16_t const tone::_playTone(const laserPins & __laser_pins){
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    // Serial.print("tone::_playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
     __laser_pins._array.at(__thisPin)._switchPin(_laserPinsStatesArr[__thisPin]);
-    // Serial.print("tone::_playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
   }
-  Serial.printf("tone::_playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
-  return _ui16_active_tone;
+  return i16IndexNumber;
 };
 
 
