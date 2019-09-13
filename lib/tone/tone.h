@@ -23,9 +23,11 @@ class tone
 
   public:
     tone(); // default constructor
-    tone(std::array<bool, 4> const __laser_pins_states, const int16_t _i16_index_number=-1);
-    int16_t i16IndexNumber;
+    tone(std::array<bool, 4> const __laser_pins_states, const int16_t __i16_index_number=-1);
+    tone(const tone & __tone);
+    tone& operator=(const tone& __tone);
 
+    int16_t i16IndexNumber;
 };
 
 #endif

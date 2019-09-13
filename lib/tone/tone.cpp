@@ -17,11 +17,23 @@ tone::tone():
   _laserPinsStatesArr({})
 {}
 
-tone::tone(std::array<bool, 4> const __laser_pins_states_arr, const int16_t _i16_index_number):
+tone::tone(std::array<bool, 4> const __laser_pins_states_arr, const int16_t __i16_index_number):
   _laserPinsStatesArr(__laser_pins_states_arr),
-  i16IndexNumber(_i16_index_number)
+  i16IndexNumber(__i16_index_number)
 {}
 
+tone::tone(const tone & __tone):
+  _laserPinsStatesArr(__tone._laserPinsStatesArr),
+  i16IndexNumber(__tone.i16IndexNumber)
+{}
+
+tone& tone::operator=(const tone& __tone)
+{
+  if (&__tone != this) {
+    _laserPinsStatesArr = __tone._laserPinsStatesArr;
+    i16IndexNumber = __tone.i16IndexNumber;
+  }
+}
 
 
 /** _playTone()
