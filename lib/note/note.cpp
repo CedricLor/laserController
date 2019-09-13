@@ -21,13 +21,12 @@
 // Note //********************************************************//
 //****************************************************************//
 
-
+tones globalTones{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
+note globalNote{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 ///////////////////////////////////
 // Static variables
 ///////////////////////////////////
-note _note;
-tones globalTones; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 // pointer to functions to produce an interface for note
 void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note) = nullptr;
@@ -184,7 +183,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 //****************************************************************//
 
 notes::notes():
-  _activeNote(_note),
+  _activeNote(globalNote),
   _tones(tones{})
 {}
 
