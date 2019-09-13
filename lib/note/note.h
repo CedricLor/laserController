@@ -29,7 +29,6 @@ class note
     note& operator=(const note& __note);
 
     /** getters */
-    static const note &getCurrentNote();
     uint16_t const getTone() const;
     uint16_t const getNote() const;
     uint16_t const ui16GetNoteDurationInMs() const;
@@ -39,7 +38,6 @@ class note
     friend class bar;
 
     // private static variables
-    static note &_activeNote;
     static tones _tones;
 
     /** setters */
@@ -72,7 +70,7 @@ class notes
     void setTPlayNote();
 
     /** getter */
-    const note &getCurrentNote();
+    const note &getCurrentNote() const;
 
     /** player */
     void playNoteStandAlone(const note & __note, beat const & __beat=beat::_activeBeat);

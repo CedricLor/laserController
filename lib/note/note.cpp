@@ -27,7 +27,6 @@
 // Static variables
 ///////////////////////////////////
 note _note;
-note &note::_activeNote = _note;
 tones note::_tones;
 
 // pointer to functions to produce an interface for note
@@ -122,14 +121,6 @@ void note::_validNote() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** note &note::getCurrentNote(): public static getter method
- *  
- *  returns a reference to the note instance that is currently active. */
-const note &note::getCurrentNote() {
-  return _activeNote;
-}
-
-
 /** uint16_t note::getTone(): public instance getter method
  * 
  *  Returns the tone of a note instance. */
@@ -201,6 +192,17 @@ notes::notes():
 //   _tones(tones{})
 // {}
 
+
+
+///////////////////////////////////
+// Getters
+///////////////////////////////////
+/** note &note::getCurrentNote(): public static getter method
+ *  
+ *  returns a reference to the note instance that is currently active. */
+const note &notes::getCurrentNote() const {
+  return _activeNote;
+}
 
 
 ///////////////////////////////////
