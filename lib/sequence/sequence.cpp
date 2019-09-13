@@ -292,7 +292,7 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
   bar::tPlayBar.disable();
-  note::tPlayNote.disable();
+  bar::_notes.tPlayNote.disable();
 
   // 1. reset tPlayNote to play notes read from a bar
   notes{}.resetTPlayNoteToPlayNotesInBar();
@@ -329,7 +329,7 @@ void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id) {
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
   bar::tPlayBar.disable();
-  note::tPlayNote.disable();
+  bar::_notes.tPlayNote.disable();
 
   // 2. set the underlying laser Tasks for a sequence -> bar -> note -> tone chain
   //    TODO: the two following lines shall be defined at the beginning of entering 

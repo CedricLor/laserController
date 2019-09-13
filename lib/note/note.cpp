@@ -184,50 +184,6 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 
 
 
-///////////////////////////////////
-// Task - Player
-///////////////////////////////////
-/** task tPlayNote:
- * 
- *   The Task is enabled upon instanciating a note in the bar class.
- *   It is disabled:
- *   - by the expiration of the interval set in the Task declaration; or
- *   - by _tcbPlayBar, the main callback of tPlayBar, when the note is supposed
- *     to finish.
- *   It does not need any mainCallback, as it does not iterate.
- * 
- *   task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
- *   for a given note type (--> full, half, ..., set in the bar) at a given
- *   beat rate. */
-Task note::tPlayNote(30000, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oetcbPlayNote, &_odtcbPlayNote);
-
-
-
-/** note::_oetcbPlayNote()
- *  On enable Task _tNote, turn the lasers to a given tone */
-bool note::_oetcbPlayNote() {
-  Serial.println("note::_oetcbPlayNote(). Starting");
-  if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %u\n", _activeNote._ui16Tone);
-  }
-  _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
-  Serial.println("note::_oetcbPlayNote(). Ending");
-  return true;
-}
-
-
-/** note::_odtcbPlayNote()
- *  On disable Task _tNote, turn off all the lasers */
-void note::_odtcbPlayNote() {
-  Serial.println("note::_odtcbPlayNote(). Starting");
-  if (MY_DG_LASER) {
-    Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
-  }
-  _activeNote._setTone(0); // tones[0] means turn off all the lasers
-  _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
-  Serial.println("note::_odtcbPlayNote(). Ending");
-}
-
 
 
 
@@ -255,10 +211,9 @@ notes::notes():
  *  sets the instance variable _activeNote 
  *  from a passed in note reference. */
 void notes::setActive(const note & __activeNote) {
-  note::tPlayNote.disable();
+  this->tPlayNote.disable();
   _activeNote = __activeNote;
 }
-
 
 
 /** notes::resetTPlayNoteToPlayNotesInBar(): public static setter method
@@ -266,17 +221,39 @@ void notes::setActive(const note & __activeNote) {
  *  resets the parameters of the static Task tPlayNote to  
  *  play notes read from a bar. */
 void notes::resetTPlayNoteToPlayNotesInBar() {
-  note::tPlayNote.disable();
-  note::tPlayNote.setInterval(30000);
-  note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
+  this->tPlayNote.disable();
+  this->tPlayNote.setInterval(30000);
+  this->tPlayNote.setOnDisable([&](){
+    this->_odtcbPlayNote();
+  });
 }
 
+// TODO: simplify/unify/reuse code re. setTPlayNote() and resetTPlayNoteToPlayNotesInBar()
+/** setTPlayNote:
+ * 
+ *   The Task is enabled upon instanciating a note in the bar class.
+ *   It is disabled:
+ *   - by the expiration of the interval set in the Task declaration; or
+ *   - by _tcbPlayBar, the main callback of tPlayBar, when the note is supposed
+ *     to finish.
+ *   It does not need any mainCallback, as it does not iterate.
+ * 
+ *   task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
+ *   for a given note type (--> full, half, ..., set in the bar) at a given
+ *   beat rate. */
+void notes::setTPlayNote() {
+  this->tPlayNote.setInterval(30000);
+  this->tPlayNote.setOnEnable([&](){
+    return this->_oetcbPlayNote();
+  });
+  this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
+}
 
 
 ///////////////////////////////////
 // Task - Player
 ///////////////////////////////////
-/**note::playNoteStandAlone:
+/**notes::playNoteStandAlone:
  *  
  *  play a single note for a given duration (calculated using the passed-in beat).
  * 
@@ -285,24 +262,47 @@ void notes::resetTPlayNoteToPlayNotesInBar() {
 void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
   setActive(__note);
   beat(__beat).setActive();
-  note::tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
-  note::tPlayNote.setOnDisable([](){
+  this->tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
+  this->tPlayNote.setOnDisable([&](){
     beat(0, 0).setActive();
-    note::_odtcbPlayNote();
-    note::tPlayNote.setOnDisable(note::_odtcbPlayNote);
+    this->_odtcbPlayNote();
+    this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
   });
-  note::tPlayNote.restartDelayed();
+  this->tPlayNote.restartDelayed();
 }
 
-/**note::playNoteInBar:
+/**notes::playNoteInBar:
  *  
  *  play a single note for its maximum duration.
  *  _tcbPlayBar manages the real duration (and the beat). 
 */
 void notes::playNoteInBar(const note & __note) {
   setActive(__note);
-  note::tPlayNote.restartDelayed();
+  this->tPlayNote.restartDelayed();
 }
 
 
+/** notes::_oetcbPlayNote()
+ *  On enable Task _tNote, turn the lasers to a given tone */
+bool notes::_oetcbPlayNote() {
+  Serial.println("note::_oetcbPlayNote(). Starting");
+  if (MY_DG_LASER) {
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %u\n", _activeNote._ui16Tone);
+  }
+  _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
+  Serial.println("note::_oetcbPlayNote(). Ending");
+  return true;
+}
 
+
+/** notes::_odtcbPlayNote()
+ *  On disable Task _tNote, turn off all the lasers */
+void notes::_odtcbPlayNote() {
+  Serial.println("note::_odtcbPlayNote(). Starting");
+  if (MY_DG_LASER) {
+    Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
+  }
+  _activeNote._setTone(0); // tones[0] means turn off all the lasers
+  _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
+  Serial.println("note::_odtcbPlayNote(). Ending");
+}

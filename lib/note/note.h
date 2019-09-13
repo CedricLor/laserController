@@ -34,9 +34,6 @@ class note
     uint16_t const getNote() const;
     uint16_t const ui16GetNoteDurationInMs() const;
 
-    /** player */
-    static Task tPlayNote;
-
   private:
     friend class notes;
     friend class bar;
@@ -44,10 +41,6 @@ class note
     // private static variables
     static note &_activeNote;
     static tones _tones;
-
-    /** player callbacks */
-    static bool _oetcbPlayNote();
-    static void _odtcbPlayNote();
 
     /** setters */
     // instance setter
@@ -76,6 +69,7 @@ class notes
     /** setter */
     void setActive(const note & __activeNote);
     void resetTPlayNoteToPlayNotesInBar();
+    void setTPlayNote();
 
     /** getter */
     const note &getCurrentNote();
