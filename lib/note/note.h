@@ -37,9 +37,6 @@ class note
     friend class notes;
     friend class bar;
 
-    // private static variables
-    static tones _tones;
-
     /** setters */
     // instance setter
     tone & _setTone(const tone & _target_tone);

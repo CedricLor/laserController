@@ -27,7 +27,7 @@
 // Static variables
 ///////////////////////////////////
 note _note;
-tones note::_tones;
+tones globalTones; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 // pointer to functions to produce an interface for note
 void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note) = nullptr;
@@ -44,7 +44,7 @@ void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t
 note::note() :
   _ui16Tone(0),
   _ui16Note(0),
-  _tone(_tones._array.at(0))
+  _tone(globalTones._array.at(0))
 {}
 
 // parameterized
@@ -54,7 +54,7 @@ note::note(
 ) :
   _ui16Tone(__ui16_tone),
   _ui16Note(__ui16_note),
-  _tone(_tones._array.at(_ui16Tone))
+  _tone(globalTones._array.at(_ui16Tone))
 {
   _ui16ValidNote();
 }
@@ -63,7 +63,7 @@ note::note(
 note::note( const note& __note) :   
   _ui16Tone(__note._ui16Tone),
   _ui16Note(__note._ui16Note),
-  _tone(_tones._array.at(_ui16Tone))
+  _tone(globalTones._array.at(_ui16Tone))
 { }
 
 // assignement operator
@@ -72,7 +72,7 @@ note& note::operator=(const note& __note)
   if (&__note != this) {
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
-    _tone = _tones._array.at(_ui16Tone);
+    _tone = globalTones._array.at(_ui16Tone);
     _ui16ValidNote();
   }
   return *this;

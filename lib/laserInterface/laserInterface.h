@@ -10,6 +10,8 @@
 #include "boxState.h"
 
 namespace laserInterface {
+    
+
     // steps stack
     void playSteps();
 
