@@ -134,7 +134,8 @@ void laserInterface::initNoteComm() {
 
 
 void laserInterface::setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    note(__ui16_target_tone, __ui16_target_note).setActive();
+    notes _notes;
+    _notes.setActive(note(__ui16_target_tone, __ui16_target_note));
 }
 
 
@@ -153,7 +154,8 @@ void laserInterface::playNote(uint16_t const __ui16_base_note_for_beat, uint16_t
   // 1. lock notes to avoid getting signal from a boxState, sequence or bar player
   lockNoteStack();
   // 2. set the note and play it
-  note(__ui16_target_tone, __ui16_target_note).playNoteStandAlone( beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  notes _notes;
+  _notes.playNoteStandAlone(note(__ui16_target_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
 
 

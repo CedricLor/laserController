@@ -284,7 +284,7 @@ void bar::_tcbPlayBar(){
    *    b. set the current note in the bar (_activeBar._notesArray[_ui16_iter]) 
    *       as _activeNote in the note class;
    *    c. restartDelayed tPlayNote. */
-  _activeBar._notesArray[_ui16_iter].playNoteInBar();
+  _notes.playNoteInBar(_activeBar._notesArray.at(_ui16_iter));
 
   /**3. Set the interval for next iteration of tPlayBar
    * 

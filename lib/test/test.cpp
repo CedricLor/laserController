@@ -172,9 +172,6 @@ void test::noteStack() {
   Serial.printf("test::noteStack: _note.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n", 
     _note.ui16GetNoteDurationInMs());
 
-  Serial.println("test::noteStack: _note.playNoteStandAlone(beat(5, 1)). \n");
-  _note.playNoteStandAlone(beat(5, 1));
-
   Serial.println("test::noteStack: over\n");
 }
 
@@ -184,42 +181,44 @@ void test::noteStack() {
 void test::rawNotesStack() {
   Serial.println("\n\ntest::rawNotesStack: starting");
 
-  Serial.println("test::rawNotesStack: testing notes constructor: notes _emptyNotes{}.");
-  notes _emptyNotes{};
-
-  Serial.println("test::rawNotesStack: testing notes constructor: notes _fullFledgeNotes{}.");
+  Serial.println("test::rawNotesStack: testing notes constructor: notes _notes{}.");
   laserPins _laserPins;
-  note _activeNote{1, 1};
-  tones _tones;
-  notes _fullFledgeNotes{_activeNote , _tones};
+  note _note{1, 1};
+  notes _notes{};
 
-  Serial.println("test::rawNotesStack: calling _emptyNotes.resetTPlayNoteToPlayNotesInBar()");
-  _emptyNotes.resetTPlayNoteToPlayNotesInBar();
-  Serial.println("test::rawNotesStack: calling _fullFledgeNotes.resetTPlayNoteToPlayNotesInBar()");
-  _fullFledgeNotes.resetTPlayNoteToPlayNotesInBar();
+  Serial.println("test::rawNotesStack: calling _notes.resetTPlayNoteToPlayNotesInBar()");
+  _notes.resetTPlayNoteToPlayNotesInBar();
+  Serial.println("test::rawNotesStack: calling _notes.resetTPlayNoteToPlayNotesInBar()");
+  _notes.resetTPlayNoteToPlayNotesInBar();
 
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._array.at(0)._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
-    _fullFledgeNotes._tones._array.at(0)._bLaserPinStatus.at(0));
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._array.at(0)._bLaserPinStatus.at(3) should be equal to 1. Is equal to [%u]\n", 
-    _fullFledgeNotes._tones._array.at(0)._bLaserPinStatus.at(3));
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._array.at(0)._playTone(10) shall return 10. Returns [%u]\n", 
-    _fullFledgeNotes._tones._array.at(0)._playTone(10, _laserPins));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _notes._tones._array.at(0)._bLaserPinStatus.at(0));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._bLaserPinStatus.at(3) should be equal to 1. Is equal to [%u]\n", 
+    _notes._tones._array.at(0)._bLaserPinStatus.at(3));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._playTone(10) shall return 10. Returns [%u]\n", 
+    _notes._tones._array.at(0)._playTone(10, _laserPins));
 
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._array.at(15)._bLaserPinStatus.at(0) should be equal to 0. Is equal to [%u]\n", 
-    _fullFledgeNotes._tones._array.at(15)._bLaserPinStatus.at(0));
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._array.at(15)._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
-    _fullFledgeNotes._tones._array.at(15)._bLaserPinStatus.at(3));
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._array.at(15)._playTone(7) shall return 7. Returns [%u]\n", 
-    _fullFledgeNotes._tones._array.at(15)._playTone(7, _laserPins));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._bLaserPinStatus.at(0) should be equal to 0. Is equal to [%u]\n", 
+    _notes._tones._array.at(15)._bLaserPinStatus.at(0));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _notes._tones._array.at(15)._bLaserPinStatus.at(3));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._playTone(7) shall return 7. Returns [%u]\n", 
+    _notes._tones._array.at(15)._playTone(7, _laserPins));
 
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._laserPins._array.at(0)._sIndexNumber should be equal to 0. Is equal to [%i]\n", 
-    _fullFledgeNotes._tones._laserPins._array.at(0)._sIndexNumber);
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
-    _fullFledgeNotes._tones._laserPins._array.at(0)._sPhysicalPinNumber);
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
-    _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(LOW));
-  Serial.printf("test::rawNotesStack: _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
-    _fullFledgeNotes._tones._laserPins._array.at(0)._switchPin(HIGH));
+  Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._sIndexNumber should be equal to 0. Is equal to [%i]\n", 
+    _notes._tones._laserPins._array.at(0)._sIndexNumber);
+  Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
+    _notes._tones._laserPins._array.at(0)._sPhysicalPinNumber);
+  Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
+    _notes._tones._laserPins._array.at(0)._switchPin(LOW));
+  Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
+    _notes._tones._laserPins._array.at(0)._switchPin(HIGH));
+
+  Serial.println("test::noteStack: _notes.playNoteStandAlone(note{4, 1}, beat(5, 1). \n");
+  _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
+
+  Serial.println("test::noteStack: _notes.playNoteStandAlone(_note, beat(5, 1)). \n");
+  _notes.playNoteStandAlone(_note, beat(5, 1));
 
 
   Serial.println("test::rawNotesStack: over\n");
@@ -253,7 +252,7 @@ void test::barStack() {
   Serial.printf("test::barStack: _bar.getNotesArray().at(0).getNote() should be equal to 8. Is equal to [%u]\n", 
     _bar.getNotesArray().at(0).getNote());
 
-  Serial.println("test::barStack: calling _bar.playNoteStandAlone(beat(5, 1)). \n");
+  Serial.println("test::barStack: calling _bar.playBarStandAlone(beat(5, 1)). \n");
   _bar.playBarStandAlone(beat(5, 1));
 
   Serial.println("test::barStack: calling _bar.playBarInSequence(). \n");
