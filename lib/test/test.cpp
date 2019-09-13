@@ -71,11 +71,11 @@ void test::toneStack() {
   std::array<bool, 4> const _aSecondPairOn = {HIGH, HIGH, LOW, LOW};
   tone _tone{_aSecondPairOn};
 
-  Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
-    _tone._bLaserPinStatus.at(0));
+  Serial.printf("test::toneStack: _tone._laserPinsStatesArr.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _tone._laserPinsStatesArr.at(0));
 
-  Serial.printf("test::toneStack: _tone._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
-    _tone._bLaserPinStatus.at(3));
+  Serial.printf("test::toneStack: _tone._laserPinsStatesArr.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _tone._laserPinsStatesArr.at(3));
   Serial.printf("test::toneStack: _laserPin._sPhysicalPinNumber should be equal to 10. Is equal to [%u]\n", 
     _tone._playTone(10, _laserPins));
 
@@ -92,17 +92,17 @@ void test::rawTonesStack() {
   laserPins _laserPins;
   tones _tones{};
 
-  Serial.printf("test::rawTonesStack: _tones._array.at(0)._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
-    _tones._array.at(0)._bLaserPinStatus.at(0));
-  Serial.printf("test::rawTonesStack: _tones._array.at(0)._bLaserPinStatus.at(3) should be equal to 1. Is equal to [%u]\n", 
-    _tones._array.at(0)._bLaserPinStatus.at(3));
+  Serial.printf("test::rawTonesStack: _tones._array.at(0)._laserPinsStatesArr.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _tones._array.at(0)._laserPinsStatesArr.at(0));
+  Serial.printf("test::rawTonesStack: _tones._array.at(0)._laserPinsStatesArr.at(3) should be equal to 1. Is equal to [%u]\n", 
+    _tones._array.at(0)._laserPinsStatesArr.at(3));
   Serial.printf("test::rawTonesStack: _tones._array.at(0)._playTone(10) shall return 10. Returns [%u]\n", 
     _tones._array.at(0)._playTone(10, _laserPins));
 
-  Serial.printf("test::rawTonesStack: _tones._array.at(15)._bLaserPinStatus.at(0) should be equal to 0. Is equal to [%u]\n", 
-    _tones._array.at(15)._bLaserPinStatus.at(0));
-  Serial.printf("test::rawTonesStack: _tones._array.at(15)._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
-    _tones._array.at(15)._bLaserPinStatus.at(3));
+  Serial.printf("test::rawTonesStack: _tones._array.at(15)._laserPinsStatesArr.at(0) should be equal to 0. Is equal to [%u]\n", 
+    _tones._array.at(15)._laserPinsStatesArr.at(0));
+  Serial.printf("test::rawTonesStack: _tones._array.at(15)._laserPinsStatesArr.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _tones._array.at(15)._laserPinsStatesArr.at(3));
   Serial.printf("test::rawTonesStack: _tones._array.at(15)._playTone(7) shall return 7. Returns [%u]\n", 
     _tones._array.at(15)._playTone(7, _laserPins));
 
@@ -128,17 +128,17 @@ void test::implementedTonesStack() {
   laserPins _laserPins;
   tones _tones{};
 
-  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
-    _tones._array.at(0)._bLaserPinStatus.at(0));
-  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._bLaserPinStatus.at(3) should be equal to 1. Is equal to [%u]\n", 
-    _tones._array.at(0)._bLaserPinStatus.at(3));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._laserPinsStatesArr.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _tones._array.at(0)._laserPinsStatesArr.at(0));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(0)._laserPinsStatesArr.at(3) should be equal to 1. Is equal to [%u]\n", 
+    _tones._array.at(0)._laserPinsStatesArr.at(3));
   Serial.printf("test::implementedTonesStack: _tones._array.at(0)._playTone(10) shall return 10. Returns [%u]\n", 
     _tones._array.at(0)._playTone(10, _laserPins));
 
-  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._bLaserPinStatus.at(0) should be equal to 0. Is equal to [%u]\n", 
-    _tones._array.at(15)._bLaserPinStatus.at(0));
-  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
-    _tones._array.at(15)._bLaserPinStatus.at(3));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._laserPinsStatesArr.at(0) should be equal to 0. Is equal to [%u]\n", 
+    _tones._array.at(15)._laserPinsStatesArr.at(0));
+  Serial.printf("test::implementedTonesStack: _tones._array.at(15)._laserPinsStatesArr.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _tones._array.at(15)._laserPinsStatesArr.at(3));
   Serial.printf("test::implementedTonesStack: _tones._array.at(15)._playTone(7) shall return 7. Returns [%u]\n", 
     _tones._array.at(15)._playTone(7, _laserPins));
 
@@ -191,17 +191,17 @@ void test::rawNotesStack() {
   Serial.println("test::rawNotesStack: calling _notes.resetTPlayNoteToPlayNotesInBar()");
   _notes.resetTPlayNoteToPlayNotesInBar();
 
-  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._bLaserPinStatus.at(0) should be equal to 1. Is equal to [%u]\n", 
-    _notes._tones._array.at(0)._bLaserPinStatus.at(0));
-  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._bLaserPinStatus.at(3) should be equal to 1. Is equal to [%u]\n", 
-    _notes._tones._array.at(0)._bLaserPinStatus.at(3));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._laserPinsStatesArr.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _notes._tones._array.at(0)._laserPinsStatesArr.at(0));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._laserPinsStatesArr.at(3) should be equal to 1. Is equal to [%u]\n", 
+    _notes._tones._array.at(0)._laserPinsStatesArr.at(3));
   Serial.printf("test::rawNotesStack: _notes._tones._array.at(0)._playTone(10) shall return 10. Returns [%u]\n", 
     _notes._tones._array.at(0)._playTone(10, _laserPins));
 
-  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._bLaserPinStatus.at(0) should be equal to 0. Is equal to [%u]\n", 
-    _notes._tones._array.at(15)._bLaserPinStatus.at(0));
-  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._bLaserPinStatus.at(3) should be equal to 0. Is equal to [%u]\n", 
-    _notes._tones._array.at(15)._bLaserPinStatus.at(3));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._laserPinsStatesArr.at(0) should be equal to 0. Is equal to [%u]\n", 
+    _notes._tones._array.at(15)._laserPinsStatesArr.at(0));
+  Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._laserPinsStatesArr.at(3) should be equal to 0. Is equal to [%u]\n", 
+    _notes._tones._array.at(15)._laserPinsStatesArr.at(3));
   Serial.printf("test::rawNotesStack: _notes._tones._array.at(15)._playTone(7) shall return 7. Returns [%u]\n", 
     _notes._tones._array.at(15)._playTone(7, _laserPins));
 

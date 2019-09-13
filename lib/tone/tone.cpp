@@ -14,11 +14,11 @@
 
 // constructor
 tone::tone():
-  _bLaserPinStatus({})
+  _laserPinsStatesArr({})
 {}
 
-tone::tone(std::array<bool, 4> const __bLaserPinsStatus):
-  _bLaserPinStatus(__bLaserPinsStatus)
+tone::tone(std::array<bool, 4> const __laser_pins_states_arr):
+  _laserPinsStatesArr(__laser_pins_states_arr)
 {}
 
 
@@ -35,7 +35,7 @@ uint16_t const tone::_playTone(const uint16_t _ui16_active_tone, const laserPins
   // For each pin
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     // Serial.print("tone::_playTone(). __thisPin in for loop. Iteration ");Serial.println(__thisPin);
-    __laser_pins._array.at(__thisPin)._switchPin(_bLaserPinStatus[__thisPin]);
+    __laser_pins._array.at(__thisPin)._switchPin(_laserPinsStatesArr[__thisPin]);
     // Serial.print("tone::_playTone(). _physical_pin_number: ");Serial.print(_physical_pin_number);Serial.print(" _target_state: ");Serial.println(_target_state);
   }
   Serial.printf("tone::_playTone(). Ending. Tone being played: %i \n", _ui16_active_tone);
