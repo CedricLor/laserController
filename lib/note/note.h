@@ -42,8 +42,7 @@ class note
 
     /** setters */
     // instance setter
-    void _setTone(const uint16_t __ui16_target_tone);
-    void _validNote();
+    tone & _setTone(const tone & _target_tone);
 
     // private instance properties
     uint16_t _ui16Tone;

@@ -86,13 +86,13 @@ note& note::operator=(const note& __note)
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** note::_setTone(): private instance setter method
+/** tone & note::_setTone(const tone & _target_tone): private instance setter method
  * 
- *  sets the instance reference to the tone associated with
+ *  sets the tone member (tone & _tone) to the tone associated with
  *  the note from a passed in tone number. */
-void note::_setTone(const uint16_t __ui16_target_tone) {
-  _ui16Note = __ui16_target_tone;
-  _tone = _tones._array.at(_ui16Tone);
+tone & note::_setTone(const tone & _target_tone) {
+  _tone = _target_tone;
+  return _tone;
 }
 
 /** note::_validNote(): private instance setter method
@@ -304,7 +304,7 @@ void notes::_odtcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
-  _activeNote._setTone(0); // tones[0] means turn off all the lasers
+  _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
   _activeNote._tone._playTone(_activeNote._ui16Tone, _tones._laserPins);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
