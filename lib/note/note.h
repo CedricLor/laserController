@@ -25,6 +25,10 @@ class note
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
     );
+    note(
+      const uint16_t __ui16_note,
+      tone & __tone
+    );
     note(const note & __note);
     note& operator=(const note& __note);
 

@@ -58,6 +58,16 @@ note::note(
   _ui16ValidNote();
 }
 
+note::note(
+  const uint16_t __ui16_note,
+  tone & __tone
+) :
+  _ui16Note(__ui16_note),
+  _tone(__tone)
+{
+  _ui16ValidNote();
+}
+
 // copy constructor
 note::note( const note& __note) :   
   _ui16Tone(__note._ui16Tone),
