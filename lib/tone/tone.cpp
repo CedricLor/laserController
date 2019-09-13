@@ -17,8 +17,9 @@ tone::tone():
   _laserPinsStatesArr({})
 {}
 
-tone::tone(std::array<bool, 4> const __laser_pins_states_arr):
-  _laserPinsStatesArr(__laser_pins_states_arr)
+tone::tone(std::array<bool, 4> const __laser_pins_states_arr, const int16_t _i16_index_number):
+  _laserPinsStatesArr(__laser_pins_states_arr),
+  i16IndexNumber(_i16_index_number)
 {}
 
 
@@ -57,56 +58,56 @@ tones::tones() :
   // Initialize the tones' _array
   /** "all off" */
   std::array<bool, 4> const _aAllOff = {HIGH, HIGH, HIGH, HIGH};
-  _array[0] = {_aAllOff};
+  _array[0] = {_aAllOff, 0};
 
   /**"first on"*/
   std::array<bool, 4> const _aFirstOn = {LOW, HIGH, HIGH, HIGH};
-  _array[1] = {_aFirstOn};
+  _array[1] = {_aFirstOn, 1};
   /**"second on*/
   std::array<bool, 4> const _aSecondOn = {HIGH, LOW, HIGH, HIGH};
-  _array[2] = {_aSecondOn};
+  _array[2] = {_aSecondOn, 2};
   /**"third on"*/
   std::array<bool, 4> const _aThirdOn = {HIGH, HIGH, LOW, HIGH};
-  _array[3] = {_aThirdOn};
+  _array[3] = {_aThirdOn, 3};
   /**"fourth on"*/
   std::array<bool, 4> const _aFourthOn = {HIGH, HIGH, HIGH, LOW};
-  _array[4] = {_aFourthOn};
+  _array[4] = {_aFourthOn, 4};
 
   /**"first pair on"*/
   std::array<bool, 4> const _aFirstPairOn = {LOW, LOW, HIGH, HIGH};
-  _array[5] = {_aFirstPairOn};
+  _array[5] = {_aFirstPairOn, 5};
   /**"second pair on*/
   std::array<bool, 4> const _aSecondPairOn = {HIGH, HIGH, LOW, LOW};
-  _array[6] = {_aSecondPairOn};
+  _array[6] = {_aSecondPairOn, 6};
 
   /**"on off on off"*/
   std::array<bool, 4> const _aOnOffOnOff = {LOW, HIGH, LOW, HIGH};
-  _array[7] = {_aOnOffOnOff};
+  _array[7] = {_aOnOffOnOff, 7};
   /**"off on off on"*/
   std::array<bool, 4> const _aOffOnOffOn = {HIGH, LOW, HIGH, LOW};
-  _array[8] = {_aOffOnOffOn};
+  _array[8] = {_aOffOnOffOn, 8};
 
   /**"external on"*/
   std::array<bool, 4> const _aExtOnIntOff = {LOW, HIGH, HIGH, LOW};
-  _array[9] = {_aExtOnIntOff};
+  _array[9] = {_aExtOnIntOff, 9};
   /**"external off*/
   std::array<bool, 4> const _aExtOffIntOn = {HIGH, LOW, LOW, HIGH};
-  _array[10] = {_aExtOffIntOn};
+  _array[10] = {_aExtOffIntOn, 10};
   /**"last off"*/
   std::array<bool, 4> const _aLastOff = {LOW, LOW, LOW, HIGH};
-  _array[11] = {_aLastOff};
+  _array[11] = {_aLastOff, 11};
   /**"third off"*/
   std::array<bool, 4> const _aThirdOff = {LOW, LOW, HIGH, LOW};
-  _array[12] = {_aThirdOff};
+  _array[12] = {_aThirdOff, 12};
   /**"second off"*/
   std::array<bool, 4> const _aSecondOff = {LOW, HIGH, LOW, LOW};
-  _array[13] = {_aSecondOff};
+  _array[13] = {_aSecondOff, 13};
   /**"first off"*/
   std::array<bool, 4> const _aFirstOff = {HIGH, LOW, LOW, LOW};
-  _array[14] = {_aFirstOff};
+  _array[14] = {_aFirstOff, 14};
 
   /**"all on"*/
   std::array<bool, 4> const _aAllOn = {LOW, LOW, LOW, LOW};
-  _array[15] = {_aAllOn};
+  _array[15] = {_aAllOn, 15};
 }
 
