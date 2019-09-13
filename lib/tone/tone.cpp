@@ -33,6 +33,7 @@ tone& tone::operator=(const tone& __tone)
     _laserPinsStatesArr = __tone._laserPinsStatesArr;
     i16IndexNumber = __tone.i16IndexNumber;
   }
+  return *this;
 }
 
 
