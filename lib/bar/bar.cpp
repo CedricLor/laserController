@@ -177,7 +177,10 @@ void bar::initBars() {
  * 
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
-void bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_id) {
+bool bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_id) {
+  if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0) || (__i16_active_bar_id == -1)) {
+    return false;
+  }
   // 1. set the bar as active
   setActive(__i16_active_bar_id);
   // 2. set the active beat from the passed in beat
@@ -196,6 +199,7 @@ void bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_
   });
   // 5. once all the setting have been done, play the bar
   tPlayBar.restart();
+  return true;
 }
 
 
@@ -203,9 +207,13 @@ void bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_
  *  
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
-void bar::playBarInSequence(/*const int16_t __i16_active_bar_id=-1*/) { // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+bool bar::playBarInSequence(/*const int16_t __i16_active_bar_id=-1*/) { // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+  if ((beat::getCurrentBeat().getBaseNoteForBeat() == 0) || (beat::getCurrentBeat().getBaseBeatInBpm() == 0)) {
+    return false;
+  }
   setActive(/*const int16_t __i16_active_bar_id=-1*/); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
   tPlayBar.restart();
+  return true;
 }
 
 

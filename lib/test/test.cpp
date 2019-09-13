@@ -257,11 +257,11 @@ void test::barStack() {
   Serial.printf("test::barStack: _bar.getNotesArray().at(0).getNote() should be equal to 8. Is equal to [%u]\n", 
     _bar.getNotesArray().at(0).getNote());
 
-  Serial.println("test::barStack: calling _bar.playBarStandAlone(beat(5, 1)). Should fail because beat has not been set.");
-  _bar.playBarStandAlone(beat(5, 1));
+  Serial.printf("test::barStack: _bar.playBarStandAlone(beat(5, 1)) should return 0 because the active bar id has not been set. Returns [%i]\n",
+    _bar.playBarStandAlone(beat(5, 1)));
 
-  Serial.println("test::barStack: calling _bar.playBarInSequence(). Should fail because beat has not been set.");
-  _bar.playBarInSequence();
+  Serial.printf("test::barStack: _bar.playBarInSequence() should fail because beat is set to default (beat == 0 and base note == 0). Returns [%i]\n",
+    _bar.playBarInSequence());
 
   Serial.println("test::barStack: calling _bar.getNotes().setActive(note{4,8}).");
   _bar.getNotes().setActive(note{4,8});
