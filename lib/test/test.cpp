@@ -16,10 +16,9 @@ test::test() { }
 void test::laserPinStack() {
   Serial.println("\n\ntest::laserPinStack: starting");
 
-  Serial.println("test::laserPinStack: testing laserPin constructor: laserPin _laserPin{-1, 21}.");
-  laserPin _laserPin{-1, 21};
-
-  Serial.printf("test::laserPinStack: _laserPin._i16IndexNumber should be equal to -1. Is equal to [%i]\n", 
+  Serial.println("test::laserPinStack: testing laserPin constructor: laserPin _laserPin{21, 3}.");
+  laserPin _laserPin{21, 3};
+  Serial.printf("test::laserPinStack: _laserPin._i16IndexNumber should be equal to 3. Is equal to [%i]\n", 
     _laserPin._i16IndexNumber);
   Serial.printf("test::laserPinStack: _laserPin._ui16PhysicalPinNumber should be equal to 21. Is equal to [%u]\n", 
     _laserPin._ui16PhysicalPinNumber);
@@ -27,7 +26,6 @@ void test::laserPinStack() {
     _laserPin._switchPin(LOW));
   Serial.printf("test::laserPinStack: _laserPin._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
     _laserPin._switchPin(HIGH));
-
   Serial.println("test::laserPinStack: testing laserPin destructor: _laserPin.~laserPin().");
   _laserPin.~laserPin();
 
@@ -39,6 +37,20 @@ void test::laserPinStack() {
     _laserPin2._ui16PhysicalPinNumber);
   Serial.println("test::laserPinStack: testing laserPin destructor: _laserPin.~laserPin().");
   _laserPin2.~laserPin();
+
+  Serial.println("test::laserPinStack: testing laserPin constructor: laserPin _laserPin{21}.");
+  laserPin _laserPin3{21};
+  Serial.printf("test::laserPinStack: _laserPin._i16IndexNumber should be equal to -1. Is equal to [%i]\n", 
+    _laserPin._i16IndexNumber);
+  Serial.printf("test::laserPinStack: _laserPin._ui16PhysicalPinNumber should be equal to 21. Is equal to [%u]\n", 
+    _laserPin._ui16PhysicalPinNumber);
+  Serial.printf("test::laserPinStack: _laserPin._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
+    _laserPin._switchPin(LOW));
+  Serial.printf("test::laserPinStack: _laserPin._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
+    _laserPin._switchPin(HIGH));
+  Serial.println("test::laserPinStack: testing laserPin destructor: _laserPin.~laserPin().");
+  _laserPin.~laserPin();
+
 
   Serial.println("test::laserPinStack: over. \n");
 }

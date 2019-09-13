@@ -19,7 +19,7 @@ laserPin::laserPin():
   _ui16PhysicalPinNumber{0}
 { }
 
-laserPin::laserPin(const int16_t __i16_index_number, const uint16_t __ui16_physical_pin_number):
+laserPin::laserPin(const uint16_t __ui16_physical_pin_number, const int16_t __i16_index_number):
   _i16IndexNumber{__i16_index_number},
   _ui16PhysicalPinNumber{__ui16_physical_pin_number}
 {
@@ -72,7 +72,7 @@ bool const laserPin::_switchPin(const bool __b_target_state) const {
 laserPins::laserPins() 
 { 
   for (short __i = 0; __i < PIN_COUNT; __i++) {
-    _array[__i] = {__i, relayPins[__i]}; // relayPins = { 5, 17, 16, 4 }
+    _array[__i] = {relayPins[__i], __i}; // relayPins = { 5, 17, 16, 4 }
   }
 }
 
