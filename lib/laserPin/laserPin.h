@@ -32,7 +32,7 @@ class laserPin
 #ifndef laserPins_h
 #define laserPins_h
 
-constexpr short    PIN_COUNT                           = 4;
+constexpr uint16_t    PIN_COUNT                           = 4;
 
 class laserPins
 {

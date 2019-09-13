@@ -71,13 +71,13 @@ bool const laserPin::_switchPin(const bool __b_target_state) const {
 ///////////////////////////////////
 laserPins::laserPins() 
 { 
-  for (short __i = 0; __i < PIN_COUNT; __i++) {
+  for (int16_t __i = 0; __i < PIN_COUNT; __i++) {
     _array[__i] = {relayPins[__i], __i}; // relayPins = { 5, 17, 16, 4 }
   }
 }
 
 laserPins::~laserPins() {
-  for (short __i = 0; __i < PIN_COUNT; __i++) {
+  for (uint16_t __i = 0; __i < PIN_COUNT; __i++) {
     _array[__i].~laserPin(); // relayPins = { 5, 17, 16, 4 }
   }
 }

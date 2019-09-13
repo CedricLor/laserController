@@ -12,7 +12,7 @@
 
 /** an array of pin numbers to which relays are attached 
 BOX BY BOX */
-extern short              relayPins[]; 
+extern uint16_t           relayPins[]; 
 
 extern const bool         MY_DEBUG;
 extern const bool         MY_DG_LASER;
