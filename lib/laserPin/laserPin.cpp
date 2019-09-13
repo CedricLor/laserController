@@ -16,8 +16,8 @@
 ///////////////////////////////////
 laserPin::laserPin() { }
 
-laserPin::laserPin(const short __s_index_number, const short __s_physical_pin_number):
-  _sIndexNumber{__s_index_number},
+laserPin::laserPin(const int16_t __i16_index_number, const short __s_physical_pin_number):
+  _i16IndexNumber{__i16_index_number},
   _sPhysicalPinNumber{__s_physical_pin_number}
 {
   pinMode(_sPhysicalPinNumber, OUTPUT);  // initialization of the pin connected to each of the relay as output
@@ -25,7 +25,7 @@ laserPin::laserPin(const short __s_index_number, const short __s_physical_pin_nu
 }
 
 laserPin::laserPin(const laserPin& __laserPin):
-  _sIndexNumber{__laserPin._sIndexNumber},
+  _i16IndexNumber{__laserPin._i16IndexNumber},
   _sPhysicalPinNumber{__laserPin._sPhysicalPinNumber}
 { }
 
@@ -33,7 +33,7 @@ laserPin& laserPin::operator=(const laserPin& __laserPin)
 {
     if (this != &__laserPin)
     {
-      _sIndexNumber = __laserPin._sIndexNumber;
+      _i16IndexNumber = __laserPin._i16IndexNumber;
       _sPhysicalPinNumber = __laserPin._sPhysicalPinNumber;
     }
     return *this;

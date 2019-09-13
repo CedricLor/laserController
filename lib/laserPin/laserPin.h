@@ -15,7 +15,7 @@ class laserPin
   friend class tone;
   public:
     laserPin();
-    laserPin(const short __s_index_number, const short __s_physical_pin_number);
+    laserPin(const int16_t __i16_index_number, const short __s_physical_pin_number);
     laserPin(const laserPin& __laserPin);
     laserPin& operator=(const laserPin& __laserPin);
     ~laserPin();
@@ -23,7 +23,7 @@ class laserPin
   private:
     bool const _switchPin(const bool __b_target_state) const;
 
-    short _sIndexNumber;          // index number in the array of _laserPins
+    int16_t _i16IndexNumber;          // index number in the array of _laserPins
     short _sPhysicalPinNumber;   // physical number of the pin controlling the relay
 };
 
