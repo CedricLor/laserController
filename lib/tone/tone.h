@@ -15,6 +15,8 @@ class tone
   friend class test;
   friend class tones;
   friend class note;
+  friend class notes;
+
   public:
     tone(); // default constructor
     tone(std::array<bool, 4> const __bLaserPinsStatus);
@@ -32,6 +34,8 @@ class tone
 class tones {
   friend class test;
   friend class note;
+  friend class notes;
+  
   public:
     tones(); // default constructor
   private:
