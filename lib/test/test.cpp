@@ -21,8 +21,8 @@ void test::laserPinStack() {
 
   Serial.printf("test::laserPinStack: _laserPin._i16IndexNumber should be equal to -1. Is equal to [%i]\n", 
     _laserPin._i16IndexNumber);
-  Serial.printf("test::laserPinStack: _laserPin._sPhysicalPinNumber should be equal to 21. Is equal to [%u]\n", 
-    _laserPin._sPhysicalPinNumber);
+  Serial.printf("test::laserPinStack: _laserPin._ui16PhysicalPinNumber should be equal to 21. Is equal to [%u]\n", 
+    _laserPin._ui16PhysicalPinNumber);
   Serial.printf("test::laserPinStack: _laserPin._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
     _laserPin._switchPin(LOW));
   Serial.printf("test::laserPinStack: _laserPin._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
@@ -30,6 +30,15 @@ void test::laserPinStack() {
 
   Serial.println("test::laserPinStack: testing laserPin destructor: _laserPin.~laserPin().");
   _laserPin.~laserPin();
+
+  Serial.println("test::laserPinStack: testing laserPin default constructor: laserPin _laserPin2.");
+  laserPin _laserPin2;
+  Serial.printf("test::laserPinStack: _laserPin2._i16IndexNumber should be equal to -2. Is equal to [%i]\n", 
+    _laserPin2._i16IndexNumber);
+  Serial.printf("test::laserPinStack: _laserPin._ui16PhysicalPinNumber should be equal to 0. Is equal to [%u]\n", 
+    _laserPin2._ui16PhysicalPinNumber);
+  Serial.println("test::laserPinStack: testing laserPin destructor: _laserPin.~laserPin().");
+  _laserPin2.~laserPin();
 
   Serial.println("test::laserPinStack: over. \n");
 }
@@ -45,8 +54,8 @@ void test::rawLaserPinsStack() {
 
   Serial.printf("test::rawLaserPinsStack: _laserPins._array.at(0)._i16IndexNumber should be equal to 0. Is equal to [%i]\n", 
     _laserPins._array.at(0)._i16IndexNumber);
-  Serial.printf("test::rawLaserPinsStack: _laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%u]\n", 
-    _laserPins._array.at(0)._sPhysicalPinNumber);
+  Serial.printf("test::rawLaserPinsStack: _laserPins._array.at(0)._ui16PhysicalPinNumber should be equal to 5. Is equal to [%u]\n", 
+    _laserPins._array.at(0)._ui16PhysicalPinNumber);
   Serial.printf("test::rawLaserPinsStack: _laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
     _laserPins._array.at(0)._switchPin(LOW));
   Serial.printf("test::rawLaserPinsStack: _laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
@@ -113,8 +122,8 @@ void test::rawTonesStack() {
 
   Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._i16IndexNumber should be equal to 0. Is equal to [%i]\n", 
     _tones._laserPins._array.at(0)._i16IndexNumber);
-  Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
-    _tones._laserPins._array.at(0)._sPhysicalPinNumber);
+  Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._ui16PhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
+    _tones._laserPins._array.at(0)._ui16PhysicalPinNumber);
   Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
     _tones._laserPins._array.at(0)._switchPin(LOW));
   Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
@@ -181,8 +190,8 @@ void test::rawNotesStack() {
 
   Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._i16IndexNumber should be equal to 0. Is equal to [%i]\n", 
     _notes._tones._laserPins._array.at(0)._i16IndexNumber);
-  Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._sPhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
-    _notes._tones._laserPins._array.at(0)._sPhysicalPinNumber);
+  Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber should be equal to 5. Is equal to [%i]\n", 
+    _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber);
   Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._switchPin(LOW) should be equal to 0. Is equal to [%i]\n", 
     _notes._tones._laserPins._array.at(0)._switchPin(LOW));
   Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 

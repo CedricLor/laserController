@@ -14,19 +14,22 @@
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
-laserPin::laserPin() { }
+laserPin::laserPin():
+  _i16IndexNumber{-2},
+  _ui16PhysicalPinNumber{0}
+{ }
 
-laserPin::laserPin(const int16_t __i16_index_number, const short __s_physical_pin_number):
+laserPin::laserPin(const int16_t __i16_index_number, const uint16_t __ui16_physical_pin_number):
   _i16IndexNumber{__i16_index_number},
-  _sPhysicalPinNumber{__s_physical_pin_number}
+  _ui16PhysicalPinNumber{__ui16_physical_pin_number}
 {
-  pinMode(_sPhysicalPinNumber, OUTPUT);  // initialization of the pin connected to each of the relay as output
+  pinMode(_ui16PhysicalPinNumber, OUTPUT);  // initialization of the pin connected to each of the relay as output
   _switchPin(HIGH);                       // setting default value of the pins at HIGH (relay closed)
 }
 
 laserPin::laserPin(const laserPin& __laserPin):
   _i16IndexNumber{__laserPin._i16IndexNumber},
-  _sPhysicalPinNumber{__laserPin._sPhysicalPinNumber}
+  _ui16PhysicalPinNumber{__laserPin._ui16PhysicalPinNumber}
 { }
 
 laserPin& laserPin::operator=(const laserPin& __laserPin)
@@ -34,7 +37,7 @@ laserPin& laserPin::operator=(const laserPin& __laserPin)
     if (this != &__laserPin)
     {
       _i16IndexNumber = __laserPin._i16IndexNumber;
-      _sPhysicalPinNumber = __laserPin._sPhysicalPinNumber;
+      _ui16PhysicalPinNumber = __laserPin._ui16PhysicalPinNumber;
     }
     return *this;
 }
@@ -43,7 +46,7 @@ laserPin& laserPin::operator=(const laserPin& __laserPin)
 ///////////////////////////////////
 laserPin::~laserPin()
 {
-  pinMode(_sPhysicalPinNumber, INPUT);  // resetting the pin as INPUT
+  pinMode(_ui16PhysicalPinNumber, INPUT);  // resetting the pin as INPUT
 }
 
 
@@ -53,7 +56,7 @@ laserPin::~laserPin()
 
 
 bool const laserPin::_switchPin(const bool __b_target_state) const {
-  digitalWrite(_sPhysicalPinNumber, __b_target_state);
+  digitalWrite(_ui16PhysicalPinNumber, __b_target_state);
   return __b_target_state;
 }
 
