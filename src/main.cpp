@@ -109,6 +109,7 @@ void setup() {
     _test.rawTonesStack();
     _test.implementedTonesStack();
     _test.noteStack();
+    _test.notesArrayStack();
     _test.rawNotesStack();
     bar::initBars();
     _test.barStack();
