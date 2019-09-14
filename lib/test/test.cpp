@@ -255,6 +255,18 @@ void test::noteStack() {
   Serial.printf("test::noteStack: _note2._tone.i16IndexNumber should be equal 2. Is equal to [%i]\n\n", 
     _note2._tone.i16IndexNumber);
 
+  Serial.printf("test::noteStack: testing _validNote()\n");
+  Serial.printf("test::noteStack: testing _validNote() in main constructor: note _note3{1, 5}\n");
+  note _note3{1, 5};
+  Serial.printf("test::noteStack: _note3.getNote() should be equal to 6. Is equal to [%u]\n", 
+    _note3.getNote());
+  Serial.printf("test::noteStack: testing _validNote() in straight copy constructor: note{1,7}\n");
+  Serial.printf("test::noteStack: note{1,7}.getNote() should be equal to 8. Is equal to [%u]\n", 
+    note{1,7}.getNote());
+  Serial.printf("test::noteStack: testing _validNote() in assignment op: _note2 = {2,11};\n");
+  Serial.printf("test::noteStack: note2.getNote() should be equal to 16. Is equal to [%u]\n", 
+    note{2,11}.getNote());
+
   Serial.println("test::noteStack: over\n");
 }
 
@@ -266,7 +278,6 @@ void test::rawNotesStack() {
 
   Serial.println("test::rawNotesStack: testing notes constructor: notes _notes{}.");
   laserPins _laserPins;
-  note _note{1, 1};
   notes _notes{};
 
   Serial.println("test::rawNotesStack: calling _notes.resetTPlayNoteToPlayNotesInBar()");
@@ -294,14 +305,12 @@ void test::rawNotesStack() {
     _notes._tones._laserPins._array.at(0)._switchPin(LOW));
   Serial.printf("test::rawNotesStack: _notes._tones._laserPins._array.at(0)._switchPin(HIGH) should be equal to 1. Is equal to [%i]\n", 
     _notes._tones._laserPins._array.at(0)._switchPin(HIGH));
-
-  Serial.println("test::rawNotesStack: calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1). \n");
+  Serial.println("test::rawNotesStack: calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n");
   _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
-
-  Serial.println("test::rawNotesStack: calling _notes.playNoteStandAlone(_note, beat(5, 1)). \n");
+  note _note{1, 1};
+  Serial.println("test::rawNotesStack: calling _notes.playNoteStandAlone(_note, beat(5, 1)).\n");
   _notes.playNoteStandAlone(_note, beat(5, 1));
-
-  Serial.println("test::rawNotesStack: calling _bar.getNotes().setActive(note{4,8}). \n");
+  Serial.println("test::rawNotesStack: calling _bar.getNotes().setActive(note{4,8}).\n");
   _notes.setActive(note{4,8});
   Serial.printf("test::rawNotesStack: _notes._activeNote.getNote() should be equal to 8. Is equal to [%u]\n", 
     _notes._activeNote.getNote());
