@@ -228,17 +228,6 @@ notes & notes::operator=(notes&& __notes) {
 
 
 ///////////////////////////////////
-// Getters
-///////////////////////////////////
-/** note &note::getCurrentNote(): public static getter method
- *  
- *  returns a reference to the note instance that is currently active. */
-const note &notes::getCurrentNote() const {
-  return _activeNote;
-}
-
-
-///////////////////////////////////
 // Setters
 ///////////////////////////////////
 /** notes::setActive(const note & __activeNote): public instance setter method
@@ -282,6 +271,17 @@ void notes::setTPlayNote() {
     return this->_oetcbPlayNote();
   });
   this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
+}
+
+
+///////////////////////////////////
+// Getters
+///////////////////////////////////
+/** note &note::getCurrentNote(): public static getter method
+ *  
+ *  returns a reference to the note instance that is currently active. */
+const note &notes::getCurrentNote() const {
+  return _activeNote;
 }
 
 

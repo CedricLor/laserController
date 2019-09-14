@@ -67,7 +67,7 @@ class notes
     /** sender to mesh */
     void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
-    /** setter */
+    /** setters */
     void setActive(const note & __activeNote);
     void resetTPlayNoteToPlayNotesInBar();
     void setTPlayNote();
