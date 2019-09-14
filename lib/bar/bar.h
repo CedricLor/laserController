@@ -14,6 +14,8 @@
 class bar
 {
   public:
+    static bars globalBars;
+    
     /** sender to mesh */
     static void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
@@ -75,7 +77,7 @@ class bars
   public:
     /** default constructor */
     bars(
-      void (*sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
+      void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
 
 

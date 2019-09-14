@@ -17,6 +17,9 @@ Traductions en anglais:
 // Bar //*********************************************************//
 //****************************************************************//
 
+bar globalBar{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
+
+bars bar::globalBars{};  // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 bar bar::_emptyBar;
 bar &bar::_activeBar = _emptyBar;
 int16_t bar::_i16ActiveBarId = -1;
@@ -116,8 +119,12 @@ void bar::initBars() {
    * base note: 1 (a full)
    * count of base notes per bar: 2
    * => 2 / 1 */
+  
+  Serial.println("bar::_initBars(). before creating _aRelays");
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
+  Serial.println("bar::_initBars(). _aRelays created");
   _bars[0] = { _aRelays};
+  Serial.println("bar::_initBars(). _bars[0] copy assigned");
   // Serial.printf("bar::_initBars(). _bars[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _bars[0].ui16GetBaseNotesCountInBar() == 2);
   // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getToneNumber() = %u\n", _bars[0].getNotesArray().at(0).getToneNumber());
   // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_bars[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
@@ -453,3 +460,11 @@ const std::array<note, 16> & bar::getNotesArray() const {
 //****************************************************************//
 // Bars //********************************************************//
 //****************************************************************//
+
+bars::bars(
+  void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
+):
+  sendCurrentBar(_sendCurrentBar),
+  _activeBar(globalBar),
+  _notes(bar::globalBars)
+{}
