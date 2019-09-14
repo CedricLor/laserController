@@ -179,6 +179,51 @@ notes::notes(
   _tones(note::globalTones)
 {}
 
+notes::notes(const notes & __notes):
+  sendCurrentNote(__notes.sendCurrentNote),
+  _activeNote(__notes._activeNote),
+  _tones(__notes._tones)
+{}
+
+notes & notes::operator=(const notes & __notes) {
+  if (&__notes != this) {
+    sendCurrentNote = __notes.sendCurrentNote;
+    _activeNote = __notes._activeNote;
+    _tones = __notes._tones;
+  }
+  return *this;
+}
+
+notes::notes(notes&& __notes):
+  sendCurrentNote(nullptr),
+  _activeNote(globalNote),
+  _tones(note::globalTones)
+{
+  sendCurrentNote = __notes.sendCurrentNote;
+  _activeNote = __notes._activeNote;
+  _tones = __notes._tones;
+
+  __notes.sendCurrentNote = nullptr;
+  __notes._activeNote = globalNote;
+  __notes._tones = note::globalTones;
+}
+
+notes & notes::operator=(notes&& __notes) {
+  if (this != &__notes) {
+    sendCurrentNote = nullptr;
+    _activeNote = globalNote;
+    _tones = note::globalTones;
+
+    sendCurrentNote = __notes.sendCurrentNote;
+    _activeNote = __notes._activeNote;
+    _tones = __notes._tones;
+
+    __notes.sendCurrentNote = nullptr;
+    __notes._activeNote = globalNote;
+    __notes._tones = note::globalTones;
+  }
+  return *this;
+}
 
 
 

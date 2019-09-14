@@ -59,8 +59,10 @@ class notes
     notes(
       void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)=nullptr
     );
-    // /** main parameterized constructor */
-    // notes(note & __activeNote);
+    notes(const notes & _notes);
+    notes & operator=(const notes & __notes);
+    notes(notes&& __notes);
+    notes & operator=(notes&& __notes);
 
     /** sender to mesh */
     void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
