@@ -16,8 +16,6 @@ class note
 {
   public:
     static tones globalTones;
-    /** sender to mesh */
-    static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
     /** default empty constructor */
     note();
@@ -58,10 +56,15 @@ class note
 class notes
 {
   public:
-    /** default empty constructor */
-    notes();
+    /** default constructor */
+    notes(
+      void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)=nullptr
+    );
     // /** main parameterized constructor */
     // notes(note & __activeNote);
+
+    /** sender to mesh */
+    void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
     /** setter */
     void setActive(const note & __activeNote);
@@ -77,9 +80,6 @@ class notes
 
     /** member */
     Task tPlayNote;
-
-    /** sender to mesh */
-    void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
   private:
     friend class test;

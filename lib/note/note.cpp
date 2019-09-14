@@ -28,8 +28,6 @@ note globalNote{}; // TODO: <-- For the moment, it is at the global scope; find 
 ///////////////////////////////////
 tones note::globalTones{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
-// pointer to functions to produce an interface for note
-void (*note::sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note) = nullptr;
 
 
 
@@ -178,15 +176,14 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 // Notes //*******************************************************//
 //****************************************************************//
 
-notes::notes():
+notes::notes(
+  void (*_sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)
+):
+  sendCurrentNote(_sendCurrentNote),
   _activeNote(globalNote),
-  _tones(tones{})
+  _tones(note::globalTones)
 {}
 
-// notes::notes(note & __activeNote):
-//   _activeNote(__activeNote),
-//   _tones(tones{})
-// {}
 
 
 

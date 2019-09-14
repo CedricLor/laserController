@@ -129,7 +129,9 @@ void laserInterface::lockBarStack() {
 // notes stack
 /*******************/
 void laserInterface::initNoteComm() {
-    note::sendCurrentNote = sendCurrentNote;
+    // TODO: initNoteComm(), in the end, this namespace shall be used to initialize the whole laser stack
+    // change its name
+    notes _notes{sendCurrentNote};
 }
 
 
