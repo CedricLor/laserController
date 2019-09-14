@@ -19,7 +19,7 @@ Traductions en anglais:
 
 bar globalBar{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
-bars bar::globalBars{};  // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
+notes bar::globalNotes{};  // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 bar bar::_emptyBar;
 bar &bar::_activeBar = _emptyBar;
 int16_t bar::_i16ActiveBarId = -1;
@@ -466,5 +466,7 @@ bars::bars(
 ):
   sendCurrentBar(_sendCurrentBar),
   _activeBar(globalBar),
-  _notes(bar::globalBars)
+  _notes(bar::globalNotes),
+  _bars(),
+  _emptyNotesArray()
 {}

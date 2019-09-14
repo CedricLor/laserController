@@ -14,8 +14,8 @@
 class bar
 {
   public:
-    static bars globalBars;
-    
+    static notes globalNotes;
+
     /** sender to mesh */
     static void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
@@ -104,8 +104,8 @@ class bars
     friend class test;
     friend class sequence;
 
-    // static properties
-    bar _emptyBar;
+    // properties
+    bar _emptyBar; // <-- check: probably not needed any more;
     bar &_activeBar;
     int16_t _i16ActiveBarId;
     std::array<bar, 7> _bars;
