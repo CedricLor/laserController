@@ -14,7 +14,7 @@ test::test() { }
 
 
 void test::laserPinStack() {
-  char * _methodName = "test::laserPinStack:";
+  const char * _methodName = "test::laserPinStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
   Serial.printf("%s testing laserPin constructor: laserPin _laserPin{21, 2}.\n", _methodName);
