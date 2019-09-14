@@ -186,8 +186,8 @@ void test::noteStack() {
     _noteDef._tone.i16IndexNumber);
   tone _tone2(tones{}._array.at(2));
   Serial.println("test::noteStack: calling _noteDef._setTone(_tone2) with _tone2(tones{}._array.at(2)).");
-  Serial.printf("test::noteStack: _noteDef._setTone(_tone) should return a tone & with i16IndexNumber equal to 2. Is equal to [%i]\n", 
-    _noteDef._setTone(_tone).i16IndexNumber);
+  Serial.printf("test::noteStack: _noteDef._setTone(_tone2) should return a tone & with i16IndexNumber equal to 2. Is equal to [%i]\n", 
+    _noteDef._setTone(_tone2).i16IndexNumber);
   Serial.printf("test::noteStack: _noteDef._tone.i16IndexNumber should be equal 2. Is equal to [%i]\n\n", 
     _noteDef._tone.i16IndexNumber);
 
@@ -208,7 +208,7 @@ void test::noteStack() {
 
   Serial.println("test::noteStack: testing note copy constructor: note _noteCpy(_note);");
   note _noteCpy(_note);
-  Serial.printf("test::noteStack: _noteCpy.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+  Serial.printf("test::noteStack: _noteCpy.getToneNumber() should be equal to 3. Is equal to [%u]\n", 
     _noteCpy.getToneNumber());
   Serial.printf("test::noteStack: _noteCpy.getNote() should be equal to 1. Is equal to [%u]\n", 
     _noteCpy.getNote());
@@ -224,7 +224,7 @@ void test::noteStack() {
 
   Serial.println("test::noteStack: testing note copy constructor: note _noteCpy2 = _note;");
   note _noteCpy2 = _note;
-  Serial.printf("test::noteStack: _noteCpy2.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+  Serial.printf("test::noteStack: _noteCpy2.getToneNumber() should be equal to 3. Is equal to [%u]\n", 
     _noteCpy2.getToneNumber());
   Serial.printf("test::noteStack: _noteCpy2.getNote() should be equal to 1. Is equal to [%u]\n", 
     _noteCpy2.getNote());
@@ -264,8 +264,32 @@ void test::noteStack() {
   Serial.printf("test::noteStack: note{1,7}.getNote() should be equal to 8. Is equal to [%u]\n", 
     note{1,7}.getNote());
   Serial.printf("test::noteStack: testing _validNote() in assignment op: _note2 = {2,11};\n");
-  Serial.printf("test::noteStack: note2.getNote() should be equal to 16. Is equal to [%u]\n", 
+  Serial.printf("test::noteStack: note2.getNote() should be equal to 16. Is equal to [%u]\n\n", 
     note{2,11}.getNote());
+
+
+  Serial.printf("test::noteStack: testing _emptyNotesArray\n");
+  Serial.printf("test::noteStack: building std::array<note, 16> _emptyNotesArray\n");
+  std::array<note, 16> _emptyNotesArray;
+  Serial.printf("test::noteStack: _emptyNotesArray.at(0)\n");
+  Serial.printf("test::noteStack: _emptyNotesArray.at(0).getToneNumber() should be equal to 0. Is equal to [%u]\n", 
+    _emptyNotesArray.at(0).getToneNumber());
+  Serial.printf("test::noteStack: _emptyNotesArray.at(15).getToneNumber() should be equal to 0. Is equal to [%u]\n", 
+    _emptyNotesArray.at(15).getToneNumber());
+  Serial.printf("test::noteStack: _emptyNotesArray.at(0).getNote() should be equal to 0. Is equal to [%u]\n", 
+    _emptyNotesArray.at(0).getNote());
+  Serial.printf("test::noteStack: _emptyNotesArray.at(15).getNote() should be equal to 0. Is equal to [%u]\n", 
+    _emptyNotesArray.at(15).getNote());
+  Serial.printf("test::noteStack: _emptyNotesArray.at(0)._tone.i16IndexNumber should be equal to 0. Is equal to [%u]\n", 
+    _emptyNotesArray.at(0)._tone.i16IndexNumber);
+  Serial.printf("test::noteStack: _emptyNotesArray.at(15)._tone.i16IndexNumber should be equal to 0. Is equal to [%u]\n", 
+    _emptyNotesArray.at(15)._tone.i16IndexNumber);
+  Serial.printf("test::noteStack: _emptyNotesArray.at(0)._tone._laserPinsStatesArr.at(0) should be equal to 1. Is equal to [%u]\n", 
+    _emptyNotesArray.at(0)._tone._laserPinsStatesArr.at(0));
+  Serial.printf("test::noteStack: _emptyNotesArray.at(15)._tone._laserPinsStatesArr.at(3) should be equal to 1. Is equal to [%u]\n", 
+    _emptyNotesArray.at(15)._tone._laserPinsStatesArr.at(3));
+
+
 
   Serial.println("test::noteStack: over\n");
 }
