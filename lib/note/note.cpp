@@ -37,8 +37,7 @@ tones note::globalTones{}; // TODO: <-- For the moment, it is at the global scop
 // default
 note::note() :
   _ui16Tone(0),
-  _ui16Note(0),
-  _tone(globalTones._array.at(0))
+  _ui16Note(0)
 {}
 
 // parameterized
@@ -47,15 +46,13 @@ note::note(
   const uint16_t __ui16_note
 ) :
   _ui16Tone(__ui16_tone),
-  _ui16Note(__ui16_note),
-  _tone(globalTones._array.at(_ui16Tone))
+  _ui16Note(__ui16_note)
 { _ui16ValidNote(); }
 
 // copy constructor
 note::note(const note& __note) :   
   _ui16Tone(__note._ui16Tone),
-  _ui16Note(__note._ui16Note),
-  _tone(globalTones._array.at(_ui16Tone))
+  _ui16Note(__note._ui16Note)
 { _ui16ValidNote(); }
 
 // assignement operator
@@ -64,7 +61,6 @@ note& note::operator=(const note& __note)
   if (&__note != this) {
     _ui16Tone = __note._ui16Tone;
     _ui16Note = __note._ui16Note;
-    _tone = __note._tone;
     _ui16ValidNote();
   }
   return *this;
@@ -78,14 +74,13 @@ note& note::operator=(const note& __note)
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** tone & note::_setTone(const tone & _target_tone): private instance setter method
+/** uint16_t note::_setTone(const tone & _target_tone): private instance setter method
  * 
  *  sets the instance reference member _tone (tone & _tone) to the passed-in reference-to 
  *  const tone. */
-tone & note::_setTone(const tone & _target_tone) {
-  _tone = _target_tone;
-  _ui16Tone = _tone.i16IndexNumber;
-  return _tone;
+uint16_t note::_setTone(const tone & _target_tone) {
+  _ui16Tone = _target_tone.i16IndexNumber;
+  return _ui16Tone;
 }
 
 /** note::_validNote(): private instance setter method
@@ -282,9 +277,9 @@ void notes::playNoteInBar(const note & __note) {
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", _activeNote._tone.i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", note::globalTones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
   }
-  _activeNote._tone._playTone(_tones._laserPins);
+  note::globalTones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
@@ -298,6 +293,6 @@ void notes::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
-  _activeNote._tone._playTone(_tones._laserPins);
+  note::globalTones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }

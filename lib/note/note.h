@@ -39,13 +39,12 @@ class note
 
     /** setters */
     // instance setter
-    tone & _setTone(const tone & _target_tone);
+    uint16_t _setTone(const tone & _target_tone);
     uint16_t _ui16ValidNote();
 
     // private instance properties
     uint16_t _ui16Tone;
     uint16_t _ui16Note;
-    tone & _tone;
 };
 
 #endif
