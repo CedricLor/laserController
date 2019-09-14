@@ -159,15 +159,48 @@ void test::noteStack() {
 
   Serial.println("test::noteStack: testing note constructor: note _note{1,1}.");
   note _note{1, 1};
-
-  Serial.printf("test::noteStack: _note.getTone() should be equal to 1. Is equal to [%u]\n", 
-    _note.getTone());
-
+  Serial.printf("test::noteStack: _note.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+    _note.getToneNumber());
   Serial.printf("test::noteStack: _note.getNote() should be equal to 1. Is equal to [%u]\n", 
     _note.getNote());
-
-  Serial.printf("test::noteStack: _note.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n", 
+  Serial.printf("test::noteStack: _note.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n\n", 
     _note.ui16GetNoteDurationInMs());
+
+  Serial.println("test::noteStack: testing note copy constructor: _note{1,1}.");
+  Serial.printf("test::noteStack: note{1,1}.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+    note{1,1}.getToneNumber());
+  Serial.printf("test::noteStack: note{1,1}.getNote() should be equal to 1. Is equal to [%u]\n", 
+    note{1,1}.getNote());
+  Serial.printf("test::noteStack: note{1,1}.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n\n", 
+    note{1,1}.ui16GetNoteDurationInMs());
+
+  Serial.println("test::noteStack: testing note copy constructor: note _noteCpy(_note);");
+  note _noteCpy(_note);
+  Serial.printf("test::noteStack: _noteCpy.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+    _noteCpy.getToneNumber());
+  Serial.printf("test::noteStack: _noteCpy.getNote() should be equal to 1. Is equal to [%u]\n", 
+    _noteCpy.getNote());
+  Serial.printf("test::noteStack: _noteCpy.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n\n", 
+    _noteCpy.ui16GetNoteDurationInMs());
+
+  Serial.println("test::noteStack: testing note copy constructor: note _noteCpy2 = _note;");
+  note _noteCpy2 = _note;
+  Serial.printf("test::noteStack: _noteCpy2.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+    _noteCpy2.getToneNumber());
+  Serial.printf("test::noteStack: _noteCpy2.getNote() should be equal to 1. Is equal to [%u]\n", 
+    _noteCpy2.getNote());
+  Serial.printf("test::noteStack: _noteCpy2.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n\n", 
+    _noteCpy2.ui16GetNoteDurationInMs());
+
+  Serial.println("test::noteStack: testing note assignment operator: note _note2; then _note2 = _note;");
+  note _note2;
+  _note2 = _note;
+  Serial.printf("test::noteStack: _noteCpy2.getToneNumber() should be equal to 1. Is equal to [%u]\n", 
+    _noteCpy2.getToneNumber());
+  Serial.printf("test::noteStack: _noteCpy2.getNote() should be equal to 1. Is equal to [%u]\n", 
+    _noteCpy2.getNote());
+  Serial.printf("test::noteStack: _noteCpy2.ui16GetNoteDurationInMs() should be equal to 0 (because beat is set to its defaults). Is equal to [%u]\n\n", 
+    _noteCpy2.ui16GetNoteDurationInMs());
 
   Serial.println("test::noteStack: over\n");
 }
@@ -219,8 +252,8 @@ void test::rawNotesStack() {
   _notes.setActive(note{4,8});
   Serial.printf("test::rawNotesStack: _notes._activeNote.getNote() should be equal to 8. Is equal to [%u]\n", 
     _notes._activeNote.getNote());
-  Serial.printf("test::rawNotesStack: _notes._activeNote.getTone() should be equal to 4. Is equal to [%u]\n", 
-    _notes._activeNote.getTone());
+  Serial.printf("test::rawNotesStack: _notes._activeNote.getToneNumber() should be equal to 4. Is equal to [%u]\n", 
+    _notes._activeNote.getToneNumber());
 
   Serial.println("test::rawNotesStack: over\n");
 }
@@ -264,8 +297,8 @@ void test::barStack() {
 
   Serial.printf("test::barStack: _bar.getNotes()._activeNote.getNote() should be equal to 8. Is equal to [%u]\n", 
     _bar.getNotes()._activeNote.getNote());
-  Serial.printf("test::barStack: _bar.getNotes()._activeNote.getTone() should be equal to 4. Is equal to [%u]\n", 
-    _bar.getNotes()._activeNote.getTone());
+  Serial.printf("test::barStack: _bar.getNotes()._activeNote.getToneNumber() should be equal to 4. Is equal to [%u]\n", 
+    _bar.getNotes()._activeNote.getToneNumber());
 
   Serial.println("test::barStack: over.\n");
 }
@@ -287,8 +320,8 @@ void test::sequenceStack() {
   Serial.println("\ntest::sequenceStack: testing notes in existing bar");
   Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%u]\n", 
     sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
-  Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%u]\n", 
-    sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
+  Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%u]\n", 
+    sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
   Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs() shall be equal to 3000. Is equal to [%u]\n", 
     sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs());
 
@@ -303,8 +336,8 @@ void test::sequenceStack() {
   Serial.println("\ntest::sequenceStack: testing notes in \"beyond bound\" bar");
   Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote() shall be equal to 0. Is equal to [%u]\n", 
     sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
-  Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone() shall be equal to 0. Is equal to [%u]\n", 
-    sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getTone());
+  Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getToneNumber() shall be equal to 0. Is equal to [%u]\n", 
+    sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getToneNumber());
 
   Serial.println("\ntest::sequenceStack: testing methods of \"beyond bound\" bar");
   Serial.printf("test::sequenceStack: sequence::sequences[0].getBarsArray().at(2).ui16GetNotesCountInBar() shall be equal to 0. Is equal to [%u]\n", 

@@ -33,7 +33,7 @@ class note
     note& operator=(const note& __note);
 
     /** getters */
-    uint16_t const getTone() const;
+    uint16_t const getToneNumber() const;
     uint16_t const getNote() const;
     uint16_t const ui16GetNoteDurationInMs() const;
 

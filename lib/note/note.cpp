@@ -132,10 +132,10 @@ uint16_t note::_ui16ValidNote() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** uint16_t note::getTone(): public instance getter method
+/** uint16_t note::getToneNumber(): public instance getter method
  * 
- *  Returns the tone of a note instance. */
-uint16_t const note::getTone() const {
+ *  Returns the tone number of a note instance. */
+uint16_t const note::getToneNumber() const {
   return _ui16Tone;
 }
 

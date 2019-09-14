@@ -140,7 +140,7 @@ void laserInterface::setCurrentNote(const uint16_t __ui16_target_tone, const uin
 
 void laserInterface::getCurrentNote() {
     const note &_note = bar::getNotes().getCurrentNote();
-    sendCurrentNote(_note.getTone(), _note.getNote());
+    sendCurrentNote(_note.getToneNumber(), _note.getNote());
 }
 
 

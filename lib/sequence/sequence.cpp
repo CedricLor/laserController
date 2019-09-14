@@ -108,12 +108,12 @@ void sequence::initSequences() {
   /** array of bars to be played in the sequence. */
   // Serial.printf("\nsequence::initSequences(). Before building _relaysBarsArray.\n");
   // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getTone() should be equal to 7. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getTone());
+  // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getToneNumber());
 
   std::array<bar, 8> _relaysBarsArray {bar::_bars[0]};
   // Serial.printf("\nsequence::initSequences(). Passed building _relaysBarsArray.\n");
   // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getTone() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getTone());
+  // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber());
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white */
@@ -122,7 +122,7 @@ void sequence::initSequences() {
   // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
   sequences[0] = {_beat_2_1, _relaysBarsArray};
   // Serial.printf("\nsequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getTone() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getTone());
+  // Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
   // Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
 
 

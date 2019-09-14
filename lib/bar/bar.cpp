@@ -114,8 +114,8 @@ void bar::initBars() {
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
   _bars[0] = { _aRelays};
   // Serial.printf("bar::_initBars(). _bars[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _bars[0].ui16GetBaseNotesCountInBar() == 2);
-  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getTone() = %u\n", _bars[0].getNotesArray().at(0).getTone());
-  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getTone() == 7 ? %s\n", ( (_bars[0].getNotesArray().at(0).getTone() == 7) ? "true" : "false") );
+  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getToneNumber() = %u\n", _bars[0].getNotesArray().at(0).getToneNumber());
+  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_bars[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
   // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getNote() = %u\n", _bars[0].getNotesArray().at(0).getNote());
   // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getNote() == 1 ? %s\n", ( (_bars[0].getNotesArray().at(0).getNote() == 1) ? "true" : "false") );
 
