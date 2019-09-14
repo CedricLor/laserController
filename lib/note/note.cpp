@@ -98,8 +98,8 @@ note& note::operator=(const note& __note)
 ///////////////////////////////////
 /** tone & note::_setTone(const tone & _target_tone): private instance setter method
  * 
- *  sets the tone member (tone & _tone) to the tone associated with
- *  the note from a passed in tone number. */
+ *  sets the instance reference member _tone (tone & _tone) to the passed-in reference-to 
+ *  const tone. */
 tone & note::_setTone(const tone & _target_tone) {
   _tone = _target_tone;
   return _tone;
