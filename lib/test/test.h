@@ -22,6 +22,7 @@ class test
     void implementedTonesStack();
 
     void noteStack();
+    void notesArrayStack();
     void rawNotesStack();
     void implementedNotesStack();
 
