@@ -470,3 +470,19 @@ bars::bars(
   _bars(),
   _emptyNotesArray()
 {}
+
+
+
+///////////////////////////////////
+// Setters
+///////////////////////////////////
+/** bars::setActive(const bar & __activeBar): public instance setter method
+ * 
+ *  sets the instance variable __activeBar 
+ *  from a passed in bar reference. */
+void bars::setActive(const bar & __activeBar) {
+  this->tPlayBar.disable();
+  _activeBar = __activeBar;
+}
+
+
