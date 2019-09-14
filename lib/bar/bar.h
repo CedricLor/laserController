@@ -48,6 +48,7 @@ class bar
 
   private:
     friend class sequence;
+    friend class bars;
 
     // static properties
     static bar _emptyBar;
