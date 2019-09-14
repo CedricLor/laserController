@@ -43,7 +43,7 @@ class bar
 
     /** player */
     bool playBarStandAlone(beat const & __beat=beat::_activeBeat, const int16_t __i16_active_bar_id=-1);
-    bool playBarInSequence(/*const int16_t __i16_active_bar_id=-1*/); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+    bool playBarInSequence(const int16_t __i16_active_bar_id); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
     static Task tPlayBar;
 
   private:
@@ -94,7 +94,7 @@ class bars
 
     /** player */
     bool playBarStandAlone(const int16_t __i16_active_bar_id=-1, beat const & __beat=beat::_activeBeat);
-    bool playBarInSequence(/*const int16_t __i16_active_bar_id=-1*/); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+    bool playBarInSequence(const int16_t __i16_active_bar_id); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
     Task tPlayBar;
 
   private:

@@ -560,8 +560,8 @@ void sequence::_tcbPlaySequence(){
   Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from sequences[%i].getBarsArray().at(%i).ui32BarDuration()\n", __ui32ThisBarDuration, _i16ActiveSequenceNb, _i16Iter);
 
   // 3. Play the corresponding bar
-  Serial.printf("sequence::_tcbPlaySequence(). about to call sequences[%i].getBarsArray()[%i].playBarInSequence()\n", _i16ActiveSequenceNb, _i16Iter);
-  bar(_activeSequence.getBarsArray().at(_i16Iter)).playBarInSequence();
+  Serial.printf("sequence::_tcbPlaySequence(). about to call sequences[%i].getBarsArray()[%i].playBarInSequence(%i)\n", _i16ActiveSequenceNb, _i16Iter, _i16Iter);
+  bar(_activeSequence.getBarsArray().at(_i16Iter)).playBarInSequence(_i16Iter);
 
   /**5. Set the interval for next iteration of tPlaySequence
    * 
