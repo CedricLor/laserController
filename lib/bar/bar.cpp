@@ -490,3 +490,35 @@ void bars::setActive(const bar & __activeBar) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
+/** int16_t const bars::i16GetCurrentBarId() const
+ * 
+ * Returns the active bar index number */
+int16_t const bars::i16GetCurrentBarId() const {
+  return _i16ActiveBarId;
+}
+
+/** bar & bars::getCurrentBar() const
+ * 
+ * Returns the active bar as a bar */
+bar & bars::getCurrentBar() const {
+  return _activeBar;
+}
+
+/** bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const
+ * 
+ * Returns a ref to one of the hard coded bars given its index number */
+// bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const {
+//   return _bars.at(__ui16_bar_id);
+// }
+
+
+
+/** notes & bar::getNotes()
+ * 
+ * Returns a ref to the static notes instance stored in bars */
+notes & bars::getNotes() {
+  return _notes;
+}
+
+
+
