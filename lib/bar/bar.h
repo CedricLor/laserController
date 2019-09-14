@@ -4,12 +4,12 @@
 
 
 */
-#ifndef bar_h
-#define bar_h
-
 #include "Arduino.h"
 #include <mns.h>
 #include <note.h>
+
+#ifndef bar_h
+#define bar_h
 
 class bar
 {
@@ -66,4 +66,52 @@ class bar
     std::array<note, 16> _notesArray;
 };
 
+#endif
+
+#ifndef bars_h
+#define bars_h
+class bars
+{
+  public:
+    /** default constructor */
+    bars(
+      void (*sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
+    );
+
+
+    /** sender to mesh */
+    void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
+
+    /** setters */
+    void setActive(const int16_t __i16_active_bar_id=-1);
+    void resetTPlayBarToPlayBarsInSequence();
+    void setTPlayBar(beat const & __beat);
+
+    /** getters */
+    int16_t const i16GetCurrentBarId() const; // returns _i16ActiveBarId
+    bar & getCurrentBar() const;
+    bar & getBarFromBarArray(const uint16_t __ui16_bar_id) const;
+    notes & getNotes();
+
+    /** player */
+    bool playBarStandAlone(const int16_t __i16_active_bar_id=-1, beat const & __beat=beat::_activeBeat);
+    bool playBarInSequence(/*const int16_t __i16_active_bar_id=-1*/); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+    Task tPlayBar;
+
+  private:
+    friend class test;
+    friend class sequence;
+
+    // static properties
+    bar _emptyBar;
+    bar &_activeBar;
+    int16_t _i16ActiveBarId;
+    std::array<bar, 7> _bars;
+    std::array<note, 16> _emptyNotesArray;
+    notes _notes;
+
+    /** player callbacks */
+    void _tcbPlayBar();
+    bool _oetcbPlayBar();
+};
 #endif
