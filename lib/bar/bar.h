@@ -61,9 +61,6 @@ class bar
     static void _tcbPlayBar();
     static bool _oetcbPlayBar();
 
-    // static setter
-    void _setTPlayBar(beat const & __beat);
-
     // private instance properties
     std::array<note, 16> _notesArray;
 };
