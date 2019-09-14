@@ -78,6 +78,8 @@ class notes
     /** player */
     void playNoteStandAlone(const note & __note, beat const & __beat=beat::_activeBeat);
     void playNoteInBar(const note & __note);
+
+    /** member */
     Task tPlayNote;
 
   private:
