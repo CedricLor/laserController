@@ -156,132 +156,133 @@ void test::implementedTonesStack() {
 
 
 void test::noteStack() {
-  Serial.printf("\n\ntest::noteStack: starting\n");
+  const char * _methodName = "test::noteStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
 
-  Serial.printf("test::noteStack: testing note constructor: note _note{1,1}.\n");
+  Serial.printf("%s testing note constructor: note _note{1,1}.\n", _methodName);
   note _note{1, 1};
   tone _tone(tones{}._array.at(3));
   tone _tone2(tones{}._array.at(2));
 
-  Serial.printf("test::noteStack: _note.getToneNumber() shall be 1. Is [%u]\n", 
+  Serial.printf("%s _note.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     _note.getToneNumber());
-  Serial.printf("test::noteStack: _note.getNote() shall be 1. Is [%u]\n", 
+  Serial.printf("%s _note.getNote() shall be 1. Is [%u]\n", _methodName, 
     _note.getNote());
-  Serial.printf("test::noteStack: _note.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", 
+  Serial.printf("%s _note.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
     _note.ui16GetNoteDurationInMs());
-  Serial.printf("test::noteStack: note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: calling _note._setTone(_tone) with _tone(tones{}._array.at(3)).\n");
-  Serial.printf("test::noteStack: _note._setTone(_tone) should return a tone & with i16IndexNumber equal to 3. Is [%i]\n", 
+  Serial.printf("%s calling _note._setTone(_tone) with _tone(tones{}._array.at(3)).\n", _methodName);
+  Serial.printf("%s _note._setTone(_tone) should return 3. Is [%i]\n", _methodName, 
     _note._setTone(_tone));
-  Serial.printf("test::noteStack: note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: _note.getToneNumber() shall be 3. Is [%u]\n\n", 
+  Serial.printf("%s _note.getToneNumber() shall be 3. Is [%u]\n\n", _methodName, 
     _note.getToneNumber());
 
-  Serial.printf("test::noteStack: testing note default constructor: note _noteDef.\n");
+  Serial.printf("%s testing note default constructor: note _noteDef.\n", _methodName);
   note _noteDef;
-  Serial.printf("test::noteStack: _noteDef.getToneNumber() shall be 0. Is [%u]\n", 
+  Serial.printf("%s _noteDef.getToneNumber() shall be 0. Is [%u]\n", _methodName, 
     _noteDef.getToneNumber());
-  Serial.printf("test::noteStack: _noteDef.getNote() shall be 0. Is [%u]\n", 
+  Serial.printf("%s _noteDef.getNote() shall be 0. Is [%u]\n", _methodName, 
     _noteDef.getNote());
-  Serial.printf("test::noteStack: _noteDef.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", 
+  Serial.printf("%s _noteDef.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
     _noteDef.ui16GetNoteDurationInMs());
-  Serial.printf("test::noteStack: note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: calling _noteDef._setTone(_tone2) with _tone2(tones{}._array.at(2)).\n");
-  Serial.printf("test::noteStack: _noteDef._setTone(_tone2) should return a tone & with i16IndexNumber equal to 2. Is [%i]\n", 
+  Serial.printf("%s calling _noteDef._setTone(_tone2) with _tone2(tones{}._array.at(2)).\n", _methodName);
+  Serial.printf("%s _noteDef._setTone(_tone2) should return 2. Is [%i]\n", _methodName, 
     _noteDef._setTone(_tone2));
-  Serial.printf("test::noteStack: note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: _noteDef.getToneNumber() shall be 2. Is [%u]\n\n", 
+  Serial.printf("%s _noteDef.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _noteDef.getToneNumber());
 
-  Serial.printf("test::noteStack: testing note straight copy constructor: note{1,1}.\n");
-  Serial.printf("test::noteStack: note{1,1}.getToneNumber() shall be 1. Is [%u]\n", 
+  Serial.printf("%s testing note straight copy constructor: note{1,1}.\n", _methodName);
+  Serial.printf("%s note{1,1}.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     note{1,1}.getToneNumber());
-  Serial.printf("test::noteStack: note{1,1}.getNote() shall be 1. Is [%u]\n", 
+  Serial.printf("%s note{1,1}.getNote() shall be 1. Is [%u]\n", _methodName, 
     note{1,1}.getNote());
-  Serial.printf("test::noteStack: note{1,1}.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", 
+  Serial.printf("%s note{1,1}.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
     note{1,1}.ui16GetNoteDurationInMs());
-  Serial.printf("test::noteStack: note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: calling note{1,1}._setTone(_tone2) with _tone2(tones{}._array.at(2)).\n");
-  Serial.printf("test::noteStack: note{1,1}._setTone(_tone2) should return a tone & with i16IndexNumber equal to 2. Is [%i]\n", 
+  Serial.printf("%s calling note{1,1}._setTone(_tone2) with _tone2(tones{}._array.at(2)).\n", _methodName);
+  Serial.printf("%s note{1,1}._setTone(_tone2) should return 2. Is [%i]\n", _methodName, 
     note{1,1}._setTone(_tone2));
-  Serial.printf("test::noteStack: note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: note{1,1}.getToneNumber() shall be 2. Is [%u]\n\n", 
+  Serial.printf("%s note{1,1}.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     note{1,1}.getToneNumber());
 
-  Serial.printf("test::noteStack: testing note copy constructor: note _noteCpy(_note);\n");
+  Serial.printf("%s testing note copy constructor: note _noteCpy(_note);\n", _methodName);
   note _noteCpy(_note);
-  Serial.printf("test::noteStack: _noteCpy.getToneNumber() shall be 3. Is [%u]\n", 
+  Serial.printf("%s _noteCpy.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _noteCpy.getToneNumber());
-  Serial.printf("test::noteStack: _noteCpy.getNote() shall be 1. Is [%u]\n", 
+  Serial.printf("%s _noteCpy.getNote() shall be 1. Is [%u]\n", _methodName, 
     _noteCpy.getNote());
-  Serial.printf("test::noteStack: _noteCpy.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", 
+  Serial.printf("%s _noteCpy.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
     _noteCpy.ui16GetNoteDurationInMs());
-  Serial.printf("test::noteStack: note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: calling _noteCpy._setTone(_tone2) with _tone(tones{}._array.at(2)).\n");
-  Serial.printf("test::noteStack: _noteCpy._setTone(_tone2) should return a tone & with i16IndexNumber equal to 2. Is [%i]\n", 
+  Serial.printf("%s calling _noteCpy._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
+  Serial.printf("%s _noteCpy._setTone(_tone2) should return 2. Is [%i]\n", _methodName, 
     _noteCpy._setTone(_tone2));
-  Serial.printf("test::noteStack: note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: _noteCpy.getToneNumber() shall be 2. Is [%u]\n\n", 
+  Serial.printf("%s _noteCpy.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _noteCpy.getToneNumber());
 
-  Serial.printf("test::noteStack: testing note copy constructor: note _noteCpy2 = _note;\n");
+  Serial.printf("%s testing note copy constructor: note _noteCpy2 = _note;\n", _methodName);
   note _noteCpy2 = _note;
-  Serial.printf("test::noteStack: _noteCpy2.getToneNumber() shall be 3. Is [%u]\n", 
+  Serial.printf("%s _noteCpy2.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _noteCpy2.getToneNumber());
-  Serial.printf("test::noteStack: _noteCpy2.getNote() shall be 1. Is [%u]\n", 
+  Serial.printf("%s _noteCpy2.getNote() shall be 1. Is [%u]\n", _methodName, 
     _noteCpy2.getNote());
-  Serial.printf("test::noteStack: _noteCpy2.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", 
+  Serial.printf("%s _noteCpy2.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
     _noteCpy2.ui16GetNoteDurationInMs());
-  Serial.printf("test::noteStack: note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: calling _noteCpy2._setTone(_tone2) with _tone(tones{}._array.at(2)).\n");
-  Serial.printf("test::noteStack: _noteCpy2._setTone(_tone2) should return a tone & with i16IndexNumber equal to 2. Is [%i]\n", 
+  Serial.printf("%s calling _noteCpy2._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
+  Serial.printf("%s _noteCpy2._setTone(_tone2) should return 2. Is [%i]\n", _methodName, 
     _noteCpy2._setTone(_tone2));
-  Serial.printf("test::noteStack: note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: _noteCpy2.getToneNumber() shall be 2. Is [%u]\n\n", 
+  Serial.printf("%s _noteCpy2.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _noteCpy2.getToneNumber());
 
-  Serial.printf("test::noteStack: testing note assignment operator: note _note2; then _note2 = _note;\n");
+  Serial.printf("%s testing note assignment operator: note _note2; then _note2 = _note;\n", _methodName);
   note _note2;
   _note2 = _note;
-  Serial.printf("test::noteStack: _note2.getToneNumber() shall be 1. Is [%u]\n", 
+  Serial.printf("%s _note2.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     _note2.getToneNumber());
-  Serial.printf("test::noteStack: _note2.getNote() shall be 3. Is [%u]\n", 
+  Serial.printf("%s _note2.getNote() shall be 3. Is [%u]\n", _methodName, 
     _note2.getNote());
-  Serial.printf("test::noteStack: _note2.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", 
+  Serial.printf("%s _note2.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
     _note2.ui16GetNoteDurationInMs());
-  Serial.printf("test::noteStack: note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: calling _note2._setTone(_tone2) with _tone(tones{}._array.at(2)).\n");
-  Serial.printf("test::noteStack: _note2._setTone(_tone2) should return a tone & with i16IndexNumber equal to 2. Is [%i]\n", 
+  Serial.printf("%s calling _note2._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
+  Serial.printf("%s _note2._setTone(_tone2) should return 2. Is [%i]\n", _methodName, 
     _note2._setTone(_tone2));
-  Serial.printf("test::noteStack: note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", 
+  Serial.printf("%s note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber);
-  Serial.printf("test::noteStack: _note2.getToneNumber() shall be 2. Is [%u]\n\n", 
+  Serial.printf("%s _note2.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _note2.getToneNumber());
 
-  Serial.printf("test::noteStack: testing _validNote()\n");
-  Serial.printf("test::noteStack: testing _validNote() in main constructor: note _note3{1, 5}\n");
+  Serial.printf("%s testing _validNote()\n", _methodName);
+  Serial.printf("%s testing _validNote() in main constructor: note _note3{1, 5}\n", _methodName);
   note _note3{1, 5};
-  Serial.printf("test::noteStack: _note3.getNote() shall be 6. Is [%u]\n", 
+  Serial.printf("%s _note3.getNote() shall be 6. Is [%u]\n", _methodName, 
     _note3.getNote());
-  Serial.printf("test::noteStack: testing _validNote() in straight copy constructor: note{1,7}\n");
-  Serial.printf("test::noteStack: note{1,7}.getNote() shall be 8. Is [%u]\n", 
+  Serial.printf("%s testing _validNote() in straight copy constructor: note{1,7}\n", _methodName);
+  Serial.printf("%s note{1,7}.getNote() shall be 8. Is [%u]\n", _methodName, 
     note{1,7}.getNote());
-  Serial.printf("test::noteStack: testing _validNote() in assignment op: _note2 = {2,11};\n");
-  Serial.printf("test::noteStack: note2.getNote() shall be 16. Is [%u]\n\n", 
+  Serial.printf("%s testing _validNote() in assignment op: _note2 = {2,11};\n", _methodName);
+  Serial.printf("%s note2.getNote() shall be 16. Is [%u]\n\n", _methodName, 
     note{2,11}.getNote());
 
-  Serial.printf("test::noteStack: over\n");
+  Serial.printf("%s over\n", _methodName);
 }
 
 
