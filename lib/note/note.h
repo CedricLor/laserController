@@ -15,6 +15,7 @@
 class note
 {
   public:
+    static tones globalTones;
     /** sender to mesh */
     static void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
 
@@ -24,10 +25,6 @@ class note
     note(
       const uint16_t __ui16_tone,
       const uint16_t __ui16_note
-    );
-    note(
-      const uint16_t __ui16_note,
-      tone & __tone
     );
     note(const note & __note);
     note& operator=(const note& __note);
@@ -40,6 +37,7 @@ class note
   private:
     friend class notes;
     friend class bar;
+    friend class test;
 
     /** setters */
     // instance setter

@@ -21,7 +21,7 @@
 // Note //********************************************************//
 //****************************************************************//
 
-tones globalTones{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
+tones note::globalTones{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 note globalNote{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 ///////////////////////////////////
@@ -58,19 +58,8 @@ note::note(
   _ui16ValidNote();
 }
 
-note::note(
-  const uint16_t __ui16_note,
-  tone & __tone
-) :
-  _ui16Note(__ui16_note),
-  _tone(__tone)
-{
-  _ui16Tone = _tone.i16IndexNumber;
-  _ui16ValidNote();
-}
-
 // copy constructor
-note::note( const note& __note) :   
+note::note(const note& __note) :   
   _ui16Tone(__note._ui16Tone),
   _ui16Note(__note._ui16Note),
   _tone(globalTones._array.at(_ui16Tone))
