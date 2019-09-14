@@ -16,6 +16,7 @@ class tone
   friend class tones;
   friend class note;
   friend class notes;
+  friend class bar;
 
   private:
     int16_t const _playTone(const laserPins & __laser_pins);
@@ -38,6 +39,7 @@ class tones {
   friend class test;
   friend class note;
   friend class notes;
+  friend class bar;
   
   public:
     tones(); // default constructor
