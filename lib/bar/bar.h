@@ -80,7 +80,6 @@ class bars
       void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
 
-
     /** sender to mesh */
     void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
