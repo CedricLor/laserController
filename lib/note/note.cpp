@@ -54,16 +54,14 @@ note::note(
   _ui16Tone(__ui16_tone),
   _ui16Note(__ui16_note),
   _tone(globalTones._array.at(_ui16Tone))
-{
-  _ui16ValidNote();
-}
+{ _ui16ValidNote(); }
 
 // copy constructor
 note::note(const note& __note) :   
   _ui16Tone(__note._ui16Tone),
   _ui16Note(__note._ui16Note),
   _tone(globalTones._array.at(_ui16Tone))
-{ }
+{ _ui16ValidNote(); }
 
 // assignement operator
 note& note::operator=(const note& __note)
@@ -91,6 +89,7 @@ note& note::operator=(const note& __note)
  *  const tone. */
 tone & note::_setTone(const tone & _target_tone) {
   _tone = _target_tone;
+  _ui16Tone = _tone.i16IndexNumber;
   return _tone;
 }
 
@@ -101,10 +100,10 @@ uint16_t note::_ui16ValidNote() {
   if (_ui16Note == 5) {
     _ui16Note = 6;
   }
-  if (_ui16Note == 7) {
+  if ((_ui16Note > 6) && (_ui16Note < 11)) {
     _ui16Note = 8;
   }
-  if (_ui16Note > 8) {
+  if (_ui16Note > 10) {
     _ui16Note = 16;
   }
   return _ui16Note;
