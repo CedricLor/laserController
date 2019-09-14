@@ -82,8 +82,9 @@ class bars
 
     /** setters */
     void setActive(const bar & __activeBar);
-    void resetTPlayBarToPlayBarsInSequence();
-    void setTPlayBar(beat const & __beat);
+    // TODO: define the following methods re. see what's in notes class
+    // void resetTPlayBarToPlayBarsInSequence();
+    // void setTPlayBar(beat const & __beat);
 
     /** getters */
     int16_t const i16GetCurrentBarId() const; // returns _i16ActiveBarId
