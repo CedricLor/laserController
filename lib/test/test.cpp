@@ -155,14 +155,10 @@ void test::implementedTonesStack() {
 
 
 
-void test::noteStack() {
-  const char * _methodName = "test::noteStack:";
-  Serial.printf("\n\n%s starting\n", _methodName);
-
+void test::noteStackParamConstructor(const char * _methodName) {
   Serial.printf("%s testing constructor: note _note{1,1}.\n", _methodName);
   note _note{1, 1};
   tone _tone(tones{}._array.at(3));
-  tone _tone2(tones{}._array.at(2));
 
   Serial.printf("%s _note.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     _note.getToneNumber());
@@ -179,9 +175,16 @@ void test::noteStack() {
     note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _note.getToneNumber() shall be 3. Is [%u]\n\n", _methodName, 
     _note.getToneNumber());
+}
 
+
+
+
+void test::noteStackDefaultConstructor(const char * _methodName) {
   Serial.printf("%s testing default constructor: note _noteDef.\n", _methodName);
   note _noteDef;
+  tone _tone2(tones{}._array.at(2));
+
   Serial.printf("%s _noteDef.getToneNumber() shall be 0. Is [%u]\n", _methodName, 
     _noteDef.getToneNumber());
   Serial.printf("%s _noteDef.getNote() shall be 0. Is [%u]\n", _methodName, 
@@ -197,8 +200,15 @@ void test::noteStack() {
     note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _noteDef.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _noteDef.getToneNumber());
+}
 
+
+
+
+void test::noteStackStraightCopyConstructor(const char * _methodName) {
   Serial.printf("%s testing straight copy constructor: note{1,1}.\n", _methodName);
+  tone _tone2(tones{}._array.at(2));
+  
   Serial.printf("%s note{1,1}.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     note{1,1}.getToneNumber());
   Serial.printf("%s note{1,1}.getNote() shall be 1. Is [%u]\n", _methodName, 
@@ -214,9 +224,20 @@ void test::noteStack() {
     note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber);
   Serial.printf("%s note{1,1}.getToneNumber() shall be 1. Is [%u]\n\n", _methodName, 
     note{1,1}.getToneNumber());
+}
 
+
+
+
+void test::noteStackCopyConstructorInitList(const char * _methodName) {
   Serial.printf("%s testing copy constructor: note _noteCpy(_note);\n", _methodName);
+  note _note{1, 1};
+  tone _tone(tones{}._array.at(3));
+  _note._setTone(_tone);
+
   note _noteCpy(_note);
+  tone _tone2(tones{}._array.at(2));
+
   Serial.printf("%s _noteCpy.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _noteCpy.getToneNumber());
   Serial.printf("%s _noteCpy.getNote() shall be 1. Is [%u]\n", _methodName, 
@@ -232,9 +253,20 @@ void test::noteStack() {
     note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _noteCpy.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _noteCpy.getToneNumber());
+}
 
+
+
+
+void test::noteStackCopyConstructorEqualSign(const char * _methodName) {
   Serial.printf("%s testing copy constructor: note _noteCpy2 = _note;\n", _methodName);
+  note _note{1, 1};
+  tone _tone(tones{}._array.at(3));
+  _note._setTone(_tone);
+
   note _noteCpy2 = _note;
+  tone _tone2(tones{}._array.at(2));
+
   Serial.printf("%s _noteCpy2.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _noteCpy2.getToneNumber());
   Serial.printf("%s _noteCpy2.getNote() shall be 1. Is [%u]\n", _methodName, 
@@ -250,10 +282,21 @@ void test::noteStack() {
     note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _noteCpy2.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _noteCpy2.getToneNumber());
+}
 
+
+
+
+void test::noteStackCopyAssignmentOp(const char * _methodName) {
   Serial.printf("%s testing assignment operator: note _note2; then _note2 = _note;\n", _methodName);
+  note _note{1, 1};
+  tone _tone(tones{}._array.at(3));
+  _note._setTone(_tone);
+
   note _note2;
   _note2 = _note;
+  tone _tone2(tones{}._array.at(2));
+
   Serial.printf("%s _note2.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _note2.getToneNumber());
   Serial.printf("%s _note2.getNote() shall be 1. Is [%u]\n", _methodName, 
@@ -269,10 +312,18 @@ void test::noteStack() {
     note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _note2.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _note2.getToneNumber());
+}
 
+
+
+
+
+void test::noteStackCopyConstructorAndCopyAssignment(const char * _methodName) {
   Serial.printf("%s testing straight copy constructor + assignt op: _note4 = note{1,1}.\n", _methodName);
   note _note4;
   _note4 = note{1,1};
+  tone _tone2(tones{}._array.at(2));
+
   Serial.printf("%s _note4.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _note4.getToneNumber());
   Serial.printf("%s _note4.getNote() shall be 1. Is [%u]\n", _methodName, 
@@ -288,10 +339,17 @@ void test::noteStack() {
     note::globalTones._array.at(_note4.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _note4.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
     _note4.getToneNumber());
+}
 
+
+
+
+
+void test::noteStackValidNote(const char * _methodName) {
   Serial.printf("%s testing _validNote()\n", _methodName);
   Serial.printf("%s testing _validNote() in main constructor: note _note3{1, 5}\n", _methodName);
   note _note3{1, 5};
+
   Serial.printf("%s _note3.getNote() shall be 6. Is [%u]\n", _methodName, 
     _note3.getNote());
   Serial.printf("%s testing _validNote() in straight copy constructor: note{1,7}\n", _methodName);
@@ -300,38 +358,75 @@ void test::noteStack() {
   Serial.printf("%s testing _validNote() in assignment op: _note2 = {2,11};\n", _methodName);
   Serial.printf("%s note2.getNote() shall be 16. Is [%u]\n\n", _methodName, 
     note{2,11}.getNote());
+}
+
+
+
+
+void test::noteStack() {
+  const char * _methodName = "test::noteStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
+
+  noteStackParamConstructor(_methodName);
+  noteStackDefaultConstructor(_methodName);
+  noteStackStraightCopyConstructor(_methodName);
+  noteStackCopyConstructorInitList(_methodName);
+  noteStackCopyConstructorEqualSign(_methodName);
+  noteStackCopyAssignmentOp(_methodName);
+  noteStackCopyConstructorAndCopyAssignment(_methodName);
+  noteStackValidNote(_methodName);
 
   Serial.printf("%s over\n", _methodName);
 }
 
 
-void test::notesArrayStack() {
-  Serial.printf("\n\ntest::notesArrayStack: starting\n");
 
-  Serial.printf("test::notesArrayStack: testing _emptyNotesArray\n");
-  Serial.printf("test::notesArrayStack: building std::array<note, 16> _emptyNotesArray\n");
+
+void test::notesArrayStackEmptyArray(const char * _methodName) {
+  Serial.printf("%s testing _emptyNotesArray\n", _methodName);
+  Serial.printf("%s building std::array<note, 16> _emptyNotesArray\n", _methodName);
   std::array<note, 16> _emptyNotesArray;
-  Serial.printf("test::notesArrayStack: _emptyNotesArray.at(0)\n");
-  Serial.printf("test::notesArrayStack: _emptyNotesArray.at(0).getToneNumber() shall be 0. Is [%u]\n", 
+
+  Serial.printf("%s _emptyNotesArray.at(0)\n", _methodName);
+  Serial.printf("%s _emptyNotesArray.at(0).getToneNumber() shall be 0. Is [%u]\n", _methodName, 
     _emptyNotesArray.at(0).getToneNumber());
-  Serial.printf("test::notesArrayStack: _emptyNotesArray.at(15).getToneNumber() shall be 0. Is [%u]\n", 
+  Serial.printf("%s _emptyNotesArray.at(15).getToneNumber() shall be 0. Is [%u]\n", _methodName, 
     _emptyNotesArray.at(15).getToneNumber());
-  Serial.printf("test::notesArrayStack: _emptyNotesArray.at(0).getNote() shall be 0. Is [%u]\n", 
+  Serial.printf("%s _emptyNotesArray.at(0).getNote() shall be 0. Is [%u]\n", _methodName, 
     _emptyNotesArray.at(0).getNote());
-  Serial.printf("test::notesArrayStack: _emptyNotesArray.at(15).getNote() shall be 0. Is [%u]\n", 
+  Serial.printf("%s _emptyNotesArray.at(15).getNote() shall be 0. Is [%u]\n", _methodName, 
     _emptyNotesArray.at(15).getNote());
-
-  Serial.printf("test::notesArrayStack: note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", 
-    note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber()).i16IndexNumber);
-  Serial.printf("test::notesArrayStack: note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", 
-    note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber()).i16IndexNumber);
-  Serial.printf("test::notesArrayStack: note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber())._laserPinsStatesArr.at(0) shall be 1. Is [%i]\n", 
-    note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber())._laserPinsStatesArr.at(0));
-  Serial.printf("test::notesArrayStack: note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber())._laserPinsStatesArr.at(3) shall be 1. Is [%i]\n", 
-    note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber())._laserPinsStatesArr.at(3));
-
-  Serial.printf("test::notesArrayStack: over\n\n");
 }
+
+
+
+void test::notesArrayStackToneSelection(const char * _methodName) {
+  std::array<note, 16> _emptyNotesArray;
+
+  Serial.printf("%s note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
+    note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber()).i16IndexNumber);
+  Serial.printf("%s note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
+    note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber()).i16IndexNumber);
+  Serial.printf("%s note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber())._laserPinsStatesArr.at(0) shall be 1. Is [%i]\n", _methodName, 
+    note::globalTones._array.at(_emptyNotesArray.at(0).getToneNumber())._laserPinsStatesArr.at(0));
+  Serial.printf("%s note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber())._laserPinsStatesArr.at(3) shall be 1. Is [%i]\n", _methodName, 
+    note::globalTones._array.at(_emptyNotesArray.at(15).getToneNumber())._laserPinsStatesArr.at(3));
+}
+
+
+
+
+void test::notesArrayStack() {
+  const char * _methodName = "test::notesArrayStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
+
+  notesArrayStackEmptyArray(_methodName);
+  notesArrayStackToneSelection(_methodName);
+
+  Serial.printf("%s over\n\n", _methodName);
+}
+
+
 
 
 void test::rawNotesStack() {
@@ -389,18 +484,17 @@ void test::barStack() {
   const char * _methodName = "test::barStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  // config
+  std::array<note, 16> _arrayOfNotes;
+  _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
+
+  // constructors
   Serial.printf("%s testing bar constructor: bar _bar(_arrayOfNotes) with _arrayOfNotes = \n", _methodName);
   Serial.printf("                std::array<note, 16> {note(4,8), note(3,8), note(2,8), note(1,8),\n");
   Serial.printf("                note(2,8), note(3,8), note(4,8), note(0,8)}\n");
-  std::array<note, 16> _arrayOfNotes;
-  _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
   bar _bar(_arrayOfNotes);
-
   // setter
   Serial.printf("%s calling _bar.setActive().\n", _methodName);
   _bar.setActive();
-
   // getters
   Serial.printf("%s _bar.ui16GetNotesCountInBar() shall be 8. Is [%u]\n", _methodName, 
     _bar.ui16GetNotesCountInBar());
@@ -410,16 +504,14 @@ void test::barStack() {
     _bar.ui32GetBarDuration());
   Serial.printf("%s _bar.getNotesArray().at(0).getNote() shall be 8. Is [%u]\n", _methodName, 
     _bar.getNotesArray().at(0).getNote());
-
+  // player
   Serial.printf("%s _bar.playBarStandAlone(beat(5, 1)) should return 0 because the active bar id has not been set. Returns [%i]\n", _methodName,
     _bar.playBarStandAlone(beat(5, 1)));
-
   // Serial.printf("%s _bar.playBarInSequence() should fail because beat is set to default (beat == 0 and base note == 0). Returns [%i]\n", _methodName,
   //   _bar.playBarInSequence());
-
+  // subsequent notes array
   Serial.printf("%s calling _bar.getNotes().setActive(note{4,8}).\n", _methodName);
   _bar.getNotes().setActive(note{4,8});
-
   Serial.printf("%s _bar.getNotes()._activeNote.getNote() shall be 8. Is [%u]\n", _methodName, 
     _bar.getNotes()._activeNote.getNote());
   Serial.printf("%s _bar.getNotes()._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
@@ -481,5 +573,5 @@ void test::sequenceStack() {
 
   beat _defaultBeat{};
   _defaultBeat.setActive();
-  Serial.printf("\n%s over\n\n");
+  Serial.printf("\n%s over\n\n", _methodName);
 }
