@@ -464,7 +464,56 @@ void test::rawNotesStackConstructors(const char * _methodName) {
 
 
 void test::rawNotesStackDefault(const char * _methodName) {
+  laserPins _laserPins;
+  notes _notes{};
 
+  Serial.printf("%s calling _notes.resetTPlayNoteToPlayNotesInBar()\n", _methodName);
+  _notes.resetTPlayNoteToPlayNotesInBar();
+
+  Serial.printf("%s testing access to members of _notes \n", _methodName);
+  Serial.printf("%s testing access to _notes._tones \n", _methodName);
+  Serial.printf("%s testing access to and values of the _laserPinsStatesArr embedded in \n", _methodName);
+  Serial.printf("   tone instances extracted from the \"hard-coded\" tones array embedded in the tones class\n");
+  Serial.printf("   from the default _notes instance.\n");
+  Serial.printf("%s _notes._tones._array.at(0)._laserPinsStatesArr.at(0) shall be 1. Is [%u]\n", _methodName, 
+    _notes._tones._array.at(0)._laserPinsStatesArr.at(0));
+  Serial.printf("%s _notes._tones._array.at(0)._laserPinsStatesArr.at(3) shall be 1. Is [%u]\n", _methodName, 
+    _notes._tones._array.at(0)._laserPinsStatesArr.at(3));
+  Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(0) shall be 0. Is [%u]\n", _methodName, 
+    _notes._tones._array.at(15)._laserPinsStatesArr.at(0));
+  Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(3) shall be 0. Is [%u]\n", _methodName, 
+    _notes._tones._array.at(15)._laserPinsStatesArr.at(3));
+
+  Serial.printf("%s _notes._tones._array.at(0)._playTone(_laserPins) shall return 0. Returns [%i]\n", _methodName, 
+    _notes._tones._array.at(0)._playTone(_laserPins));
+  Serial.printf("%s _notes._tones._array.at(15)._playTone(_laserPins) shall return 15. Returns [%i]\n", _methodName, 
+    _notes._tones._array.at(15)._playTone(_laserPins));
+
+  Serial.printf("%s testing access to _notes._tones._laserPins \n", _methodName);
+  Serial.printf("%s _notes._tones._laserPins._array.at(0)._i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
+    _notes._tones._laserPins._array.at(0)._i16IndexNumber);
+  Serial.printf("%s _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber shall be 5. Is [%i]\n", _methodName, 
+    _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber);
+  Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(LOW) shall be 0. Is [%i]\n", _methodName, 
+    _notes._tones._laserPins._array.at(0)._switchPin(LOW));
+  Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(HIGH) shall be 1. Is [%i]\n", _methodName, 
+    _notes._tones._laserPins._array.at(0)._switchPin(HIGH));
+
+  // testing playNoteStandAlone
+  Serial.printf("%s calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n", _methodName);
+  _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
+  note _note{1, 1};
+  Serial.printf("%s calling _notes.playNoteStandAlone(_note, beat(5, 1)).\n", _methodName);
+  _notes.playNoteStandAlone(_note, beat(5, 1));
+
+  // testing setActive, getNote and getToneNumber
+  Serial.printf("%s testing setActive, getNote and getToneNumber\n", _methodName);
+  Serial.printf("%s calling _notes.setActive(note{4,8}).\n", _methodName);
+  _notes.setActive(note{4,8});
+  Serial.printf("%s _notes._activeNote.getNote() shall be 8. Is [%u]\n", _methodName, 
+    _notes._activeNote.getNote());
+  Serial.printf("%s _notes._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
+    _notes._activeNote.getToneNumber());
 }
 
 
@@ -476,45 +525,6 @@ void test::rawNotesStack() {
 
   rawNotesStackConstructors(_methodName);
   rawNotesStackDefault(_methodName);
-  laserPins _laserPins;
-  notes _notes{};
-
-  Serial.printf("%s calling _notes.resetTPlayNoteToPlayNotesInBar()\n", _methodName);
-  _notes.resetTPlayNoteToPlayNotesInBar();
-
-  Serial.printf("%s _notes._tones._array.at(0)._laserPinsStatesArr.at(0) shall be 1. Is [%u]\n", _methodName, 
-    _notes._tones._array.at(0)._laserPinsStatesArr.at(0));
-  Serial.printf("%s _notes._tones._array.at(0)._laserPinsStatesArr.at(3) shall be 1. Is [%u]\n", _methodName, 
-    _notes._tones._array.at(0)._laserPinsStatesArr.at(3));
-  Serial.printf("%s _notes._tones._array.at(0)._playTone(_laserPins) shall return 0. Returns [%i]\n", _methodName, 
-    _notes._tones._array.at(0)._playTone(_laserPins));
-
-  Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(0) shall be 0. Is [%u]\n", _methodName, 
-    _notes._tones._array.at(15)._laserPinsStatesArr.at(0));
-  Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(3) shall be 0. Is [%u]\n", _methodName, 
-    _notes._tones._array.at(15)._laserPinsStatesArr.at(3));
-  Serial.printf("%s _notes._tones._array.at(15)._playTone(_laserPins) shall return 15. Returns [%i]\n", _methodName, 
-    _notes._tones._array.at(15)._playTone(_laserPins));
-
-  Serial.printf("%s _notes._tones._laserPins._array.at(0)._i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
-    _notes._tones._laserPins._array.at(0)._i16IndexNumber);
-  Serial.printf("%s _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber shall be 5. Is [%i]\n", _methodName, 
-    _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber);
-  Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(LOW) shall be 0. Is [%i]\n", _methodName, 
-    _notes._tones._laserPins._array.at(0)._switchPin(LOW));
-  Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(HIGH) shall be 1. Is [%i]\n", _methodName, 
-    _notes._tones._laserPins._array.at(0)._switchPin(HIGH));
-  Serial.printf("%s calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n", _methodName);
-  _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
-  note _note{1, 1};
-  Serial.printf("%s calling _notes.playNoteStandAlone(_note, beat(5, 1)).\n", _methodName);
-  _notes.playNoteStandAlone(_note, beat(5, 1));
-  Serial.printf("%s calling _bar.getNotes().setActive(note{4,8}).\n", _methodName);
-  _notes.setActive(note{4,8});
-  Serial.printf("%s _notes._activeNote.getNote() shall be 8. Is [%u]\n", _methodName, 
-    _notes._activeNote.getNote());
-  Serial.printf("%s _notes._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
-    _notes._activeNote.getToneNumber());
 
   Serial.printf("%s over\n", _methodName);
 }
