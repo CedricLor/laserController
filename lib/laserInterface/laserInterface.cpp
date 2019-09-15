@@ -72,7 +72,16 @@ void laserInterface::lockSequenceStack() {
 // bars stack
 /*******************/
 void laserInterface::initBarComm() {
-    bar::sendCurrentBar = sendCurrentBar;
+    // TODO: initBarComm(), in the end, this namespace shall be used to initialize the whole laser stack
+    // change its name
+    bars _bars{sendCurrentBar};
+    /**
+     *  TODO: This expression won't be very usefull -> the _bars instance is will automatically
+     *        be deleted when this method will end...
+     * 
+     *        Such an expression shall be used on a global variable or at least, on a notes instance that is going
+     *        to be used for sthg. 
+     * */
 }
 
 
@@ -132,6 +141,13 @@ void laserInterface::initNoteComm() {
     // TODO: initNoteComm(), in the end, this namespace shall be used to initialize the whole laser stack
     // change its name
     notes _notes{sendCurrentNote};
+    /**
+     *  TODO: This expression won't be very usefull -> the _notes instance that is created here 
+     *        will be automatically deleted when this method will terminate...
+     * 
+     *        Such an expression shall be used on a global variable or at least, on a notes
+     *        instance that is going to last and be used for sthg. 
+     * */
 }
 
 

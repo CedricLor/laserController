@@ -16,9 +16,6 @@ class bar
   public:
     static notes globalNotes;
 
-    /** sender to mesh */
-    static void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
-
     /** default empty constructor */
     bar();
     bar(std::array<note, 16> & __notesArray); 
@@ -67,6 +64,8 @@ class bar
 };
 
 #endif
+
+
 
 #ifndef bars_h
 #define bars_h

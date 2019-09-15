@@ -28,8 +28,6 @@ std::array<bar, 7> bar::_bars;
 std::array<note, 16> bar::_emptyNotesArray;
 notes bar::_notes;
 
-// pointer to functions to produce an interface for bar
-void (*bar::sendCurrentBar)(const int16_t __i16_current_bar_id) = nullptr;
 
 
 
