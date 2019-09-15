@@ -282,7 +282,7 @@ void notes::setTPlayNote() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** note &note::getCurrentNote(): public static getter method
+/** const note &notes::getCurrentNote() const: public static getter method
  *  
  *  returns a reference to the note instance that is currently active. */
 const note &notes::getCurrentNote() const {
@@ -293,7 +293,7 @@ const note &notes::getCurrentNote() const {
 ///////////////////////////////////
 // Task - Player
 ///////////////////////////////////
-/**notes::playNoteStandAlone:
+/** void notes::playNoteStandAlone(const note & __note, beat const & __beat):
  *  
  *  play a single note for a given duration (calculated using the passed-in beat).
  * 
@@ -311,7 +311,7 @@ void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
   this->tPlayNote.restartDelayed();
 }
 
-/**notes::playNoteInBar:
+/** void notes::playNoteInBar(const note & __note):
  *  
  *  play a single note for its maximum duration.
  *  _tcbPlayBar manages the real duration (and the beat). 
@@ -329,6 +329,17 @@ bool notes::_oetcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
   }
+  /** TODO: refacto the preceding line and related methods.
+   *  
+   *  I need to come up with something that looks like:
+   *  
+   *  _activeNote._playTone();
+   * 
+   *  1. _tones._laserPins shall have been accessible/readable by activeNote 
+   *  upon instanciation.
+   *  2. _laserPins shall have been set somehow, as a pointer or a smart pointer.
+   *  3. _activeNote shall have access to the _playTone method of its own tone.
+   */
   _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
 
   Serial.println("note::_oetcbPlayNote(). Ending");
@@ -344,6 +355,7 @@ void notes::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
+  // TODO: same as above
   _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
