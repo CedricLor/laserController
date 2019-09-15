@@ -72,7 +72,13 @@ class bar
 class bars
 {
   public:
-    /** default constructor */
+    /** default constructor 
+     * 
+     *  The bars' properties (_emptyBar, _activeBar, _i16ActiveBarId, _notes,
+     *  _emptyNotesArray) are defined in the constructor, by default, without
+     *  parameters.
+     * 
+     *  The only parameters, _sendCurrentBar, is an optional callback. */
     bars(
       void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
