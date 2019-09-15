@@ -207,7 +207,6 @@ void test::noteStackDefaultConstructor(const char * _methodName) {
 
 void test::noteStackStraightCopyConstructor(const char * _methodName) {
   Serial.printf("%s testing straight copy constructor: note{1,1}.\n", _methodName);
-  tone _tone2(tones{}._array.at(2));
   
   Serial.printf("%s note{1,1}.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     note{1,1}.getToneNumber());
@@ -218,6 +217,9 @@ void test::noteStackStraightCopyConstructor(const char * _methodName) {
   Serial.printf("%s note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber);
   Serial.printf("%s calling note{1,1}._setTone(_tone2) with _tone2(tones{}._array.at(2)).\n", _methodName);
+
+  tone _tone2(tones{}._array.at(2));
+
   Serial.printf("%s note{1,1}._setTone(_tone2) should return 2. Is [%i]\n", _methodName, 
     note{1,1}._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
@@ -429,11 +431,51 @@ void test::notesArrayStack() {
 
 
 
+void test::rawNotesStackSender(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
+    /** TODO: draft whatever  */
+}
+
+
+
+
+void test::rawNotesStackConstructors(const char * _methodName) {  
+  Serial.printf("%s testing notes constructors.\n", _methodName);
+
+  Serial.printf("%s testing notes default constructor: notes _notes{}.\n", _methodName);
+  notes _notes{};
+  Serial.printf("%s testing notes default constructor with params: notes _notes2{nullptr}.\n", _methodName);
+  notes _notes2{nullptr};
+  Serial.printf("%s testing notes default constructor with params: notes _notes3{rawNotesStackSender}.\n", _methodName);
+  notes _notes3{rawNotesStackSender};
+
+  Serial.printf("%s testing notes straigth copy constructor: notes{}.\n", _methodName);
+  notes{};
+  Serial.printf("%s testing notes copy constructor with initializer: notes _noteCpy(_notes).\n", _methodName);
+  notes _notesCpy(_notes);
+  Serial.printf("%s testing notes copy constructor with equal sign: notes _noteCpy(_notes).\n", _methodName);
+  notes _notesCpy2 = _notes;
+  Serial.printf("%s testing notes assignment op: _notes = _notes3.\n", _methodName);
+  _notes = _notes3;
+
+  Serial.printf("%s testing constructor: over.\n\n", _methodName);
+}
+
+
+
+
+void test::rawNotesStackDefault(const char * _methodName) {
+
+}
+
+
+
+
 void test::rawNotesStack() {
   const char * _methodName = "test::rawNotesStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  Serial.printf("%s testing notes constructor: notes _notes{}.\n", _methodName);
+  rawNotesStackConstructors(_methodName);
+  rawNotesStackDefault(_methodName);
   laserPins _laserPins;
   notes _notes{};
 

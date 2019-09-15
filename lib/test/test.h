@@ -36,7 +36,9 @@ class test
     void notesArrayStackToneSelection(const char * _methodName);
 
     void rawNotesStack();
-    void implementedNotesStack();
+    void rawNotesStackConstructors(const char * _methodName);
+    static void rawNotesStackSender(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void rawNotesStackDefault(const char * _methodName);
 
     void barStack();
     void rawBarsStack();
