@@ -83,6 +83,8 @@ uint16_t note::_setTone(const tone & _target_tone) {
   return _ui16Tone;
 }
 
+
+
 /** note::_validNote(): private instance setter method
  * 
  *  changes passed-in notes to the valid notes. */
@@ -162,6 +164,19 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 
 
 
+
+
+
+
+
+///////////////////////////////////
+// Players
+///////////////////////////////////
+/** const int16_t _playTone(tones & _tones)  */
+const int16_t note::_playTone(tones & _tones) {
+  const int16_t _tone_index_number = _tones._array.at(getToneNumber())._playTone(_tones._laserPins);
+  return _tone_index_number;
+}
 
 
 
@@ -340,7 +355,8 @@ bool notes::_oetcbPlayNote() {
    *  2. _laserPins shall have been set somehow, as a pointer or a smart pointer.
    *  3. _activeNote shall have access to the _playTone method of its own tone.
    */
-  _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+  // _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+  _activeNote._playTone(_tones);
 
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
@@ -356,6 +372,7 @@ void notes::_odtcbPlayNote() {
   }
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
   // TODO: same as above
-  _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+  // _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+  _activeNote._playTone(_tones);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
