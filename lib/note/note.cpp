@@ -327,9 +327,10 @@ void notes::playNoteInBar(const note & __note) {
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", note::globalTones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
   }
-  note::globalTones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+  _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
 }
@@ -343,6 +344,6 @@ void notes::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
-  note::globalTones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
+  _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
