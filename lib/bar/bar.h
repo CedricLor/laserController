@@ -29,8 +29,6 @@ class bar
     void setActive(const int16_t __i16_active_bar_id=-1);
 
     /** getters */
-    static int16_t const i16GetCurrentBarId(); // returns _i16ActiveBarId
-    static bar & getCurrentBar();
     static bar & getBarFromBarArray(const uint16_t __ui16_bar_id);
     static notes & getNotes();
     uint16_t const ui16GetNotesCountInBar() const;

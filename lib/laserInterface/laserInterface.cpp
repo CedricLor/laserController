@@ -91,7 +91,10 @@ void laserInterface::setCurrentBar(const int16_t __i16_target_bar_id) {
 
 
 void laserInterface::getCurrentBar() {
-    sendCurrentBar(bar::i16GetCurrentBarId());
+    /** TODO: the following instance of bars does not survive out of the scope of this method.
+     *  ... not very usefull. */
+    bars _bars;
+    sendCurrentBar(_bars.i16GetCurrentBarId());
 }
 
 
@@ -121,8 +124,10 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   bar __target_bar(_arrayOfNotes);
   __target_bar.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   // 2. Or set the active bar
+  // TODO: the following instance of bars will not survive the current scope
+  bars _bars;
   setCurrentBar(__ui16_target_bar);
-  bar & __bar_ref = bar::getCurrentBar();
+  bar & __bar_ref = _bars.getCurrentBar();
   // 3. play the bar
   __bar_ref.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }

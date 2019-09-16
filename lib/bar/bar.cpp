@@ -342,20 +342,6 @@ void bar::setActive(const int16_t __i16_active_bar_id) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** int16_t const bar::i16GetCurrentBarId()
- * 
- * Returns the active bar index number */
-int16_t const bar::i16GetCurrentBarId() {
-  return _i16ActiveBarId;
-}
-
-/** bar & bar::getCurrentBar()
- * 
- * Returns the active bar as a bar */
-bar & bar::getCurrentBar() {
-  return _activeBar;
-}
-
 /** bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) 
  * 
  * Returns a ref to one of the hard coded bars given its index number */
