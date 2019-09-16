@@ -112,6 +112,12 @@ void laserInterface::sendCurrentBar(const int16_t __i16_current_bar_id) {
 void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_target_bar) {
   // 1. lock bar to avoid getting signal from a boxState or sequence player
   lockBarStack();
+
+  // TODO: the following instance of bars will not survive the current scope
+  bars _bars{sendCurrentBar};
+  // TODO: check how the activeBarId is set and where it is used; maybe get rid of it
+  setCurrentBar(__ui16_target_bar);
+
   // two ways ---> 
   // TODO: see which way is more coherent from an interface stand point and either remove one of them or split functions
   // 2. create a bar
@@ -125,10 +131,6 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   bar __target_bar(_arrayOfNotes);
   __target_bar.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
   // 2. Or set the active bar
-  // TODO: the following instance of bars will not survive the current scope
-  bars _bars{sendCurrentBar};
-  setCurrentBar(__ui16_target_bar);
-  bar & __bar_ref = _bars.getCurrentBar();
   // 3. play the bar
   __bar_ref.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
