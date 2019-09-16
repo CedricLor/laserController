@@ -181,39 +181,6 @@ void bar::initBars() {
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
-/** bar::playBarStandAlone():
- *  
- *  play a single bar calculating the durations
- *  on the basis of the passed-in beat.
- * 
- *  {@ params} beat const & __beat: pass a beat to be taken into account
- *             to calculate the notes duration */
-bool bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_id) {
-  if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0) || (__i16_active_bar_id == -1)) {
-    return false;
-  }
-  // 1. set the bar as active
-  setActive(__i16_active_bar_id);
-  // 2. set the active beat from the passed in beat
-  beat(__beat).setActive();
-  /**3. set the tPlayNote Task to its default when playing notes read from a bar.
-   *    tPlayNote will be managed from tPlayBar => set tPlayNote to play each note (in the bar)
-   *    for one single iteration and with the maximum available interval (30000). */
-  notes{}.resetTPlayNoteToPlayNotesInBar();
-  /**4. set the onDisable callback of tPlayBar to reset the active beat to (0,0) once
-   *    the stand alone bar has been read, so that (i) bar can be read again as part of a
-   *    sequence and (ii) any other class that may depend on beat finds a clean beat to start
-   *    with, as required. */
-  tPlayBar.setOnDisable([&](){
-    beat(0, 0).setActive();
-    tPlayBar.setOnDisable(NULL);
-  });
-  // 5. once all the setting have been done, play the bar
-  tPlayBar.restart();
-  return true;
-}
-
-
 /** bar::playBarInSequence():
  *  
  *  play a single bar calculating the durations

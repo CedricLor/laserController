@@ -35,7 +35,6 @@ class bar
     const std::array<note, 16> & getNotesArray() const;
 
     /** player */
-    bool playBarStandAlone(beat const & __beat=beat::_activeBeat, const int16_t __i16_active_bar_id=-1);
     bool playBarInSequence(const int16_t __i16_active_bar_id); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
     static Task tPlayBar;
 
