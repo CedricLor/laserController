@@ -57,6 +57,9 @@ class note
 
 class notes
 {
+  friend class test;
+  friend class bars;
+  friend class bar;
   public:
     /** default constructor */
     notes(
@@ -86,8 +89,6 @@ class notes
     Task tPlayNote;
 
   private:
-    friend class test;
-    friend class bar;
 
     /** private members */
     note & _activeNote;

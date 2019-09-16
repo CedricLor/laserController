@@ -587,12 +587,25 @@ void test::barStack() {
   // Serial.printf("%s _bar.playBarInSequence() shall fail because beat is set to default (beat == 0 and base note == 0). Is [%i]\n", _methodName,
   //   _bar.playBarInSequence());
   // subsequent notes array
-  Serial.printf("%s calling _bar.getNotes().setActive(note{4,8}).\n", _methodName);
-  _bar.getNotes().setActive(note{4,8});
-  Serial.printf("%s _bar.getNotes()._activeNote.getNote() shall be 8. Is [%u]\n", _methodName, 
-    _bar.getNotes()._activeNote.getNote());
-  Serial.printf("%s _bar.getNotes()._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
-    _bar.getNotes()._activeNote.getToneNumber());
+
+  Serial.printf("%s over.\n\n", _methodName);
+}
+
+
+
+
+void test::rawBarsStack() {
+  const char * _methodName = "test::rawBarsStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
+
+  bars _bars;
+
+  Serial.printf("%s calling _bars.getNotes().setActive(note{4,8}).\n", _methodName);
+  _bars.getNotes().setActive(note{4,8});
+  Serial.printf("%s _bars.getNotes().getCurrentNote().getNote() shall be 8. Is [%u]\n", _methodName, 
+    _bars.getNotes().getCurrentNote().getNote());
+  Serial.printf("%s _bars.getNotes()._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
+    _bars.getNotes().getCurrentNote().getToneNumber());
 
   Serial.printf("%s over.\n\n", _methodName);
 }

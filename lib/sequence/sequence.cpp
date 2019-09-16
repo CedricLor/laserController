@@ -11,6 +11,8 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "sequence.h"
 
+bars sequence::globalBars;
+
 const int16_t sequence::_i16_sequence_count = 7;
 sequence sequence::_emptySequence;
 sequence &sequence::_activeSequence = _emptySequence;

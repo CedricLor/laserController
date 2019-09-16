@@ -82,7 +82,7 @@ void setup() {
     mns::myScheduler.addTask(sequence::tPlaySequenceInLoop);
     mns::myScheduler.addTask(sequence::tPlaySequence);
     mns::myScheduler.addTask(bar::tPlayBar);
-    mns::myScheduler.addTask(bar::getNotes().tPlayNote);
+    mns::myScheduler.addTask(sequence::globalBars.getNotes().tPlayNote);
   }
 
 
@@ -112,6 +112,7 @@ void setup() {
     _test.rawNotesStack();
     bar::initBars();
     _test.barStack();
+    _test.rawBarsStack();
     sequence::initSequences();
     _test.sequenceStack();
   }

@@ -158,16 +158,12 @@ void laserInterface::initNoteComm() {
 
 
 void laserInterface::setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    // TODO: not very usefull. _bars will expire with the scope of this method.
-    bars _bars{sendCurrentBar};
-    _bars.getNotes().setActive(note(__ui16_target_tone, __ui16_target_note));
+    sequence::globalBars.getNotes().setActive(note(__ui16_target_tone, __ui16_target_note));
 }
 
 
 void laserInterface::getCurrentNote() {
-    // TODO: not very usefull. _bars will expire with the scope of this method.
-    bars _bars{sendCurrentBar};
-    const note &_note = _bars.getNotes().getCurrentNote();
+    const note & _note = sequence::globalBars.getNotes().getCurrentNote();
     sendCurrentNote(_note.getToneNumber(), _note.getNote());
 }
 

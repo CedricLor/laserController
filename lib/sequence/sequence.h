@@ -28,6 +28,7 @@ class sequence
 
     /** public static array of sequences */
     static std::array<sequence, 7> sequences; // <-- TODO: make it private at some point
+    static bars globalBars;
 
     /** sequences initializer */
     static void initSequences(); // initializer of the array of sequences
@@ -51,8 +52,6 @@ class sequence
     /** interface to mesh */
     static void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     static const int16_t getCurrentSequence();
-
-
 
   private:
     // static private constants to set stuffs

@@ -29,7 +29,6 @@ class bar
     void setActive(const int16_t __i16_active_bar_id=-1);
 
     /** getters */
-    static notes & getNotes();
     uint16_t const ui16GetNotesCountInBar() const;
     uint16_t const ui16GetBaseNotesCountInBar() const;
     uint32_t const ui32GetBarDuration() const;

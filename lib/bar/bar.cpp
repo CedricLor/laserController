@@ -342,15 +342,6 @@ void bar::setActive(const int16_t __i16_active_bar_id) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** notes & bar::getNotes()
- * 
- * Returns a ref to the static notes instance stored in bars */
-notes & bar::getNotes() {
-  return _notes;
-}
-
-
-
 /** uint16_t const bar::ui16GetNotesCountInBar() const
  * 
  * Returns the effective number of notes (as opposed to 
