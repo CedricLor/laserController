@@ -159,9 +159,6 @@ void test::rawTonesStack() {
 
 
 
-void test::implementedTonesStack() {
-
-}
 
 
 
@@ -186,6 +183,8 @@ void test::noteStackParamConstructor(const char * _methodName) {
     note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber);
   Serial.printf("%s _note.getToneNumber() shall be 3. Is [%u]\n\n", _methodName, 
     _note.getToneNumber());
+  Serial.printf("%s _note._playTone() shall be 3. Is [%u]\n\n", _methodName, 
+    _note._playTone());
 }
 
 
@@ -209,8 +208,10 @@ void test::noteStackDefaultConstructor(const char * _methodName) {
     _noteDef._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteDef.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s _noteDef.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s _noteDef.getToneNumber() shall be 2. Is [%u]\n", _methodName, 
     _noteDef.getToneNumber());
+  Serial.printf("%s _noteDef._playTone() shall be 2. Is [%u]\n\n", _methodName, 
+    _noteDef._playTone());
 }
 
 
@@ -227,16 +228,17 @@ void test::noteStackStraightCopyConstructor(const char * _methodName) {
     note{1,1}.ui16GetNoteDurationInMs());
   Serial.printf("%s note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber);
+
   Serial.printf("%s calling note{1,1}._setTone(_tone2) with _tone2(tones{}._array.at(2)).\n", _methodName);
-
   tone _tone2(tones{}._array.at(2));
-
   Serial.printf("%s note{1,1}._setTone(_tone2) shall be 2. Is [%i]\n", _methodName, 
     note{1,1}._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     note::globalTones._array.at(note{1,1}.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s note{1,1}.getToneNumber() shall be 1. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s note{1,1}.getToneNumber() shall be 1. Is [%u]\n", _methodName, 
     note{1,1}.getToneNumber());
+  Serial.printf("%s note{1,1}._playTone() shall be 1. Is [%u]\n\n", _methodName, 
+    note{1,1}._playTone());
 }
 
 
@@ -259,13 +261,16 @@ void test::noteStackCopyConstructorInitList(const char * _methodName) {
     _noteCpy.ui16GetNoteDurationInMs());
   Serial.printf("%s note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber);
+
   Serial.printf("%s calling _noteCpy._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
   Serial.printf("%s _noteCpy._setTone(_tone2) shall be 2. Is [%i]\n", _methodName, 
     _noteCpy._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s _noteCpy.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s _noteCpy.getToneNumber() shall be 2. Is [%u]\n", _methodName, 
     _noteCpy.getToneNumber());
+  Serial.printf("%s _noteCpy._playTone() shall be 2. Is [%u]\n\n", _methodName, 
+    _noteCpy._playTone());
 }
 
 
@@ -288,13 +293,16 @@ void test::noteStackCopyConstructorEqualSign(const char * _methodName) {
     _noteCpy2.ui16GetNoteDurationInMs());
   Serial.printf("%s note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber);
+
   Serial.printf("%s calling _noteCpy2._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
   Serial.printf("%s _noteCpy2._setTone(_tone2) shall be 2. Is [%i]\n", _methodName, 
     _noteCpy2._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_noteCpy2.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s _noteCpy2.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s _noteCpy2.getToneNumber() shall be 2. Is [%u]\n", _methodName, 
     _noteCpy2.getToneNumber());
+  Serial.printf("%s _noteCpy2._playTone() shall be 2. Is [%u]\n\n", _methodName, 
+    _noteCpy2._playTone());
 }
 
 
@@ -318,13 +326,16 @@ void test::noteStackCopyAssignmentOp(const char * _methodName) {
     _note2.ui16GetNoteDurationInMs());
   Serial.printf("%s note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber);
+    
   Serial.printf("%s calling _note2._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
   Serial.printf("%s _note2._setTone(_tone2) shall be 2. Is [%i]\n", _methodName, 
     _note2._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note2.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s _note2.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s _note2.getToneNumber() shall be 2. Is [%u]\n", _methodName, 
     _note2.getToneNumber());
+  Serial.printf("%s _note2._playTone() shall be 2. Is [%u]\n\n", _methodName, 
+    _note2._playTone());
 }
 
 
@@ -345,13 +356,16 @@ void test::noteStackCopyConstructorAndCopyAssignment(const char * _methodName) {
     _note4.ui16GetNoteDurationInMs());
   Serial.printf("%s note::globalTones._array.at(_note4.getToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note4.getToneNumber()).i16IndexNumber);
+
   Serial.printf("%s calling _note4._setTone(_tone2) with _tone(tones{}._array.at(2)).\n", _methodName);
   Serial.printf("%s _note4._setTone(_tone2) shall be 1. Is [%i]\n", _methodName, 
     _note4._setTone(_tone2));
   Serial.printf("%s note::globalTones._array.at(_note4.getToneNumber()).i16IndexNumber shall be 2. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note4.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s _note4.getToneNumber() shall be 2. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s _note4.getToneNumber() shall be 2. Is [%u]\n", _methodName, 
     _note4.getToneNumber());
+  Serial.printf("%s _note4._playTone() shall be 2. Is [%u]\n\n", _methodName, 
+    _note4._playTone());
 }
 
 

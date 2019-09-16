@@ -107,7 +107,6 @@ void setup() {
     _test.rawLaserPinsStack();
     _test.toneStack();
     _test.rawTonesStack();
-    _test.implementedTonesStack();
     _test.noteStack();
     _test.notesArrayStack();
     _test.rawNotesStack();

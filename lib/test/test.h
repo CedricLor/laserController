@@ -20,7 +20,6 @@ class test
     void toneStack();
     void rawTonesStackTonesArray(const char * _methodName, uint16_t _toneIndexNumber);
     void rawTonesStack();
-    void implementedTonesStack();
 
     void noteStack();
     void noteStackParamConstructor(const char * _methodName);
