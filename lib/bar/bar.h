@@ -18,7 +18,7 @@ class bar
 
     /** default empty constructor */
     bar();
-    bar(std::array<note, 16> & __notesArray); 
+    bar(std::array<note, 16> __notesArray); 
     bar( const bar& __bar);
     bar& operator=(const bar& __bar);
  

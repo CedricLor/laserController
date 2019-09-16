@@ -43,7 +43,7 @@ bar::bar() :
 
 // parameterized
 bar::bar(
-  std::array<note, 16> & __notesArray
+  std::array<note, 16> __notesArray
 ):
   _notesArray{__notesArray}
 {
