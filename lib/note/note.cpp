@@ -259,36 +259,43 @@ void notes::setActive(const note & __activeNote) {
 }
 
 
-/** notes::resetTPlayNoteToPlayNotesInBar(): public static setter method
+/** notes::disableAndResetTPlayNote(): public setter method
  * 
- *  resets the parameters of the static Task tPlayNote to  
+ *  resets the parameters of the Task tPlayNote to  
  *  play notes read from a bar. */
-void notes::resetTPlayNoteToPlayNotesInBar() {
-  this->tPlayNote.disable();
-  this->tPlayNote.setInterval(30000);
-  this->tPlayNote.setOnDisable([&](){
-    this->_odtcbPlayNote();
-  });
+void notes::disableAndResetTPlayNote() {
+  tPlayNote.disable();
+  resetTPlayNote();
 }
 
-// TODO: simplify/unify/reuse code re. setTPlayNote() and resetTPlayNoteToPlayNotesInBar()
-/** setTPlayNote:
+/** void notes::resetTPlayNote(): public setter method
+ * 
+ *   notes::resetTPlayNote sets Task notes::tPlayNote to its default 
+ *   parameters:
+ *   - an interval of 30.000 seconds;
+ *   - no main callback;
+ *   - 
+ * 
+ *   It is called by sequence (from the players (standalone and in boxState)) and
+ *   bar (from the standalone bar player).
  * 
  *   The Task is enabled upon instanciating a note in the bar class.
  *   It is disabled:
- *   - by the expiration of the interval set in the Task declaration; or
+ *   - at the expiration of the interval set herein (30000 ms); or
  *   - by _tcbPlayBar, the main callback of tPlayBar, when the note is supposed
  *     to finish.
  *   It does not need any mainCallback, as it does not iterate.
  * 
  *   task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
  *   for a given note type (--> full, half, ..., set in the bar) at a given
- *   beat rate. */
-void notes::setTPlayNote() {
+ *   beat rate. 
+ * 
+ *   */
+void notes::resetTPlayNote() {
+  this->tPlayNote.setIterations(1);
   this->tPlayNote.setInterval(30000);
-  this->tPlayNote.setOnEnable([&](){
-    return this->_oetcbPlayNote();
-  });
+  this->tPlayNote.setCallback(NULL);
+  this->tPlayNote.setOnEnable([&](){return this->_oetcbPlayNote();});
   this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
 }
 

@@ -297,7 +297,7 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
   bar::_notes.tPlayNote.disable();
 
   // 1. reset tPlayNote to play notes read from a bar
-  notes{}.resetTPlayNoteToPlayNotesInBar();
+  notes{}.disableAndResetTPlayNote();
 
   /**2. set the tPlayBar Task to its default when reading bars from a sequence.
    *    tPlayBar will be managed from tPlaySequence => tPlayBar will not need to reset
@@ -336,7 +336,7 @@ void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id) {
   // 2. set the underlying laser Tasks for a sequence -> bar -> note -> tone chain
   //    TODO: the two following lines shall be defined at the beginning of entering 
   //          an automated boxState or even the stepControllerMode
-  notes{}.resetTPlayNoteToPlayNotesInBar();
+  notes{}.disableAndResetTPlayNote();
   bar::tPlayBar.setOnDisable(NULL);
 
   // 3. set this Task for a regular step -> boxState -> sequence -> bar -> note -> tone chain 

@@ -468,27 +468,52 @@ notes & bars::getNotes() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
 bool bars::playBarStandAlone(const bar & __target_bar, beat const & __beat) {
+  // TODO: make this method return an uint16_t, with each steps marking the passing of
+  // one step.
+
+  // 0. Do not do anything if the beat has not been set
   if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0)) {
     return false;
   }
-  // 1. set the bar as active
+
+  // 1. set the passed-in bar as active
+  // TODO: <-- check the question of the active bar id, as necessary
   setActive(__target_bar);
-  // 2. set the active beat from the passed in beat
+  
+  // 2. set the active beat from the passed-in beat
   beat(__beat).setActive();
-  /**3. set the tPlayNote Task to its default when playing notes read from a bar.
-   *    tPlayNote will be managed from tPlayBar => set tPlayNote to play each note (in the bar)
-   *    for one single iteration and with the maximum available interval (30000). */
-  notes{}.resetTPlayNoteToPlayNotesInBar();
-  /**4. set the onDisable callback of tPlayBar to reset the active beat to (0,0) once
-   *    the stand alone bar has been read, so that (i) bar can be read again as part of a
-   *    sequence and (ii) any other class that may depend on beat finds a clean beat to start
-   *    with, as required. */
+
+  /**3. set the tPlayNote Task to its default.
+   *    
+   *    The tPlayNote Task will then be enabled and disabled from 
+   *    tPlayBar's callbacks.
+   * 
+   *    The following instruction resets tPlayNote to play a note 
+   *    for one single iteration for a maximum duration of 30000 ms. */
+  notes{}.disableAndResetTPlayNote();
+
+  /**4. set the onDisable callback of tPlayBar: 
+   * 
+   *    once the standalone bar has been read/played,
+   *    the active beat shall be reset to (0,0) (to leave the beat 
+   *    in a clean state). 
+   *    In addition, tPlayBar does not, in its default state, have 
+   *    an onDisable callback. So we need to leave it also clean.
+   *    
+   *    This way:
+   *    (i) bars can be read again as part of a sequence,
+   *    (ii) bars can be read again as stand-alone with any new beat, or
+   *    (iii) any other class that may depend on a beat (note, notes, bar or sequences) finds a
+   *    clean beat state to start with, as necessary. */
   tPlayBar.setOnDisable([&](){
     beat(0, 0).setActive();
     tPlayBar.setOnDisable(NULL);
   });
+
   // 5. once all the setting have been done, play the bar
   tPlayBar.restart();
+
+  // 6. return true
   return true;
 }
 

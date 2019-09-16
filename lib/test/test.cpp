@@ -492,8 +492,10 @@ void test::rawNotesStackDefault(const char * _methodName) {
   laserPins _laserPins;
   notes _notes{};
 
-  Serial.printf("%s calling _notes.resetTPlayNoteToPlayNotesInBar()\n", _methodName);
-  _notes.resetTPlayNoteToPlayNotesInBar();
+  Serial.printf("%s calling _notes.resetTPlayNote()\n", _methodName);
+  _notes.resetTPlayNote();
+  Serial.printf("%s calling _notes.disableAndResetTPlayNote()\n", _methodName);
+  _notes.disableAndResetTPlayNote();
 
   Serial.printf("%s testing access to members of _notes \n", _methodName);
   Serial.printf("%s testing access to _notes._tones \n", _methodName);
