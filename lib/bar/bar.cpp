@@ -204,7 +204,7 @@ bool bar::playBarStandAlone(beat const & __beat, const int16_t __i16_active_bar_
    *    the stand alone bar has been read, so that (i) bar can be read again as part of a
    *    sequence and (ii) any other class that may depend on beat finds a clean beat to start
    *    with, as required. */
-  tPlayBar.setOnDisable([](){
+  tPlayBar.setOnDisable([&](){
     beat(0, 0).setActive();
     tPlayBar.setOnDisable(NULL);
   });
