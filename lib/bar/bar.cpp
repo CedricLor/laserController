@@ -24,7 +24,7 @@ notes bar::globalNotes{};  // TODO: <-- For the moment, it is at the global scop
 bar bar::_emptyBar;
 bar &bar::_activeBar = _emptyBar;
 int16_t bar::_i16ActiveBarId = -1;
-std::array<bar, 7> bar::_bars;
+std::array<bar, 7> bar::_barsArray;
 std::array<note, 16> bar::_emptyNotesArray;
 notes bar::_notes;
 
@@ -62,9 +62,9 @@ bar& bar::operator=(const bar& __bar)
   // Serial.printf("bar& bar::operator=(const bar& __bar). __bar.ui16GetBaseNotesCountInBar() = %u\n", __bar.ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getToneNumber() = %u\n", __bar._notesArray[0].getToneNumber());
   // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getNote() = %u\n", __bar._notesArray[0].getNote());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0].ui16GetBaseNotesCountInBar() = %u\n", _bars[0].ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._notesArray[0].getToneNumber() = %u\n", _bars[0]._notesArray[0].getToneNumber());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _bars[0]._notesArray[0].getNote() = %u\n", _bars[0]._notesArray[0].getNote());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _barsArray[0].ui16GetBaseNotesCountInBar() = %u\n", _barsArray[0].ui16GetBaseNotesCountInBar());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _barsArray[0]._notesArray[0].getToneNumber() = %u\n", _barsArray[0]._notesArray[0].getToneNumber());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _barsArray[0]._notesArray[0].getNote() = %u\n", _barsArray[0]._notesArray[0].getNote());
   // Serial.printf("bar& bar::operator=(const bar& __bar). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getToneNumber() = %u\n", _notesArray[0].getToneNumber());
   // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
@@ -122,13 +122,13 @@ void bar::initBars() {
   Serial.println("bar::_initBars(). before creating _aRelays");
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
   Serial.println("bar::_initBars(). _aRelays created");
-  _bars[0] = { _aRelays};
-  Serial.println("bar::_initBars(). _bars[0] copy assigned");
-  // Serial.printf("bar::_initBars(). _bars[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _bars[0].ui16GetBaseNotesCountInBar() == 2);
-  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getToneNumber() = %u\n", _bars[0].getNotesArray().at(0).getToneNumber());
-  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_bars[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
-  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getNote() = %u\n", _bars[0].getNotesArray().at(0).getNote());
-  // Serial.printf("bar::_initBars(). _bars[0].getNotesArray().at(0).getNote() == 1 ? %s\n", ( (_bars[0].getNotesArray().at(0).getNote() == 1) ? "true" : "false") );
+  _barsArray[0] = { _aRelays};
+  Serial.println("bar::_initBars(). _barsArray[0] copy assigned");
+  // Serial.printf("bar::_initBars(). _barsArray[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _barsArray[0].ui16GetBaseNotesCountInBar() == 2);
+  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getToneNumber() = %u\n", _barsArray[0].getNotesArray().at(0).getToneNumber());
+  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
+  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getNote() = %u\n", _barsArray[0].getNotesArray().at(0).getNote());
+  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getNote() == 1 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getNote() == 1) ? "true" : "false") );
 
   /** twins
    * duration of a beat in bpm: 2
@@ -136,7 +136,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
-  _bars[1] = { _aTwins};
+  _barsArray[1] = { _aTwins};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -144,7 +144,7 @@ void bar::initBars() {
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
-  _bars[2] = { _aAll};
+  _barsArray[2] = { _aAll};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -152,7 +152,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
-  _bars[3] = { _aSwipeR};
+  _barsArray[3] = { _aSwipeR};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -160,7 +160,7 @@ void bar::initBars() {
    * count of base notes per bar: 4
    * => 4 / 1 */
   std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
-  _bars[4] = { _aSwipeL};
+  _barsArray[4] = { _aSwipeL};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -168,7 +168,7 @@ void bar::initBars() {
    * count of base notes per bar: 1
    * => 1 / 1 */
   std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
-  _bars[5] = { _aAllOff};
+  _barsArray[5] = { _aAllOff};
 
   Serial.println("void bar::_initBars(). Ending.");
 }
@@ -342,15 +342,6 @@ void bar::setActive(const int16_t __i16_active_bar_id) {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) 
- * 
- * Returns a ref to one of the hard coded bars given its index number */
-bar & bar::getBarFromBarArray(const uint16_t __ui16_bar_id) {
-  return _bars.at(__ui16_bar_id);
-}
-
-
-
 /** notes & bar::getNotes()
  * 
  * Returns a ref to the static notes instance stored in bars */
@@ -452,7 +443,7 @@ bars::bars(
   sendCurrentBar(_sendCurrentBar),
   _activeBar(globalBar),
   _notes(bar::globalNotes),
-  _bars(),
+  _barsArray(),
   _emptyNotesArray()
 {}
 
@@ -492,9 +483,9 @@ bar & bars::getCurrentBar() const {
 /** bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const
  * 
  * Returns a ref to one of the hard coded bars given its index number */
-// bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const {
-//   return _bars.at(__ui16_bar_id);
-// }
+bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const {
+  return at(__ui16_bar_id);
+}
 
 
 
@@ -523,7 +514,7 @@ bool bars::playBarStandAlone(const int16_t __i16_active_bar_id, beat const & __b
     return false;
   }
   // 1. set the bar as active
-  setActive(_bars[__i16_active_bar_id]);
+  setActive(_barsArray[__i16_active_bar_id]);
   // 2. set the active beat from the passed in beat
   beat(__beat).setActive();
   /**3. set the tPlayNote Task to its default when playing notes read from a bar.
@@ -552,7 +543,7 @@ bool bars::playBarInSequence(const int16_t __i16_active_bar_id) { // <-- TODO: w
   if ((beat::getCurrentBeat().getBaseNoteForBeat() == 0) || (beat::getCurrentBeat().getBaseBeatInBpm() == 0)) {
     return false;
   }
-  setActive(_bars[__i16_active_bar_id]); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+  setActive(_barsArray[__i16_active_bar_id]); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
   tPlayBar.restart();
   return true;
 }

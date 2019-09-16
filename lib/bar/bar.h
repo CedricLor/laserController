@@ -29,7 +29,6 @@ class bar
     void setActive(const int16_t __i16_active_bar_id=-1);
 
     /** getters */
-    static bar & getBarFromBarArray(const uint16_t __ui16_bar_id);
     static notes & getNotes();
     uint16_t const ui16GetNotesCountInBar() const;
     uint16_t const ui16GetBaseNotesCountInBar() const;
@@ -49,7 +48,7 @@ class bar
     static bar _emptyBar;
     static bar &_activeBar;
     static int16_t _i16ActiveBarId;
-    static std::array<bar, 7> _bars;
+    static std::array<bar, 7> _barsArray;
     static std::array<note, 16> _emptyNotesArray;
     static notes _notes;
 
@@ -110,7 +109,7 @@ class bars
     bar &_activeBar;
     int16_t _i16ActiveBarId;
     notes _notes;
-    std::array<bar, 7> _bars;
+    std::array<bar, 7> _barsArray;
     std::array<note, 16> _emptyNotesArray;
 
     /** player callbacks */

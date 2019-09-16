@@ -107,10 +107,10 @@ void sequence::initSequences() {
   // --> Sequence 0: "Relays"
   /** array of bars to be played in the sequence. */
   // Serial.printf("\nsequence::initSequences(). Before building _relaysBarsArray.\n");
-  // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). bar::_bars[0].getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", bar::_bars[0].getNotesArray().at(0).getToneNumber());
+  // Serial.printf("sequence::initSequences(). bar::_barsArray[0].getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", bar::_barsArray[0].getNotesArray().at(0).getNote());
+  // Serial.printf("sequence::initSequences(). bar::_barsArray[0].getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", bar::_barsArray[0].getNotesArray().at(0).getToneNumber());
 
-  std::array<bar, 8> _relaysBarsArray {bar::_bars[0]};
+  std::array<bar, 8> _relaysBarsArray {bar::_barsArray[0]};
   // Serial.printf("\nsequence::initSequences(). Passed building _relaysBarsArray.\n");
   // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getNote());
   // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber());
@@ -127,17 +127,17 @@ void sequence::initSequences() {
 
 
   // --> Sequence 1: "Twins"
-  std::array<bar, 8> _twinsBarsArray {bar::_bars[1]};
+  std::array<bar, 8> _twinsBarsArray {bar::_barsArray[1]};
   sequences[1] = {_beat_2_1, _twinsBarsArray};
 
 
   // --> Sequence 2: "All"
-  std::array<bar, 8> _allBarsArray {bar::_bars[1]};
+  std::array<bar, 8> _allBarsArray {bar::_barsArray[1]};
   sequences[2] = {_beat_2_1, _allBarsArray};
 
 
   // --> Sequence 3: "Swipe Right"
-  std::array<bar, 8> _swipeRBarsArray {bar::_bars[3]};
+  std::array<bar, 8> _swipeRBarsArray {bar::_barsArray[3]};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
@@ -146,12 +146,12 @@ void sequence::initSequences() {
 
 
   // --> Sequence 4: "Swipe Left"
-  std::array<bar, 8> _swipeLBarsArray {bar::_bars[4]};
+  std::array<bar, 8> _swipeLBarsArray {bar::_barsArray[4]};
   sequences[4] = {_beat_120_1, _swipeLBarsArray};
 
 
   // --> Sequence 5: "All Off"
-  std::array<bar, 8> _allOffBarsArray {bar::_bars[5]};
+  std::array<bar, 8> _allOffBarsArray {bar::_barsArray[5]};
   sequences[5] = {_beat_2_1, _allOffBarsArray};
 
   Serial.println("sequence::_initSequences(). Ending.");

@@ -80,8 +80,8 @@ beat& beat::operator=(const beat& __beat)
 //    * duration of a beat in bpm: 2
 //    * base note: 1 (a full) */
 //   _beats[0] = { 2, 1 };
-//   // Serial.println("bar::_initBars(). _bars[0]._ui16BaseBeatInBpm: ");Serial.println(_bars[0]._ui16BaseBeatInBpm);
-//   // Serial.println("bar::_initBars(). _bars[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_bars[0]._iLaserPinStatusAtEachBeat[0][1]);
+//   // Serial.println("bar::_initBars(). _barsArray[0]._ui16BaseBeatInBpm: ");Serial.println(_barsArray[0]._ui16BaseBeatInBpm);
+//   // Serial.println("bar::_initBars(). _barsArray[0]._iLaserPinStatusAtEachBeat[0][1]");Serial.println(_barsArray[0]._iLaserPinStatusAtEachBeat[0][1]);
 
 //   /** 120 per minute
 //    * duration of a beat in bpm: 120
