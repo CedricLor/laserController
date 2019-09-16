@@ -172,8 +172,13 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 ///////////////////////////////////
 // Players
 ///////////////////////////////////
-/** const int16_t _playTone()  */
-const int16_t note::_playTone() {
+/** const int16_t note::_playTone() const */
+const int16_t note::_playTone() const {
+  /**TODO: 
+   * 
+   * call to be simplified:
+   * -> globalTones._playTone(getToneNumber());
+   */
   const int16_t _tone_index_number = globalTones._array.at(getToneNumber())._playTone(globalTones._laserPins);
   return _tone_index_number;
 }
@@ -344,22 +349,11 @@ bool notes::_oetcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
   }
-  /** TODO: refacto the preceding line and related methods.
-   *  
-   *  I need to come up with something that looks like:
-   *  
-   *  _activeNote._playTone();
-   * 
-   *  1. _tones._laserPins shall have been accessible/readable by activeNote 
-   *  upon instanciation.
-   *  2. _laserPins shall have been set somehow, as a pointer or a smart pointer.
-   *  3. _activeNote shall have access to the _playTone method of its own tone.
-   */
-  // _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
-  _activeNote._playTone();
-
-  Serial.println("note::_oetcbPlayNote(). Ending");
+  if (_activeNote._playTone() >= 0) {
   return true;
+
+  }
+  return false;
 }
 
 
@@ -371,8 +365,6 @@ void notes::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
-  // TODO: same as above
-  // _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
   _activeNote._playTone();
   Serial.println("note::_odtcbPlayNote(). Ending");
 }

@@ -43,7 +43,7 @@ class note
     uint16_t _ui16ValidNote();
 
     /** player */
-    const int16_t _playTone();
+    const int16_t _playTone() const;
 
     // private instance properties
     uint16_t _ui16Tone;
