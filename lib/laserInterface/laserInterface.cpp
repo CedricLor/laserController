@@ -103,27 +103,35 @@ void laserInterface::sendCurrentBar(const int16_t __i16_current_bar_id) {
     /** TODO: draft a call to myMeshViews.  */
 }
 
+
 /** laserInterface::playBar():
  * 
  *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base note 
  *             for a given beat. ex. 4, a black
  *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
  *             in bpm. ex. 120 bpm (500 ms) */
-void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_target_bar) {
-  // 1. lock bar to avoid getting signal from a boxState or sequence player
+void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar) {
+  /** 1. lock bar to avoid getting signal from a boxState or sequence player*/
   lockBarStack();
 
-  // TODO: the following instance of bars will not survive the current scope
-  bars _bars{sendCurrentBar};
-  // TODO: check how the activeBarId is set and where it is used; maybe get rid of it
-  setCurrentBar(__ui16_target_bar);
-
-  /** two ways ---> 2. create a bar or select a bar in the hard coded bars array
+  /** 2. set the active bar from the passed-in parameters or create a bar
+   *     TODO: check how the activeBarId is set and where it is used; maybe get rid of it
+   *     TODO: we need to be able to pass an std::array<note, 16> to this method to create new bars
    * 
-   *  TODO: try to change the bar factory in the bars class */
-  bar __target_bar(std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)});
+   *     two ways ---> 2. (i) create a bar or (ii) select a bar in the hard coded bars array
+   * 
+   *     TODO: make a choice. And try to change the bar factory in the bars class */
+  bar __target_bar;
+  if (__i16_target_bar != -1) {
+    // 2.a: select a bar in the hard coded bars array and set it as active
+    __target_bar = sequence::globalBars.getBarFromBarArray(__i16_target_bar);
+  } else {
+    // 2.a: create a bar
+    __target_bar = {std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  }
+
   // 3. play it
-  _bars.playBarStandAlone(__target_bar, beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  sequence::globalBars.playBarStandAlone(__target_bar, beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
 
 

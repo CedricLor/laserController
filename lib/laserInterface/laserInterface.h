@@ -56,7 +56,7 @@ namespace laserInterface {
     void setCurrentBar(const int16_t __i16_target_bar_id);
     void getCurrentBar();
     void sendCurrentBar(const int16_t __i16_current_bar_id);
-    void playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_target_bar);
+    void playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar=-1);
     void lockBarStack();
 
     // note stack
