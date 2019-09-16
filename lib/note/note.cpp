@@ -172,9 +172,9 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 ///////////////////////////////////
 // Players
 ///////////////////////////////////
-/** const int16_t _playTone(tones & _tones)  */
-const int16_t note::_playTone(tones & _tones) {
-  const int16_t _tone_index_number = _tones._array.at(getToneNumber())._playTone(_tones._laserPins);
+/** const int16_t _playTone()  */
+const int16_t note::_playTone() {
+  const int16_t _tone_index_number = globalTones._array.at(getToneNumber())._playTone(globalTones._laserPins);
   return _tone_index_number;
 }
 
@@ -356,7 +356,7 @@ bool notes::_oetcbPlayNote() {
    *  3. _activeNote shall have access to the _playTone method of its own tone.
    */
   // _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
-  _activeNote._playTone(_tones);
+  _activeNote._playTone();
 
   Serial.println("note::_oetcbPlayNote(). Ending");
   return true;
@@ -373,6 +373,6 @@ void notes::_odtcbPlayNote() {
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
   // TODO: same as above
   // _tones._array.at(_activeNote.getToneNumber())._playTone(_tones._laserPins);
-  _activeNote._playTone(_tones);
+  _activeNote._playTone();
   Serial.println("note::_odtcbPlayNote(). Ending");
 }
