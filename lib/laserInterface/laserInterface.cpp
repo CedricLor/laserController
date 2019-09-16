@@ -93,7 +93,7 @@ void laserInterface::setCurrentBar(const int16_t __i16_target_bar_id) {
 void laserInterface::getCurrentBar() {
     /** TODO: the following instance of bars does not survive out of the scope of this method.
      *  ... not very usefull. */
-    bars _bars;
+    bars _bars{sendCurrentBar};
     sendCurrentBar(_bars.i16GetCurrentBarId());
 }
 
