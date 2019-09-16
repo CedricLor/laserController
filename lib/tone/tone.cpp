@@ -37,7 +37,7 @@ tone& tone::operator=(const tone& __tone)
 }
 
 
-/** _playTone()
+/** tone::_playTone()
  *   
  *  _playTone() is an instance method of a tone instance. A tone instance
  *  stores in its _laserPinsStatesArr the state of each pin for this tone.
@@ -121,3 +121,18 @@ tones::tones() :
   _array[15] = {_aAllOn, 15};
 }
 
+
+
+
+
+/** tones::_playTone()
+ *   
+ *  _playTone() is an instance method of a tones instance.
+ *  
+ *  _playTone() is mainly a wrapper over the _playTone method of tone instances.
+*/
+int16_t const tones::_playTone(const uint16_t __toneNumber) {
+  const int16_t _i16_tone_index_number = 10;
+  _array.at(__toneNumber)._playTone(_laserPins);
+  return _i16_tone_index_number;
+};
