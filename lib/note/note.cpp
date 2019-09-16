@@ -254,7 +254,7 @@ notes & notes::operator=(notes&& __notes) {
  *  (ii) in laserInterface, to retrieve the params (_ui16Note and _ui16Tone) of
  *       the currently active note and send them to the mesh. */
 void notes::setActive(const note & __activeNote) {
-  this->tPlayNote.disable();
+  tPlayNote.disable();
   _activeNote = __activeNote;
 }
 
@@ -361,6 +361,7 @@ bool notes::_oetcbPlayNote() {
 
 
 /** notes::_odtcbPlayNote()
+ * 
  *  On disable Task _tNote, turn off all the lasers */
 void notes::_odtcbPlayNote() {
   Serial.println("note::_odtcbPlayNote(). Starting");
