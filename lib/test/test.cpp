@@ -561,14 +561,11 @@ void test::barStack() {
   const char * _methodName = "test::barStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  std::array<note, 16> _arrayOfNotes;
-  _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
-
   // constructors
-  Serial.printf("%s testing bar constructor: bar _bar(_arrayOfNotes) with _arrayOfNotes = \n", _methodName);
-  Serial.printf("                std::array<note, 16> {note(4,8), note(3,8), note(2,8), note(1,8),\n");
-  Serial.printf("                note(2,8), note(3,8), note(4,8), note(0,8)}\n");
-  bar _bar(_arrayOfNotes);
+  Serial.printf("%s testing bar constructor: bar _bar{std::array<note, 16>{note(4,8), note(3,8),\n", _methodName);
+  Serial.printf("                            note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}\n");
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+
   // setter
   Serial.printf("%s calling _bar.setActive().\n", _methodName);
   _bar.setActive();
@@ -581,12 +578,6 @@ void test::barStack() {
     _bar.ui32GetBarDuration());
   Serial.printf("%s _bar.getNotesArray().at(0).getNote() shall be 8. Is [%u]\n", _methodName, 
     _bar.getNotesArray().at(0).getNote());
-  // player
-  Serial.printf("%s _bar.playBarStandAlone(beat(5, 1)) shall be 0 because the active bar id has not been set. Is [%i]\n", _methodName,
-    _bar.playBarStandAlone(beat(5, 1)));
-  // Serial.printf("%s _bar.playBarInSequence() shall fail because beat is set to default (beat == 0 and base note == 0). Is [%i]\n", _methodName,
-  //   _bar.playBarInSequence());
-  // subsequent notes array
 
   Serial.printf("%s over.\n\n", _methodName);
 }
@@ -599,7 +590,16 @@ void test::rawBarsStack() {
   Serial.printf("\n\n%s starting\n", _methodName);
 
   bars _bars;
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  _bar.setActive();
 
+  // player
+  Serial.printf("%s _bars.playBarStandAlone(_bar, beat(5, 1)) shall be 1. Is [%i]\n", _methodName,
+    _bars.playBarStandAlone(_bar, beat(5, 1)));
+  // Serial.printf("%s _bar.playBarInSequence() shall fail because beat is set to default (beat == 0 and base note == 0). Is [%i]\n", _methodName,
+  //   _bar.playBarInSequence());
+
+  // nested notes class (including notes array)
   Serial.printf("%s calling _bars.getNotes().setActive(note{4,8}).\n", _methodName);
   _bars.getNotes().setActive(note{4,8});
   Serial.printf("%s _bars.getNotes().getCurrentNote().getNote() shall be 8. Is [%u]\n", _methodName, 
