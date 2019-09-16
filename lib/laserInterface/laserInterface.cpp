@@ -118,21 +118,12 @@ void laserInterface::playBar(const uint16_t __ui16_base_note_for_beat, const uin
   // TODO: check how the activeBarId is set and where it is used; maybe get rid of it
   setCurrentBar(__ui16_target_bar);
 
-  // two ways ---> 
-  // TODO: see which way is more coherent from an interface stand point and either remove one of them or split functions
-  // 2. create a bar
-  std::array<note, 16> _arrayOfNotes;
-  _arrayOfNotes.fill(note(0,0));
-  _arrayOfNotes = {note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)};
-  /**  bar __target_bar(4, _arrayOfNotes)
-   *      ex. bar(4, std::array<note, 16> {note(4,8), note(3,8), note(2,8), note(1,8)}, note(2,8), note(3,8), note(4,8), note(0,8))
-   *      where:
-   *      - the array of notes contained in the bar. */
-  bar __target_bar(_arrayOfNotes);
-  __target_bar.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
-  // 2. Or set the active bar
-  // 3. play the bar
-  __bar_ref.playBarStandAlone(beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  /** two ways ---> 2. create a bar or select a bar in the hard coded bars array
+   * 
+   *  TODO: try to change the bar factory in the bars class */
+  bar __target_bar(std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)});
+  // 3. play it
+  _bars.playBarStandAlone(__target_bar, beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
 
 
