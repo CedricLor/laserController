@@ -181,27 +181,6 @@ void bar::initBars() {
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
-/** bar::playBarInSequence():
- *  
- *  play a single bar calculating the durations
- *  on the basis of the beat set by tPlaySequence. */
-bool bar::playBarInSequence(const int16_t __i16_active_bar_id) { // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
-  if ((beat::getCurrentBeat().getBaseNoteForBeat() == 0) || (beat::getCurrentBeat().getBaseBeatInBpm() == 0)) {
-    return false;
-  }
-  setActive(/*const int16_t __i16_active_bar_id=-1*/); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
-  tPlayBar.restart();
-  return true;
-}
-
-
-
-
-
-
-
-
-
 Task bar::tPlayBar(0, 1, &_tcbPlayBar, NULL/*&mns::myScheduler*/, false, &_oetcbPlayBar, NULL);
 
 
@@ -518,15 +497,17 @@ bool bars::playBarStandAlone(const bar & __target_bar, beat const & __beat) {
 }
 
 
+
+
 /** bars::playBarInSequence():
  *  
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
-bool bars::playBarInSequence(const int16_t __i16_active_bar_id) { // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+bool bars::playBarInSequence(const bar & __target_bar) { // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
   if ((beat::getCurrentBeat().getBaseNoteForBeat() == 0) || (beat::getCurrentBeat().getBaseBeatInBpm() == 0)) {
     return false;
   }
-  setActive(_barsArray[__i16_active_bar_id]); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+  setActive(__target_bar); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
   tPlayBar.restart();
   return true;
 }
@@ -611,8 +592,3 @@ void bars::_tcbPlayBar(){
 
   Serial.println(F("bars::_tcbPlayBar(). Ending."));
 };
-
-
-
-
-

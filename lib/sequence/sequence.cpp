@@ -563,7 +563,7 @@ void sequence::_tcbPlaySequence(){
 
   // 3. Play the corresponding bar
   Serial.printf("sequence::_tcbPlaySequence(). about to call sequences[%i].getBarsArray()[%i].playBarInSequence(%i)\n", _i16ActiveSequenceNb, _i16Iter, _i16Iter);
-  bar(_activeSequence.getBarsArray().at(_i16Iter)).playBarInSequence(_i16Iter);
+  sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(_i16Iter));
 
   /**5. Set the interval for next iteration of tPlaySequence
    * 
