@@ -106,7 +106,7 @@ class bars
 
     // properties
     bar _emptyBar; // <-- check: probably not needed any more;
-    bar &_activeBar;
+    bar & _activeBar;
     int16_t _i16ActiveBarId;
     notes _notes;
     std::array<bar, 7> _barsArray;
