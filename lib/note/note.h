@@ -62,7 +62,7 @@ class notes
     notes(
       void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)=nullptr
     );
-    notes(const notes & _notes);
+    notes(const notes & __notes);
     notes & operator=(const notes & __notes);
     notes(notes&& __notes);
     notes & operator=(notes&& __notes);
