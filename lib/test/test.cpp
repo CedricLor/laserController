@@ -181,7 +181,7 @@ void test::noteStackParamConstructor(const char * _methodName) {
     _note._setTone(_tone));
   Serial.printf("%s note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     note::globalTones._array.at(_note.getToneNumber()).i16IndexNumber);
-  Serial.printf("%s _note.getToneNumber() shall be 3. Is [%u]\n\n", _methodName, 
+  Serial.printf("%s _note.getToneNumber() shall be 3. Is [%u]\n", _methodName, 
     _note.getToneNumber());
   Serial.printf("%s _note._playTone() shall be 3. Is [%u]\n\n", _methodName, 
     _note._playTone());

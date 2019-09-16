@@ -174,13 +174,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 ///////////////////////////////////
 /** const int16_t note::_playTone() const */
 const int16_t note::_playTone() const {
-  /**TODO: 
-   * 
-   * call to be simplified:
-   * -> globalTones._playTone(getToneNumber());
-   */
-  const int16_t _tone_index_number = globalTones._playTone(getToneNumber());
-  return _tone_index_number;
+  return globalTones._playTone(getToneNumber());
 }
 
 
@@ -347,7 +341,9 @@ void notes::playNoteInBar(const note & __note) {
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). Starting");
   if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_activeNote.getToneNumber()) %u\n", _activeNote.getToneNumber());
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber) %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getToneNumber()) == (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getToneNumber()) == (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber));
   }
   if (_activeNote._playTone() >= 0) {
   return true;
