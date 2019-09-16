@@ -179,7 +179,7 @@ const int16_t note::_playTone() const {
    * call to be simplified:
    * -> globalTones._playTone(getToneNumber());
    */
-  const int16_t _tone_index_number = globalTones._array.at(getToneNumber())._playTone(globalTones._laserPins);
+  const int16_t _tone_index_number = globalTones._playTone(getToneNumber());
   return _tone_index_number;
 }
 

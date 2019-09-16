@@ -18,6 +18,7 @@ class test
     void rawLaserPinsStack();
 
     void toneStack();
+    void rawTonesStackTonesArray(const char * _methodName, uint16_t _toneIndexNumber);
     void rawTonesStack();
     void implementedTonesStack();
 

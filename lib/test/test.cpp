@@ -8,7 +8,8 @@
 
 
 
-test::test() { }
+test::test()
+{ }
 
 
 
@@ -108,41 +109,51 @@ void test::toneStack() {
 
 
 
-void test::rawTonesStack() {
-  Serial.printf("\n\ntest::rawTonesStack: starting\n");
-
-  Serial.printf("test::rawTonesStack: testing tones constructor: tones _tones{}.\n");
+void test::rawTonesStackTonesArray(const char * _methodName, uint16_t _toneIndexNumber) {
   laserPins _laserPins;
   tones _tones{};
 
-  Serial.printf("test::rawTonesStack: _tones._array.at(0)._laserPinsStatesArr.at(0) shall be 1. Is [%u]\n", 
-    _tones._array.at(0)._laserPinsStatesArr.at(0));
-  Serial.printf("test::rawTonesStack: _tones._array.at(0)._laserPinsStatesArr.at(3) shall be 1. Is [%u]\n", 
-    _tones._array.at(0)._laserPinsStatesArr.at(3));
-  Serial.printf("test::rawTonesStack: _tones._array.at(0).i16IndexNumber shall be 0. Is [%i]\n", 
-    _tones._array.at(0).i16IndexNumber);
-  Serial.printf("test::rawTonesStack: _tones._array.at(0)._playTone(_laserPins) shall return 0. Returns [%i]\n", 
-    _tones._array.at(0)._playTone(_laserPins));
+  Serial.printf("%s _tones._array.at(%u)._laserPinsStatesArr.at(0) shall be 1. Is [%u]\n", _methodName, _toneIndexNumber,
+    _tones._array.at(_toneIndexNumber)._laserPinsStatesArr.at(0));
+  Serial.printf("%s _tones._array.at(%u)._laserPinsStatesArr.at(3) shall be 1. Is [%u]\n", _methodName, _toneIndexNumber,
+    _tones._array.at(_toneIndexNumber)._laserPinsStatesArr.at(3));
+    
+  Serial.printf("%s _tones._array.at(%u).i16IndexNumber is [%i]\n", _methodName, _toneIndexNumber,
+    _tones._array.at(_toneIndexNumber).i16IndexNumber);
+  Serial.printf("%s _tones._array.at(%u)._playTone(_laserPins) returns [%i]\n", _methodName, _toneIndexNumber,
+    _tones._array.at(_toneIndexNumber)._playTone(_laserPins));
+  Serial.printf("%s (_tones._playTone(%u) == _tones._array.at(%u)._playTone(_laserPins)) shall return 1. Returns [%i]\n", _methodName, _toneIndexNumber, _toneIndexNumber,
+    _tones._array.at(_toneIndexNumber).i16IndexNumber == _tones._array.at(0)._playTone(_laserPins));
+  Serial.printf("%s _tones._playTone(%u) shall returns [%i]\n", _methodName, _toneIndexNumber,
+    _tones._playTone(_toneIndexNumber));
+  Serial.printf("%s (_tones._playTone(%u) == _tones._array.at(%u)._playTone(_laserPins)) shall return 1. Returns [%i]\n\n", _methodName, _toneIndexNumber, _toneIndexNumber,
+    _tones._array.at(0)._playTone(_laserPins) == _tones._playTone(0));
+}
 
-  Serial.printf("test::rawTonesStack: _tones._array.at(15)._laserPinsStatesArr.at(0) shall be 0. Is [%u]\n", 
-    _tones._array.at(15)._laserPinsStatesArr.at(0));
-  Serial.printf("test::rawTonesStack: _tones._array.at(15)._laserPinsStatesArr.at(3) shall be 0. Is [%u]\n", 
-    _tones._array.at(15)._laserPinsStatesArr.at(3));
-  Serial.printf("test::rawTonesStack: _tones._array.at(15).i16IndexNumber shall be 15. Is [%i]\n", 
-    _tones._array.at(15).i16IndexNumber);
-  Serial.printf("test::rawTonesStack: _tones._array.at(15)._playTone(_laserPins) shall return 15. Returns [%i]\n", 
-    _tones._array.at(15)._playTone(_laserPins));
 
-  Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._i16IndexNumber shall be 0. Is [%i]\n", 
+
+
+void test::rawTonesStack() {
+  const char * _methodName = "test::rawTonesStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
+
+  Serial.printf("%s testing tones constructor: tones _tones{}.\n", _methodName);
+  laserPins _laserPins;
+  tones _tones{};
+
+  rawTonesStackTonesArray(_methodName, 0);
+  rawTonesStackTonesArray(_methodName, 15);
+
+  Serial.printf("%s _tones._laserPins._array.at(0)._i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
     _tones._laserPins._array.at(0)._i16IndexNumber);
-  Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._ui16PhysicalPinNumber shall be 5. Is [%i]\n", 
+  Serial.printf("%s _tones._laserPins._array.at(0)._ui16PhysicalPinNumber shall be 5. Is [%i]\n", _methodName, 
     _tones._laserPins._array.at(0)._ui16PhysicalPinNumber);
-  Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._switchPin(LOW) shall be 0. Is [%i]\n", 
+  Serial.printf("%s _tones._laserPins._array.at(0)._switchPin(LOW) shall be 0. Is [%i]\n", _methodName, 
     _tones._laserPins._array.at(0)._switchPin(LOW));
-  Serial.printf("test::rawTonesStack: _tones._laserPins._array.at(0)._switchPin(HIGH) shall be 1. Is [%i]\n", 
+  Serial.printf("%s _tones._laserPins._array.at(0)._switchPin(HIGH) shall be 1. Is [%i]\n", _methodName, 
     _tones._laserPins._array.at(0)._switchPin(HIGH));
 
-  Serial.printf("test::rawTonesStack: over\n\n");
+  Serial.printf("%s over\n\n", _methodName);
 }
 
 
