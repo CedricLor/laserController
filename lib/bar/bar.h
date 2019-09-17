@@ -13,6 +13,10 @@
 
 class bar
 {
+  // TODO: Check whether we need all these friends
+  friend class sequence;
+  friend class bars;
+
   public:
     static notes globalNotes;
 
@@ -65,6 +69,9 @@ class bar
 #define bars_h
 class bars
 {
+  friend class test;
+  friend class sequence;
+  
   public:
     /** default constructor 
      * 
@@ -98,9 +105,6 @@ class bars
     Task tPlayBar;
 
   private:
-    friend class test;
-    friend class sequence;
-
     // properties
     bar _emptyBar; // <-- check: probably not needed any more;
     bar & _activeBar;
