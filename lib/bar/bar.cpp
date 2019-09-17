@@ -186,8 +186,7 @@ bars::bars(
   _activeBar(globalBar),
   _i16ActiveBarId(-1), /** TODO: will need to be set properly and worked on*/
   _notes(), // TODO: check interplay of this variable with the _notes{} called from sequence.cpp
-  _barsArray({}),
-  _emptyNotesArray({}) /** TODO: almost sur that it is not needed*/
+  _barsArray({})
 {
   // 1. Disable and reset the Task tPlayBar
   disableAndResetTPlayBar();

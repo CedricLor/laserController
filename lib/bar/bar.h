@@ -48,8 +48,8 @@ class bars
   public:
     /** default constructor 
      * 
-     *  The bars' properties (_activeBar, _i16ActiveBarId, _notes,
-     *  _emptyNotesArray) are defined in the constructor, by default, without
+     *  The bars' properties (_activeBar, _i16ActiveBarId, _notes) 
+     *  are defined in the constructor, by default, without
      *  parameters.
      * 
      *  The only parameters, _sendCurrentBar, is an optional callback. */
@@ -84,7 +84,6 @@ class bars
     int16_t _i16ActiveBarId;
     notes _notes;
     std::array<bar, 7> _barsArray;
-    std::array<note, 16> _emptyNotesArray;
 
     /** player callbacks */
     void _tcbPlayBar();
