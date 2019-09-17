@@ -13,9 +13,8 @@
 
 class bar
 {
-  // TODO: Check whether we need all these friends
-  friend class sequence;
   friend class bars;
+  friend class test;
 
   public:
     /** default empty constructor */
@@ -43,8 +42,8 @@ class bar
 #define bars_h
 class bars
 {
-  friend class test;
   friend class sequence;
+  friend class test;
   
   public:
     /** default constructor 
