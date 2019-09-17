@@ -639,14 +639,17 @@ void test::barStackConstructors(const char * _methodName) {
 void test::barStackGetters(const char * _methodName) {
   // constructors
   bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  beat _beat(5, 1);
+  _beat.setActive();
 
   // getters
   Serial.printf("%s _bar.ui16GetNotesCountInBar() shall be 8. Is [%u]\n", _methodName, 
     _bar.ui16GetNotesCountInBar());
-  Serial.printf("%s _bar.ui16GetBaseNotesCountInBar() shall be 0 (because beat has not been set). Is [%u]\n", _methodName, 
+  Serial.printf("%s _bar.ui16GetBaseNotesCountInBar() shall be 1. Is [%u]\n", _methodName, 
     _bar.ui16GetBaseNotesCountInBar());
-  Serial.printf("%s _bar.ui32GetBarDuration() shall be 0 (because beat has not been set). Is [%u]\n", _methodName, 
-    _bar.ui32GetBarDuration());
+  const uint32_t _ui32ExpectGetBarDuration = 12000;
+  Serial.printf("%s _bar.ui32GetBarDuration() shall be %u. Is [%u]. ---> %s\n", _methodName, _ui32ExpectGetBarDuration,
+    _bar.ui32GetBarDuration(), ((_bar.ui32GetBarDuration() == _ui32ExpectGetBarDuration) ? "PASSED" : "FAILED"));
   Serial.printf("%s _bar.getNotesArray().at(0).getNote() shall be 8. Is [%u]\n\n", _methodName, 
     _bar.getNotesArray().at(0).getNote());
 }
