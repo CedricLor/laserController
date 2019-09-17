@@ -35,10 +35,16 @@ class test
     void notesArrayStackEmptyArray(const char * _methodName);
     void notesArrayStackToneSelection(const char * _methodName);
 
-    void rawNotesStack();
     void rawNotesStackConstructors(const char * _methodName);
-    static void rawNotesStackSender(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void rawNotesStackDefaultResetters(const char * _methodName, laserPins & _laserPins, notes & _notes);
+    void rawNotesStackDefaultMembers(const char * _methodName, notes & _notes);
+    void rawNotesStackDefaultPlayTone(const char * _methodName, laserPins & _laserPins, notes & _notes);
+    void rawNotesStackDefaultLaserPins(const char * _methodName, notes & _notes);
+    void rawNotesStackDefaultSettersAndGetters(const char * _methodName, notes & _notes);
+    void rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes);
     void rawNotesStackDefault(const char * _methodName);
+    void rawNotesStack();
+    static void rawNotesStackSender(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
 
     void barStack();
     void rawBarsStack();

@@ -488,15 +488,20 @@ void test::rawNotesStackConstructors(const char * _methodName) {
 
 
 
-void test::rawNotesStackDefault(const char * _methodName) {
-  laserPins _laserPins;
-  notes _notes{};
-
+void test::rawNotesStackDefaultResetters(const char * _methodName, laserPins & _laserPins, notes & _notes) {
+  // Resetters
+  Serial.printf("%s testing Task tPlayNote resetters \n", _methodName);
   Serial.printf("%s calling _notes.resetTPlayNote()\n", _methodName);
   _notes.resetTPlayNote();
-  Serial.printf("%s calling _notes.disableAndResetTPlayNote()\n", _methodName);
+  Serial.printf("%s calling _notes.disableAndResetTPlayNote()\n\n", _methodName);
   _notes.disableAndResetTPlayNote();
+}
 
+
+
+
+void test::rawNotesStackDefaultMembers(const char * _methodName, notes & _notes) {
+  // Members
   Serial.printf("%s testing access to members of _notes \n", _methodName);
   Serial.printf("%s testing access to _notes._tones \n", _methodName);
   Serial.printf("%s testing access to and values of the _laserPinsStatesArr embedded in \n", _methodName);
@@ -508,14 +513,26 @@ void test::rawNotesStackDefault(const char * _methodName) {
     _notes._tones._array.at(0)._laserPinsStatesArr.at(3));
   Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(0) shall be 0. Is [%u]\n", _methodName, 
     _notes._tones._array.at(15)._laserPinsStatesArr.at(0));
-  Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(3) shall be 0. Is [%u]\n", _methodName, 
+  Serial.printf("%s _notes._tones._array.at(15)._laserPinsStatesArr.at(3) shall be 0. Is [%u]\n\n", _methodName, 
     _notes._tones._array.at(15)._laserPinsStatesArr.at(3));
+}
 
+
+
+
+void test::rawNotesStackDefaultPlayTone(const char * _methodName, laserPins & _laserPins, notes & _notes) {
+  // _notes->_playTone
   Serial.printf("%s _notes._tones._array.at(0)._playTone(_laserPins) shall be 0. Is [%i]\n", _methodName, 
     _notes._tones._array.at(0)._playTone(_laserPins));
-  Serial.printf("%s _notes._tones._array.at(15)._playTone(_laserPins) shall be 15. Is [%i]\n", _methodName, 
+  Serial.printf("%s _notes._tones._array.at(15)._playTone(_laserPins) shall be 15. Is [%i]\n\n", _methodName, 
     _notes._tones._array.at(15)._playTone(_laserPins));
+}
 
+
+
+
+void test::rawNotesStackDefaultLaserPins(const char * _methodName, notes & _notes) {
+  // _notes._tones_.laserPins
   Serial.printf("%s testing access to _notes._tones._laserPins \n", _methodName);
   Serial.printf("%s _notes._tones._laserPins._array.at(0)._i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
     _notes._tones._laserPins._array.at(0)._i16IndexNumber);
@@ -523,24 +540,68 @@ void test::rawNotesStackDefault(const char * _methodName) {
     _notes._tones._laserPins._array.at(0)._ui16PhysicalPinNumber);
   Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(LOW) shall be 0. Is [%i]\n", _methodName, 
     _notes._tones._laserPins._array.at(0)._switchPin(LOW));
-  Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(HIGH) shall be 1. Is [%i]\n", _methodName, 
+  Serial.printf("%s _notes._tones._laserPins._array.at(0)._switchPin(HIGH) shall be 1. Is [%i]\n\n", _methodName, 
     _notes._tones._laserPins._array.at(0)._switchPin(HIGH));
+}
 
-  // testing playNoteStandAlone
-  Serial.printf("%s calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n", _methodName);
-  _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
-  note _note{1, 1};
-  Serial.printf("%s calling _notes.playNoteStandAlone(_note, beat(5, 1)).\n", _methodName);
-  _notes.playNoteStandAlone(_note, beat(5, 1));
 
-  // testing setActive, getNote and getToneNumber
+
+
+void test::rawNotesStackDefaultSettersAndGetters(const char * _methodName, notes & _notes) {
+  // testing _notes.setActive, _notes._activeNote.getNote and _notes._activeNote.getToneNumber
   Serial.printf("%s testing setActive, getNote and getToneNumber\n", _methodName);
+  _notes.disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.setActive(note{4,8}).\n", _methodName);
   _notes.setActive(note{4,8});
   Serial.printf("%s _notes._activeNote.getNote() shall be 8. Is [%u]\n", _methodName, 
     _notes._activeNote.getNote());
-  Serial.printf("%s _notes._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
+  Serial.printf("%s _notes._activeNote.getToneNumber() shall be 4. Is [%u]\n\n", _methodName, 
     _notes._activeNote.getToneNumber());
+}
+
+
+
+
+void test::rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes) {
+  // testing _notes.playNoteStandAlone
+  _notes.disableAndResetTPlayNote();
+  Serial.printf("%s calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n", _methodName);
+  _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
+  note _note{1, 1};
+  _notes.disableAndResetTPlayNote();
+  Serial.printf("%s calling _notes.playNoteStandAlone(_note, beat(5, 1)) with note _note{1, 1}.\n\n", _methodName);
+  _notes.playNoteStandAlone(_note, beat(5, 1));
+  _notes.disableAndResetTPlayNote();
+
+  // testing _notes.playNoteInBar
+  Serial.printf("%s testing _notes.playNoteInBar\n", _methodName);
+  Serial.printf("%s setting active beat to beat(5, 1)\n", _methodName);
+  beat _beat(5, 1);
+  _beat.setActive();
+
+  _notes.disableAndResetTPlayNote();
+  Serial.printf("%s calling _notes.playNoteInBar(note{4, 1}.\n", _methodName);
+  _notes.playNoteInBar(note{4, 1});
+  _notes.disableAndResetTPlayNote();
+  Serial.printf("%s calling _notes.playNoteStandAlone(_note).\n\n", _methodName);
+  _notes.playNoteInBar(_note);
+  _notes.disableAndResetTPlayNote();
+}
+
+
+
+
+void test::rawNotesStackDefault(const char * _methodName) {
+  laserPins _laserPins;
+  notes _notes{};
+
+  rawNotesStackDefaultResetters(_methodName, _laserPins, _notes);
+  rawNotesStackDefaultMembers(_methodName, _notes);
+  rawNotesStackDefaultPlayTone(_methodName, _laserPins, _notes);
+  rawNotesStackDefaultLaserPins(_methodName, _notes);
+  rawNotesStackDefaultSettersAndGetters(_methodName, _notes);
+  rawNotesStackDefaultPlayers(_methodName, _notes);
+
 }
 
 
