@@ -494,7 +494,7 @@ void test::rawNotesStackDefaultResetters(const char * _methodName, laserPins & _
   Serial.printf("%s calling _notes.resetTPlayNote()\n", _methodName);
   _notes.resetTPlayNote();
   Serial.printf("%s calling _notes.disableAndResetTPlayNote()\n\n", _methodName);
-  _notes.disableAndResetTPlayNote();
+  _notes.disableAndResetTPlayNote();  
 }
 
 
@@ -620,29 +620,151 @@ void test::rawNotesStack() {
 
 
 
-void test::barStack() {
-  const char * _methodName = "test::barStack:";
-  Serial.printf("\n\n%s starting\n", _methodName);
 
+void test::barStackConstructors(const char * _methodName) {
+  // TODO: the bar instances were never initialized in real world conditions. 
+  // The unique test bar _bar is created outside the collection and alloted through _bars.setActive(_bar)
+  // If I had tested loading the test bar into the _bars._barsArray using the assignment operator instead,
+  // just like in what was happening in the bars constructor, I would have detected the bug in the tests.
   // constructors
   Serial.printf("%s testing bar constructor: bar _bar{std::array<note, 16>{note(4,8), note(3,8),\n", _methodName);
-  Serial.printf("                            note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}\n");
+  Serial.printf("                            note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}\n\n");
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+}
+
+
+
+
+
+void test::barStackGetters(const char * _methodName) {
+  // constructors
   bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
 
-  // setter
-  Serial.printf("%s calling _bar.setActive().\n", _methodName);
-  _bar.setActive();
   // getters
   Serial.printf("%s _bar.ui16GetNotesCountInBar() shall be 8. Is [%u]\n", _methodName, 
     _bar.ui16GetNotesCountInBar());
   Serial.printf("%s _bar.ui16GetBaseNotesCountInBar() shall be 0 (because beat has not been set). Is [%u]\n", _methodName, 
     _bar.ui16GetBaseNotesCountInBar());
-  Serial.printf("%s _note.ui32GetBarDuration() shall be 0 (because beat has not been set). Is [%u]\n", _methodName, 
+  Serial.printf("%s _bar.ui32GetBarDuration() shall be 0 (because beat has not been set). Is [%u]\n", _methodName, 
     _bar.ui32GetBarDuration());
-  Serial.printf("%s _bar.getNotesArray().at(0).getNote() shall be 8. Is [%u]\n", _methodName, 
+  Serial.printf("%s _bar.getNotesArray().at(0).getNote() shall be 8. Is [%u]\n\n", _methodName, 
     _bar.getNotesArray().at(0).getNote());
+}
+
+
+
+
+
+void test::barStack() {
+  const char * _methodName = "test::barStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
+
+  barStackConstructors(_methodName);
+  barStackGetters(_methodName);
 
   Serial.printf("%s over.\n\n", _methodName);
+}
+
+
+
+
+void test::rawBarsStackConstructors(const char * _methodName) {
+  Serial.printf("%s testing default constructor bars _bars\n", _methodName);
+  bars _bars;
+}
+
+
+
+
+void test::rawBarsStackInitializers(const char * _methodName) {
+  bars _bars;
+  // TODO: the bar instances were never initialized in real world conditions. 
+  // The unique test bar _bar is created outside the collection and alloted through _bars.setActive(_bar)
+  // If I had tested loading the test bar into the _bars._barsArray using the assignment operator instead,
+  // just like in what was happening in the bars constructor, I would have detected the bug in the tests.
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  Serial.printf("%s testing _bars.setActive(_bar) with bar _bar{std::array<note, 16>{note(4,8), note(3,8)...} \n", _methodName);
+  _bars.setActive(_bar);
+}
+
+
+
+
+void test::rawBarsStackPlayers(const char * _methodName) {
+  bars _bars;
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  _bars.setActive(_bar);
+
+  Serial.printf("%s testing players\n", _methodName);
+
+  // players
+  Serial.printf("%s calling _bars.disableAndResetTPlayBar()\n", _methodName);
+  _bars.disableAndResetTPlayBar();
+  Serial.printf("%s _bars.playBarStandAlone(_bar, beat(5, 1)) shall be 1. Is [%i]\n", _methodName,
+    _bars.playBarStandAlone(_bar, beat(5, 1)));
+  _bars.disableAndResetTPlayBar();
+  // Serial.printf("%s _bar.playBarInSequence() shall fail because beat is set to default (beat == 0 and base note == 0). Is [%i]\n", _methodName,
+  //   _bar.playBarInSequence());
+}
+
+
+
+
+void test::rawBarsStackNestedNotes(const char * _methodName) {
+  bars _bars;
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  _bars.setActive(_bar);
+
+  Serial.printf("%s testing nested notes \n", _methodName);
+  // nested notes class (including notes array)
+  Serial.printf("%s calling _bars.getNotes().setActive(note{4,8}).\n", _methodName);
+  _bars.getNotes().setActive(note{4,8});
+  Serial.printf("%s _bars.getNotes().getCurrentNote().getNote() shall be 8. Is [%u]\n", _methodName, 
+    _bars.getNotes().getCurrentNote().getNote());
+  Serial.printf("%s _bars.getNotes()._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
+    _bars.getNotes().getCurrentNote().getToneNumber());
+}
+
+
+
+
+void test::rawBarsStackTaskCallbacks(const char * _methodName) {
+  bars _bars;
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  _bars.setActive(_bar);
+
+  Serial.printf("%s testing Task callbacks \n", _methodName);
+
+  // Task TPlayBar callbacks
+  Serial.printf("%s calling _bars._tcbPlayBar().\n", _methodName);
+  _bars._tcbPlayBar();
+  Serial.printf("%s _bars._oetcbPlayBar() shall be 1. Is [%i]\n", _methodName, _bars._oetcbPlayBar());
+  _bars.disableAndResetTPlayBar();
+}
+
+
+
+
+void test::rawBarsStackTaskAccessFromActiveBar(const char * _methodName) {
+  bars _bars;
+  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  _bars.setActive(_bar);
+
+  Serial.printf("%s testing Task callbacks \n", _methodName);
+
+  // Testing _activeBar with a hardcoded bar
+  _bars.setActive(sequence::globalBars._barsArray[1]);
+  beat(0, 0).setActive();
+  Serial.printf("%s _bars._activeBar.ui16GetNotesCountInBar() shall be 2. Is [%u]\n", _methodName, 
+    _bars._activeBar.ui16GetNotesCountInBar());
+  Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
+    _bars._activeBar.ui16GetBaseNotesCountInBar());
+  Serial.printf("%s _bars._activeBar.ui32GetBarDuration() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
+    _bars._activeBar.ui32GetBarDuration());
+  Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getNote() shall be 1. Is [%u]\n", _methodName,   
+  _bars._activeBar.getNotesArray().at(0).getNote());
+  Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getToneNumber() shall be 7. Is [%u]\n", _methodName,   
+  _bars._activeBar.getNotesArray().at(0).getToneNumber());
 }
 
 
@@ -652,23 +774,23 @@ void test::rawBarsStack() {
   const char * _methodName = "test::rawBarsStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  bars _bars;
-  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
-  _bar.setActive();
+  rawBarsStackConstructors(_methodName);
+  rawBarsStackInitializers(_methodName);
+  rawBarsStackPlayers(_methodName);
+  rawBarsStackNestedNotes(_methodName);
+  rawBarsStackTaskCallbacks(_methodName);
+  rawBarsStackTaskAccessFromActiveBar(_methodName);
 
-  // player
-  Serial.printf("%s _bars.playBarStandAlone(_bar, beat(5, 1)) shall be 1. Is [%i]\n", _methodName,
-    _bars.playBarStandAlone(_bar, beat(5, 1)));
-  // Serial.printf("%s _bar.playBarInSequence() shall fail because beat is set to default (beat == 0 and base note == 0). Is [%i]\n", _methodName,
-  //   _bar.playBarInSequence());
+  Serial.printf("%s over.\n\n", _methodName);
+}
 
-  // nested notes class (including notes array)
-  Serial.printf("%s calling _bars.getNotes().setActive(note{4,8}).\n", _methodName);
-  _bars.getNotes().setActive(note{4,8});
-  Serial.printf("%s _bars.getNotes().getCurrentNote().getNote() shall be 8. Is [%u]\n", _methodName, 
-    _bars.getNotes().getCurrentNote().getNote());
-  Serial.printf("%s _bars.getNotes()._activeNote.getToneNumber() shall be 4. Is [%u]\n", _methodName, 
-    _bars.getNotes().getCurrentNote().getToneNumber());
+
+
+
+void test::implementedBarsStack() {
+  const char * _methodName = "test::rawBarsStack:";
+  Serial.printf("\n\n%s starting\n", _methodName);
+
 
   Serial.printf("%s over.\n\n", _methodName);
 }
