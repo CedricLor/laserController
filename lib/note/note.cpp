@@ -290,8 +290,15 @@ notes & notes::operator=(notes&& __notes) {
  *  (ii) in laserInterface, to retrieve the params (_ui16Note and _ui16Tone) of
  *       the currently active note and send them to the mesh. */
 void notes::setActive(const note & __activeNote) {
+  // Serial.println("notes::setActive: starting");
   tPlayNote.disable();
+  // Serial.println("notes::setActive: tPlayNote disabled");
+  // Serial.printf("notes::setActive: __activeNote._ui16Tone: %u\n", __activeNote._ui16Tone);
+  // Serial.printf("notes::setActive: __activeNote._ui16Note: %u\n", __activeNote._ui16Note);
+  // Serial.printf("notes::setActive: _activeNote._ui16Tone: %u\n", _activeNote._ui16Tone);
+  // Serial.printf("notes::setActive: _activeNote._ui16Note: %u\n", _activeNote._ui16Note);
   _activeNote = __activeNote;
+  // Serial.println("notes::setActive: over");
 }
 
 
@@ -374,8 +381,11 @@ void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
  *  _tcbPlayBar manages the real duration (and the beat). 
 */
 void notes::playNoteInBar(const note & __note) {
+  // Serial.println("notes::playNoteInBar: starting");
   setActive(__note);
+  // Serial.println("notes::playNoteInBar: setActive(__note) passed");
   this->tPlayNote.restartDelayed();
+  // Serial.println("notes::playNoteInBar: over");
 }
 
 
