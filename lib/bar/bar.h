@@ -26,37 +26,13 @@ class bar
     bar( const bar& __bar);
     bar& operator=(const bar& __bar);
  
-    // objects array initializer
-    static void initBars(); // initializer of the array of bars
-
-    /** setters */
-    void setActive(const int16_t __i16_active_bar_id=-1);
-
     /** getters */
     uint16_t const ui16GetNotesCountInBar() const;
     uint16_t const ui16GetBaseNotesCountInBar() const;
     uint32_t const ui32GetBarDuration() const;
     const std::array<note, 16> & getNotesArray() const;
 
-    /** player */
-    static Task tPlayBar;
-
   private:
-    friend class sequence;
-    friend class bars;
-
-    // static properties
-    static bar _emptyBar;
-    static bar &_activeBar;
-    static int16_t _i16ActiveBarId;
-    static std::array<bar, 7> _barsArray;
-    static std::array<note, 16> _emptyNotesArray;
-    static notes _notes;
-
-    /** player callbacks */
-    static void _tcbPlayBar();
-    static bool _oetcbPlayBar();
-
     // private instance properties
     std::array<note, 16> _notesArray;
 };
@@ -75,7 +51,7 @@ class bars
   public:
     /** default constructor 
      * 
-     *  The bars' properties (_emptyBar, _activeBar, _i16ActiveBarId, _notes,
+     *  The bars' properties (_activeBar, _i16ActiveBarId, _notes,
      *  _emptyNotesArray) are defined in the constructor, by default, without
      *  parameters.
      * 
@@ -89,9 +65,8 @@ class bars
 
     /** setters */
     void setActive(const bar & __activeBar);
-    // TODO: define the following methods re. see what's in notes class
-    // void resetTPlayBarToPlayBarsInSequence();
-    // void setTPlayBar(beat const & __beat);
+    void disableAndResetTPlayBar();
+    void resetTPlayBar();
 
     /** getters */
     int16_t const i16GetCurrentBarId() const; // returns _i16ActiveBarId
@@ -106,7 +81,7 @@ class bars
 
   private:
     // properties
-    bar _emptyBar; // <-- check: probably not needed any more;
+    // TODO: Check whether we really need all these variables
     bar & _activeBar;
     int16_t _i16ActiveBarId;
     notes _notes;
