@@ -46,7 +46,7 @@ class test
     void rawNotesStack();
     static void rawNotesStackSender(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
 
-    void barStackGetters(const char * _methodName);
+    void barStackGetters(const char * _methodName, bar & _bar);
     void barStackConstructors(const char * _methodName);
     void barStack();
     void rawBarsStackConstructors(const char * _methodName);

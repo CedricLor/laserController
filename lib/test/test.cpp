@@ -622,26 +622,36 @@ void test::rawNotesStack() {
 
 
 void test::barStackConstructors(const char * _methodName) {
-  // TODO: the bar instances were never initialized in real world conditions. 
-  // The unique test bar _bar is created outside the collection and alloted through _bars.setActive(_bar)
-  // If I had tested loading the test bar into the _bars._barsArray using the assignment operator instead,
-  // just like in what was happening in the bars constructor, I would have detected the bug in the tests.
-  // constructors
+  beat _beat(5, 1);
+  _beat.setActive();
+
+  Serial.printf("%s testing bar default constructor: bar _bar;\n", _methodName);
+  bar _emptyBar;
+  barStackGetters(_methodName, _emptyBar);
+  Serial.printf("%s testing bar default constructor: everything above should be at 0;\n", _methodName);
+
   Serial.printf("%s testing bar constructor: bar _bar{std::array<note, 16>{note(4,8), note(3,8),\n", _methodName);
-  Serial.printf("                            note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}\n\n");
+  Serial.printf("                            note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}\n");
   bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+  barStackGetters(_methodName, _bar);
+
+  Serial.printf("%s testing bar copy constructor: bar _barCpy(_bar)\n", _methodName);
+  bar _barCpy(_bar);
+  barStackGetters(_methodName, _barCpy);
+
+  Serial.printf("%s testing bar copy assignment: _bar = _barCpy\n", _methodName);
+  _bar = _barCpy;
+  barStackGetters(_methodName, _bar);
+
+  Serial.printf("%s testing bar copy constructor + assignment: _bar = bar(_barCpy)\n", _methodName);
+  barStackGetters(_methodName, _bar);
 }
 
 
 
 
 
-void test::barStackGetters(const char * _methodName) {
-  // constructors
-  bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
-  beat _beat(5, 1);
-  _beat.setActive();
-
+void test::barStackGetters(const char * _methodName, bar & _bar) {
   // getters
   Serial.printf("%s _bar.ui16GetNotesCountInBar() shall be 8. Is [%u]\n", _methodName, 
     _bar.ui16GetNotesCountInBar());
@@ -663,7 +673,6 @@ void test::barStack() {
   Serial.printf("\n\n%s starting\n", _methodName);
 
   barStackConstructors(_methodName);
-  barStackGetters(_methodName);
 
   Serial.printf("%s over.\n\n", _methodName);
 }
