@@ -31,9 +31,9 @@ class test
     void noteStackCopyConstructorAndCopyAssignment(const char * _methodName);
     void noteStackValidNote(const char * _methodName);
 
-    void notesArrayStack();
     void notesArrayStackEmptyArray(const char * _methodName);
     void notesArrayStackToneSelection(const char * _methodName);
+    void notesArrayStack();
 
     void rawNotesStackConstructors(const char * _methodName);
     void rawNotesStackDefaultResetters(const char * _methodName, laserPins & _laserPins, notes & _notes);
@@ -49,12 +49,17 @@ class test
     void barStackGetters(const char * _methodName, bar & _bar);
     void barStackConstructors(const char * _methodName);
     void barStack();
+
+    void barArrayStackBarGetters(const char * _methodName, std::array<bar, 7> & _barsArray);
+    void barArrayStack();
+
     void rawBarsStackConstructors(const char * _methodName);
     void rawBarsStackInitializers(const char * _methodName);
-    void rawBarsStackPlayers(const char * _methodName);
-    void rawBarsStackNestedNotes(const char * _methodName);
-    void rawBarsStackTaskCallbacks(const char * _methodName);
-    void rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName);
+    void rawBarsStackStandAlonePlayer(const char * _methodName, bars & _bars, bar & _bar);
+    void rawBarsStackBarInSequencePlayer(const char * _methodName, bars & _bars);
+    void rawBarsStackNestedNotes(const char * _methodName, bars & _bars);
+    void rawBarsStackTaskCallbacks(const char * _methodName, bars & _bars);
+    void rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName, bars & _bars);
     void rawBarsStack();
     void implementedBarsStack();
 

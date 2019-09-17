@@ -113,6 +113,7 @@ void setup() {
     _test.rawNotesStack();
     _test.barStack();
     _test.rawBarsStack();
+    _test.implementedBarsStack();
     sequence::initSequences();
     _test.sequenceStack();
   }
