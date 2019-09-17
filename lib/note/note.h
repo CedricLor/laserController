@@ -14,6 +14,12 @@
 
 class note
 {
+  // TODO: Try to remove friends little by little
+  friend class notes;
+  friend class bar;
+  friend class bars;
+  friend class sequence;
+  friend class test;
   public:
     static tones globalTones;
 
@@ -35,10 +41,6 @@ class note
     uint16_t const ui16GetNoteDurationInMs() const;
 
   private:
-    friend class notes;
-    friend class bar;
-    friend class test;
-
     /** setters */
     // instance setter
     uint16_t _setTone(const tone & _target_tone);
@@ -59,9 +61,11 @@ class note
 
 class notes
 {
-  friend class test;
-  friend class bars;
+  // TODO: Try to remove friends little by little
   friend class bar;
+  friend class bars;
+  friend class sequence;
+  friend class test;
   public:
     /** default constructor */
     notes(
