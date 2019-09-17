@@ -18,8 +18,6 @@ class bar
   friend class bars;
 
   public:
-    static notes globalNotes;
-
     /** default empty constructor */
     bar();
     bar(std::array<note, 16> __notesArray); 
