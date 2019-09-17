@@ -79,7 +79,6 @@ class bars
 
   private:
     // properties
-    // TODO: Check whether we really need all these variables
     bar & _activeBar;
     int16_t _i16ActiveBarId;
     notes _notes;
