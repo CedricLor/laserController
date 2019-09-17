@@ -538,9 +538,8 @@ void bars::_tcbPlayBar(){
    *    Task bars::tPlayBar. This marks the duration of each note played in the
    *    context of a bar. */
   Serial.println(F("------------- DEBUG --------- BAR --------- DEBUG -------------"));
-  /** TODO: two following lines: replace "_notesArray[_ui16Iter]" by ".getNotesArray().at" */
-  Serial.printf("bars::_tcbPlayBar(). calling _activeBar._notesArray[_ui16Iter].ui16GetNoteDurationInMs(%u)\n", _ui16Iter);
-  tPlayBar.setInterval(_activeBar._notesArray[_ui16Iter].ui16GetNoteDurationInMs());
+  Serial.printf("bars::_tcbPlayBar(). setting the interval, by calling _activeBar.getNotesArray().at(%u).ui16GetNoteDurationInMs() = %u\n", _ui16Iter, _activeBar.getNotesArray().at(_ui16Iter).ui16GetNoteDurationInMs());
+  tPlayBar.setInterval(_activeBar.getNotesArray().at(_ui16Iter).ui16GetNoteDurationInMs());
 
   Serial.println(F("bars::_tcbPlayBar(). Ending."));
 };
