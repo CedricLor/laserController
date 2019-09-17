@@ -81,7 +81,8 @@ void setup() {
     mns::myScheduler.addTask(boxState::tPlayBoxState);
     mns::myScheduler.addTask(sequence::tPlaySequenceInLoop);
     mns::myScheduler.addTask(sequence::tPlaySequence);
-    mns::myScheduler.addTask(bar::tPlayBar);
+    mns::myScheduler.addTask(sequence::globalBars.tPlayBar);
+    // TODO: following line: draft sthg shorter
     mns::myScheduler.addTask(sequence::globalBars.getNotes().tPlayNote);
   }
 
@@ -110,7 +111,6 @@ void setup() {
     _test.noteStack();
     _test.notesArrayStack();
     _test.rawNotesStack();
-    bar::initBars();
     _test.barStack();
     _test.rawBarsStack();
     sequence::initSequences();
