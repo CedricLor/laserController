@@ -297,8 +297,8 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
    */
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
-  bar::tPlayBar.disable();
-  bar::_notes.tPlayNote.disable();
+  sequence::globalBars.tPlayBar.disable();
+  sequence::globalBars._notes.tPlayNote.disable();
 
   // 1. reset tPlayNote to play notes read from a bar
   notes{}.disableAndResetTPlayNote();
@@ -307,10 +307,10 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
    *    tPlayBar will be managed from tPlaySequence => tPlayBar will not need to reset
    *    the beat upon being disabled (tPlaySequence will do it).
    *    
-   *    tPlaySequence and tPlayBar will rely on the beat set in sequence
+   *    tPlaySequence and tPlayBar relies on the beat set in sequence
    *    to make the duration calculations.
    *  */
-  bar::tPlayBar.setOnDisable(NULL);
+  sequence::globalBars.tPlayBar.setOnDisable(NULL);
 
   /**3. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
    *    the stand alone sequence has been read, so that any other object that may 
@@ -334,14 +334,14 @@ void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id) {
   //    TODO: check whether this shall be done here or elsewhere (in boxState)
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
-  bar::tPlayBar.disable();
-  bar::_notes.tPlayNote.disable();
+  sequence::globalBars.tPlayBar.disable();
+  sequence::globalBars._notes.tPlayNote.disable();
 
   // 2. set the underlying laser Tasks for a sequence -> bar -> note -> tone chain
   //    TODO: the two following lines shall be defined at the beginning of entering 
   //          an automated boxState or even the stepControllerMode
   notes{}.disableAndResetTPlayNote();
-  bar::tPlayBar.setOnDisable(NULL);
+  sequence::globalBars.tPlayBar.setOnDisable(NULL);
 
   // 3. set this Task for a regular step -> boxState -> sequence -> bar -> note -> tone chain 
   //    (as opposed to a standAlone play of the sequence)
