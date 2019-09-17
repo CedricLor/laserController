@@ -730,10 +730,6 @@ void test::rawBarsStackConstructors(const char * _methodName) {
 
 void test::rawBarsStackInitializers(const char * _methodName) {
   bars _bars;
-  // TODO: the bar instances were never initialized in real world conditions. 
-  // The unique test bar _bar is created outside the collection and alloted through _bars.setActive(_bar)
-  // If I had tested loading the test bar into the _bars._barsArray using the assignment operator instead,
-  // just like in what was happening in the bars constructor, I would have detected the bug in the tests.
   bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
   Serial.printf("%s testing _bars.setActive(_bar) with bar _bar{std::array<note, 16>{note(4,8), note(3,8)...} \n", _methodName);
   rawBarsStackStandAlonePlayer(_methodName, _bars, _bar);
