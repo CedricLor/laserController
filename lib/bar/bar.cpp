@@ -221,16 +221,16 @@ bars::bars(
    * count of base notes per bar: 2
    * => 2 / 1 */
   
-  Serial.println("bar::_initBars(). before creating _aRelays");
+  // Serial.println("bars::bars. before creating _aRelays");
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
-  Serial.println("bar::_initBars(). _aRelays created");
+  // Serial.println("bars::bars. _aRelays created");
   _barsArray[0] = {_aRelays};
-  Serial.println("bar::_initBars(). _barsArray[0] copy assigned");
-  // Serial.printf("bar::_initBars(). _barsArray[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _barsArray[0].ui16GetBaseNotesCountInBar() == 2);
-  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getToneNumber() = %u\n", _barsArray[0].getNotesArray().at(0).getToneNumber());
-  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
-  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getNote() = %u\n", _barsArray[0].getNotesArray().at(0).getNote());
-  // Serial.printf("bar::_initBars(). _barsArray[0].getNotesArray().at(0).getNote() == 1 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getNote() == 1) ? "true" : "false") );
+  // Serial.println("bars::bars. _barsArray[0] copy assigned");
+  // Serial.printf("bars::bars. _barsArray[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _barsArray[0].ui16GetBaseNotesCountInBar() == 2);
+  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getToneNumber() = %u\n", _barsArray[0].getNotesArray().at(0).getToneNumber());
+  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
+  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getNote() = %u\n", _barsArray[0].getNotesArray().at(0).getNote());
+  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getNote() == 1 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getNote() == 1) ? "true" : "false") );
 
   /** twins
    * duration of a beat in bpm: 2

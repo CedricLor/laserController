@@ -745,25 +745,26 @@ void test::rawBarsStackTaskCallbacks(const char * _methodName) {
 
 
 
-void test::rawBarsStackTaskAccessFromActiveBar(const char * _methodName) {
+void test::rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName) {
   bars _bars;
   bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
-  _bars.setActive(_bar);
 
   Serial.printf("%s testing Task callbacks \n", _methodName);
 
   // Testing _activeBar with a hardcoded bar
   _bars.setActive(sequence::globalBars._barsArray[1]);
   beat(0, 0).setActive();
+
   Serial.printf("%s _bars._activeBar.ui16GetNotesCountInBar() shall be 2. Is [%u]\n", _methodName, 
     _bars._activeBar.ui16GetNotesCountInBar());
   Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
     _bars._activeBar.ui16GetBaseNotesCountInBar());
   Serial.printf("%s _bars._activeBar.ui32GetBarDuration() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
     _bars._activeBar.ui32GetBarDuration());
+
   Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getNote() shall be 1. Is [%u]\n", _methodName,   
   _bars._activeBar.getNotesArray().at(0).getNote());
-  Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getToneNumber() shall be 7. Is [%u]\n", _methodName,   
+  Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getToneNumber() shall be 5. Is [%u]\n", _methodName,   
   _bars._activeBar.getNotesArray().at(0).getToneNumber());
 }
 
@@ -779,7 +780,7 @@ void test::rawBarsStack() {
   rawBarsStackPlayers(_methodName);
   rawBarsStackNestedNotes(_methodName);
   rawBarsStackTaskCallbacks(_methodName);
-  rawBarsStackTaskAccessFromActiveBar(_methodName);
+  rawBarsStackTaskAccessFromAndToActiveBar(_methodName);
 
   Serial.printf("%s over.\n\n", _methodName);
 }

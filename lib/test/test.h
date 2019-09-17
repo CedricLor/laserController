@@ -54,7 +54,7 @@ class test
     void rawBarsStackPlayers(const char * _methodName);
     void rawBarsStackNestedNotes(const char * _methodName);
     void rawBarsStackTaskCallbacks(const char * _methodName);
-    void rawBarsStackTaskAccessFromActiveBar(const char * _methodName);
+    void rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName);
     void rawBarsStack();
     void implementedBarsStack();
 
