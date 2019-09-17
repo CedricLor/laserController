@@ -301,6 +301,7 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
   sequence::globalBars._notes.tPlayNote.disable();
 
   // 1. reset tPlayNote to play notes read from a bar
+  // TODO: Find out where the "notes" instance comes from!!!
   notes{}.disableAndResetTPlayNote();
 
   /**2. set the tPlayBar Task to its default when reading bars from a sequence.
@@ -558,16 +559,23 @@ void sequence::_tcbPlaySequence(){
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   // 1. Get the number of iterations (each iteration corresponds to one bar)
-  int16_t _i16Iter = tPlaySequence.getRunCounter() - 1;
-  Serial.printf("sequence::_tcbPlaySequence(). have set _i16Iter: %i \n", _i16Iter);
+  uint16_t _ui16Iter = tPlaySequence.getRunCounter();
+  _ui16Iter = ((0 == _ui16Iter) ? 0 : (_ui16Iter - 1));
+  // Serial.printf("sequence::_tcbPlaySequence(). tPlaySequence.getRunCounter() == [%lu]\n", tPlaySequence.getRunCounter());
+  // Serial.printf("sequence::_tcbPlaySequence(). _ui16Iter == [%u]\n", _ui16Iter);
 
   // 2. Calculate the bar duration
-  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_i16Iter).ui32GetBarDuration();
-  Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from sequences[%i].getBarsArray().at(%i).ui32BarDuration()\n", __ui32ThisBarDuration, _i16ActiveSequenceNb, _i16Iter);
+  // _activeSequence.getBarsArray();
+  // Serial.println("-------------- sequence::_tcbPlaySequence(). passed _activeSequence.getBarsArray() ------------");
+  // _activeSequence.getBarsArray().at(_ui16Iter);
+  // Serial.println("-------------- sequence::_tcbPlaySequence(). passed _activeSequence.getBarsArray().at(_ui16Iter) ------------");
+  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
+  Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from _activeSequence.getBarsArray().at(%i)).ui32BarDuration()\n", __ui32ThisBarDuration, _ui16Iter);
 
   // 3. Play the corresponding bar
-  Serial.printf("sequence::_tcbPlaySequence(). about to call sequences[%i].getBarsArray()[%i].playBarInSequence(%i)\n", _i16ActiveSequenceNb, _i16Iter, _i16Iter);
-  sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(_i16Iter));
+  Serial.printf("sequence::_tcbPlaySequence(). about to call sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(%i))\n", _ui16Iter);
+
+  sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(_ui16Iter));
 
   /**5. Set the interval for next iteration of tPlaySequence
    * 
