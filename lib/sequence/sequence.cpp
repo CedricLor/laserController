@@ -281,7 +281,7 @@ int16_t const sequence::getCurrentSequence() {
 ///////////////////////////////////
 // Sequence Players
 ///////////////////////////////////
-/** bar::playSequenceStandAlone():
+/** sequence::playSequenceStandAlone():
  *  
  *  play a single sequence calculating the durations
  *  on the basis of the passed-in beat.
