@@ -215,19 +215,27 @@ notes::notes(
   sendCurrentNote(_sendCurrentNote),
   _activeNote(globalNote),
   _tones(note::globalTones)
-{}
+{
+  // TODO: Do the same on the upper levels (bars in particular)
+  // Identify whether other external variables may need to be reset upon destroying
+  // notes
+  disableAndResetTPlayNote();
+}
 
 notes::notes(const notes & __notes):
   sendCurrentNote(__notes.sendCurrentNote),
   _activeNote(__notes._activeNote),
   _tones(__notes._tones)
-{}
+{
+  disableAndResetTPlayNote();
+}
 
 notes & notes::operator=(const notes & __notes) {
   if (&__notes != this) {
     sendCurrentNote = __notes.sendCurrentNote;
     _activeNote = __notes._activeNote;
     _tones = __notes._tones;
+    disableAndResetTPlayNote();
   }
   return *this;
 }
@@ -244,6 +252,8 @@ notes::notes(notes&& __notes):
   __notes.sendCurrentNote = nullptr;
   __notes._activeNote = globalNote;
   __notes._tones = note::globalTones;
+
+  disableAndResetTPlayNote();
 }
 
 notes & notes::operator=(notes&& __notes) {
@@ -259,6 +269,8 @@ notes & notes::operator=(notes&& __notes) {
     __notes.sendCurrentNote = nullptr;
     __notes._activeNote = globalNote;
     __notes._tones = note::globalTones;
+
+    disableAndResetTPlayNote();
   }
   return *this;
 }
