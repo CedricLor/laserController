@@ -26,6 +26,8 @@ class note
     );
     note(const note & __note);
     note& operator=(const note& __note);
+    note(note&& __note);
+    note & operator=(note&& __note);
 
     /** getters */
     uint16_t const getToneNumber() const;

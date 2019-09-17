@@ -66,6 +66,30 @@ note& note::operator=(const note& __note)
   return *this;
 }
 
+note::note(note&& __note):
+  _ui16Tone(0),
+  _ui16Note(0)
+{
+  _ui16Tone = __note._ui16Tone;
+  _ui16Note = __note._ui16Note;
+
+  __note._ui16Tone = 0;
+  __note._ui16Note = 0;
+}
+
+note & note::operator=(note&& __note) {
+  if (this != &__note) {
+    _ui16Tone = 0;
+    _ui16Note = 0;
+
+    _ui16Tone = __note._ui16Tone;
+    _ui16Note = __note._ui16Note;
+
+    __note._ui16Tone = 0;
+    __note._ui16Note = 0;
+  }
+  return *this;
+}
 
 
 
