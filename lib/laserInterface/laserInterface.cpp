@@ -74,28 +74,17 @@ void laserInterface::lockSequenceStack() {
 void laserInterface::initBarComm() {
     // TODO: initBarComm(), in the end, this namespace shall be used to initialize the whole laser stack
     // change its name
-    bars _bars{sendCurrentBar};
-    /**
-     *  TODO: This expression won't be very usefull -> the _bars instance is will automatically
-     *        be deleted when this method will end...
-     * 
-     *        Such an expression shall be used on a global variable or at least, on a notes instance that is going
-     *        to be used for sthg. 
-     * */
+    sequence::globalBars.sendCurrentBar = sendCurrentBar;
 }
 
 
 void laserInterface::setCurrentBar(const int16_t __i16_target_bar_id) {
-    bars _bars{sendCurrentBar};
-    _bars.getBarFromBarArray(__i16_target_bar_id).setActive();
+    sequence::globalBars.setActive(sequence::globalBars.getBarFromBarArray(__i16_target_bar_id));
 }
 
 
 void laserInterface::getCurrentBar() {
-    /** TODO: the following instance of bars does not survive out of the scope of this method.
-     *  ... not very usefull. */
-    bars _bars{sendCurrentBar};
-    sendCurrentBar(_bars.i16GetCurrentBarId());
+    sequence::globalBars.sendCurrentBar(sequence::globalBars.i16GetCurrentBarId());
 }
 
 
@@ -185,5 +174,5 @@ void laserInterface::playNote(uint16_t const __ui16_base_note_for_beat, uint16_t
 
 void laserInterface::lockNoteStack() {
   lockBarStack();
-  bar::tPlayBar.disable();
+  sequence::globalBars.tPlayBar.disable();
 }
