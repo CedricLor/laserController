@@ -17,8 +17,6 @@ class note
   // TODO: Try to remove friends little by little
   friend class notes;
   friend class bar;
-  friend class bars;
-  friend class sequence;
   friend class test;
   public:
     static tones globalTones;
