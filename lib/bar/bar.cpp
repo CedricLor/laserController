@@ -182,6 +182,7 @@ bars::bars(
   void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
 ):
   sendCurrentBar(_sendCurrentBar),
+  tPlayNote(_notes.tPlayNote),
   _activeBar(globalBar),
   _i16ActiveBarId(-1), /** TODO: will need to be set properly and worked on*/
   _notes(), // TODO: check interplay of this variable with the _notes{} called from sequence.cpp
