@@ -3,14 +3,14 @@
   Created by Cedric Lor, June 4, 2019.
 
 */
-#ifndef sequence_h
-#define sequence_h
-
 #include "Arduino.h"
 #include <painlessMesh.h>
 #include <mns.h>
 #include <ControlerBox.h>
 #include <bar.h>
+
+#ifndef sequence_h
+#define sequence_h
 
 class sequence
 {
@@ -74,6 +74,64 @@ class sequence
     static bool _oetcbPlaySequence();
     static void _tcbPlaySequence();
     static void _odtcbPlaySequence();
+};
+
+#endif
+
+#ifndef sequences_h
+#define sequences_h
+
+class sequences
+{
+  public:
+    /** constructors */
+    sequences(); // default constructor
+    // sequences(
+    // );
+    // copy constructor
+    sequences(const sequences & __sequences);
+    // assignement operator
+    sequences& operator=(const sequences & __sequences);
+
+    /** public properties */
+    std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
+    bars globalBars;
+
+    /** setters */
+    void setActive(sequence & __sequence);
+
+    /** getters */
+    sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
+
+    /** Task - sequence players */
+    void playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id=-1);
+    void playSequenceInBoxState(const int16_t __i16_sequence_id);
+    Task tPlaySequenceInLoop;
+    Task tPlaySequence;
+    Task & tPlayBar;
+    Task & tPlayNote;
+
+    /** interface to mesh */
+    void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
+    const int16_t getCurrentSequence();
+
+  private:
+    // private constants to set stuffs
+    const int16_t _i16_sequence_count;
+
+    // variable: currently played active sequence
+    sequence _emptySequence;
+    sequence & _activeSequence;
+    int16_t _i16ActiveSequenceNb;
+
+    // tasks callbacks
+    bool _oetcbPlaySequenceInLoop();
+    void _tcbPlaySequenceInLoop();
+    void _odtcbPlaySequenceInLoop();
+
+    bool _oetcbPlaySequence();
+    void _tcbPlaySequence();
+    void _odtcbPlaySequence();
 };
 
 #endif
