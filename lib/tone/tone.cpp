@@ -67,58 +67,42 @@ tones::tones() :
 
   // Initialize the tones' _array
   /** "all off" */
-  std::array<bool, 4> const _aAllOff = {HIGH, HIGH, HIGH, HIGH};
-  _array[0] = {_aAllOff, 0};
+  _array[0] = {std::array<bool, 4>{HIGH, HIGH, HIGH, HIGH}, 0};
 
   /**"first on"*/
-  std::array<bool, 4> const _aFirstOn = {LOW, HIGH, HIGH, HIGH};
-  _array[1] = {_aFirstOn, 1};
+  _array[1] = {std::array<bool, 4>{LOW, HIGH, HIGH, HIGH}, 1};
   /**"second on*/
-  std::array<bool, 4> const _aSecondOn = {HIGH, LOW, HIGH, HIGH};
-  _array[2] = {_aSecondOn, 2};
+  _array[2] = {std::array<bool, 4>{HIGH, LOW, HIGH, HIGH}, 2};
   /**"third on"*/
-  std::array<bool, 4> const _aThirdOn = {HIGH, HIGH, LOW, HIGH};
-  _array[3] = {_aThirdOn, 3};
+  _array[3] = {std::array<bool, 4>{HIGH, HIGH, LOW, HIGH}, 3};
   /**"fourth on"*/
-  std::array<bool, 4> const _aFourthOn = {HIGH, HIGH, HIGH, LOW};
-  _array[4] = {_aFourthOn, 4};
+  _array[4] = {std::array<bool, 4>{HIGH, HIGH, HIGH, LOW}, 4};
 
   /**"first pair on"*/
-  std::array<bool, 4> const _aFirstPairOn = {LOW, LOW, HIGH, HIGH};
-  _array[5] = {_aFirstPairOn, 5};
+  _array[5] = {std::array<bool, 4>{LOW, LOW, HIGH, HIGH}, 5};
   /**"second pair on*/
-  std::array<bool, 4> const _aSecondPairOn = {HIGH, HIGH, LOW, LOW};
-  _array[6] = {_aSecondPairOn, 6};
+  _array[6] = {std::array<bool, 4>{HIGH, HIGH, LOW, LOW}, 6};
 
   /**"on off on off"*/
-  std::array<bool, 4> const _aOnOffOnOff = {LOW, HIGH, LOW, HIGH};
-  _array[7] = {_aOnOffOnOff, 7};
+  _array[7] = {std::array<bool, 4>{LOW, HIGH, LOW, HIGH}, 7};
   /**"off on off on"*/
-  std::array<bool, 4> const _aOffOnOffOn = {HIGH, LOW, HIGH, LOW};
-  _array[8] = {_aOffOnOffOn, 8};
+  _array[8] = {std::array<bool, 4>{HIGH, LOW, HIGH, LOW}, 8};
 
-  /**"external on"*/
-  std::array<bool, 4> const _aExtOnIntOff = {LOW, HIGH, HIGH, LOW};
-  _array[9] = {_aExtOnIntOff, 9};
-  /**"external off*/
-  std::array<bool, 4> const _aExtOffIntOn = {HIGH, LOW, LOW, HIGH};
-  _array[10] = {_aExtOffIntOn, 10};
+  /**"two external lasers on, two internal lasers off"*/
+  _array[9] = {std::array<bool, 4>{LOW, HIGH, HIGH, LOW}, 9};
+  /**"two external lasers off, two internal lasers on*/
+  _array[10] = {std::array<bool, 4>{HIGH, LOW, LOW, HIGH}, 10};
   /**"last off"*/
-  std::array<bool, 4> const _aLastOff = {LOW, LOW, LOW, HIGH};
-  _array[11] = {_aLastOff, 11};
+  _array[11] = {std::array<bool, 4>{LOW, LOW, LOW, HIGH}, 11};
   /**"third off"*/
-  std::array<bool, 4> const _aThirdOff = {LOW, LOW, HIGH, LOW};
-  _array[12] = {_aThirdOff, 12};
+  _array[12] = {std::array<bool, 4>{LOW, LOW, HIGH, LOW}, 12};
   /**"second off"*/
-  std::array<bool, 4> const _aSecondOff = {LOW, HIGH, LOW, LOW};
-  _array[13] = {_aSecondOff, 13};
+  _array[13] = {std::array<bool, 4>{LOW, HIGH, LOW, LOW}, 13};
   /**"first off"*/
-  std::array<bool, 4> const _aFirstOff = {HIGH, LOW, LOW, LOW};
-  _array[14] = {_aFirstOff, 14};
+  _array[14] = {std::array<bool, 4>{HIGH, LOW, LOW, LOW}, 14};
 
   /**"all on"*/
-  std::array<bool, 4> const _aAllOn = {LOW, LOW, LOW, LOW};
-  _array[15] = {_aAllOn, 15};
+  _array[15] = {std::array<bool, 4>{LOW, LOW, LOW, LOW}, 15};
 }
 
 
