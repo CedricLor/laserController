@@ -394,8 +394,8 @@ notes & bars::getNotes() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
 uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __beat) {
-  // TODO: make this method return an uint16_t, with each steps marking the passing of
-  // one step.
+  /** TODO: make called methods return sthg, and this one returning at each steps
+   *  marking the passing (or failure) of the various steps. */
 
   // 0. Do not do anything if the beat has not been set
   if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0)) {
