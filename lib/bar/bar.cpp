@@ -30,7 +30,7 @@ bar globalBar{}; // TODO: <-- For the moment, it is at the global scope; find a 
 ///////////////////////////////////
 // default
 bar::bar() :
-  i16IndexNumber(-2), /** default initialization at -2; this way, avoids getting in conflict with bars::_i16ActiveBarId which is default initialized at -1 */
+  i16IndexNumber(-1), /** default initialization at -1 */
   _notesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, notes, note, tones, tone, laserPins) */
 {
 }
@@ -192,7 +192,6 @@ bars::bars(
   sendCurrentBar(_sendCurrentBar),
   tPlayNote(_notes.tPlayNote),
   _activeBar(globalBar),
-  _i16ActiveBarId(-1), /** TODO: will need to be set properly and worked on*/
   _notes(),
   _barsArray({})
 {
@@ -294,14 +293,12 @@ bars::bars(
  *  sets the instance variable __activeBar 
  *  from a passed in bar reference.
  * 
- *  TODO: add an index number to hard coded bars, and set it here.
- * 
  * Drafting of the former bar method, which this method is supposed to replace.
  * 
  * void bar::setActive(const int16_t __i16_active_bar_id) {
  *   tPlayBar.disable();
  *   _activeBar = *this;
- *   _i16ActiveBarId = __i16_active_bar_id; <------------ SETTING OF INDEX NUMBER
+ *   _i16ActiveBarId = __i16_active_bar_id;
  * }
  *  */
 void bars::setActive(const bar & __activeBar) {
@@ -357,7 +354,7 @@ void bars::resetTPlayBar() {
  * 
  * Returns the active bar index number */
 int16_t const bars::i16GetCurrentBarId() const {
-  return _i16ActiveBarId;
+  return _activeBar.i16IndexNumber;
 }
 
 /** bar & bars::getCurrentBar() const

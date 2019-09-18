@@ -51,7 +51,7 @@ class bars
   public:
     /** default constructor 
      * 
-     *  The bars' properties (_activeBar, _i16ActiveBarId, _notes) 
+     *  The bars' properties (_activeBar, _notes) 
      *  are defined in the constructor, by default, without
      *  parameters.
      * 
@@ -83,7 +83,6 @@ class bars
   private:
     // properties
     bar & _activeBar;
-    int16_t _i16ActiveBarId;
     notes _notes;
     std::array<bar, 7> _barsArray;
 
