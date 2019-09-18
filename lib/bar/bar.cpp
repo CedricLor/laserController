@@ -190,7 +190,6 @@ bars::bars(
   void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
 ):
   sendCurrentBar(_sendCurrentBar),
-  tPlayNote(_notes.tPlayNote),
   _activeBar(globalBar),
   _notes(),
   _barsArray({})
