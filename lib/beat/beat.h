@@ -17,7 +17,8 @@ class beat
     beat(
       const uint16_t __ui16_base_beat_in_bpm, 
       const uint16_t __ui16_base_note_for_beat,
-      void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat)=nullptr
+      void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat)=nullptr,
+      void (*__setActiveInLaserInterfaceNS)(const beat & __beat)=nullptr
     ); 
     // copy constructor
     beat(const beat & __beat);
@@ -33,7 +34,7 @@ class beat
     void setActive();
 
     /** getters */
-    static beat const & getCurrentBeat(); // return a ref to the _activeBeat instance
+    static beat const & (*getCurrentBeat)(); // return a ref to the _activeBeat instance
     uint16_t const getBaseBeatInBpm() const;
     uint16_t const getBaseNoteForBeat() const;
     uint16_t const ui16GetBaseNoteDurationInMs() const;
@@ -48,7 +49,9 @@ class beat
 
     // static properties
     // static std::array<beat, 7> _beats;
-    static beat _activeBeat;
+
+    // setters
+    void (*_setActiveInBeatNS)(const beat & __beat);
 
     // private instance properties
     uint16_t _ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)

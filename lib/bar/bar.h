@@ -75,7 +75,7 @@ class bars
     notes & getNotes();
 
     /** player */
-    uint16_t const playBarStandAlone(const bar & __target_bar, beat const & __beat=beat::_activeBeat);
+    uint16_t const playBarStandAlone(const bar & __target_bar, beat const & __beat=beat());
     bool playBarInSequence(const bar & __target_bar);
     Task tPlayBar;
 
