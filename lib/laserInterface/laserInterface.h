@@ -11,7 +11,7 @@
 
 namespace laserInterface {
     
-  namespace steps {
+  namespace stepsNS {
     void play();
 
     namespace collection {
