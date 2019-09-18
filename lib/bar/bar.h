@@ -29,8 +29,11 @@ class bar
     uint32_t const ui32GetBarDuration() const;
     const std::array<note, 16> & getNotesArray() const;
 
+    /** public instance properties */
+    int16_t i16IndexNumber;
+
   private:
-    // private instance properties
+    /** private instance properties */
     std::array<note, 16> _notesArray;
 };
 
