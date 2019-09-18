@@ -75,7 +75,7 @@ class bars
     notes & getNotes();
 
     /** player */
-    bool playBarStandAlone(const bar & __target_bar, beat const & __beat=beat::_activeBeat);
+    uint16_t const playBarStandAlone(const bar & __target_bar, beat const & __beat=beat::_activeBeat);
     bool playBarInSequence(const bar & __target_bar); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
     Task tPlayBar;
     Task & tPlayNote;
