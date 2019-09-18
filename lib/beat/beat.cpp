@@ -12,8 +12,7 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "beat.h"
 
-beat beat::_beat;
-beat &beat::_activeBeat = _beat;
+beat beat::_activeBeat;
 // std::array<beat, 7> beat::_beats;
 
 
