@@ -397,9 +397,6 @@ notes & bars::getNotes() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration */
 uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __beat) {
-  /** TODO: make called methods return sthg, and this one returning at each steps
-   *  marking the passing (or failure) of the various steps. */
-
   // 0. Do not do anything if the beat has not been set
   if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0)) {
     return 0;
@@ -454,11 +451,11 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
  *  
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
-bool bars::playBarInSequence(const bar & __target_bar) { // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+bool bars::playBarInSequence(const bar & __target_bar) {
   if ((beat::getCurrentBeat().getBaseNoteForBeat() == 0) || (beat::getCurrentBeat().getBaseBeatInBpm() == 0)) {
     return false;
   }
-  setActive(__target_bar); // <-- TODO: we need to pass the active_bar id if we play a bar coming from the array, mainly for debug purposes 
+  setActive(__target_bar);
   tPlayBar.restart();
   return true;
 }

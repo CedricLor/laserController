@@ -216,9 +216,8 @@ notes::notes(
   _activeNote(globalNote),
   _tones(note::globalTones)
 {
-  // TODO: Do the same on the upper levels (bars in particular)
-  // Identify whether other external variables may need to be reset upon destroying
-  // notes
+  /** TODO: not really sure _tones(note::globalTones) needs to be 
+   *        set from a global variable. */
   disableAndResetTPlayNote();
 }
 // copy constructor
