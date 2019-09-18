@@ -38,6 +38,9 @@ bar::bar() :
 bar::bar(
   /** TODO: Here, I am not passing the __notesArray by reference; 
    *        - check other constructors of other classes; 
+   *            OK for laserPin; nothing to do with laserPins
+   *            OK for tone (std::array<bool, 4> _laserPinsStatesArr)
+   *            sequence: not done; waiting complete refacto of sequence
    *        - see whether this is optimal;
    *        - review history of why this is this way here (I think this was a bug correction);
    *        - check whether the solution adopted here (passing in by value)
