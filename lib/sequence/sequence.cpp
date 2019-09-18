@@ -569,11 +569,10 @@ void sequence::_tcbPlaySequence(){
   // _activeSequence.getBarsArray().at(_ui16Iter);
   // Serial.println("-------------- sequence::_tcbPlaySequence(). passed _activeSequence.getBarsArray().at(_ui16Iter) ------------");
   uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
-  Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from _activeSequence.getBarsArray().at(%i)).ui32BarDuration()\n", __ui32ThisBarDuration, _ui16Iter);
+  // Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from _activeSequence.getBarsArray().at(%i)).ui32BarDuration()\n", __ui32ThisBarDuration, _ui16Iter);
 
   // 3. Play the corresponding bar
-  Serial.printf("sequence::_tcbPlaySequence(). about to call sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(%i))\n", _ui16Iter);
-
+  // Serial.printf("sequence::_tcbPlaySequence(). about to call sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(%i))\n", _ui16Iter);
   sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(_ui16Iter));
 
   /**5. Set the interval for next iteration of tPlaySequence
@@ -581,7 +580,7 @@ void sequence::_tcbPlaySequence(){
    *    At each pass, reset the interval before the next iteration of this 
    *    Task sequence::tPlaySequence. This marks the duration of each bar played in the
    *    context of a sequence. */
-  Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
+  // Serial.printf("sequence::_tcbPlaySequence(). about to set the interval of tPlaySequence to __ui32ThisBarDuration = [%u]\n", __ui32ThisBarDuration);
   tPlaySequence.setInterval(__ui32ThisBarDuration);
   // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
   // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
