@@ -54,6 +54,10 @@ namespace laserInterface {
     void sendMonitoredBoxesStates();
   }
 
+  namespace beatNS {
+    beat activeBeat;
+  }
+
   namespace sequenceNS {
     // sequence stack
     void initSequenceComm();
