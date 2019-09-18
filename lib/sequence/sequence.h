@@ -61,7 +61,6 @@ class sequence
     static sequence _emptySequence;
     static sequence & _activeSequence;
     static int16_t _i16ActiveSequenceNb;
-    static std::array<bar, 8> _emptyBarsArray;
 
     // instance properties
     beat _beat;
