@@ -11,38 +11,50 @@
 
 namespace laserInterface {
     
+  namespace steps {
+    void play();
 
-    // steps stack
-    void playSteps();
+    namespace collection {
+      void initComm();
+      void set();
+      void send();
+    }
 
-    void initStepsComm();
-    void addStep();
-    void removeStep();
-    void setCurrentStep();
-    void sendCurrentStep();
-    void setSteps();
-    void sendSteps();
+    namespace single {
+      void add();
+      void remove();
+      void setCurrent();
+      void sendCurrent();
+    }
+  }
 
+  namespace boxStateNS {
     // boxStates stack
-    void initBoxStatesComm();
+    void initComm();
     /** not being implemented for the moment; activeState set by direct call from meshController to ControlerBox */
     // void setBoxState();
-    void sendCurrentBoxState(const int16_t _i16CurrentStateNbr);
+    void sendCurrent(const int16_t _i16CurrentStateNbr);
+  }
 
+  namespace monitoredMasterBoxes {
     // masterBoxes stack
     void initMonitoredMasterBoxComm();
     void addMonitoredMasterBox();
     void removeMonitoredMasterBox();
     void setMonitoredMasterBoxes();
     void sendMonitoredMasterBoxes();
+  }
 
+  namespace monitoredStates {
     // monitored states stack
     void initMonitoredBoxesStatesComm();
     void addMonitoredBoxState();
     void removeMonitoredBoxState();
     void setMonitoredBoxesStates();
     void sendMonitoredBoxesStates();
+  }
 
+  namespace sequenceNS {
     // sequence stack
     void initSequenceComm();
     void setCurrentSequence(const int16_t __i16ActiveSequenceNb);
@@ -50,7 +62,9 @@ namespace laserInterface {
     void sendCurrentSequence(const int16_t __i16ActiveSequenceNb);
     void playSequence(const int16_t __i16SequenceNb);
     void lockSequenceStack();
+  }
 
+  namespace barNS {
     // bar stack
     void initBarComm();
     void setCurrentBar(const int16_t __i16_target_bar_id);
@@ -58,7 +72,9 @@ namespace laserInterface {
     void sendCurrentBar(const int16_t __i16_current_bar_id);
     void playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar=-1);
     void lockBarStack();
+  }
 
+  namespace noteNS {
     // note stack
     void initNoteComm();
     void setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
@@ -66,6 +82,7 @@ namespace laserInterface {
     void sendCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
     void playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
     void lockNoteStack();
+  }
 }
 
 #endif
