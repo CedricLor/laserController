@@ -24,6 +24,18 @@ void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) 
 }
 
 
+
+
+
+/*******************/
+// beat stack
+/*******************/
+
+
+
+
+
+
 /*******************/
 // sequences stack
 /*******************/
