@@ -306,9 +306,12 @@ void notes::setActive(const note & __activeNote) {
  * 
  *  resets the parameters of the Task tPlayNote to  
  *  play notes read from a bar. */
-void notes::disableAndResetTPlayNote() {
-  tPlayNote.disable();
+bool const notes::disableAndResetTPlayNote() {
+  if (!(tPlayNote.disable())) {
+    return false;
+  };
   resetTPlayNote();
+  return true;
 }
 
 /** void notes::resetTPlayNote(): public setter method

@@ -79,7 +79,7 @@ class notes
 
     /** setters */
     void setActive(const note & __activeNote);
-    void disableAndResetTPlayNote();
+    bool const disableAndResetTPlayNote();
     void resetTPlayNote();
 
     /** getter */

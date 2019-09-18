@@ -301,9 +301,12 @@ bars::bars(
  *   _i16ActiveBarId = __i16_active_bar_id;
  * }
  *  */
-void bars::setActive(const bar & __activeBar) {
-  this->tPlayBar.disable();
+uint16_t const bars::setActive(const bar & __activeBar) {
+  if (this->tPlayBar.disable()) {
+    return -2;
+  };
   _activeBar = __activeBar;
+  return _activeBar.i16IndexNumber;
 }
 
 
@@ -403,7 +406,9 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
   }
 
   // 1. set the passed-in bar as active
-  setActive(__target_bar);
+  if (setActive(__target_bar) == -2) {
+    return 1;
+  };
   
   // 2. set the active beat from the passed-in beat
   beat(__beat).setActive();
@@ -415,7 +420,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
    * 
    *    The following instruction resets tPlayNote to play a note 
    *    for one single iteration for a maximum duration of 30000 ms. */
-  notes{}.disableAndResetTPlayNote();
+  if (!(notes{}.disableAndResetTPlayNote())) {return 2;};
 
   /**4. set the onDisable callback of tPlayBar: 
    * 
@@ -438,8 +443,8 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
   // 5. once all the setting have been done, play the bar
   tPlayBar.restart();
 
-  // 6. return true
-  return 1;
+  // 6. return 3 for success
+  return 3;
 }
 
 
