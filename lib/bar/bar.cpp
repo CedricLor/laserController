@@ -30,6 +30,7 @@ bar globalBar{}; // TODO: <-- For the moment, it is at the global scope; find a 
 ///////////////////////////////////
 // default
 bar::bar() :
+  i16IndexNumber(-2), /** default initialization at -2; this way, avoids getting in conflict with bars::_i16ActiveBarId which is default initialized at -1 */
   _notesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, notes, note, tones, tone, laserPins) */
 {
 }
@@ -45,14 +46,17 @@ bar::bar(
    *        - review history of why this is this way here (I think this was a bug correction);
    *        - check whether the solution adopted here (passing in by value)
    *          shall not be duplicated in other classes. */
-  std::array<note, 16> __notesArray
+  std::array<note, 16> __notesArray,
+  const int16_t __i16IndexNumber
 ):
+  i16IndexNumber(__i16IndexNumber),
   _notesArray{__notesArray} 
 {
 }
 
 // copy constructor
 bar::bar(const bar& __bar):
+  i16IndexNumber(__bar.i16IndexNumber),
   _notesArray{__bar._notesArray}
 {
 }
@@ -70,6 +74,7 @@ bar& bar::operator=(const bar& __bar)
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- End before assignment ---------------");
   if (&__bar != this) {
     // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- Passed self test ---------------");
+    i16IndexNumber = __bar.i16IndexNumber;
     _notesArray = __bar._notesArray;
   }
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- After assignment ---------------");

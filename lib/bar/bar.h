@@ -19,7 +19,7 @@ class bar
   public:
     /** default empty constructor */
     bar();
-    bar(std::array<note, 16> __notesArray); 
+    bar(std::array<note, 16> __notesArray, const int16_t __i16IndexNumber=-2); 
     bar( const bar& __bar);
     bar& operator=(const bar& __bar);
  
