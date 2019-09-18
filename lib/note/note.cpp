@@ -152,7 +152,7 @@ uint16_t const note::getNote() const {
 }
 
 
-/** ul note::ui16GetNoteDurationInMs(): public instance getter method
+/** uint16_t note::ui16GetNoteDurationInMs(): public instance getter method
  *  
  *  Returns the duration of a note instance in ms. */
 uint16_t const note::ui16GetNoteDurationInMs() const {
@@ -221,7 +221,7 @@ notes::notes(
   // notes
   disableAndResetTPlayNote();
 }
-
+// copy constructor
 notes::notes(const notes & __notes):
   sendCurrentNote(__notes.sendCurrentNote),
   _activeNote(__notes._activeNote),
@@ -229,7 +229,7 @@ notes::notes(const notes & __notes):
 {
   disableAndResetTPlayNote();
 }
-
+// copy assignment operator
 notes & notes::operator=(const notes & __notes) {
   if (&__notes != this) {
     sendCurrentNote = __notes.sendCurrentNote;
@@ -239,7 +239,7 @@ notes & notes::operator=(const notes & __notes) {
   }
   return *this;
 }
-
+// move constructor
 notes::notes(notes&& __notes):
   sendCurrentNote(nullptr),
   _activeNote(globalNote),
@@ -255,7 +255,7 @@ notes::notes(notes&& __notes):
 
   disableAndResetTPlayNote();
 }
-
+// move assignment op
 notes & notes::operator=(notes&& __notes) {
   if (this != &__notes) {
     sendCurrentNote = nullptr;
