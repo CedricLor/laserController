@@ -11,15 +11,13 @@
 class beat
 {
   public:
-    /** sender to mesh */
-    static void (*sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
-
     /** default empty constructor */
     beat();
     /** main parameterized constructor */
     beat(
       const uint16_t __ui16_base_beat_in_bpm, 
-      const uint16_t __ui16_base_note_for_beat
+      const uint16_t __ui16_base_note_for_beat,
+      void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat)=nullptr
     ); 
     // copy constructor
     beat(const beat & __beat);
@@ -28,6 +26,8 @@ class beat
 
     // objects array initializer
     // static void initBeats(); // initializer of the array of beats
+    /** sender to mesh */
+    void (*sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
 
     /** setters */
     void setActive();

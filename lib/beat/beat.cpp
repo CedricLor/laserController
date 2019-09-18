@@ -17,9 +17,6 @@ beat beat::_activeBeat;
 
 
 
-// pointer to functions to produce an interface for beat
-void (*beat::sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat) = nullptr;
-
 
 
 
@@ -28,6 +25,7 @@ void (*beat::sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint
 ///////////////////////////////////
 // default
 beat::beat() :
+  sendCurrentBeat(nullptr),
   _ui16BaseBeatInBpm(0), 
   _ui16BaseNoteForBeat(0)
 {
@@ -36,8 +34,10 @@ beat::beat() :
 // parameterized
 beat::beat(
   const uint16_t __ui16_base_beat_in_bpm, 
-  const uint16_t __ui16_base_note_for_beat
+  const uint16_t __ui16_base_note_for_beat,
+  void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat)
 ):
+  sendCurrentBeat(_sendCurrentBeat),
   _ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
   _ui16BaseNoteForBeat(__ui16_base_note_for_beat)
 {
