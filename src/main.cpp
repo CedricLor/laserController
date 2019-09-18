@@ -82,7 +82,7 @@ void setup() {
     mns::myScheduler.addTask(sequence::tPlaySequenceInLoop);
     mns::myScheduler.addTask(sequence::tPlaySequence);
     mns::myScheduler.addTask(sequence::globalBars.tPlayBar);
-    mns::myScheduler.addTask(sequence::globalBars.tPlayNote);
+    mns::myScheduler.addTask(sequence::globalBars.getNotes().tPlayNote);
   }
 
 

@@ -383,11 +383,15 @@ void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
  *  _tcbPlayBar manages the real duration (and the beat). 
 */
 void notes::playNoteInBar(const note & __note) {
-  // Serial.println("notes::playNoteInBar: starting");
+  Serial.println("notes::playNoteInBar: starting");
   setActive(__note);
   // Serial.println("notes::playNoteInBar: setActive(__note) passed");
-  this->tPlayNote.restartDelayed();
-  // Serial.println("notes::playNoteInBar: over");
+  tPlayNote.restartDelayed();
+  Serial.printf("notes::playNoteInBar: tPlayNote.getInterval(): [%lu]\n", tPlayNote.getInterval());
+  Serial.printf("notes::playNoteInBar: tPlayNote.getIterations(): [%li]\n", tPlayNote.getIterations());
+  Serial.printf("notes::playNoteInBar: tPlayNote.getRunCounter(): [%lu]\n", tPlayNote.getRunCounter());
+  Serial.printf("notes::playNoteInBar: tPlayNote.isEnabled(): shall be 1: Is [%i]\n", tPlayNote.isEnabled());
+  Serial.println("notes::playNoteInBar: over");
 }
 
 
