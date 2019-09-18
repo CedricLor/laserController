@@ -159,22 +159,22 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   // Serial.println("note::ui16GetNoteDurationInMs(). Starting.");
   // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
   // Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
-  // Serial.printf("note::ui16GetNoteDurationInMs(). beat::getCurrentBeat().getBaseNoteForBeat() == %u\n", beat::getCurrentBeat().getBaseNoteForBeat());
+  // Serial.printf("note::ui16GetNoteDurationInMs(). activeBeat.getBaseNoteForBeat() == %u\n", activeBeat.getBaseNoteForBeat());
 
-  if ((_ui16Note == 0) || (beat::getCurrentBeat().getBaseNoteForBeat() == 0)) {
+  if ((_ui16Note == 0) || (activeBeat.getBaseNoteForBeat() == 0)) {
     return 0;
   }
   // Serial.printf("note::ui16GetNoteDurationInMs(). Passed the 0 tests.\n");
 
-  // const uint16_t __ui16baseNoteDuration = beat::getCurrentBeat().ui16GetBaseNoteDurationInMs();
+  // const uint16_t __ui16baseNoteDuration = activeBeat.ui16GetBaseNoteDurationInMs();
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16baseNoteDuration == %u\n", __ui16baseNoteDuration);
-  // const uint16_t __ui16BaseNoteForBeat = beat::getCurrentBeat().getBaseNoteForBeat();
+  // const uint16_t __ui16BaseNoteForBeat = activeBeat.getBaseNoteForBeat();
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16BaseNoteForBeat == %u\n", __ui16BaseNoteForBeat);
   // const uint16_t __num = __ui16baseNoteDuration * __ui16BaseNoteForBeat;
   // Serial.printf("note::ui16GetNoteDurationInMs(). __num == %u\n", __num);
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
   uint16_t __ui16DurationInMs =
-  (uint16_t)ceil(((beat::getCurrentBeat().getBaseNoteForBeat() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs()))
+  (uint16_t)ceil(((activeBeat.getBaseNoteForBeat() * activeBeat.ui16GetBaseNoteDurationInMs()))
   / _ui16Note);
 
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ulDurationInM == %u\n", __ui16DurationInMs);
@@ -364,10 +364,10 @@ const note &notes::getCurrentNote() const {
  *             to calculate the notes duration */
 void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
   setActive(__note);
-  beat(__beat).setActive();
+  activeBeat = __beat;
   this->tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
   this->tPlayNote.setOnDisable([&](){
-    beat(0, 0).setActive();
+    activeBeat = beat(0, 0);
     this->_odtcbPlayNote();
     this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
   });
@@ -382,7 +382,6 @@ void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
 void notes::playNoteInBar(const note & __note) {
   Serial.println("notes::playNoteInBar: starting");
   setActive(__note);
-  // Serial.println("notes::playNoteInBar: setActive(__note) passed");
   tPlayNote.restartDelayed();
   Serial.println("notes::playNoteInBar: over");
 }

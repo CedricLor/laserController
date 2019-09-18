@@ -316,14 +316,14 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
    *    the stand alone sequence has been read, so that any other object that may 
    *    thereafter depend on beat finds a clean beat to start with, as required. */
   tPlaySequence.setOnDisable([](){
-    beat(0, 0).setActive();
+    activeBeat = beat(0, 0);
     tPlaySequence.setOnDisable(_odtcbPlaySequence);
   });
 
   // 4. set the active sequence and associated beat
   setActive(__i16_sequence_id);
  
-  beat(__beat).setActive();
+  activeBeat = __beat;
 
   tPlaySequence.enable();
 }
@@ -351,7 +351,7 @@ void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id) {
   setActive(__i16_sequence_id);
 
   // 5. set the beat
-  _beat.setActive();
+  activeBeat = _beat;
 
   tPlaySequenceInLoop.enable();
 }

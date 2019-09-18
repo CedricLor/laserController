@@ -14,7 +14,7 @@ Traductions en anglais:
 
 // std::array<beat, 7> beat::_beats;
 
-
+beat activeBeat;
 
 
 
@@ -25,7 +25,6 @@ Traductions en anglais:
 // default
 beat::beat() :
   sendCurrentBeat(nullptr),
-  _setActiveInBeatNS(nullptr),
   _ui16BaseBeatInBpm(0), 
   _ui16BaseNoteForBeat(0)
 {
@@ -35,11 +34,9 @@ beat::beat() :
 beat::beat(
   const uint16_t __ui16_base_beat_in_bpm, 
   const uint16_t __ui16_base_note_for_beat,
-  void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat),
-  void (*__setActiveInLaserInterfaceNS)(const beat & __beat)
+  void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat)
 ):
   sendCurrentBeat(_sendCurrentBeat),
-  _setActiveInBeatNS(__setActiveInLaserInterfaceNS),
   _ui16BaseBeatInBpm(__ui16_base_beat_in_bpm), 
   _ui16BaseNoteForBeat(__ui16_base_note_for_beat)
 {
@@ -48,7 +45,6 @@ beat::beat(
 // copy constructor
 beat::beat( const beat& __beat ):
   sendCurrentBeat(__beat.sendCurrentBeat),
-  _setActiveInBeatNS(__beat._setActiveInBeatNS),
   _ui16BaseBeatInBpm(__beat._ui16BaseBeatInBpm), 
   _ui16BaseNoteForBeat(__beat._ui16BaseNoteForBeat)  
 {
@@ -59,7 +55,6 @@ beat& beat::operator=(const beat& __beat)
 {
   if (&__beat != this) {
     sendCurrentBeat = __beat.sendCurrentBeat;
-    _setActiveInBeatNS = __beat._setActiveInBeatNS;
     _ui16BaseBeatInBpm = __beat._ui16BaseBeatInBpm;
     _ui16BaseNoteForBeat = __beat._ui16BaseNoteForBeat;
   }
@@ -103,32 +98,8 @@ beat& beat::operator=(const beat& __beat)
 
 
 ///////////////////////////////////
-// Setters
-///////////////////////////////////
-/** note::setActive(): public instance setter method
- * 
- *  sets the parameters of the static variable &beat::_activeBeat
- *  from a passed in beat reference. */
-void beat::setActive() {
-  // TODO: this if() test is not satisfactory. Refacto.
-  if (_setActiveInBeatNS != nullptr) {
-    _setActiveInBeatNS(*this);
-  }
-}
-
-
-
-
-///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** const beat &beat::getCurrentBeat(): public static getter method
- *  
- *  returns a reference to the beat instance that is currently active,
- *  stored in the static variable beat::_activeBeat. */
-beat const & (*beat::getCurrentBeat)()=nullptr;
-
-
 /** uint16_t beat::getBaseBeatInBpm(): public instance getter method
  * 
  *  Returns the base beat in bpm of a beat instance. */

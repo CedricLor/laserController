@@ -576,8 +576,7 @@ void test::rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes)
   // testing _notes.playNoteInBar
   Serial.printf("%s testing _notes.playNoteInBar\n", _methodName);
   Serial.printf("%s setting active beat to beat(5, 1)\n", _methodName);
-  beat _beat(5, 1);
-  _beat.setActive();
+  activeBeat = beat(5, 1);
 
   _notes.disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.playNoteInBar(note{4, 1}.\n", _methodName);
@@ -622,8 +621,7 @@ void test::rawNotesStack() {
 
 
 void test::barStackConstructors(const char * _methodName) {
-  beat _beat(5, 1);
-  _beat.setActive();
+  activeBeat = beat(5, 1);
 
   Serial.printf("%s testing bar default constructor: bar _bar;\n", _methodName);
   bar _emptyBar;
@@ -698,8 +696,7 @@ void test::barArrayStack() {
   const char * _methodName = "test::barArrayStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  beat _beat(5, 1);
-  _beat.setActive();
+  activeBeat = beat(5, 1);
 
   Serial.printf("%s testing bar instance's creation and assignment as in bars default (and only) constructor\n", _methodName);
 
@@ -805,7 +802,7 @@ void test::rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName, ba
   Serial.printf("%s _bars._activeBar.ui16GetNotesCountInBar() is [%u]\n", _methodName, 
     _bars._activeBar.ui16GetNotesCountInBar());
 
-  beat(0, 0).setActive();
+  activeBeat = beat(0, 0);
 
   Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
     _bars._activeBar.ui16GetBaseNotesCountInBar());
@@ -817,7 +814,7 @@ void test::rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName, ba
   Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getToneNumber() is [%u]\n", _methodName,   
   _bars._activeBar.getNotesArray().at(0).getToneNumber());
 
-  beat(5, 1).setActive();
+  activeBeat = beat(5, 1);
 
   Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar() is [%u]\n", _methodName, 
     _bars._activeBar.ui16GetBaseNotesCountInBar());
@@ -859,8 +856,7 @@ void test::implementedBarsStack() {
 void test::sequenceStack() {
   const char * _methodName = "test::sequenceStack:";
   Serial.printf("\n%s starting\n", _methodName);
-  beat _beat{sequence::sequences[0].getAssociatedBeat()};
-  _beat.setActive();
+  activeBeat = beat{sequence::sequences[0].getAssociatedBeat()};
 
   Serial.printf("\n%s testing sequence::sequences[0]\n", _methodName);
   Serial.printf("%s sequence::sequences[0].getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
@@ -904,7 +900,6 @@ void test::sequenceStack() {
   Serial.printf("%s sequence::sequences[0].ui32GetSequenceDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
     sequence::sequences[0].ui32GetSequenceDuration());
 
-  beat _defaultBeat{};
-  _defaultBeat.setActive();
+  activeBeat = beat{};
   Serial.printf("\n%s over\n\n", _methodName);
 }

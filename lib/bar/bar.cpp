@@ -117,7 +117,7 @@ uint16_t const bar::ui16GetNotesCountInBar() const {
  * number of notes) in a bar */
 uint16_t const bar::ui16GetBaseNotesCountInBar() const {
   // Serial.printf("bar::ui16GetBaseNotesCountInBar(): starting\n");
-  if (beat::getCurrentBeat().getBaseNoteForBeat() == 0) {
+  if (activeBeat.getBaseNoteForBeat() == 0) {
     return 0;
   }
   uint16_t __ui = 0;
@@ -149,9 +149,9 @@ uint16_t const bar::ui16GetBaseNotesCountInBar() const {
     __ui16TotalNotesIn16th += 16 / __ui16Note;
   };
   // Serial.printf("bar::ui16GetBaseNotesCountInBar(): __ui16TotalNotesIn16th = [%u]\n", __ui16TotalNotesIn16th);
-  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): beat::getCurrentBeat().getBaseNoteForBeat() = [%u]\n", beat::getCurrentBeat().getBaseNoteForBeat());
-  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): about to return [%u]\n", (__ui16TotalNotesIn16th / 16 * beat::getCurrentBeat().getBaseNoteForBeat()));
-  return (__ui16TotalNotesIn16th / 16 * beat::getCurrentBeat().getBaseNoteForBeat());
+  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): activeBeat.getBaseNoteForBeat() = [%u]\n", activeBeat.getBaseNoteForBeat());
+  // Serial.printf("bar::ui16GetBaseNotesCountInBar(): about to return [%u]\n", (__ui16TotalNotesIn16th / 16 * activeBeat.getBaseNoteForBeat()));
+  return (__ui16TotalNotesIn16th / 16 * activeBeat.getBaseNoteForBeat());
 }
 
 
@@ -161,9 +161,9 @@ uint16_t const bar::ui16GetBaseNotesCountInBar() const {
 uint32_t const bar::ui32GetBarDuration() const {
   // Serial.println(F("bar::ui32GetBarDuration(). Starting."));
   // Serial.printf("bar::ui32GetBarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar::ui32GetBarDuration(). beat::getCurrentBeat().ui16GetBaseNoteDurationInMs() = %u\n", beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
-  return (ui16GetBaseNotesCountInBar() * beat::getCurrentBeat().ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32GetBarDuration(). activeBeat.ui16GetBaseNoteDurationInMs() = %u\n", activeBeat.ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * activeBeat.ui16GetBaseNoteDurationInMs());
+  return (ui16GetBaseNotesCountInBar() * activeBeat.ui16GetBaseNoteDurationInMs());
 }
 
 
@@ -407,7 +407,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
   };
   
   /** 2. set the active beat from the passed-in beat */
-  beat(__beat).setActive();
+  activeBeat = __beat;
 
   /**3. set the tPlayNote Task to its default by calling notes{}.disableAndResetTPlayNote()
    *    
@@ -432,7 +432,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
    *    (iii) any other class that may depend on a beat (note, notes, bar or sequences) finds a
    *    clean beat state to start with, as necessary. */
   tPlayBar.setOnDisable([&](){
-    beat(0, 0).setActive();
+    activeBeat = beat(0, 0);
     tPlayBar.setOnDisable(NULL);
   });
 
@@ -451,7 +451,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
 bool bars::playBarInSequence(const bar & __target_bar) {
-  if ((beat::getCurrentBeat().getBaseNoteForBeat() == 0) || (beat::getCurrentBeat().getBaseBeatInBpm() == 0)) {
+  if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
     return false;
   }
   setActive(__target_bar);

@@ -31,28 +31,13 @@ void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) 
 // beat stack
 /*******************/
 void laserInterface::beatNS::init() {
-    beatNS::activeBeat = beat(2, 1, sendCurrentBeat, _setActiveInBeatNS);
-    beat::getCurrentBeat = beatNS::getCurrentBeat;
+    beatNS::activeBeat = beat(2, 1, sendCurrentBeat);
 }
 
 
 void laserInterface::beatNS::sendCurrentBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat) {
     // Do something smart
 }
-
-
-void laserInterface::beatNS::_setActiveInBeatNS(const beat & __beat) {
-    beatNS::activeBeat = __beat;
-}
-
-
-/** const beat & laserInterface::beatNS::getCurrentBeat(): public static getter method
- *  
- *  returns a reference to the beatNS::activeBeat instance. */
-beat const & laserInterface::beatNS::getCurrentBeat() {
-    return beatNS::activeBeat;
-}
-
 
 
 
