@@ -416,7 +416,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
    * 
    *    The following instruction resets tPlayNote to play a note 
    *    for one single iteration for a maximum duration of 30000 ms. */
-  if (!(notes{}.disableAndResetTPlayNote())) {return 2;};
+  notes{}.disableAndResetTPlayNote();
 
   /**4. set the onDisable callback of tPlayBar: 
    * 
@@ -439,8 +439,8 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
   // 5. once all the setting have been done, play the bar
   tPlayBar.restart();
 
-  // 6. return 3 for success
-  return 3;
+  // 6. return 2 for success
+  return 2;
 }
 
 

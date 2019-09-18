@@ -305,12 +305,9 @@ void notes::setActive(const note & __activeNote) {
  * 
  *  resets the parameters of the Task tPlayNote to  
  *  play notes read from a bar. */
-bool const notes::disableAndResetTPlayNote() {
-  if (!(tPlayNote.disable())) {
-    return false;
-  };
+void notes::disableAndResetTPlayNote() {
+  tPlayNote.disable();
   resetTPlayNote();
-  return true;
 }
 
 /** void notes::resetTPlayNote(): public setter method
@@ -387,10 +384,6 @@ void notes::playNoteInBar(const note & __note) {
   setActive(__note);
   // Serial.println("notes::playNoteInBar: setActive(__note) passed");
   tPlayNote.restartDelayed();
-  Serial.printf("notes::playNoteInBar: tPlayNote.getInterval(): [%lu]\n", tPlayNote.getInterval());
-  Serial.printf("notes::playNoteInBar: tPlayNote.getIterations(): [%li]\n", tPlayNote.getIterations());
-  Serial.printf("notes::playNoteInBar: tPlayNote.getRunCounter(): [%lu]\n", tPlayNote.getRunCounter());
-  Serial.printf("notes::playNoteInBar: tPlayNote.isEnabled(): shall be 1: Is [%i]\n", tPlayNote.isEnabled());
   Serial.println("notes::playNoteInBar: over");
 }
 
