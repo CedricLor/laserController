@@ -234,7 +234,7 @@ bars::bars(
   // Serial.println("bars::bars. before creating _aRelays");
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
   // Serial.println("bars::bars. _aRelays created");
-  _barsArray[0] = {_aRelays};
+  _barsArray[0] = {_aRelays, 0};
   // Serial.println("bars::bars. _barsArray[0] copy assigned");
   // Serial.printf("bars::bars. _barsArray[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _barsArray[0].ui16GetBaseNotesCountInBar() == 2);
   // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getToneNumber() = %u\n", _barsArray[0].getNotesArray().at(0).getToneNumber());
@@ -248,7 +248,7 @@ bars::bars(
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
-  _barsArray[1] = {_aTwins};
+  _barsArray[1] = {_aTwins, 1};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -256,7 +256,7 @@ bars::bars(
    * count of base notes per bar: 2
    * => 2 / 1 */
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
-  _barsArray[2] = {_aAll};
+  _barsArray[2] = {_aAll, 2};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -264,7 +264,7 @@ bars::bars(
    * count of base notes per bar: 4
    * => 4 / 1 */
   std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
-  _barsArray[3] = {_aSwipeR};
+  _barsArray[3] = {_aSwipeR, 3};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -272,7 +272,7 @@ bars::bars(
    * count of base notes per bar: 4
    * => 4 / 1 */
   std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
-  _barsArray[4] = {_aSwipeL};
+  _barsArray[4] = {_aSwipeL, 4};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -280,7 +280,7 @@ bars::bars(
    * count of base notes per bar: 1
    * => 1 / 1 */
   std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
-  _barsArray[5] = {_aAllOff};
+  _barsArray[5] = {_aAllOff, 5};
 
 }
 
