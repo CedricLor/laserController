@@ -34,7 +34,6 @@ class tone
 #define tones_h
 class tones {
   friend class note;
-  friend class notes;
   friend class test;
   
   public:
