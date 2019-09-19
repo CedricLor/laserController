@@ -247,7 +247,7 @@ notes::notes(notes&& __notes):
 notes & notes::operator=(notes&& __notes) {
   if (this != &__notes) {
     sendCurrentNote = nullptr;
-    _activeNote = globalNote;
+    _activeNote = note{};
     _tones = {};
 
     sendCurrentNote = __notes.sendCurrentNote;
@@ -255,7 +255,7 @@ notes & notes::operator=(notes&& __notes) {
     _tones = __notes._tones;
 
     __notes.sendCurrentNote = nullptr;
-    __notes._activeNote = globalNote;
+    __notes._activeNote = note{};
     __notes._tones = {};
 
     disableAndResetTPlayNote();
