@@ -27,17 +27,17 @@ class beat
       const uint16_t __ui16_base_note_for_beat,
       void (*_sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat)=nullptr
     ); 
-    // copy constructor
+    /** copy constructor */
     beat(const beat & __beat);
-    // assignement operator
+    /** assignement operator */
     beat& operator=(const beat & __beat);
-    // move constructor
+    /** move constructor */
     beat(beat&& __beat);
-    // move assignement operator
+    /** move assignement operator */
     beat & operator=(beat&& __beat);
 
-    // objects array initializer
-    // static void initBeats(); // initializer of the array of beats
+    /** objects array initializer */
+    // static void initBeats(); /** initializer of the array of beats */
     /** sender to mesh */
     void (*sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
 
@@ -48,11 +48,11 @@ class beat
 
   private:
 
-    // static properties
+    /** static properties */
     // static std::array<beat, 7> _beats;
 
-    // private instance properties
-    uint16_t _ui16BaseBeatInBpm; // basic time unit for the smallest note to be played (_iBaseNoteForBeat)
+    /** private instance properties */
+    uint16_t _ui16BaseBeatInBpm; // basic time unit for the one signle base note (_ui16BaseNoteForBeat)
     uint16_t _ui16BaseNoteForBeat; // base note for the beat
 };
 
