@@ -44,17 +44,21 @@ beat::beat(
 
 // copy constructor
 beat::beat( const beat& __beat ):
-  sendCurrentBeat(__beat.sendCurrentBeat),
   _ui16BaseBeatInBpm(__beat._ui16BaseBeatInBpm), 
   _ui16BaseNoteForBeat(__beat._ui16BaseNoteForBeat)  
 {
+  if (__beat.sendCurrentBeat != nullptr) {
+    sendCurrentBeat = __beat.sendCurrentBeat;
+  }
 }
 
 // assignement operator
-beat& beat::operator=(const beat& __beat)
+beat& beat::operator=(const beat & __beat)
 {
   if (&__beat != this) {
-    sendCurrentBeat = __beat.sendCurrentBeat;
+    if (__beat.sendCurrentBeat != nullptr) {
+      sendCurrentBeat = __beat.sendCurrentBeat;
+    }
     _ui16BaseBeatInBpm = __beat._ui16BaseBeatInBpm;
     _ui16BaseNoteForBeat = __beat._ui16BaseNoteForBeat;
   }

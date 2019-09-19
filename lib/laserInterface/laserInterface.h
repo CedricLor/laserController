@@ -11,6 +11,8 @@
 
 namespace laserInterface {
     
+  void init();
+
   namespace stepsNS {
     void play();
 
@@ -55,7 +57,6 @@ namespace laserInterface {
   }
 
   namespace beatNS {
-    beat activeBeat;
     void init();
     void sendCurrentBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
   }

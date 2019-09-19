@@ -10,6 +10,11 @@ using namespace laserInterface;
 
 
 
+void laserInterface::init() {
+    beatNS::init();
+}
+
+
 /*******************/
 // boxStates stack
 /*******************/
@@ -31,7 +36,7 @@ void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) 
 // beat stack
 /*******************/
 void laserInterface::beatNS::init() {
-    beatNS::activeBeat = beat(2, 1, sendCurrentBeat);
+    activeBeat = beat(2, 1, sendCurrentBeat);
 }
 
 
