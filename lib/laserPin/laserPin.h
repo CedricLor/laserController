@@ -13,6 +13,7 @@ class laserPin
 {
   friend class test;
   friend class tone;
+
   public:
     laserPin();
     laserPin(const uint16_t __ui16_physical_pin_number, const int16_t __i16_index_number=-1);
@@ -37,8 +38,7 @@ constexpr uint16_t    PIN_COUNT                           = 4;
 class laserPins
 {
   friend class test;
-  friend class tone;
-  friend class tones;
+
   public:
     laserPins();
     ~laserPins();
