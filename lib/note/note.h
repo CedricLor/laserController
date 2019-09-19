@@ -14,7 +14,6 @@
 
 class note
 {
-  // TODO: Try to remove friends little by little
   friend class notes;
   friend class test;
   public:
@@ -57,8 +56,6 @@ class note
 
 class notes
 {
-  // TODO: Try to remove friends little by little
-  friend class bar;
   friend class bars;
   friend class test;
   public:
