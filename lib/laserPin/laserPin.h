@@ -42,6 +42,7 @@ class laserPins
   public:
     laserPins();
     ~laserPins();
+    laserPin const & at(uint16_t const __indexNumber) const;
   private:
     std::array<laserPin, PIN_COUNT> _array;
 };

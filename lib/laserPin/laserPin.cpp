@@ -53,12 +53,13 @@ laserPin::~laserPin()
 
 
 
-
-
 bool const laserPin::_switchPin(const bool __b_target_state) const {
   digitalWrite(_ui16PhysicalPinNumber, __b_target_state);
   return __b_target_state;
 }
+
+
+
 
 
 
@@ -80,6 +81,10 @@ laserPins::~laserPins() {
   for (uint16_t __i = 0; __i < PIN_COUNT; __i++) {
     _array[__i].~laserPin(); // relayPins = { 5, 17, 16, 4 }
   }
+}
+
+laserPin const & laserPins::at(uint16_t const __indexNumber) const {
+  return _array[__indexNumber];
 }
 
 // ESP32 Pin Layout

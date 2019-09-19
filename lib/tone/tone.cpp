@@ -48,7 +48,7 @@ tone& tone::operator=(const tone& __tone)
 */
 int16_t const tone::_playTone(const laserPins & __laser_pins){
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-    __laser_pins._array.at(__thisPin)._switchPin(_laserPinsStatesArr[__thisPin]);
+    __laser_pins.at(__thisPin)._switchPin(_laserPinsStatesArr[__thisPin]);
   }
   return i16IndexNumber;
 };
