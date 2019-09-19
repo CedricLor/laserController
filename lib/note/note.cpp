@@ -26,7 +26,6 @@ note globalNote{}; // TODO: <-- For the moment, it is at the global scope; find 
 ///////////////////////////////////
 // Static variables
 ///////////////////////////////////
-tones note::globalTones{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 
 
@@ -197,8 +196,8 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 // Players
 ///////////////////////////////////
 /** const int16_t note::_playTone() const */
-const int16_t note::_playTone() const {
-  return globalTones._playTone(getToneNumber());
+const int16_t note::_playTone(tones const & __tones) const {
+  return __tones._playTone(getToneNumber());
 }
 
 
@@ -387,7 +386,7 @@ bool notes::_oetcbPlayNote() {
     Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getToneNumber()) == (_tones.at(_activeNote.getToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getToneNumber()) == (_tones.at(_activeNote.getToneNumber()).i16IndexNumber));
   }
   bool _return = false;
-  if (_activeNote._playTone() >= 0) {
+  if (_activeNote._playTone(_tones) >= 0) {
     _return = true;
   }
   Serial.printf("note::_oetcbPlayNote(). returning [%s]\n", (_return == true) ? "true" : "false");
@@ -404,6 +403,6 @@ void notes::_odtcbPlayNote() {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(_tones.at(0)); // tones[0] means turn off all the lasers
-  _activeNote._playTone();
+  _activeNote._playTone(_tones);
   Serial.println("note::_odtcbPlayNote(). over");
 }

@@ -19,7 +19,6 @@ class note
   friend class bar;
   friend class test;
   public:
-    static tones globalTones;
 
     /** default empty constructor */
     note();
@@ -45,7 +44,7 @@ class note
     uint16_t _ui16ValidNote();
 
     /** player */
-    const int16_t _playTone() const;
+    const int16_t _playTone(tones const & __tones) const;
 
     // private instance properties
     uint16_t _ui16Tone;
