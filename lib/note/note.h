@@ -97,3 +97,5 @@ class notes
     void _odtcbPlayNote();
 };
 #endif
+
+extern note globalNote;
