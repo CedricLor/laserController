@@ -41,7 +41,7 @@ class tones {
     tones(); // default constructor
   private:
     /** player */
-    int16_t const _playTone(const uint16_t __toneNumber);
+    int16_t const _playTone(const uint16_t __ui16ToneNumber);
     /** members */
     laserPins _laserPins;
     std::array<tone, 16> _tonesArray;

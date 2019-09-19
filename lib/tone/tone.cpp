@@ -115,6 +115,6 @@ tones::tones() :
  *  
  *  _playTone() is mainly a wrapper over the _playTone method of tone instances.
 */
-int16_t const tones::_playTone(const uint16_t __toneNumber) {
-  return _tonesArray.at(__toneNumber)._playTone(_laserPins);
+int16_t const tones::_playTone(const uint16_t __ui16ToneNumber) {
+  return _tonesArray.at(__ui16ToneNumber)._playTone(_laserPins);
 };
