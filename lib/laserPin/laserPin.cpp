@@ -83,8 +83,8 @@ laserPins::~laserPins() {
   }
 }
 
-laserPin const & laserPins::at(uint16_t const __indexNumber) const {
-  return _array[__indexNumber];
+laserPin const & laserPins::at (uint16_t const __ui16IndexNumber) const {
+  return _array[__ui16IndexNumber];
 }
 
 // ESP32 Pin Layout
