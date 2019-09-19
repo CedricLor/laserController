@@ -46,7 +46,7 @@ tone& tone::operator=(const tone& __tone)
  *  and switches each pin to the corresponding state (HIGH or LOW) stored in 
  *  _laserPinsStatesArr.
 */
-int16_t const tone::_playTone(const laserPins & __laser_pins){
+int16_t const tone::_playTone(const laserPins & __laser_pins) const {
   for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
     __laser_pins.at(__thisPin)._switchPin(_laserPinsStatesArr[__thisPin]);
   }
@@ -108,7 +108,7 @@ tones::tones() :
 
 
 
-tone & tones::at (uint16_t const __ui16IndexNumber) {
+tone const & tones::at (uint16_t const __ui16IndexNumber) {
   return _tonesArray[__ui16IndexNumber];
 }
 

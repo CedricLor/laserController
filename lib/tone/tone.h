@@ -16,7 +16,7 @@ class tone
   friend class test;
 
   private:
-    int16_t const _playTone(const laserPins & __laser_pins);
+    int16_t const _playTone(const laserPins & __laser_pins) const;
     std::array<bool, 4> _laserPinsStatesArr;  // array containing the state of each laser at each tempo
 
   public:
@@ -38,7 +38,7 @@ class tones {
   
   public:
     tones(); // default constructor
-    tone & at (uint16_t const __ui16IndexNumber);
+    tone const & at (uint16_t const __ui16IndexNumber);
   private:
     /** player */
     int16_t const _playTone(const uint16_t __ui16ToneNumber);
