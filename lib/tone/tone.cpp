@@ -121,6 +121,6 @@ tone const & tones::at (uint16_t const __ui16IndexNumber) const {
  *  
  *  _playTone() is mainly a wrapper over the _playTone method of tone instances.
 */
-int16_t const tones::_playTone(const uint16_t __ui16ToneNumber) {
+int16_t const tones::_playTone(const uint16_t __ui16ToneNumber) const {
   return at(__ui16ToneNumber)._playTone(_laserPins);
 };
