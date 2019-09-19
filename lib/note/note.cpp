@@ -273,8 +273,9 @@ notes & notes::operator=(notes&& __notes) {
  *  sets the instance variable _activeNote from a passed in note reference.
  *  
  *  The _activeNote is then used: 
- *  (i)  in this class, to start the tone player for the currently active note,
- *       from the tPlayNote Task (onEnable and onDiable) callbacks;
+ *  (i)  in this class (notes), to provide 
+ *       (a) the interval param to Task tPlayNote (ie. the note duration);
+ *       (b) to call _tPlayTone (ie. the note tone).
  *  (ii) in laserInterface, to retrieve the params (_ui16Note and _ui16Tone) of
  *       the currently active note and send them to the mesh. */
 void notes::setActive(const note & __activeNote) {
