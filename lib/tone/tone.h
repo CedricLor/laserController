@@ -39,6 +39,7 @@ class tones {
   
   public:
     tones(); // default constructor
+    tone const & at (uint16_t const __ui16IndexNumber) const;
   private:
     /** player */
     int16_t const _playTone(const uint16_t __ui16ToneNumber);

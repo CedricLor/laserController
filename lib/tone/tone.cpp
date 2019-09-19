@@ -108,6 +108,12 @@ tones::tones() :
 
 
 
+tone const & tones::at (uint16_t const __ui16IndexNumber) const {
+  return _tonesArray[__ui16IndexNumber];
+}
+
+
+
 
 /** tones::_playTone()
  *   
