@@ -31,6 +31,10 @@ class beat
     beat(const beat & __beat);
     // assignement operator
     beat& operator=(const beat & __beat);
+    // move constructor
+    beat(beat&& __beat);
+    // move assignement operator
+    beat & operator=(beat&& __beat);
 
     // objects array initializer
     // static void initBeats(); // initializer of the array of beats

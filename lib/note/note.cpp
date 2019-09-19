@@ -70,11 +70,7 @@ note::note(note&& __note):
   _ui16Tone(0),
   _ui16Note(0)
 {
-  _ui16Tone = __note._ui16Tone;
-  _ui16Note = __note._ui16Note;
-
-  __note._ui16Tone = 0;
-  __note._ui16Note = 0;
+  *this = std::move(__note);
 }
 
 note & note::operator=(note&& __note) {
@@ -244,15 +240,7 @@ notes::notes(notes&& __notes):
   _activeNote(globalNote),
   _tones(note::globalTones)
 {
-  sendCurrentNote = __notes.sendCurrentNote;
-  _activeNote = __notes._activeNote;
-  _tones = __notes._tones;
-
-  __notes.sendCurrentNote = nullptr;
-  __notes._activeNote = globalNote;
-  __notes._tones = note::globalTones;
-
-  disableAndResetTPlayNote();
+  *this = std::move(__notes);
 }
 // move assignment op
 notes & notes::operator=(notes&& __notes) {

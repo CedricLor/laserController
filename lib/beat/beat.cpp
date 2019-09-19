@@ -65,7 +65,31 @@ beat& beat::operator=(const beat & __beat)
   return *this;
 }
 
+// move constructor
+beat::beat(beat&& __beat):
+  _ui16BaseBeatInBpm(0), 
+  _ui16BaseNoteForBeat(0)
+{
+  *this = std::move(__beat);
+}
 
+// move assignment op
+beat & beat::operator=(beat&& __beat) {
+  if (this != &__beat) {
+    _ui16BaseBeatInBpm = 0;
+    _ui16BaseNoteForBeat = 0;
+
+    if (__beat.sendCurrentBeat != nullptr) {
+      sendCurrentBeat = __beat.sendCurrentBeat;
+    }
+    _ui16BaseBeatInBpm = __beat._ui16BaseBeatInBpm;
+    _ui16BaseNoteForBeat = __beat._ui16BaseNoteForBeat;
+
+    __beat._ui16BaseBeatInBpm = 0;
+    __beat._ui16BaseNoteForBeat = 0;
+  }
+  return *this;
+}
 
 
 
