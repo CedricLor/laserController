@@ -63,32 +63,32 @@ namespace laserInterface {
 
   namespace sequenceNS {
     // sequence stack
-    void initSequenceComm();
-    void setCurrentSequence(const int16_t __i16ActiveSequenceNb);
-    void getCurrentSequence();
-    void sendCurrentSequence(const int16_t __i16ActiveSequenceNb);
-    void playSequence(const int16_t __i16SequenceNb);
-    void lockSequenceStack();
+    void initComm();
+    void setCurrent(const int16_t __i16ActiveSequenceNb);
+    void getCurrent();
+    void sendCurrent(const int16_t __i16ActiveSequenceNb);
+    void play(const int16_t __i16SequenceNb);
+    void lockStack();
   }
 
   namespace barNS {
     // bar stack
-    void initBarComm();
-    void setCurrentBar(const int16_t __i16_target_bar_id);
-    void getCurrentBar();
-    void sendCurrentBar(const int16_t __i16_current_bar_id);
-    void playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar=-1);
-    void lockBarStack();
+    void initComm();
+    void setCurrent(const int16_t __i16_target_bar_id);
+    void getCurrent();
+    void sendCurrent(const int16_t __i16_current_bar_id);
+    void play(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar=-1);
+    void lockStack();
   }
 
   namespace noteNS {
     // note stack
-    void initNoteComm();
-    void setCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
-    void getCurrentNote();
-    void sendCurrentNote(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
-    void playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
-    void lockNoteStack();
+    void initComm();
+    void setCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void getCurrent();
+    void sendCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void lockStack();
   }
 }
 
