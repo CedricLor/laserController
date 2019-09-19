@@ -86,7 +86,7 @@ class notes
     const note &getCurrentNote() const;
 
     /** player */
-    void playNoteStandAlone(const note & __note, beat const & __beat=activeBeat);
+    void playNoteStandAlone(const note & __note, beat const & __beat);
     void playNoteInBar(const note & __note);
 
     /** member */
