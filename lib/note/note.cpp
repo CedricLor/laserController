@@ -383,8 +383,8 @@ bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). starting");
   if (MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_activeNote.getToneNumber()) %u\n", _activeNote.getToneNumber());
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber) %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
-    Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getToneNumber()) == (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getToneNumber()) == (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber));
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_tones._tonesArray.at(_activeNote.getToneNumber()).i16IndexNumber) %i\n", _tones._tonesArray.at(_activeNote.getToneNumber()).i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getToneNumber()) == (_tones._tonesArray.at(_activeNote.getToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getToneNumber()) == (_tones._tonesArray.at(_activeNote.getToneNumber()).i16IndexNumber));
   }
   bool _return = false;
   if (_activeNote._playTone() >= 0) {
@@ -403,7 +403,7 @@ void notes::_odtcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
-  _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
+  _activeNote._setTone(_tones._tonesArray.at(0)); // tones[0] means turn off all the lasers
   _activeNote._playTone();
   Serial.println("note::_odtcbPlayNote(). over");
 }

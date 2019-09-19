@@ -44,6 +44,6 @@ class tones {
     int16_t const _playTone(const uint16_t __toneNumber);
     /** members */
     laserPins _laserPins;
-    std::array<tone, 16> _array;
+    std::array<tone, 16> _tonesArray;
 };
 #endif

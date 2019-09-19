@@ -65,44 +65,44 @@ tones::tones() :
   _laserPins(laserPins{})
 {
 
-  // Initialize the tones' _array
+  // Initialize the tones' _array: _tonesArray
   /** "all off" */
-  _array[0] = {std::array<bool, 4>{HIGH, HIGH, HIGH, HIGH}, 0};
+  _tonesArray[0] = {std::array<bool, 4>{HIGH, HIGH, HIGH, HIGH}, 0};
 
   /**"first on"*/
-  _array[1] = {std::array<bool, 4>{LOW, HIGH, HIGH, HIGH}, 1};
+  _tonesArray[1] = {std::array<bool, 4>{LOW, HIGH, HIGH, HIGH}, 1};
   /**"second on*/
-  _array[2] = {std::array<bool, 4>{HIGH, LOW, HIGH, HIGH}, 2};
+  _tonesArray[2] = {std::array<bool, 4>{HIGH, LOW, HIGH, HIGH}, 2};
   /**"third on"*/
-  _array[3] = {std::array<bool, 4>{HIGH, HIGH, LOW, HIGH}, 3};
+  _tonesArray[3] = {std::array<bool, 4>{HIGH, HIGH, LOW, HIGH}, 3};
   /**"fourth on"*/
-  _array[4] = {std::array<bool, 4>{HIGH, HIGH, HIGH, LOW}, 4};
+  _tonesArray[4] = {std::array<bool, 4>{HIGH, HIGH, HIGH, LOW}, 4};
 
   /**"first pair on"*/
-  _array[5] = {std::array<bool, 4>{LOW, LOW, HIGH, HIGH}, 5};
+  _tonesArray[5] = {std::array<bool, 4>{LOW, LOW, HIGH, HIGH}, 5};
   /**"second pair on*/
-  _array[6] = {std::array<bool, 4>{HIGH, HIGH, LOW, LOW}, 6};
+  _tonesArray[6] = {std::array<bool, 4>{HIGH, HIGH, LOW, LOW}, 6};
 
   /**"on off on off"*/
-  _array[7] = {std::array<bool, 4>{LOW, HIGH, LOW, HIGH}, 7};
+  _tonesArray[7] = {std::array<bool, 4>{LOW, HIGH, LOW, HIGH}, 7};
   /**"off on off on"*/
-  _array[8] = {std::array<bool, 4>{HIGH, LOW, HIGH, LOW}, 8};
+  _tonesArray[8] = {std::array<bool, 4>{HIGH, LOW, HIGH, LOW}, 8};
 
   /**"two external lasers on, two internal lasers off"*/
-  _array[9] = {std::array<bool, 4>{LOW, HIGH, HIGH, LOW}, 9};
+  _tonesArray[9] = {std::array<bool, 4>{LOW, HIGH, HIGH, LOW}, 9};
   /**"two external lasers off, two internal lasers on*/
-  _array[10] = {std::array<bool, 4>{HIGH, LOW, LOW, HIGH}, 10};
+  _tonesArray[10] = {std::array<bool, 4>{HIGH, LOW, LOW, HIGH}, 10};
   /**"last off"*/
-  _array[11] = {std::array<bool, 4>{LOW, LOW, LOW, HIGH}, 11};
+  _tonesArray[11] = {std::array<bool, 4>{LOW, LOW, LOW, HIGH}, 11};
   /**"third off"*/
-  _array[12] = {std::array<bool, 4>{LOW, LOW, HIGH, LOW}, 12};
+  _tonesArray[12] = {std::array<bool, 4>{LOW, LOW, HIGH, LOW}, 12};
   /**"second off"*/
-  _array[13] = {std::array<bool, 4>{LOW, HIGH, LOW, LOW}, 13};
+  _tonesArray[13] = {std::array<bool, 4>{LOW, HIGH, LOW, LOW}, 13};
   /**"first off"*/
-  _array[14] = {std::array<bool, 4>{HIGH, LOW, LOW, LOW}, 14};
+  _tonesArray[14] = {std::array<bool, 4>{HIGH, LOW, LOW, LOW}, 14};
 
   /**"all on"*/
-  _array[15] = {std::array<bool, 4>{LOW, LOW, LOW, LOW}, 15};
+  _tonesArray[15] = {std::array<bool, 4>{LOW, LOW, LOW, LOW}, 15};
 }
 
 
@@ -116,5 +116,5 @@ tones::tones() :
  *  _playTone() is mainly a wrapper over the _playTone method of tone instances.
 */
 int16_t const tones::_playTone(const uint16_t __toneNumber) {
-  return _array.at(__toneNumber)._playTone(_laserPins);
+  return _tonesArray.at(__toneNumber)._playTone(_laserPins);
 };
