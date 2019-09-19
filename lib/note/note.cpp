@@ -214,10 +214,8 @@ notes::notes(
 ):
   sendCurrentNote(_sendCurrentNote),
   _activeNote(globalNote),
-  _tones(note::globalTones)
+  _tones({})
 {
-  /** TODO: not really sure _tones(note::globalTones) needs to be 
-   *        set from a global variable. */
   disableAndResetTPlayNote();
 }
 // copy constructor
@@ -242,7 +240,7 @@ notes & notes::operator=(const notes & __notes) {
 notes::notes(notes&& __notes):
   sendCurrentNote(nullptr),
   _activeNote(globalNote),
-  _tones(note::globalTones)
+  _tones({})
 {
   *this = std::move(__notes);
 }
@@ -251,7 +249,7 @@ notes & notes::operator=(notes&& __notes) {
   if (this != &__notes) {
     sendCurrentNote = nullptr;
     _activeNote = globalNote;
-    _tones = note::globalTones;
+    _tones = {};
 
     sendCurrentNote = __notes.sendCurrentNote;
     _activeNote = __notes._activeNote;
@@ -259,7 +257,7 @@ notes & notes::operator=(notes&& __notes) {
 
     __notes.sendCurrentNote = nullptr;
     __notes._activeNote = globalNote;
-    __notes._tones = note::globalTones;
+    __notes._tones = {};
 
     disableAndResetTPlayNote();
   }
