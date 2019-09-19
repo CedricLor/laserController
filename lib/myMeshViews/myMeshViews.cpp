@@ -56,7 +56,7 @@ myMeshViews::myMeshViews()
 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::statusMsg(): Starting.");
+    Serial.println("myMeshViews::statusMsg(): starting.");
   }
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
@@ -79,7 +79,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   thisBox.boxActiveStateHasBeenSignaled = true;
 
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::statusMsg(): Ending.");
+    Serial.println("myMeshViews::statusMsg(): over.");
   }
 }
 
@@ -111,7 +111,7 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
-    Serial.print("myMeshViews::_changeBoxRequest(): Starting.\n");
+    Serial.print("myMeshViews::_changeBoxRequest(): starting.\n");
   }
 
   // broadcast or send the message
@@ -127,7 +127,7 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_changeBoxRequest(): Ending.");
+    Serial.println("myMeshViews::_changeBoxRequest(): over.");
   }
 }
 
@@ -140,14 +140,14 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_changedBoxConfirmation(): Starting.");
+    Serial.println("myMeshViews::_changedBoxConfirmation(): starting.");
   }
 
   // broadcast confirmation
   _sendMsg(obj);
 
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::changedMasterBoxConfirmation(): Ending.");
+    Serial.println("myMeshViews::changedMasterBoxConfirmation(): over.");
   }
 }
 
@@ -199,7 +199,7 @@ void myMeshViews::_addIps(JsonObject& _joMsg) {
 
 void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   if (MY_DG_MESH) {
-    Serial.println("myMeshViews::_sendMsg(): Starting.");
+    Serial.println("myMeshViews::_sendMsg(): starting.");
     // Serial.println("myMeshViews::_sendMsg(): about to allote thisBox.ui16NodeName to _joMsg[\"senderNodeName\"]");
   }
 

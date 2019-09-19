@@ -33,7 +33,7 @@ void MasterSlaveBox::changeGlobalMasterBoxAndSlaveReaction(const byte bMasterBox
 
 
 void MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber) {
-  // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Starting with bMasterBoxNumber = %u\n", bMasterBoxNumber);
+  // Serial.printf("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): starting with bMasterBoxNumber = %u\n", bMasterBoxNumber);
   thisBox.ui16MasterBoxName = bMasterBoxNumber;
   // Serial.print("MasterSlaveBox::_changeTheMasterBoxId(const byte bMasterBoxNumber): Done\n");
 }

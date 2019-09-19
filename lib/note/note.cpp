@@ -156,7 +156,7 @@ uint16_t const note::getNote() const {
  *  
  *  Returns the duration of a note instance in ms. */
 uint16_t const note::ui16GetNoteDurationInMs() const {
-  // Serial.println("note::ui16GetNoteDurationInMs(). Starting.");
+  // Serial.println("note::ui16GetNoteDurationInMs(). starting.");
   // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
   // Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
   // Serial.printf("note::ui16GetNoteDurationInMs(). activeBeat.getBaseNoteForBeat() == %u\n", activeBeat.getBaseNoteForBeat());
@@ -181,7 +181,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   if (__ui16DurationInMs > 30000) {
     return 30000;
   }
-  // Serial.println("note::ui16GetNoteDurationInMs(). Ending.");
+  // Serial.println("note::ui16GetNoteDurationInMs(). over.");
   return __ui16DurationInMs;
 }
 
@@ -390,17 +390,18 @@ void notes::playNoteInBar(const note & __note) {
 /** notes::_oetcbPlayNote()
  *  On enable Task _tNote, turn the lasers to a given tone */
 bool notes::_oetcbPlayNote() {
-  Serial.println("note::_oetcbPlayNote(). Starting");
+  Serial.println("note::_oetcbPlayNote(). starting");
   if (MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_activeNote.getToneNumber()) %u\n", _activeNote.getToneNumber());
     Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber) %i\n", _tones._array.at(_activeNote.getToneNumber()).i16IndexNumber);
     Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getToneNumber()) == (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getToneNumber()) == (_tones._array.at(_activeNote.getToneNumber()).i16IndexNumber));
   }
+  bool _return = false;
   if (_activeNote._playTone() >= 0) {
-  return true;
-
+    _return = true;
   }
-  return false;
+  Serial.printf("note::_oetcbPlayNote(). returning [%s]\n", (_return == true) ? "true" : "false");
+  return _return;
 }
 
 
@@ -408,11 +409,11 @@ bool notes::_oetcbPlayNote() {
  * 
  *  On disable Task _tNote, turn off all the lasers */
 void notes::_odtcbPlayNote() {
-  Serial.println("note::_odtcbPlayNote(). Starting");
+  Serial.println("note::_odtcbPlayNote(). starting");
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setTone(_tones._array.at(0)); // tones[0] means turn off all the lasers
   _activeNote._playTone();
-  Serial.println("note::_odtcbPlayNote(). Ending");
+  Serial.println("note::_odtcbPlayNote(). over");
 }

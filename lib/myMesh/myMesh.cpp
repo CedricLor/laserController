@@ -213,7 +213,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   tChangedConnection.restart();
 
   if (MY_DG_MESH) {
-    Serial.println(F("myMesh::droppedConnectionCallback(): Ending."));
+    Serial.println(F("myMesh::droppedConnectionCallback(): over."));
   }
 }
 
@@ -321,7 +321,7 @@ void myMesh::changedConnectionCallback() {
  *  Checks whether the node is alone, upon mesh events or before sending
  *  messages through the mesh. */
 bool myMesh::IamAlone() {
-  Serial.printf("myMesh::IamAlone(): Starting\n");
+  Serial.printf("myMesh::IamAlone(): starting\n");
   /** Tests:
    *  (i) is the size of the nodeList < 2 (=> equal to 1 or 0)?
    *  (ii) is the last item of the nodeList equal to 0? <-- this second test is suspect. */
@@ -359,7 +359,7 @@ Task myMesh::tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, NULL/*&mn
    Restarts the mesh if the node is no longer connected.
 */
 void myMesh::_tcbIamAloneTimeOut() {
-  Serial.println("myMesh::_tcbIamAloneTimeOut(): Starting.");
+  Serial.println("myMesh::_tcbIamAloneTimeOut(): starting.");
   if (IamAlone()) {
     Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
     // myMeshStarter::tRestart.restartDelayed();
@@ -424,7 +424,7 @@ void myMesh::_odtcbUpdateCBOnChangedConnections() {
 
 
 void myMesh::_tcbUpdateCBOnChangedConnections() {
-  if (MY_DG_MESH) Serial.println("\nmyMesh::_tcbUpdateCBOnChangedConnections(): Starting. Time: " + String(millis()));
+  if (MY_DG_MESH) Serial.println("\nmyMesh::_tcbUpdateCBOnChangedConnections(): starting. Time: " + String(millis()));
   // 1. Disable the Task tSaveNodeMap (just in case)
   tSaveNodeMap.disable();
 
@@ -471,7 +471,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
   // 4. Delete the boxes marked as 0 from the ControlerBoxes[] array
   _deleteBoxesFromCBArray(_nodeMap);
 
-  Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Ending. Time: " + String(millis()));
+  Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): over. Time: " + String(millis()));
 
   // This code was when iterating over the _savedNodeList
   // and comparing it with the _newNodeList
@@ -554,7 +554,7 @@ void myMesh::_tcbSaveNodeMap() {
 std::map<uint32_t, uint16_t> myMesh::_nodeMap;
 
 void myMesh::_saveNodeMap() {
-  // Serial.println("myMesh::_saveNodeMap(): Starting. Time: " + String(millis()));
+  // Serial.println("myMesh::_saveNodeMap(): starting. Time: " + String(millis()));
   _nodeMap.clear();
   // Serial.println("myMesh::_saveNodeMap(): Before iteration. Time: " + String(millis()));
   // for (uint32_t _savedNode : _savedNodeList) {
@@ -572,7 +572,7 @@ void myMesh::_saveNodeMap() {
   //   }
   //   Serial.printf("myMesh::_saveNodeMap(): ---\n\n");
   // }
-  // Serial.println("myMesh::_saveNodeMap(): Ending. Time: " + String(millis()));
+  // Serial.println("myMesh::_saveNodeMap(): over. Time: " + String(millis()));
 }
 
 

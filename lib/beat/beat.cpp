@@ -73,7 +73,7 @@ beat& beat::operator=(const beat & __beat)
 // Initialisers
 ///////////////////////////////////
 // void beat::initBeats() {
-//   Serial.println("void beat::initBeats(). Starting.");
+//   Serial.println("void beat::initBeats(). starting.");
 //   // define an array containing predefined beats
 
 //   /** Signature of a beat:
@@ -92,7 +92,7 @@ beat& beat::operator=(const beat & __beat)
 //    * base note: 1 (a full) */
 //   _beats[1] = { 120, 1 };
 
-//   Serial.println("void bar::initBeats(). Ending.");
+//   Serial.println("void bar::initBeats(). over.");
 // }
 
 
@@ -125,7 +125,7 @@ uint16_t const beat::getBaseNoteForBeat() const {
  *  
  *  Returns the duration, in ms, of the base note of a beat instance. */
 uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
-  // Serial.println("beat::ui16GetBaseNoteDurationInMs(). Starting.");
+  // Serial.println("beat::ui16GetBaseNoteDurationInMs(). starting.");
   // Serial.println(F("------------- DEBUG --------- beat --------- DEBUG -------------"));
   // Serial.printf("beat::ui16GetBaseNoteDurationInMs(). _ui16BaseBeatInBpm = %u\n", _ui16BaseBeatInBpm);
 
@@ -140,6 +140,6 @@ uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
     // Serial.println("beat::ui16GetBaseNoteDurationInMs(). __ui16DurationInMs is > 30000.");
     return 30000;
   }
-  // Serial.println("beat::ui16GetBaseNoteDurationInMs(). Ending.");
+  // Serial.println("beat::ui16GetBaseNoteDurationInMs(). over.");
   return __ui16DurationInMs;
 }

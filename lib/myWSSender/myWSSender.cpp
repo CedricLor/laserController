@@ -200,7 +200,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
 
 void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client) {
-  Serial.printf("- myWSSender::prepareWSData. Starting. Message type [%i]\n", _i8messageType);
+  Serial.printf("- myWSSender::prepareWSData. starting. Message type [%i]\n", _i8messageType);
   StaticJsonDocument<900> __doc;
   JsonObject __newObj = __doc.to<JsonObject>();
   __newObj["action"] = _i8messageType;
@@ -289,7 +289,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
   sendWSData(__newObj, _client);
 
   if (MY_DG_WS) {
-    Serial.println("- myWSSender::prepareWSData. Ending.");
+    Serial.println("- myWSSender::prepareWSData. over.");
   }
 }
 
@@ -308,7 +308,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
 
 void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
     if (MY_DG_WS) {
-      Serial.println("- myWSSender::sendWSData. Starting.");
+      Serial.println("- myWSSender::sendWSData. starting.");
     }
 
     // If no client has ever even tried to connect, the websocket server is not yet started. Return.
@@ -344,7 +344,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
     _client->text(_buffer);
 
     if (MY_DG_WS) {
-      Serial.println(F("- myWSSender::sendWSData. Ending."));
+      Serial.println(F("- myWSSender::sendWSData. over."));
     }
 }
 

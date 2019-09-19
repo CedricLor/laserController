@@ -366,7 +366,7 @@ boxState::boxState(const int16_t _i16Duration,
 
 // boxState array initialiser
 void boxState::initBoxStates() {
-  Serial.println("boxState::_initBoxStates(). Starting.");
+  Serial.println("boxState::_initBoxStates(). starting.");
   /** Constructor signature (using "little constructor")
    * _i16Duration, _ui16AssociatedSequence, _i16onIRTrigger, _i16onMeshTrigger, _i16onExpire */
 
@@ -502,7 +502,7 @@ void boxState::initBoxStates() {
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
   boxStates[13] = {120, 0, -1, -1, 4}; 
 
-  Serial.println("boxState::_initBoxStates(). Ending.");
+  Serial.println("boxState::_initBoxStates(). over.");
 }
 
 
@@ -524,7 +524,7 @@ void boxState::switchToStepControlled() {
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
 void boxState::_restartPlayBoxState() {
-  // Serial.println("void boxState::_restartPlayBoxState(). Starting.");
+  // Serial.println("void boxState::_restartPlayBoxState(). starting.");
   // Serial.print("void boxState::_restartPlayBoxState(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
@@ -561,7 +561,7 @@ void boxState::_restartPlayBoxState() {
   // Serial.println("*********************************************************");
 
 
-  // Serial.println("void boxState::_restartPlayBoxState(). Ending.");
+  // Serial.println("void boxState::_restartPlayBoxState(). over.");
 };
 
 
@@ -604,7 +604,7 @@ Task boxState::tPlayBoxState(0, 1, NULL, NULL/*&mns::myScheduler*/, false, &_oet
 
 
 bool boxState::_oetcbPlayBoxState(){
-  Serial.println("boxState::_oetcbPlayBoxState(). Starting.");
+  Serial.println("boxState::_oetcbPlayBoxState(). starting.");
   // Serial.print("boxState::_oetcbPlayBoxState(). Box State Number: ");Serial.println(thisBox.i16BoxActiveState);
 
   // 1. select the currently active state
@@ -619,7 +619,7 @@ bool boxState::_oetcbPlayBoxState(){
     sendCurrentBoxState(thisBox.i16BoxActiveState);
   }
 
-  Serial.println("boxState::_oetcbPlayBoxState(). Ending.");
+  Serial.println("boxState::_oetcbPlayBoxState(). over.");
   return true;
 }
 
@@ -632,7 +632,7 @@ bool boxState::_oetcbPlayBoxState(){
   set it to its default state.
 */
 void boxState::_odtcbPlayBoxState(){
-  Serial.println("boxState::_odtcbPlayBoxState(). Starting.");
+  Serial.println("boxState::_odtcbPlayBoxState(). starting.");
   // Serial.print("boxState::_odtcbPlayBoxState() tPlayBoxState.getInterval(): ");
   // Serial.println(tPlayBoxState.getInterval());
 
@@ -653,7 +653,7 @@ void boxState::_odtcbPlayBoxState(){
     _setBoxTargetState(thisBox.sBoxDefaultState);
 
   }
-  Serial.println("boxState::_odtcbPlayBoxState(). Ending.");
+  Serial.println("boxState::_odtcbPlayBoxState(). over.");
 }
 
 
@@ -662,12 +662,12 @@ void boxState::_odtcbPlayBoxState(){
 
 // _setBoxTargetState is the central entry point to request a boxState change.
 void boxState::_setBoxTargetState(const short __boxTargetState) {
-  Serial.println("boxState::_setBoxTargetState(). Starting.");
+  Serial.println("boxState::_setBoxTargetState(). starting.");
   Serial.printf("boxState::_setBoxTargetState(). __boxTargetState: %u\n", __boxTargetState);
   _boxTargetState = __boxTargetState;
   _restartPlayBoxState();
   Serial.printf("boxState::_setBoxTargetState(). _boxTargetState: %u\n", _boxTargetState);
-  Serial.println("boxState::_setBoxTargetState(). Ending.");
+  Serial.println("boxState::_setBoxTargetState(). over.");
 };
 
 

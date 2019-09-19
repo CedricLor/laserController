@@ -159,7 +159,7 @@ uint16_t const bar::ui16GetBaseNotesCountInBar() const {
  * 
  * Returns the current bar effective duration in ms */
 uint32_t const bar::ui32GetBarDuration() const {
-  // Serial.println(F("bar::ui32GetBarDuration(). Starting."));
+  // Serial.println(F("bar::ui32GetBarDuration(). starting."));
   // Serial.printf("bar::ui32GetBarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar::ui32GetBarDuration(). activeBeat.ui16GetBaseNoteDurationInMs() = %u\n", activeBeat.ui16GetBaseNoteDurationInMs());
   // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * activeBeat.ui16GetBaseNoteDurationInMs());
@@ -474,7 +474,7 @@ bool bars::playBarInSequence(const bar & __target_bar) {
  *  the effective number of notes in the bar.  
  * */
 bool bars::_oetcbPlayBar(){
-  // Serial.println("bars::_oetcbPlayBar(). Starting.");
+  // Serial.println("bars::_oetcbPlayBar(). starting.");
 
   // if (MY_DG_LASER) {
   //   Serial.println("bars::_oetcbPlayBar(). Before setting the iterations for this bars: *!*!*!*!*!");
@@ -501,7 +501,7 @@ bool bars::_oetcbPlayBar(){
   //   Serial.println("bars::_oetcbPlayBar(). *!*!*!*!*!");
   // }
 
-  // Serial.println("bars::_oetcbPlayBar(). Ending.");
+  // Serial.println("bars::_oetcbPlayBar(). over.");
 
   return true;
 }
@@ -519,7 +519,7 @@ bool bars::_oetcbPlayBar(){
  *   - At the next iteration, which will occur after the interval corresponding
  *     to duration of the current note, tPlayBar will disable tPlayNote. */
 void bars::_tcbPlayBar(){
-  Serial.println("bars::_tcbPlayBar(). Starting.");
+  Serial.println("bars::_tcbPlayBar(). starting.");
 
   // 1. get the run counter
   uint16_t _ui16Iter = tPlayBar.getRunCounter();
@@ -551,5 +551,5 @@ void bars::_tcbPlayBar(){
   // Serial.printf("bars::_tcbPlayBar(). setting the interval, by calling _activeBar.getNotesArray().at(%u).ui16GetNoteDurationInMs() = %u\n", _ui16Iter, _activeBar.getNotesArray().at(_ui16Iter).ui16GetNoteDurationInMs());
   tPlayBar.setInterval(_activeBar.getNotesArray().at(_ui16Iter).ui16GetNoteDurationInMs());
 
-  Serial.println(F("bars::_tcbPlayBar(). Ending."));
+  Serial.println(F("bars::_tcbPlayBar(). over."));
 };

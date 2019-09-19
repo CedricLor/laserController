@@ -86,7 +86,7 @@ sequence& sequence::operator=(const sequence& __sequence)
 // Initialisers
 ///////////////////////////////////
 void sequence::initSequences() {
-  Serial.println("sequence::_initSequences(). Starting.");
+  Serial.println("sequence::_initSequences(). starting.");
 
   /** Signature for calls:
     a. a beat instance, composed of:
@@ -159,7 +159,7 @@ void sequence::initSequences() {
   std::array<bar, 8> _allOffBarsArray {sequence::globalBars._barsArray[5]};
   sequences[5] = {_beat_2_1, _allOffBarsArray};
 
-  Serial.println("sequence::_initSequences(). Ending.");
+  Serial.println("sequence::_initSequences(). over.");
 }
 
 
@@ -416,7 +416,7 @@ Task sequence::tPlaySequenceInLoop(0, TASK_FOREVER, &_tcbPlaySequenceInLoop, NUL
     equal to 0.
 */
 bool sequence::_oetcbPlaySequenceInLoop() {
-  Serial.println("sequence::_oetcbPlaySequenceInLoop(). Starting. *****");
+  Serial.println("sequence::_oetcbPlaySequenceInLoop(). starting. *****");
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
@@ -444,7 +444,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   //   Serial.println("sequence::_oetcbPlaySequenceInLoop(). ******");
   // }
 
-  Serial.println("sequence::_oetcbPlaySequenceInLoop(). Ending.");
+  Serial.println("sequence::_oetcbPlaySequenceInLoop(). over.");
   return true;
 }
 
@@ -452,7 +452,7 @@ bool sequence::_oetcbPlaySequenceInLoop() {
 
 
 void sequence::_tcbPlaySequenceInLoop() {
-  Serial.println("sequence::_tcbPlaySequenceInLoop(). Starting. ******");
+  Serial.println("sequence::_tcbPlaySequenceInLoop(). starting. ******");
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_tcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
@@ -464,7 +464,7 @@ void sequence::_tcbPlaySequenceInLoop() {
   Serial.println("sequence::_tcbPlaySequenceInLoop(). about to enable tPlaySequence");
   tPlaySequence.enable();
 
-  Serial.println("sequence::_tcbPlaySequenceInLoop(). Ending.");
+  Serial.println("sequence::_tcbPlaySequenceInLoop(). over.");
 }
 
 
@@ -473,7 +473,7 @@ void sequence::_tcbPlaySequenceInLoop() {
 // On disable tPlaySequenceInLoop, turn off all the laser by playing
 // sequence 5 ("all off").
 void sequence::_odtcbPlaySequenceInLoop() {
-  Serial.println("sequence::_odtcbPlaySequenceInLoop(). Starting. ******");
+  Serial.println("sequence::_odtcbPlaySequenceInLoop(). starting. ******");
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). millis() = ");Serial.println(millis());
@@ -491,7 +491,7 @@ void sequence::_odtcbPlaySequenceInLoop() {
     //   Serial.print("sequence::_odtcbPlaySequenceInLoop(). Just after calling sequences[5].playSequenceInBoxState(5).\n");
     // }
   }
-  Serial.println("sequence::_odtcbPlaySequenceInLoop(). Ending.");
+  Serial.println("sequence::_odtcbPlaySequenceInLoop(). over.");
 };
 
 
@@ -554,7 +554,7 @@ bool sequence::_oetcbPlaySequence(){
  *    provided by the class bar, before enabling the Task tPlayBar in the bar class.
  * */
 void sequence::_tcbPlaySequence(){
-  Serial.println("sequence::_tcbPlaySequence(). Starting.");
+  Serial.println("sequence::_tcbPlaySequence(). starting.");
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   // 1. Get the number of iterations (each iteration corresponds to one bar)
@@ -585,7 +585,7 @@ void sequence::_tcbPlaySequence(){
   // Serial.printf("sequence::_tcbPlaySequence(). Set interval: %u ms.\n", __ui32ThisBarDuration);
   // Serial.printf("sequence::_tcbPlaySequence(). Get interval: %lu ms.\n", tPlaySequence.getInterval());
 
-  Serial.println("sequence::_tcbPlaySequence(). Ending.");
+  Serial.println("sequence::_tcbPlaySequence(). over.");
 };
 
 

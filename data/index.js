@@ -794,7 +794,7 @@ class bxCont {
    *  In a last step (to be refactored), it handles the case where it is a reboot.
    * */
   addOrUpdateCntrlerBox(data) {
-    console.log("bxCont.addOrUpdateCntrlerBox -- Starting. data: ");console.log(data);
+    console.log("bxCont.addOrUpdateCntrlerBox -- starting. data: ");console.log(data);
     // _data = {lb:1; action: "addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
     // Check whether the boxRow has already been created
     // console.log("bxCont.addOrUpdateCntrlerBox: " + data.lb);

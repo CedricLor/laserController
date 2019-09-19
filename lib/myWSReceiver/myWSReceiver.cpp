@@ -48,7 +48,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 {
 
   if (MY_DG_WS) {
-    Serial.println("myWSReceiver::myWSReceiver. Starting.");
+    Serial.println("myWSReceiver::myWSReceiver. starting.");
   }
 
   // create a StaticJsonDocument entitled _doc
@@ -79,7 +79,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   if (MY_DG_WS) {
-    Serial.printf("myWSReceiver::_actionSwitch. Starting.\n");
+    Serial.printf("myWSReceiver::_actionSwitch. starting.\n");
   }
 
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
@@ -261,7 +261,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
   // {"action":"changeNet","key":"save","dataset":{"sIP":"192.168.5.1","sssid":"ESP32-Access-Point","spass":"123456789","sgw":"192.168.5.1","snm":"255.255.255.0","shi":"0","smc":"10"},"lb":"all","val":"softAP"}
   // {"action":"changeNet","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Starting.\n"); }
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): starting.\n"); }
 
   // If this is a reboot message
   if (_obj["key"] == "reboot") {
@@ -297,7 +297,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   // broadcast the _obj (including its "reboot" or "save" key)
   _requestBoxChange(_obj, true /*_bBroadcast*/);
 
-  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): Ending.\n"); }
+  if (MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): over.\n"); }
 }
 
 

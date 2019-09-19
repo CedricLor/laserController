@@ -58,7 +58,7 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, v
 void myMeshController::_main()
 {
   if (MY_DG_MESH) {
-    Serial.print("myMeshController::_main: Starting\n");
+    Serial.print("myMeshController::_main: starting\n");
   }
   
   // read the action field
@@ -451,7 +451,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 void myMeshController::_changeBoxSendConfirmationMsg() {
   // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox 
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate 
-  if (MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: Starting\n");
+  if (MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: starting\n");
 
   // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
   _nsobj["st"] = 2;

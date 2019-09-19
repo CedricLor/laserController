@@ -134,7 +134,7 @@ uint16_t ControlerBox::getMasterBoxNameForWeb() {
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
 void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
-  // Serial.println("ControlerBox::setBoxActiveState(): Starting");
+  // Serial.println("ControlerBox::setBoxActiveState(): starting");
 
   if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
     i16BoxActiveState = _sBoxActiveState;
@@ -167,7 +167,7 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
     }
   }
 
-  // Serial.println("ControlerBox::setBoxActiveState(): Ending");
+  // Serial.println("ControlerBox::setBoxActiveState(): over");
 }
 
 
@@ -177,7 +177,7 @@ void ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
 void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
-  // Serial.println("ControlerBox::setBoxDefaultState(): Starting");
+  // Serial.println("ControlerBox::setBoxDefaultState(): starting");
 
   sBoxDefaultState = _sBoxDefaultState;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
@@ -185,7 +185,7 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   sBoxDefaultStateChangeHasBeenSignaled = false;
   // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
 
-  // Serial.println("ControlerBox::setBoxDefaultState(): Ending");
+  // Serial.println("ControlerBox::setBoxDefaultState(): over");
 }
 
 
@@ -339,7 +339,7 @@ void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedF
 // called from myMeshController
 void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   const char * _subName = "ControlerBox::updateOtherBoxProperties():";
-  Serial.printf("%s Starting\n", _subName);
+  Serial.printf("%s starting\n", _subName);
 
   // set the nodeId
   if (nodeId == 0) {
@@ -392,7 +392,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
     Serial.printf("%s Updated box index %u. Calling printProperties().\n", _subName, __ui16BoxIndex);
     printProperties(__ui16BoxIndex);
   }
-  Serial.println("%s Ending");
+  Serial.println("%s over");
 }
 
 
@@ -411,7 +411,7 @@ void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
 
 void ControlerBox::deleteBox() {
   const char * _subName = "ControlerBox::deleteBox():";
-  Serial.printf("%s Starting\n", _subName);
+  Serial.printf("%s starting\n", _subName);
   // Serial.printf("%s Received _ui16BoxIndex %u\n", );
   nodeId = 0;
   Serial.printf("%s NodeId reset to 0\n", _subName);
@@ -449,7 +449,7 @@ void ControlerBox::deleteBox() {
 
   updateConnectedBoxCount(connectedBoxesCount - 1);
   Serial.printf("%s updated ConnectedBoxCount\n", _subName);
-  Serial.printf("%s Ending\n", _subName);
+  Serial.printf("%s over\n", _subName);
 }
 
 
@@ -458,14 +458,14 @@ void ControlerBox::deleteBox() {
 
 
 void ControlerBox::deleteBoxByNodeId(uint32_t _ui32nodeId) {
-  Serial.println("ControlerBox::deleteBoxByNodeId(): Starting");
+  Serial.println("ControlerBox::deleteBoxByNodeId(): starting");
   for (uint16_t __it = 0; __it < gui16BoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == _ui32nodeId) {
       ControlerBoxes[__it].deleteBox();
       break;
     }
   }
-  Serial.println("ControlerBox::deleteBoxByNodeId(): Ending");
+  Serial.println("ControlerBox::deleteBoxByNodeId(): over");
 }
 
 
