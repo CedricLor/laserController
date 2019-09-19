@@ -46,7 +46,7 @@ class sequence
     std::array<bar, 8> const & getBarsArray() const;
 
     /** Task - sequence players */
-    void playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id=-1);
+    void playSequenceStandAlone(const int16_t __i16_sequence_id=-1, beat const & __beat=activeBeat);
     void playSequenceInBoxState(const int16_t __i16_sequence_id);
     static Task tPlaySequenceInLoop;
     static Task tPlaySequence;
@@ -106,7 +106,7 @@ class sequences
     sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
 
     /** Task - sequence players */
-    void playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id=-1);
+    void playSequenceStandAlone(const int16_t __i16_sequence_id=-1, beat const & __beat=activeBeat);
     void playSequenceInBoxState(const int16_t __i16_sequence_id);
     Task tPlaySequenceInLoop;
     Task tPlaySequence;

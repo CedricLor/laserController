@@ -290,7 +290,7 @@ int16_t const sequence::getCurrentSequence() {
  *  {@ params} beat const & __beat: pass a beat to be taken into account
  *             to calculate the notes duration
  * */
-void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id) {
+void sequence::playSequenceStandAlone(const int16_t __i16_sequence_id, beat const & __beat) {
   /** 1. disable all previously eventually enabled laser Tasks,
    *     in order to start with a clean Tasks state when playing a sequence stand alone
    */
