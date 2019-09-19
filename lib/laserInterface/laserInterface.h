@@ -40,25 +40,25 @@ namespace laserInterface {
 
   namespace monitoredMasterBoxes {
     // masterBoxes stack
-    void initMonitoredMasterBoxComm();
-    void addMonitoredMasterBox();
-    void removeMonitoredMasterBox();
-    void setMonitoredMasterBoxes();
-    void sendMonitoredMasterBoxes();
+    void initComm();
+    void add();
+    void remove();
+    void set();
+    void send();
   }
 
   namespace monitoredStates {
     // monitored states stack
-    void initMonitoredBoxesStatesComm();
-    void addMonitoredBoxState();
-    void removeMonitoredBoxState();
-    void setMonitoredBoxesStates();
-    void sendMonitoredBoxesStates();
+    void initComm();
+    void add();
+    void remove();
+    void set();
+    void send();
   }
 
   namespace beatNS {
     void init();
-    void sendCurrentBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
+    void sendCurrent(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
   }
 
   namespace sequenceNS {

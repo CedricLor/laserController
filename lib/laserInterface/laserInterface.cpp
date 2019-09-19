@@ -36,11 +36,11 @@ void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) 
 // beat stack
 /*******************/
 void laserInterface::beatNS::init() {
-    activeBeat = beat(2, 1, sendCurrentBeat);
+    activeBeat = beat(2, 1, beatNS::sendCurrent);
 }
 
 
-void laserInterface::beatNS::sendCurrentBeat(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat) {
+void laserInterface::beatNS::sendCurrent(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat) {
     // Do something smart
 }
 
