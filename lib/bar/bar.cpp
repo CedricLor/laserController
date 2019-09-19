@@ -1,5 +1,5 @@
 /*
-  bar.cpp - bars are two beats to four beats, precoded sequences of notes
+  bar.cpp - bars are precoded sequences of notes
   Created by Cedric Lor, June 4, 2019.
 
 
@@ -393,7 +393,8 @@ notes & bars::getNotes() {
  *  play a single bar calculating the durations
  *  on the basis of the passed-in beat.
  * 
- *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *  {@ params} const bar & __target_bar: bar to be played
+ *  {@ params} beat const & __beat: beat to be taken into account
  *             to calculate the notes duration */
 uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __beat) {
   // 0. Do not do anything if the beat has not been set

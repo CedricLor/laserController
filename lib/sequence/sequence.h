@@ -16,7 +16,9 @@ class sequence
 {
   public:
     /** constructors */
-    sequence(); // default constructor
+    // default constructor
+    sequence();
+    // parameterized constructor
     sequence(
       const beat & __beat,
       std::array<bar, 8> & __barsArray

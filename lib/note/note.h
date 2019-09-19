@@ -1,5 +1,5 @@
 /*
-  note.h - notes are tones for a given length (in base beat)
+  note.h - notes are tones played for a given length (expressed in base beat)notes are tones for a given length (in base beat)
   Created by Cedric Lor, June 28, 2019.
 
 */

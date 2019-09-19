@@ -1,5 +1,5 @@
 /*
-  bar.h - bars are two beats to four beats, precoded sequences of notes
+  bar.h - bars are precoded sequences of notes
   Created by Cedric Lor, June 4, 2019.
 
 

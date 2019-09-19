@@ -285,10 +285,10 @@ int16_t const sequence::getCurrentSequence() {
  *  play a single sequence calculating the durations
  *  on the basis of the passed-in beat.
  * 
- *  {@ params} beat const & __beat: pass a beat to be taken into account
- *             to calculate the notes duration 
  *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose) 
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration
  * */
 void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id) {
   /** 1. disable all previously eventually enabled laser Tasks,
@@ -322,9 +322,9 @@ void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_s
 
   // 4. set the active sequence and associated beat
   setActive(__i16_sequence_id);
- 
   activeBeat = __beat;
 
+  // 5. restart the tPlaySequence Task
   tPlaySequence.enable();
 }
 
