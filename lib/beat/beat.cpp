@@ -30,7 +30,14 @@ beat::beat() :
 {
 }
 
-// parameterized
+/** parameterized constructor
+ * 
+ * {@} params: const uint16_t __ui16_base_beat_in_bpm
+ * {@} params: const uint16_t __ui16_base_note_for_beat
+ * {@} params: void (*_sendCurrentBeat)(
+ *        const uint16_t __ui16_base_beat_in_bpm,
+ *        const uint16_t __ui16_base_note_for_beat)
+ *  */
 beat::beat(
   const uint16_t __ui16_base_beat_in_bpm, 
   const uint16_t __ui16_base_note_for_beat,
