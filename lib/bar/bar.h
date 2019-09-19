@@ -78,6 +78,7 @@ class bars
     uint16_t const playBarStandAlone(const bar & __target_bar, beat const & __beat);
     bool playBarInSequence(const bar & __target_bar);
     Task tPlayBar;
+    Task & tPlayNote;
 
   private:
     // properties
