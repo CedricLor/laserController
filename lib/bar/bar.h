@@ -37,6 +37,8 @@ class bar
     std::array<note, 16> _notesArray;
 };
 
+extern bar globalBar;
+
 #endif
 
 
@@ -92,4 +94,3 @@ class bars
 };
 #endif
 
-extern bar globalBar;
