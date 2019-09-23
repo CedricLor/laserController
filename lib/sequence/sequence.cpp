@@ -616,7 +616,8 @@ sequences::sequences(
 ): 
   sendCurrentSequence(_sendCurrentSequence),
   tPlayBar(_bars.tPlayBar),
-  tPlayNote(_bars.tPlayNote)
+  tPlayNote(_bars.tPlayNote),
+  activeSequence(globalSequence)
 {
 
 }
