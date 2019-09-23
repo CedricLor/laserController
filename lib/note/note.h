@@ -49,6 +49,8 @@ class note
     uint16_t _ui16Note;
 };
 
+extern note globalNote;
+
 #endif
 
 #ifndef notes_h
@@ -97,5 +99,3 @@ class notes
     void _odtcbPlayNote();
 };
 #endif
-
-extern note globalNote;
