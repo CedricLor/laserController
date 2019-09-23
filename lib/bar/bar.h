@@ -52,7 +52,7 @@ class bars
     /** default constructor 
      * 
      *  The bars' properties (_activeBar, _notes) 
-     *  are defined in the constructor, by default, without
+     *  are defined in bars constructor, calling their default constructors without
      *  parameters.
      * 
      *  The only parameters, _sendCurrentBar, is an optional callback. */
