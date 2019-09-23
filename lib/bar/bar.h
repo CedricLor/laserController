@@ -91,3 +91,5 @@ class bars
     bool _oetcbPlayBar();
 };
 #endif
+
+extern bar globalBar;
