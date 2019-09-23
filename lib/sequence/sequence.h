@@ -122,7 +122,7 @@ class sequences
     const int16_t getCurrentSequence();
 
     // static variable: currently played active sequence
-    static sequence emptySequence;
+    sequence emptySequence;
     static sequence & activeSequence;
 
   private:
