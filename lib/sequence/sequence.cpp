@@ -613,7 +613,8 @@ sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
-  tPlayBar(_bars.tPlayBar)
+  tPlayBar(_bars.tPlayBar),
+  tPlayNote(_bars.tPlayNote)
 {
 
 }
