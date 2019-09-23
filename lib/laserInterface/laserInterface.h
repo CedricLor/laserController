@@ -13,6 +13,36 @@ namespace laserInterface {
     
   void init();
 
+  enum class _Mode : uint16_t { step_controlled, automatic, sequence_manual, bar_manual, note_manual };
+
+  class laserScheduler {
+    friend step;
+    friend boxState;
+
+    public:
+      laserScheduler(_Mode __mode=_Mode::automatic);
+    private:
+      // laserSchedule mode: 1. automatic (sequences connected to boxStates), 2. sequence manual, 3. bar manual, 4. note manual
+      uint16_t _activeMode;
+
+      // players
+      notes _notes;
+      bars _bars;
+      sequences _sequences;
+      
+      // default item
+      beat const _defaultBeat;
+      note const _defaultNote;
+      bar const _defaultBar;
+      sequence const _defaultSequence;
+
+      // active item
+      beat & _activeBeat;
+      note & _activeNote;
+      bar & _activeBar;
+      sequence & _activeSequence;
+  };
+
   namespace stepsNS {
     void play();
 
