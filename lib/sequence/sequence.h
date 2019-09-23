@@ -123,7 +123,7 @@ class sequences
 
     // variable: currently played active sequence
     sequence emptySequence;
-    static sequence & activeSequence;
+    sequence & activeSequence;
 
   private:
     // private constants to set stuffs
