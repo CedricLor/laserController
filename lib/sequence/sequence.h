@@ -91,7 +91,9 @@ class sequences
   public:
 
     /** constructors */
-    sequences(); // default constructor
+    sequences(
+      void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr
+    ); // default constructor
     // sequences(
     // );
     // copy constructor
@@ -101,7 +103,7 @@ class sequences
 
     /** public properties */
     std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
-    bars globalBars;
+    bars _bars;
 
     /** setters */
     void setActive(sequence & __sequence);

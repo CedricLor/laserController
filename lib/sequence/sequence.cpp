@@ -598,3 +598,22 @@ void sequence::_odtcbPlaySequence(){
   //   // Serial.println("sequence::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
   // }
 }
+
+
+
+
+
+
+
+//****************************************************************//
+// Sequences //***************************************************//
+//****************************************************************//
+
+sequences::sequences(
+  void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
+): 
+  sendCurrentSequence(_sendCurrentSequence),
+  tPlayBar(_bars.tPlayBar)
+{
+
+}
