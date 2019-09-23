@@ -198,7 +198,7 @@ bars::bars(
   // 1. Disable and reset the Task tPlayBar
   disableAndResetTPlayBar();
 
-  // 2. Define _barsArray, an array containing references to the note type and tones to be played in the bar
+  // 2. Define _barsArray, an array containing a series of hard coded bars
 
   /** Signature of a bar:
    *  a. std::array<note, 16> & _notesArray: a reference to an array of notes. Each note
@@ -213,6 +213,7 @@ bars::bars(
    *     e. the two notes are:
    *        - {1,7} -> a white with tone 7.
    *        - {1,8} -> a white with tone 8. 
+   *  b. the bar's index number in the barsArray
    * 
    *  It used to include:
    *  a. a beat object, which contains:
@@ -221,9 +222,6 @@ bars::bars(
    *        (the 4 in 2/4, for instance; the 2 is defined at the sequence level);
    * */
 
-  /** TODO: refactor the bars factory to reduce its memory footprint
-   * 
-  */
   /** relays
    * duration of a beat in bpm: 2
    * base note: 1 (a full)
