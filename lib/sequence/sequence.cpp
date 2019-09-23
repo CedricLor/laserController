@@ -14,8 +14,8 @@ Traductions en anglais:
 bars sequence::globalBars;
 
 const int16_t sequence::_i16_sequence_count = 7;
-sequence sequence::_emptySequence;
-sequence &sequence::_activeSequence = _emptySequence;
+sequence sequence::emptySequence;
+sequence &sequence::activeSequence = emptySequence;
 int16_t sequence::_i16ActiveSequenceNb = -1;
 std::array<sequence, 7> sequence::sequences;
 
@@ -178,7 +178,7 @@ void sequence::initSequences() {
  *  sets the caller sequence as the static variable &sequence::_sequence.
  * */
 void sequence::setActive(const int16_t __i16_active_sequence_id) {
-  _activeSequence = *this;
+  activeSequence = *this;
   _i16ActiveSequenceNb = __i16_active_sequence_id;
 }
 
@@ -428,13 +428,13 @@ bool sequence::_oetcbPlaySequenceInLoop() {
   // }
 
   // if (MY_DG_LASER) {
-  //   Serial.printf("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(%u)", _activeSequence.ui32GetSequenceDuration());
+  //   Serial.printf("sequence::_oetcbPlaySequenceInLoop(). About to call tPlaySequenceInLoop.setInterval(%u)", activeSequence.ui32GetSequenceDuration());
   // }
 
   /* Set the interval between each iteration of tPlaySequenceInLoop
       (each iteration will restart the Task tPlaySequence, so this interval
       shall be equal to the duration of the sequence). */
-  tPlaySequenceInLoop.setInterval(_activeSequence.ui32GetSequenceDuration());
+  tPlaySequenceInLoop.setInterval(activeSequence.ui32GetSequenceDuration());
 
   // if (MY_DG_LASER) {
   //   Serial.print("sequence::_oetcbPlaySequenceInLoop(). tPlaySequenceInLoop.getInterval() = ");Serial.println(tPlaySequenceInLoop.getInterval());
@@ -519,10 +519,10 @@ bool sequence::_oetcbPlaySequence(){
   // 1. Set the number of iterations of the tPlaySequence task from the
   //    number of bars in the sequence
   // if (MY_DG_LASER) {
-  //   Serial.printf("void sequence::_playSequence(). About to call tPlaySequence.setIterations(%u).\n", _activeSequence.ui16GetBarCountInSequence());
+  //   Serial.printf("void sequence::_playSequence(). About to call tPlaySequence.setIterations(%u).\n", activeSequence.ui16GetBarCountInSequence());
   //   Serial.printf("void sequence::_playSequence(). tPlaySequence.getIterations() = %lu", tPlaySequence.getIterations());
   // }
-  tPlaySequence.setIterations(_activeSequence.ui16GetBarCountInSequence());
+  tPlaySequence.setIterations(activeSequence.ui16GetBarCountInSequence());
   // if (MY_DG_LASER) {
   //   Serial.printf("void sequence::_playSequence(). tPlaySequence.getIterations() = %lu", tPlaySequence.getIterations());
   // }
@@ -564,16 +564,16 @@ void sequence::_tcbPlaySequence(){
   // Serial.printf("sequence::_tcbPlaySequence(). _ui16Iter == [%u]\n", _ui16Iter);
 
   // 2. Calculate the bar duration
-  // _activeSequence.getBarsArray();
-  // Serial.println("-------------- sequence::_tcbPlaySequence(). passed _activeSequence.getBarsArray() ------------");
-  // _activeSequence.getBarsArray().at(_ui16Iter);
-  // Serial.println("-------------- sequence::_tcbPlaySequence(). passed _activeSequence.getBarsArray().at(_ui16Iter) ------------");
-  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
-  // Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from _activeSequence.getBarsArray().at(%i)).ui32BarDuration()\n", __ui32ThisBarDuration, _ui16Iter);
+  // activeSequence.getBarsArray();
+  // Serial.println("-------------- sequence::_tcbPlaySequence(). passed activeSequence.getBarsArray() ------------");
+  // activeSequence.getBarsArray().at(_ui16Iter);
+  // Serial.println("-------------- sequence::_tcbPlaySequence(). passed activeSequence.getBarsArray().at(_ui16Iter) ------------");
+  uint32_t __ui32ThisBarDuration = activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
+  // Serial.printf("sequence::_tcbPlaySequence(). got __ui32ThisBarDuration [%u] from activeSequence.getBarsArray().at(%i)).ui32BarDuration()\n", __ui32ThisBarDuration, _ui16Iter);
 
   // 3. Play the corresponding bar
-  // Serial.printf("sequence::_tcbPlaySequence(). about to call sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(%i))\n", _ui16Iter);
-  sequence::globalBars.playBarInSequence(_activeSequence.getBarsArray().at(_ui16Iter));
+  // Serial.printf("sequence::_tcbPlaySequence(). about to call sequence::globalBars.playBarInSequence(activeSequence.getBarsArray().at(%i))\n", _ui16Iter);
+  sequence::globalBars.playBarInSequence(activeSequence.getBarsArray().at(_ui16Iter));
 
   /**5. Set the interval for next iteration of tPlaySequence
    * 

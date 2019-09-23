@@ -38,7 +38,7 @@ namespace laserInterface {
 
       // active item
       beat & _activeBeat;
-      // sequence & _activeSequence;
+      sequence & _activeSequence;
       // bar & _activeBar;
       // note & _activeNote;
   };

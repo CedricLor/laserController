@@ -14,8 +14,6 @@
 
 class sequence
 {
-  friend class laserScheduler;
-
   public:
     /** constructors */
     // default constructor
@@ -57,13 +55,15 @@ class sequence
     static void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     static const int16_t getCurrentSequence();
 
+    // static variable: currently played active sequence
+    static sequence emptySequence;
+    static sequence & activeSequence;
+
   private:
     // static private constants to set stuffs
     static const int16_t _i16_sequence_count;
 
     // static variable: currently played active sequence
-    static sequence _emptySequence;
-    static sequence & _activeSequence;
     static int16_t _i16ActiveSequenceNb;
 
     // instance properties
@@ -87,7 +87,6 @@ class sequence
 
 class sequences
 {
-  friend class laserScheduler;
 
   public:
 
@@ -122,13 +121,15 @@ class sequences
     void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     const int16_t getCurrentSequence();
 
+    // static variable: currently played active sequence
+    static sequence emptySequence;
+    static sequence & activeSequence;
+
   private:
     // private constants to set stuffs
     const int16_t _i16_sequence_count;
 
     // variable: currently played active sequence
-    sequence _emptySequence;
-    sequence & _activeSequence;
     int16_t _i16ActiveSequenceNb;
 
     // tasks callbacks
