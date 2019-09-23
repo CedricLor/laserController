@@ -11,6 +11,8 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "sequence.h"
 
+sequence globalSequence{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
+
 bars sequence::globalBars;
 
 const int16_t sequence::_i16_sequence_count = 7;

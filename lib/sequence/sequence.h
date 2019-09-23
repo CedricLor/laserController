@@ -80,6 +80,8 @@ class sequence
     static void _odtcbPlaySequence();
 };
 
+extern sequence globalSequence;
+
 #endif
 
 #ifndef sequences_h
