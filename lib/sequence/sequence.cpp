@@ -623,5 +623,10 @@ sequences::sequences(
   tPlayNote(_bars.tPlayNote),
   activeSequence(globalSequence)
 {
+  // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
+  // disableAndResetTPlayBar();
+
+  // 2. Define _sequencesArray, an array containing a series of hard coded sequences
+
 
 }
