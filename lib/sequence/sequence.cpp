@@ -89,7 +89,7 @@ sequence& sequence::operator=(const sequence& __sequence)
 void sequence::initSequences() {
   Serial.println("sequence::_initSequences(). starting.");
 
-  /** Signature for calls:
+  /** Signature of a sequence:
     a. a beat instance, composed of:
        1. _ui16BaseBeatInBpm: the base beat in bpm
        2. _ui16BaseNoteForBeat: the base note for each beat (1 -> full, 2 -> white,
