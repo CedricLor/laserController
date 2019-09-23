@@ -38,9 +38,9 @@ namespace laserInterface {
 
       // active item
       beat & _activeBeat;
-      note & _activeNote;
-      bar & _activeBar;
-      sequence & _activeSequence;
+      // sequence & _activeSequence;
+      // bar & _activeBar;
+      // note & _activeNote;
   };
 
   namespace stepsNS {

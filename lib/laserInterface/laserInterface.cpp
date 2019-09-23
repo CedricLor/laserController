@@ -21,7 +21,12 @@ void laserInterface::init() {
 /*******************/
 // laserScheduler
 /*******************/
-
+laserInterface::laserScheduler::laserScheduler(_Mode __mode):
+  _activeBeat(activeBeat)
+  // _activeSequence(sequence::_emptySequence)
+  // _activeBar(globalBar),
+  // _activeNote(),
+{ }
 
 
 

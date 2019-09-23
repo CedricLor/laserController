@@ -14,6 +14,8 @@
 
 class sequence
 {
+  friend class laserScheduler;
+
   public:
     /** constructors */
     // default constructor
@@ -85,7 +87,10 @@ class sequence
 
 class sequences
 {
+  friend class laserScheduler;
+
   public:
+
     /** constructors */
     sequences(); // default constructor
     // sequences(
