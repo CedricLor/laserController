@@ -60,9 +60,6 @@ class sequence
     static sequence & activeSequence;
 
   private:
-    // static private constants to set stuffs
-    static const int16_t _i16_sequence_count;
-
     // static variable: currently played active sequence
     static int16_t _i16ActiveSequenceNb;
 
@@ -130,9 +127,6 @@ class sequences
     sequence & activeSequence;
 
   private:
-    // private constants to set stuffs
-    const int16_t _i16_sequence_count;
-
     // variable: currently played active sequence
     int16_t _i16ActiveSequenceNb;
 
