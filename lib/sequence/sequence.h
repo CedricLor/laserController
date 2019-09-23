@@ -121,7 +121,7 @@ class sequences
     void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     const int16_t getCurrentSequence();
 
-    // static variable: currently played active sequence
+    // variable: currently played active sequence
     sequence emptySequence;
     static sequence & activeSequence;
 
