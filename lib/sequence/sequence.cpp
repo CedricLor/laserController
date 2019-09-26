@@ -742,5 +742,5 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  * Returns the active sequence index number 
  * */
 int16_t const sequences::i16GetCurrentSequenceId() const {
-
+  return activeSequence.i16IndexNumber;
 }
