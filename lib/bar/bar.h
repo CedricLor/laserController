@@ -48,6 +48,7 @@ extern bar globalBar;
 class bars
 {
   friend class sequence;
+  friend class sequences;
   friend class test;
   
   public:
