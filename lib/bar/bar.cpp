@@ -372,7 +372,7 @@ bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) {
 
 /** notes & bar::getNotes()
  * 
- * Returns a ref to the static notes instance stored in bars */
+ * Returns a ref to the notes instance stored in bars */
 notes & bars::getNotes() {
   return _notes;
 }
