@@ -288,8 +288,8 @@ bars::bars(
 ///////////////////////////////////
 /** bars::setActive(const bar & __activeBar): public instance setter method
  * 
- *  sets the instance variable __activeBar 
- *  from a passed in bar reference.
+ *  sets the class instance variable _activeBar 
+ *  from a passed in const bar lvalue reference.
  * 
  * Drafting of the former bar method, which this method is supposed to replace.
  * 
