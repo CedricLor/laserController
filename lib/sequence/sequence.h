@@ -108,7 +108,7 @@ class sequences
     bars _bars;
 
     /** setters */
-    void setActive(sequence & __sequence);
+    uint16_t setActive(const sequence & __ActiveSequence);
     void disableAndResetPlaySequenceTasks();
 
     /** getters */

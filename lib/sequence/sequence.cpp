@@ -700,3 +700,34 @@ sequences::sequences(
 
   Serial.println("sequences::sequences(). over.");
 }
+
+
+
+
+///////////////////////////////////
+// Setters
+///////////////////////////////////
+/** sequences::setActive()
+ * 
+ *  sets the class instance variable _activeSequence 
+ *  from a passed in lvalue const sequence reference.
+ * 
+ *  public instance setter 
+ * */
+uint16_t sequences::setActive(const sequence & __activeSequence) {
+  if (this->tPlayBar.disable()) {
+    return -2;
+  };
+  activeSequence = __activeSequence;
+  // return __activeSequence.i16IndexNumber;
+}
+
+
+
+
+
+
+
+
+
+
