@@ -310,41 +310,37 @@ uint16_t const bars::setActive(const bar & __activeBar) {
 
 /** bars::disableAndResetTPlayBar(): public setter method
  * 
- *  resets the parameters of the Task tPlayBar to  
- *  play bars read from a sequence. */
-void bars::disableAndResetTPlayBar() {
-  tPlayBar.disable();
-  resetTPlayBar();
-}
-
-/** void bars::resetTPlayBar(): public setter method
+ *  Resets the parameters of the Task tPlayBar to its default parameters, to
+ *  play bars read from a sequence. 
  * 
- *   bars::resetTPlayBar() sets Task bars::tPlayBar to its default 
- *   parameters:
- *   - an interval of 30.000 seconds;
- *   - no main callback;
- *   - 
+ *   Task tPlayBar default parameters:
+ *   - an interval of 0 second;
+ *   - one single iteration;
+ *   - its default main callback;
+ *   - its default onEnable callback
  * 
- *   It is called by sequence (from the players (standalone and in boxState)) and
- *   bar (from the standalone bar player).
+ *   bars::disableAndResetTPlayBar() is called by sequence 
+ *   (from the sequence players (standalone sequence player and
+ *   sequence player in a boxState)) and by bar (from the 
+ *   standalone bar player).
  * 
- *   The Task is enabled upon instanciating a bars in the sequence class.
+ *   The Task tPlayBar is enabled upon entering a new bar from
+ *   a sequence.
+ * 
  *   It is disabled:
  *   - at the expiration of its programmed iterations; or
  *   - by the callbacks of tPlaySequence.
  * 
- *   task tPlayBar plays a given bar (set in bars::activeBar) at a given
- *   beat rate. 
- * 
- *   */
-void bars::resetTPlayBar() {
+ *   task tPlayBar plays a given bar (set in bars::activeBar) 
+ *   at a given beat rate.
+ * */
+void bars::disableAndResetTPlayBar() {
+  tPlayBar.disable();
   tPlayBar.set(0, 1, [&](){_tcbPlayBar();}, [&](){return _oetcbPlayBar();});
-  this->tPlayBar.setIterations(1);
-  this->tPlayBar.setInterval(0);
-  this->tPlayBar.setCallback([&](){_tcbPlayBar();});
-  this->tPlayBar.setOnEnable([&](){return _oetcbPlayBar();});
-  this->tPlayBar.setOnDisable(NULL);
 }
+
+
+
 
 
 

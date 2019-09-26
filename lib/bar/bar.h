@@ -69,7 +69,6 @@ class bars
     /** setters */
     uint16_t const setActive(const bar & __activeBar);
     void disableAndResetTPlayBar();
-    void resetTPlayBar();
 
     /** getters */
     int16_t const i16GetCurrentBarId() const; // returns _i16ActiveBarId
