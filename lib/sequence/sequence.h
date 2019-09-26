@@ -100,6 +100,9 @@ class sequences
     // assignement operator
     sequences& operator=(const sequences & __sequences);
 
+    /** interface to mesh */
+    void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
+
     /** public properties */
     std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
     bars _bars;
@@ -119,7 +122,6 @@ class sequences
     Task & tPlayNote;
 
     /** interface to mesh */
-    void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     const int16_t getCurrentSequence();
 
     // variable: currently played active sequence
