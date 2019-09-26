@@ -96,13 +96,7 @@ class sequences
     /** constructors */
     sequences(
       void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr
-    ); // default constructor
-    // sequences(
-    // );
-    // copy constructor
-    sequences(const sequences & __sequences);
-    // assignement operator
-    sequences& operator=(const sequences & __sequences);
+    );
 
     /** interface to mesh */
     void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
