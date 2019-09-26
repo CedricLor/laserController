@@ -109,6 +109,7 @@ class sequences
 
     /** setters */
     void setActive(sequence & __sequence);
+    void disableAndResetPlaySequenceTasks();
 
     /** getters */
     sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);

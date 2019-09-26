@@ -624,7 +624,7 @@ sequences::sequences(
   activeSequence(globalSequence)
 {
   // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
-  // disableAndResetTPlayBar(); <-- TODO: uncomment
+  disableAndResetPlaySequenceTasks();
 
   // 2. Define _sequencesArray, an array containing a series of hard coded sequences
 
