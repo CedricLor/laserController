@@ -614,7 +614,6 @@ void sequence::_odtcbPlaySequence(){
 //****************************************************************//
 // Sequences //***************************************************//
 //****************************************************************//
-
 sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
@@ -626,24 +625,16 @@ sequences::sequences(
   // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
   disableAndResetPlaySequenceTasks();
 
-  // 2. Define _sequencesArray, an array containing a series of hard coded sequences
+  // 2. Define sequencesArray, an array containing a series of hard coded sequences
 
-    /** Signature of a sequence:
-    a. a beat instance, composed of:
-       1. _ui16BaseBeatInBpm: the base beat in bpm
-       2. _ui16BaseNoteForBeat: the base note for each beat (1 -> full, 2 -> white,
-                          4 -> black, etc.; the 4 in 2/4)
-    b. the array of bars to be played in the sequence (_barsArray).
-    
-    There used to be an additional param/member:
-    - _ui16BaseNotesCountPerBar: the number of base notes per bar (the 2 in 2/4)
-    But this param/member has been removed.
-    As a consequence of the removal of this param, bars sized to any number of base notes
-    can be inserted in sequence, and the sequence will just adapt its tPlaySequence and
-    tPlaySequenceInLoop interval to the various bars durations.
-    */
+  /** Signature of a sequence:
+   *  a. a beat instance, composed of:
+   *    1. _ui16BaseBeatInBpm: the base beat in bpm (e.g. 120 bpm, 2 bpm, etc.);
+   *    2. _ui16BaseNoteForBeat: the base note for each beat (e.g. 4 -> black, etc.; the 4 in 2/4);
+   *  b. the array of bars to be played in the sequence (_barsArray);
+   *  c. the sequence's index number in the sequencesArray.
+   * */
   
-
   // --> Sequence 0: "Relays"
   /** array of bars to be played in the sequence. */
   // Serial.printf("\nsequence::initSequences(). Before building _relaysBarsArray.\n");
