@@ -21,10 +21,11 @@ class sequence
     // parameterized constructor
     sequence(
       const beat & __beat,
-      std::array<bar, 8> & __barsArray
+      std::array<bar, 8> & __barsArray,
+      int16_t __i16IndexNumber
     );
     // copy constructor
-    sequence( const sequence& __sequence);
+    sequence(const sequence& __sequence);
     // assignement operator
     sequence& operator=(const sequence& __sequence);
 
@@ -44,6 +45,9 @@ class sequence
     uint32_t const ui32GetSequenceDuration() const;
     beat const & getAssociatedBeat() const;
     std::array<bar, 8> const & getBarsArray() const;
+
+    /** public instance properties */
+    int16_t i16IndexNumber;
 
     /** Task - sequence players */
     void playSequenceStandAlone(const int16_t __i16_sequence_id, beat const & __beat);
@@ -112,6 +116,7 @@ class sequences
     void disableAndResetPlaySequenceTasks();
 
     /** getters */
+    int16_t const i16GetCurrentSequenceId() const; // returns the current sequence i16IndexNumber
     sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
 
     /** Task - sequence players */
