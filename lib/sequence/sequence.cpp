@@ -203,7 +203,9 @@ void sequence::setActive(const int16_t __i16_active_sequence_id) {
 ///////////////////////////////////
 /** sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) 
  * 
- * Returns a const ref to one of the hard coded bars given its index number */
+ * Instance getter.
+ * 
+ * Returns a const ref to one of the hard coded sequences given its index number */
 sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) {
   return sequences.at(__ui16_sequence_id);
 }
@@ -727,6 +729,53 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
   activeSequence = __activeSequence;
   return __activeSequence.i16IndexNumber;
 }
+
+
+
+
+/** sequences::disableAndResetPlaySequenceTasks(): public setter method
+ * 
+ *  Resets the parameters of the Tasks [tPlaySequence/tPlaySequenceInLoop] 
+ *  to their default parameters, to play a sequence, as instructed from a boxState
+ *  or stand alone. 
+ * 
+ *   Task tPlaySequenceInLoop default parameters:
+
+ *   - interval: 0 second;
+ *   - iteration forever;
+ *   - main callback: &_tcbPlaySequenceInLoop;
+ *   - onEnable callback: &_oetcbPlaySequenceInLoop;
+ *   - onDisable callback: &_odtcbPlaySequenceInLoop;
+ *   - added to myScheduler in setup(); disabled by default.
+ * 
+ *   Task tPlaySequence default parameters:
+ * 
+ *   - interval: 0 second;
+ *   - 0 iteration;
+ *   - main callback: &_oetcbPlaySequence;
+ *   - onEnable callback:  &_oetcbPlaySequence;
+ *   - onDisable callback: &_odtcbPlaySequence)
+ *   - added to myScheduler in setup(); disabled by default.
+ * 
+ *   bars::disableAndResetPlaySequenceTasks() is called by [boxState] 
+ *   (from [---]) and by sequence ([from the 
+ *   standalone sequence player]).
+ * 
+ *   Task tPlaySequenceInLoop is enabled upon entering a new boxState.
+ *   It is disabled upon exiting a boxState.
+ * 
+ *   Task tPlaySequence is enabled by tPlaySequenceInLoop onEnable callback.
+ *   It is disabled:
+ *   - at the expiration of its programmed iterations;
+ *   - by the onDisable callback of tPlaySequenceInLoop.
+ *  TODO: mention the laserInterface interrupts, here and in other parts.
+ * 
+ *  Each iteration of tPlaySequence correspond to one bar in the sequence.
+ *  Task tPlaySequence iterations is set in its onEnable callback.
+ *  Task tPlaySequence interval is reset in its main callback, at each iteration.
+ * 
+ *  public instance setter 
+ * */
 
 
 
