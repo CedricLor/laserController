@@ -726,7 +726,7 @@ sequences::sequences(
  *  public instance setter 
  * */
 uint16_t sequences::setActive(const sequence & __activeSequence) {
-  _bars.disableAndResetTPlayBar();
+  disableAndResetPlaySequenceTasks();
   activeSequence = __activeSequence;
   return __activeSequence.i16IndexNumber;
 }
@@ -785,16 +785,19 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  *  - at the expiration of its programmed iterations;
  *  - by the onDisable callback of tPlaySequenceInLoop.
  *  TODO: mention the laserInterface interrupts, here and in other parts.
- * 
+ *  
  *  Each iteration of tPlaySequence correspond to one bar in the sequence.
  *  Task tPlaySequence iterations is set in its onEnable callback.
  *  Task tPlaySequence interval is reset in its main callback, at each iteration.
  * 
  *  public instance setter 
  * */
-
-
-
+void sequences::disableAndResetPlaySequenceTasks() {
+  tPlaySequenceInLoop.disable();
+  tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
+  tPlaySequence.disable();
+  tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
+}
 
 
 
