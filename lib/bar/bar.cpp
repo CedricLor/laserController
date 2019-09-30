@@ -359,7 +359,7 @@ int16_t const bars::i16GetCurrentBarId() const {
 /** bar & bars::getCurrentBar() const
  * 
  * Returns the active bar as a bar */
-bar & bars::getCurrentBar() const {
+bar const & bars::getCurrentBar() const {
   return _activeBar;
 }
 
