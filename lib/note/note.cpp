@@ -280,7 +280,7 @@ notes & notes::operator=(notes&& __notes) {
  *       the currently active note and send them to the mesh. */
 void notes::setActive(const note & __activeNote) {
   // Serial.println("notes::setActive: starting");
-  tPlayNote.disable();
+  disableAndResetTPlayNote();
   // Serial.println("notes::setActive: tPlayNote disabled");
   // Serial.printf("notes::setActive: __activeNote._ui16Tone: %u\n", __activeNote._ui16Tone);
   // Serial.printf("notes::setActive: __activeNote._ui16Note: %u\n", __activeNote._ui16Note);
