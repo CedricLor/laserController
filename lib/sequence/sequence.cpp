@@ -824,6 +824,6 @@ int16_t const sequences::i16GetCurrentSequenceId() const {
  * Instance getter.
  * 
  * Returns a const ref to one of the hard coded sequences given its index number */
-sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) {
+sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const {
   return sequencesArray.at(__ui16_sequence_id);
 }

@@ -111,7 +111,7 @@ class sequences
 
     /** getters */
     int16_t const i16GetCurrentSequenceId() const; // returns the current sequence i16IndexNumber
-    sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
+    sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const;
 
     /** Task - sequence players */
     void playSequenceStandAlone(const int16_t __i16_sequence_id=-1, beat const & __beat=activeBeat);
