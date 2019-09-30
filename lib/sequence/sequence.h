@@ -129,9 +129,6 @@ class sequences
     sequence & activeSequence;
 
   private:
-    // variable: currently played active sequence
-    int16_t _i16ActiveSequenceNb;
-
     // tasks callbacks
     bool _oetcbPlaySequenceInLoop();
     void _tcbPlaySequenceInLoop();
