@@ -625,6 +625,7 @@ sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
+  sequencesArray({}),
   tPlayBar(_bars.tPlayBar),
   tPlayNote(_bars.tPlayNote),
   activeSequence(globalSequence)
