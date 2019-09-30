@@ -214,5 +214,5 @@ void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint
 
 void laserInterface::noteNS::lockStack() {
   barNS::lockStack();
-  sequence::globalBars.tPlayBar.disable();
+  sequence::globalBars.disableAndResetTPlayBar();
 }

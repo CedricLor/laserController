@@ -300,9 +300,7 @@ bars::bars(
  * }
  *  */
 uint16_t const bars::setActive(const bar & __activeBar) {
-  if (this->tPlayBar.disable()) {
-    return -2;
-  };
+  disableAndResetTPlayBar();
   _activeBar = __activeBar;
   return _activeBar.i16IndexNumber;
 }

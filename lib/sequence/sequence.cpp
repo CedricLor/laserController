@@ -305,7 +305,7 @@ void sequence::playSequenceStandAlone(const int16_t __i16_sequence_id, beat cons
    */
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
-  sequence::globalBars.tPlayBar.disable();
+  sequence::globalBars.disableAndResetTPlayBar();
   sequence::globalBars._notes.tPlayNote.disable();
 
   // 1. reset tPlayNote to play notes read from a bar
@@ -343,7 +343,7 @@ void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id) {
   //    TODO: check whether this shall be done here or elsewhere (in boxState)
   tPlaySequenceInLoop.disable();
   tPlaySequence.disable();
-  sequence::globalBars.tPlayBar.disable();
+  sequence::globalBars.disableAndResetTPlayBar();
   sequence::globalBars._notes.tPlayNote.disable();
 
   // 2. set the underlying laser Tasks for a sequence -> bar -> note -> tone chain
@@ -723,9 +723,7 @@ sequences::sequences(
  *  public instance setter 
  * */
 uint16_t sequences::setActive(const sequence & __activeSequence) {
-  if (this->tPlayBar.disable()) {
-    return -2;
-  };
+  _bars.disableAndResetTPlayBar();
   activeSequence = __activeSequence;
   return __activeSequence.i16IndexNumber;
 }
