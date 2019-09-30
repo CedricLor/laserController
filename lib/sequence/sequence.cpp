@@ -812,3 +812,18 @@ void sequences::disableAndResetPlaySequenceTasks() {
 int16_t const sequences::i16GetCurrentSequenceId() const {
   return activeSequence.i16IndexNumber;
 }
+
+
+
+
+
+
+
+/** sequence & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id)
+ * 
+ * Instance getter.
+ * 
+ * Returns a const ref to one of the hard coded sequences given its index number */
+sequence & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) {
+  return sequencesArray.at(__ui16_sequence_id);
+}
