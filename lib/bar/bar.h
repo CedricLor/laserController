@@ -73,7 +73,7 @@ class bars
     /** getters */
     int16_t const i16GetCurrentBarId() const; // returns the current bar's i16IndexNumber
     bar & getCurrentBar() const;
-    bar & getBarFromBarArray(const uint16_t __ui16_bar_id);
+    bar const & getBarFromBarArray(const uint16_t __ui16_bar_id);
     notes & getNotes();
 
     /** player */
