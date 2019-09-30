@@ -712,6 +712,9 @@ sequences::sequences(
 
 
 
+
+
+
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
@@ -731,41 +734,56 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
 
 
 
+
+
+
+/** TODO: - review calls to disableAndResetPlaySequenceTasks,
+ *          disableAndResetTPlayBar and disableAndResetTPlayNote;
+ *        - check whether they are rather called upon terminating or upon starting a player;
+ *        - try to systematically use them as a replacement for calls to task disable.
+ * 
+ *        - try to rationalize, comparing what is happening in each of the stacks. I have got the sentiment that it is a bit fuzzy at the moment.
+ * */
+
+
+
+
+
+
+
 /** sequences::disableAndResetPlaySequenceTasks(): public setter method
  * 
  *  Resets the parameters of the Tasks [tPlaySequence/tPlaySequenceInLoop] 
  *  to their default parameters, to play a sequence, as instructed from a boxState
  *  or stand alone. 
  * 
- *   Task tPlaySequenceInLoop default parameters:
-
- *   - interval: 0 second;
- *   - iteration forever;
- *   - main callback: &_tcbPlaySequenceInLoop;
- *   - onEnable callback: &_oetcbPlaySequenceInLoop;
- *   - onDisable callback: &_odtcbPlaySequenceInLoop;
- *   - added to myScheduler in setup(); disabled by default.
+ *  Task tPlaySequenceInLoop default parameters:
+ *  - interval: 0 second;
+ *  - iteration forever;
+ *  - main callback: &_tcbPlaySequenceInLoop;
+ *  - onEnable callback: &_oetcbPlaySequenceInLoop;
+ *  - onDisable callback: &_odtcbPlaySequenceInLoop;
+ *  - added to myScheduler in setup(); disabled by default.
  * 
- *   Task tPlaySequence default parameters:
+ *  Task tPlaySequence default parameters:
+ *  - interval: 0 second;
+ *  - 0 iteration;
+ *  - main callback: &_oetcbPlaySequence;
+ *  - onEnable callback:  &_oetcbPlaySequence;
+ *  - onDisable callback: &_odtcbPlaySequence)
+ *  - added to myScheduler in setup(); disabled by default.
  * 
- *   - interval: 0 second;
- *   - 0 iteration;
- *   - main callback: &_oetcbPlaySequence;
- *   - onEnable callback:  &_oetcbPlaySequence;
- *   - onDisable callback: &_odtcbPlaySequence)
- *   - added to myScheduler in setup(); disabled by default.
+ *  bars::disableAndResetPlaySequenceTasks() is called by [boxState] 
+ *  (from [---]) and by sequence ([from the 
+ *  standalone sequence player]).
  * 
- *   bars::disableAndResetPlaySequenceTasks() is called by [boxState] 
- *   (from [---]) and by sequence ([from the 
- *   standalone sequence player]).
+ *  Task tPlaySequenceInLoop is enabled upon entering a new boxState.
+ *  It is disabled upon exiting a boxState.
  * 
- *   Task tPlaySequenceInLoop is enabled upon entering a new boxState.
- *   It is disabled upon exiting a boxState.
- * 
- *   Task tPlaySequence is enabled by tPlaySequenceInLoop onEnable callback.
- *   It is disabled:
- *   - at the expiration of its programmed iterations;
- *   - by the onDisable callback of tPlaySequenceInLoop.
+ *  Task tPlaySequence is enabled by tPlaySequenceInLoop onEnable callback.
+ *  It is disabled:
+ *  - at the expiration of its programmed iterations;
+ *  - by the onDisable callback of tPlaySequenceInLoop.
  *  TODO: mention the laserInterface interrupts, here and in other parts.
  * 
  *  Each iteration of tPlaySequence correspond to one bar in the sequence.
