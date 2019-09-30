@@ -288,10 +288,10 @@ bars::bars(
 ///////////////////////////////////
 /** bars::setActive(const bar & __activeBar): public instance setter method
  * 
- *  sets the class instance variable _activeBar 
- *  from a passed in const bar lvalue reference.
+ *  bars::setActive() sets the variable _activeBar (of the bars instance)
+ *  using the passed-in param (which is a const bar lvalue reference).
  * 
- * Drafting of the former bar method, which this method is supposed to replace.
+ *  Drafting of the former bar method, which this method is supposed to replace.
  * 
  * void bar::setActive(const int16_t __i16_active_bar_id) {
  *   tPlayBar.disable();
@@ -317,17 +317,19 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  *   - its default main callback;
  *   - its default onEnable callback
  * 
- *   bars::disableAndResetTPlayBar() is called by sequence 
- *   (from the sequence players (standalone sequence player and
- *   sequence player in a boxState)) and by bar (from the 
- *   standalone bar player).
+ *   bars::disableAndResetTPlayBar() is called by:
+ *   - the constructor of the bars class, before initializing the various hard-coded bars;
+ *   - setActive() in the bars class (which is itself called by playBarStandAlone() and playBarInSequence());
+ *   - the test file (test.cpp);
+ *   - the laserInterface;
+ *   - playSequenceStandAlone and playSequenceInBoxState in the sequence class;
  * 
- *   The Task tPlayBar is enabled upon entering a new bar from
- *   a sequence.
+ *   The Task tPlayBar is enabled upon entering a new bar by playBarInSequence
+ *   or by playBarStandAlone().
  * 
  *   It is disabled:
- *   - at the expiration of its programmed iterations; or
- *   - by the callbacks of tPlaySequence.
+ *   - once it has performed all of its iterations; or
+ *   - by the callback of tPlaySequence.
  * 
  *   task tPlayBar plays a given bar (set in bars::activeBar) 
  *   at a given beat rate.
