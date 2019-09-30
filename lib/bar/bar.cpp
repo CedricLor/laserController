@@ -361,7 +361,7 @@ bar & bars::getCurrentBar() const {
   return _activeBar;
 }
 
-/** bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const
+/** bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id)
  * 
  * Returns a ref to one of the hard coded bars given its index number */
 bar & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) {
