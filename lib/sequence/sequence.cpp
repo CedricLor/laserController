@@ -893,7 +893,6 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
  *  interval for this Task (before being reset in this onEnable callback) is
  *  equal to 0. 
  * */
-
 bool sequences::_oetcbPlaySequenceInLoop() {
   Serial.println("sequences::_oetcbPlaySequenceInLoop(). starting. *****");
 
@@ -906,9 +905,6 @@ bool sequences::_oetcbPlaySequenceInLoop() {
 
 
 
-
-
-
 void sequences::_tcbPlaySequenceInLoop() {
   Serial.println("sequences::_tcbPlaySequenceInLoop(). starting. ******");
 
@@ -917,9 +913,6 @@ void sequences::_tcbPlaySequenceInLoop() {
 
   Serial.println("sequences::_tcbPlaySequenceInLoop(). over.");
 }
-
-
-
 
 
 
