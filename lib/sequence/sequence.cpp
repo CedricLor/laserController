@@ -870,10 +870,6 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
 
 
 
-
-
-
-
 /** bool sequences::_oetcbPlaySequenceInLoop()
  * 
  *  Set the interval between each iteration of tPlaySequenceInLoop
@@ -934,4 +930,80 @@ void sequences::_odtcbPlaySequenceInLoop() {
 
 
 
+///////////////////////////////////
+// Single Sequence Player
+///////////////////////////////////
+/** Task tPlaySequence.
+ *  
+ * It plays a given sequence once.
+ * */
 
+
+
+/** bool sequences::_oetcbPlaySequence(): onEnable callback for tPlaySequence
+ *  
+ *  sets the number of iterations of tPlaySequence to the number of bars in this sequence.
+ * */
+bool sequences::_oetcbPlaySequence() {
+  /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the sequence. */
+  tPlaySequence.setIterations(activeSequence.ui16GetBarCountInSequence());
+
+  /** 2. Signal the change of sequence to the mesh. */
+  if (sendCurrentSequence != nullptr) {
+    sendCurrentSequence(activeSequence.i16IndexNumber);
+  }
+
+  return true;
+}
+
+
+
+/** void sequences::_tcbPlaySequence(): 
+ * 
+ *  Main callback for tPlaySequence
+ *  Each iteration of tPlaySequence corresponds to a bar. 
+ *  Accordingly, each iteration runs for an identical a fixed time -> interval.
+ * 
+ *  The iterations and the interval of the Task have been set in its onEnable 
+ *  callback and do not change on iterations.
+ * 
+ *  At each iteration of tPlaySequence:
+ *  - using the Task iterator (step 1. below), we get, from this sequence's 
+ *    array of associatedBars, the index number of the bar to be played (step 2 below).
+ *  - we then set the active bar in the bar class from the array of hard coded bars 
+ *    provided by the class bar, before enabling the Task tPlayBar in the bar class.
+ * */
+void sequences::_tcbPlaySequence() {
+  Serial.println("sequences::_tcbPlaySequence(). starting.");
+  Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
+
+  // 1. Get the number of iterations (each iteration corresponds to one bar)
+  uint16_t _ui16Iter = tPlaySequence.getRunCounter();
+  _ui16Iter = ((0 == _ui16Iter) ? 0 : (_ui16Iter - 1));
+
+  // 2. Calculate the bar duration
+  uint32_t __ui32ThisBarDuration = activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
+
+  // 3. Play the corresponding bar
+  _bars.playBarInSequence(activeSequence.getBarsArray().at(_ui16Iter));
+
+  /**4. Set the interval for next iteration of tPlaySequence
+   * 
+   *    At each pass, reset the interval before the next iteration of this 
+   *    Task sequences::tPlaySequence. This marks the duration of each bar played in the
+   *    context of a sequence. */
+  tPlaySequence.setInterval(__ui32ThisBarDuration);
+
+  Serial.println("sequences::_tcbPlaySequence(). over.");
+};
+
+
+
+/** tPlaySequence disable callback */
+void sequences::_odtcbPlaySequence() {
+  // if (MY_DG_LASER) {
+  //   Serial.println("----------------------------on disable tPlaySequence ------------------------------");
+  //   Serial.print("sequences::_odtcbPlaySequence(). millis() = ");Serial.println(millis());
+  //   Serial.println("sequences::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
+  // }
+}

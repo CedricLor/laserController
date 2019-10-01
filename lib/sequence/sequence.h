@@ -14,6 +14,7 @@
 
 class sequence
 {
+  friend class sequences;
   public:
     /** constructors */
     // default constructor
