@@ -366,6 +366,7 @@ void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
 
 
 // TODO: should probably return a note instead of a true/false
+// TODO: playNoteInBar has been modified to return a value: Do sthing now with the return value
 /** bool const notes::playNoteInBar(const note & __note):
  *  
  *  play a single note for its maximum duration.
