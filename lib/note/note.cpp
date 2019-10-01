@@ -364,16 +364,23 @@ void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
   this->tPlayNote.restartDelayed();
 }
 
-/** void notes::playNoteInBar(const note & __note):
+
+// TODO: should probably return a note instead of a true/false
+/** bool const notes::playNoteInBar(const note & __note):
  *  
  *  play a single note for its maximum duration.
- *  _tcbPlayBar manages the real duration (and the beat). 
-*/
-void notes::playNoteInBar(const note & __note) {
+ *  _tcbPlayBar manages the real duration (and the beat) by 
+ *  disabling the Task tPlayNote
+ */
+bool const notes::playNoteInBar(const note & __note) {
   Serial.println("notes::playNoteInBar: starting");
+  if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
+    return false;
+  }
   setActive(__note);
   tPlayNote.restartDelayed();
   Serial.println("notes::playNoteInBar: over");
+  return true;
 }
 
 

@@ -83,7 +83,7 @@ class notes
 
     /** player */
     void playNoteStandAlone(const note & __note, beat const & __beat=activeBeat);
-    void playNoteInBar(const note & __note);
+    bool const playNoteInBar(const note & __note);
 
     /** member */
     Task tPlayNote;
