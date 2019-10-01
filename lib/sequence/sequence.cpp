@@ -828,3 +828,81 @@ int16_t const sequences::i16GetCurrentSequenceId() const {
 sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const {
   return sequencesArray.at(__ui16_sequence_id);
 }
+
+
+
+
+
+
+
+///////////////////////////////////
+// Loop Player
+///////////////////////////////////
+/**
+ *  tPlayBoxState plays once (unless restarted by tPlayBoxStates)
+ *    - tPlayBoxState -> onEnable: enables tPlaySequenceInLoop by calling
+ *      playSequenceInBoxState();
+ *    - tPlayBoxState -> onDisable: disables tPlaySequenceInLoop
+ *  tPlaySequenceInLoop plays forever (until interrupt by tPlayBoxState):
+ *    - tPlaySequenceInLoop -> onEnable: calculates the sequence duration and
+ *      sets the interval for tPlaySequenceInLoop
+ *    - tPlaySequenceInLoop -> main callback: starts tPlaySequence
+ *    - tPlaySequenceInLoop -> onDisable: plays sequence 5 (all off) */
+
+/** tPlaySequenceInLoop
+ * 
+ *  tPlaySequenceInLoop plays a sequence in loop, for an unlimited number
+ *  of iterations, until it is disabled by tPlayBoxState.
+ * 
+ *  tPlaySequenceInLoop is enabled and disabled by the onEnable and
+ *  onDisable callbacks of tPlayBoxState.
+ * 
+ *  Upon entering a new boxState (startup, IR signal received, etc.), the onEnable 
+ *  callback of tPlayBoxState task calls the playSequenceInBoxState() method of
+ *  sequence::sequences[_currentBoxState.ui16AssociatedSequence].
+ * 
+ *  _currentBoxState.ui16AssociatedSequence is the index number, in the 
+ *  sequences array, of the sequence associated with the calling boxState.
+ * 
+ *  This Task tPlaySequenceInLoop is enabled by playSequenceInBoxState, until 
+ *  being disabled by the boxState::tPlayBoxState onDisable callback.
+ * */
+
+
+
+
+
+
+
+/** bool sequences::_oetcbPlaySequenceInLoop()
+ * 
+ *  Set the interval between each iteration of tPlaySequenceInLoop
+ *  (each iteration will restart the Task tPlaySequence, so this
+ *  interval shall be equal to the duration of the sequence).
+ * 
+ *  This interval will only be taken into account after the main 
+ *  callback has been called ==> the forenext iteration.
+ * 
+ *  This calculation is made based on the base of the base beat in bpm,
+ *  the base note, the number of base notes per bars and the number 
+ *  of bars in the sequence.
+ * 
+ *  _oetcbPlaySequenceInLoop() does not start playing the sequence. This is
+ *  done in the main callback of tPlaySequenceInLoop. The first iteration of
+ *  the Task occurs immediately after the onEnable callback, at the initial
+ *  interval for this Task (before being reset in this onEnable callback) is
+ *  equal to 0. 
+ * */
+
+bool sequences::_oetcbPlaySequenceInLoop() {
+  Serial.println("sequences::_oetcbPlaySequenceInLoop(). starting. *****");
+
+  tPlaySequenceInLoop.setInterval(activeSequence.ui32GetSequenceDuration());
+
+  Serial.println("sequences::_oetcbPlaySequenceInLoop(). over.");
+  return true;
+}
+
+
+
+
