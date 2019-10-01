@@ -450,7 +450,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
  *  
  *  play a single bar calculating the durations
  *  on the basis of the beat set by tPlaySequence. */
-bool bars::playBarInSequence(const bar & __target_bar) {
+bool const bars::playBarInSequence(const bar & __target_bar) {
   if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
     return false;
   }
