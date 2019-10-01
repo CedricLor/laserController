@@ -921,8 +921,12 @@ void sequences::_tcbPlaySequenceInLoop() {
 
 
 
-// On disable tPlaySequenceInLoop, turn off all the laser by playing
-// sequence 5 ("all off").
+
+
+
+/** On disable tPlaySequenceInLoop, turn off all the laser by playing
+ *  sequence 5 ("all off"). 
+ * */
 void sequences::_odtcbPlaySequenceInLoop() {
   Serial.println("sequences::_odtcbPlaySequenceInLoop(). starting. ******");
   if (activeSequence.i16IndexNumber != 5) {
