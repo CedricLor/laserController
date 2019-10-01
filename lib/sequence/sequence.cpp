@@ -906,3 +906,18 @@ bool sequences::_oetcbPlaySequenceInLoop() {
 
 
 
+
+
+
+void sequences::_tcbPlaySequenceInLoop() {
+  Serial.println("sequences::_tcbPlaySequenceInLoop(). starting. ******");
+
+  Serial.println("sequences::_tcbPlaySequenceInLoop(). about to enable tPlaySequence");
+  tPlaySequence.restart();
+
+  Serial.println("sequences::_tcbPlaySequenceInLoop(). over.");
+}
+
+
+
+
