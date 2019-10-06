@@ -346,13 +346,13 @@ const note &notes::getCurrentNote() const {
 void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
   setActive(__note);
   activeBeat = __beat;
-  this->tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
-  this->tPlayNote.setOnDisable([&](){
+  tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
+  tPlayNote.setOnDisable([&](){
     activeBeat = beat(0, 0);
-    this->_odtcbPlayNote();
-    this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
+    _odtcbPlayNote();
+    tPlayNote.setOnDisable([&](){_odtcbPlayNote();});
   });
-  this->tPlayNote.restartDelayed();
+  tPlayNote.restartDelayed();
 }
 
 
