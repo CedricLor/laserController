@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/CedricLor/laserController#readme",
   "devDependencies": {
-    "eslint": "^6.1.0"
+    "eslint": "^6.5.1"
   },
   "dependencies": {
     "express": "^4.17.1",
