@@ -308,7 +308,9 @@ uint16_t const bars::setActive(const bar & __activeBar) {
 
 /** bars::disableAndResetTPlayBar(): public setter method
  * 
- *  Resets the parameters of the Task tPlayBar to its default parameters, to
+ *  
+ *  Disables and resets the parameters of the Task tPlayNote (by calling
+ *  _disableAndResetTPlayNote) and  Task tPlayBar to its default parameters, to
  *  play bars read from a sequence. 
  * 
  *   Task tPlayBar default parameters:
@@ -409,14 +411,14 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
   /** 2. set the active beat from the passed-in beat */
   activeBeat = __beat;
 
-  /**3. set the tPlayNote Task to its default by calling notes{}.disableAndResetTPlayNote()
+  /**3. set the tPlayNote Task to its default by calling _notes._disableAndResetTPlayNote()
    *    
    *    The tPlayNote Task will then be enabled and disabled from 
-   *    tPlayBar's callbacks.
+   *    tPlayBar's onEnable and main callbacks (respectively _oetcbPlayBar and _tcbPlayBar).
    * 
    *    The following instruction resets tPlayNote to play a note 
    *    for one single iteration for a maximum duration of 30000 ms. */
-  notes{}.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
 
   /**4. set the onDisable callback of tPlayBar: 
    * 

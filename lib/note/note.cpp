@@ -215,7 +215,7 @@ notes::notes(
   _activeNote(globalNote),
   _tones({})
 {
-  disableAndResetTPlayNote();
+  _disableAndResetTPlayNote();
 }
 // copy constructor
 notes::notes(const notes & __notes):
@@ -223,7 +223,7 @@ notes::notes(const notes & __notes):
   _activeNote(__notes._activeNote),
   _tones(__notes._tones)
 {
-  disableAndResetTPlayNote();
+  _disableAndResetTPlayNote();
 }
 // copy assignment operator
 notes & notes::operator=(const notes & __notes) {
@@ -231,7 +231,7 @@ notes & notes::operator=(const notes & __notes) {
     sendCurrentNote = __notes.sendCurrentNote;
     _activeNote = __notes._activeNote;
     _tones = __notes._tones;
-    disableAndResetTPlayNote();
+    _disableAndResetTPlayNote();
   }
   return *this;
 }
@@ -258,7 +258,7 @@ notes & notes::operator=(notes&& __notes) {
     __notes._activeNote = note{};
     __notes._tones = {};
 
-    disableAndResetTPlayNote();
+    _disableAndResetTPlayNote();
   }
   return *this;
 }
@@ -280,7 +280,7 @@ notes & notes::operator=(notes&& __notes) {
  *       the currently active note and send them to the mesh. */
 void notes::setActive(const note & __activeNote) {
   // Serial.println("notes::setActive: starting");
-  disableAndResetTPlayNote();
+  _disableAndResetTPlayNote();
   // Serial.println("notes::setActive: tPlayNote disabled");
   // Serial.printf("notes::setActive: __activeNote._ui16Tone: %u\n", __activeNote._ui16Tone);
   // Serial.printf("notes::setActive: __activeNote._ui16Note: %u\n", __activeNote._ui16Note);
@@ -291,7 +291,7 @@ void notes::setActive(const note & __activeNote) {
 }
 
 
-/** notes::disableAndResetTPlayNote(): public setter method
+/** notes::_disableAndResetTPlayNote(): public setter method
  * 
  *  disables Task tPlayNote and resets its default parameters, so as
  *  it be ready to play any note.
@@ -315,7 +315,7 @@ void notes::setActive(const note & __activeNote) {
  *   for a given note type (--> full, half, ..., set in the bar) at a given
  *   beat rate. 
  *  */
-void notes::disableAndResetTPlayNote() {
+void notes::_disableAndResetTPlayNote() {
   tPlayNote.disable();
   tPlayNote.set(30000, 1, NULL, [&](){return this->_oetcbPlayNote();}, [&](){this->_odtcbPlayNote();});
 }

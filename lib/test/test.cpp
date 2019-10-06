@@ -500,10 +500,8 @@ void test::rawNotesStackConstructors(const char * _methodName) {
 void test::rawNotesStackDefaultResetters(const char * _methodName, laserPins & _laserPins, notes & _notes) {
   // Resetters
   Serial.printf("%s testing Task tPlayNote resetters \n", _methodName);
-  Serial.printf("%s calling _notes.resetTPlayNote()\n", _methodName);
-  _notes.resetTPlayNote();
-  Serial.printf("%s calling _notes.disableAndResetTPlayNote()\n\n", _methodName);
-  _notes.disableAndResetTPlayNote();  
+  Serial.printf("%s calling _notes._disableAndResetTPlayNote()\n\n", _methodName);
+  _notes._disableAndResetTPlayNote();  
 }
 
 
@@ -559,7 +557,7 @@ void test::rawNotesStackDefaultLaserPins(const char * _methodName, notes & _note
 void test::rawNotesStackDefaultSettersAndGetters(const char * _methodName, notes & _notes) {
   // testing _notes.setActive, _notes._activeNote.getNote and _notes._activeNote.getToneNumber
   Serial.printf("%s testing setActive, getNote and getToneNumber\n", _methodName);
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.setActive(note{4,8}).\n", _methodName);
   _notes.setActive(note{4,8});
   Serial.printf("%s _notes._activeNote.getNote() shall be 8. Is [%u]\n", _methodName, 
@@ -573,27 +571,27 @@ void test::rawNotesStackDefaultSettersAndGetters(const char * _methodName, notes
 
 void test::rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes) {
   // testing _notes.playNoteStandAlone
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n", _methodName);
   _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
   note _note{1, 1};
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.playNoteStandAlone(_note, beat(5, 1)) with note _note{1, 1}.\n\n", _methodName);
   _notes.playNoteStandAlone(_note, beat(5, 1));
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
 
   // testing _notes.playNoteInBar
   Serial.printf("%s testing _notes.playNoteInBar\n", _methodName);
   Serial.printf("%s setting active beat to beat(5, 1)\n", _methodName);
   activeBeat = beat(5, 1);
 
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.playNoteInBar(note{4, 1}.\n", _methodName);
   _notes.playNoteInBar(note{4, 1});
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
   Serial.printf("%s calling _notes.playNoteStandAlone(_note).\n\n", _methodName);
   _notes.playNoteInBar(_note);
-  _notes.disableAndResetTPlayNote();
+  _notes._disableAndResetTPlayNote();
 }
 
 

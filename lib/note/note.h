@@ -75,7 +75,6 @@ class notes
 
     /** setters */
     void setActive(const note & __activeNote);
-    void disableAndResetTPlayNote();
 
     /** getter */
     const note &getCurrentNote() const;
@@ -88,6 +87,8 @@ class notes
     Task tPlayNote;
 
   private:
+    /** setters */
+    void _disableAndResetTPlayNote();
 
     /** private members */
     note & _activeNote;
