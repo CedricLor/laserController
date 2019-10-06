@@ -293,23 +293,16 @@ void notes::setActive(const note & __activeNote) {
 
 /** notes::disableAndResetTPlayNote(): public setter method
  * 
- *  resets the parameters of the Task tPlayNote to  
- *  play notes read from a bar. */
-void notes::disableAndResetTPlayNote() {
-  tPlayNote.disable();
-  resetTPlayNote();
-}
-
-/** void notes::resetTPlayNote(): public setter method
+ *  disables Task tPlayNote and resets its default parameters, so as
+ *  it be ready to play any note.
  * 
- *   notes::resetTPlayNote sets Task notes::tPlayNote to its default 
- *   parameters:
- *   - an interval of 30.000 seconds;
- *   - no main callback;
- *   - 
+ *  Default parameters:
+ *  - an interval of 30.000 seconds;
+ *  - 1 iteration;
+ *  - no main callback;
+ *  - an onEnable callback, that turns the lasers on in a given tone;
+ *  - an onDisable callback, that turn the lasers off.
  * 
- *   It is called by sequence (from the players (standalone and in boxState)) and
- *   bar (from the standalone bar player).
  * 
  *   The Task is enabled upon instanciating a note in the bar class.
  *   It is disabled:
@@ -321,15 +314,13 @@ void notes::disableAndResetTPlayNote() {
  *   task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
  *   for a given note type (--> full, half, ..., set in the bar) at a given
  *   beat rate. 
- * 
- *   */
-void notes::resetTPlayNote() {
-  this->tPlayNote.setIterations(1);
-  this->tPlayNote.setInterval(30000);
-  this->tPlayNote.setCallback(NULL);
-  this->tPlayNote.setOnEnable([&](){return this->_oetcbPlayNote();});
-  this->tPlayNote.setOnDisable([&](){this->_odtcbPlayNote();});
+ *  */
+void notes::disableAndResetTPlayNote() {
+  tPlayNote.disable();
+  tPlayNote.set(30000, 1, NULL, [&](){return this->_oetcbPlayNote();}, [&](){this->_odtcbPlayNote();});
 }
+
+
 
 
 ///////////////////////////////////

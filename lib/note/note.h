@@ -76,7 +76,6 @@ class notes
     /** setters */
     void setActive(const note & __activeNote);
     void disableAndResetTPlayNote();
-    void resetTPlayNote();
 
     /** getter */
     const note &getCurrentNote() const;
