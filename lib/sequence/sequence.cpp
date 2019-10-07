@@ -794,6 +794,7 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  *  public instance setter 
  * */
 void sequences::disableAndResetPlaySequenceTasks() {
+  _bars.disableAndResetTPlayBar();
   tPlaySequenceInLoop.disable();
   tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
   tPlaySequence.disable();
