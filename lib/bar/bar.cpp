@@ -337,8 +337,9 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  *   at a given beat rate.
  * */
 void bars::disableAndResetTPlayBar() {
+  _notes._disableAndResetTPlayNote();
   tPlayBar.disable();
-  tPlayBar.set(0, 1, [&](){_tcbPlayBar();}, [&](){return _oetcbPlayBar();});
+  tPlayBar.set(0, 1, [&](){_tcbPlayBar();}, [&](){return _oetcbPlayBar();}, NULL);
 }
 
 
@@ -403,7 +404,8 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
     return 0;
   }
 
-  // 1. set the passed-in bar as active
+  // 1. set the passed-in bar as active (setActive() will also call 
+  //    disableAndResetTPlayBar() and _notes._disableAndResetTPlayNote())
   if (setActive(__target_bar) == -2) {
     return 1;
   };
@@ -411,16 +413,7 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
   /** 2. set the active beat from the passed-in beat */
   activeBeat = __beat;
 
-  /**3. set the tPlayNote Task to its default by calling _notes._disableAndResetTPlayNote()
-   *    
-   *    The tPlayNote Task will then be enabled and disabled from 
-   *    tPlayBar's onEnable and main callbacks (respectively _oetcbPlayBar and _tcbPlayBar).
-   * 
-   *    The following instruction resets tPlayNote to play a note 
-   *    for one single iteration for a maximum duration of 30000 ms. */
-  _notes._disableAndResetTPlayNote();
-
-  /**4. set the onDisable callback of tPlayBar: 
+  /**3. set the onDisable callback of tPlayBar: 
    * 
    *    once the standalone bar has been read/played,
    *    the active beat shall be reset to (0,0) (to leave the beat 
@@ -438,10 +431,10 @@ uint16_t const bars::playBarStandAlone(const bar & __target_bar, beat const & __
     tPlayBar.setOnDisable(NULL);
   });
 
-  // 5. once all the setting have been done, play the bar
+  // 4. once all the setting have been done, play the bar
   tPlayBar.restart();
 
-  // 6. return 2 for success
+  // 5. return 2 for success
   return 2;
 }
 
