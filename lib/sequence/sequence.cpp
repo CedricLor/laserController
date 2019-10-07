@@ -810,6 +810,51 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
 
 
 
+
+
+
+///////////////////////////////////
+// Sequence Players
+///////////////////////////////////
+/** sequences::playSequenceStandAlone():
+ *  
+ *  play a single sequence calculating the durations
+ *  on the basis of the passed-in beat.
+ * 
+ *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
+ *             sequence array (might be needed for debug and interface purpose) 
+ *  {@ params} beat const & __beat: pass a beat to be taken into account
+ *             to calculate the notes duration
+ * */
+uint16_t const sequences::playSequenceStandAlone(const sequence & __target_sequence) {
+  // 0. Do not do anything if the beat has not been set
+  if ((__target_sequence._beat.getBaseBeatInBpm() == 0) || (__target_sequence._beat.getBaseNoteForBeat() == 0)) {
+    return 0;
+  }
+
+  // 1. set the active sequence and the active beat
+  if (setActive(__target_sequence) == -2) {
+    return 1;
+  }
+
+  /**2. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
+   *    the stand alone sequence has been read, so that any other object that may 
+   *    thereafter depend on beat finds a clean beat to start with, as required. */
+  tPlaySequence.setOnDisable([&](){
+    activeBeat = beat(0, 0);
+    tPlaySequence.setOnDisable([&](){
+      _odtcbPlaySequence();
+    });
+  });
+
+  // 3. restart the tPlaySequence Task
+  tPlaySequence.restart();
+
+  // 4. return 2 for success
+  return 2;
+}
+
+
 ///////////////////////////////////
 // Loop Player
 ///////////////////////////////////
