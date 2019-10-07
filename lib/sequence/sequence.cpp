@@ -701,6 +701,7 @@ sequences::sequences(
  * */
 uint16_t sequences::setActive(const sequence & __activeSequence) {
   disableAndResetPlaySequenceTasks();
+  activeBeat = __activeSequence._beat;
   activeSequence = __activeSequence;
   return __activeSequence.i16IndexNumber;
 }
