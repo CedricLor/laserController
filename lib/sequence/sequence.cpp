@@ -184,8 +184,13 @@ void sequence::initSequences() {
  *  sets the caller sequence as the static variable &sequence::_sequence.
  * */
 void sequence::setActive(const int16_t __i16_active_sequence_id) {
-  activeSequence = *this;
+  sequence::globalBars.disableAndResetTPlayBar();
+  tPlaySequence.disable();
+  tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
+  tPlaySequenceInLoop.disable();
+  tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
 
+  activeSequence = *this;
   _i16ActiveSequenceNb = __i16_active_sequence_id;
 }
 
