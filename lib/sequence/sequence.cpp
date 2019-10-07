@@ -324,35 +324,18 @@ void sequence::playSequenceStandAlone(const int16_t __i16_sequence_id, beat cons
   });
 
   // 3. restart the tPlaySequence Task
-  tPlaySequence.enable();
+  tPlaySequence.restart();
 }
 
 
 void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id) {
-  // 1. disable all previously eventually enabled laser Task
-  //    TODO: check whether this shall be done here or elsewhere (in boxState)
-  tPlaySequenceInLoop.disable();
-  tPlaySequence.disable();
-  sequence::globalBars.disableAndResetTPlayBar();
-  sequence::globalBars._notes.disableAndResetTPlayNote();
-
-  // 2. set the underlying laser Tasks for a sequence -> bar -> note -> tone chain
-  //    TODO: the two following lines shall be defined at the beginning of entering 
-  //          an automated boxState or even the stepControllerMode
-  notes{}.disableAndResetTPlayNote();
-  sequence::globalBars.tPlayBar.setOnDisable(NULL);
-
-  // 3. set this Task for a regular step -> boxState -> sequence -> bar -> note -> tone chain 
-  //    (as opposed to a standAlone play of the sequence)
-  tPlaySequence.setOnDisable(_odtcbPlaySequence);
-  
-  // 4. set the active sequence
+  if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
+    return;
+  }
   setActive(__i16_sequence_id);
-
-  // 5. set the beat
   activeBeat = _beat;
 
-  tPlaySequenceInLoop.enable();
+  tPlaySequenceInLoop.restart();
 }
 
 
