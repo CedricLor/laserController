@@ -23,7 +23,7 @@ class sequence
     sequence(
       const beat & __beat,
       std::array<bar, 8> & __barsArray,
-      int16_t __i16IndexNumber
+      int16_t __i16IndexNumber=-2
     );
     // copy constructor
     sequence(const sequence& __sequence);

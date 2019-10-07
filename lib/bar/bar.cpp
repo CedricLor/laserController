@@ -30,7 +30,7 @@ bar globalBar{}; // TODO: <-- For the moment, it is at the global scope; find a 
 ///////////////////////////////////
 // default
 bar::bar() :
-  i16IndexNumber(-1), /** default initialization at -1 */
+  i16IndexNumber(-2), /** default initialization at -2 */
   _notesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, notes, note, tones, tone, laserPins) */
 {
 }
@@ -302,7 +302,7 @@ bars::bars(
 uint16_t const bars::setActive(const bar & __activeBar) {
   disableAndResetTPlayBar();
   _activeBar = __activeBar;
-  return _activeBar.i16IndexNumber;
+  return i16GetCurrentBarId();
 }
 
 

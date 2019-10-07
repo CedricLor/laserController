@@ -17,7 +17,7 @@ bars sequence::globalBars;
 
 sequence sequence::emptySequence;
 sequence &sequence::activeSequence = emptySequence;
-int16_t sequence::_i16ActiveSequenceNb = -1;
+int16_t sequence::_i16ActiveSequenceNb = -2;
 std::array<sequence, 7> sequence::sequences;
 
 
@@ -37,7 +37,7 @@ void (*sequence::sendCurrentSequence)(const int16_t __i16_active_sequence_id) = 
 ///////////////////////////////////
 // default constructor
 sequence::sequence():
-  i16IndexNumber(-1),
+  i16IndexNumber(-2),
   _beat(beat{0, 0}),
   _barsArray({})
 { 
