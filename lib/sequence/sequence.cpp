@@ -300,28 +300,17 @@ int16_t const sequence::getCurrentSequence() {
  *             to calculate the notes duration
  * */
 void sequence::playSequenceStandAlone(const int16_t __i16_sequence_id, beat const & __beat) {
-  /** 1. disable all previously eventually enabled laser Tasks,
-   *     in order to start with a clean Tasks state when playing a sequence stand alone
-   */
-  tPlaySequenceInLoop.disable();
-  tPlaySequence.disable();
-  sequence::globalBars.disableAndResetTPlayBar();
-  sequence::globalBars._notes.disableAndResetTPlayNote();
+  // 0. Do not do anything if the beat has not been set
+  if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0)) {
+    return;
+  }
 
-  // 1. reset tPlayNote to play notes read from a bar
-  // TODO: Find out where the "notes" instance comes from!!!
-  notes{}.disableAndResetTPlayNote();
+  // 1. set the active sequence and associated beat
+  setActive(__i16_sequence_id);
+  activeBeat = __beat;
 
-  /**2. set the tPlayBar Task to its default when reading bars from a sequence.
-   *    tPlayBar will be managed from tPlaySequence => tPlayBar will not need to reset
-   *    the beat upon being disabled (tPlaySequence will do it).
-   *    
-   *    tPlaySequence and tPlayBar relies on the beat set in sequence
-   *    to make the duration calculations.
-   *  */
-  sequence::globalBars.tPlayBar.setOnDisable(NULL);
 
-  /**3. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
+  /**2. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
    *    the stand alone sequence has been read, so that any other object that may 
    *    thereafter depend on beat finds a clean beat to start with, as required. */
   tPlaySequence.setOnDisable([](){
@@ -329,11 +318,7 @@ void sequence::playSequenceStandAlone(const int16_t __i16_sequence_id, beat cons
     tPlaySequence.setOnDisable(_odtcbPlaySequence);
   });
 
-  // 4. set the active sequence and associated beat
-  setActive(__i16_sequence_id);
-  activeBeat = __beat;
-
-  // 5. restart the tPlaySequence Task
+  // 3. restart the tPlaySequence Task
   tPlaySequence.enable();
 }
 
