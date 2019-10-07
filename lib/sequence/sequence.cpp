@@ -769,10 +769,10 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  * */
 void sequences::disableAndResetPlaySequenceTasks() {
   _bars.disableAndResetTPlayBar();
-  tPlaySequenceInLoop.disable();
-  tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
   tPlaySequence.disable();
   tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
+  tPlaySequenceInLoop.disable();
+  tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
 }
 
 
