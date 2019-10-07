@@ -713,18 +713,12 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
 
 
 /** TODO: - review calls to disableAndResetPlaySequenceTasks,
- *          disableAndResetTPlayBar and disableAndResetTPlayNote;
+ *          disableAndResetTPlayBar and _disableAndResetTPlayNote;
  *        - check whether they are rather called upon terminating or upon starting a player;
  *        - try to systematically use them as a replacement for calls to task disable.
  * 
  *        - try to rationalize, comparing what is happening in each of the stacks. I have got the sentiment that it is a bit fuzzy at the moment.
  * */
-
-
-
-
-
-
 
 /** sequences::disableAndResetPlaySequenceTasks(): public setter method
  * 
@@ -853,6 +847,24 @@ uint16_t const sequences::playSequenceStandAlone(const sequence & __target_seque
   // 4. return 2 for success
   return 2;
 }
+
+
+bool sequences::playSequenceInBoxState(const sequence & __target_sequence) {
+  if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
+    return false;
+  }
+  setActive(__target_sequence);
+  tPlaySequenceInLoop.restart();
+  return true;
+}
+
+
+
+
+
+
+
+
 
 
 ///////////////////////////////////

@@ -116,6 +116,7 @@ class sequences
 
     /** Task - sequence players */
     uint16_t const playSequenceStandAlone(const sequence & __target_sequence);
+    bool playSequenceInBoxState(const sequence & __target_sequence);
     Task tPlaySequenceInLoop;
     Task tPlaySequence;
     Task & tPlayBar;
