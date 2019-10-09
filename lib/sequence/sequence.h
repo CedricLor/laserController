@@ -140,4 +140,6 @@ class sequences
     void _odtcbPlaySequence();
 };
 
+extern sequences globalSequences;
+
 #endif
