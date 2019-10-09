@@ -57,15 +57,6 @@ class sequence
     // instance properties
     beat _beat;
     std::array<bar, 8> _barsArray;
-
-    // tasks callbacks
-    static bool _oetcbPlaySequenceInLoop();
-    static void _tcbPlaySequenceInLoop();
-    static void _odtcbPlaySequenceInLoop();
-
-    static bool _oetcbPlaySequence();
-    static void _tcbPlaySequence();
-    static void _odtcbPlaySequence();
 };
 
 extern sequence globalSequence;

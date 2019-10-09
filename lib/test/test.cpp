@@ -849,10 +849,10 @@ void test::implementedBarsStack() {
   const char * _methodName = "test::rawBarsStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  sequence::globalBars.setActive(sequence::globalBars._barsArray.at(1));
-  rawBarsStackNestedNotes(_methodName, sequence::globalBars);
-  rawBarsStackTaskCallbacks(_methodName, sequence::globalBars);
-  rawBarsStackTaskAccessFromAndToActiveBar(_methodName, sequence::globalBars);
+  globalSequences._bars.setActive(globalSequences._bars.at(1));
+  rawBarsStackNestedNotes(_methodName, globalSequences._bars);
+  rawBarsStackTaskCallbacks(_methodName, globalSequences._bars);
+  rawBarsStackTaskAccessFromAndToActiveBar(_methodName, globalSequences._bars);
 
   Serial.printf("%s over.\n\n", _methodName);
 }
