@@ -146,6 +146,16 @@ uint32_t const sequence::ui32GetSequenceDuration() const {
 int16_t const sequence::getCurrentSequence() {
   return _i16ActiveSequenceNb;
 }
+   
+/** sequence const & sequences::getCurrentSequence() const
+ * 
+ * Returns the active sequence as a sequence */
+sequence const & sequences::getCurrentSequence() const {
+  return _activeSequence;
+}
+
+
+
 
 
 
@@ -166,7 +176,7 @@ sequences::sequences(
   sequencesArray({}),
   tPlayBar(_bars.tPlayBar),
   tPlayNote(_bars.tPlayNote),
-  activeSequence(globalSequence)
+  _activeSequence(globalSequence)
 {
   // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
   disableAndResetPlaySequenceTasks();
@@ -262,7 +272,7 @@ sequences::sequences(
 uint16_t sequences::setActive(const sequence & __activeSequence) {
   disableAndResetPlaySequenceTasks();
   activeBeat = __activeSequence._beat;
-  activeSequence = __activeSequence;
+  _activeSequence = __activeSequence;
   return __activeSequence.i16IndexNumber;
 }
 
@@ -340,7 +350,7 @@ void sequences::disableAndResetPlaySequenceTasks() {
  * Returns the active sequence index number 
  * */
 int16_t const sequences::i16GetCurrentSequenceId() const {
-  return activeSequence.i16IndexNumber;
+  return _activeSequence.i16IndexNumber;
 }
 
 
@@ -484,7 +494,7 @@ bool sequences::playSequenceInBoxState(const sequence & __target_sequence) {
 bool sequences::_oetcbPlaySequenceInLoop() {
   Serial.println("sequences::_oetcbPlaySequenceInLoop(). starting. *****");
 
-  tPlaySequenceInLoop.setInterval(activeSequence.ui32GetSequenceDuration());
+  tPlaySequenceInLoop.setInterval(_activeSequence.ui32GetSequenceDuration());
 
   Serial.println("sequences::_oetcbPlaySequenceInLoop(). over.");
   return true;
@@ -510,7 +520,7 @@ void sequences::_tcbPlaySequenceInLoop() {
  * */
 void sequences::_odtcbPlaySequenceInLoop() {
   Serial.println("sequences::_odtcbPlaySequenceInLoop(). starting. ******");
-  if (activeSequence.i16IndexNumber != 5) {
+  if (_activeSequence.i16IndexNumber != 5) {
     playSequenceInBoxState(sequencesArray[5]);
   }
   Serial.println("sequences::_odtcbPlaySequenceInLoop(). over.");
@@ -538,11 +548,11 @@ void sequences::_odtcbPlaySequenceInLoop() {
  * */
 bool sequences::_oetcbPlaySequence() {
   /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the sequence. */
-  tPlaySequence.setIterations(activeSequence.ui16GetBarCountInSequence());
+  tPlaySequence.setIterations(_activeSequence.ui16GetBarCountInSequence());
 
   /** 2. Signal the change of sequence to the mesh. */
   if (sendCurrentSequence != nullptr) {
-    sendCurrentSequence(activeSequence.i16IndexNumber);
+    sendCurrentSequence(_activeSequence.i16IndexNumber);
   }
 
   return true;
@@ -574,10 +584,10 @@ void sequences::_tcbPlaySequence() {
   _ui16Iter = ((0 == _ui16Iter) ? 0 : (_ui16Iter - 1));
 
   // 2. Calculate the bar duration
-  uint32_t __ui32ThisBarDuration = activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
+  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
 
   // 3. Play the corresponding bar
-  _bars.playBarInSequence(activeSequence.getBarsArray().at(_ui16Iter));
+  _bars.playBarInSequence(_activeSequence.getBarsArray().at(_ui16Iter));
 
   /**4. Set the interval for next iteration of tPlaySequence
    * 

@@ -88,6 +88,7 @@ class sequences
 
     /** getters */
     int16_t const i16GetCurrentSequenceId() const; // returns the current sequence i16IndexNumber
+    sequence const & getCurrentSequence() const;
     sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const;
 
     /** Task - sequence players */
@@ -98,14 +99,13 @@ class sequences
     Task & tPlayBar;
     Task & tPlayNote;
 
-    /** interface to mesh */
-    const int16_t getCurrentSequence();
-
-    // variable: currently played active sequence
+    // variables
     sequence emptySequence;
-    sequence & activeSequence;
 
   private:
+    // variables
+    sequence & _activeSequence;
+
     // tasks callbacks
     bool _oetcbPlaySequenceInLoop();
     void _tcbPlaySequenceInLoop();

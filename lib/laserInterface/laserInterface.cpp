@@ -81,7 +81,7 @@ void laserInterface::sequenceNS::setCurrent(const int16_t __i16_sequence_id) {
 
 
 void laserInterface::sequenceNS::getCurrent() {
-    sequenceNS::sendCurrent(globalSequences.getCurrentSequence());
+    sequenceNS::sendCurrent(globalSequences.getCurrentSequence().i16IndexNumber);
 }
 
 
