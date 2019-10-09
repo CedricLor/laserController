@@ -17,17 +17,9 @@ class sequence
   friend class sequences;
   public:
     /** constructors */
-    // default constructor
     sequence();
-    // parameterized constructor
-    sequence(
-      const beat & __beat,
-      std::array<bar, 8> & __barsArray,
-      int16_t __i16IndexNumber=-2
-    );
-    // copy constructor
+    sequence(const beat & __beat, std::array<bar, 8> & __barsArray, int16_t __i16IndexNumber=-2);
     sequence(const sequence& __sequence);
-    // assignement operator
     sequence& operator=(const sequence& __sequence);
 
     /** public static array of sequences */
