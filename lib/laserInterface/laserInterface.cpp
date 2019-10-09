@@ -76,7 +76,7 @@ void laserInterface::sequenceNS::initComm() {
 // pass non static sequences
 // Same issue with setCurrentBar
 void laserInterface::sequenceNS::setCurrent(const int16_t __i16_sequence_id) {
-    globalSequences.sequencesArray.at(__i16_sequence_id).setActive(__i16_sequence_id);
+    globalSequences.setActive(globalSequences.sequencesArray.at(__i16_sequence_id));
 }
 
 

@@ -32,10 +32,6 @@ class sequence
 
     /** public static array of sequences */
     static std::array<sequence, 7> sequences; // <-- TODO: make it private at some point
-    static bars globalBars;
-
-    /** setters */
-    void setActive(const int16_t __i16_active_sequence_id=-1);
 
     /** getters */
     static sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
