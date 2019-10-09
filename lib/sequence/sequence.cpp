@@ -15,9 +15,6 @@ sequence globalSequence{}; // TODO: <-- For the moment, it is at the global scop
 sequences globalSequences; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 sequence sequence::emptySequence;
-sequence &sequence::activeSequence = emptySequence;
-int16_t sequence::_i16ActiveSequenceNb = -2;
-std::array<sequence, 7> sequence::sequences;
 
 
 

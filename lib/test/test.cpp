@@ -863,49 +863,49 @@ void test::implementedBarsStack() {
 void test::sequenceStack() {
   const char * _methodName = "test::sequenceStack:";
   Serial.printf("\n%s starting\n", _methodName);
-  activeBeat = beat{sequence::sequences[0].getAssociatedBeat()};
+  activeBeat = beat{globalSequences.sequencesArray[0].getAssociatedBeat()};
 
-  Serial.printf("\n%s testing sequence::sequences[0]\n", _methodName);
-  Serial.printf("%s sequence::sequences[0].getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("%s sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm() shall be 2. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("\n%s testing globalSequences.sequencesArray[0]\n", _methodName);
+  Serial.printf("%s globalSequences.sequencesArray[0].getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("%s globalSequences.sequencesArray[0].getAssociatedBeat().getBaseBeatInBpm() shall be 2. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getAssociatedBeat().getBaseBeatInBpm());
 
   Serial.printf("\n%s testing notes in existing bar\n", _methodName);
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber() shall be equal to 7. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs() shall be equal to 3000. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber() shall be equal to 7. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs() shall be equal to 3000. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs());
 
   Serial.printf("\n%s testing methods of existing bar\n", _methodName);
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(0).ui16GetNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).ui16GetNotesCountInBar());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(0).ui32GetBarDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).ui32GetBarDuration());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetNotesCountInBar());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration());
 
   Serial.printf("\n%s testing notes in \"beyond bound\" bar\n", _methodName);
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote() shall be equal to 0. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getToneNumber() shall be equal to 0. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(2).getNotesArray().at(0).getToneNumber());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getNote() shall be equal to 0. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getToneNumber() shall be equal to 0. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getToneNumber());
 
   Serial.printf("\n%s testing methods of \"beyond bound\" bar\n", _methodName);
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(2).ui16GetNotesCountInBar() shall be equal to 0. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(2).ui16GetNotesCountInBar());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(2).ui16GetBaseNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar());
-  Serial.printf("%s sequence::sequences[0].getBarsArray().at(2).ui32GetBarDuration() shall be equal to 0. Is [%u]\n", _methodName, 
-    sequence::sequences[0].getBarsArray().at(2).ui32GetBarDuration());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetNotesCountInBar() shall be equal to 0. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetNotesCountInBar());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetBaseNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar());
+  Serial.printf("%s globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration() shall be equal to 0. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration());
 
   Serial.printf("\n%s testing sequence methods\n", _methodName);
-  Serial.printf("%s sequence::sequences[0].i16GetBarCountInSequence() shall be equal to 1. Is [%u]\n", _methodName, 
-    sequence::sequences[0].ui16GetBarCountInSequence());
-  Serial.printf("%s sequence::sequences[0].ui32GetSequenceDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
-    sequence::sequences[0].ui32GetSequenceDuration());
+  Serial.printf("%s globalSequences.sequencesArray[0].i16GetBarCountInSequence() shall be equal to 1. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].ui16GetBarCountInSequence());
+  Serial.printf("%s globalSequences.sequencesArray[0].ui32GetSequenceDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
+    globalSequences.sequencesArray[0].ui32GetSequenceDuration());
 
   activeBeat = beat{};
   Serial.printf("\n%s over\n\n", _methodName);
