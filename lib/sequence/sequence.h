@@ -31,9 +31,6 @@ class sequence
     /** public instance properties */
     int16_t i16IndexNumber;
 
-    // static variable: currently played active sequence
-    static sequence emptySequence;
-
   private:
 
     // instance properties
@@ -81,9 +78,6 @@ class sequences
     Task tPlaySequence;
     Task & tPlayBar;
     Task & tPlayNote;
-
-    // variables
-    sequence emptySequence;
 
   private:
     // variables

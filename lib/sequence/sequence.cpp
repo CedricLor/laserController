@@ -14,8 +14,6 @@ Traductions en anglais:
 sequence globalSequence{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 sequences globalSequences; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
-sequence sequence::emptySequence;
-
 
 
 
