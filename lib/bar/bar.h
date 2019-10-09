@@ -75,6 +75,7 @@ class bars
     bar const & getCurrentBar() const;
     bar const & getBarFromBarArray(const uint16_t __ui16_bar_id) const;
     notes & getNotes();
+    bar const & at(const uint16_t __ui16_bar_id) const;
 
     /** player */
     uint16_t const playBarStandAlone(const bar & __target_bar, beat const & __beat=activeBeat);

@@ -387,6 +387,16 @@ notes & bars::getNotes() {
 
 
 
+/** bar const & bars::at(const uint16_t __ui16_bar_id) const
+ * 
+ * Returns a ref to the notes instance stored in bars */
+bar const & bars::at(const uint16_t __ui16_bar_id) const {
+  return _barsArray.at(__ui16_bar_id);
+}
+
+
+
+
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
