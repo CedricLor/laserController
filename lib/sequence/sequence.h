@@ -43,12 +43,6 @@ class sequence
     /** public instance properties */
     int16_t i16IndexNumber;
 
-    /** Task - sequence players */
-    void playSequenceStandAlone(const int16_t __i16_sequence_id, beat const & __beat);
-    void playSequenceInBoxState(const int16_t __i16_sequence_id);
-    static Task tPlaySequenceInLoop;
-    static Task tPlaySequence;
-
     /** interface to mesh */
     static void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     static const int16_t getCurrentSequence();
