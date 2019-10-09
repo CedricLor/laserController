@@ -44,7 +44,6 @@ class sequence
     int16_t i16IndexNumber;
 
     /** interface to mesh */
-    static void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
     static const int16_t getCurrentSequence();
 
     // static variable: currently played active sequence

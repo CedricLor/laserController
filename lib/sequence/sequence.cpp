@@ -23,14 +23,6 @@ std::array<sequence, 7> sequence::sequences;
 
 
 
-// pointer to functions to produce an interface for sequence
-void (*sequence::sendCurrentSequence)(const int16_t __i16_active_sequence_id) = nullptr;
-
-
-
-
-
-
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
