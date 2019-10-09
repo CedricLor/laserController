@@ -42,9 +42,6 @@ class sequence
     /** public instance properties */
     int16_t i16IndexNumber;
 
-    /** interface to mesh */
-    static const int16_t getCurrentSequence();
-
     // static variable: currently played active sequence
     static sequence emptySequence;
     static sequence & activeSequence;

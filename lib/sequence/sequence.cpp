@@ -138,15 +138,6 @@ uint32_t const sequence::ui32GetSequenceDuration() const {
 
 
 
-/** int16_t const sequence::getCurrentSequence()
- * 
- *  Static getter
- * 
- *  Returns the active sequence index number. */
-int16_t const sequence::getCurrentSequence() {
-  return _i16ActiveSequenceNb;
-}
-   
 /** sequence const & sequences::getCurrentSequence() const
  * 
  * Returns the active sequence as a sequence */
