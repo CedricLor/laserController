@@ -34,7 +34,6 @@ class sequence
     static std::array<sequence, 7> sequences; // <-- TODO: make it private at some point
 
     /** getters */
-    static sequence & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id);
     uint16_t const ui16GetBarCountInSequence() const;
     uint32_t const ui32GetSequenceDuration() const;
     beat const & getAssociatedBeat() const;

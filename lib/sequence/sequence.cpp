@@ -82,17 +82,6 @@ sequence& sequence::operator=(const sequence& __sequence)
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) 
- * 
- * Instance getter.
- * 
- * Returns a const ref to one of the hard coded sequences given its index number */
-sequence & sequence::getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) {
-  return sequences.at(__ui16_sequence_id);
-}
-
-
-
 /**uint16_t const sequence::ui16GetBarCountInSequence() const 
  *  
  * Instance getter.
