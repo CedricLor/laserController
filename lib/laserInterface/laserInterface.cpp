@@ -12,6 +12,7 @@ using namespace laserInterface;
 
 void laserInterface::init() {
     beatNS::init();
+    sequence::initSequences();
 }
 
 
@@ -68,7 +69,7 @@ void laserInterface::beatNS::sendCurrent(const uint16_t __ui16_base_beat_in_bpm,
 // sequences stack
 /*******************/
 void laserInterface::sequenceNS::initComm() {
-    sequence::sendCurrentSequence = sequenceNS::sendCurrent;
+    globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
 }
 
 // TODO: for the moment, setCurrentSequence can only be called with a sequence_id
@@ -76,12 +77,12 @@ void laserInterface::sequenceNS::initComm() {
 // pass non static sequences
 // Same issue with setCurrentBar
 void laserInterface::sequenceNS::setCurrent(const int16_t __i16_sequence_id) {
-    sequence::getSequenceFromSequenceArray(__i16_sequence_id).setActive(__i16_sequence_id);
+    globalSequences.sequencesArray.at(__i16_sequence_id).setActive(__i16_sequence_id);
 }
 
 
 void laserInterface::sequenceNS::getCurrent() {
-    sequenceNS::sendCurrent(sequence::getCurrentSequence());
+    sequenceNS::sendCurrent(globalSequences.getCurrentSequence());
 }
 
 
@@ -95,13 +96,13 @@ void laserInterface::sequenceNS::sendCurrent(const int16_t _i16CurrentStateNbr) 
 void laserInterface::sequenceNS::play(const int16_t __i16SequenceNb) {
   sequenceNS::lockStack();
   sequenceNS::setCurrent(__i16SequenceNb); // <-- TODO: this does not do anything. Draft sthing similar to playBar
-  sequence::tPlaySequence.restartDelayed();
+  globalSequences.tPlaySequence.restartDelayed();
 }
 
 
 void laserInterface::sequenceNS::lockStack() {
   ControlerBox::setBoxActiveStateFromWeb(0);
-  sequence::tPlaySequenceInLoop.disable();
+  globalSequences.tPlaySequenceInLoop.disable();
 }
 
 
@@ -114,17 +115,17 @@ void laserInterface::sequenceNS::lockStack() {
 void laserInterface::barNS::initComm() {
     // TODO: initBarComm(), in the end, this namespace shall be used to initialize the whole laser stack
     // change its name
-    sequence::globalBars.sendCurrentBar = barNS::sendCurrent;
+    globalSequences._bars.sendCurrentBar = barNS::sendCurrent;
 }
 
 
 void laserInterface::barNS::setCurrent(const int16_t __i16_target_bar_id) {
-    sequence::globalBars.setActive(sequence::globalBars.getBarFromBarArray(__i16_target_bar_id));
+    globalSequences._bars.setActive(globalSequences._bars.getBarFromBarArray(__i16_target_bar_id));
 }
 
 
 void laserInterface::barNS::getCurrent() {
-    sequence::globalBars.sendCurrentBar(sequence::globalBars.i16GetCurrentBarId());
+    globalSequences._bars.sendCurrentBar(globalSequences._bars.i16GetCurrentBarId());
 }
 
 
@@ -153,20 +154,20 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
   bar __target_bar;
   if (__i16_target_bar != -1) {
     // 2.a: select a bar in the hard coded bars array and set it as active
-    __target_bar = sequence::globalBars.getBarFromBarArray(__i16_target_bar);
+    __target_bar = globalSequences._bars.getBarFromBarArray(__i16_target_bar);
   } else {
     // 2.a: create a bar
     __target_bar = {std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
   }
 
   // 3. play it
-  sequence::globalBars.playBarStandAlone(__target_bar, beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  globalSequences._bars.playBarStandAlone(__target_bar, beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
 
 
 void laserInterface::barNS::lockStack() {
   sequenceNS::lockStack();
-  sequence::tPlaySequence.disable();
+  globalSequences.tPlaySequence.disable();
 }
 
 
@@ -188,12 +189,12 @@ void laserInterface::noteNS::initComm() {
 
 
 void laserInterface::noteNS::setCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    sequence::globalBars.getNotes().setActive(note(__ui16_target_tone, __ui16_target_note));
+    globalSequences._bars.getNotes().setActive(note(__ui16_target_tone, __ui16_target_note));
 }
 
 
 void laserInterface::noteNS::getCurrent() {
-    const note & _note = sequence::globalBars.getNotes().getCurrentNote();
+    const note & _note = globalSequences._bars.getNotes().getCurrentNote();
     noteNS::sendCurrent(_note.getToneNumber(), _note.getNote());
 }
 
@@ -214,5 +215,5 @@ void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint
 
 void laserInterface::noteNS::lockStack() {
   barNS::lockStack();
-  sequence::globalBars.disableAndResetTPlayBar();
+  globalSequences._bars.disableAndResetTPlayBar();
 }
