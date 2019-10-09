@@ -12,7 +12,6 @@ using namespace laserInterface;
 
 void laserInterface::init() {
     beatNS::init();
-    sequence::initSequences();
 }
 
 

@@ -114,7 +114,6 @@ void setup() {
     _test.rawBarsStack();
     _test.implementedBarsStack();
     laserInterface::init();
-    sequence::initSequences();
     _test.sequenceStack();
   }
 

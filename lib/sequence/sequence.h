@@ -34,9 +34,6 @@ class sequence
     static std::array<sequence, 7> sequences; // <-- TODO: make it private at some point
     static bars globalBars;
 
-    /** sequences initializer */
-    static void initSequences(); // initializer of the array of sequences
-
     /** setters */
     void setActive(const int16_t __i16_active_sequence_id=-1);
 
