@@ -592,8 +592,8 @@ void boxState::_restartPlayBoxState() {
   i16BoxActiveState property and set by _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState:
   2. in the currently active boxState, it reads the associated sequence number in its properties;
-  3. sets the new sequence to be played (by calling sequence::playSequenceInBoxState());
-  4. starts playing the sequence (by enabling the task sequence::tPlaySequenceInLoop.
+  3. sets the new sequence to be played (by calling globalSequences.playSequenceInBoxState());
+  4. starts playing the sequence (by enabling the task globalSequences.tPlaySequenceInLoop.
 
   It iterates only once and does not have a main callback.
 
@@ -612,7 +612,7 @@ bool boxState::_oetcbPlayBoxState(){
 
   // 2. Select the desired sequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
-  sequence::sequences[_currentBoxState.ui16AssociatedSequence].playSequenceInBoxState(_currentBoxState.ui16AssociatedSequence);
+  globalSequences.playSequenceInBoxState(globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
 
   // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
@@ -639,7 +639,7 @@ void boxState::_odtcbPlayBoxState(){
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
-  sequence::tPlaySequenceInLoop.disable();
+  globalSequences.tPlaySequenceInLoop.disable();
   // Serial.println("boxState::_odtcbPlayBoxState(): thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("boxState::_odtcbPlayBoxState(): _boxTargetState");
