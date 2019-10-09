@@ -104,7 +104,7 @@ class sequences
 
     /** public properties */
     std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
-    bars _bars;
+    bars _bars;  // <-- TODO: make it private at some point
 
     /** setters */
     uint16_t setActive(const sequence & __ActiveSequence);

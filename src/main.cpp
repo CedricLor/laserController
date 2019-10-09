@@ -79,10 +79,10 @@ void setup() {
     mns::myScheduler.addTask(pirController::tSpeedBumper);
     mns::myScheduler.addTask(step::tPreloadNextStep);
     mns::myScheduler.addTask(boxState::tPlayBoxState);
-    mns::myScheduler.addTask(sequence::tPlaySequenceInLoop);
-    mns::myScheduler.addTask(sequence::tPlaySequence);
-    mns::myScheduler.addTask(sequence::globalBars.tPlayBar);
-    mns::myScheduler.addTask(sequence::globalBars.tPlayNote);
+    mns::myScheduler.addTask(globalSequences.tPlaySequenceInLoop);
+    mns::myScheduler.addTask(globalSequences.tPlaySequence);
+    mns::myScheduler.addTask(globalSequences._bars.tPlayBar);
+    mns::myScheduler.addTask(globalSequences._bars.tPlayNote);
   }
 
 
