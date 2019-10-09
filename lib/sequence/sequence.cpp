@@ -743,7 +743,7 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  *  - onDisable callback: &_odtcbPlaySequence)
  *  - added to myScheduler in setup(); disabled by default.
  * 
- *  bars::disableAndResetPlaySequenceTasks() is called by [boxState] 
+ *  This method disableAndResetPlaySequenceTasks() is called by [boxState] 
  *  (from [---]) and by sequence ([from the 
  *  standalone sequence player]).
  * 
