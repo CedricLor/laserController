@@ -63,6 +63,8 @@ class test
     void rawBarsStack();
     void implementedBarsStack();
 
+    void beforeSequenceStacks();
+
     void sequenceStack();
     void rawSequencesStack();
     void implementedSequencesStack();

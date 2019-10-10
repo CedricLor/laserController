@@ -103,16 +103,7 @@ void setup() {
   }
 
   if ((isInterface == false) || (isRoot == false)) {
-    _test.laserPinStack();
-    _test.rawLaserPinsStack();
-    _test.toneStack();
-    _test.rawTonesStack();
-    _test.noteStack();
-    _test.notesArrayStack();
-    _test.rawNotesStack();
-    _test.barStack();
-    _test.rawBarsStack();
-    _test.implementedBarsStack();
+    _test.beforeSequenceStacks();
     laserInterface::init();
     _test.sequenceStack();
   }

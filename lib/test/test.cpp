@@ -860,6 +860,22 @@ void test::implementedBarsStack() {
 
 
 
+void test::beforeSequenceStacks() {
+  laserPinStack();
+  rawLaserPinsStack();
+  toneStack();
+  rawTonesStack();
+  noteStack();
+  notesArrayStack();
+  rawNotesStack();
+  barStack();
+  rawBarsStack();
+  implementedBarsStack();
+}
+
+
+
+
 void test::sequenceStack() {
   const char * _methodName = "test::sequenceStack:";
   Serial.printf("\n%s starting\n", _methodName);
