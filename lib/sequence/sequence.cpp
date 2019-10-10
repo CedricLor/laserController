@@ -435,11 +435,16 @@ uint16_t const sequences::playSequenceStandAlone(const sequence & __target_seque
 
 
 bool sequences::playSequenceInBoxState(const sequence & __target_sequence) {
-  if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
+  Serial.printf("sequences::playSequenceInBoxState(const sequence & __target_sequence): starting with __target_sequence.i16IndexNumber = [%i]\n", __target_sequence.i16IndexNumber);
+  if ((__target_sequence._beat.getBaseNoteForBeat() == 0) || (__target_sequence._beat.getBaseBeatInBpm() == 0)) {
+    Serial.printf("sequences::playSequenceInBoxState(const sequence & __target_sequence): __target_sequence._beat.getBaseNoteForBeat() == [%u]\n", __target_sequence._beat.getBaseNoteForBeat());
+    Serial.printf("sequences::playSequenceInBoxState(const sequence & __target_sequence): __target_sequence._beat.getBaseNoteForBeat() == [%u]\n", __target_sequence._beat.getBaseBeatInBpm());
+    Serial.println("sequences::playSequenceInBoxState(const sequence & __target_sequence): success");
     return false;
   }
   setActive(__target_sequence);
   tPlaySequenceInLoop.restart();
+  Serial.println("sequences::playSequenceInBoxState(const sequence & __target_sequence): success");
   return true;
 }
 
