@@ -51,9 +51,9 @@ class sequences
   public:
 
     /** constructors */
-    sequences(
-      void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr
-    );
+    sequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
+    sequences(const sequences& __sequences);
+    sequences & operator=(const sequences& __sequences);
 
     /** interface to mesh */
     void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);

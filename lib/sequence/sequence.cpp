@@ -155,6 +155,10 @@ sequence const & sequences::getCurrentSequence() const {
 //****************************************************************//
 // Sequences //***************************************************//
 //****************************************************************//
+
+/** sequences::sequences()
+ * 
+ *  default constructor */
 sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
@@ -237,6 +241,31 @@ sequences::sequences(
   sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 5};
 
   Serial.println("sequences::sequences(). over.");
+}
+
+
+// copy constructor
+sequences::sequences(const sequences & __sequences):
+  sendCurrentSequence(__sequences.sendCurrentSequence),
+  sequencesArray(__sequences.sequencesArray),
+  tPlayBar(__sequences.tPlayBar),
+  tPlayNote(__sequences.tPlayNote),
+  _activeSequence(__sequences._activeSequence)
+{ }
+
+
+
+// assignement operator
+sequences & sequences::operator=(const sequences & __sequences)
+{
+  // Serial.printf("sequences::operator=(const sequences& ): assignment operator starting\n");
+  if (&__sequences != this) {
+    // Serial.printf("sequence::operator=(const sequences& ): self assignmenttest passed\n");
+    sendCurrentSequence = __sequences.sendCurrentSequence;
+    sequencesArray = __sequences.sequencesArray;
+    _activeSequence = __sequences._activeSequence;
+  }
+  return *this;
 }
 
 
