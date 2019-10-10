@@ -73,18 +73,6 @@ void setup() {
     mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
     mns::myScheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
-  if ((isInterface == false) || (isRoot == false)) {
-    mns::myScheduler.addTask(ControlerBox::tSetBoxState);
-    mns::myScheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
-    mns::myScheduler.addTask(pirController::tSpeedBumper);
-    mns::myScheduler.addTask(step::tPreloadNextStep);
-    mns::myScheduler.addTask(boxState::tPlayBoxState);
-    mns::myScheduler.addTask(globalSequences.tPlaySequenceInLoop);
-    mns::myScheduler.addTask(globalSequences.tPlaySequence);
-    mns::myScheduler.addTask(globalSequences._bars.tPlayBar);
-    mns::myScheduler.addTask(globalSequences._bars.tPlayNote);
-  }
-
 
   thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
   thisBox.sBoxDefaultState = gi16BoxDefaultState;
@@ -103,6 +91,11 @@ void setup() {
   }
 
   if ((isInterface == false) || (isRoot == false)) {
+    mns::myScheduler.addTask(ControlerBox::tSetBoxState);
+    mns::myScheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
+    mns::myScheduler.addTask(pirController::tSpeedBumper);
+    mns::myScheduler.addTask(step::tPreloadNextStep);
+    mns::myScheduler.addTask(boxState::tPlayBoxState);
     _test.beforeSequenceStacks();
     laserInterface::init();
     _test.sequenceStack();

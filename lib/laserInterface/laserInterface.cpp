@@ -11,7 +11,12 @@ using namespace laserInterface;
 
 
 void laserInterface::init() {
-    beatNS::init();
+  beatNS::init();
+  mns::myScheduler.addTask(globalSequences.tPlaySequenceInLoop);
+  mns::myScheduler.addTask(globalSequences.tPlaySequence);
+  mns::myScheduler.addTask(globalSequences._bars.tPlayBar);
+  mns::myScheduler.addTask(globalSequences._bars.tPlayNote);
+  globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
 }
 
 
