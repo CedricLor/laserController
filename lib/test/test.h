@@ -7,7 +7,7 @@
 #define test_h
 
 #include "Arduino.h"
-#include "sequence.h"
+#include "laserInterface.h"
 
 class test
 {

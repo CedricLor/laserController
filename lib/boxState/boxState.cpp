@@ -612,7 +612,7 @@ bool boxState::_oetcbPlayBoxState(){
 
   // 2. Select the desired sequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
-  globalSequences.playSequenceInBoxState(globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
+  laserInterface::globalSequences.playSequenceInBoxState(laserInterface::globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
 
   // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
@@ -639,7 +639,7 @@ void boxState::_odtcbPlayBoxState(){
   boxState& _currentBoxState = boxStates[thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
-  globalSequences.tPlaySequenceInLoop.disable();
+  laserInterface::globalSequences.tPlaySequenceInLoop.disable();
   // Serial.println("boxState::_odtcbPlayBoxState(): thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("boxState::_odtcbPlayBoxState(): _boxTargetState");

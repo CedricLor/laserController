@@ -7,17 +7,19 @@
 
 #include "Arduino.h"
 #include "myMeshController.h"
-#include "boxState.h"
+#include "sequence.h"
 
 namespace laserInterface {
     
+  extern sequences globalSequences;
+
   void init();
 
   enum class _Mode : uint16_t { step_controlled, automatic, sequence_manual, bar_manual, note_manual };
 
   class laserScheduler {
-    friend step;
-    friend boxState;
+    // friend step;
+    // friend boxState;
 
     public:
       laserScheduler(_Mode __mode=_Mode::automatic);

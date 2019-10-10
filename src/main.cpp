@@ -16,7 +16,6 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <myMeshStarter.h>
 #include <boxState.h>
 #include <signal.h>
-#include <laserInterface.h>
 #include <pirController.h>
 #include <myWebServerBase.h>
 #include <test.h>
@@ -31,7 +30,6 @@ painlessMesh            laserControllerMesh;
 ControlerBox            ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox = ControlerBoxes[0];
 signal                  _signal;
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +99,7 @@ void setup() {
     _test.sequenceStack();
   }
 
-  
+
   boxState::initBoxStates();
 
   enableTasks();

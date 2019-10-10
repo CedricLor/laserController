@@ -10,6 +10,8 @@ using namespace laserInterface;
 
 
 
+sequences laserInterface::globalSequences;
+
 void laserInterface::init() {
   beatNS::init();
   mns::myScheduler.addTask(globalSequences.tPlaySequenceInLoop);
@@ -38,7 +40,7 @@ laserInterface::laserScheduler::laserScheduler(_Mode __mode):
 // boxStates stack
 /*******************/
 void laserInterface::boxStateNS::initComm() {
-    boxState::sendCurrentBoxState = sendCurrent;
+    // boxState::sendCurrentBoxState = sendCurrent;
 }
 
 
