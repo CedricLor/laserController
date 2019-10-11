@@ -37,8 +37,6 @@ class bar
     std::array<note, 16> _notesArray;
 };
 
-extern bar globalBar;
-
 #endif
 
 
@@ -85,7 +83,8 @@ class bars
 
   private:
     // properties
-    bar & _activeBar;
+    bar _defaultBar = bar{};
+    bar & _activeBar = _defaultBar;
     notes _notes;
     std::array<bar, 7> _barsArray;
 

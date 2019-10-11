@@ -17,9 +17,6 @@ Traductions en anglais:
 // Bar //*********************************************************//
 //****************************************************************//
 
-bar globalBar{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
-
-
 
 
 
@@ -191,7 +188,6 @@ bars::bars(
 ):
   sendCurrentBar(_sendCurrentBar),
   tPlayNote(_notes.tPlayNote),
-  _activeBar(globalBar),
   _notes(),
   _barsArray({})
 {
