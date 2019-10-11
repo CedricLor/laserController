@@ -158,14 +158,12 @@ sequence const & sequences::getCurrentSequence() const {
  * 
  *  default constructor */
 sequences::sequences(
-  sequence & __activeSequence,
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
   sequencesArray({}),
   tPlayBar(_bars.tPlayBar),
-  tPlayNote(_bars.tPlayNote),
-  _activeSequence(__activeSequence)
+  tPlayNote(_bars.tPlayNote)
 {
   // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
   disableAndResetPlaySequenceTasks();

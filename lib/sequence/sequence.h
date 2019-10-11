@@ -49,7 +49,7 @@ class sequences
   public:
 
     /** constructors */
-    sequences(sequence & __activeSequence, void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
+    sequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
     sequences(const sequences& __sequences);
     sequences & operator=(const sequences& __sequences);
 
@@ -79,7 +79,8 @@ class sequences
 
   private:
     // variables
-    sequence & _activeSequence;
+    sequence _defaultSequence = sequence{};
+    sequence & _activeSequence = _defaultSequence;
 
     // tasks callbacks
     bool _oetcbPlaySequenceInLoop();

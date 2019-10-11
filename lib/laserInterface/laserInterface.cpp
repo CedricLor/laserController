@@ -9,8 +9,7 @@
 using namespace laserInterface;
 
 
-sequence laserInterface::globalSequence;
-sequences laserInterface::globalSequences(globalSequence, sequenceNS::sendCurrent);
+sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init() {
   beatNS::init();

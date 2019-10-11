@@ -11,7 +11,6 @@
 
 namespace laserInterface {
 
-  extern sequence globalSequence;
   extern sequences globalSequences;
 
   void init();
