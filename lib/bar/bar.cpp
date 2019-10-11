@@ -28,7 +28,7 @@ Traductions en anglais:
 // default
 bar::bar() :
   i16IndexNumber(-2), /** default initialization at -2 */
-  _notesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, notes, note, tones, tone, laserPins) */
+  _notesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, notes, note, laserTones, laserTone, laserPins) */
 {
 }
 
@@ -37,7 +37,7 @@ bar::bar(
   /** TODO: Here, I am not passing the __notesArray by reference; 
    *        - check other constructors of other classes; 
    *            OK for laserPin; nothing to do with laserPins
-   *            OK for tone (std::array<bool, 4> _laserPinsStatesArr)
+   *            OK for laserTone (std::array<bool, 4> _laserPinsStatesArr)
    *            sequence: not done; waiting complete refacto of sequence
    *        - see whether this is optimal;
    *        - review history of why this is this way here (I think this was a bug correction);
@@ -200,15 +200,15 @@ bars::bars(
    *  a. std::array<note, 16> & _notesArray: a reference to an array of notes. Each note
    *     is composed of:
    *     (i) its duration (expressed in base note - full, half, quarter, etc.) and;
-   *     (ii) its tone.
+   *     (ii) its laserTone.
    *     ex.: { 2, 1, 2, 2, {{1,7},{1,8}}}
    *     a. 2: the bar shall be played at 2 beats per minutes => the base note last 30 seconds.
    *     b. 1: the base note is a white
    *     c. 2: we have two notes per bar;
    *     d. 2: we have two effective notes in this specific bar;
    *     e. the two notes are:
-   *        - {1,7} -> a white with tone 7.
-   *        - {1,8} -> a white with tone 8. 
+   *        - {1,7} -> a white with laserTone 7.
+   *        - {1,8} -> a white with laserTone 8. 
    *  b. the bar's index number in the barsArray
    * 
    *  It used to include:

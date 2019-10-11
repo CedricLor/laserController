@@ -1,5 +1,5 @@
 /*
-  note.h - notes are tones played for a given length (expressed in base beat)notes are tones for a given length (in base beat)
+  note.h - notes are laserTones played for a given length (expressed in base beat)
   Created by Cedric Lor, June 28, 2019.
 
 */
@@ -22,7 +22,7 @@ class note
     note();
     /** main parameterized constructor */
     note(
-      const uint16_t __ui16_tone,
+      const uint16_t __ui16_laser_tone,
       const uint16_t __ui16_note
     );
     note(const note & __note);
@@ -31,21 +31,21 @@ class note
     note & operator=(note&& __note);
 
     /** getters */
-    uint16_t const getToneNumber() const;
+    uint16_t const getLaserToneNumber() const;
     uint16_t const getNote() const;
     uint16_t const ui16GetNoteDurationInMs() const;
 
   private:
     /** setters */
     // instance setter
-    uint16_t _setTone(const tone & _target_tone);
+    uint16_t _setLaserTone(const laserTone & _target_laser_tone);
     uint16_t _ui16ValidNote();
 
     /** player */
-    const int16_t _playTone(tones const & __tones) const;
+    const int16_t _playLaserTone(laserTones const & __laser_tones) const;
 
     // private instance properties
-    uint16_t _ui16Tone;
+    uint16_t _ui16LaserTone;
     uint16_t _ui16Note;
 };
 
@@ -62,7 +62,7 @@ class notes
   public:
     /** default constructor */
     notes(
-      void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)=nullptr
+      void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note)=nullptr
     );
     notes(const notes & __notes);
     notes & operator=(const notes & __notes);
@@ -70,7 +70,7 @@ class notes
     notes & operator=(notes&& __notes);
 
     /** sender to mesh */
-    void (*sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note);
+    void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note);
 
     /** setters */
     void setActive(const note & __activeNote);
@@ -92,7 +92,7 @@ class notes
     /** private members */
     note _defaultNote;
     note & _activeNote = _defaultNote;
-    tones _tones;
+    laserTones _laserTones;
 
     /** player callbacks */
     bool _oetcbPlayNote();

@@ -17,9 +17,9 @@ class test
     void laserPinStack();
     void rawLaserPinsStack();
 
-    void toneStack();
-    void rawTonesStackTonesArray(const char * _methodName, uint16_t _toneIndexNumber);
-    void rawTonesStack();
+    void laserToneStack();
+    void rawLaserTonesStackLaserTonesArray(const char * _methodName, uint16_t _toneIndexNumber);
+    void rawLaserTonesStack();
 
     void noteStack();
     void noteStackParamConstructor(const char * _methodName);
@@ -44,7 +44,7 @@ class test
     void rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes);
     void rawNotesStackDefault(const char * _methodName);
     void rawNotesStack();
-    static void rawNotesStackSender(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    static void rawNotesStackSender(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note);
 
     void barStackGetters(const char * _methodName, bar & _bar);
     void barStackConstructors(const char * _methodName);

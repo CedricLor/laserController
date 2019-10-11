@@ -1,5 +1,5 @@
 /*
-  note.cpp - notes are tones played for a given length (expressed in base beat)
+  note.cpp - notes are laserTones played for a given length (expressed in base beat)
   Created by Cedric Lor, June 28, 2019.
 
   * 1. ronde                   : 16 : 16 / 1
@@ -26,22 +26,22 @@
 ///////////////////////////////////
 // default
 note::note() :
-  _ui16Tone(0),
+  _ui16LaserTone(0),
   _ui16Note(0)
 {}
 
 // parameterized
 note::note(
-  const uint16_t __ui16_tone,
+  const uint16_t __ui16_laser_tone,
   const uint16_t __ui16_note
 ) :
-  _ui16Tone(__ui16_tone),
+  _ui16LaserTone(__ui16_laser_tone),
   _ui16Note(__ui16_note)
 { _ui16ValidNote(); }
 
 // copy constructor
 note::note(const note& __note) :   
-  _ui16Tone(__note._ui16Tone),
+  _ui16LaserTone(__note._ui16LaserTone),
   _ui16Note(__note._ui16Note)
 { _ui16ValidNote(); }
 
@@ -49,7 +49,7 @@ note::note(const note& __note) :
 note& note::operator=(const note& __note)
 {
   if (&__note != this) {
-    _ui16Tone = __note._ui16Tone;
+    _ui16LaserTone = __note._ui16LaserTone;
     _ui16Note = __note._ui16Note;
     _ui16ValidNote();
   }
@@ -57,7 +57,7 @@ note& note::operator=(const note& __note)
 }
 
 note::note(note&& __note):
-  _ui16Tone(0),
+  _ui16LaserTone(0),
   _ui16Note(0)
 {
   *this = std::move(__note);
@@ -65,13 +65,13 @@ note::note(note&& __note):
 
 note & note::operator=(note&& __note) {
   if (this != &__note) {
-    _ui16Tone = 0;
+    _ui16LaserTone = 0;
     _ui16Note = 0;
 
-    _ui16Tone = __note._ui16Tone;
+    _ui16LaserTone = __note._ui16LaserTone;
     _ui16Note = __note._ui16Note;
 
-    __note._ui16Tone = 0;
+    __note._ui16LaserTone = 0;
     __note._ui16Note = 0;
   }
   return *this;
@@ -84,13 +84,13 @@ note & note::operator=(note&& __note) {
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** uint16_t note::_setTone(const tone & _target_tone): private instance setter method
+/** uint16_t note::_setTone(const laserTone & _target_laser_tone): private instance setter method
  * 
- *  sets the instance reference member _tone (tone & _tone) to the passed-in reference-to 
- *  const tone. */
-uint16_t note::_setTone(const tone & _target_tone) {
-  _ui16Tone = _target_tone.i16IndexNumber;
-  return _ui16Tone;
+ *  sets the instance reference member _laserTone (laserTone & _laserTone) to the passed-in reference-to 
+ *  const laserTone. */
+uint16_t note::_setLaserTone(const laserTone & _target_laser_tone) {
+  _ui16LaserTone = _target_laser_tone.i16IndexNumber;
+  return _ui16LaserTone;
 }
 
 
@@ -122,11 +122,11 @@ uint16_t note::_ui16ValidNote() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** uint16_t note::getToneNumber(): public instance getter method
+/** uint16_t note::getLaserToneNumber(): public instance getter method
  * 
  *  Returns the tone number of a note instance. */
-uint16_t const note::getToneNumber() const {
-  return _ui16Tone;
+uint16_t const note::getLaserToneNumber() const {
+  return _ui16LaserTone;
 }
 
 
@@ -187,8 +187,8 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
 // Players
 ///////////////////////////////////
 /** const int16_t note::_playTone() const */
-const int16_t note::_playTone(tones const & __tones) const {
-  return __tones._playTone(getToneNumber());
+const int16_t note::_playLaserTone(laserTones const & __laser_tones) const {
+  return __laser_tones._playLaserTone(getLaserToneNumber());
 }
 
 
@@ -200,10 +200,10 @@ const int16_t note::_playTone(tones const & __tones) const {
 //****************************************************************//
 
 notes::notes(
-  void (*_sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)
+  void (*_sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note)
 ):
   sendCurrentNote(_sendCurrentNote),
-  _tones({})
+  _laserTones({})
 {
   _disableAndResetTPlayNote();
 }
@@ -211,7 +211,7 @@ notes::notes(
 notes::notes(const notes & __notes):
   sendCurrentNote(__notes.sendCurrentNote),
   _activeNote(__notes._activeNote),
-  _tones(__notes._tones)
+  _laserTones(__notes._laserTones)
 {
   _disableAndResetTPlayNote();
 }
@@ -220,7 +220,7 @@ notes & notes::operator=(const notes & __notes) {
   if (&__notes != this) {
     sendCurrentNote = __notes.sendCurrentNote;
     _activeNote = __notes._activeNote;
-    _tones = __notes._tones;
+    _laserTones = __notes._laserTones;
     _disableAndResetTPlayNote();
   }
   return *this;
@@ -228,7 +228,7 @@ notes & notes::operator=(const notes & __notes) {
 // move constructor
 notes::notes(notes&& __notes):
   sendCurrentNote(nullptr),
-  _tones({})
+  _laserTones({})
 {
   *this = std::move(__notes);
 }
@@ -237,15 +237,15 @@ notes & notes::operator=(notes&& __notes) {
   if (this != &__notes) {
     sendCurrentNote = nullptr;
     _activeNote = note{};
-    _tones = {};
+    _laserTones = {};
 
     sendCurrentNote = __notes.sendCurrentNote;
     _activeNote = __notes._activeNote;
-    _tones = __notes._tones;
+    _laserTones = __notes._laserTones;
 
     __notes.sendCurrentNote = nullptr;
     __notes._activeNote = note{};
-    __notes._tones = {};
+    __notes._laserTones = {};
 
     _disableAndResetTPlayNote();
   }
@@ -370,12 +370,12 @@ bool const notes::playNoteInBar(const note & __note) {
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). starting");
   if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_activeNote.getToneNumber()) %u\n", _activeNote.getToneNumber());
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_tones.at(_activeNote.getToneNumber()).i16IndexNumber) %i\n", _tones.at(_activeNote.getToneNumber()).i16IndexNumber);
-    Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getToneNumber()) == (_tones.at(_activeNote.getToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getToneNumber()) == (_tones.at(_activeNote.getToneNumber()).i16IndexNumber));
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_activeNote.getLaserToneNumber()) %u\n", _activeNote.getLaserToneNumber());
+    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber) %i\n", _laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getLaserToneNumber()) == (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getLaserToneNumber()) == (_laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber));
   }
   bool _return = false;
-  if (_activeNote._playTone(_tones) >= 0) {
+  if (_activeNote._playLaserTone(_laserTones) >= 0) {
     _return = true;
   }
   Serial.printf("note::_oetcbPlayNote(). returning [%s]\n", (_return == true) ? "true" : "false");
@@ -391,7 +391,7 @@ void notes::_odtcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
-  _activeNote._setTone(_tones.at(0)); // tones[0] means turn off all the lasers
-  _activeNote._playTone(_tones);
+  _activeNote._setLaserTone(_laserTones.at(0)); // tones[0] means turn off all the lasers
+  _activeNote._playLaserTone(_laserTones);
   Serial.println("note::_odtcbPlayNote(). over");
 }

@@ -192,28 +192,28 @@ void laserInterface::noteNS::initComm() {
 }
 
 
-void laserInterface::noteNS::setCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    globalSequences._bars.getNotes().setActive(note(__ui16_target_tone, __ui16_target_note));
+void laserInterface::noteNS::setCurrent(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
+    globalSequences._bars.getNotes().setActive(note(__ui16_target_laser_tone, __ui16_target_note));
 }
 
 
 void laserInterface::noteNS::getCurrent() {
     const note & _note = globalSequences._bars.getNotes().getCurrentNote();
-    noteNS::sendCurrent(_note.getToneNumber(), _note.getNote());
+    noteNS::sendCurrent(_note.getLaserToneNumber(), _note.getNote());
 }
 
 
-void laserInterface::noteNS::sendCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
+void laserInterface::noteNS::sendCurrent(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
     /** TODO: draft a call to myMeshViews.  */
 }
 
 
-void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
+void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
   // 1. lock notes to avoid getting signal from a boxState, sequence or bar player
   noteNS::lockStack();
   // 2. set the note and play it
   notes _notes;
-  _notes.playNoteStandAlone(note(__ui16_target_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  _notes.playNoteStandAlone(note(__ui16_target_laser_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 }
 
 

@@ -12,7 +12,7 @@
 class laserPin
 {
   friend class test;
-  friend class tone;
+  friend class laserTone;
 
   public:
     laserPin();

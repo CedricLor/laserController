@@ -117,10 +117,10 @@ namespace laserInterface {
   namespace noteNS {
     // note stack
     void initComm();
-    void setCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void setCurrent(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note);
     void getCurrent();
-    void sendCurrent(const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
-    void play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note);
+    void sendCurrent(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note);
+    void play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note);
     void lockStack();
   }
 }

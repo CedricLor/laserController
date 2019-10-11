@@ -17,8 +17,8 @@ laserInterface: laserInterface::beatNS::init() sets the initial parameters of ac
 ->  void laserInterface::beatNS::init()
 ->  laserInterface::barNS::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar)
     ->  calling playBarStandAlone(const bar & __target_bar, beat const & __beat)
-->  void laserInterface::noteNS::playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_tone, const uint16_t __ui16_target_note) {
-    ->  calling playNoteStandAlone(note(__ui16_target_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+->  void laserInterface::noteNS::playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
+    ->  calling playNoteStandAlone(note(__ui16_target_laser_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 
 
 sequence: sequence instances hold a beat instance, which is reverberated to activeBeat when playing a given sequence.
