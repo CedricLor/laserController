@@ -10,7 +10,8 @@
 #include "sequence.h"
 
 namespace laserInterface {
-    
+
+  extern sequence globalSequence;
   extern sequences globalSequences;
 
   void init();
@@ -27,6 +28,8 @@ namespace laserInterface {
       // laserSchedule mode: 1. automatic (sequences connected to boxStates), 2. sequence manual, 3. bar manual, 4. note manual
       uint16_t _activeMode;
 
+      beat & _activeBeat;
+
       // players
       notes _notes;
       bars _bars;
@@ -39,7 +42,6 @@ namespace laserInterface {
       sequence const _defaultSequence;
 
       // active item
-      beat & _activeBeat;
       // sequence & _activeSequence;
       // bar & _activeBar;
       // note & _activeNote;

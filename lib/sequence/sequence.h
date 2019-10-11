@@ -38,8 +38,6 @@ class sequence
     std::array<bar, 8> _barsArray;
 };
 
-extern sequence globalSequence;
-
 #endif
 
 #ifndef sequences_h
@@ -51,7 +49,7 @@ class sequences
   public:
 
     /** constructors */
-    sequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
+    sequences(sequence & __activeSequence, void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
     sequences(const sequences& __sequences);
     sequences & operator=(const sequences& __sequences);
 

@@ -11,7 +11,6 @@ Traductions en anglais:
 #include "Arduino.h"
 #include "sequence.h"
 
-sequence globalSequence{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
 
 
 
@@ -159,13 +158,14 @@ sequence const & sequences::getCurrentSequence() const {
  * 
  *  default constructor */
 sequences::sequences(
+  sequence & __activeSequence,
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
   sequencesArray({}),
   tPlayBar(_bars.tPlayBar),
   tPlayNote(_bars.tPlayNote),
-  _activeSequence(globalSequence)
+  _activeSequence(__activeSequence)
 {
   // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
   disableAndResetPlaySequenceTasks();

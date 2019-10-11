@@ -9,8 +9,8 @@
 using namespace laserInterface;
 
 
-
-sequences laserInterface::globalSequences;
+sequence laserInterface::globalSequence;
+sequences laserInterface::globalSequences(globalSequence, sequenceNS::sendCurrent);
 
 void laserInterface::init() {
   beatNS::init();
@@ -29,7 +29,8 @@ void laserInterface::init() {
 // laserScheduler
 /*******************/
 laserInterface::laserScheduler::laserScheduler(_Mode __mode):
-  _activeBeat(activeBeat)
+  _activeBeat(activeBeat),
+  _sequences(globalSequences)
   // _activeSequence(sequence::globalSequence)
 { }
 
