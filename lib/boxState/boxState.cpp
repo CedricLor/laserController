@@ -366,7 +366,7 @@ boxState::boxState(const int16_t _i16Duration,
 
 // boxState array initialiser
 void boxState::initBoxStates() {
-  Serial.println("boxState::_initBoxStates(). starting.");
+  Serial.println("boxState::initBoxStates(). starting.");
   /** Constructor signature (using "little constructor")
    * _i16Duration, _ui16AssociatedSequence, _i16onIRTrigger, _i16onMeshTrigger, _i16onExpire */
 
@@ -502,7 +502,7 @@ void boxState::initBoxStates() {
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
   boxStates[13] = {120, 0, -1, -1, 4}; 
 
-  Serial.println("boxState::_initBoxStates(). over.");
+  Serial.println("boxState::initBoxStates(). over.\n");
 }
 
 
