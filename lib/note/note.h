@@ -1,7 +1,6 @@
 /*
   note.h - notes are laserTones played for a given length (expressed in base beat)
   Created by Cedric Lor, June 28, 2019.
-
 */
 
 #include "Arduino.h"

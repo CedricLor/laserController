@@ -124,7 +124,7 @@ uint16_t note::_ui16ValidNote() {
 ///////////////////////////////////
 /** uint16_t note::getLaserToneNumber(): public instance getter method
  * 
- *  Returns the tone number of a note instance. */
+ *  Returns the laserTone number of a note instance. */
 uint16_t const note::getLaserToneNumber() const {
   return _ui16LaserTone;
 }
@@ -264,7 +264,7 @@ notes & notes::operator=(notes&& __notes) {
  *  The _activeNote is then used: 
  *  (i)  in this class (notes), to provide 
  *       (a) the interval param to Task tPlayNote (ie. the note duration);
- *       (b) to call _tPlayTone (ie. the note tone).
+ *       (b) to call _playLaserTone (ie. the note laserTone). <-- TODO: correct erroneous comments
  *  (ii) in laserInterface, to retrieve the params (_ui16Note and _ui16Tone) of
  *       the currently active note and send them to the mesh. */
 void notes::setActive(const note & __activeNote) {
@@ -289,7 +289,7 @@ void notes::setActive(const note & __activeNote) {
  *  - an interval of 30.000 seconds;
  *  - 1 iteration;
  *  - no main callback;
- *  - an onEnable callback, that turns the lasers on in a given tone;
+ *  - an onEnable callback, that turns the lasers on in a given laserTone;
  *  - an onDisable callback, that turn the lasers off.
  * 
  * 
@@ -300,7 +300,7 @@ void notes::setActive(const note & __activeNote) {
  *     to finish.
  *   It does not need any mainCallback, as it does not iterate.
  * 
- *   task tPlaynote plays a given tone (set in note::_ui16ActiveTone)
+ *   task tPlaynote plays a given laserTone (set in note::_ui16ActiveTone)
  *   for a given note type (--> full, half, ..., set in the bar) at a given
  *   beat rate. 
  *  */
@@ -366,12 +366,12 @@ bool const notes::playNoteInBar(const note & __note) {
 
 
 /** notes::_oetcbPlayNote()
- *  On enable Task _tNote, turn the lasers to a given tone */
+ *  On enable Task _tNote, turn the lasers to a given laserTone */
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). starting");
   if (MY_DG_LASER) {
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_activeNote.getLaserToneNumber()) %u\n", _activeNote.getLaserToneNumber());
-    Serial.printf("note::_oetcbPlayNote(). Going to play tone number (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber) %i\n", _laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber);
+    Serial.printf("note::_oetcbPlayNote(). Going to play laserTone number (_activeNote.getLaserToneNumber()) %u\n", _activeNote.getLaserToneNumber());
+    Serial.printf("note::_oetcbPlayNote(). Going to play laserTone number (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber) %i\n", _laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber);
     Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getLaserToneNumber()) == (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getLaserToneNumber()) == (_laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber));
   }
   bool _return = false;
@@ -391,7 +391,7 @@ void notes::_odtcbPlayNote() {
   if (MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
-  _activeNote._setLaserTone(_laserTones.at(0)); // tones[0] means turn off all the lasers
+  _activeNote._setLaserTone(_laserTones.at(0)); // _laserTones.at(0) means turn off all the lasers
   _activeNote._playLaserTone(_laserTones);
   Serial.println("note::_odtcbPlayNote(). over");
 }

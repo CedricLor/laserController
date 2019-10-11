@@ -1,6 +1,6 @@
 /*
-  tone.cpp - tones are statuses of ALL the lasers connected to the box at one base beat
-  Tones do not have have a time length. Their time length is defined inside sequences.
+  laserTone.cpp - tone instances are statuses of ALL the lasers connected to the box at one base beat.
+  Tone instances do not have have a time length. Their time length is defined inside sequences.
   Created by Cedric Lor, June 10, 2019.
 
 */
@@ -39,8 +39,8 @@ laserTone & laserTone::operator=(const laserTone & __laserTone)
 
 /** laserTone::_playLaserTone()
  *   
- *  _playLaserTone() is an instance method of a tone instance. A tone instance
- *  stores in its _laserPinsStatesArr the state of each pin for this tone.
+ *  _playLaserTone() is an instance method of a laserTone instance. A laserTone instance
+ *  stores in its _laserPinsStatesArr the state of each pin for this laserTone.
  *  
  *  _playLaserTone() iterates over the __laser_pins array passed as parameters 
  *  and switches each pin to the corresponding state (HIGH or LOW) stored in 
@@ -117,9 +117,9 @@ laserTone const & laserTones::at (uint16_t const __ui16IndexNumber) const {
 
 /** laserTones::_playLaserTone()
  *   
- *  _playLaserTone() is an instance method of a tones instance.
+ *  _playLaserTone() is an instance method of a laserTones instance.
  *  
- *  _playLaserTone() is mainly a wrapper over the _playLaserTone method of tone instances.
+ *  _playLaserTone() is mainly a wrapper over the _playLaserTone method of laserTone instances.
 */
 int16_t const laserTones::_playLaserTone(const uint16_t __ui16LaserToneNumber) const {
   return at(__ui16LaserToneNumber)._playLaserTone(_laserPins);

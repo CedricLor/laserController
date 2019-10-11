@@ -89,7 +89,7 @@ void test::rawLaserPinsStack() {
 void test::laserToneStack() {
   Serial.printf("\n\ntest::laserToneStack: starting\n");
 
-  Serial.printf("test::laserToneStack: testing tone constructor: laserTone _laserTone{{HIGH, HIGH, LOW, LOW}}.\n");
+  Serial.printf("test::laserToneStack: testing laserTone constructor: laserTone _laserTone{{HIGH, HIGH, LOW, LOW}}.\n");
   laserPins _laserPins;
   std::array<bool, 4> const _aSecondPairOn = {HIGH, HIGH, LOW, LOW};
   laserTone _laserTone{_aSecondPairOn};
@@ -137,7 +137,7 @@ void test::rawLaserTonesStack() {
   const char * _methodName = "test::rawLaserTonesStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  Serial.printf("%s testing tones constructor: tones _laserTones{}.\n", _methodName);
+  Serial.printf("%s testing laserTones constructor: laserTones _laserTones{}.\n", _methodName);
   laserPins _laserPins;
   laserTones _laserTones{};
 
@@ -234,7 +234,7 @@ void test::noteStackStraightCopyConstructor(const char * _methodName) {
   Serial.printf("%s _laserTones.at(note{1,1}.getLaserToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     _laserTones.at(note{1,1}.getLaserToneNumber()).i16IndexNumber);
 
-  Serial.printf("%s calling note{1,1}._setLaserTone(_laser_tone2) with _laser_tone2(tones{}.at(2)).\n", _methodName);
+  Serial.printf("%s calling note{1,1}._setLaserTone(_laser_tone2) with _laser_tone2(laserTones{}.at(2)).\n", _methodName);
   laserTone _laser_tone2(laserTones{}.at(2));
   Serial.printf("%s note{1,1}._setLaserTone(_laser_tone2) shall be 2. Is [%i]\n", _methodName, 
     note{1,1}._setLaserTone(_laser_tone2));
@@ -518,7 +518,7 @@ void test::rawNotesStackDefaultMembers(const char * _methodName, notes & _notes)
   Serial.printf("%s testing access to members of _notes \n", _methodName);
   Serial.printf("%s testing access to _notes._laserTones \n", _methodName);
   Serial.printf("%s testing access to and values of the _laserPinsStatesArr embedded in \n", _methodName);
-  Serial.printf("   tone instances extracted from the \"hard-coded\" tones array embedded in the tones class\n");
+  Serial.printf("   laserTone instances extracted from the \"hard-coded\" laserTones array embedded in the laserTones class\n");
   Serial.printf("   from the default _notes instance.\n");
   Serial.printf("%s _notes._laserTones.at(0)._laserPinsStatesArr.at(0) shall be 1. Is [%u]\n", _methodName, 
     _notes._laserTones.at(0)._laserPinsStatesArr.at(0));
