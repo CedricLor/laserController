@@ -79,7 +79,7 @@ class sequences
 
   private:
     // variables
-    sequence _defaultSequence = sequence{};
+    sequence _defaultSequence;
     sequence & _activeSequence = _defaultSequence;
 
     // tasks callbacks

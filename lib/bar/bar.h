@@ -83,7 +83,7 @@ class bars
 
   private:
     // properties
-    bar _defaultBar = bar{};
+    bar _defaultBar;
     bar & _activeBar = _defaultBar;
     notes _notes;
     std::array<bar, 7> _barsArray;

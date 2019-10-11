@@ -21,15 +21,6 @@
 // Note //********************************************************//
 //****************************************************************//
 
-note globalNote{}; // TODO: <-- For the moment, it is at the global scope; find a way to have it stored somewhere else
-
-///////////////////////////////////
-// Static variables
-///////////////////////////////////
-
-
-
-
 ///////////////////////////////////
 // Constructors
 ///////////////////////////////////
@@ -212,7 +203,6 @@ notes::notes(
   void (*_sendCurrentNote)(const uint16_t __ui16_current_tone, const uint16_t __ui16_current_note)
 ):
   sendCurrentNote(_sendCurrentNote),
-  _activeNote(globalNote),
   _tones({})
 {
   _disableAndResetTPlayNote();
@@ -238,7 +228,6 @@ notes & notes::operator=(const notes & __notes) {
 // move constructor
 notes::notes(notes&& __notes):
   sendCurrentNote(nullptr),
-  _activeNote(globalNote),
   _tones({})
 {
   *this = std::move(__notes);

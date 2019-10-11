@@ -49,7 +49,6 @@ class note
     uint16_t _ui16Note;
 };
 
-extern note globalNote;
 
 #endif
 
@@ -91,7 +90,8 @@ class notes
     void _disableAndResetTPlayNote();
 
     /** private members */
-    note & _activeNote;
+    note _defaultNote;
+    note & _activeNote = _defaultNote;
     tones _tones;
 
     /** player callbacks */
