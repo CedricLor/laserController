@@ -7,7 +7,7 @@
 #include "Arduino.h"
 #include <mns.h>
 #include <beat.h>
-#include <tone.h>
+#include <laserTone.h>
 
 #ifndef note_h
 #define note_h

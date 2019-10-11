@@ -34,10 +34,10 @@ Dependency structure
 |  |  |  |  |--note.cpp (a static class playing a note for a maximum 30 seconds)
 |  |  |  |  |  |--note.h
 |  |  |  |  |  |--tone.cpp (an array of tones, containing all the possible lasers on/off configurations)
-|  |  |  |  |  |  |--tone.h
+|  |  |  |  |  |  |--laserTone.h
 |  |  |  |
 |  |  |  |--tone.cpp
-|  |  |  |  |--tone.h
+|  |  |  |  |--laserTone.h
 |  |  |  |  |--global.cpp (called to retrieve some values)
 |  |  |  |  |  |--global.h
 |  |  |  |

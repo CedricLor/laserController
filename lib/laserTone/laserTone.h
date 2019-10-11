@@ -1,5 +1,5 @@
 /*
-  tone.h - tones are statuses of all the lasers connected to the box at one base beat
+  laserTone.h - tones are statuses of all the lasers connected to the box at one base beat
   Created by Cedric Lor, June 10, 2019.
 
 */
