@@ -32,7 +32,7 @@ class note
     /** getters */
     uint16_t const getLaserToneNumber() const;
     uint16_t const getNote() const;
-    uint16_t const ui16GetNoteDurationInMs() const;
+    uint16_t const ui16GetNoteDurationInMs(const beat & _beat) const;
 
   private:
     /** setters */
@@ -78,8 +78,7 @@ class notes
     const note &getCurrentNote() const;
 
     /** player */
-    void playNoteStandAlone(const note & __note, beat const & __beat=activeBeat);
-    bool const playNoteInBar(const note & __note);
+    bool const playNote(const note & __note, const beat & __beat);
 
     /** member */
     Task tPlayNote;

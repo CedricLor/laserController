@@ -141,20 +141,20 @@ uint16_t const note::getNote() const {
 /** uint16_t note::ui16GetNoteDurationInMs(): public instance getter method
  *  
  *  Returns the duration of a note instance in ms. */
-uint16_t const note::ui16GetNoteDurationInMs() const {
+uint16_t const note::ui16GetNoteDurationInMs(const beat & _beat) const {
   // Serial.println("note::ui16GetNoteDurationInMs(). starting.");
   // Serial.println(F("------------- DEBUG --------- note --------- DEBUG -------------"));
   // Serial.printf("note::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
-  // Serial.printf("note::ui16GetNoteDurationInMs(). activeBeat.getBaseNoteForBeat() == %u\n", activeBeat.getBaseNoteForBeat());
+  // Serial.printf("note::ui16GetNoteDurationInMs(). _beat.getBaseNoteForBeat() == %u\n", _beat.getBaseNoteForBeat());
 
-  if ((_ui16Note == 0) || (activeBeat.getBaseNoteForBeat() == 0)) {
+  if ((_ui16Note == 0) || (_beat.getBaseNoteForBeat() == 0)) {
     return 0;
   }
 
-  // const uint16_t __ui16baseNoteDuration = activeBeat.ui16GetBaseNoteDurationInMs();
+  // const uint16_t __ui16baseNoteDuration = _beat.ui16GetBaseNoteDurationInMs();
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16baseNoteDuration == %u\n", __ui16baseNoteDuration);
 
-  // const uint16_t __ui16BaseNoteForBeat = activeBeat.getBaseNoteForBeat();
+  // const uint16_t __ui16BaseNoteForBeat = _beat.getBaseNoteForBeat();
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ui16BaseNoteForBeat == %u\n", __ui16BaseNoteForBeat);
 
   // const uint16_t __num = __ui16baseNoteDuration * __ui16BaseNoteForBeat;
@@ -163,7 +163,7 @@ uint16_t const note::ui16GetNoteDurationInMs() const {
   // see https://stackoverflow.com/questions/17005364/dividing-two-integers-and-rounding-up-the-result-without-using-floating-point
   uint16_t __ui16DurationInMs =
     (uint16_t)ceil(
-      ((activeBeat.getBaseNoteForBeat() * activeBeat.ui16GetBaseNoteDurationInMs()))
+      ((_beat.getBaseNoteForBeat() * _beat.ui16GetBaseNoteDurationInMs()))
       / _ui16Note
     );
   // Serial.printf("note::ui16GetNoteDurationInMs(). __ulDurationInM == %u\n", __ui16DurationInMs);
@@ -326,43 +326,32 @@ const note &notes::getCurrentNote() const {
 ///////////////////////////////////
 // Task - Player
 ///////////////////////////////////
-/** void notes::playNoteStandAlone(const note & __note, beat const & __beat):
+/** bool const notes::playNote(const note & __note, const beat & __beat):
  *  
- *  play a single note for a given duration (calculated using the passed-in beat).
+ *  Play a single note for a given duration (calculated using the passed-in beat)
+ *  or the maximum duration (30.000 ms) if the calculated duration exceeds 30000 ms.
+ *  by enabling Task tPlayNote.
+ *  
+ *  Task tPlayNote may then be disabled by calls to _disableAndResetTPlayNote().
  * 
- *  {@ params} beat const & __beat: pass a beat to be taken into account
- *             to calculate the notes duration */
-void notes::playNoteStandAlone(const note & __note, beat const & __beat) {
-  setActive(__note);
-  activeBeat = __beat;
-  tPlayNote.setInterval(__note.ui16GetNoteDurationInMs());
-  tPlayNote.setOnDisable([&](){
-    activeBeat = beat(0, 0);
-    _odtcbPlayNote();
-    tPlayNote.setOnDisable([&](){_odtcbPlayNote();});
-  });
-  tPlayNote.restartDelayed();
-}
-
-
-// TODO: should probably return a note instead of a true/false
-// TODO: playNoteInBar has been modified to return a value: Do sthing now with the return value
-/** bool const notes::playNoteInBar(const note & __note):
- *  
- *  play a single note for its maximum duration.
- *  _tcbPlayBar manages the real duration (and the beat) by 
- *  disabling the Task tPlayNote
- */
-bool const notes::playNoteInBar(const note & __note) {
-  Serial.println("notes::playNoteInBar: starting");
-  if ((activeBeat.getBaseNoteForBeat() == 0) || (activeBeat.getBaseBeatInBpm() == 0)) {
+ *  {@ params} const note & __note: pass a constant reference to a note used
+ *             to calculate the notes duration
+ *  {@ params} const beat & beat: pass a constant reference to a beat used
+ *             to calculate the notes duration.
+ * */
+bool const notes::playNote(const note & __note, const beat & __beat) {
+  Serial.println("notes::playNote: starting");
+  if ((__beat.getBaseNoteForBeat() == 0) || (__beat.getBaseBeatInBpm() == 0)) {
     return false;
   }
   setActive(__note);
+  tPlayNote.setInterval(__note.ui16GetNoteDurationInMs(__beat));
   tPlayNote.restartDelayed();
-  Serial.println("notes::playNoteInBar: over");
+  Serial.println("notes::playNote: over");
   return true;
 }
+
+
 
 
 /** notes::_oetcbPlayNote()

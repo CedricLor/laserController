@@ -14,8 +14,6 @@ Traductions en anglais:
 
 // std::array<beat, 7> beat::_beats;
 
-beat activeBeat;
-
 
 
 

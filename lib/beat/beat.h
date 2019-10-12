@@ -56,6 +56,4 @@ class beat
     uint16_t _ui16BaseNoteForBeat; // base note for the beat
 };
 
-extern beat activeBeat;
-
 #endif

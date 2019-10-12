@@ -24,7 +24,7 @@ class sequence
 
     /** getters */
     uint16_t const ui16GetBarCountInSequence() const;
-    uint32_t const ui32GetSequenceDuration() const;
+    uint32_t const ui32GetSequenceDuration(beat const & __beat) const;
     beat const & getAssociatedBeat() const;
     std::array<bar, 8> const & getBarsArray() const;
 

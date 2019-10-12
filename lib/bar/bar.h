@@ -25,8 +25,8 @@ class bar
  
     /** getters */
     uint16_t const ui16GetNotesCountInBar() const;
-    uint16_t const ui16GetBaseNotesCountInBar() const;
-    uint32_t const ui32GetBarDuration() const;
+    uint16_t const ui16GetBaseNotesCountInBar(const beat & _beat) const;
+    uint32_t const ui32GetBarDuration(const beat & _beat) const;
     const std::array<note, 16> & getNotesArray() const;
 
     /** public instance properties */
@@ -76,8 +76,7 @@ class bars
     bar const & at(const uint16_t __ui16_bar_id) const;
 
     /** player */
-    uint16_t const playBarStandAlone(const bar & __target_bar, beat const & __beat=activeBeat);
-    bool const playBarInSequence(const bar & __target_bar);
+    uint16_t const playBar(const bar & __target_bar, beat const & __beat);
     Task tPlayBar;
     Task & tPlayNote;
 
@@ -89,7 +88,7 @@ class bars
     std::array<bar, 7> _barsArray;
 
     /** player callbacks */
-    void _tcbPlayBar();
+    void _tcbPlayBar(beat const & __beat);
     bool _oetcbPlayBar();
 };
 #endif

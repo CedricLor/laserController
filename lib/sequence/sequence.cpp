@@ -118,12 +118,11 @@ std::array<bar, 8> const & sequence::getBarsArray() const {
  * 
  * Returns the sequence duration. 
  * Used to set the interval for tPlaySequenceInLoop. */
-uint32_t const sequence::ui32GetSequenceDuration() const {
-
+uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
   uint32_t __ui32SequenceDuration = 0;
   uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
   for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
-    __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration();
+    __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration(__beat);
   }
 
   return __ui32SequenceDuration;
@@ -283,7 +282,7 @@ sequences & sequences::operator=(const sequences & __sequences)
  * */
 uint16_t sequences::setActive(const sequence & __activeSequence) {
   disableAndResetPlaySequenceTasks();
-  activeBeat = __activeSequence._beat;
+  // laserInterface::activeBeat = __activeSequence._beat;
   _activeSequence = __activeSequence;
   return __activeSequence.i16IndexNumber;
 }
@@ -398,9 +397,7 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
  *  on the basis of the passed-in beat.
  * 
  *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
- *             sequence array (might be needed for debug and interface purpose) 
- *  {@ params} beat const & __beat: pass a beat to be taken into account
- *             to calculate the notes duration
+ *             sequence array (might be needed for debug and interface purpose)
  * */
 uint16_t const sequences::playSequenceStandAlone(const sequence & __target_sequence) {
   // 0. Do not do anything if the beat has not been set
@@ -417,7 +414,7 @@ uint16_t const sequences::playSequenceStandAlone(const sequence & __target_seque
    *    the stand alone sequence has been read, so that any other object that may 
    *    thereafter depend on beat finds a clean beat to start with, as required. */
   tPlaySequence.setOnDisable([&](){
-    activeBeat = beat(0, 0);
+    // _activeBeat = beat(0, 0);
     tPlaySequence.setOnDisable([&](){
       _odtcbPlaySequence();
     });
@@ -511,7 +508,7 @@ bool sequences::playSequenceInBoxState(const sequence & __target_sequence) {
 bool sequences::_oetcbPlaySequenceInLoop() {
   Serial.println("sequences::_oetcbPlaySequenceInLoop(). starting. *****");
 
-  tPlaySequenceInLoop.setInterval(_activeSequence.ui32GetSequenceDuration());
+  tPlaySequenceInLoop.setInterval(_activeSequence.ui32GetSequenceDuration(_activeSequence._beat));
 
   Serial.println("sequences::_oetcbPlaySequenceInLoop(). over.");
   return true;
@@ -601,10 +598,10 @@ void sequences::_tcbPlaySequence() {
   _ui16Iter = ((0 == _ui16Iter) ? 0 : (_ui16Iter - 1));
 
   // 2. Calculate the bar duration
-  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration();
+  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration(_activeSequence._beat);
 
   // 3. Play the corresponding bar
-  _bars.playBarInSequence(_activeSequence.getBarsArray().at(_ui16Iter));
+  _bars.playBar(_activeSequence.getBarsArray().at(_ui16Iter), _activeSequence._beat);
 
   /**4. Set the interval for next iteration of tPlaySequence
    * 
