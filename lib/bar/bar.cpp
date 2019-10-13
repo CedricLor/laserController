@@ -158,8 +158,8 @@ uint16_t const bar::ui16GetBaseNotesCountInBar(const beat & _beat) const {
 uint32_t const bar::ui32GetBarDuration(const beat & _beat) const {
   // Serial.println(F("bar::ui32GetBarDuration(). starting."));
   // Serial.printf("bar::ui32GetBarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar::ui32GetBarDuration(). laserInterface::activeBeat.ui16GetBaseNoteDurationInMs() = %u\n", laserInterface::activeBeat.ui16GetBaseNoteDurationInMs());
-  // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * laserInterface::activeBeat.ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32GetBarDuration(). _beat.ui16GetBaseNoteDurationInMs() = %u\n", _beat.ui16GetBaseNoteDurationInMs());
+  // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * _beat.ui16GetBaseNoteDurationInMs());
   return (ui16GetBaseNotesCountInBar(_beat) * _beat.ui16GetBaseNoteDurationInMs());
 }
 

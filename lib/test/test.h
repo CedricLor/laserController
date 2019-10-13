@@ -55,8 +55,7 @@ class test
 
     void rawBarsStackConstructors(const char * _methodName);
     void rawBarsStackInitializers(const char * _methodName);
-    void rawBarsStackStandAlonePlayer(const char * _methodName, bars & _bars, bar & _bar);
-    void rawBarsStackBarInSequencePlayer(const char * _methodName, bars & _bars);
+    void rawBarsStackPlayer(const char * _methodName, bars & _bars, bar & _bar);
     void rawBarsStackNestedNotes(const char * _methodName, bars & _bars);
     void rawBarsStackTaskCallbacks(const char * _methodName, bars & _bars);
     void rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName, bars & _bars);

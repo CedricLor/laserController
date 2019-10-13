@@ -1,27 +1,27 @@
 private beat users (or beat setters):
 
 
-bars: bars rely on activeBeat, when played within the context of a sequence;
+bars: bars rely on laserInterface::activeBeat, when played within the context of a sequence;
       they rely on a passed-in beat, when played "stand alone"
 ->  bars::playBarStandAlone(const bar & __target_bar, beat const & __beat)
 
 
-notes: notes rely on activeBeat, when played within the context of a sequence;
+notes: notes rely on laserInterface::activeBeat, when played within the context of a sequence;
        they rely on a passed-in beat, when played "stand alone"
-->  notes::playNoteStandAlone(const note & __note, beat const & __beat)
+->  notes::playNote(const note & __note, beat const & __beat)
 
 
-laserInterface: laserInterface::beatNS::init() sets the initial parameters of activeBeat;
+laserInterface: laserInterface::beatNS::init() sets the initial parameters of laserInterface::activeBeat;
                 laserInterface::barNS::playBar() and laserInterface::noteNS::playNote()
-                are just wrappers around bars::playBarStandAlone() and playNoteStandAlone()
+                are just wrappers around bars::playBarStandAlone() and playNote()
 ->  void laserInterface::beatNS::init()
 ->  laserInterface::barNS::playBar(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar)
     ->  calling playBarStandAlone(const bar & __target_bar, beat const & __beat)
 ->  void laserInterface::noteNS::playNote(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
-    ->  calling playNoteStandAlone(note(__ui16_target_laser_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+    ->  calling playNote(note(__ui16_target_laser_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
 
 
-sequence: sequence instances hold a beat instance, which is reverberated to activeBeat when playing a given sequence.
+sequence: sequence instances hold a beat instance, which is reverberated to laserInterface::activeBeat when playing a given sequence.
 ->  sequence(
       const beat & __beat,
       std::array<bar, 8> & __barsArray
@@ -30,8 +30,6 @@ sequence: sequence instances hold a beat instance, which is reverberated to acti
         _beat(beat{0, 0}),
         _barsArray({})
     { }
--> void sequence::initSequences()
--> void sequence::playSequenceStandAlone(beat const & __beat, const int16_t __i16_sequence_id)
--> void sequence::playSequenceInBoxState(const int16_t __i16_sequence_id)
+-> uint16_t const sequences::playSequence(const sequence & __target_sequence, Task & __sequenceTask)
 
 test

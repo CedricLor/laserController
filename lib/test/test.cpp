@@ -174,7 +174,7 @@ void test::noteStackParamConstructor(const char * _methodName) {
   Serial.printf("%s _note.getNote() shall be 1. Is [%u]\n", _methodName, 
     _note.getNote());
   Serial.printf("%s _note.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    _note.ui16GetNoteDurationInMs());
+    _note.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(_note.getLaserToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     _laserTones.at(_note.getLaserToneNumber()).i16IndexNumber);
   Serial.printf("%s calling _note._setLaserTone(_laser_tone) with _laser_tone(_laserTones.at(3)).\n", _methodName);
@@ -202,7 +202,7 @@ void test::noteStackDefaultConstructor(const char * _methodName) {
   Serial.printf("%s _noteDef.getNote() shall be 0. Is [%u]\n", _methodName, 
     _noteDef.getNote());
   Serial.printf("%s _noteDef.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    _noteDef.ui16GetNoteDurationInMs());
+    _noteDef.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(_noteDef.getLaserToneNumber()).i16IndexNumber shall be 0. Is [%i]\n", _methodName, 
     _laserTones.at(_noteDef.getLaserToneNumber()).i16IndexNumber);
   Serial.printf("%s calling _noteDef._setLaserTone(_laserTone2) with _laserTone2(_laserTones.at(2)).\n", _methodName);
@@ -230,7 +230,7 @@ void test::noteStackStraightCopyConstructor(const char * _methodName) {
   Serial.printf("%s note{1,1}.getNote() shall be 1. Is [%u]\n", _methodName, 
     note{1,1}.getNote());
   Serial.printf("%s note{1,1}.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    note{1,1}.ui16GetNoteDurationInMs());
+    note{1,1}.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(note{1,1}.getLaserToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     _laserTones.at(note{1,1}.getLaserToneNumber()).i16IndexNumber);
 
@@ -265,7 +265,7 @@ void test::noteStackCopyConstructorInitList(const char * _methodName) {
   Serial.printf("%s _noteCpy.getNote() shall be 1. Is [%u]\n", _methodName, 
     _noteCpy.getNote());
   Serial.printf("%s _noteCpy.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    _noteCpy.ui16GetNoteDurationInMs());
+    _noteCpy.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(_noteCpy.getLaserToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     _laserTones.at(_noteCpy.getLaserToneNumber()).i16IndexNumber);
 
@@ -299,7 +299,7 @@ void test::noteStackCopyConstructorEqualSign(const char * _methodName) {
   Serial.printf("%s _noteCpy2.getNote() shall be 1. Is [%u]\n", _methodName, 
     _noteCpy2.getNote());
   Serial.printf("%s _noteCpy2.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    _noteCpy2.ui16GetNoteDurationInMs());
+    _noteCpy2.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(_noteCpy2.getLaserToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     _laserTones.at(_noteCpy2.getLaserToneNumber()).i16IndexNumber);
 
@@ -334,7 +334,7 @@ void test::noteStackCopyAssignmentOp(const char * _methodName) {
   Serial.printf("%s _note2.getNote() shall be 1. Is [%u]\n", _methodName, 
     _note2.getNote());
   Serial.printf("%s _note2.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    _note2.ui16GetNoteDurationInMs());
+    _note2.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(_note2.getLaserToneNumber()).i16IndexNumber shall be 3. Is [%i]\n", _methodName, 
     _laserTones.at(_note2.getLaserToneNumber()).i16IndexNumber);
     
@@ -366,7 +366,7 @@ void test::noteStackCopyConstructorAndCopyAssignment(const char * _methodName) {
   Serial.printf("%s _note4.getNote() shall be 1. Is [%u]\n", _methodName, 
     _note4.getNote());
   Serial.printf("%s _note4.ui16GetNoteDurationInMs() shall be 0 (because beat is set to its defaults). Is [%u]\n", _methodName, 
-    _note4.ui16GetNoteDurationInMs());
+    _note4.ui16GetNoteDurationInMs(laserInterface::activeBeat));
   Serial.printf("%s _laserTones.at(_note4.getLaserToneNumber()).i16IndexNumber shall be 1. Is [%i]\n", _methodName, 
     _laserTones.at(_note4.getLaserToneNumber()).i16IndexNumber);
 
@@ -576,27 +576,28 @@ void test::rawNotesStackDefaultSettersAndGetters(const char * _methodName, notes
 
 
 void test::rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes) {
-  // testing _notes.playNoteStandAlone
+  // testing _notes.playNote
   _notes._disableAndResetTPlayNote();
-  Serial.printf("%s calling _notes.playNoteStandAlone(note{4, 1}, beat(5, 1).\n", _methodName);
-  _notes.playNoteStandAlone(note{4, 1}, beat(5, 1));
+  laserInterface::activeBeat = beat(5, 1);
+  Serial.printf("%s calling _notes.playNote(note{4, 1}, laserInterface::activeBeat).\n", _methodName);
+  _notes.playNote(note{4, 1}, laserInterface::activeBeat);
   note _note{1, 1};
   _notes._disableAndResetTPlayNote();
-  Serial.printf("%s calling _notes.playNoteStandAlone(_note, beat(5, 1)) with note _note{1, 1}.\n\n", _methodName);
-  _notes.playNoteStandAlone(_note, beat(5, 1));
+  Serial.printf("%s calling _notes.playNote(_note, laserInterface::activeBeat) with note _note{1, 1}.\n\n", _methodName);
+  _notes.playNote(_note, laserInterface::activeBeat);
   _notes._disableAndResetTPlayNote();
 
-  // testing _notes.playNoteInBar
-  Serial.printf("%s testing _notes.playNoteInBar\n", _methodName);
+  // testing _notes.playNote
+  Serial.printf("%s testing _notes.playNote\n", _methodName);
   Serial.printf("%s setting active beat to beat(5, 1)\n", _methodName);
-  activeBeat = beat(5, 1);
+  laserInterface::activeBeat = beat(5, 1);
 
   _notes._disableAndResetTPlayNote();
-  Serial.printf("%s calling _notes.playNoteInBar(note{4, 1}.\n", _methodName);
-  _notes.playNoteInBar(note{4, 1});
+  Serial.printf("%s calling _notes.playNote(note{4, 1}.\n", _methodName);
+  _notes.playNote(note{4, 1}, laserInterface::activeBeat);
   _notes._disableAndResetTPlayNote();
-  Serial.printf("%s calling _notes.playNoteStandAlone(_note).\n\n", _methodName);
-  _notes.playNoteInBar(_note);
+  Serial.printf("%s calling _notes.playNote(_note).\n\n", _methodName);
+  _notes.playNote(_note, laserInterface::activeBeat);
   _notes._disableAndResetTPlayNote();
 }
 
@@ -634,7 +635,7 @@ void test::rawNotesStack() {
 
 
 void test::barStackConstructors(const char * _methodName) {
-  activeBeat = beat(5, 1);
+  laserInterface::activeBeat = beat(5, 1);
 
   Serial.printf("%s testing bar default constructor: bar _bar;\n", _methodName);
   bar _emptyBar;
@@ -667,10 +668,10 @@ void test::barStackGetters(const char * _methodName, bar & _bar) {
   Serial.printf("%s _bar.ui16GetNotesCountInBar() shall be 8. Is [%u]\n", _methodName, 
     _bar.ui16GetNotesCountInBar());
   Serial.printf("%s _bar.ui16GetBaseNotesCountInBar() shall be 1. Is [%u]\n", _methodName, 
-    _bar.ui16GetBaseNotesCountInBar());
+    _bar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
   const uint32_t _ui32ExpectGetBarDuration = 12000;
   Serial.printf("%s _bar.ui32GetBarDuration() shall be %u. Is [%u]. ---> %s\n", _methodName, _ui32ExpectGetBarDuration,
-    _bar.ui32GetBarDuration(), ((_bar.ui32GetBarDuration() == _ui32ExpectGetBarDuration) ? "PASSED" : "FAILED"));
+    _bar.ui32GetBarDuration(laserInterface::activeBeat), ((_bar.ui32GetBarDuration(laserInterface::activeBeat) == _ui32ExpectGetBarDuration) ? "PASSED" : "FAILED"));
   Serial.printf("%s _bar.getNotesArray().at(0).getNote() shall be 8. Is [%u]\n\n", _methodName, 
     _bar.getNotesArray().at(0).getNote());
 }
@@ -709,7 +710,7 @@ void test::barArrayStack() {
   const char * _methodName = "test::barArrayStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  activeBeat = beat(5, 1);
+  laserInterface::activeBeat = beat(5, 1);
 
   Serial.printf("%s testing bar instance's creation and assignment as in bars default (and only) constructor\n", _methodName);
 
@@ -742,8 +743,7 @@ void test::rawBarsStackInitializers(const char * _methodName) {
   bars _bars;
   bar _bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
   Serial.printf("%s testing _bars.setActive(_bar) with bar _bar{std::array<note, 16>{note(4,8), note(3,8)...} \n", _methodName);
-  rawBarsStackStandAlonePlayer(_methodName, _bars, _bar);
-  rawBarsStackBarInSequencePlayer(_methodName, _bars);
+  rawBarsStackPlayer(_methodName, _bars, _bar);
   _bars.setActive(_bar);
   rawBarsStackNestedNotes(_methodName, _bars);
   rawBarsStackTaskCallbacks(_methodName, _bars);
@@ -753,30 +753,23 @@ void test::rawBarsStackInitializers(const char * _methodName) {
 
 
 
-void test::rawBarsStackStandAlonePlayer(const char * _methodName, bars & _bars, bar & _bar) {
+void test::rawBarsStackPlayer(const char * _methodName, bars & _bars, bar & _bar) {
 
   Serial.printf("%s testing players\n", _methodName);
 
-  // players
+  // play a stand alone bar
   Serial.printf("%s calling _bars.disableAndResetTPlayBar()\n", _methodName);
   _bars.disableAndResetTPlayBar();
-  Serial.printf("%s _bars.playBarStandAlone(_bar, beat(5, 1)) shall be 1. Is [%i]\n", _methodName,
-    _bars.playBarStandAlone(_bar, beat(5, 1)));
+  laserInterface::activeBeat = beat(5, 1);
+  Serial.printf("%s _bars.playBarStandAlone(_bar, laserInterface::activeBeat) shall be 1. Is [%i]\n", _methodName,
+    _bars.playBar(_bar, laserInterface::activeBeat));
   _bars.disableAndResetTPlayBar();
-}
 
-
-
-
-void test::rawBarsStackBarInSequencePlayer(const char * _methodName, bars & _bars) {
-
-  Serial.printf("%s testing players\n", _methodName);
-
-  // players
+  // play a bar in a sequence
   Serial.printf("%s calling _bars.disableAndResetTPlayBar()\n", _methodName);
   _bars.disableAndResetTPlayBar();
-  Serial.printf("%s _bar.playBarInSequence() shall fail because beat is set to default (beat == 0 and base note == 0). Is [%i]\n", _methodName,
-    _bars.playBarInSequence(_bars._barsArray.at(0)));
+  Serial.printf("%s _bar.playBar() shall fail because beat is set to default (beat == 0 and base note == 0). Shall be 0. Is [%i]\n", _methodName,
+    _bars.playBar(_bars._barsArray.at(0), laserInterface::activeBeat));
   _bars.disableAndResetTPlayBar();
 }
 
@@ -802,7 +795,7 @@ void test::rawBarsStackTaskCallbacks(const char * _methodName, bars & _bars) {
   Serial.printf("%s testing Task callbacks \n", _methodName);
   // Task TPlayBar callbacks
   Serial.printf("%s calling _bars._tcbPlayBar().\n", _methodName);
-  _bars._tcbPlayBar();
+  _bars._tcbPlayBar(beat{});
   Serial.printf("%s _bars._oetcbPlayBar() shall be 1. Is [%i]\n", _methodName, _bars._oetcbPlayBar());
   _bars.disableAndResetTPlayBar();
 }
@@ -815,24 +808,24 @@ void test::rawBarsStackTaskAccessFromAndToActiveBar(const char * _methodName, ba
   Serial.printf("%s _bars._activeBar.ui16GetNotesCountInBar() is [%u]\n", _methodName, 
     _bars._activeBar.ui16GetNotesCountInBar());
 
-  activeBeat = beat(0, 0);
+  laserInterface::activeBeat = beat(0, 0);
 
-  Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
-    _bars._activeBar.ui16GetBaseNotesCountInBar());
-  Serial.printf("%s _bars._activeBar.ui32GetBarDuration() shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
-    _bars._activeBar.ui32GetBarDuration());
+  Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat) shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
+    _bars._activeBar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
+  Serial.printf("%s _bars._activeBar.ui32GetBarDuration(laserInterface::activeBeat) shall be 0 (because beat has been set to default). Is [%u]\n", _methodName, 
+    _bars._activeBar.ui32GetBarDuration(laserInterface::activeBeat));
 
   Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getNote() is [%u]\n", _methodName,   
   _bars._activeBar.getNotesArray().at(0).getNote());
   Serial.printf("%s _bars._activeBar.getNotesArray().at(0).getLaserToneNumber() is [%u]\n", _methodName,   
   _bars._activeBar.getNotesArray().at(0).getLaserToneNumber());
 
-  activeBeat = beat(5, 1);
+  laserInterface::activeBeat = beat(5, 1);
 
-  Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar() is [%u]\n", _methodName, 
-    _bars._activeBar.ui16GetBaseNotesCountInBar());
+  Serial.printf("%s _bars._activeBar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat) is [%u]\n", _methodName, 
+    _bars._activeBar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
   Serial.printf("%s _bars._activeBar.ui32GetBarDuration() is [%u]\n", _methodName, 
-    _bars._activeBar.ui32GetBarDuration());
+    _bars._activeBar.ui32GetBarDuration(laserInterface::activeBeat));
 }
 
 
@@ -885,7 +878,7 @@ void test::beforeSequenceStacks() {
 void test::sequenceStack() {
   const char * _methodName = "test::sequenceStack:";
   Serial.printf("\n%s starting\n", _methodName);
-  activeBeat = beat{laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat()};
+  laserInterface::activeBeat = beat{laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat()};
 
   Serial.printf("\n%s testing laserInterface::globalSequences.sequencesArray[0]\n", _methodName);
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
@@ -899,15 +892,15 @@ void test::sequenceStack() {
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getLaserToneNumber() shall be equal to 7. Is [%u]\n", _methodName, 
     laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getLaserToneNumber());
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs() shall be equal to 3000. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs());
+    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs(laserInterface::activeBeat));
 
   Serial.printf("\n%s testing methods of existing bar\n", _methodName);
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
     laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetNotesCountInBar());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration());
+  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar(laserInterface::activeBeat) shall be equal to 2. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
+  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration(laserInterface::activeBeat) shall be equal to 60000. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration(laserInterface::activeBeat));
 
   Serial.printf("\n%s testing notes in \"beyond bound\" bar\n", _methodName);
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getNote() shall be equal to 0. Is [%u]\n", _methodName, 
@@ -918,17 +911,17 @@ void test::sequenceStack() {
   Serial.printf("\n%s testing methods of \"beyond bound\" bar\n", _methodName);
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetNotesCountInBar() shall be equal to 0. Is [%u]\n", _methodName, 
     laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetNotesCountInBar());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetBaseNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration() shall be equal to 0. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration());
+  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetBaseNotesCountInBar(laserInterface::activeBeat) shall be equal to 2. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
+  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration(laserInterface::activeBeat) shall be equal to 0. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration(laserInterface::activeBeat));
 
   Serial.printf("\n%s testing sequence methods\n", _methodName);
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].i16GetBarCountInSequence() shall be equal to 1. Is [%u]\n", _methodName, 
     laserInterface::globalSequences.sequencesArray[0].ui16GetBarCountInSequence());
   Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].ui32GetSequenceDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].ui32GetSequenceDuration());
+    laserInterface::globalSequences.sequencesArray[0].ui32GetSequenceDuration(laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat()));
 
-  activeBeat = beat{};
+  laserInterface::activeBeat = beat{};
   Serial.printf("\n%s over\n\n", _methodName);
 }
