@@ -70,8 +70,7 @@ class sequences
     sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const;
 
     /** Task - sequence players */
-    uint16_t const playSequenceStandAlone(const sequence & __target_sequence);
-    bool playSequenceInBoxState(const sequence & __target_sequence);
+    uint16_t const playSequence(const sequence & __target_sequence, Task & __sequenceTask);
     Task tPlaySequenceInLoop;
     Task tPlaySequence;
     Task & tPlayBar;

@@ -320,7 +320,7 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  *   - setActive() in the bars class (which is itself called by playBar());
  *   - the test file (test.cpp);
  *   - the laserInterface;
- *   - playSequenceStandAlone and playSequenceInBoxState in the sequence class;
+ *   - playSequence in the sequence class;
  * 
  *   The Task tPlayBar is enabled upon entering a new bar by playBar.
  * 

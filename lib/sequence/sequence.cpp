@@ -391,15 +391,16 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
 ///////////////////////////////////
 // Sequence Players
 ///////////////////////////////////
-/** sequences::playSequenceStandAlone():
+/** sequences::playSequence():
  *  
  *  play a single sequence calculating the durations
  *  on the basis of the passed-in beat.
  * 
  *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose)
+ *  {@ params} task & __sequenceTask: either tPlaySequence or tPlaySequenceInLoop 
  * */
-uint16_t const sequences::playSequenceStandAlone(const sequence & __target_sequence) {
+uint16_t const sequences::playSequence(const sequence & __target_sequence, Task & __sequenceTask) {
   // 0. Do not do anything if the beat has not been set
   if ((__target_sequence._beat.getBaseBeatInBpm() == 0) || (__target_sequence._beat.getBaseNoteForBeat() == 0)) {
     return 0;
@@ -410,37 +411,14 @@ uint16_t const sequences::playSequenceStandAlone(const sequence & __target_seque
     return 1;
   }
 
-  /**2. set the onDisable callback of tPlaySequence to reset the active beat to (0,0) once
-   *    the stand alone sequence has been read, so that any other object that may 
-   *    thereafter depend on beat finds a clean beat to start with, as required. */
-  tPlaySequence.setOnDisable([&](){
-    // _activeBeat = beat(0, 0);
-    tPlaySequence.setOnDisable([&](){
-      _odtcbPlaySequence();
-    });
-  });
+  // 2. restart the tPlaySequence or tPlaySequenceStandAlone Task
+  __sequenceTask.restart();
 
-  // 3. restart the tPlaySequence Task
-  tPlaySequence.restart();
-
-  // 4. return 2 for success
+  // 3. return 2 for success
   return 2;
 }
 
 
-bool sequences::playSequenceInBoxState(const sequence & __target_sequence) {
-  // Serial.printf("sequences::playSequenceInBoxState(const sequence & __target_sequence): starting with __target_sequence.i16IndexNumber = [%i]\n", __target_sequence.i16IndexNumber);
-  if ((__target_sequence._beat.getBaseNoteForBeat() == 0) || (__target_sequence._beat.getBaseBeatInBpm() == 0)) {
-    // Serial.printf("sequences::playSequenceInBoxState(const sequence & __target_sequence): __target_sequence._beat.getBaseNoteForBeat() == [%u]\n", __target_sequence._beat.getBaseNoteForBeat());
-    // Serial.printf("sequences::playSequenceInBoxState(const sequence & __target_sequence): __target_sequence._beat.getBaseNoteForBeat() == [%u]\n", __target_sequence._beat.getBaseBeatInBpm());
-    // Serial.println("sequences::playSequenceInBoxState(const sequence & __target_sequence): success");
-    return false;
-  }
-  setActive(__target_sequence);
-  tPlaySequenceInLoop.restart();
-  // Serial.println("sequences::playSequenceInBoxState(const sequence & __target_sequence): success");
-  return true;
-}
 
 
 
@@ -535,7 +513,7 @@ void sequences::_tcbPlaySequenceInLoop() {
 void sequences::_odtcbPlaySequenceInLoop() {
   Serial.println("sequences::_odtcbPlaySequenceInLoop(). starting. ******");
   if (_activeSequence.i16IndexNumber != 5) {
-    playSequenceInBoxState(sequencesArray[5]);
+    playSequence(sequencesArray[5], tPlaySequenceInLoop);
   }
   Serial.println("sequences::_odtcbPlaySequenceInLoop(). over.");
 };

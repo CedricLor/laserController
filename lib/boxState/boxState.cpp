@@ -592,7 +592,7 @@ void boxState::_restartPlayBoxState() {
   i16BoxActiveState property and set by _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState:
   2. in the currently active boxState, it reads the associated sequence number in its properties;
-  3. sets the new sequence to be played (by calling globalSequences.playSequenceInBoxState());
+  3. sets the new sequence to be played (by calling globalSequences.playSequence());
   4. starts playing the sequence (by enabling the task globalSequences.tPlaySequenceInLoop.
 
   It iterates only once and does not have a main callback.
@@ -612,7 +612,10 @@ bool boxState::_oetcbPlayBoxState(){
 
   // 2. Select the desired sequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
-  laserInterface::globalSequences.playSequenceInBoxState(laserInterface::globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
+  laserInterface::globalSequences.playSequence(
+    laserInterface::globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence), 
+    laserInterface::globalSequences.tPlaySequenceInLoop
+  );
 
   // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
