@@ -155,7 +155,7 @@ void serialInit() {
 
 void enableTasks() {
   if ( (isInterface == false) || (isRoot == false) ) {
-    signal::startup();
+    _signal.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }

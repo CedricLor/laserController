@@ -15,22 +15,23 @@ class signal
   public:
     signal();
 
-    static void startup();
+    void startup();
 
   private:
     static void _tcbSetBoxStateFromWeb();
     static void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
-    static bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
+    bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
     static void _tcbIfIRTriggered(const ControlerBox & _callingBox);
-    static bool _testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);
-    static bool _testIfIRisHighIsMine(const ControlerBox & _callingBox);
-    static bool _isCallerThisBox(const ControlerBox & _callingBox);
-    static bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState);
-    static bool _isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName);
-    static bool _isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState);
-    static bool _isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState);
-    static bool _isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime);
+    bool _testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    bool _testIfIRisHighIsMine(const ControlerBox & _callingBox);
+    bool _isCallerThisBox(const ControlerBox & _callingBox);
+    bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    bool _isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName);
+    bool _isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    bool _isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    bool _isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime);
 
 };
 
+extern signal _signal;
 #endif

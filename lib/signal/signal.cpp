@@ -81,7 +81,7 @@ void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
     return;
   }
   // 2. if so, check whether mesh has been triggered and act
-  if (_testIfMeshisHigh(_currentBoxState, _callingBox)) {
+  if (_signal._testIfMeshisHigh(_currentBoxState, _callingBox)) {
     boxState::_setBoxTargetState(_currentBoxState.i16onMeshTrigger);
   }
 }
@@ -120,7 +120,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
     return;
   }
   // 2. if so, check whether IR has been triggered
-  if (_testIfIRisHigh(_callingBox, _currentBoxState)) {
+  if (_signal._testIfIRisHigh(_callingBox, _currentBoxState)) {
     boxState::_setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
 }
