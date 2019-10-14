@@ -221,42 +221,31 @@ void stepCollection::_tcbPreloadNextStep() {
   Serial.printf("stepCollection::_tcbPreloadNextStep(): starting\n");
   // read next step values from the file system
   readStepInFile("/sessions.json", bxStateColl.ui16stepCounter);
-
-  // load the values in memory as variables into the next step
-  // steps[bxStateColl.ui16stepCounter] = {
-  //   /*set _i16stepBoxStateNb*/,
-  //   /*set _i16StateDuration*/,
-  //   /*_ui16AssociatedSequence*/,
-  //   /*_i16onIRTrigger*/,
-  //   /*_i16onMeshTrigger*/,
-  //   /*_i16onExpire*/,
-  //   /*_i16monitoredMasterStates*/
-  // };
   Serial.printf("stepCollection::_tcbPreloadNextStep(): ending\n");
 }
 
 
 
 void stepCollection::readStepInFile(const char * path, uint16_t _ui16stepCounter){
-    Serial.printf("stepCollection::readJSONObjLineInFile: Reading file: %s\r\n", path);
+  Serial.printf("stepCollection::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
-    char _cStep[900];
-    mySpiffs __mySpiffs;
-    if (!(__mySpiffs.readStepInFile(path, _ui16stepCounter, _cStep, thisBox.ui16NodeName))) {
-      return;
-    }
+  char _cStep[900];
+  mySpiffs __mySpiffs;
+  if (!(__mySpiffs.readStepInFile(path, _ui16stepCounter, _cStep, thisBox.ui16NodeName))) {
+    return;
+  }
 
-    DeserializationError err = deserializeJson(_jdStep, _cStep);
-    if (err) {
-        Serial.print(F("stepCollection::readJSONObjLineInFile: deserializeJson() failed: "));
-        Serial.println(err.c_str());
-    }
+  DeserializationError err = deserializeJson(_jdStep, _cStep);
+  if (err) {
+    Serial.print(F("stepCollection::readJSONObjLineInFile: deserializeJson() failed: "));
+    Serial.println(err.c_str());
+    return;
+  }
 
-    // Get a reference to the root object
-    JsonObject _joStep = _jdStep.as<JsonObject>();
+  // Get a reference to the root object
+  JsonObject _joStep = _jdStep.as<JsonObject>();
 
-    _preloadNextStepFromJSON(_joStep);
-
+  _preloadNextStepFromJSON(_joStep);
 }
 
 
