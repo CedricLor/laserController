@@ -477,10 +477,3 @@ void ControlerBox::_reboot() {
   if (MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
   ESP.restart();
 }
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE

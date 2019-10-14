@@ -11,11 +11,9 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include "mns.h"
 #include <mySavedPrefs.h>
 #include <myOta.h>
-#include <ControlerBox.h>
+#include <thisControlerBox.h>
 #include <myMesh.h>
 #include <myMeshStarter.h>
-#include <boxState.h>
-#include <signal.h>
 #include <pirController.h>
 #include <myWebServerBase.h>
 #include <test.h>
@@ -29,8 +27,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 painlessMesh            laserControllerMesh;
 ControlerBox            ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox = ControlerBoxes[0];
-signal                  _signal;
-
+thisControlerBox        thisCntrlerBox;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +152,7 @@ void serialInit() {
 
 void enableTasks() {
   if ( (isInterface == false) || (isRoot == false) ) {
-    _signal.startup();
+    thisCntrlerBox.signalHandlers.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }

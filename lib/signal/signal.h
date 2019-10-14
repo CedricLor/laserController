@@ -18,10 +18,10 @@ class signal
     void startup();
 
   private:
-    static void _tcbSetBoxStateFromWeb();
-    static void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
+    void _tcbSetBoxStateFromWeb();
+    void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
     bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
-    static void _tcbIfIRTriggered(const ControlerBox & _callingBox);
+    void _tcbIfIRTriggered(const ControlerBox & _callingBox);
     bool _testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     bool _testIfIRisHighIsMine(const ControlerBox & _callingBox);
     bool _isCallerThisBox(const ControlerBox & _callingBox);
