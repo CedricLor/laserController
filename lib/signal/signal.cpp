@@ -52,7 +52,7 @@ signal::signal()
 
 
 void signal::startup() {
-  boxState::_setBoxTargetState(2); 
+  bxStateColl._setBoxTargetState(2); 
   /** 2 for pir Startup; at startUp, put the box in pirStartup state 
    *  TODO for next implementation: 
    *  - define a isIr bool in global;
@@ -67,7 +67,7 @@ void signal::startup() {
 /** signal::_tcbSetBoxStateFromWeb() set the target boxState from
  *  a changeBox request. */
 void signal::_tcbSetBoxStateFromWeb() {
-  boxState::_setBoxTargetState(ControlerBox::i16boxStateRequestedFromWeb);
+  bxStateColl._setBoxTargetState(ControlerBox::i16boxStateRequestedFromWeb);
 }
 
 
@@ -75,14 +75,14 @@ void signal::_tcbSetBoxStateFromWeb() {
 
 /***/
 void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
-  const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
+  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(thisBox.i16BoxActiveState);
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
     return;
   }
   // 2. if so, check whether mesh has been triggered and act
   if (_signal._testIfMeshisHigh(_currentBoxState, _callingBox)) {
-    boxState::_setBoxTargetState(_currentBoxState.i16onMeshTrigger);
+    bxStateColl._setBoxTargetState(_currentBoxState.i16onMeshTrigger);
   }
 }
 
@@ -114,14 +114,14 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  *  1. add an i16onMasterIRTrigger property to boxState to handle the masterBox(es) IR signals; */
 void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
-  const boxState & _currentBoxState = boxState::boxStates[thisBox.i16BoxActiveState];
+  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(thisBox.i16BoxActiveState);
   // 1. check whether the current boxState is IR sensitive
   if (_currentBoxState.i16onIRTrigger == -1) {
     return;
   }
   // 2. if so, check whether IR has been triggered
   if (_signal._testIfIRisHigh(_callingBox, _currentBoxState)) {
-    boxState::_setBoxTargetState(_currentBoxState.i16onIRTrigger);
+    bxStateColl._setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
 }
 

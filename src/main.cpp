@@ -93,14 +93,11 @@ void setup() {
     mns::myScheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
     mns::myScheduler.addTask(pirController::tSpeedBumper);
     mns::myScheduler.addTask(step::tPreloadNextStep);
-    mns::myScheduler.addTask(boxState::tPlayBoxState);
+    mns::myScheduler.addTask(bxStateColl.tPlayBoxState);
     _test.beforeSequenceStacks();
     laserInterface::init();
     _test.sequenceStack();
   }
-
-
-  boxState::initBoxStates();
 
   enableTasks();
 

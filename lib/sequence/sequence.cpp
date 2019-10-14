@@ -458,7 +458,8 @@ uint16_t const sequences::playSequence(const sequence & __target_sequence, Task 
  *  sequences array, of the sequence associated with the calling boxState.
  * 
  *  This Task tPlaySequenceInLoop is enabled by playSequenceInBoxState, until 
- *  being disabled by the boxState::tPlayBoxState onDisable callback.
+ *  being disabled by the bxStateColl.tPlayBoxState onDisable callback
+ *  (bxStateColl._odtcbPlayBoxState).
  * */
 
 

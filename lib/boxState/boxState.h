@@ -85,16 +85,6 @@ class boxState
       std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames,
       std::array<int16_t, 4> _i16monitoredMasterStates);
 
-    // boxStates array
-    static const short int BOX_STATES_COUNT;
-    static boxState boxStates[];
-    static void initBoxStates();
-
-    // step mode switch stack
-    static void switchToStepControlled();
-    static uint16_t ui16stepCounter;
-    static uint16_t ui16Mode;
-
     // instance variables
     int16_t i16Duration; // duration for which the state shall stay active before automatically returning to default
     uint16_t ui16AssociatedSequence;  // sequence associated to a given state
@@ -104,33 +94,10 @@ class boxState
     std::array<uint16_t, 4> ui16monitoredMasterBoxesNodeNames;
     std::array<int16_t, 4> i16monitoredMasterStates;
 
-    /** individual boxState Task: iterating once (unless explicitly restarted) 
-     *  for the duration of a single boxState */
-    static Task tPlayBoxState;
-
-    /** interface to mesh */
-    static void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
-
   private:
     friend class signal;
     friend class step;
     friend class stepCollection;
-
-    static const std::array<uint16_t, 4> _monitorNoMaster; // {254}
-    static const std::array<int16_t, 4> _monitorNoStates;// {-1};
-    static const std::array<int16_t, 4> _IRStates;// {6, 7, 8, 9};
-    static const std::array<int16_t, 4> _MeshStates;// {10, 11, 12, 13};
-
-    static short int _boxTargetState;
-
-    static void _restartPlayBoxState();
-
-    static bool _oetcbPlayBoxState();
-    static void _odtcbPlayBoxState();
-
-    static void _setBoxTargetState(const short int targetBoxState);
-
-    static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
 };
 
 
@@ -147,6 +114,10 @@ class boxStateCollection
     // step mode switch stack
     void switchToStepControlled();
     uint16_t ui16stepCounter;
+    /** ui16Mode = 0 => mode automatic, boxStates use their default settings
+     *  ui16Mode = 1 => step controlled, boxStates use the settings corresponding
+     *  to the step they are embedded in.
+     *  */
     uint16_t ui16Mode;
 
     /** individual boxState Task: iterating once (unless explicitly restarted) 
