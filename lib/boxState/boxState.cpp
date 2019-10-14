@@ -220,10 +220,7 @@ stepCollection::stepCollection() {
 void stepCollection::_tcbPreloadNextStep() {
   Serial.printf("stepCollection::_tcbPreloadNextStep(): starting\n");
   // read next step values from the file system
-  char _cNodeName[4];
-  snprintf(_cNodeName, 4, "%u", thisBox.ui16NodeName);
-
-  readJSONObjLineInFile("/sessions.json", bxStateColl.ui16stepCounter, _cNodeName);
+  readStepInFile("/sessions.json", bxStateColl.ui16stepCounter);
 
   // load the values in memory as variables into the next step
   // steps[bxStateColl.ui16stepCounter] = {
@@ -240,25 +237,13 @@ void stepCollection::_tcbPreloadNextStep() {
 
 
 
-void stepCollection::readJSONObjLineInFile(const char * path, uint16_t _ui16stepCounter, const char * _cNodeName){
+void stepCollection::readStepInFile(const char * path, uint16_t _ui16stepCounter){
     Serial.printf("stepCollection::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
-    File file = SPIFFS.open(path, FILE_READ);
-    if(!file || file.isDirectory()){
-        Serial.println("stepCollection::readJSONObjLineInFile: - failed to open file for reading");
-        return;
-    }
-
-    mySpiffs __mySpiffs;
-    // buffer to contain the step
     char _cStep[900];
-    __mySpiffs.readLine(file, _ui16stepCounter, _cStep, _cNodeName);
+    mySpiffs __mySpiffs;
+    __mySpiffs.readStepInFile(path, _ui16stepCounter, _cStep, thisBox.ui16NodeName);
 
-    // reading JSON stuffs
-    // capacity = 905 for one step with comments,
-    // a little bit larger than what the size of _cStep
-    const size_t jsonStepCapacity = 905;
-    StaticJsonDocument<jsonStepCapacity> _jdStep;
     DeserializationError err = deserializeJson(_jdStep, _cStep);
     if (err) {
         Serial.print(F("stepCollection::readJSONObjLineInFile: deserializeJson() failed: "));
@@ -267,33 +252,34 @@ void stepCollection::readJSONObjLineInFile(const char * path, uint16_t _ui16step
 
     // Get a reference to the root object
     JsonObject _joStep = _jdStep.as<JsonObject>();
-    serializeJsonPretty(_joStep, Serial);
-    Serial.print("\n");
 
     _preloadNextStepFromJSON(_joStep);
 
-    file.close();
 }
 
 
 
-void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
-  // step &_nextStep = stepCollection::steps[bxStateColl.ui16stepCounter];
-  // _nextStep._i16stepBoxStateNb = _joStep["_i16stepBoxStateNb"];
-  // _nextStep._i16StateDuration = _joStep["_i16StateDuration"];
-  // _nextStep._ui16AssociatedSequence = _joStep["_ui16AssociatedSequence"];
-  // _nextStep._i16onIRTrigger = _joStep["_i16onIRTrigger"];
-  // _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
-  // _nextStep._i16onExpire = _joStep["_i16onExpire"];
 
-  std::array<int16_t, 4> _i16monitoredMasterStates = {};
+void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
+  Serial.println("stepCollection::_preloadNextStepFromJSON: starting");
+  // Load the the monitored master states into an std::array
   uint16_t _i = 0;
+  std::array<int16_t, 4> _i16monitoredMasterStates = {};
   for (int16_t _monitoredState : _joStep["_i16monitoredMasterStates"].as<JsonArray>()) {
-    // _nextStep._i16monitoredMasterStates[_i] = _monitoredState;
-    _i16monitoredMasterStates[_i] = _monitoredState;
+    _i16monitoredMasterStates.at(_i) = _monitoredState;
     _i++;
   }
+
+  // Load the the monitored master names into an std::array
+  _i = 0;
   std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames = {};
+  // TODO: Uncomment the following lines once the JSON file has been adapted
+  // for (uint16_t _monitoredMasterBoxesNodeName : _joStep["_ui16monitoredMasterBoxesNodeNames"].as<JsonArray>()) {
+  //   _ui16monitoredMasterBoxesNodeNames.at(_i) = _monitoredMasterBoxesNodeName;
+  //   _i++;
+  // }
+
+  // Load the next step into a step instance
   stepsArray[bxStateColl.ui16stepCounter] = {
     // _i16stepBoxStateNb(__i16stepBoxStateNb),
     _joStep["_i16stepBoxStateNb"].as<int16_t>(),

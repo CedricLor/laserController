@@ -9,7 +9,6 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
-#include <mns.h>
 #include <mySpiffs.h>
 #include <laserInterface.h>
 
@@ -51,11 +50,13 @@ class stepCollection
 
     std::array<step, 8> stepsArray;
 
-    void readJSONObjLineInFile(const char * path, uint16_t _ui16stepCounter, const char * _cNodeName);
+    void readStepInFile(const char * path, uint16_t _ui16stepCounter);
 
     Task tPreloadNextStep;
     void _tcbPreloadNextStep();
     void _preloadNextStepFromJSON(JsonObject& _joStep);
+
+    StaticJsonDocument<905> _jdStep;
 };
 
 extern stepCollection stepColl;
