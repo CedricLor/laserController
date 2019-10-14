@@ -51,7 +51,7 @@ class stepCollection
 
     std::array<step, 8> stepsArray;
 
-    void readJSONObjLineInFile(mySpiffs & __mySpiffs, const char * path, uint16_t _ui16stepCounter, const char * _cNodeName);
+    void readJSONObjLineInFile(const char * path, uint16_t _ui16stepCounter, const char * _cNodeName);
 
     Task tPreloadNextStep;
     void _tcbPreloadNextStep();

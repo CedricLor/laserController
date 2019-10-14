@@ -218,12 +218,12 @@ stepCollection::stepCollection() {
 
 
 void stepCollection::_tcbPreloadNextStep() {
+  Serial.printf("stepCollection::_tcbPreloadNextStep(): starting\n");
   // read next step values from the file system
   char _cNodeName[4];
   snprintf(_cNodeName, 4, "%u", thisBox.ui16NodeName);
 
-  mySpiffs _mySpiffs;
-  readJSONObjLineInFile(_mySpiffs, "/sessions.json", bxStateColl.ui16stepCounter, _cNodeName);
+  readJSONObjLineInFile("/sessions.json", bxStateColl.ui16stepCounter, _cNodeName);
 
   // load the values in memory as variables into the next step
   // steps[bxStateColl.ui16stepCounter] = {
@@ -235,19 +235,22 @@ void stepCollection::_tcbPreloadNextStep() {
   //   /*_i16onExpire*/,
   //   /*_i16monitoredMasterStates*/
   // };
+  Serial.printf("stepCollection::_tcbPreloadNextStep(): ending\n");
 }
 
 
 
-void stepCollection::readJSONObjLineInFile(mySpiffs & __mySpiffs, const char * path, uint16_t _ui16stepCounter, const char * _cNodeName){
-    Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
+void stepCollection::readJSONObjLineInFile(const char * path, uint16_t _ui16stepCounter, const char * _cNodeName){
+    Serial.printf("stepCollection::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
     File file = SPIFFS.open(path, FILE_READ);
     if(!file || file.isDirectory()){
-        Serial.println("mySpiffs::readJSONObjLineInFile: - failed to open file for reading");
+        Serial.println("stepCollection::readJSONObjLineInFile: - failed to open file for reading");
         return;
     }
 
+    mySpiffs __mySpiffs;
+    // buffer to contain the step
     char _cStep[900];
     __mySpiffs.readLine(file, _ui16stepCounter, _cStep, _cNodeName);
 
@@ -258,12 +261,14 @@ void stepCollection::readJSONObjLineInFile(mySpiffs & __mySpiffs, const char * p
     StaticJsonDocument<jsonStepCapacity> _jdStep;
     DeserializationError err = deserializeJson(_jdStep, _cStep);
     if (err) {
-        Serial.print(F("mySpiffs::readJSONObjLineInFile: deserializeJson() failed: "));
+        Serial.print(F("stepCollection::readJSONObjLineInFile: deserializeJson() failed: "));
         Serial.println(err.c_str());
     }
 
     // Get a reference to the root object
     JsonObject _joStep = _jdStep.as<JsonObject>();
+    serializeJsonPretty(_joStep, Serial);
+    Serial.print("\n");
 
     _preloadNextStepFromJSON(_joStep);
 
