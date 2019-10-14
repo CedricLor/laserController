@@ -120,4 +120,46 @@ class boxState
     static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
 };
 
+class boxStateCollection
+{
+  public:
+    /** constructors*/
+    /** default constructor: used to define the boxStates array */
+    boxStateCollection(void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr);
+
+    // boxStates array
+    std::array<boxState, 14> boxStatesArray;
+
+    // step mode switch stack
+    void switchToStepControlled();
+    uint16_t ui16stepCounter;
+    uint16_t ui16Mode;
+
+    /** individual boxState Task: iterating once (unless explicitly restarted) 
+     *  for the duration of a single boxState */
+    Task tPlayBoxState;
+
+    /** interface to mesh */
+    void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
+
+  private:
+    friend class signal;
+    friend class step;
+
+    const std::array<uint16_t, 4> _monitorNoMaster; // {254}
+    const std::array<int16_t, 4> _monitorNoStates;// {-1};
+    const std::array<int16_t, 4> _IRStates;// {6, 7, 8, 9};
+    const std::array<int16_t, 4> _MeshStates;// {10, 11, 12, 13};
+
+    short int _boxTargetState;
+
+    void _restartPlayBoxState();
+
+    bool _oetcbPlayBoxState();
+    void _odtcbPlayBoxState();
+
+    void _setBoxTargetState(const short int targetBoxState);
+
+    unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
+};
 #endif
