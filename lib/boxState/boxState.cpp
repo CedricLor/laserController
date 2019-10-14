@@ -289,7 +289,7 @@ void (*boxState::sendCurrentBoxState)(const int16_t _i16CurrentStateNbr) = nullp
 
 
 // Various constant used both in step and boxState
-const std::array<uint16_t, 4> _monitorNoMaster {254};
+const std::array<uint16_t, 4> boxState::_monitorNoMaster {254};
 const std::array<int16_t, 4> boxState::_monitorNoStates {-1};
 const std::array<int16_t, 4> boxState::_IRStates {6, 7, 8, 9};
 const std::array<int16_t, 4> boxState::_MeshStates {10, 11, 12, 13};
