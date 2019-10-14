@@ -120,12 +120,13 @@ class boxState
     static unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
 };
 
+
 class boxStateCollection
 {
   public:
     /** constructors*/
     /** default constructor: used to define the boxStates array */
-    boxStateCollection(void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr);
+    boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr);
 
     // boxStates array
     std::array<boxState, 14> boxStatesArray;

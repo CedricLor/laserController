@@ -685,3 +685,352 @@ unsigned long boxState::_ulCalcInterval(int16_t _i16IntervalInS) {
   return (_i16IntervalInS * 1000);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+// boxStateCollection class
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+/** Constructors */
+/** default constructor */
+boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)):
+  ui16stepCounter(0),
+  ui16Mode(0),
+  sendCurrentBoxState(_sendCurrentBoxState),
+  _monitorNoMaster({254}),
+  _monitorNoStates({-1}),
+  _IRStates({6, 7, 8, 9}),
+  _MeshStates({10, 11, 12, 13}),
+  _boxTargetState(0)
+{
+  Serial.println("boxStateCollection::initBoxStates(). starting.");
+  /** Constructor signature (using "little constructor")
+   * _i16Duration, _ui16AssociatedSequence, _i16onIRTrigger, _i16onMeshTrigger, _i16onExpire */
+
+  // ********* TECHNICAL STATES ***********************************************
+  // ----- 0, 1, 2
+  // --> STATE 0: manual / off
+  /** {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = -1, onMeshTrigger = -1, onExpire = 0 (repeat)} */
+  boxStatesArray[0] = {-1, 5, -1, -1, 0};
+  // Serial.println("void boxStateCollection::_initBoxStates(). boxStates[0].cName: ");
+  // Serial.println(boxStates[0].cName);
+  // Serial.println("void boxStateCollection::_initBoxStates(). boxStates[0].i16Duration");
+  // Serial.println(boxStates[0].i16Duration);
+
+  // const uint16_t _i16Duration, const uint16_t _ui16AssociatedSequence
+  // const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire
+
+  // --> STATE 1: align lasers
+  /** sequence "twins" for indefinite time, without interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 1 ("twins"), 
+   *   onIRTrigger = -1, 
+   *   onMeshTrigger = -1, 
+   *   onExpire = 1 (repeat)} */
+  boxStatesArray[1] = {-1, 1, -1, -1, 1};
+
+  // --> STATE 2: pir startup waiting mesh
+  /** sequence "twins" for 60 seconds, no interrupt from IR, interrupts from mesh */
+  /** {Duration = 60 sec., AssocSeqce = 1 ("twins"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 12 (possible val: 0-2 12-13 with restrictions 
+   *   (restrictions --> no subsequent IR before expiration of 60 seconds startup delay)),
+   *   onExpire = 3 (repeat)} */
+  boxStatesArray[2] = {60, 1, -1, 8, 3};
+
+
+  // ********* WAITING STATES (3 STATES + STATE 0) ****************************
+  // ----- 3, 4, 5, 0
+  // --> STATE 3: Waiting Both
+  /** sequence "all of" for indefinite time, IR and mesh interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 3 (repeat)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[3] = {-1, 5, 6, 10, 3}; 
+
+  // --> STATE 4: Waiting IR
+  /** sequence "all of" for indefinite time, IR interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (repeat)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[4] = {-1, 5, 6, -1, 4}; 
+
+  // --> STATE 5: Waiting Mesh
+  /** sequence "all of" for indefinite time, mesh interrupts.
+   *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 5 (repeat)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[5] = {-1, 5, -1, 10, 5}; 
+
+
+  // ********* PIR HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) *******
+  // ----- 6, 7, 8, 9
+  // --> STATE 6: PIR High Both interrupt
+  /** sequence "relays" for 120 seconds, IR and mesh interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 3 (fall back to waiting both)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[6] = {120, 0, 6, 10, 3}; 
+
+  // --> STATE 7: PIR High IR interrupt
+  /** sequence "relays" for 120 seconds, IR interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[7] = {120, 0, 6, -1, 4}; 
+  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
+   * from IR only */
+
+  // --> STATE 8: PIR High Mesh interrupt
+  /** sequence "relays" for 120 seconds, mesh interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[8] = {120, 0, -1, 10, 5}; 
+
+  // --> STATE 9: PIR High no interrupt
+  /** sequence "relays" for 120 seconds, no interrupt.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[9] = {120, 0, -1, -1, 4}; 
+
+
+  // ********* MESH HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) ******
+  // ----- 10, 11, 12, 13
+  // --> STATE 10: Mesh High Both interrupt
+  /** sequence "relays" for 120 seconds, IR and mesh interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 3 (fall back to waiting both)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[10] = {120, 0, 6, 10, 3}; 
+
+  // --> STATE 11: Mesh High IR interrupt
+  /** sequence "relays" for 120 seconds, IR interrupts.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = 6 (possible val: IR High: 6-9), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[11] = {120, 0, 6, -1, 4}; 
+
+  // --> STATE 12: Mesh High Mesh interrupt
+  /** sequence "relays" for 120 seconds, mesh interrupt.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
+   *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[12] = {120, 0, -1, 10, 5/*possible val: 0 3-13*/}; 
+  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
+   * from mesh only */
+
+  // --> STATE 13: mesh High no interrupt
+  /** sequence "relays" for 120 seconds, no interrupt.
+   *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
+   *   onIRTrigger = -1 (possible val: no IR High: -1), 
+   *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
+   *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
+  boxStatesArray[13] = {120, 0, -1, -1, 4}; 
+
+  // Set Task tPlayBoxState
+  tPlayBoxState.set(0, 1, NULL, [&](){ return _oetcbPlayBoxState();}, [&](){ return _odtcbPlayBoxState();});
+
+  Serial.println("boxStateCollection::initBoxStates(). over.\n");
+}
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////
+// Switch to Step Controlled Mode
+//////////////////////////////////////////////
+void boxStateCollection::switchToStepControlled() {
+  ui16Mode = 1;
+  ui16stepCounter = 0;
+  step::initSteps();
+}
+
+
+
+//////////////////////////////////////////////
+// Task _tPlayBoxStates and its callbacks
+//////////////////////////////////////////////
+void boxStateCollection::_restartPlayBoxState() {
+  // Serial.println("void boxStateCollection::_restartPlayBoxState(). starting.");
+  // Serial.print("void boxStateCollection::_restartPlayBoxState(). Iteration:");
+  // Serial.println(tPlayBoxStates.getRunCounter());
+
+  /** If the targetState has been reset, start playing the corresponding state:
+   *  1. get the params for the new state in case we are in step controlled mode;
+   *  2. set the duration to stay in the new boxState (by setting the aInterval
+   *     of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
+   *     the i16Duration of the target boxState (boxStates[_boxTargetState].i16Duration);
+   *  3. set the i16BoxActiveState property (and related properties) of this box;
+   *  4. restart/enable the "children" Task tPlayBoxState.*/
+
+  /** 1. If we are in step controlled mode (mode 1),
+   *     configure the params of the new boxState. */
+  if (ui16Mode == 1) {
+    step::steps[ui16stepCounter].applyStep();
+    ui16stepCounter = ui16stepCounter + 1;
+    // preload the next step from flash memory
+    step::tPreloadNextStep.enable();
+  }
+
+  // 2. Set the duration of Task tPlayBoxState
+  // Serial.print("void boxStateCollection::_restartPlayBoxState() boxStates[_boxTargetState].i16Duration: "); Serial.println(boxStates[_boxTargetState].i16Duration);
+  tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray[_boxTargetState].i16Duration));
+  // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
+
+  // 3. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
+  thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
+  // Serial.println("void boxStateCollection::_restartPlayBoxState() tPlayBoxState about to be enabled");
+
+  // 4. Restart/enable tPlayBoxState
+  tPlayBoxState.restartDelayed();
+  // Serial.println("void boxStateCollection::_restartPlayBoxState() tPlayBoxState enabled");
+  // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
+  // Serial.println("*********************************************************");
+
+
+  // Serial.println("void boxStateCollection::_restartPlayBoxState(). over.");
+};
+
+
+
+
+
+
+
+
+
+
+/*
+  tPlayBoxState starts and stops new boxStates.
+  It iterates only once. It is enabled by _restartPlayBoxState.
+  Its main iteration is delayed until aInterval has expired. aInterval is set in
+  _restartPlayBoxState. Such interval is equal to the duration of the new boxState.
+
+  Upon being enabled, its onEnable callback:
+  1. looks for the new boxState number, stored in this ControlerBox's
+  i16BoxActiveState property and set by _restart_tPlayBoxState.
+  Using this number, its selects the currently active boxState:
+  2. in the currently active boxState, it reads the associated sequence number in its properties;
+  3. sets the new sequence to be played (by calling globalSequences.playSequence());
+  4. starts playing the sequence (by enabling the task globalSequences.tPlaySequenceInLoop.
+
+  It iterates only once and does not have a main callback.
+
+  Upon expiration of the Task, its onDisable callback disables
+  Task tPlaySequenceInLoop.
+*/
+
+bool boxStateCollection::_oetcbPlayBoxState(){
+  Serial.println("boxStateCollection::_oetcbPlayBoxState(). starting.");
+  // Serial.print("boxStateCollection::_oetcbPlayBoxState(). Box State Number: ");Serial.println(thisBox.i16BoxActiveState);
+
+  // 1. select the currently active state
+  boxState& _currentBoxState = boxStatesArray[thisBox.i16BoxActiveState];
+
+  // 2. Select the desired sequence and play it in loop
+  //    until tPlayBoxState expires, for the duration mentionned in the activeState
+  laserInterface::globalSequences.playSequence(
+    laserInterface::globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence), 
+    laserInterface::globalSequences.tPlaySequenceInLoop
+  );
+
+  // 3. Signal the change of state to the mesh
+  if (sendCurrentBoxState != nullptr) {
+    sendCurrentBoxState(thisBox.i16BoxActiveState);
+  }
+
+  Serial.println("boxStateCollection::_oetcbPlayBoxState(). over.");
+  return true;
+}
+
+
+
+
+/* Upon disabling the task which plays a given boxState,
+  (i) disable the associated sequence player; and
+  (ii) if the state which was being played was not the default state,
+  set it to its default state.
+*/
+void boxStateCollection::_odtcbPlayBoxState(){
+  Serial.println("boxStateCollection::_odtcbPlayBoxState(). starting.");
+  // Serial.print("boxStateCollection::_odtcbPlayBoxState() tPlayBoxState.getInterval(): ");
+  // Serial.println(tPlayBoxState.getInterval());
+
+  boxState& _currentBoxState = boxStatesArray[thisBox.i16BoxActiveState];
+
+  // 1. Disable the associated sequence player
+  laserInterface::globalSequences.tPlaySequenceInLoop.disable();
+  // Serial.println("boxStateCollection::_odtcbPlayBoxState(): thisBox i16BoxActiveState number");
+  // Serial.println(_thisBox.i16BoxActiveState);
+  // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _boxTargetState");
+  // Serial.println(_boxTargetState);
+
+  // 2. Start the following state (timer interrupt)
+  // or reset the boxState to default if no following state
+  if (_currentBoxState.i16onExpire != -1) {
+    _setBoxTargetState(_currentBoxState.i16onExpire);
+  } else {
+    _setBoxTargetState(thisBox.sBoxDefaultState);
+
+  }
+  Serial.println("boxStateCollection::_odtcbPlayBoxState(). over.");
+}
+
+
+
+
+
+// _setBoxTargetState is the central entry point to request a boxState change.
+void boxStateCollection::_setBoxTargetState(const short __boxTargetState) {
+  Serial.println("boxStateCollection::_setBoxTargetState(). starting.");
+  Serial.printf("boxStateCollection::_setBoxTargetState(). __boxTargetState: %u\n", __boxTargetState);
+  _boxTargetState = __boxTargetState;
+  _restartPlayBoxState();
+  Serial.printf("boxStateCollection::_setBoxTargetState(). _boxTargetState: %u\n", _boxTargetState);
+  Serial.println("boxStateCollection::_setBoxTargetState(). over.");
+};
+
+
+
+//////////////////////////////
+// helpers
+//////////////////////////////
+unsigned long boxStateCollection::_ulCalcInterval(int16_t _i16IntervalInS) {
+  if (_i16IntervalInS == -1) {
+    return 4294967290;
+  }
+  return (_i16IntervalInS * 1000);
+}
+
