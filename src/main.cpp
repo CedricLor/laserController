@@ -27,7 +27,9 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 painlessMesh              laserControllerMesh;
 ControlerBox              ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox =   ControlerBoxes[0];
-controllerBoxesCollection cntrllerBoxesCollection;
+signal                    _signal;
+// controllerBoxesCollection cntrllerBoxesCollection;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +154,8 @@ void serialInit() {
 
 void enableTasks() {
   if ( (isInterface == false) || (isRoot == false) ) {
-    cntrllerBoxesCollection.signalHandlers.startup();
+    _signal.startup();
+    // cntrllerBoxesCollection.signalHandlers.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }
