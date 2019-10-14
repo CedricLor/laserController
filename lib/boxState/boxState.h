@@ -51,6 +51,20 @@ class step
 };
 
 
+class stepCollection
+{
+  public:
+    stepCollection();
+
+    std::array<step, 8> stepsArray;
+
+    Task tPreloadNextStep;
+    void _tcbPreloadNextStep();
+    void _preloadNextStepFromJSON(JsonObject& _joStep);
+
+    void initSteps();
+};
+
 
 class boxState
 {
