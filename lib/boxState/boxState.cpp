@@ -604,10 +604,11 @@ void boxStateCollection::_restartPlayBoxState() {
   /** 1. If we are in step controlled mode (mode 1),
    *     configure the params of the new boxState. */
   if (ui16Mode == 1) {
+    // Serial.println("void boxStateCollection::_restartPlayBoxState(). in step controlled mode.");
     stepColl.stepsArray.at(ui16stepCounter).applyStep();
     ui16stepCounter = ui16stepCounter + 1;
     // preload the next step from flash memory
-    stepColl.tPreloadNextStep.enable();
+    stepColl.tPreloadNextStep.restart();
   }
 
   // 2. Set the duration of Task tPlayBoxState
