@@ -41,11 +41,6 @@ class step
 
     void applyStep();
 
-    static Task tPreloadNextStep;
-    static void _tcbPreloadNextStep();
-    static void _preloadNextStepFromJSON(JsonObject& _joStep);
-
-    static void initSteps();
   private:
 
 };
@@ -58,11 +53,14 @@ class stepCollection
 
     std::array<step, 8> stepsArray;
 
+    void readJSONObjLineInFile(mySpiffs & __mySpiffs, const char * path, uint16_t _ui16stepCounter, const char * _cNodeName);
+
     Task tPreloadNextStep;
     void _tcbPreloadNextStep();
     void _preloadNextStepFromJSON(JsonObject& _joStep);
 };
 
+extern stepCollection stepColl;
 
 class boxState
 {

@@ -110,67 +110,6 @@ step::step(int16_t __i16stepBoxStateNb,
 }
 
 
-Task step::tPreloadNextStep(0, 1, &_tcbPreloadNextStep, NULL/*&mns::myScheduler*/, false, NULL, NULL);
-
-void step::_tcbPreloadNextStep() {
-  mySpiffs _mySpiffs;
-  // read next step values from the file system
-  char _cNodeName[4];
-  snprintf(_cNodeName, 4, "%u", thisBox.ui16NodeName);
-  _mySpiffs.readJSONObjLineInFile("/sessions.json", step::_preloadNextStepFromJSON, bxStateColl.ui16stepCounter, _cNodeName);
-
-  // load the values in memory as variables into the next step
-  // steps[bxStateColl.ui16stepCounter] = {
-  //   /*set _i16stepBoxStateNb*/,
-  //   /*set _i16StateDuration*/,
-  //   /*_ui16AssociatedSequence*/,
-  //   /*_i16onIRTrigger*/,
-  //   /*_i16onMeshTrigger*/,
-  //   /*_i16onExpire*/,
-  //   /*_i16monitoredMasterStates*/
-  // };
-}
-
-void step::_preloadNextStepFromJSON(JsonObject& _joStep) {
-  // step &_nextStep = step::steps[bxStateColl.ui16stepCounter];
-  // _nextStep._i16stepBoxStateNb = _joStep["_i16stepBoxStateNb"];
-  // _nextStep._i16StateDuration = _joStep["_i16StateDuration"];
-  // _nextStep._ui16AssociatedSequence = _joStep["_ui16AssociatedSequence"];
-  // _nextStep._i16onIRTrigger = _joStep["_i16onIRTrigger"];
-  // _nextStep._i16onMeshTrigger = _joStep["_i16onMeshTrigger"];
-  // _nextStep._i16onExpire = _joStep["_i16onExpire"];
-
-  std::array<int16_t, 4> _i16monitoredMasterStates = {};
-  uint16_t _i = 0;
-  for (int16_t _monitoredState : _joStep["_i16monitoredMasterStates"].as<JsonArray>()) {
-    // _nextStep._i16monitoredMasterStates[_i] = _monitoredState;
-    _i16monitoredMasterStates[_i] = _monitoredState;
-    _i++;
-  }
-  std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames = {};
-  step::steps[bxStateColl.ui16stepCounter] = {
-    // _i16stepBoxStateNb(__i16stepBoxStateNb),
-    _joStep["_i16stepBoxStateNb"].as<int16_t>(),
-    // _i16StateDuration(__i16StateDuration),
-    _joStep["_i16StateDuration"].as<int16_t>(),
-    // _ui16AssociatedSequence(__ui16AssociatedSequence),
-    _joStep["_ui16AssociatedSequence"].as<uint16_t>(),
-    // _i16onIRTrigger(__i16onIRTrigger),
-    _joStep["_i16onIRTrigger"].as<int16_t>(),
-    // _i16onMeshTrigger(__i16onMeshTrigger),
-    _joStep["_i16onMeshTrigger"].as<int16_t>(),
-    // _i16onExpire(__i16onExpire),
-    _joStep["_i16onExpire"].as<int16_t>(),
-    // _ui16monitoredMasterBoxesNodeNames(__ui16monitoredMasterBoxesNodeNames),
-    _ui16monitoredMasterBoxesNodeNames,
-    // _i16monitoredMasterStates(__i16monitoredMasterStates),
-    _i16monitoredMasterStates
-  };
-}
-
-
-
-
 
 /** step::applyStep(): applies the values of this step to the relevant boxState */
 void step::applyStep() {
@@ -189,87 +128,6 @@ void step::applyStep() {
 
 
 
-void step::initSteps() {
-  Serial.println("step::initSteps(): starting");
-  /* step 0: waiting IR, all Off
-  - no passenger */
-  steps[0] = {4, -1, 5, 6, -1, 4, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
-  // Serial.println("step::initSteps():");
-  /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
-    onIRTrigger: apply state 6, onMeshTrigger: -1 (no mesh trigger),
-    onExpire: 4 (no expiration, repeat), 
-    _ui16monitoredMasterBoxesNodeNames: [254] (_monitorNoMaster),
-    _i16monitoredMasterStates:  [-1] _monitorNoStates */
-
-  /* step 1: PIR High, waiting both, relays
-  - passenger at box 1 (this box) */
-  std::array<uint16_t, 4> _arrMonitor_202_203 {202, 203};
-  steps[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, sequence: 0 - relays,
-    onIRTrigger: apply state 6 (repeat), onMeshTrigger: 12 (Mesh High, waiting mesh),
-    onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], 
-    _ui16monitoredMasterBoxesNodeNames: [202, 203],
-    _i16monitoredMasterStates: _IRStates [6, 7, 8, 9] */
-
-  /* step 2: Mesh High, waiting mesh, all Off
-  - passenger at boxes 2 or 3, going to boxes 5 or 6 */
-  std::array<uint16_t, 4> _arrMonitor_205_206 {205, 206};
-  steps[2] = {12, 60, 5, -1, 12, 12, _arrMonitor_205_206, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, sequence: 5 - all Off,
-    onIRTrigger: -1, onMeshTrigger: 12 (repeat Mesh High, waiting mesh),
-    onExpire: 12 (repeat), 
-    _ui16stepMasterBoxName: [205, 206],
-    _i16monitoredMasterStates: _IRStates [6, 7, 8, 9] */
-
-  /* step 3: Mesh High, waiting mesh, relays
-  - passenger at boxes 5 or 6, going between boxes 5 and 6 */
-  steps[3] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
-    onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), 
-    _ui16stepMasterBoxName: [202, 203],
-    _i16monitoredMasterStates: _IRStates [6, 7, 8, 9] */
-
-  /* step 4: Mesh High, waiting mesh, relays
-  - passenger at boxes 5 or 6, going to box 4 */
-  steps[4] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
-    onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), 
-    _ui16stepMasterBoxName: [202, 203],
-    _i16monitoredMasterStates: _IRStates [6, 7, 8, 9] */
-
-  /* step 5: Mesh High, waiting mesh, relays
-  - passenger at box 4, going to box 2 or 3 */
-  steps[5] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
-    onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
-    onExpire: 12 (repeat until mesh trigger), 
-    _ui16stepMasterBoxName: [202, 203],
-    _i16monitoredMasterStates: _IRStates [6, 7, 8, 9] */
-
-  /* step 6: Mesh High, IR interrupt, relays
-  - passenger at boxes 2 or 3, going to box 1 */
-  steps[6] = {11, -1, 0, 9, 11, 11, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
-  /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
-    onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: 11 (repeat),
-    onExpire: 11 (repeat once), 
-    _ui16stepMasterBoxName: [254] (_monitorNoMaster),
-    _i16monitoredMasterStates:  [-1] _monitorNoStates */
-
-  /* step 7: IR High, no interrupt, relays
-  - passenger at boxes 2 or 3, going to box 1 */
-  steps[7] = {9, -1, 0, -1, -1, 9, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
-  /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
-    onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
-    onExpire: 9 (repeat once), 
-    _ui16stepMasterBoxName: [254] (_monitorNoMaster), 
-    _i16monitoredMasterStates:  [-1] _monitorNoStates */
-  Serial.println("step::initSteps(): starting");
-}
-
-
-
 
 
 
@@ -280,6 +138,7 @@ void step::initSteps() {
 // stepCollection class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
+stepCollection stepColl;
 
 stepCollection::stepCollection() {
   Serial.println("stepCollection::stepCollection(): starting");
@@ -368,7 +227,9 @@ void stepCollection::_tcbPreloadNextStep() {
   // read next step values from the file system
   char _cNodeName[4];
   snprintf(_cNodeName, 4, "%u", thisBox.ui16NodeName);
-  _mySpiffs.readJSONObjLineInFile("/sessions.json", step::_preloadNextStepFromJSON, bxStateColl.ui16stepCounter, _cNodeName);
+  void actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), mySavedPrefs &_myPrefsRef);
+
+  readJSONObjLineInFile(_mySpiffs, "/sessions.json", bxStateColl.ui16stepCounter, _cNodeName);
 
   // load the values in memory as variables into the next step
   // steps[bxStateColl.ui16stepCounter] = {
@@ -380,6 +241,39 @@ void stepCollection::_tcbPreloadNextStep() {
   //   /*_i16onExpire*/,
   //   /*_i16monitoredMasterStates*/
   // };
+}
+
+
+
+void stepCollection::readJSONObjLineInFile(mySpiffs & __mySpiffs, const char * path, uint16_t _ui16stepCounter, const char * _cNodeName){
+    Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
+
+    File file = SPIFFS.open(path, FILE_READ);
+    if(!file || file.isDirectory()){
+        Serial.println("mySpiffs::readJSONObjLineInFile: - failed to open file for reading");
+        return;
+    }
+
+    char _cStep[900];
+    __mySpiffs.readLine(file, _ui16stepCounter, _cStep, _cNodeName);
+
+    // reading JSON stuffs
+    // capacity = 905 for one step with comments,
+    // a little bit larger than what the size of _cStep
+    const size_t jsonStepCapacity = 905;
+    StaticJsonDocument<jsonStepCapacity> _jdStep;
+    DeserializationError err = deserializeJson(_jdStep, _cStep);
+    if (err) {
+        Serial.print(F("mySpiffs::readJSONObjLineInFile: deserializeJson() failed: "));
+        Serial.println(err.c_str());
+    }
+
+    // Get a reference to the root object
+    JsonObject _joStep = _jdStep.as<JsonObject>();
+
+    _preloadNextStepFromJSON(_joStep);
+
+    file.close();
 }
 
 
@@ -689,7 +583,6 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
 void boxStateCollection::switchToStepControlled() {
   ui16Mode = 1;
   ui16stepCounter = 0;
-  step::initSteps();
 }
 
 
@@ -716,7 +609,7 @@ void boxStateCollection::_restartPlayBoxState() {
     step::steps[ui16stepCounter].applyStep();
     ui16stepCounter = ui16stepCounter + 1;
     // preload the next step from flash memory
-    step::tPreloadNextStep.enable();
+    stepColl.tPreloadNextStep.enable();
   }
 
   // 2. Set the duration of Task tPlayBoxState
