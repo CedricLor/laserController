@@ -61,8 +61,6 @@ class stepCollection
     Task tPreloadNextStep;
     void _tcbPreloadNextStep();
     void _preloadNextStepFromJSON(JsonObject& _joStep);
-
-    void initSteps();
 };
 
 
@@ -116,6 +114,7 @@ class boxState
   private:
     friend class signal;
     friend class step;
+    friend class stepCollection;
 
     static const std::array<uint16_t, 4> _monitorNoMaster; // {254}
     static const std::array<int16_t, 4> _monitorNoStates;// {-1};
@@ -160,6 +159,7 @@ class boxStateCollection
   private:
     friend class signal;
     friend class step;
+    friend class stepCollection;
 
     const std::array<uint16_t, 4> _monitorNoMaster; // {254}
     const std::array<int16_t, 4> _monitorNoStates;// {-1};
