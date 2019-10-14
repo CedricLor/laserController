@@ -1,19 +1,19 @@
 /*
-  thisControlerBox.cpp - Library to handle this particular ControlerBox (as opposed to the others in the collection)
+  controllerBoxesCollection.cpp - Library to handle this particular ControlerBox (as opposed to the others in the collection)
   Created by Cedric Lor, Octobre 14, 2019.
 */
 
 #include "Arduino.h"
-#include "thisControlerBox.h"
+#include "controllerBoxesCollection.h"
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Class thisControlerBox
+// Class controllerBoxesCollection
 ////////////////////////////////////////////////////////////////////////////////
 
 // Constructors
-thisControlerBox::thisControlerBox():
+controllerBoxesCollection::controllerBoxesCollection():
   i16boxStateRequestedFromWeb(-1),
   thisBox(ControlerBoxes[0])
 {
@@ -25,7 +25,7 @@ thisControlerBox::thisControlerBox():
 
 /** Setters */
 
-/** void thisControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
+/** void controllerBoxesCollection::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
  *  
  * Setter for the activeState and associated variables
  * 
@@ -35,15 +35,15 @@ thisControlerBox::thisControlerBox():
  * params:  const short _sBoxActiveState:
  *          const uint32_t _ui32BoxActiveStateStartTime:
  * */
-void thisControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
-  // Serial.println("thisControlerBox::setBoxActiveState(): starting");
+void controllerBoxesCollection::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+  // Serial.println("controllerBoxesCollection::setBoxActiveState(): starting");
 
   if ( (thisBox.i16BoxActiveState != _sBoxActiveState) || (thisBox.ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
     thisBox.i16BoxActiveState = _sBoxActiveState;
-    // Serial.printf("thisControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
+    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
 
     thisBox.boxActiveStateHasBeenSignaled = false;
-    // Serial.printf("thisControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
+    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
     // setters:
     // - by default to true upon init (controlerBox constructor);
     // - to false here (usefull for the IF, for the received states of other boxes);
@@ -52,7 +52,7 @@ void thisControlerBox::setBoxActiveState(const short _sBoxActiveState, const uin
     // used by the interface mostly
 
     thisBox.ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-    // Serial.printf("thisControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
+    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it.
@@ -63,7 +63,7 @@ void thisControlerBox::setBoxActiveState(const short _sBoxActiveState, const uin
     tSetBoxState.restart();
   }
 
-  // Serial.println("thisControlerBox::setBoxActiveState(): over");
+  // Serial.println("controllerBoxesCollection::setBoxActiveState(): over");
 }
 
 
@@ -71,7 +71,7 @@ void thisControlerBox::setBoxActiveState(const short _sBoxActiveState, const uin
  * 
  *  Called from: 
  *  - myMeshController, upon receiving a changeBox request from the web. */
-void thisControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
+void controllerBoxesCollection::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
    *  on thisBox boxState, add it to the Scheduler and restart it. */
@@ -82,6 +82,6 @@ void thisControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateReques
 
 /** private methods */
 // Task tSetBoxState resetter
-void thisControlerBox::resetTSetBoxState() {
+void controllerBoxesCollection::resetTSetBoxState() {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
 }

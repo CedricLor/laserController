@@ -2,19 +2,19 @@
   ControlerBox.h - Library to replace box_type struct - handles the ControlerBox attributes.
   Created by Cedric Lor, January 2, 2019.
 */
-#ifndef thisControlerBox_h
-#define thisControlerBox_h
+#ifndef controllerBoxesCollection_h
+#define controllerBoxesCollection_h
 
 #include "Arduino.h"
 #include <mns.h>
 #include <global.h>
 #include <signal.h>
 
-class thisControlerBox
+class controllerBoxesCollection
 {
   public:
     // default constructor
-    thisControlerBox();
+    controllerBoxesCollection();
 
     // boxState Setters Tasks
     Task tSetBoxState;
@@ -35,6 +35,6 @@ class thisControlerBox
     void resetTSetBoxState();
 };
 
-extern thisControlerBox thisCntrlerBox;
+extern controllerBoxesCollection cntrllerBoxesCollection;
 
 #endif

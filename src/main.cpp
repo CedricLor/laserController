@@ -11,7 +11,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include "mns.h"
 #include <mySavedPrefs.h>
 #include <myOta.h>
-#include <thisControlerBox.h>
+#include <controllerBoxesCollection.h>
 #include <myMesh.h>
 #include <myMeshStarter.h>
 #include <pirController.h>
@@ -24,10 +24,10 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-painlessMesh            laserControllerMesh;
-ControlerBox            ControlerBoxes[UI8_BOXES_COUNT];
-ControlerBox &thisBox = ControlerBoxes[0];
-thisControlerBox        thisCntrlerBox;
+painlessMesh              laserControllerMesh;
+ControlerBox              ControlerBoxes[UI8_BOXES_COUNT];
+ControlerBox &thisBox =   ControlerBoxes[0];
+controllerBoxesCollection cntrllerBoxesCollection;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ void serialInit() {
 
 void enableTasks() {
   if ( (isInterface == false) || (isRoot == false) ) {
-    thisCntrlerBox.signalHandlers.startup();
+    cntrllerBoxesCollection.signalHandlers.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }

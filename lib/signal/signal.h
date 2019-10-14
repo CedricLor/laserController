@@ -12,7 +12,7 @@
 
 class signal
 {
-  friend class thisControlerBox;
+  friend class controllerBoxesCollection;
   public:
     signal();
 
