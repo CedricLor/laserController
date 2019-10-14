@@ -440,19 +440,19 @@ void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, uin
 
 
 
-void mySpiffs::readStepInFile(const char * path, uint16_t _ui16stepCounter, char * _cStep, uint16_t _ui16NodeName){
-// void mySpiffs::readJSONObjLineInFile(const char * path, void (&callBack)(JsonObject&), uint16_t _ui16stepCounter, const char * _cNodeName){
+bool mySpiffs::readStepInFile(const char * path, uint16_t _ui16stepCounter, char * _cStep, uint16_t _ui16NodeName){
     Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
     File file = SPIFFS.open(path, FILE_READ);
     if(!file || file.isDirectory()){
         Serial.println("mySpiffs::readJSONObjLineInFile: - failed to open file for reading");
-        return;
+        return false;
     }
 
     readLine(file, _ui16stepCounter, _cStep, _ui16NodeName);
 
     file.close();
+    return true;
 }
 
 

@@ -32,7 +32,7 @@ class mySpiffs
     void convertJsonFilePrettyToUgly(const char * path, const uint16_t _ui16NodeName);
 
     void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, uint16_t ui16NodeName);
-    void readStepInFile(const char * path, uint16_t _ui16stepCounter, char* _cStep, uint16_t ui16NodeName);
+    bool readStepInFile(const char * path, uint16_t _ui16stepCounter, char* _cStep, uint16_t ui16NodeName);
 
     void writeFile(const char * path, const char * message);
     // writeFile("/hello.txt", "Hello ");

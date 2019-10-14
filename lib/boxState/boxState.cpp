@@ -242,7 +242,9 @@ void stepCollection::readStepInFile(const char * path, uint16_t _ui16stepCounter
 
     char _cStep[900];
     mySpiffs __mySpiffs;
-    __mySpiffs.readStepInFile(path, _ui16stepCounter, _cStep, thisBox.ui16NodeName);
+    if (!(__mySpiffs.readStepInFile(path, _ui16stepCounter, _cStep, thisBox.ui16NodeName))) {
+      return;
+    }
 
     DeserializationError err = deserializeJson(_jdStep, _cStep);
     if (err) {
