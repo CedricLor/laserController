@@ -18,9 +18,6 @@ class thisControlerBox
 
     // boxState Setters Tasks
     Task tSetBoxState;
-    void (*_tcbIfMeshTriggered)(const ControlerBox & _callingBox);
-    void (*_tcbIfIRTriggered)(const ControlerBox & _callingBox);
-    void (*_tcbSetBoxStateFromWeb)();
 
     /** -------- Public Variables */
     /** - Signal catchers ----------------- */
@@ -33,7 +30,7 @@ class thisControlerBox
 
   private:
     /**reset Task tSetBoxState*/
-    void resetTasktSetBoxState();
+    void resetTSetBoxState();
 };
 
 extern thisControlerBox thisCntrlerBox;

@@ -16,7 +16,7 @@
 thisControlerBox::thisControlerBox():
   i16boxStateRequestedFromWeb(-1)
 {
-  resetTasktSetBoxState();
+  resetTSetBoxState();
 }
 
 
@@ -32,15 +32,13 @@ void thisControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateReques
   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
    *  on thisBox boxState, add it to the Scheduler and restart it. */
-  if (_tcbSetBoxStateFromWeb != nullptr) {
-    tSetBoxState.set(0, 1, _tcbSetBoxStateFromWeb);
-    tSetBoxState.restart();
-  }
+  tSetBoxState.set(0, 1, signalHandlers._tcbSetBoxStateFromWeb);
+  tSetBoxState.restart();
 }
 
 
 /** private methods */
 // Task tSetBoxState resetter
-void thisControlerBox::resetTasktSetBoxState() {
+void thisControlerBox::resetTSetBoxState() {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
 }
