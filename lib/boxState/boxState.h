@@ -177,4 +177,7 @@ class boxStateCollection
 
     unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
 };
+
+extern boxStateCollection bxStateColl;
+
 #endif

@@ -28,6 +28,7 @@ painlessMesh              laserControllerMesh;
 ControlerBox              ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox =   ControlerBoxes[0];
 signal                    _signal;
+boxStateCollection        bxStateColl;
 // controllerBoxesCollection cntrllerBoxesCollection;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
