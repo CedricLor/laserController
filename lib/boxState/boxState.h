@@ -16,8 +16,6 @@
 class step
 {
   public:
-    static step steps[];
-
     step();
     step(int16_t __i16stepBoxStateNb,
       int16_t __i16StateDuration,

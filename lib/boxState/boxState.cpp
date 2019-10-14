@@ -80,10 +80,6 @@
 // step class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-
-step step::steps[8];
-
-
 step::step() {
 
 }
@@ -223,12 +219,11 @@ stepCollection::stepCollection() {
 
 
 void stepCollection::_tcbPreloadNextStep() {
-  mySpiffs _mySpiffs;
   // read next step values from the file system
   char _cNodeName[4];
   snprintf(_cNodeName, 4, "%u", thisBox.ui16NodeName);
-  void actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), mySavedPrefs &_myPrefsRef);
 
+  mySpiffs _mySpiffs;
   readJSONObjLineInFile(_mySpiffs, "/sessions.json", bxStateColl.ui16stepCounter, _cNodeName);
 
   // load the values in memory as variables into the next step
@@ -439,7 +434,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
   // --> STATE 0: manual / off
   /** {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
    *   onIRTrigger = -1, onMeshTrigger = -1, onExpire = 0 (repeat)} */
-  boxStatesArray[0] = {-1, 5, -1, -1, 0};
+  boxStatesArray.at(0) = {-1, 5, -1, -1, 0};
   // Serial.println("void boxStateCollection::_initBoxStates(). bxStateColl.boxStatesArray.at(0).i16Duration");
   // Serial.println(bxStateColl.boxStatesArray.at(0).i16Duration);
 
@@ -452,7 +447,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = -1, 
    *   onMeshTrigger = -1, 
    *   onExpire = 1 (repeat)} */
-  boxStatesArray[1] = {-1, 1, -1, -1, 1};
+  boxStatesArray.at(1) = {-1, 1, -1, -1, 1};
 
   // --> STATE 2: pir startup waiting mesh
   /** sequence "twins" for 60 seconds, no interrupt from IR, interrupts from mesh */
@@ -461,7 +456,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onMeshTrigger = 12 (possible val: 0-2 12-13 with restrictions 
    *   (restrictions --> no subsequent IR before expiration of 60 seconds startup delay)),
    *   onExpire = 3 (repeat)} */
-  boxStatesArray[2] = {60, 1, -1, 8, 3};
+  boxStatesArray.at(2) = {60, 1, -1, 8, 3};
 
 
   // ********* WAITING STATES (3 STATES + STATE 0) ****************************
@@ -472,7 +467,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 3 (repeat)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[3] = {-1, 5, 6, 10, 3}; 
+  boxStatesArray.at(3) = {-1, 5, 6, 10, 3}; 
 
   // --> STATE 4: Waiting IR
   /** sequence "all of" for indefinite time, IR interrupts.
@@ -480,7 +475,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
    *   onExpire = 4 (repeat)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[4] = {-1, 5, 6, -1, 4}; 
+  boxStatesArray.at(4) = {-1, 5, 6, -1, 4}; 
 
   // --> STATE 5: Waiting Mesh
   /** sequence "all of" for indefinite time, mesh interrupts.
@@ -488,7 +483,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 5 (repeat)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[5] = {-1, 5, -1, 10, 5}; 
+  boxStatesArray.at(5) = {-1, 5, -1, 10, 5}; 
 
 
   // ********* PIR HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) *******
@@ -499,7 +494,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 3 (fall back to waiting both)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[6] = {120, 0, 6, 10, 3}; 
+  boxStatesArray.at(6) = {120, 0, 6, 10, 3}; 
 
   // --> STATE 7: PIR High IR interrupt
   /** sequence "relays" for 120 seconds, IR interrupts.
@@ -507,7 +502,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[7] = {120, 0, 6, -1, 4}; 
+  boxStatesArray.at(7) = {120, 0, 6, -1, 4}; 
   /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
    * from IR only */
 
@@ -517,7 +512,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[8] = {120, 0, -1, 10, 5}; 
+  boxStatesArray.at(8) = {120, 0, -1, 10, 5}; 
 
   // --> STATE 9: PIR High no interrupt
   /** sequence "relays" for 120 seconds, no interrupt.
@@ -525,7 +520,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[9] = {120, 0, -1, -1, 4}; 
+  boxStatesArray.at(9) = {120, 0, -1, -1, 4}; 
 
 
   // ********* MESH HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) ******
@@ -536,7 +531,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 3 (fall back to waiting both)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[10] = {120, 0, 6, 10, 3}; 
+  boxStatesArray.at(10) = {120, 0, 6, 10, 3}; 
 
   // --> STATE 11: Mesh High IR interrupt
   /** sequence "relays" for 120 seconds, IR interrupts.
@@ -544,7 +539,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[11] = {120, 0, 6, -1, 4}; 
+  boxStatesArray.at(11) = {120, 0, 6, -1, 4}; 
 
   // --> STATE 12: Mesh High Mesh interrupt
   /** sequence "relays" for 120 seconds, mesh interrupt.
@@ -552,7 +547,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[12] = {120, 0, -1, 10, 5/*possible val: 0 3-13*/}; 
+  boxStatesArray.at(12) = {120, 0, -1, 10, 5/*possible val: 0 3-13*/}; 
   /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
    * from mesh only */
 
@@ -562,7 +557,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
-  boxStatesArray[13] = {120, 0, -1, -1, 4}; 
+  boxStatesArray.at(13) = {120, 0, -1, -1, 4}; 
 
   // Set Task tPlayBoxState
   tPlayBoxState.set(0, 1, NULL, [&](){ return _oetcbPlayBoxState();}, [&](){ return _odtcbPlayBoxState();});
@@ -606,7 +601,7 @@ void boxStateCollection::_restartPlayBoxState() {
   /** 1. If we are in step controlled mode (mode 1),
    *     configure the params of the new boxState. */
   if (ui16Mode == 1) {
-    step::steps[ui16stepCounter].applyStep();
+    stepColl.stepsArray.at(ui16stepCounter).applyStep();
     ui16stepCounter = ui16stepCounter + 1;
     // preload the next step from flash memory
     stepColl.tPreloadNextStep.enable();
