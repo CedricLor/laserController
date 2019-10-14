@@ -416,7 +416,7 @@ boxState::boxState(const int16_t _i16Duration,
 /** default constructor */
 boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)):
   ui16stepCounter(0),
-  ui16Mode(0),
+  ui16Mode(1),
   sendCurrentBoxState(_sendCurrentBoxState),
   _monitorNoMaster({254}),
   _monitorNoStates({-1}),
