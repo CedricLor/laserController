@@ -24,8 +24,10 @@ class thisControlerBox
     int16_t i16boxStateRequestedFromWeb;
     /** - Signal instance ----------------- */
     signal signalHandlers;
+    ControlerBox & thisBox;
 
     /** setters */
+    void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
   private:
