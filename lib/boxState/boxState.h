@@ -15,6 +15,8 @@
 
 class step
 {
+  friend class boxStateCollection;
+  
   public:
     step();
     step(int16_t __i16stepBoxStateNb,
@@ -27,6 +29,9 @@ class step
       const std::array<int16_t, 4> __i16monitoredMasterStates
     );
 
+    void applyStep();
+
+  private:
     // boxState criteria (variables) setter
     int16_t _i16stepBoxStateNb;
     int16_t _i16StateDuration;
@@ -36,11 +41,6 @@ class step
     int16_t _i16onExpire;
     std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames;
     std::array<int16_t, 4> _i16monitoredMasterStates;
-
-    void applyStep();
-
-  private:
-
 };
 
 
@@ -62,6 +62,7 @@ extern stepCollection stepColl;
 
 class boxState
 {
+
   public:
     /** constructors*/
     /** default constructor: used to define the boxStates array */
@@ -91,14 +92,14 @@ class boxState
     std::array<int16_t, 4> i16monitoredMasterStates;
 
   private:
-    friend class signal;
-    friend class step;
-    friend class stepCollection;
 };
 
 
 class boxStateCollection
 {
+  friend class signal;
+  friend class stepCollection;
+
   public:
     /** constructors*/
     /** default constructor: used to define the boxStates array */
@@ -124,10 +125,6 @@ class boxStateCollection
     void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
 
   private:
-    friend class signal;
-    friend class step;
-    friend class stepCollection;
-
     const std::array<uint16_t, 4> _monitorNoMaster; // {254}
     const std::array<int16_t, 4> _monitorNoStates;// {-1};
     const std::array<int16_t, 4> _IRStates;// {6, 7, 8, 9};

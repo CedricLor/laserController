@@ -62,7 +62,7 @@ ControlerBox::ControlerBox()
    *  
    *  Setters:
    *  - here; 
-   *  - in updateMasterBoxName() below (called from from step::applyStep(),
+   *  - in updateMasterBoxName() below (called from from stepCollection.applyStep(),
    *    from myMeshController::_updateMyMasterBoxName() and 
    *    myMeshController::_changedBoxConfirmation());
    *  - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) 

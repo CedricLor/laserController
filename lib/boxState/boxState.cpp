@@ -81,7 +81,6 @@
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 step::step() {
-
 }
 
 
@@ -585,6 +584,10 @@ void boxStateCollection::switchToStepControlled() {
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
+/** void boxStateCollection::_restartPlayBoxState()
+ * 
+ *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
+*/
 void boxStateCollection::_restartPlayBoxState() {
   // Serial.println("void boxStateCollection::_restartPlayBoxState(). starting.");
   // Serial.print("void boxStateCollection::_restartPlayBoxState(). Iteration:");
@@ -609,7 +612,7 @@ void boxStateCollection::_restartPlayBoxState() {
 
   // 2. Set the duration of Task tPlayBoxState
   // Serial.print("void boxStateCollection::_restartPlayBoxState() bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration: "); Serial.println(bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
-  tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray[_boxTargetState].i16Duration));
+  tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray.at(_boxTargetState).i16Duration));
   // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
   // 3. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
