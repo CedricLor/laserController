@@ -186,6 +186,7 @@ step & step::operator=(step&& __step) {
 /** step::applyStep(): applies the values of this step to the relevant boxState */
 void step::applyStep() {
   Serial.println("step::applyStep(). starting");
+  stepColl.activeStep = *this;
   bxStateColl.boxStatesArray.at(_i16stepBoxStateNb) = {
     _i16StateDuration,
     _ui16AssociatedSequence,
@@ -214,7 +215,6 @@ stepCollection stepColl;
 
 stepCollection::stepCollection():
   activeStep({}),
-  pendingStep({}),
   nextStep({}),
   stepsIndexNbArray({}),
   maxStepIndexNb(0)
@@ -222,7 +222,7 @@ stepCollection::stepCollection():
   Serial.println("stepCollection::stepCollection(): starting");
   /* step 0: waiting IR, all Off
   - no passenger */
-  stepsArray[0] = {4, -1, 5, 6, -1, 4, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
+  // stepsArray[0] = {4, -1, 5, 6, -1, 4, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
   // Serial.println("stepCollection::stepCollection():");
   /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
     onIRTrigger: apply state 6, onMeshTrigger: -1 (no mesh trigger),
@@ -232,8 +232,8 @@ stepCollection::stepCollection():
 
   /* step 1: PIR High, waiting both, relays
   - passenger at box 1 (this box) */
-  std::array<uint16_t, 4> _arrMonitor_202_203 {202, 203};
-  stepsArray[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, _arrMonitor_202_203, bxStateColl._IRStates};
+  // std::array<uint16_t, 4> _arrMonitor_202_203 {202, 203};
+  // stepsArray[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, _arrMonitor_202_203, bxStateColl._IRStates};
   /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, sequence: 0 - relays,
     onIRTrigger: apply state 6 (repeat), onMeshTrigger: 12 (Mesh High, waiting mesh),
     onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], 
@@ -242,8 +242,8 @@ stepCollection::stepCollection():
 
   /* step 2: Mesh High, waiting mesh, all Off
   - passenger at boxes 2 or 3, going to boxes 5 or 6 */
-  std::array<uint16_t, 4> _arrMonitor_205_206 {205, 206};
-  stepsArray[2] = {12, 60, 5, -1, 12, 12, _arrMonitor_205_206, bxStateColl._IRStates};
+  // std::array<uint16_t, 4> _arrMonitor_205_206 {205, 206};
+  // stepsArray[2] = {12, 60, 5, -1, 12, 12, _arrMonitor_205_206, bxStateColl._IRStates};
   /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, sequence: 5 - all Off,
     onIRTrigger: -1, onMeshTrigger: 12 (repeat Mesh High, waiting mesh),
     onExpire: 12 (repeat), 
@@ -252,7 +252,7 @@ stepCollection::stepCollection():
 
   /* step 3: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going between boxes 5 and 6 */
-  stepsArray[3] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
+  // stepsArray[3] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), 
@@ -261,7 +261,7 @@ stepCollection::stepCollection():
 
   /* step 4: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going to box 4 */
-  stepsArray[4] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
+  // stepsArray[4] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), 
@@ -270,7 +270,7 @@ stepCollection::stepCollection():
 
   /* step 5: Mesh High, waiting mesh, relays
   - passenger at box 4, going to box 2 or 3 */
-  stepsArray[5] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
+  // stepsArray[5] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
   /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), 
@@ -279,7 +279,7 @@ stepCollection::stepCollection():
 
   /* step 6: Mesh High, IR interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
-  stepsArray[6] = {11, -1, 0, 9, 11, 11, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
+  // stepsArray[6] = {11, -1, 0, 9, 11, 11, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
   /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: 11 (repeat),
     onExpire: 11 (repeat once), 
@@ -288,15 +288,16 @@ stepCollection::stepCollection():
 
   /* step 7: IR High, no interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
-  stepsArray[7] = {9, -1, 0, -1, -1, 9, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
+  // stepsArray[7] = {9, -1, 0, -1, -1, 9, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
   /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
     onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
     onExpire: 9 (repeat once), 
     _ui16stepMasterBoxName: [254] (_monitorNoMaster), 
     _i16monitoredMasterStates:  [-1] _monitorNoStates */
-  Serial.println("stepCollection::stepCollection(): starting");
 
   tPreloadNextStep.set(0, 1, [&](){ return _tcbPreloadNextStep(); }, NULL, NULL);
+  
+  Serial.println("stepCollection::stepCollection(): ending");
 }
 
 
@@ -353,7 +354,7 @@ void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
   }
 
   // Load the next step into a step instance
-  stepsArray[bxStateColl.ui16stepCounter] = {
+  nextStep = {
     // _i16stepBoxStateNb(__i16stepBoxStateNb),
     _joStep["_i16BoxStateNb"].as<int16_t>(),
     // _i16StateDuration(__i16StateDuration),
@@ -656,7 +657,7 @@ void boxStateCollection::_getSettingsFromStepAndGetNextStep() {
   // Serial.println("void boxStateCollection::_restartPlayBoxStateInStepControlledMode(). starting.");
   /** 1. configure the params of the pending boxState. */
   // Serial.println("void boxStateCollection::_restartPlayBoxState(). in step controlled mode.");
-  stepColl.stepsArray.at(ui16stepCounter).applyStep();
+  stepColl.nextStep.applyStep();
   /** 2. increment the step counter. */
   ui16stepCounter = ui16stepCounter + 1;
   /** 3. preload the next step from flash memory */

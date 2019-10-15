@@ -393,8 +393,6 @@ void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, uin
     Serial.println("mySpiffs::readLine(): starting");
     char _endLineMarker = '\n';
     uint16_t _ui16InternalStepsCounter = 0;
-    char _boxMarker[11];
-    snprintf(_boxMarker, 11, "%s%u", "$[BOX: ", _ui16NodeName);
     char _cNodeName[4];
     snprintf(_cNodeName, 4, "%u", _ui16NodeName);
     bool _boxFound = false;

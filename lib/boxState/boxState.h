@@ -52,9 +52,7 @@ class stepCollection
   public:
     stepCollection();
 
-    std::array<step, 8> stepsArray;
     step activeStep;
-    step pendingStep;
     step nextStep;
     std::array<int16_t, 10> stepsIndexNbArray;
     int16_t maxStepIndexNb;
