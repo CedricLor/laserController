@@ -135,7 +135,13 @@ void step::applyStep() {
 ///////////////////////////////////////////////////////
 stepCollection stepColl;
 
-stepCollection::stepCollection() {
+stepCollection::stepCollection():
+  activeStep({}),
+  pendingStep({}),
+  nextStep({}),
+  stepsIndexNbArray({}),
+  maxStepIndexNb(0)
+{
   Serial.println("stepCollection::stepCollection(): starting");
   /* step 0: waiting IR, all Off
   - no passenger */

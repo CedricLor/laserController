@@ -49,6 +49,11 @@ class stepCollection
     stepCollection();
 
     std::array<step, 8> stepsArray;
+    step activeStep;
+    step pendingStep;
+    step nextStep;
+    std::array<int16_t, 10> stepsIndexNbArray;
+    int16_t maxStepIndexNb;
 
     void readStepInFile(const char * path, uint16_t _ui16stepCounter);
 
