@@ -146,10 +146,9 @@ void mySpiffs::readJSONFile(const char * path){
     }
 
     // reading what is in the file and printing it
-    // Serial.println("mySpiffs::readJSONFile(): - read from file:");
-    // while(file.available()){
-    //     Serial.write(file.read());
-    // }
+    Serial.println("mySpiffs::readJSONFile(): - read from file: ----");
+    serializeJsonPretty(jdSteps, Serial);
+    Serial.println("\n---");
 
     file.close();
 }
@@ -158,7 +157,27 @@ void mySpiffs::readJSONFile(const char * path){
 
 
 
-bool mySpiffs::_lookForMyBoxNumberInPrettyFile(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName, size_t _prettyBoxMarkerSize, char * _prettyBoxMarker) {
+bool mySpiffs::_lookForMyBoxNumberInPrettyFile(File& prettyFile, const uint16_t _ui16NodeName, size_t _prettyBoxMarkerSize, char * _prettyBoxMarker) {
+  // We are looking for the JSON object in the file that corresponds to this box.
+  // This line is marked in the pretty JSON document as follows: ""boxNumber": 201,"
+  // It will be rewritten as  $[BOX: 201]$ in the ugly JSON.
+
+  // Building the sought-for string  --> "boxNumber": 201,
+  snprintf(_prettyBoxMarker, _prettyBoxMarkerSize, "\"boxNumber\": %u,", _ui16NodeName);
+
+  // Looking for the sought-for string
+  if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
+    Serial.printf("mySpiffs::_lookForMyBoxNumberInPrettyFile(): found box %s\n", _prettyBoxMarker);
+    return true;
+  }
+  // Else the string was not found, return
+  // Serial.println("mySpiffs::_lookForMyBoxNumberInPrettyFile(): box number not found");
+  return false;
+}
+
+
+
+bool mySpiffs::_insertBoxNumberFromPrettyFileToUglyFile(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName, size_t _prettyBoxMarkerSize, char * _prettyBoxMarker) {
   // We are looking for the JSON object in the file that corresponds to this box.
   // This line is marked in the pretty JSON document as follows: ""boxNumber": 201,"
   // It will be rewritten as  $[BOX: 201]$ in the ugly JSON.
@@ -166,16 +185,16 @@ bool mySpiffs::_lookForMyBoxNumberInPrettyFile(File& prettyFile, const char * _u
   // Building the sought for string  --> "boxNumber": 201,
   snprintf(_prettyBoxMarker, _prettyBoxMarkerSize, "\"boxNumber\": %u,", _ui16NodeName);
 
-  // Looking for the string
+  // Looking for the sought for string
   if (prettyFile.find(_prettyBoxMarker, _prettyBoxMarkerSize - 1)) {
-    Serial.printf("mySpiffs::_lookForMyBoxNumberInPrettyFile(): found box %s\n", _prettyBoxMarker);
+    Serial.printf("mySpiffs::_insertBoxNumberFromPrettyFileToUglyFile(): found box %s\n", _prettyBoxMarker);
 
     // Building the box marker to be inserted n the ugly file
     size_t _uglyBoxMarkerSize = 15;
     char _uglyBoxMarker[_uglyBoxMarkerSize];
     snprintf(_uglyBoxMarker, _uglyBoxMarkerSize, "$[BOX: %u]$", _ui16NodeName); // --> $[BOX: 201]$
-    // Serial.printf("mySpiffs::_lookForMyBoxNumberInPrettyFile(): built name %s\n", _uglyBoxMarker);
-    // Serial.printf("mySpiffs::_lookForMyBoxNumberInPrettyFile(): about to append it to %s\n", _uglyFileName);
+    // Serial.printf("mySpiffs::_insertBoxNumberFromPrettyFileToUglyFile(): built name %s\n", _uglyBoxMarker);
+    // Serial.printf("mySpiffs::_insertBoxNumberFromPrettyFileToUglyFile(): about to append it to %s\n", _uglyFileName);
 
     // Appending it to the ugly file
     appendToFile(_uglyFileName, _uglyBoxMarker);
@@ -183,7 +202,7 @@ bool mySpiffs::_lookForMyBoxNumberInPrettyFile(File& prettyFile, const char * _u
     return true;
   }
   // Else the string was not found, return
-  // Serial.println("mySpiffs::_lookForMyBoxNumberInPrettyFile(): box number not found");
+  // Serial.println("mySpiffs::_insertBoxNumberFromPrettyFileToUglyFile(): box number not found");
   return false;
 }
 
@@ -297,7 +316,7 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
 
 
     // 1. Look for this file number in the pretty file
-    if (!(_lookForMyBoxNumberInPrettyFile(prettyFile, _uglyFileName, _ui16NodeName, _prettyBoxMarkerSize, _prettyBoxMarker))) {
+    if (!(_lookForMyBoxNumberInPrettyFile(prettyFile, _ui16NodeName, _prettyBoxMarkerSize, _prettyBoxMarker))) {
         return;
     }
 
@@ -333,24 +352,33 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
 
 
 void mySpiffs::_createUglyFile(File& prettyFile, char* _uglyFileName) {
+    Serial.printf("mySpiffs::_createUglyFile(): starting with prettyFile = [%s] and _uglyFileName = [%s]\n", prettyFile.name(), _uglyFileName);
     char prettyFileName[30];
     snprintf(prettyFileName, 30, "%s", prettyFile.name());
+    Serial.printf("mySpiffs::_createUglyFile(): prettyFile.name() [%s] copied to prettyFileName [%s]\n", prettyFile.name(), prettyFileName);
     strtok(prettyFileName, "-");  // get rid of the beginning of the string (i.e. "pretty" in "pretty-sessions.json")
-    snprintf(_uglyFileName, 30, "%s", strtok(NULL, "-"));
-    // Serial.printf("mySpiffs::_createUglyFile: Creating file %s\n", _uglyFileName);
+    snprintf(_uglyFileName, 30, "/%s", strtok(NULL, "-"));
+    Serial.printf("mySpiffs::_createUglyFile(): _uglyFileName created: [%s]\n", _uglyFileName);
 
+    Serial.printf("mySpiffs::_createUglyFile(): about to delete any previoulsy existing ugly file: [%s]\n", _uglyFileName);
     deleteFile(_uglyFileName); // just in case the ugly file already exists, delete it
+    Serial.printf("mySpiffs::_createUglyFile(): ugly file [%s] deleted\n", _uglyFileName);
 
     File uglyFile;
+    Serial.printf("mySpiffs::_createUglyFile(): new instance of ugly file created\n");
     uglyFile = SPIFFS.open(_uglyFileName, FILE_WRITE);
     if(!uglyFile){
-        Serial.println("mySpiffs::_createUglyFile(): - failed to open file for writing");
+        Serial.println("mySpiffs::_createUglyFile(): failed to open file for writing");
         prettyFile.close();
+        Serial.printf("mySpiffs::_createUglyFile(): closed prettyFile [%s]", prettyFile.name());
         return;
+    } else {
+        Serial.printf("mySpiffs::_createUglyFile(): uglyFile opened with name [%s]\n", uglyFile.name());
+        Serial.printf("mySpiffs::_createUglyFile(): [%s] created\n", _uglyFileName);
     }
 
-    // Serial.printf("mySpiffs::_createUglyFile(): uglyFile.name(): %s\n", uglyFile.name());
     uglyFile.close();
+    Serial.printf("mySpiffs::_createUglyFile(): ending successfully. [%s] created and closed\n", _uglyFileName);
 }
 
 
@@ -363,6 +391,8 @@ void mySpiffs::convertJsonFilePrettyToUgly(const char * path, const uint16_t _ui
     if(!prettyFile || prettyFile.isDirectory()){
         Serial.println("mySpiffs::convertJsonFilePrettyToUgly: - failed to open file for reading");
         return;
+    } else {
+        Serial.printf("mySpiffs::convertJsonFilePrettyToUgly: - pretty file [%s] opened\n", path);
     }
 
     // create an ugly file
@@ -373,13 +403,16 @@ void mySpiffs::convertJsonFilePrettyToUgly(const char * path, const uint16_t _ui
     // which will read the pretty file and make it ugly
     convertJsonStepsPrettyToUgly(prettyFile, _uglyFileName, _ui16NodeName);
 
-    Serial.println("mySpiffs::convertJsonFilePrettyToUgly: closing files");
+    Serial.println("mySpiffs::convertJsonFilePrettyToUgly(): closing files");
     // close all the files
     prettyFile.close();
+    Serial.printf("mySpiffs::convertJsonFilePrettyToUgly(): file [%s] closed\n", path);
     // uglyFile.close();
 
     // delete the pretty file
+    Serial.printf("mySpiffs::convertJsonFilePrettyToUgly(): about to delete file [%s]\n", path);
     deleteFile(path);
+    Serial.printf("mySpiffs::convertJsonFilePrettyToUgly(): file [%s] deleted\n", path);
 
     // readFile(_uglyFileName);
     Serial.println("mySpiffs::convertJsonFilePrettyToUgly: ending");

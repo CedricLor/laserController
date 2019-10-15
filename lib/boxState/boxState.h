@@ -52,13 +52,17 @@ class stepCollection
   public:
     stepCollection();
 
-    step activeStep;
-    step nextStep;
-    int16_t maxStepIndexNb;
+    void reset();
 
-    void readStepInFile(const char * path, uint16_t _ui16stepCounter);
+    uint16_t ui16stepCounter;
+    step nextStep;
+    char stepFileName[20];
+    int16_t i16maxStepIndexNb;
 
     Task tPreloadNextStep;
+
+  private:
+    void _preloadNextStep(uint16_t _ui16stepCounter);
     void _tcbPreloadNextStep();
     void _preloadNextStepFromJSON(JsonObject& _joStep);
     void _parseJsonArray(JsonObject& _joStep, const char * key);
@@ -120,7 +124,6 @@ class boxStateCollection
 
     // step mode switch stack
     void toogleStepControlled(uint16_t _ui16Mode);
-    uint16_t ui16stepCounter;
     /** ui16Mode = 0 => mode automatic, boxStates use their default settings
      *  ui16Mode = 1 => step controlled, boxStates use the settings corresponding
      *  to the step they are embedded in.
@@ -142,8 +145,8 @@ class boxStateCollection
 
     short int _boxTargetState;
 
-    void _getSettingsFromStepAndGetNextStep();
     void _restartPlayBoxState();
+    void _restartPlayBoxStateInStepControlledMode();
 
     bool _oetcbPlayBoxState();
     void _odtcbPlayBoxState();

@@ -16,7 +16,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <myMeshStarter.h>
 #include <pirController.h>
 #include <myWebServerBase.h>
-#include <test.h>
+// #include <test.h>
 
 
 
@@ -44,10 +44,10 @@ void enableTasks();
 void setup() {
   delay(2000);
   serialInit();
-  test _test;
+  // test _test;
 
   mns::myScheduler.init();
-  
+
   // TRUE IS READONLY and FALSE IS RW!!!
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.loadPrefsWrapper();
@@ -60,7 +60,7 @@ void setup() {
 
   mns::myScheduler.addTask(ControlerBox::tReboot);
   mns::myScheduler.addTask(myMeshStarter::tRestart);
-  
+
   mns::myScheduler.addTask(myMesh::tChangedConnection);
   mns::myScheduler.addTask(myMesh::tIamAloneTimeOut);
   mns::myScheduler.addTask(myMesh::tPrintMeshTopo);
@@ -74,15 +74,18 @@ void setup() {
 
   thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
   thisBox.sBoxDefaultState = gi16BoxDefaultState;
-  
+
   myMesh::start();
 
+  Serial.println("\nStarting SPIFFS");
   if(!SPIFFS.begin(true)){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
-  mySpiffs _mySpiffs;
-  _mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
+  mySpiffs __mySpiffs;
+  __mySpiffs.listDir("/", 0);
+  __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
+  Serial.println("\n");
 
   if (isInterface) {
     myWebServerBase _myWebServer;
@@ -94,9 +97,9 @@ void setup() {
     mns::myScheduler.addTask(pirController::tSpeedBumper);
     mns::myScheduler.addTask(stepColl.tPreloadNextStep);
     mns::myScheduler.addTask(bxStateColl.tPlayBoxState);
-    _test.beforeSequenceStacks();
+    // _test.beforeSequenceStacks();
     laserInterface::init();
-    _test.sequenceStack();
+    // _test.sequenceStack();
   }
 
   enableTasks();
@@ -105,12 +108,7 @@ void setup() {
   Serial.printf("Box number: %i\n", gui16NodeName);
   Serial.printf("Version: %i\n", VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
-  
-  // for (short __thisPin = 0; __thisPin < PIN_COUNT; __thisPin++) {
-  //    digitalWrite(relayPins[__thisPin], LOW);
-  //    Serial.print("\n------ PIN number: ");Serial.print(relayPins[__thisPin]);Serial.print("\n");
-  // }
-
+  __mySpiffs.listDir("/", 0);
 }
 
 
@@ -124,7 +122,7 @@ void loop() {
     ArduinoOTA.handle();
     return;
   }
-  
+
   mns::myScheduler.execute();
   laserControllerMesh.update();
   if ((isInterface == false) || (isRoot == false)) {

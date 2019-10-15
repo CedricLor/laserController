@@ -186,7 +186,6 @@ step & step::operator=(step&& __step) {
 /** step::applyStep(): applies the values of this step to the relevant boxState */
 void step::applyStep() {
   Serial.println("step::applyStep(). starting");
-  stepColl.activeStep = *this;
   bxStateColl.boxStatesArray.at(_i16stepBoxStateNb) = {
     _i16StateDuration,
     _ui16AssociatedSequence,
@@ -214,9 +213,9 @@ void step::applyStep() {
 stepCollection stepColl;
 
 stepCollection::stepCollection():
-  activeStep({}),
-  nextStep({}),
-  maxStepIndexNb(0)
+  ui16stepCounter(0),
+  stepFileName("/sessions.json"),
+  i16maxStepIndexNb(-1)
 {
   Serial.println("stepCollection::stepCollection(): starting");
   /* step 0: waiting IR, all Off
@@ -295,34 +294,44 @@ stepCollection::stepCollection():
     _i16monitoredMasterStates:  [-1] _monitorNoStates */
 
   mySpiffs __mySpiffs;
-  maxStepIndexNb = __mySpiffs.numberOfLinesInFile("/sessions.json");
+  i16maxStepIndexNb = __mySpiffs.numberOfLinesInFile(stepFileName);
+  
   tPreloadNextStep.set(0, 1, [&](){ return _tcbPreloadNextStep(); }, NULL, NULL);
+  tPreloadNextStep.restart();
 
   Serial.println("stepCollection::stepCollection(): ending");
 }
 
 
+
+void stepCollection::reset() {
+  ui16stepCounter = 0;
+  _preloadNextStep(ui16stepCounter);
+}
+
+
+
 void stepCollection::_tcbPreloadNextStep() {
   Serial.printf("stepCollection::_tcbPreloadNextStep(): starting\n");
   // read next step values from the file system
-  readStepInFile("/sessions.json", bxStateColl.ui16stepCounter);
+  _preloadNextStep(ui16stepCounter);
   Serial.printf("stepCollection::_tcbPreloadNextStep(): ending\n");
 }
 
 
 
-void stepCollection::readStepInFile(const char * path, uint16_t _ui16stepCounter){
-  Serial.printf("stepCollection::readJSONObjLineInFile: Reading file: %s\r\n", path);
+void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
+  Serial.printf("stepCollection::_preloadNextStep: Reading file: %s\r\n", stepFileName);
 
   char _cStep[900];
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readStepInFile(path, _ui16stepCounter, _cStep, thisBox.ui16NodeName))) {
+  if (!(__mySpiffs.readStepInFile(stepFileName, _ui16stepCounter, _cStep, thisBox.ui16NodeName))) {
     return;
   }
 
   DeserializationError err = deserializeJson(_jdStep, _cStep);
   if (err) {
-    Serial.print(F("stepCollection::readJSONObjLineInFile: deserializeJson() failed: "));
+    Serial.print(F("stepCollection::_preloadNextStep: deserializeJson() failed: "));
     Serial.println(err.c_str());
     return;
   }
@@ -477,11 +486,11 @@ boxState::boxState(const int16_t _i16Duration,
 // boxStateCollection class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
+void (boxStateCollection::*restartPBS)() = nullptr;  
 
 /** Constructors */
 /** default constructor */
 boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)):
-  ui16stepCounter(0),
   ui16Mode(0),
   sendCurrentBoxState(_sendCurrentBoxState),
   _monitorNoMaster({254}),
@@ -627,6 +636,8 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
   // Set Task tPlayBoxState
   tPlayBoxState.set(0, 1, NULL, [&](){ return _oetcbPlayBoxState();}, [&](){ return _odtcbPlayBoxState();});
 
+  restartPBS = &boxStateCollection::_restartPlayBoxState;
+
   Serial.println("boxStateCollection::initBoxStates(). over.\n");
 }
 
@@ -641,8 +652,16 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
 // Switch to Step Controlled Mode
 //////////////////////////////////////////////
 void boxStateCollection::toogleStepControlled(uint16_t _ui16Mode) {
+  Serial.println("void boxStateCollection::toogleStepControlled(). starting.");
   ui16Mode = _ui16Mode;
-  ui16stepCounter = 0;
+  stepColl.reset();
+  if (ui16Mode) {
+    restartPBS = &boxStateCollection::_restartPlayBoxStateInStepControlledMode;
+  } else {
+    restartPBS = &boxStateCollection::_restartPlayBoxState;
+  }
+  (*this.*restartPBS)();
+  Serial.println("void boxStateCollection::toogleStepControlled(). ending.");
 }
 
 
@@ -650,18 +669,24 @@ void boxStateCollection::toogleStepControlled(uint16_t _ui16Mode) {
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
-/** void boxStateCollection::_getSettingsFromStepAndGetNextStep()
+/** void boxStateCollection::_restartPlayBoxStateInStepControlledMode()
  * 
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
 */
-void boxStateCollection::_getSettingsFromStepAndGetNextStep() {
-  // Serial.println("void boxStateCollection::_getSettingsFromStepAndGetNextStep(). starting.");
-  /** 1. configure the params of the pending boxState. */
-  stepColl.nextStep.applyStep();
-  /** 2. increment the step counter. */
-  ui16stepCounter = ui16stepCounter + 1;
-  /** 3. preload the next step from flash memory. */
-  stepColl.tPreloadNextStep.restart();
+void boxStateCollection::_restartPlayBoxStateInStepControlledMode() {
+  // Serial.println("void boxStateCollection::_restartPlayBoxStateInStepControlledMode(). starting.");
+  if (stepColl.i16maxStepIndexNb > -1) {
+    /** 1. configure the params of the pending boxState. */
+    stepColl.nextStep.applyStep();
+    if ((stepColl.ui16stepCounter < stepColl.i16maxStepIndexNb)) {
+      /** 2. increment the step counter. */
+      stepColl.ui16stepCounter = stepColl.ui16stepCounter + 1;
+      /** 3. preload the next step from flash memory. */
+      stepColl.tPreloadNextStep.restart();
+    }
+  }
+  /** 4. call the generic _restartPlayBoxState()*/
+  _restartPlayBoxState();
 }
 
 
@@ -680,10 +705,6 @@ void boxStateCollection::_restartPlayBoxState() {
    *     the i16Duration of the target boxState (bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
    *  2. set the i16BoxActiveState property (and related properties) of this box;
    *  3. restart/enable the "children" Task tPlayBoxState.*/
-
-  if (ui16Mode && (ui16stepCounter < stepColl.maxStepIndexNb)) {
-    _getSettingsFromStepAndGetNextStep();
-  }
 
   // 1. Set the duration of Task tPlayBoxState
   // Serial.print("void boxStateCollection::_restartPlayBoxState() bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration: "); Serial.println(bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
@@ -798,7 +819,8 @@ void boxStateCollection::_setBoxTargetState(const short __boxTargetState) {
   Serial.println("boxStateCollection::_setBoxTargetState(). starting.");
   Serial.printf("boxStateCollection::_setBoxTargetState(). __boxTargetState: %u\n", __boxTargetState);
   _boxTargetState = __boxTargetState;
-  _restartPlayBoxState();
+  // _restartPlayBoxState();
+  (*this.*restartPBS)();
   Serial.printf("boxStateCollection::_setBoxTargetState(). _boxTargetState: %u\n", _boxTargetState);
   Serial.println("boxStateCollection::_setBoxTargetState(). over.");
 };
