@@ -80,7 +80,7 @@
 // step class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-step::step(): 
+step::step():
   _i16stepBoxStateNb(0),
   _i16StateDuration(0),
   _ui16AssociatedSequence(0),
@@ -89,9 +89,7 @@ step::step():
   _i16onExpire(0),
   _ui16monitoredMasterBoxesNodeNames({}),
   _i16monitoredMasterStates({})
-{
-}
-
+{}
 
 step::step(int16_t __i16stepBoxStateNb,
   int16_t __i16StateDuration,
@@ -101,19 +99,89 @@ step::step(int16_t __i16stepBoxStateNb,
   int16_t __i16onExpire,
   std::array<uint16_t, 4> __ui16monitoredMasterBoxesNodeNames,
   std::array<int16_t, 4> __i16monitoredMasterStates
-)
-    : _i16stepBoxStateNb(__i16stepBoxStateNb),
-    _i16StateDuration(__i16StateDuration),
-    _ui16AssociatedSequence(__ui16AssociatedSequence),
-    _i16onIRTrigger(__i16onIRTrigger),
-    _i16onMeshTrigger(__i16onMeshTrigger),
-    _i16onExpire(__i16onExpire),
-    _ui16monitoredMasterBoxesNodeNames(__ui16monitoredMasterBoxesNodeNames),
-    _i16monitoredMasterStates(__i16monitoredMasterStates)
+): 
+  _i16stepBoxStateNb(__i16stepBoxStateNb),
+  _i16StateDuration(__i16StateDuration),
+  _ui16AssociatedSequence(__ui16AssociatedSequence),
+  _i16onIRTrigger(__i16onIRTrigger),
+  _i16onMeshTrigger(__i16onMeshTrigger),
+  _i16onExpire(__i16onExpire),
+  _ui16monitoredMasterBoxesNodeNames(__ui16monitoredMasterBoxesNodeNames),
+  _i16monitoredMasterStates(__i16monitoredMasterStates)
+{}
+
+// copy constructor
+step::step(const step& __step):
+  _i16stepBoxStateNb(__step._i16stepBoxStateNb),
+  _i16StateDuration(__step._i16StateDuration),
+  _ui16AssociatedSequence(__step._ui16AssociatedSequence),
+  _i16onIRTrigger(__step._i16onIRTrigger),
+  _i16onMeshTrigger(__step._i16onMeshTrigger),
+  _i16onExpire(__step._i16onExpire),
+  _ui16monitoredMasterBoxesNodeNames(__step._ui16monitoredMasterBoxesNodeNames),
+  _i16monitoredMasterStates(__step._i16monitoredMasterStates)
+{ }
+
+// assignement operator
+step& step::operator=(const step& __step)
 {
+  if (&__step != this) {
+    _i16stepBoxStateNb = __step._i16stepBoxStateNb;
+    _i16StateDuration = __step._i16StateDuration;
+    _ui16AssociatedSequence = __step._ui16AssociatedSequence;
+    _i16onIRTrigger = __step._i16onIRTrigger;
+    _i16onMeshTrigger = __step._i16onMeshTrigger;
+    _i16onExpire = __step._i16onExpire;
+    _ui16monitoredMasterBoxesNodeNames = __step._ui16monitoredMasterBoxesNodeNames;
+    _i16monitoredMasterStates = __step._i16monitoredMasterStates;
+  }
+  return *this;
 }
 
+step::step(step&& __step):
+  _i16stepBoxStateNb(0),
+  _i16StateDuration(0),
+  _ui16AssociatedSequence(0),
+  _i16onIRTrigger(0),
+  _i16onMeshTrigger(0),
+  _i16onExpire(0),
+  _ui16monitoredMasterBoxesNodeNames({}),
+  _i16monitoredMasterStates({})
+{
+  *this = std::move(__step);
+}
 
+step & step::operator=(step&& __step) {
+  if (this != &__step) {
+    _i16stepBoxStateNb = 0;
+    _i16StateDuration = 0;
+    _ui16AssociatedSequence = 0;
+    _i16onIRTrigger = 0;
+    _i16onMeshTrigger = 0;
+    _i16onExpire = 0;
+    _ui16monitoredMasterBoxesNodeNames = {};
+    _i16monitoredMasterStates = {};
+
+    _i16stepBoxStateNb = __step._i16stepBoxStateNb;
+    _i16StateDuration = __step._i16StateDuration;
+    _ui16AssociatedSequence = __step._ui16AssociatedSequence;
+    _i16onIRTrigger = __step._i16onIRTrigger;
+    _i16onMeshTrigger = __step._i16onMeshTrigger;
+    _i16onExpire = __step._i16onExpire;
+    _ui16monitoredMasterBoxesNodeNames = __step._ui16monitoredMasterBoxesNodeNames;
+    _i16monitoredMasterStates = __step._i16monitoredMasterStates;
+
+    __step._i16stepBoxStateNb = 0;
+    __step._i16StateDuration = 0;
+    __step._ui16AssociatedSequence = 0;
+    __step._i16onIRTrigger = 0;
+    __step._i16onMeshTrigger = 0;
+    __step._i16onExpire = 0;
+    __step._ui16monitoredMasterBoxesNodeNames = {};
+    __step._i16monitoredMasterStates = {};
+  }
+  return *this;
+}
 
 /** step::applyStep(): applies the values of this step to the relevant boxState */
 void step::applyStep() {

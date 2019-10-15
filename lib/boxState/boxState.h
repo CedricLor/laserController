@@ -27,6 +27,10 @@ class step
       std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames,
       const std::array<int16_t, 4> __i16monitoredMasterStates
     );
+    step( const step& __step);
+    step& operator=(const step& __step);
+    step(step&& __step);
+    step & operator=(step&& __step);
 
     void applyStep();
 
