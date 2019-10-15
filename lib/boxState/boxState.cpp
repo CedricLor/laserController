@@ -339,7 +339,7 @@ void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
   // Load the the monitored master states into an std::array
   uint16_t _i = 0;
   std::array<int16_t, 4> _i16monitoredMasterStates = {};
-  for (int16_t _monitoredState : _joStep["_i16monitoredMasterStates"].as<JsonArray>()) {
+  for (int16_t _monitoredState : _joStep["_i16mastStates"].as<JsonArray>()) {
     _i16monitoredMasterStates.at(_i) = _monitoredState;
     _i++;
   }
@@ -347,26 +347,25 @@ void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
   // Load the the monitored master names into an std::array
   _i = 0;
   std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames = {};
-  // TODO: Uncomment the following lines once the JSON file has been adapted
-  // for (uint16_t _monitoredMasterBoxesNodeName : _joStep["_ui16monitoredMasterBoxesNodeNames"].as<JsonArray>()) {
-  //   _ui16monitoredMasterBoxesNodeNames.at(_i) = _monitoredMasterBoxesNodeName;
-  //   _i++;
-  // }
+  for (uint16_t _monitoredMasterBoxesNodeName : _joStep["_ui16mastBxsNN"].as<JsonArray>()) {
+    _ui16monitoredMasterBoxesNodeNames.at(_i) = _monitoredMasterBoxesNodeName;
+    _i++;
+  }
 
   // Load the next step into a step instance
   stepsArray[bxStateColl.ui16stepCounter] = {
     // _i16stepBoxStateNb(__i16stepBoxStateNb),
-    _joStep["_i16stepBoxStateNb"].as<int16_t>(),
+    _joStep["_i16BoxStateNb"].as<int16_t>(),
     // _i16StateDuration(__i16StateDuration),
-    _joStep["_i16StateDuration"].as<int16_t>(),
+    _joStep["_i16StDur"].as<int16_t>(),
     // _ui16AssociatedSequence(__ui16AssociatedSequence),
-    _joStep["_ui16AssociatedSequence"].as<uint16_t>(),
+    _joStep["_ui16AssSeq"].as<uint16_t>(),
     // _i16onIRTrigger(__i16onIRTrigger),
-    _joStep["_i16onIRTrigger"].as<int16_t>(),
+    _joStep["_i16onIR"].as<int16_t>(),
     // _i16onMeshTrigger(__i16onMeshTrigger),
-    _joStep["_i16onMeshTrigger"].as<int16_t>(),
+    _joStep["_i16onMesh"].as<int16_t>(),
     // _i16onExpire(__i16onExpire),
-    _joStep["_i16onExpire"].as<int16_t>(),
+    _joStep["_i16onExp"].as<int16_t>(),
     // _ui16monitoredMasterBoxesNodeNames(__ui16monitoredMasterBoxesNodeNames),
     _ui16monitoredMasterBoxesNodeNames,
     // _i16monitoredMasterStates(__i16monitoredMasterStates),

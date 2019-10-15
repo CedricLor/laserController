@@ -64,6 +64,7 @@ class stepCollection
     Task tPreloadNextStep;
     void _tcbPreloadNextStep();
     void _preloadNextStepFromJSON(JsonObject& _joStep);
+    void _parseJsonArray(JsonObject& _joStep, const char * key);
 
     StaticJsonDocument<905> _jdStep;
 };
