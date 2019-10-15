@@ -216,7 +216,6 @@ stepCollection stepColl;
 stepCollection::stepCollection():
   activeStep({}),
   nextStep({}),
-  stepsIndexNbArray({}),
   maxStepIndexNb(0)
 {
   Serial.println("stepCollection::stepCollection(): starting");
@@ -296,7 +295,7 @@ stepCollection::stepCollection():
     _i16monitoredMasterStates:  [-1] _monitorNoStates */
 
   tPreloadNextStep.set(0, 1, [&](){ return _tcbPreloadNextStep(); }, NULL, NULL);
-  
+
   Serial.println("stepCollection::stepCollection(): ending");
 }
 
