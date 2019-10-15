@@ -556,8 +556,8 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
 //////////////////////////////////////////////
 // Switch to Step Controlled Mode
 //////////////////////////////////////////////
-void boxStateCollection::switchToStepControlled() {
-  ui16Mode = 1;
+void boxStateCollection::toogleStepControlled(uint16_t _ui16Mode) {
+  ui16Mode = _ui16Mode;
   ui16stepCounter = 0;
 }
 
@@ -566,6 +566,22 @@ void boxStateCollection::switchToStepControlled() {
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
+/** void boxStateCollection::_restartPlayBoxStateInStepControlledMode()
+ * 
+ *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
+*/
+void boxStateCollection::_getSettingsFromStepAndGetNextStep() {
+  // Serial.println("void boxStateCollection::_restartPlayBoxStateInStepControlledMode(). starting.");
+  /** 1. configure the params of the pending boxState. */
+  // Serial.println("void boxStateCollection::_restartPlayBoxState(). in step controlled mode.");
+  stepColl.stepsArray.at(ui16stepCounter).applyStep();
+  /** 2. increment the step counter. */
+  ui16stepCounter = ui16stepCounter + 1;
+  /** 3. preload the next step from flash memory */
+  stepColl.tPreloadNextStep.restart();
+}
+
+
 /** void boxStateCollection::_restartPlayBoxState()
  * 
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
@@ -576,33 +592,26 @@ void boxStateCollection::_restartPlayBoxState() {
   // Serial.println(tPlayBoxStates.getRunCounter());
 
   /** If the targetState has been reset, start playing the corresponding state:
-   *  1. get the params for the new state in case we are in step controlled mode;
-   *  2. set the duration to stay in the new boxState (by setting the aInterval
+   *  1. set the duration to stay in the new boxState (by setting the aInterval
    *     of the "children" Task tPlayBoxState; tPlayBoxState.setInterval), to
    *     the i16Duration of the target boxState (bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
-   *  3. set the i16BoxActiveState property (and related properties) of this box;
-   *  4. restart/enable the "children" Task tPlayBoxState.*/
+   *  2. set the i16BoxActiveState property (and related properties) of this box;
+   *  3. restart/enable the "children" Task tPlayBoxState.*/
 
-  /** 1. If we are in step controlled mode (mode 1),
-   *     configure the params of the new boxState. */
-  if (ui16Mode == 1) {
-    // Serial.println("void boxStateCollection::_restartPlayBoxState(). in step controlled mode.");
-    stepColl.stepsArray.at(ui16stepCounter).applyStep();
-    ui16stepCounter = ui16stepCounter + 1;
-    // preload the next step from flash memory
-    stepColl.tPreloadNextStep.restart();
+  if (ui16Mode) {
+    _getSettingsFromStepAndGetNextStep();
   }
 
-  // 2. Set the duration of Task tPlayBoxState
+  // 1. Set the duration of Task tPlayBoxState
   // Serial.print("void boxStateCollection::_restartPlayBoxState() bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration: "); Serial.println(bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
   tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray.at(_boxTargetState).i16Duration));
   // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
-  // 3. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
+  // 2. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
   thisBox.setBoxActiveState(_boxTargetState, laserControllerMesh.getNodeTime());
   // Serial.println("void boxStateCollection::_restartPlayBoxState() tPlayBoxState about to be enabled");
 
-  // 4. Restart/enable tPlayBoxState
+  // 3. Restart tPlayBoxState
   tPlayBoxState.restartDelayed();
   // Serial.println("void boxStateCollection::_restartPlayBoxState() tPlayBoxState enabled");
   // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());

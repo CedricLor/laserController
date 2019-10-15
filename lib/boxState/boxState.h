@@ -104,13 +104,15 @@ class boxStateCollection
   public:
     /** constructors*/
     /** default constructor: used to define the boxStates array */
-    boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr);
+    boxStateCollection(
+      void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr
+    );
 
     // boxStates array
     std::array<boxState, 14> boxStatesArray;
 
     // step mode switch stack
-    void switchToStepControlled();
+    void toogleStepControlled(uint16_t _ui16Mode);
     uint16_t ui16stepCounter;
     /** ui16Mode = 0 => mode automatic, boxStates use their default settings
      *  ui16Mode = 1 => step controlled, boxStates use the settings corresponding
@@ -133,6 +135,7 @@ class boxStateCollection
 
     short int _boxTargetState;
 
+    void _getSettingsFromStepAndGetNextStep();
     void _restartPlayBoxState();
 
     bool _oetcbPlayBoxState();
