@@ -1,5 +1,5 @@
 /*
-  controllerBoxesCollection.cpp - Library to handle this particular ControlerBox (as opposed to the others in the collection)
+  controllerBoxesCollection.cpp - Library to handle ControlerBoxes collection
   Created by Cedric Lor, Octobre 14, 2019.
 */
 
