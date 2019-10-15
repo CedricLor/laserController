@@ -33,6 +33,7 @@ class mySpiffs
 
     void readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, uint16_t ui16NodeName);
     bool readStepInFile(const char * path, uint16_t _ui16stepCounter, char* _cStep, uint16_t ui16NodeName);
+    uint16_t numberOfLinesInFile(const char * path);
 
     void writeFile(const char * path, const char * message);
     // writeFile("/hello.txt", "Hello ");

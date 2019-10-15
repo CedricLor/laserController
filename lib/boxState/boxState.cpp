@@ -294,6 +294,8 @@ stepCollection::stepCollection():
     _ui16stepMasterBoxName: [254] (_monitorNoMaster), 
     _i16monitoredMasterStates:  [-1] _monitorNoStates */
 
+  mySpiffs __mySpiffs;
+  maxStepIndexNb = __mySpiffs.numberOfLinesInFile("/sessions.json");
   tPreloadNextStep.set(0, 1, [&](){ return _tcbPreloadNextStep(); }, NULL, NULL);
 
   Serial.println("stepCollection::stepCollection(): ending");
@@ -648,18 +650,17 @@ void boxStateCollection::toogleStepControlled(uint16_t _ui16Mode) {
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
-/** void boxStateCollection::_restartPlayBoxStateInStepControlledMode()
+/** void boxStateCollection::_getSettingsFromStepAndGetNextStep()
  * 
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
 */
 void boxStateCollection::_getSettingsFromStepAndGetNextStep() {
-  // Serial.println("void boxStateCollection::_restartPlayBoxStateInStepControlledMode(). starting.");
+  // Serial.println("void boxStateCollection::_getSettingsFromStepAndGetNextStep(). starting.");
   /** 1. configure the params of the pending boxState. */
-  // Serial.println("void boxStateCollection::_restartPlayBoxState(). in step controlled mode.");
   stepColl.nextStep.applyStep();
   /** 2. increment the step counter. */
   ui16stepCounter = ui16stepCounter + 1;
-  /** 3. preload the next step from flash memory */
+  /** 3. preload the next step from flash memory. */
   stepColl.tPreloadNextStep.restart();
 }
 
@@ -680,7 +681,7 @@ void boxStateCollection::_restartPlayBoxState() {
    *  2. set the i16BoxActiveState property (and related properties) of this box;
    *  3. restart/enable the "children" Task tPlayBoxState.*/
 
-  if (ui16Mode) {
+  if (ui16Mode && (ui16stepCounter < stepColl.maxStepIndexNb)) {
     _getSettingsFromStepAndGetNextStep();
   }
 

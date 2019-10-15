@@ -334,9 +334,9 @@ void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _ugly
 
 void mySpiffs::_createUglyFile(File& prettyFile, char* _uglyFileName) {
     char prettyFileName[30];
-    strcpy(prettyFileName, prettyFile.name());
-    strtok(prettyFileName, "-");  // get rid of the beginning of the string
-    strcat(_uglyFileName, strtok(NULL, "-")); // add the end "sessions.json"
+    snprintf(prettyFileName, 30, "%s", prettyFile.name());
+    strtok(prettyFileName, "-");  // get rid of the beginning of the string (i.e. "pretty" in "pretty-sessions.json")
+    snprintf(_uglyFileName, 30, "%s", strtok(NULL, "-"));
     // Serial.printf("mySpiffs::_createUglyFile: Creating file %s\n", _uglyFileName);
 
     deleteFile(_uglyFileName); // just in case the ugly file already exists, delete it
@@ -452,6 +452,26 @@ bool mySpiffs::readStepInFile(const char * path, uint16_t _ui16stepCounter, char
     file.close();
     return true;
 }
+
+
+
+uint16_t mySpiffs::numberOfLinesInFile(const char * path) {
+    uint16_t numberOfLines = 0;
+
+    File file = SPIFFS.open(path, FILE_READ);
+    if(!file || file.isDirectory()) {
+        Serial.println("mySpiffs::readJSONObjLineInFile: - failed to open file for reading");
+        return false;
+    }
+
+    while (file.available() > 0) {
+        if (file.read() == '\n') {
+            ++numberOfLines;
+        }
+    }
+    return numberOfLines;
+}
+
 
 
 
