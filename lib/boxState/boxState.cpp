@@ -80,7 +80,16 @@
 // step class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-step::step() {
+step::step(): 
+  _i16stepBoxStateNb(0),
+  _i16StateDuration(0),
+  _ui16AssociatedSequence(0),
+  _i16onIRTrigger(0),
+  _i16onMeshTrigger(0),
+  _i16onExpire(0),
+  _ui16monitoredMasterBoxesNodeNames({}),
+  _i16monitoredMasterStates({})
+{
 }
 
 
