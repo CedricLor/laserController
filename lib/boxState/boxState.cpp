@@ -323,18 +323,17 @@ void stepCollection::_tcbPreloadNextStep() {
 void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
   Serial.printf("stepCollection::_preloadNextStep: Reading file: %s\r\n", stepFileName);
 
-  char _cStep[900];
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readStepInFile(stepFileName, _ui16stepCounter, _cStep, thisBox.ui16NodeName))) {
+  if (!(__mySpiffs.readItemInFile(stepFileName, _ui16stepCounter, _jdStep))) {
     return;
   }
 
-  DeserializationError err = deserializeJson(_jdStep, _cStep);
-  if (err) {
-    Serial.print(F("stepCollection::_preloadNextStep: deserializeJson() failed: "));
-    Serial.println(err.c_str());
-    return;
-  }
+  // DeserializationError err = deserializeJson(_jdStep, _cStep);
+  // if (err) {
+  //   Serial.print(F("stepCollection::_preloadNextStep: deserializeJson() failed: "));
+  //   Serial.println(err.c_str());
+  //   return;
+  // }
 
   // Get a reference to the root object
   JsonObject _joStep = _jdStep.as<JsonObject>();
