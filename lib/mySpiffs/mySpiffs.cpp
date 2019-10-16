@@ -422,48 +422,18 @@ void mySpiffs::convertJsonFilePrettyToUgly(const char * path, const uint16_t _ui
 
 
 
-void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, uint16_t _ui16NodeName) {
+void mySpiffs::readLine(File& file, uint16_t _ui16lineNumber, char* _buffer, size_t _buff_size) {
     Serial.println("mySpiffs::readLine(): starting");
-    char _endLineMarker = '\n';
-    uint16_t _ui16InternalStepsCounter = 0;
-    char _cNodeName[4];
-    snprintf(_cNodeName, 4, "%u", _ui16NodeName);
-    bool _boxFound = false;
+    const char _endLineMarker = '\n';
+    uint16_t _ui16lineCounter = 0;
 
     while (file.available() > 0) {
-        // we are still looking for the relevant bloc in the file (the one
-        // that follows the line $[BOX: 201).
-        // Accordingly, _boxFound is still false.
-        if (_boxFound == false) {
-            // if we find the box marker, mark _boxFound to true and
-            // move to the end of the line
-            if (file.find(_cNodeName, 3)) {
-                Serial.printf("mySpiffs::readLine(): found box %s\n", _cNodeName);
-                _boxFound = true;
-                file.find(_endLineMarker);
-                continue;
-            }
-            // else the box was not found, return
-            else {
-                Serial.println("mySpiffs::readLine(): box not found");
-                return;
-            }
-        }
-        // This is the case where the relevant NodeName has been found (_boxFound == true).
-        // If we are not yet at the line corresponding to the sought for step,
-        // - go to the endline marker
-        // - increment the step counter
-        // - continue in the loop
-        if (_ui16InternalStepsCounter < _ui16stepCounter) {
-            file.find(_endLineMarker);
-            _ui16InternalStepsCounter++;
-        }
-        // This is the case where the relevant NodeName has been found (_boxFound == true)
-        // and where are at the line corresponding to the sought for step.
-        // copy the line into the _cStep buffer and return
-        if (_ui16InternalStepsCounter == _ui16stepCounter) {
-            strcpy(_cStep, file.readStringUntil(_endLineMarker).c_str());
+        if (_ui16lineCounter == _ui16lineNumber) {
+            snprintf(_buffer, _buff_size, file.readStringUntil(_endLineMarker).c_str());
             return;
+        }
+        if (file.read() == _endLineMarker) {
+            ++_ui16lineCounter;
         }
     }
 }
@@ -471,7 +441,7 @@ void mySpiffs::readLine(File& file, uint16_t _ui16stepCounter, char* _cStep, uin
 
 
 
-bool mySpiffs::readStepInFile(const char * path, uint16_t _ui16stepCounter, char * _cStep, uint16_t _ui16NodeName){
+bool mySpiffs::readItemInFile(const char * path, uint16_t _ui16lineNumber, StaticJsonDocument<905> & _jd){
     Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
     File file = SPIFFS.open(path, FILE_READ);
@@ -480,7 +450,16 @@ bool mySpiffs::readStepInFile(const char * path, uint16_t _ui16stepCounter, char
         return false;
     }
 
-    readLine(file, _ui16stepCounter, _cStep, _ui16NodeName);
+    size_t _buff_size = 904;
+    char _buffer[_buff_size];
+    readLine(file, _ui16lineNumber, _buffer, _buff_size);
+
+    DeserializationError err = deserializeJson(_jd, _buffer);
+    if (err) {
+        Serial.print(F("mySpiffs::readJSONObjLineInFile: deserializeJson() failed: "));
+        Serial.println(err.c_str());
+        return;
+    }
 
     file.close();
     return true;
