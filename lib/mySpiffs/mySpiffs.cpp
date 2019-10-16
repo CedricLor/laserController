@@ -422,7 +422,7 @@ void mySpiffs::convertJsonFilePrettyToUgly(const char * path, const uint16_t _ui
 
 
 
-void mySpiffs::readLine(File& file, uint16_t _ui16lineNumber, char* _buffer, size_t _buff_size) {
+void mySpiffs::readLine(File& file, const uint16_t _ui16lineNumber, char* _buffer, size_t _buff_size) {
     Serial.println("mySpiffs::readLine(): starting");
     const char _endLineMarker = '\n';
     uint16_t _ui16lineCounter = 0;
@@ -441,7 +441,7 @@ void mySpiffs::readLine(File& file, uint16_t _ui16lineNumber, char* _buffer, siz
 
 
 
-bool mySpiffs::readCollectionItemParamsInFile(const char * path, uint16_t _ui16lineNumber){
+bool mySpiffs::readCollectionItemParamsInFile(const char * path, const uint16_t _ui16lineNumber){
     Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
     File file = SPIFFS.open(path, FILE_READ);

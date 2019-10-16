@@ -31,8 +31,8 @@ class mySpiffs
     void convertJsonStepsPrettyToUgly(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName);
     void convertJsonFilePrettyToUgly(const char * path, const uint16_t _ui16NodeName);
 
-    void readLine(File& file, uint16_t _ui16stepCounter, char* _buffer, size_t _buff_size);
-    bool readCollectionItemParamsInFile(const char * path, uint16_t _ui16stepCounter);
+    void readLine(File& file, const uint16_t _ui16stepCounter, char* _buffer, size_t _buff_size);
+    bool readCollectionItemParamsInFile(const char * path, const uint16_t _ui16stepCounter);
     uint16_t numberOfLinesInFile(const char * path);
     StaticJsonDocument<905> _jdItemParams;
 
