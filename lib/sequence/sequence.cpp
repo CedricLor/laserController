@@ -160,8 +160,8 @@ sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
-  ui16sequenceIndex(0),
   sequencesArray({}),
+  ui16sequenceIndex(0),
   tPlayBar(_bars.tPlayBar),
   tPlayNote(_bars.tPlayNote)
 {
@@ -247,8 +247,8 @@ sequences::sequences(
 // copy constructor
 sequences::sequences(const sequences & __sequences):
   sendCurrentSequence(__sequences.sendCurrentSequence),
-  ui16sequenceIndex(__sequences.ui16sequenceIndex),
   sequencesArray(__sequences.sequencesArray),
+  ui16sequenceIndex(__sequences.ui16sequenceIndex),
   tPlayBar(__sequences.tPlayBar),
   tPlayNote(__sequences.tPlayNote),
   _activeSequence(__sequences._activeSequence)
@@ -669,8 +669,8 @@ void sequences::_preloadNextSequenceFromJSON(JsonObject& _joSequence) {
 
 
 
-std::array<bar, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray) {
-  uint16_t _barIx = 0;
+std::array<bar, 8> const sequences::_parseJsonBarsArray(const JsonArray& _jaBarsArray) {
+  int16_t _barIx = 0;
   std::array<bar, 8> _barsArray {};
   for (JsonVariant _JsonNotesArray : _jaBarsArray) {
     std::array<note, 16> _notesArray = _parseJsonNotesArray(_JsonNotesArray);
@@ -682,7 +682,7 @@ std::array<bar, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray) {
 
 
 
-std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray) {
+std::array<note, 16> const sequences::_parseJsonNotesArray(const JsonArray& _JsonNotesArray) {
   uint16_t _noteIx = 0;
   std::array<note, 16> _notesArray;
   for (JsonVariant _JsonNote : _JsonNotesArray) {

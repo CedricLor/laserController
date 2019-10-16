@@ -458,7 +458,7 @@ bool mySpiffs::readCollectionItemParamsInFile(const char * path, uint16_t _ui16l
     if (err) {
         Serial.print(F("mySpiffs::readJSONObjLineInFile: deserializeJson() failed: "));
         Serial.println(err.c_str());
-        return;
+        return false;
     }
 
     file.close();
