@@ -441,7 +441,7 @@ void mySpiffs::readLine(File& file, uint16_t _ui16lineNumber, char* _buffer, siz
 
 
 
-bool mySpiffs::readItemInFile(const char * path, uint16_t _ui16lineNumber, StaticJsonDocument<905> & _jd){
+bool mySpiffs::readCollectionItemParamsInFile(const char * path, uint16_t _ui16lineNumber, StaticJsonDocument<905> & _jd){
     Serial.printf("mySpiffs::readJSONObjLineInFile: Reading file: %s\r\n", path);
 
     File file = SPIFFS.open(path, FILE_READ);

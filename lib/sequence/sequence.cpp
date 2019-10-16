@@ -630,7 +630,7 @@ void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
   Serial.printf("stepCollection::_preloadNextSequence: Reading file: %s\r\n", sequenceFileName);
 
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readItemInFile(sequenceFileName, _ui16sequenceIndex, _jdSequence))) {
+  if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16sequenceIndex, _jdSequence))) {
     return;
   }
 

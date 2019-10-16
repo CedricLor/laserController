@@ -324,7 +324,7 @@ void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
   Serial.printf("stepCollection::_preloadNextStep: Reading file: %s\r\n", stepFileName);
 
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readItemInFile(stepFileName, _ui16stepCounter, _jdStep))) {
+  if (!(__mySpiffs.readCollectionItemParamsInFile(stepFileName, _ui16stepCounter, _jdStep))) {
     return;
   }
 
