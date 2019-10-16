@@ -324,7 +324,7 @@ void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
   Serial.printf("stepCollection::_preloadNextStep: Reading file: %s\r\n", stepFileName);
 
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readCollectionItemParamsInFile(stepFileName, _ui16stepCounter, _jdStep))) {
+  if (!(__mySpiffs.readCollectionItemParamsInFile(stepFileName, _ui16stepCounter))) {
     return;
   }
 
@@ -336,7 +336,7 @@ void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
   // }
 
   // Get a reference to the root object
-  JsonObject _joStep = _jdStep.as<JsonObject>();
+  JsonObject _joStep = __mySpiffs._jdItemParams.as<JsonObject>();
 
   _preloadNextStepFromJSON(_joStep);
 }
@@ -344,7 +344,7 @@ void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
 
 
 
-void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
+void stepCollection::_preloadNextStepFromJSON(const JsonObject& _joStep) {
   Serial.println("stepCollection::_preloadNextStepFromJSON: starting");
   // Load the the monitored master states into an std::array
   // uint16_t _i = 0;

@@ -630,7 +630,7 @@ void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
   Serial.printf("stepCollection::_preloadNextSequence: Reading file: %s\r\n", sequenceFileName);
 
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16sequenceIndex, _jdSequence))) {
+  if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16sequenceIndex))) {
     return;
   }
 
@@ -642,7 +642,7 @@ void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
   // }
 
   // Get a reference to the root object
-  JsonObject _joSequence = _jdSequence.as<JsonObject>();
+  JsonObject _joSequence = __mySpiffs._jdItemParams.as<JsonObject>();
 
   _preloadNextSequenceFromJSON(_joSequence);
 }
@@ -650,7 +650,7 @@ void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
 
 
 
-void sequences::_preloadNextSequenceFromJSON(JsonObject& _joSequence) {
+void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
   // {"bt":{"bpm":2,"base":1}, "brs":[[{"t":7,"n":1},{"t":8,"n":1}]], "ix":0}
   Serial.println("sequences::_preloadNextSequenceFromJSON: starting");
   // Load _joSequence["brs"] into an std::array

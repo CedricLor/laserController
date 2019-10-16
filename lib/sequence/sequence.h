@@ -81,11 +81,9 @@ class sequences
 
     void _preloadNextSequence(uint16_t _ui16sequenceIndex);
     void _tcbPreloadNextSequence();
-    void _preloadNextSequenceFromJSON(JsonObject& _joSequence);
+    void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
     std::array<bar, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
     std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
-
-    StaticJsonDocument<905> _jdSequence;
 
   private:
     // variables
