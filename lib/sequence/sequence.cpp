@@ -160,6 +160,7 @@ sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
+  ui16sequenceIndex(0),
   sequencesArray({}),
   tPlayBar(_bars.tPlayBar),
   tPlayNote(_bars.tPlayNote)
@@ -192,7 +193,7 @@ sequences::sequences(
   // Serial.printf("\nsequence::initSequences(). Before building _relaysBarsArray.\n");
   // Serial.printf("sequence::initSequences(). bar::_barsArray[0].getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", bar::_barsArray[0].getNotesArray().at(0).getNote());
   // Serial.printf("sequence::initSequences(). bar::_barsArray[0].getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", bar::_barsArray[0].getNotesArray().at(0).getToneNumber());
-  std::array<bar, 8> _relaysBarsArray {_bars._barsArray[0]};
+  std::array<bar, 8> _relaysBarsArray {_bars._barsArray.at(0)};
   // Serial.printf("\nsequence::initSequences(). Passed building _relaysBarsArray.\n");
   // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getNote());
   // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber());
@@ -209,17 +210,17 @@ sequences::sequences(
 
 
   // --> Sequence 1: "Twins"
-  std::array<bar, 8> _twinsBarsArray {_bars._barsArray[1]};
+  std::array<bar, 8> _twinsBarsArray {_bars._barsArray.at(1)};
   sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1};
 
 
   // --> Sequence 2: "All"
-  std::array<bar, 8> _allBarsArray {_bars._barsArray[2]};
+  std::array<bar, 8> _allBarsArray {_bars._barsArray.at(2)};
   sequencesArray[2] = {_beat_2_1, _allBarsArray, 2};
 
 
   // --> Sequence 3: "Swipe Right"
-  std::array<bar, 8> _swipeRBarsArray {_bars._barsArray[3]};
+  std::array<bar, 8> _swipeRBarsArray {_bars._barsArray.at(3)};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white */
@@ -228,13 +229,16 @@ sequences::sequences(
 
 
   // --> Sequence 4: "Swipe Left"
-  std::array<bar, 8> _swipeLBarsArray {_bars._barsArray[4]};
+  std::array<bar, 8> _swipeLBarsArray {_bars._barsArray.at(4)};
   sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 4};
 
 
   // --> Sequence 5: "All Off"
-  std::array<bar, 8> _allOffBarsArray {_bars._barsArray[5]};
+  std::array<bar, 8> _allOffBarsArray {_bars._barsArray.at(5)};
   sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 5};
+
+  tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
+  tPreloadNextSequence.restart();
 
   Serial.println("sequences::sequences(). over.");
 }
@@ -243,6 +247,7 @@ sequences::sequences(
 // copy constructor
 sequences::sequences(const sequences & __sequences):
   sendCurrentSequence(__sequences.sendCurrentSequence),
+  ui16sequenceIndex(__sequences.ui16sequenceIndex),
   sequencesArray(__sequences.sequencesArray),
   tPlayBar(__sequences.tPlayBar),
   tPlayNote(__sequences.tPlayNote),
@@ -258,6 +263,7 @@ sequences & sequences::operator=(const sequences & __sequences)
   if (&__sequences != this) {
     // Serial.printf("sequence::operator=(const sequences& ): self assignmenttest passed\n");
     sendCurrentSequence = __sequences.sendCurrentSequence;
+    ui16sequenceIndex = __sequences.ui16sequenceIndex;
     sequencesArray = __sequences.sequencesArray;
     _activeSequence = __sequences._activeSequence;
   }
@@ -600,4 +606,91 @@ void sequences::_odtcbPlaySequence() {
   //   Serial.print("sequences::_odtcbPlaySequence(). millis() = ");Serial.println(millis());
   //   Serial.println("sequences::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
   // }
+}
+
+
+
+
+
+
+///////////////////////////////////
+// Sequence Loader
+///////////////////////////////////
+void sequences::_tcbPreloadNextSequence() {
+  Serial.printf("sequences::_tcbPreloadNextSequence(): starting\n");
+  // read next step values from the file system
+  _preloadNextSequence(ui16sequenceIndex);
+  Serial.printf("sequences::_tcbPreloadNextSequence(): ending\n");
+}
+
+
+
+
+void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
+  Serial.printf("stepCollection::_preloadNextSequence: Reading file: %s\r\n", sequenceFileName);
+
+  mySpiffs __mySpiffs;
+  if (!(__mySpiffs.readItemInFile(sequenceFileName, _ui16sequenceIndex, _jdSequence))) {
+    return;
+  }
+
+  // DeserializationError err = deserializeJson(_jdSequence, _cSequence);
+  // if (err) {
+  //   Serial.print(F("stepCollection::_preloadNextSequence: deserializeJson() failed: "));
+  //   Serial.println(err.c_str());
+  //   return;
+  // }
+
+  // Get a reference to the root object
+  JsonObject _joSequence = _jdSequence.as<JsonObject>();
+
+  _preloadNextSequenceFromJSON(_joSequence);
+}
+
+
+
+
+void sequences::_preloadNextSequenceFromJSON(JsonObject& _joSequence) {
+  // {"bt":{"bpm":2,"base":1}, "brs":[[{"t":7,"n":1},{"t":8,"n":1}]], "ix":0}
+  Serial.println("sequences::_preloadNextSequenceFromJSON: starting");
+  // Load _joSequence["brs"] into an std::array
+  std::array<bar, 8> _barsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
+
+  // Load the next sequence into a sequence instance
+  nextSequence = {
+    beat{
+      _joSequence["bt"]["bpm"].as<uint16_t>(),
+      _joSequence["bt"]["base"].as<uint16_t>()
+    },
+    _barsArray,
+    _joSequence["ix"].as<int16_t>()
+  };
+}
+
+
+
+std::array<bar, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray) {
+  uint16_t _barIx = 0;
+  std::array<bar, 8> _barsArray {};
+  for (JsonVariant _JsonNotesArray : _jaBarsArray) {
+    std::array<note, 16> _notesArray = _parseJsonNotesArray(_JsonNotesArray);
+    _barsArray.at(_barIx) = {_notesArray, _barIx};
+    _barIx++;
+  }
+  return _barsArray;
+}
+
+
+
+std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray) {
+  uint16_t _noteIx = 0;
+  std::array<note, 16> _notesArray;
+  for (JsonVariant _JsonNote : _JsonNotesArray) {
+    _notesArray.at(_noteIx) = {
+      _JsonNote["t"].as<uint16_t>(),
+      _JsonNote["n"].as<uint16_t>()
+    };
+    _noteIx++;
+  }
+  return _notesArray;
 }

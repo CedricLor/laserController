@@ -5,7 +5,7 @@
 */
 #include "Arduino.h"
 #include <painlessMesh.h>
-#include <mns.h>
+#include <mySpiffs.h>
 #include <ControlerBox.h>
 #include <bar.h>
 
@@ -38,10 +38,6 @@ class sequence
     std::array<bar, 8> _barsArray;
 };
 
-#endif
-
-#ifndef sequences_h
-#define sequences_h
 
 class sequences
 {
@@ -60,6 +56,10 @@ class sequences
     std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
     bars _bars;  // <-- TODO: make it private at some point
 
+    uint16_t ui16sequenceIndex;
+    sequence nextSequence;
+    char sequenceFileName[20];
+    
     /** setters */
     uint16_t setActive(const sequence & __ActiveSequence);
     void disableAndResetPlaySequenceTasks();
@@ -75,6 +75,17 @@ class sequences
     Task tPlaySequence;
     Task & tPlayBar;
     Task & tPlayNote;
+
+    /** Task - preload next sequence */
+    Task tPreloadNextSequence;
+
+    void _preloadNextSequence(uint16_t _ui16sequenceIndex);
+    void _tcbPreloadNextSequence();
+    void _preloadNextSequenceFromJSON(JsonObject& _joSequence);
+    std::array<bar, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
+    std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
+
+    StaticJsonDocument<905> _jdSequence;
 
   private:
     // variables
