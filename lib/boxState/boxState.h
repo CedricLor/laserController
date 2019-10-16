@@ -65,7 +65,8 @@ class stepCollection
     void _preloadNextStep(uint16_t _ui16stepCounter);
     void _tcbPreloadNextStep();
     void _preloadNextStepFromJSON(JsonObject& _joStep);
-    void _parseJsonArray(JsonObject& _joStep, const char * key);
+    template<typename ARRAY>
+    void _parseJsonArray(const JsonObject& _joStep, const char * key, ARRAY & _array);
 
     StaticJsonDocument<905> _jdStep;
 };

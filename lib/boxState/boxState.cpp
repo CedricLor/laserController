@@ -347,20 +347,22 @@ void stepCollection::_preloadNextStep(uint16_t _ui16stepCounter){
 void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
   Serial.println("stepCollection::_preloadNextStepFromJSON: starting");
   // Load the the monitored master states into an std::array
-  uint16_t _i = 0;
+  // uint16_t _i = 0;
   std::array<int16_t, 4> _i16monitoredMasterStates = {};
-  for (int16_t _monitoredState : _joStep["_i16mastStates"].as<JsonArray>()) {
-    _i16monitoredMasterStates.at(_i) = _monitoredState;
-    _i++;
-  }
+  _parseJsonArray(_joStep, "_i16mastStates", _i16monitoredMasterStates);
+  // for (JsonVariant _monitoredState : _joStep["_i16mastStates"].as<JsonArray>()) {
+  //   _i16monitoredMasterStates.at(_i) = _monitoredState;
+  //   _i++;
+  // }
 
   // Load the the monitored master names into an std::array
-  _i = 0;
+  // _i = 0;
   std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames = {};
-  for (uint16_t _monitoredMasterBoxesNodeName : _joStep["_ui16mastBxsNN"].as<JsonArray>()) {
-    _ui16monitoredMasterBoxesNodeNames.at(_i) = _monitoredMasterBoxesNodeName;
-    _i++;
-  }
+  _parseJsonArray(_joStep, "_ui16mastBxsNN", _ui16monitoredMasterBoxesNodeNames);
+  // for (uint16_t _monitoredMasterBoxesNodeName : _joStep["_ui16mastBxsNN"].as<JsonArray>()) {
+  //   _ui16monitoredMasterBoxesNodeNames.at(_i) = _monitoredMasterBoxesNodeName;
+  //   _i++;
+  // }
 
   // Load the next step into a step instance
   nextStep = {
@@ -381,6 +383,17 @@ void stepCollection::_preloadNextStepFromJSON(JsonObject& _joStep) {
     // _i16monitoredMasterStates(__i16monitoredMasterStates),
     _i16monitoredMasterStates
   };
+}
+
+
+template<typename ARRAY>
+void stepCollection::_parseJsonArray(const JsonObject& _joStep, const char * key, ARRAY & _array)
+{
+  uint16_t _i = 0;
+  for (JsonVariant _it : _joStep[key].as<JsonArray>()) {
+    _array.at(_i) = _it;
+    _i++;
+  }
 }
 
 
