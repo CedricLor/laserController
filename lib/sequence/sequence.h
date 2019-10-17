@@ -28,6 +28,7 @@ class sequence
     beat const & getAssociatedBeat() const;
     std::array<bar, 8> const & getBarsArray() const;
     std::array<uint16_t, 8> const & getBarsIndexNumbersArray() const;
+    int16_t const ui16GetFirstBarIndexNumber() const;
 
     /** public instance properties */
     int16_t i16IndexNumber;

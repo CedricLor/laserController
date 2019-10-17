@@ -171,6 +171,14 @@ std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
 
 
 
+/**std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
+ * 
+ * Instance getter.
+ * 
+ * Returns the index number of the first bar in the sequence as a const uint16_t
+ *  */
+int16_t const sequence::ui16GetFirstBarIndexNumber() const {
+  return _barsArray.at(0).i16IndexNumber;
   }
 
 
