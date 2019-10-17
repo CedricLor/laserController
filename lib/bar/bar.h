@@ -60,6 +60,8 @@ class bars
     bars(
       void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
+    // bars(const bars& __bars);
+    // bars& operator=(const bars& __bars);
 
     /** sender to mesh */
     void (*sendCurrentBar)(const int16_t __i16_current_bar_id);

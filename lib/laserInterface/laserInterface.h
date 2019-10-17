@@ -11,6 +11,7 @@
 
 namespace laserInterface {
 
+  extern beat activeBeat;
   extern sequences globalSequences;
 
   void init();
@@ -27,7 +28,7 @@ namespace laserInterface {
       // laserSchedule mode: 1. automatic (sequences connected to boxStates), 2. sequence manual, 3. bar manual, 4. note manual
       uint16_t _activeMode;
 
-      beat & _activeBeat;
+      // beat & _activeBeat;
 
       // players
       notes _notes;

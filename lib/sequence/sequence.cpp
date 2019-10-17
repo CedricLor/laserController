@@ -250,47 +250,47 @@ sequences::sequences(
 }
 
 
-// copy constructor
-sequences::sequences(const sequences & __sequences):
-  sendCurrentSequence(__sequences.sendCurrentSequence),
-  sequencesArray(__sequences.sequencesArray),
-  _bars(__sequences._bars),
-  ui16sequenceIndex(__sequences.ui16sequenceIndex),
-  nextSequence(__sequences.nextSequence),
-  tPlaySequenceInLoop(),
-  tPlaySequence(),
-  tPreloadNextSequence(),
-  _defaultSequence(__sequences._defaultSequence),
-  _activeSequence(__sequences._activeSequence)
-{ 
-  snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
-  disableAndResetPlaySequenceTasks();
-  tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
-}
+// // copy constructor
+// sequences::sequences(const sequences & __sequences):
+//   sendCurrentSequence(__sequences.sendCurrentSequence),
+//   sequencesArray(__sequences.sequencesArray),
+//   _bars(__sequences._bars),
+//   ui16sequenceIndex(__sequences.ui16sequenceIndex),
+//   nextSequence(__sequences.nextSequence),
+//   tPlaySequenceInLoop(),
+//   tPlaySequence(),
+//   tPreloadNextSequence(),
+//   _defaultSequence(__sequences._defaultSequence),
+//   _activeSequence(__sequences._activeSequence)
+// { 
+//   snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
+//   disableAndResetPlaySequenceTasks();
+//   tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
+// }
 
 
 
 
-// assignement operator
-sequences & sequences::operator=(const sequences & __sequences)
-{
-  // Serial.printf("sequences::operator=(const sequences& ): assignment operator starting\n");
-  if (&__sequences != this) {
-    // Serial.printf("sequence::operator=(const sequences& ): self assignmenttest passed\n");
-    sendCurrentSequence = __sequences.sendCurrentSequence;
-    sequencesArray = __sequences.sequencesArray;
-    _bars = __sequences._bars;
-    ui16sequenceIndex = __sequences.ui16sequenceIndex;
-    nextSequence = __sequences.nextSequence;
-    snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
-    _defaultSequence = __sequences._defaultSequence;
-    _activeSequence = __sequences._activeSequence;
+// // assignement operator
+// sequences & sequences::operator=(const sequences & __sequences)
+// {
+//   // Serial.printf("sequences::operator=(const sequences& ): assignment operator starting\n");
+//   if (&__sequences != this) {
+//     // Serial.printf("sequence::operator=(const sequences& ): self assignmenttest passed\n");
+//     sendCurrentSequence = __sequences.sendCurrentSequence;
+//     sequencesArray = __sequences.sequencesArray;
+//     _bars = __sequences._bars;
+//     ui16sequenceIndex = __sequences.ui16sequenceIndex;
+//     nextSequence = __sequences.nextSequence;
+//     snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
+//     _defaultSequence = __sequences._defaultSequence;
+//     _activeSequence = __sequences._activeSequence;
 
-    disableAndResetPlaySequenceTasks();
-    tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
-  }
-  return *this;
-}
+//     disableAndResetPlaySequenceTasks();
+//     tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
+//   }
+//   return *this;
+// }
 
 
 

@@ -279,6 +279,37 @@ bars::bars(
 
 
 
+// bars::bars(const bars& __bars):
+//   sendCurrentBar(__bars.sendCurrentBar),
+//   nextBar(__bars.nextBar),
+//   ui16barIndex(__bars.ui16barIndex),
+//   tPlayBar(),
+//   _defaultBar(__bars._defaultBar),
+//   _activeBar(__bars._activeBar),
+//   _notes(__bars._notes),
+//   _barsArray(__bars._barsArray)
+// {
+//   snprintf(barFileName, 20, __bars.barFileName);
+//   disableAndResetTPlayBar();
+// }
+
+
+
+// bars& bars::operator=(const bars& __bars) {
+//   if (&__bars != this) {
+//     sendCurrentBar = __bars.sendCurrentBar;
+//     nextBar = __bars.nextBar;
+//     snprintf(barFileName, 20, __bars.barFileName);
+//     ui16barIndex = __bars.ui16barIndex;
+//     _defaultBar = __bars._defaultBar;
+//     _activeBar = __bars._activeBar;
+//     _notes = __bars._notes;
+//     _barsArray = __bars._barsArray;
+
+//     disableAndResetTPlayBar();
+//   }
+//   return *this;
+// }
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////

@@ -9,6 +9,7 @@
 using namespace laserInterface;
 
 
+beat laserInterface::activeBeat;
 sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init() {
@@ -27,9 +28,9 @@ void laserInterface::init() {
 /*******************/
 // laserScheduler
 /*******************/
-laserInterface::laserScheduler::laserScheduler(_Mode __mode):
-  _activeBeat(activeBeat),
-  _sequences(globalSequences)
+laserInterface::laserScheduler::laserScheduler(_Mode __mode)
+  // _activeBeat(activeBeat),
+  // _sequences(globalSequences)
   // _activeSequence(sequence::globalSequence)
 { }
 
@@ -164,8 +165,10 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
     __target_bar = {std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
   }
 
+  activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+
   // 3. play it
-  globalSequences._bars.playBarStandAlone(__target_bar, beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  globalSequences._bars.playBar(__target_bar, activeBeat);
 }
 
 
@@ -213,7 +216,8 @@ void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint
   noteNS::lockStack();
   // 2. set the note and play it
   notes _notes;
-  _notes.playNoteStandAlone(note(__ui16_target_laser_tone, __ui16_target_note), beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm));
+  activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  _notes.playNote(note(__ui16_target_laser_tone, __ui16_target_note), activeBeat);
 }
 
 
