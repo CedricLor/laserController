@@ -187,7 +187,12 @@ bars::bars(
   void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
 ):
   sendCurrentBar(_sendCurrentBar),
-  tPlayNote(_notes.tPlayNote),
+  ui16barIndex(0),  // <-- TODO: review setters method here; maybe need to cast barIndex as an int16, to initialize at -1
+  nextBar(),
+  barFileName("bars.json"),
+  tPlayBar(),
+  _defaultBar(),
+  _activeBar(_defaultBar),
   _notes(),
   _barsArray({})
 {
@@ -550,3 +555,70 @@ void bars::_tcbPlayBar(beat const & __beat){
 
   Serial.println(F("bars::_tcbPlayBar(). over."));
 };
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////
+// Bar Loader
+///////////////////////////////////
+void bars::_tcbPreloadNextBar() {
+  Serial.printf("sequences::_tcbPreloadNextBar(): starting\n");
+  // read next bar values from the file system
+  _preloadNextBar(ui16barIndex);
+  Serial.printf("sequences::_tcbPreloadNextBar(): ending\n");
+}
+
+
+
+
+void bars::_preloadNextBar(uint16_t _ui16barIndex){
+  Serial.printf("bars::_preloadNextBar: Reading file: %s\r\n", barFileName);
+
+  mySpiffs __mySpiffs;
+  if (!(__mySpiffs.readCollectionItemParamsInFile(barFileName, _ui16barIndex))) {
+    return;
+  }
+
+  // Get a reference to the root array
+  JsonObject _joBar = __mySpiffs._jdItemParams.as<JsonObject>();
+
+  _preloadNextBarFromJSON(_joBar);
+}
+
+
+
+
+void bars::_preloadNextBarFromJSON(const JsonObject& _joBar) {
+  // {"nts":[{"t":7,"n":1},{"t":8,"n":1}], "ix":0}
+  Serial.println("bars::_preloadNextBarFromJSON: starting");
+  // Load _joBar["nts"] into an std::array
+  std::array<note, 16> _notesArray = _parseJsonNotesArray(_joBar["nts"].as<JsonArray>());
+
+  // Load the next sequence into a sequence instance
+  nextBar = {
+    _notesArray,
+    _joBar["ix"].as<int16_t>()
+  };
+}
+
+
+
+std::array<note, 16> const bars::_parseJsonNotesArray(const JsonArray& _JsonNotesArray) {
+  uint16_t _noteIx = 0;
+  std::array<note, 16> _notesArray;
+  for (JsonVariant _JsonNote : _JsonNotesArray) {
+    _notesArray.at(_noteIx) = {
+      _JsonNote["t"].as<uint16_t>(),
+      _JsonNote["n"].as<uint16_t>()
+    };
+    _noteIx++;
+  }
+  return _notesArray;
+}

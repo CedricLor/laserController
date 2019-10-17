@@ -5,7 +5,7 @@
 
 */
 #include "Arduino.h"
-#include <mns.h>
+#include <mySpiffs.h>
 #include <note.h>
 
 #ifndef bar_h
@@ -37,12 +37,6 @@ class bar
     std::array<note, 16> _notesArray;
 };
 
-#endif
-
-
-
-#ifndef bars_h
-#define bars_h
 class bars
 {
   friend class sequence;
@@ -85,14 +79,13 @@ class bars
     /** player */
     uint16_t const playBar(const bar & __target_bar, beat const & __beat);
     Task tPlayBar;
-    Task & tPlayNote;
 
     /** Task - preload next bar from SPIFFS */
     Task tPreloadNextBar;
 
     void _preloadNextBar(uint16_t _ui16barIndex);
     void _tcbPreloadNextBar();
-    void _preloadNextBarFromJSON(const JsonObject& _joSequence);
+    void _preloadNextBarFromJSON(const JsonObject& _joBar);
     std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
 
   private:
