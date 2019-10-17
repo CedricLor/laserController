@@ -160,10 +160,16 @@ sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
-  sequencesArray({}),
-  ui16sequenceIndex(0),
-  tPlayBar(_bars.tPlayBar),
-  tPlayNote(_bars.tPlayNote)
+  sequencesArray(),
+  _bars(),
+  ui16sequenceIndex(0), // <-- TODO: review setters method here; maybe need to cast sequenceIndex as an int16, to initialize at -1
+  nextSequence(),
+  sequenceFileName("/sequences.json"),
+  tPlaySequenceInLoop(),
+  tPlaySequence(),
+  tPreloadNextSequence(),
+  _defaultSequence(),
+  _activeSequence(_defaultSequence)
 {
   // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
   disableAndResetPlaySequenceTasks();
@@ -248,11 +254,20 @@ sequences::sequences(
 sequences::sequences(const sequences & __sequences):
   sendCurrentSequence(__sequences.sendCurrentSequence),
   sequencesArray(__sequences.sequencesArray),
+  _bars(__sequences._bars),
   ui16sequenceIndex(__sequences.ui16sequenceIndex),
-  tPlayBar(__sequences.tPlayBar),
-  tPlayNote(__sequences.tPlayNote),
+  nextSequence(__sequences.nextSequence),
+  tPlaySequenceInLoop(),
+  tPlaySequence(),
+  tPreloadNextSequence(),
+  _defaultSequence(__sequences._defaultSequence),
   _activeSequence(__sequences._activeSequence)
-{ }
+{ 
+  snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
+  disableAndResetPlaySequenceTasks();
+  tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
+}
+
 
 
 
@@ -263,9 +278,16 @@ sequences & sequences::operator=(const sequences & __sequences)
   if (&__sequences != this) {
     // Serial.printf("sequence::operator=(const sequences& ): self assignmenttest passed\n");
     sendCurrentSequence = __sequences.sendCurrentSequence;
-    ui16sequenceIndex = __sequences.ui16sequenceIndex;
     sequencesArray = __sequences.sequencesArray;
+    _bars = __sequences._bars;
+    ui16sequenceIndex = __sequences.ui16sequenceIndex;
+    nextSequence = __sequences.nextSequence;
+    snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
+    _defaultSequence = __sequences._defaultSequence;
     _activeSequence = __sequences._activeSequence;
+
+    disableAndResetPlaySequenceTasks();
+    tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
   }
   return *this;
 }
@@ -633,13 +655,6 @@ void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
   if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16sequenceIndex))) {
     return;
   }
-
-  // DeserializationError err = deserializeJson(_jdSequence, _cSequence);
-  // if (err) {
-  //   Serial.print(F("stepCollection::_preloadNextSequence: deserializeJson() failed: "));
-  //   Serial.println(err.c_str());
-  //   return;
-  // }
 
   // Get a reference to the root object
   JsonObject _joSequence = __mySpiffs._jdItemParams.as<JsonObject>();

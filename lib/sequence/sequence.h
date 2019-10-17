@@ -74,8 +74,6 @@ class sequences
     uint16_t const playSequence(const sequence & __target_sequence, Task & __sequenceTask);
     Task tPlaySequenceInLoop;
     Task tPlaySequence;
-    Task & tPlayBar;
-    Task & tPlayNote;
 
     /** Task - preload next sequence from SPIFFS */
     Task tPreloadNextSequence;
