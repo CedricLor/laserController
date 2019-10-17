@@ -688,24 +688,11 @@ std::array<bar, 8> const sequences::_parseJsonBarsArray(const JsonArray& _jaBars
   int16_t _barIx = 0;
   std::array<bar, 8> _barsArray {};
   for (JsonVariant _JsonNotesArray : _jaBarsArray) {
-    std::array<note, 16> _notesArray = _parseJsonNotesArray(_JsonNotesArray);
-    _barsArray.at(_barIx) = {_notesArray, _barIx};
+    _barsArray.at(_barIx) = {
+      _bars._parseJsonNotesArray(_JsonNotesArray), 
+      _barIx
+    };
     _barIx++;
   }
   return _barsArray;
-}
-
-
-
-std::array<note, 16> const sequences::_parseJsonNotesArray(const JsonArray& _JsonNotesArray) {
-  uint16_t _noteIx = 0;
-  std::array<note, 16> _notesArray;
-  for (JsonVariant _JsonNote : _JsonNotesArray) {
-    _notesArray.at(_noteIx) = {
-      _JsonNote["t"].as<uint16_t>(),
-      _JsonNote["n"].as<uint16_t>()
-    };
-    _noteIx++;
-  }
-  return _notesArray;
 }
