@@ -350,8 +350,9 @@ void stepCollection::_preloadNextStepFromJSON(const JsonObject& _joStep) {
   // uint16_t _i = 0;
   std::array<int16_t, 4> _i16monitoredMasterStates = {};
   _parseJsonArray(_joStep, "_i16mastStates", _i16monitoredMasterStates);
-  // for (JsonVariant _monitoredState : _joStep["_i16mastStates"].as<JsonArray>()) {
-  //   _i16monitoredMasterStates.at(_i) = _monitoredState;
+  // uint16_t _i = 0;
+  // for (auto _it : _i16monitoredMasterStates) {
+  //   Serial.printf("stepCollection::_preloadNextStepFromJSON: _i16monitoredMasterStates[%u]: [%i]\n", _i, _it);
   //   _i++;
   // }
 
@@ -359,8 +360,9 @@ void stepCollection::_preloadNextStepFromJSON(const JsonObject& _joStep) {
   // _i = 0;
   std::array<uint16_t, 4> _ui16monitoredMasterBoxesNodeNames = {};
   _parseJsonArray(_joStep, "_ui16mastBxsNN", _ui16monitoredMasterBoxesNodeNames);
-  // for (uint16_t _monitoredMasterBoxesNodeName : _joStep["_ui16mastBxsNN"].as<JsonArray>()) {
-  //   _ui16monitoredMasterBoxesNodeNames.at(_i) = _monitoredMasterBoxesNodeName;
+  // _i = 0;
+  // for (auto _it : _ui16monitoredMasterBoxesNodeNames) {
+  //   Serial.printf("stepCollection::_preloadNextStepFromJSON: _ui16monitoredMasterBoxesNodeNames[%u]: [%u]\n", _i, _it);
   //   _i++;
   // }
 
@@ -389,7 +391,17 @@ void stepCollection::_preloadNextStepFromJSON(const JsonObject& _joStep) {
 template<typename ARRAY>
 void stepCollection::_parseJsonArray(const JsonObject& _joStep, const char * key, ARRAY & _array)
 {
+  // Serial.println("stepCollection::_parseJsonArray(): starting");
   uint16_t _i = 0;
+  // int16_t _firstJsonArrayElt = _joStep[key][0].as<int16_t>();
+  // // Serial.print("stepCollection::_parseJsonArray(): _firstJsonArrayElt: ");Serial.print(_firstJsonArrayElt);Serial.println();
+  // // Serial.printf("stepCollection::_parseJsonArray(): _firstJsonArrayElt == _nullValueConvention: [%s]\n", ((_firstJsonArrayElt == _nullValueConvention) ? "true" : "false"));
+  // if (_firstJsonArrayElt == _nullValueConvention) {
+  //   for (_i = 0; _i < _array.size(); _i++) {
+  //     _array.at(_i) = _firstJsonArrayElt;
+  //   }
+  //   return;
+  // }
   for (JsonVariant _it : _joStep[key].as<JsonArray>()) {
     _array.at(_i) = _it;
     _i++;
@@ -663,8 +675,8 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
 //////////////////////////////////////////////
 // Switch to Step Controlled Mode
 //////////////////////////////////////////////
-void boxStateCollection::toogleStepControlled(uint16_t _ui16Mode) {
-  Serial.println("void boxStateCollection::toogleStepControlled(). starting.");
+void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
+  Serial.println("void boxStateCollection::toggleStepControlled(). starting.");
   ui16Mode = _ui16Mode;
   stepColl.reset();
   if (ui16Mode) {
@@ -673,7 +685,7 @@ void boxStateCollection::toogleStepControlled(uint16_t _ui16Mode) {
     restartPBS = &boxStateCollection::_restartPlayBoxState;
   }
   (*this.*restartPBS)();
-  Serial.println("void boxStateCollection::toogleStepControlled(). ending.");
+  Serial.println("void boxStateCollection::toggleStepControlled(). ending.");
 }
 
 
@@ -829,11 +841,11 @@ void boxStateCollection::_odtcbPlayBoxState(){
 // _setBoxTargetState is the central entry point to request a boxState change.
 void boxStateCollection::_setBoxTargetState(const short __boxTargetState) {
   Serial.println("boxStateCollection::_setBoxTargetState(). starting.");
-  Serial.printf("boxStateCollection::_setBoxTargetState(). __boxTargetState: %u\n", __boxTargetState);
+  Serial.printf("boxStateCollection::_setBoxTargetState(). __boxTargetState (passed in parameters): %u\n", __boxTargetState);
   _boxTargetState = __boxTargetState;
   // _restartPlayBoxState();
   (*this.*restartPBS)();
-  Serial.printf("boxStateCollection::_setBoxTargetState(). _boxTargetState: %u\n", _boxTargetState);
+  Serial.printf("boxStateCollection::_setBoxTargetState(). _boxTargetState (boxStateCollection instance variable): %u\n", _boxTargetState);
   Serial.println("boxStateCollection::_setBoxTargetState(). over.");
 };
 

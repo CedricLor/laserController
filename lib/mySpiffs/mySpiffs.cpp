@@ -454,6 +454,7 @@ bool mySpiffs::readCollectionItemParamsInFile(const char * path, const uint16_t 
     char _buffer[_buff_size];
     readLine(file, _ui16lineNumber, _buffer, _buff_size);
 
+    // Serial.printf("mySpiffs::readJSONObjLineInFile: _buffer: %s\n", _buffer);
     DeserializationError err = deserializeJson(_jdItemParams, _buffer);
     if (err) {
         Serial.print(F("mySpiffs::readJSONObjLineInFile: deserializeJson() failed: "));

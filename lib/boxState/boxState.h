@@ -122,7 +122,7 @@ class boxStateCollection
     std::array<boxState, 14> boxStatesArray;
 
     // step mode switch stack
-    void toogleStepControlled(uint16_t _ui16Mode);
+    void toggleStepControlled(uint16_t _ui16Mode);
     /** ui16Mode = 0 => mode automatic, boxStates use their default settings
      *  ui16Mode = 1 => step controlled, boxStates use the settings corresponding
      *  to the step they are embedded in.
