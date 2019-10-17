@@ -105,7 +105,8 @@ beat const & sequence::getAssociatedBeat() const {
  * 
  * Instance getter.
  * 
- * Returns a const ref to the associated bars array */
+ * Returns a const ref to the associated bars array
+ *  */
 std::array<bar, 8> const & sequence::getBarsArray() const {
   return _barsArray;
 }
@@ -116,7 +117,8 @@ std::array<bar, 8> const & sequence::getBarsArray() const {
  * 
  * Instance getter.
  * 
- * Returns a const ref to an array of bars index numbers */
+ * Returns a const ref to an array of bars index numbers
+ *  */
 std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
 {
   uint16_t _i = 0;
