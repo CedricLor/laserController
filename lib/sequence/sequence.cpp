@@ -23,43 +23,36 @@ Traductions en anglais:
 sequence::sequence():
   i16IndexNumber(-2),
   _beat(beat{0, 0}),
-  _barsArray({})
+  _ui16BarsArray({})
 { 
 }
 
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
-  std::array<bar, 8> & __barsArray,
+  std::array<uint16_t, 8> & __ui16BarsArray,
   int16_t __i16IndexNumber
 ):
   i16IndexNumber(__i16IndexNumber),
   _beat(__beat),
-  _barsArray(__barsArray)
+  _ui16BarsArray(__ui16BarsArray)
 { }
 
 // copy constructor
 sequence::sequence(const sequence& __sequence):
   i16IndexNumber(__sequence.i16IndexNumber),
   _beat(__sequence._beat),
-  _barsArray(__sequence._barsArray)
+  _ui16BarsArray(__sequence._ui16BarsArray)
 { }
 
 // assignement operator
 sequence& sequence::operator=(const sequence& __sequence)
 {
-  // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting\n");
   if (&__sequence != this) {
-    // Serial.printf("sequence::operator=(const sequence& ): self assignmenttest passed\n");
     i16IndexNumber = __sequence.i16IndexNumber;
-    // Serial.printf("sequence::operator=(const sequence& ): __sequence._beat.getBaseBeatInBpm(): [%u]\n", __sequence._beat.getBaseBeatInBpm());
     _beat = __sequence._beat;
-    // Serial.printf("sequence::operator=(const sequence& ): _beat.getBaseBeatInBpm(): [%u]\n", __sequence._beat.getBaseBeatInBpm());
-    // Serial.printf("sequence::operator=(const sequence& ): __sequence._barsArray.at(0)._notesArray.at(0).getNote(): [%u]\n", __sequence._barsArray.at(0)._notesArray.at(0).getNote());
-    _barsArray = __sequence._barsArray;
-    // Serial.printf("sequence::operator=(const sequence& ): __sequence._barsArray.at(0)._notesArray.at(0).getNote(): [%u]\n", __sequence._barsArray.at(0)._notesArray.at(0).getNote());
+    _ui16BarsArray = __sequence._ui16BarsArray;
   }
-  // Serial.printf("sequence::operator=(const sequence& ): assignment operator starting. About to return this.\n");
   return *this;
 }
 
@@ -125,9 +118,17 @@ beat const & sequence::getAssociatedBeat() const {
  * 
  * Returns a const ref to the associated bars array
  *  */
-std::array<bar, 8> const & sequence::getBarsArray() const {
-  return _barsArray;
-}
+// std::array<bar, 8> const & sequence::getBarsArray() const {
+/** ** ** ** ** ** ** ** **/
+//   uint16_t _i = 0;
+//   std::array<uint16_t, 8> barIndexNumbersArray;
+//   for (auto _bar: _barsArray) {
+//     barIndexNumbersArray.at(_i) = _bar.i16IndexNumber;
+//     _i++;
+//   }
+/** ** ** ** ** ** ** ** **/
+//   return _barsArray;
+// }
 
 
 
@@ -139,13 +140,7 @@ std::array<bar, 8> const & sequence::getBarsArray() const {
  *  */
 std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
 {
-  uint16_t _i = 0;
-  std::array<uint16_t, 8> barIndexNumbersArray;
-  for (auto _bar: _barsArray) {
-    barIndexNumbersArray.at(_i) = _bar.i16IndexNumber;
-    _i++;
-  }
-  return barIndexNumbersArray;
+  return _ui16BarsArray;
 }
 
 
@@ -157,7 +152,7 @@ std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
  * Returns the index number of the first bar in the sequence as a const uint16_t
  *  */
 int16_t const sequence::ui16GetFirstBarIndexNumber() const {
-  return _barsArray.at(0).i16IndexNumber;
+  return _ui16BarsArray.at(0);
 }
 
 
@@ -170,7 +165,7 @@ int16_t const sequence::ui16GetFirstBarIndexNumber() const {
  * number in the array of bars associated to this sequence
  *  */
 int16_t const sequence::ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const {
-  return _barsArray.at(ui16BarIxNumbInSequence).i16IndexNumber;
+  return _ui16BarsArray.at(ui16BarIxNumbInSequence);
 }
 
 
@@ -239,13 +234,13 @@ sequences::sequences(
   
 
   // --> Sequence 0: "Relays"
-  /** std::array<bar, 8> _relaysBarsArray {_bars._barsArray.at(0)};
+  /** std::array<uint16_t, 8> _relaysBarsArray {0};
    * 
    *  Defines the array of bars to be played in the sequence. 
    *  In the following _relaysBarsArray exemple, the array of bars only contains
-   *  one single bar (_bars._barsArray.at(0)). It could contain more.
+   *  one single bar (0)). It could contain more.
    * */
-  std::array<bar, 8> _relaysBarsArray {_bars._barsArray.at(0)};
+  std::array<uint16_t, 8> _relaysBarsArray {0};
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white 
@@ -254,39 +249,45 @@ sequences::sequences(
   // Serial.printf("\nsequence::initSequences(). Passed building _beat_2_1.\n");
   // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
   sequencesArray[0] = {_beat_2_1, _relaysBarsArray, 0};
+  // {"bt":{"bpm":2,"base":1}, "brs":[0], "ix":0}
   // Serial.printf("\nsequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
   // Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
   // Serial.printf("sequence::initSequences(). sequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", sequences[0].getAssociatedBeat().getBaseBeatInBpm());
 
 
   // --> Sequence 1: "Twins"
-  std::array<bar, 8> _twinsBarsArray {_bars._barsArray.at(1)};
+  std::array<uint16_t, 8> _twinsBarsArray {1};
   sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1};
+  // {"bt":{"bpm":2,"base":1}, "brs":[1], "ix":1}
 
 
   // --> Sequence 2: "All"
-  std::array<bar, 8> _allBarsArray {_bars._barsArray.at(2)};
+  std::array<uint16_t, 8> _allBarsArray {2};
   sequencesArray[2] = {_beat_2_1, _allBarsArray, 2};
+  // {"bt":{"bpm":2,"base":1}, "brs":[2], "ix":2}
 
 
   // --> Sequence 3: "Swipe Right"
-  std::array<bar, 8> _swipeRBarsArray {_bars._barsArray.at(3)};
+  std::array<uint16_t, 8> _swipeRBarsArray {3};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white 
    * */
   const beat _beat_120_1(120,1);
   sequencesArray[3] = {_beat_120_1, _swipeRBarsArray, 3};
+  // {"bt":{"bpm":120,"base":1}, "brs":[3], "ix":3}
 
 
   // --> Sequence 4: "Swipe Left"
-  std::array<bar, 8> _swipeLBarsArray {_bars._barsArray.at(4)};
+  std::array<uint16_t, 8> _swipeLBarsArray {4};
   sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 4};
+  // {"bt":{"bpm":120,"base":1}, "brs":[4], "ix":4}
 
 
   // --> Sequence 5: "All Off"
-  std::array<bar, 8> _allOffBarsArray {_bars._barsArray.at(5)};
+  std::array<uint16_t, 8> _allOffBarsArray {5};
   sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 5};
+  // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
 
   tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
   tPreloadNextSequence.restart();
@@ -722,10 +723,10 @@ void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
 
 
 void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
-  // {"bt":{"bpm":2,"base":1}, "brs":[[{"t":7,"n":1},{"t":8,"n":1}]], "ix":0}
+  // {"bt":{"bpm":2,"base":1}, "brs":[0,3,2,6], "ix":0}
   Serial.println("sequences::_preloadNextSequenceFromJSON: starting");
   // Load _joSequence["brs"] into an std::array
-  std::array<bar, 8> _barsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
+  std::array<uint16_t, 8> _barsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
 
   // Load the next sequence into a sequence instance
   nextSequence = {
@@ -740,15 +741,13 @@ void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
 
 
 
-std::array<bar, 8> const sequences::_parseJsonBarsArray(const JsonArray& _jaBarsArray) {
+std::array<uint16_t, 8> const sequences::_parseJsonBarsArray(const JsonArray& _jaBarsArray) {
+  // "brs":[0,3,2,6]
   int16_t _barIx = 0;
-  std::array<bar, 8> _barsArray {};
-  for (JsonVariant _JsonNotesArray : _jaBarsArray) {
-    _barsArray.at(_barIx) = {
-      _bars._parseJsonNotesArray(_JsonNotesArray), 
-      _barIx
-    };
+  std::array<uint16_t, 8> __ui16BarsArray {};
+  for (JsonVariant _JsonBarIxNumber : _jaBarsArray) {
+    __ui16BarsArray.at(_barIx) = _JsonBarIxNumber;
     _barIx++;
   }
-  return _barsArray;
+  return __ui16BarsArray;
 }

@@ -18,7 +18,7 @@ class sequence
   public:
     /** constructors */
     sequence();
-    sequence(const beat & __beat, std::array<bar, 8> & __barsArray, int16_t __i16IndexNumber=-2);
+    sequence(const beat & __beat, std::array<uint16_t, 8> & __ui16BarsArray, int16_t __i16IndexNumber=-2);
     sequence(const sequence& __sequence);
     sequence& operator=(const sequence& __sequence);
 
@@ -38,7 +38,7 @@ class sequence
 
     // instance properties
     beat _beat;
-    std::array<bar, 8> _barsArray;
+    std::array<uint16_t, 8> _ui16BarsArray;
 };
 
 
@@ -84,7 +84,7 @@ class sequences
     void _preloadNextSequence(uint16_t _ui16sequenceIndex);
     void _tcbPreloadNextSequence();
     void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
-    std::array<bar, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
+    std::array<uint16_t, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
 
   private:
     // variables
