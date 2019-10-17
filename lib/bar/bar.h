@@ -56,13 +56,18 @@ class bars
      *  are defined in bars constructor, calling their default constructors without
      *  parameters.
      * 
-     *  The only parameters, _sendCurrentBar, is an optional callback. */
+     *  The only parameter, _sendCurrentBar, is an optional callback. */
     bars(
       void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
 
     /** sender to mesh */
     void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
+
+    /** Variables to read bars from SPIFSS */
+    uint16_t ui16barIndex;
+    bar nextBar;
+    char barFileName[20];
 
     /** setters */
     uint16_t const setActive(const bar & __activeBar);
@@ -79,6 +84,14 @@ class bars
     uint16_t const playBar(const bar & __target_bar, beat const & __beat);
     Task tPlayBar;
     Task & tPlayNote;
+
+    /** Task - preload next bar from SPIFFS */
+    Task tPreloadNextBar;
+
+    void _preloadNextBar(uint16_t _ui16barIndex);
+    void _tcbPreloadNextBar();
+    void _preloadNextBarFromJSON(const JsonObject& _joSequence);
+    std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
 
   private:
     // properties
