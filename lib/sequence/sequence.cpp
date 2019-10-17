@@ -90,6 +90,24 @@ uint16_t const sequence::ui16GetBarCountInSequence() const {
 
 
 
+/** uint32_t const sequence::ui32GetSequenceDuration()
+ * 
+ * Instance getter.
+ * 
+ * Returns the sequence duration. 
+ * Used to set the interval for tPlaySequenceInLoop. */
+uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
+  uint32_t __ui32SequenceDuration = 0;
+  uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
+  for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
+    __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration(__beat);
+  }
+
+  return __ui32SequenceDuration;
+}
+
+
+
 /**beat const & sequence::getAssociatedBeat() const 
  * 
  * Instance getter.
@@ -138,15 +156,26 @@ std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
  * 
  * Returns the sequence duration. 
  * Used to set the interval for tPlaySequenceInLoop. */
-uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
-  uint32_t __ui32SequenceDuration = 0;
-  uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
-  for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
-    __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration(__beat);
+// uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
+//   uint32_t __ui32SequenceDuration = 0;
+//   uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
+//   for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
+//     __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration(__beat);
+//   }
+
+//   return __ui32SequenceDuration;
+// }
+
+
+
+
+
+
   }
 
-  return __ui32SequenceDuration;
-}
+
+
+
 
 
 
