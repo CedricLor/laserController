@@ -179,7 +179,7 @@ std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
  *  */
 int16_t const sequence::ui16GetFirstBarIndexNumber() const {
   return _barsArray.at(0).i16IndexNumber;
-  }
+}
 
 
 
@@ -364,6 +364,8 @@ sequences::sequences(
 uint16_t sequences::setActive(const sequence & __activeSequence) {
   disableAndResetPlaySequenceTasks();
   _activeSequence = __activeSequence;
+  _bars.ui16barIndex = _activeSequence.ui16GetFirstBarIndexNumber();
+  _bars.tPreloadNextBar.restart();
   return __activeSequence.i16IndexNumber;
 }
 
