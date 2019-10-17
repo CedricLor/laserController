@@ -29,6 +29,7 @@ class sequence
     std::array<bar, 8> const & getBarsArray() const;
     std::array<uint16_t, 8> const & getBarsIndexNumbersArray() const;
     int16_t const ui16GetFirstBarIndexNumber() const;
+    int16_t const ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const;
 
     /** public instance properties */
     int16_t i16IndexNumber;

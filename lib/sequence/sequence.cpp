@@ -162,6 +162,19 @@ int16_t const sequence::ui16GetFirstBarIndexNumber() const {
 
 
 
+/**int16_t const sequence::ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const
+ * 
+ * Instance getter.
+ * 
+ * Returns the index number of a bar in the bars database, given such bar's index
+ * number in the array of bars associated to this sequence
+ *  */
+int16_t const sequence::ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const {
+  return _barsArray.at(ui16BarIxNumbInSequence).i16IndexNumber;
+}
+
+
+
 
 
 
@@ -654,6 +667,10 @@ void sequences::_tcbPlaySequence() {
    *    context of a sequence.
    *  */
   tPlaySequence.setInterval(__ui32ThisBarDuration);
+
+  /**5. Preload the next bar*/
+  _bars.ui16IxNumbOfBarToPreload = _activeSequence.ui16GetBarIndexNumber(_ui16Iter + 1);
+  _bars.tPreloadNextBar.restart();
 
   Serial.println("sequences::_tcbPlaySequence(). over.");
 };
