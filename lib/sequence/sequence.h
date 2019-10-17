@@ -56,6 +56,7 @@ class sequences
     std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
     bars _bars;  // <-- TODO: make it private at some point
 
+    /** Variables to read sequences from SPIFSS */
     uint16_t ui16sequenceIndex;
     sequence nextSequence;
     char sequenceFileName[20];
@@ -76,7 +77,7 @@ class sequences
     Task & tPlayBar;
     Task & tPlayNote;
 
-    /** Task - preload next sequence */
+    /** Task - preload next sequence from SPIFFS */
     Task tPreloadNextSequence;
 
     void _preloadNextSequence(uint16_t _ui16sequenceIndex);
