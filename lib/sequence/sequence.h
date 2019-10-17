@@ -60,7 +60,7 @@ class sequences
     bars _bars;  // <-- TODO: make it private at some point
 
     /** Variables to read sequences from SPIFSS */
-    uint16_t ui16sequenceIndex;
+    uint16_t ui16IxNumbOfSequenceToPreload;
     sequence nextSequence;
     char sequenceFileName[20];
     
@@ -81,7 +81,7 @@ class sequences
     /** Task - preload next sequence from SPIFFS */
     Task tPreloadNextSequence;
 
-    void _preloadNextSequence(uint16_t _ui16sequenceIndex);
+    void _preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload);
     void _tcbPreloadNextSequence();
     void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
     std::array<uint16_t, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray);

@@ -200,7 +200,7 @@ sequences::sequences(
   sendCurrentSequence(_sendCurrentSequence),
   sequencesArray(),
   _bars(),
-  ui16sequenceIndex(0), // <-- TODO: review setters method here; maybe need to cast sequenceIndex as an int16, to initialize at -1
+  ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast sequenceIndex as an int16, to initialize at -1
   nextSequence(),
   sequenceFileName("/sequences.json"),
   tPlaySequenceInLoop(),
@@ -295,48 +295,6 @@ sequences::sequences(
   Serial.println("sequences::sequences(). over.");
 }
 
-
-// // copy constructor
-// sequences::sequences(const sequences & __sequences):
-//   sendCurrentSequence(__sequences.sendCurrentSequence),
-//   sequencesArray(__sequences.sequencesArray),
-//   _bars(__sequences._bars),
-//   ui16sequenceIndex(__sequences.ui16sequenceIndex),
-//   nextSequence(__sequences.nextSequence),
-//   tPlaySequenceInLoop(),
-//   tPlaySequence(),
-//   tPreloadNextSequence(),
-//   _defaultSequence(__sequences._defaultSequence),
-//   _activeSequence(__sequences._activeSequence)
-// { 
-//   snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
-//   disableAndResetPlaySequenceTasks();
-//   tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
-// }
-
-
-
-
-// // assignement operator
-// sequences & sequences::operator=(const sequences & __sequences)
-// {
-//   // Serial.printf("sequences::operator=(const sequences& ): assignment operator starting\n");
-//   if (&__sequences != this) {
-//     // Serial.printf("sequence::operator=(const sequences& ): self assignmenttest passed\n");
-//     sendCurrentSequence = __sequences.sendCurrentSequence;
-//     sequencesArray = __sequences.sequencesArray;
-//     _bars = __sequences._bars;
-//     ui16sequenceIndex = __sequences.ui16sequenceIndex;
-//     nextSequence = __sequences.nextSequence;
-//     snprintf(sequenceFileName, 20, __sequences.sequenceFileName);
-//     _defaultSequence = __sequences._defaultSequence;
-//     _activeSequence = __sequences._activeSequence;
-
-//     disableAndResetPlaySequenceTasks();
-//     tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
-//   }
-//   return *this;
-// }
 
 
 
@@ -698,18 +656,18 @@ void sequences::_odtcbPlaySequence() {
 void sequences::_tcbPreloadNextSequence() {
   Serial.printf("sequences::_tcbPreloadNextSequence(): starting\n");
   // read next step values from the file system
-  _preloadNextSequence(ui16sequenceIndex);
+  _preloadNextSequence(ui16IxNumbOfSequenceToPreload);
   Serial.printf("sequences::_tcbPreloadNextSequence(): ending\n");
 }
 
 
 
 
-void sequences::_preloadNextSequence(uint16_t _ui16sequenceIndex){
+void sequences::_preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload){
   Serial.printf("stepCollection::_preloadNextSequence: Reading file: %s\r\n", sequenceFileName);
 
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16sequenceIndex))) {
+  if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16IxNumbOfSequenceToPreload))) {
     return;
   }
 
