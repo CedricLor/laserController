@@ -16,8 +16,10 @@ void laserInterface::init() {
   beatNS::init();
   mns::myScheduler.addTask(globalSequences.tPlaySequenceInLoop);
   mns::myScheduler.addTask(globalSequences.tPlaySequence);
+  mns::myScheduler.addTask(globalSequences.tPreloadNextSequence);
   mns::myScheduler.addTask(globalSequences._bars.tPlayBar);
-  mns::myScheduler.addTask(globalSequences._bars.tPlayNote);
+  mns::myScheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
+  mns::myScheduler.addTask(globalSequences._bars.tPreloadNextBar);
   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
 }
 
