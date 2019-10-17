@@ -27,6 +27,7 @@ class sequence
     uint32_t const ui32GetSequenceDuration(beat const & __beat) const;
     beat const & getAssociatedBeat() const;
     std::array<bar, 8> const & getBarsArray() const;
+    std::array<uint16_t, 8> const & getBarsIndexNumbersArray() const;
 
     /** public instance properties */
     int16_t i16IndexNumber;

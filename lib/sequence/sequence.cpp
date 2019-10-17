@@ -112,6 +112,24 @@ std::array<bar, 8> const & sequence::getBarsArray() const {
 
 
 
+/**std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
+ * 
+ * Instance getter.
+ * 
+ * Returns a const ref to an array of bars index numbers */
+std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
+{
+  uint16_t _i = 0;
+  std::array<uint16_t, 8> barIndexNumbersArray;
+  for (auto _bar: _barsArray) {
+    barIndexNumbersArray.at(_i) = _bar.i16IndexNumber;
+    _i++;
+  }
+  return barIndexNumbersArray;
+}
+
+
+
 /** uint32_t const sequence::ui32GetSequenceDuration()
  * 
  * Instance getter.
