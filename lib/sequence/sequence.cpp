@@ -684,7 +684,7 @@ void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
   // {"bt":{"bpm":2,"base":1}, "brs":[0,3,2,6], "ix":0}
   Serial.println("sequences::_preloadNextSequenceFromJSON: starting");
   // Load _joSequence["brs"] into an std::array
-  std::array<uint16_t, 8> _barsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
+  std::array<uint16_t, 8> __ui16BarsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
 
   // Load the next sequence into a sequence instance
   nextSequence = {
@@ -692,7 +692,7 @@ void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
       _joSequence["bt"]["bpm"].as<uint16_t>(),
       _joSequence["bt"]["base"].as<uint16_t>()
     },
-    _barsArray,
+    __ui16BarsArray,
     _joSequence["ix"].as<int16_t>()
   };
 }
