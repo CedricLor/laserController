@@ -150,27 +150,6 @@ std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
 
 
 
-/** uint32_t const sequence::ui32GetSequenceDuration()
- * 
- * Instance getter.
- * 
- * Returns the sequence duration. 
- * Used to set the interval for tPlaySequenceInLoop. */
-// uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
-//   uint32_t __ui32SequenceDuration = 0;
-//   uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
-//   for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
-//     __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration(__beat);
-//   }
-
-//   return __ui32SequenceDuration;
-// }
-
-
-
-
-
-
 /**std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
  * 
  * Instance getter.
@@ -672,7 +651,8 @@ void sequences::_tcbPlaySequence() {
    * 
    *    At each pass, reset the interval before the next iteration of this 
    *    Task sequences::tPlaySequence. This marks the duration of each bar played in the
-   *    context of a sequence. */
+   *    context of a sequence.
+   *  */
   tPlaySequence.setInterval(__ui32ThisBarDuration);
 
   Serial.println("sequences::_tcbPlaySequence(). over.");
