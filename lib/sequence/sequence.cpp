@@ -366,7 +366,7 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
   _activeSequence = __activeSequence;
   _bars.ui16barIndex = _activeSequence.ui16GetFirstBarIndexNumber();
   _bars.tPreloadNextBar.restart();
-  return __activeSequence.i16IndexNumber;
+  return _activeSequence.i16IndexNumber;
 }
 
 
