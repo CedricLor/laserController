@@ -84,7 +84,7 @@ class sequences
     void _preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload);
     void _tcbPreloadNextSequence();
     void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
-    std::array<uint16_t, 8> const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
+    std::array<uint16_t, 8> & const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
 
   private:
     // variables
