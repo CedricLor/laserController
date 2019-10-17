@@ -148,12 +148,6 @@ uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
 
 
 
-/** sequence const & sequences::getCurrentSequence() const
- * 
- * Returns the active sequence as a sequence */
-sequence const & sequences::getCurrentSequence() const {
-  return _activeSequence;
-}
 
 
 
@@ -395,6 +389,19 @@ void sequences::disableAndResetPlaySequenceTasks() {
   tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
   tPlaySequenceInLoop.disable();
   tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
+}
+
+
+
+
+
+
+
+/** sequence const & sequences::getCurrentSequence() const
+ * 
+ * Returns the active sequence as a sequence */
+sequence const & sequences::getCurrentSequence() const {
+  return _activeSequence;
 }
 
 
