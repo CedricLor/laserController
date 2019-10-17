@@ -212,18 +212,19 @@ sequences::sequences(
    *  tPlaySequenceInLoop interval to the various bars durations.
    * */
   
+
   // --> Sequence 0: "Relays"
-  /** array of bars to be played in the sequence. */
-  // Serial.printf("\nsequence::initSequences(). Before building _relaysBarsArray.\n");
-  // Serial.printf("sequence::initSequences(). bar::_barsArray[0].getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", bar::_barsArray[0].getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). bar::_barsArray[0].getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", bar::_barsArray[0].getNotesArray().at(0).getToneNumber());
+  /** std::array<bar, 8> _relaysBarsArray {_bars._barsArray.at(0)};
+   * 
+   *  Defines the array of bars to be played in the sequence. 
+   *  In the following _relaysBarsArray exemple, the array of bars only contains
+   *  one single bar (_bars._barsArray.at(0)). It could contain more.
+   * */
   std::array<bar, 8> _relaysBarsArray {_bars._barsArray.at(0)};
-  // Serial.printf("\nsequence::initSequences(). Passed building _relaysBarsArray.\n");
-  // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getNote() should be equal to 1. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber() should be equal to 7. Is equal to [%u].\n", _relaysBarsArray.at(0).getNotesArray().at(0).getToneNumber());
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
-   *    _ui16BaseNoteForBeat = 1; a white */
+   *    _ui16BaseNoteForBeat = 1; a white 
+   * */
   const beat _beat_2_1(2,1);
   // Serial.printf("\nsequence::initSequences(). Passed building _beat_2_1.\n");
   // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
@@ -247,7 +248,8 @@ sequences::sequences(
   std::array<bar, 8> _swipeRBarsArray {_bars._barsArray.at(3)};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
-   *    _ui16BaseNoteForBeat = 1; a white */
+   *    _ui16BaseNoteForBeat = 1; a white 
+   * */
   const beat _beat_120_1(120,1);
   sequencesArray[3] = {_beat_120_1, _swipeRBarsArray, 3};
 
@@ -438,8 +440,7 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
 ///////////////////////////////////
 /** sequences::playSequence():
  *  
- *  play a single sequence calculating the durations
- *  on the basis of the passed-in beat.
+ *  play a single sequence calculating the durations on the basis of the passed-in beat.
  * 
  *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose)
