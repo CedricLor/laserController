@@ -227,7 +227,10 @@ bars::bars(
    * duration of a beat in bpm: 2
    * base note: 1 (a full)
    * count of base notes per bar: 2
-   * => 2 / 1 */
+   * => 2 / 1 
+   * {"nts":[{"t":7,"n":1},{"t":8,"n":1}], "ix":0}
+   * 
+   * */
   
   // Serial.println("bars::bars. before creating _aRelays");
   std::array<note, 16> _aRelays {note(7,1), note(8,1)};
@@ -244,7 +247,10 @@ bars::bars(
    * duration of a beat in bpm: 2
    * base note: 1 (a full)
    * count of base notes per bar: 2
-   * => 2 / 1 */
+   * => 2 / 1 
+   * {"nts":[{"t":5,"n":1},{"t":6,"n":1}], "ix":1}
+   * 
+   * */
   std::array<note, 16> _aTwins {note(5,1), note(6,1)};
   _barsArray[1] = {_aTwins, 1};
 
@@ -252,7 +258,10 @@ bars::bars(
    * duration of a beat in bpm: 2
    * base note: 1 (a full)
    * count of base notes per bar: 2
-   * => 2 / 1 */
+   * => 2 / 1 
+   * {"nts":[{"t":15,"n":1},{"t":1,"n":1}], "ix":2}
+   * 
+   * */
   std::array<note, 16> _aAll {note(15,1), note(0,1)};
   _barsArray[2] = {_aAll, 2};
 
@@ -260,7 +269,10 @@ bars::bars(
    * duration of a beat in bpm: 120
    * base note: 1 (a full)
    * count of base notes per bar: 4
-   * => 4 / 1 */
+   * => 4 / 1 
+   * {"nts":[{"t":1,"n":1},{"t":2,"n":1},{"t":3,"n":1},{"t":4,"n":1}], "ix":3}
+   * 
+   * */
   std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
   _barsArray[3] = {_aSwipeR, 3};
 
@@ -268,7 +280,10 @@ bars::bars(
    * duration of a beat in bpm: 120
    * base note: 1 (a full)
    * count of base notes per bar: 4
-   * => 4 / 1 */
+   * => 4 / 1 
+   * {"nts":[{"t":4,"n":1},{"t":3,"n":1},{"t":2,"n":1},{"t":1,"n":1}], "ix":3}
+   * 
+   * */
   std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
   _barsArray[4] = {_aSwipeL, 4};
 
@@ -276,7 +291,10 @@ bars::bars(
    * duration of a beat in bpm: 2
    * base note: 1 (a full)
    * count of base notes per bar: 1
-   * => 1 / 1 */
+   * => 1 / 1 
+   * {"nts":[{"t":5,"n":1},{"t":0,"n":1}], "ix":3}
+   * 
+   * */
   std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
   _barsArray[5] = {_aAllOff, 5};
 
