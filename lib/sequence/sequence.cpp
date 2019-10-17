@@ -375,14 +375,6 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
 
 
 
-/** TODO: - review calls to disableAndResetPlaySequenceTasks,
- *          disableAndResetTPlayBar and _disableAndResetTPlayNote;
- *        - check whether they are rather called upon terminating or upon starting a player;
- *        - try to systematically use them as a replacement for calls to task disable.
- * 
- *        - try to rationalize, comparing what is happening in each of the stacks. I have got the sentiment that it is a bit fuzzy at the moment.
- * */
-
 /** sequences::disableAndResetPlaySequenceTasks(): public setter method
  * 
  *  Resets the parameters of the Tasks [tPlaySequence/tPlaySequenceInLoop] 
@@ -405,22 +397,20 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  *  - onDisable callback: &_odtcbPlaySequence)
  *  - added to myScheduler in setup(); disabled by default.
  * 
- *  This method disableAndResetPlaySequenceTasks() is called by [boxState] 
- *  (from [---]) and by sequence ([from the 
- *  standalone sequence player]).
+ *  This method disableAndResetPlaySequenceTasks() is called by sequences (from
+ *  sequences.setActive()).
  * 
  *  Task tPlaySequenceInLoop is enabled upon entering a new boxState.
  *  It is disabled upon exiting a boxState.
  * 
  *  Task tPlaySequence is enabled by tPlaySequenceInLoop onEnable callback.
  *  It is disabled:
- *  - at the expiration of its programmed iterations;
+ *  - alone, at the expiration of its programmed iterations; or
  *  - by the onDisable callback of tPlaySequenceInLoop.
- *  TODO: mention the laserInterface interrupts, here and in other parts.
  *  
- *  Each iteration of tPlaySequence correspond to one bar in the sequence.
- *  Task tPlaySequence iterations is set in its onEnable callback.
- *  Task tPlaySequence interval is reset in its main callback, at each iteration.
+ *  Each iteration of tPlaySequence corresponds to one bar in the sequence.
+ *  Task tPlaySequence iterations parameter is set, once, in its onEnable callback.
+ *  Task tPlaySequence interval is reset at each iteration in its main callback.
  * 
  *  public instance setter 
  * */
@@ -561,22 +551,22 @@ uint16_t const sequences::playSequence(const sequence & __target_sequence, Task 
 
 /** bool sequences::_oetcbPlaySequenceInLoop()
  * 
- *  Set the interval between each iteration of tPlaySequenceInLoop
- *  (each iteration will restart the Task tPlaySequence, so this
- *  interval shall be equal to the duration of the sequence).
+ *  Set the interval between each iteration of tPlaySequenceInLoop.
+ *  Each iteration will restart the Task tPlaySequence. Accordingly,
+ *  this interval shall be equal to the duration of the sequence.
  * 
- *  This interval will only be taken into account after the main 
- *  callback has been called ==> the forenext iteration.
+ *  This interval will only be taken into account AFTER the MAIN 
+ *  callback has been called ==> the forenext iteration. Accordingly,
+ *  the first iteration of the Task tPlaySequenceInLoop will occur "immediately 
+ *  after" the onEnable callback, as the default interval for this Task is set to 0.
  * 
- *  This calculation is made based on the base of the base beat in bpm,
- *  the base note, the number of base notes per bars and the number 
- *  of bars in the sequence.
+ *  The calculation of the interval is made based on the basis of the 
+ *  base beat in bpm, the base note per beat, the number of base notes 
+ *  per bars and the number of bars in the sequence.
  * 
- *  _oetcbPlaySequenceInLoop() does not start playing the sequence. This is
- *  done in the main callback of tPlaySequenceInLoop. The first iteration of
- *  the Task occurs immediately after the onEnable callback, at the initial
- *  interval for this Task (before being reset in this onEnable callback) is
- *  equal to 0. 
+ *  _oetcbPlaySequenceInLoop() does NOT start playing the sequence (i.e. it does
+ *  NOT restart Task tPlaySequence). Task tPlaySequence is restarted in the main 
+ *  callback of tPlaySequenceInLoop.
  * */
 bool sequences::_oetcbPlaySequenceInLoop() {
   Serial.println("sequences::_oetcbPlaySequenceInLoop(). starting. *****");
@@ -647,20 +637,22 @@ bool sequences::_oetcbPlaySequence() {
 
 
 
-/** void sequences::_tcbPlaySequence(): 
+/** void sequences::_tcbPlaySequence(): Main callback for tPlaySequence
  * 
- *  Main callback for tPlaySequence
- *  Each iteration of tPlaySequence corresponds to a bar. 
- *  Accordingly, each iteration runs for an identical a fixed time -> interval.
+ *  Each iteration of tPlaySequence corresponds to a bar.
  * 
- *  The iterations and the interval of the Task have been set in its onEnable 
- *  callback and do not change on iterations.
+ *  The number of iterations for the Task have been set in its onEnable 
+ *  callback and do not change on each iterations.
+ * 
+ *  To the difference of musical partitions (where bars in a sequence always have the 
+ *  same duration), the duration of each bar is recalculated at each iteration. This
+ *  allows more flexibility (bars of various durations may be inserted in a sequence).
  * 
  *  At each iteration of tPlaySequence:
- *  - using the Task iterator (step 1. below), we get, from this sequence's 
- *    array of associatedBars, the index number of the bar to be played (step 2 below).
- *  - we then set the active bar in the bar class from the array of hard coded bars 
- *    provided by the class bar, before enabling the Task tPlayBar in the bar class.
+ *  - recalculate the bar duration (steps 1 and 2 below);
+ *  - set the Task interval before next iteration accordingly (step 4);
+ *  - call _bars.playBar (step 3) to play the bar which is currently active in the sequence;
+ *  - preload the next bar from SPIFFS.
  * */
 void sequences::_tcbPlaySequence() {
   Serial.println("sequences::_tcbPlaySequence(). starting.");
