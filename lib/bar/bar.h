@@ -61,7 +61,7 @@ class bars
     void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
     /** Variables to read bars from SPIFSS */
-    uint16_t ui16barIndex;
+    uint16_t ui16IxNumbOfBarToPreload;
     bar nextBar;
     char barFileName[20];
 
@@ -83,7 +83,7 @@ class bars
     /** Task - preload next bar from SPIFFS */
     Task tPreloadNextBar;
 
-    void _preloadNextBar(uint16_t _ui16barIndex);
+    void _preloadNextBar(uint16_t _ui16IxNumbOfBarToPreload);
     void _tcbPreloadNextBar();
     void _preloadNextBarFromJSON(const JsonObject& _joBar);
     std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);

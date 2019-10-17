@@ -187,7 +187,7 @@ bars::bars(
   void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
 ):
   sendCurrentBar(_sendCurrentBar),
-  ui16barIndex(0),  // <-- TODO: review setters method here; maybe need to cast barIndex as an int16, to initialize at -1
+  ui16IxNumbOfBarToPreload(0),  // <-- TODO: review setters method here; maybe need to cast barIndex as an int16, to initialize at -1
   nextBar(),
   barFileName("bars.json"),
   tPlayBar(),
@@ -302,37 +302,6 @@ bars::bars(
 
 
 
-// bars::bars(const bars& __bars):
-//   sendCurrentBar(__bars.sendCurrentBar),
-//   nextBar(__bars.nextBar),
-//   ui16barIndex(__bars.ui16barIndex),
-//   tPlayBar(),
-//   _defaultBar(__bars._defaultBar),
-//   _activeBar(__bars._activeBar),
-//   _notes(__bars._notes),
-//   _barsArray(__bars._barsArray)
-// {
-//   snprintf(barFileName, 20, __bars.barFileName);
-//   disableAndResetTPlayBar();
-// }
-
-
-
-// bars& bars::operator=(const bars& __bars) {
-//   if (&__bars != this) {
-//     sendCurrentBar = __bars.sendCurrentBar;
-//     nextBar = __bars.nextBar;
-//     snprintf(barFileName, 20, __bars.barFileName);
-//     ui16barIndex = __bars.ui16barIndex;
-//     _defaultBar = __bars._defaultBar;
-//     _activeBar = __bars._activeBar;
-//     _notes = __bars._notes;
-//     _barsArray = __bars._barsArray;
-
-//     disableAndResetTPlayBar();
-//   }
-//   return *this;
-// }
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
@@ -561,18 +530,18 @@ void bars::_tcbPlayBar(beat const & __beat){
 void bars::_tcbPreloadNextBar() {
   Serial.printf("sequences::_tcbPreloadNextBar(): starting\n");
   // read next bar values from the file system
-  _preloadNextBar(ui16barIndex);
+  _preloadNextBar(ui16IxNumbOfBarToPreload);
   Serial.printf("sequences::_tcbPreloadNextBar(): ending\n");
 }
 
 
 
 
-void bars::_preloadNextBar(uint16_t _ui16barIndex){
+void bars::_preloadNextBar(uint16_t _ui16IxNumbOfBarToPreload){
   Serial.printf("bars::_preloadNextBar: Reading file: %s\r\n", barFileName);
 
   mySpiffs __mySpiffs;
-  if (!(__mySpiffs.readCollectionItemParamsInFile(barFileName, _ui16barIndex))) {
+  if (!(__mySpiffs.readCollectionItemParamsInFile(barFileName, _ui16IxNumbOfBarToPreload))) {
     return;
   }
 
