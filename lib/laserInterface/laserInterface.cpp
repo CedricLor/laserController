@@ -160,17 +160,19 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
    *     TODO: make a choice. And try to change the bar factory in the bars class */
   bar __target_bar;
   if (__i16_target_bar != -1) {
-    // 2.a: select a bar in the hard coded bars array and set it as active
-    __target_bar = globalSequences._bars.getBarFromBarArray(__i16_target_bar);
+    // 2.a: set the number of the bar to preload from SPIFFS and then preloaded it from SPIFFS
+    globalSequences._bars.ui16IxNumbOfBarToPreload = __i16_target_bar;
+    globalSequences._bars._preloadNextBar(globalSequences._bars.ui16IxNumbOfBarToPreload);
   } else {
     // 2.a: create a bar
-    __target_bar = {std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}};
+    __target_bar = bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}, -2};
+    globalSequences._bars.nextBar = __target_bar;
   }
 
   activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
 
   // 3. play it
-  globalSequences._bars.playBar(__target_bar, activeBeat);
+  globalSequences._bars.playBar(activeBeat);
 }
 
 

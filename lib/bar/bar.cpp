@@ -418,15 +418,13 @@ bar const & bars::at(const uint16_t __ui16_bar_id) const {
 ///////////////////////////////////
 // Player
 ///////////////////////////////////
-/** bars::playBar():
+/** bars::playBar(beat const & __beat):
  *  
- *  play a single bar calculating the durations
- *  on the basis of the passed-in beat.
+ *  play the preloaded bar.
  * 
- *  {@ params} const bar & __target_bar: bar to be played
  *  {@ params} beat const & __beat: beat to be taken into account
  *             to calculate the notes duration */
-uint16_t const bars::playBar(const bar & __target_bar, beat const & __beat) {
+uint16_t const bars::playBar(beat const & __beat) {
   // 0. Do not do anything if the beat has not been set
   if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0)) {
     return 0;
@@ -434,7 +432,7 @@ uint16_t const bars::playBar(const bar & __target_bar, beat const & __beat) {
 
   // 1. set the passed-in bar as active (setActive() will also call 
   //    disableAndResetTPlayBar() and _notes._disableAndResetTPlayNote())
-  if (setActive(__target_bar) == -2) {
+  if (setActive(nextBar) == -2) {
     return 1;
   };
   

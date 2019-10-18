@@ -77,7 +77,7 @@ class bars
     bar const & at(const uint16_t __ui16_bar_id) const;
 
     /** player */
-    uint16_t const playBar(const bar & __target_bar, beat const & __beat);
+    uint16_t const playBar(beat const & __beat);
     Task tPlayBar;
 
     /** Task - preload next bar from SPIFFS */
