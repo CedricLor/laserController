@@ -18,7 +18,7 @@ class sequence
   public:
     /** constructors */
     sequence();
-    sequence(const beat & __beat, std::array<uint16_t, 8> & __ui16BarsArray, int16_t __i16IndexNumber=-2);
+    sequence(const beat & __beat, std::array<int16_t, 8> & __i16BarsArray, int16_t __i16IndexNumber=-2);
     sequence(const sequence& __sequence);
     sequence& operator=(const sequence& __sequence);
 
@@ -26,10 +26,9 @@ class sequence
     uint16_t const ui16GetBarCountInSequence() const;
     uint32_t const ui32GetSequenceDuration(beat const & __beat) const;
     beat const & getAssociatedBeat() const;
-    std::array<bar, 8> const & getBarsArray() const;
-    std::array<uint16_t, 8> const & getBarsIndexNumbersArray() const;
-    int16_t const ui16GetFirstBarIndexNumber() const;
-    int16_t const ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const;
+    std::array<int16_t, 8> const & getBarsIxNumbsArray() const;
+    int16_t const i16GetFirstBarIndexNumber() const;
+    int16_t const i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const;
 
     /** public instance properties */
     int16_t i16IndexNumber;
@@ -38,7 +37,7 @@ class sequence
 
     // instance properties
     beat _beat;
-    std::array<uint16_t, 8> _ui16BarsArray;
+    std::array<int16_t, 8> _i16BarIxNumbsArray;
 };
 
 
@@ -83,7 +82,7 @@ class sequences
     void _preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload);
     void _tcbPreloadNextSequence();
     void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
-    std::array<uint16_t, 8> & const _parseJsonBarsArray(const JsonArray& _jaBarsArray);
+    std::array<int16_t, 8> _parseJsonBarsArray(const JsonArray& _jaBarsArray);
 
   private:
     // variables

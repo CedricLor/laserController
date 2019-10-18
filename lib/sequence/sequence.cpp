@@ -23,26 +23,26 @@ Traductions en anglais:
 sequence::sequence():
   i16IndexNumber(-2),
   _beat(beat{0, 0}),
-  _ui16BarsArray({})
+  _i16BarIxNumbsArray({-2, -2, -2, -2, -2, -2, -2, -2})
 { 
 }
 
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
-  std::array<uint16_t, 8> & __ui16BarsArray,
+  std::array<int16_t, 8> & __i16BarIxNumbsArray,
   int16_t __i16IndexNumber
 ):
   i16IndexNumber(__i16IndexNumber),
   _beat(__beat),
-  _ui16BarsArray(__ui16BarsArray)
+  _i16BarIxNumbsArray(__i16BarIxNumbsArray)
 { }
 
 // copy constructor
 sequence::sequence(const sequence& __sequence):
   i16IndexNumber(__sequence.i16IndexNumber),
   _beat(__sequence._beat),
-  _ui16BarsArray(__sequence._ui16BarsArray)
+  _i16BarIxNumbsArray(__sequence._i16BarIxNumbsArray)
 { }
 
 // assignement operator
@@ -51,7 +51,7 @@ sequence& sequence::operator=(const sequence& __sequence)
   if (&__sequence != this) {
     i16IndexNumber = __sequence.i16IndexNumber;
     _beat = __sequence._beat;
-    _ui16BarsArray = __sequence._ui16BarsArray;
+    _i16BarIxNumbsArray = __sequence._i16BarIxNumbsArray;
   }
   return *this;
 }
@@ -75,7 +75,7 @@ sequence& sequence::operator=(const sequence& __sequence)
  * Returns the bar count in a given sequence. */
 uint16_t const sequence::ui16GetBarCountInSequence() const {
   uint16_t __ui16BarCountInSequence = 0;
-  while (getBarsArray().at(__ui16BarCountInSequence).ui16GetNotesCountInBar() > 0) {
+  while (getBarsIxNumbsArray().at(__ui16BarCountInSequence) != -2) {
     __ui16BarCountInSequence++;
   }
   return __ui16BarCountInSequence;
@@ -114,40 +114,40 @@ beat const & sequence::getAssociatedBeat() const {
 
 
 
-/**std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
+/**std::array<int16_t, 8> const & sequence::getBarsIxNumbsArray() const
  * 
  * Instance getter.
  * 
  * Returns a const ref to an array of bars index numbers
  *  */
-std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
+std::array<int16_t, 8> const & sequence::getBarsIxNumbsArray() const
 {
-  return _ui16BarsArray;
+  return _i16BarIxNumbsArray;
 }
 
 
 
-/**std::array<uint16_t, 8> const & sequence::getBarsIndexNumbersArray() const
+/**int16_t const sequence::i16GetFirstBarIndexNumber
  * 
  * Instance getter.
  * 
  * Returns the index number of the first bar in the sequence as a const uint16_t
  *  */
-int16_t const sequence::ui16GetFirstBarIndexNumber() const {
-  return _ui16BarsArray.at(0);
+int16_t const sequence::i16GetFirstBarIndexNumber() const {
+  return _i16BarIxNumbsArray.at(0);
 }
 
 
 
-/**int16_t const sequence::ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const
+/**int16_t const sequence::i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const
  * 
  * Instance getter.
  * 
  * Returns the index number of a bar in the bars database, given such bar's index
  * number in the array of bars associated to this sequence
  *  */
-int16_t const sequence::ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const {
-  return _ui16BarsArray.at(ui16BarIxNumbInSequence);
+int16_t const sequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSequence) const {
+  return _i16BarIxNumbsArray.at(__ui16BarIxNumbInSequence);
 }
 
 
@@ -185,7 +185,7 @@ sequences::sequences(
   sendCurrentSequence(_sendCurrentSequence),
   sequencesArray(),
   _bars(),
-  ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast sequenceIndex as an int16, to initialize at -1
+  ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
   nextSequence(),
   sequenceFileName("/sequences.json"),
   tPlaySequence(),
@@ -224,7 +224,7 @@ sequences::sequences(
    *  In the following _relaysBarsArray exemple, the array of bars only contains
    *  one single bar (0)). It could contain more.
    * */
-  std::array<uint16_t, 8> _relaysBarsArray {0};
+  std::array<int16_t, 8> _relaysBarsArray {0};
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white 
@@ -240,19 +240,19 @@ sequences::sequences(
 
 
   // --> Sequence 1: "Twins"
-  std::array<uint16_t, 8> _twinsBarsArray {1};
+  std::array<int16_t, 8> _twinsBarsArray {1};
   sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1};
   // {"bt":{"bpm":2,"base":1}, "brs":[1], "ix":1}
 
 
   // --> Sequence 2: "All"
-  std::array<uint16_t, 8> _allBarsArray {2};
+  std::array<int16_t, 8> _allBarsArray {2};
   sequencesArray[2] = {_beat_2_1, _allBarsArray, 2};
   // {"bt":{"bpm":2,"base":1}, "brs":[2], "ix":2}
 
 
   // --> Sequence 3: "Swipe Right"
-  std::array<uint16_t, 8> _swipeRBarsArray {3};
+  std::array<int16_t, 8> _swipeRBarsArray {3};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white 
@@ -263,13 +263,13 @@ sequences::sequences(
 
 
   // --> Sequence 4: "Swipe Left"
-  std::array<uint16_t, 8> _swipeLBarsArray {4};
+  std::array<int16_t, 8> _swipeLBarsArray {4};
   sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 4};
   // {"bt":{"bpm":120,"base":1}, "brs":[4], "ix":4}
 
 
   // --> Sequence 5: "All Off"
-  std::array<uint16_t, 8> _allOffBarsArray {5};
+  std::array<int16_t, 8> _allOffBarsArray {5};
   sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 5};
   // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
 
@@ -299,7 +299,7 @@ sequences::sequences(
 uint16_t sequences::setActive(const sequence & __activeSequence) {
   disableAndResetTPlaySequence();
   _activeSequence = __activeSequence;
-  _bars.ui16IxNumbOfBarToPreload = _activeSequence.ui16GetFirstBarIndexNumber();
+  _bars.ui16IxNumbOfBarToPreload = _activeSequence.i16GetFirstBarIndexNumber();
   _bars.tPreloadNextBar.restart();
   return _activeSequence.i16IndexNumber;
 }
@@ -505,7 +505,7 @@ void sequences::_tcbPlaySequence() {
   tPlaySequence.setInterval(__ui32ThisBarDuration);
 
   /**5. Preload the next bar*/
-  _bars.ui16IxNumbOfBarToPreload = _activeSequence.ui16GetBarIndexNumber(_ui16Iter + 1);
+  _bars.ui16IxNumbOfBarToPreload = _activeSequence.i16GetBarIndexNumber(_ui16Iter + 1);
   _bars.tPreloadNextBar.restart();
 
   Serial.println("sequences::_tcbPlaySequence(). over.");
@@ -577,7 +577,7 @@ void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
   // {"bt":{"bpm":2,"base":1}, "brs":[0,3,2,6], "ix":0}
   Serial.println("sequences::_preloadNextSequenceFromJSON: starting");
   // Load _joSequence["brs"] into an std::array
-  std::array<uint16_t, 8> & __ui16BarsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
+  std::array<int16_t, 8> __i16BarsIxNumbsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
 
   // Load the next sequence into a sequence instance
   nextSequence = {
@@ -585,20 +585,20 @@ void sequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
       _joSequence["bt"]["bpm"].as<uint16_t>(),
       _joSequence["bt"]["base"].as<uint16_t>()
     },
-    __ui16BarsArray,
+    __i16BarsIxNumbsArray,
     _joSequence["ix"].as<int16_t>()
   };
 }
 
 
 
-std::array<uint16_t, 8> & const sequences::_parseJsonBarsArray(const JsonArray& _jaBarsArray) {
+std::array<int16_t, 8> sequences::_parseJsonBarsArray(const JsonArray& _jaBarsArray) {
   // "brs":[0,3,2,6]
   int16_t _barIx = 0;
-  std::array<uint16_t, 8> __ui16BarsArray {};
+  std::array<int16_t, 8> __i16BarsIxNumbsArray {};
   for (JsonVariant _JsonBarIxNumber : _jaBarsArray) {
-    __ui16BarsArray.at(_barIx) = _JsonBarIxNumber;
+    __i16BarsIxNumbsArray.at(_barIx) = _JsonBarIxNumber;
     _barIx++;
   }
-  return __ui16BarsArray;
+  return __i16BarsIxNumbsArray;
 }
