@@ -14,9 +14,8 @@ sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init() {
   beatNS::init();
-  mns::myScheduler.addTask(globalSequences.tPlaySequenceInLoop);
-  mns::myScheduler.addTask(globalSequences.tPlaySequence);
   mns::myScheduler.addTask(globalSequences.tPreloadNextSequence);
+  mns::myScheduler.addTask(globalSequences.tPlaySequence);
   mns::myScheduler.addTask(globalSequences._bars.tPlayBar);
   mns::myScheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
   mns::myScheduler.addTask(globalSequences._bars.tPreloadNextBar);
@@ -109,7 +108,8 @@ void laserInterface::sequenceNS::play(const int16_t __i16SequenceNb) {
 
 void laserInterface::sequenceNS::lockStack() {
   ControlerBox::setBoxActiveStateFromWeb(0);
-  globalSequences.tPlaySequenceInLoop.disable();
+  globalSequences.setStopCallbackForTPlaySequence();
+  globalSequences.tPlaySequence.disable();
 }
 
 

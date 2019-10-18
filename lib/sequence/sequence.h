@@ -46,7 +46,6 @@ class sequences
 {
 
   public:
-
     /** constructors */
     sequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
     // sequences(const sequences& __sequences);
@@ -66,7 +65,8 @@ class sequences
     
     /** setters */
     uint16_t setActive(const sequence & __ActiveSequence);
-    void disableAndResetPlaySequenceTasks();
+    void disableAndResetTPlaySequence();
+    void setStopCallbackForTPlaySequence();
 
     /** getters */
     int16_t const i16GetCurrentSequenceId() const; // returns the current sequence i16IndexNumber
@@ -74,8 +74,7 @@ class sequences
     sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const;
 
     /** Task - sequence players */
-    uint16_t const playSequence(const sequence & __target_sequence, Task & __sequenceTask);
-    Task tPlaySequenceInLoop;
+    uint16_t const playSequence(const sequence & __target_sequence);
     Task tPlaySequence;
 
     /** Task - preload next sequence from SPIFFS */
@@ -92,13 +91,10 @@ class sequences
     sequence & _activeSequence = _defaultSequence;
 
     // tasks callbacks
-    bool _oetcbPlaySequenceInLoop();
-    void _tcbPlaySequenceInLoop();
-    void _odtcbPlaySequenceInLoop();
-
     bool _oetcbPlaySequence();
     void _tcbPlaySequence();
     void _odtcbPlaySequence();
+    void _odtcbPlaySequenceStop();
 };
 
 #endif

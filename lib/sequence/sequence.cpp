@@ -83,24 +83,6 @@ uint16_t const sequence::ui16GetBarCountInSequence() const {
 
 
 
-/** uint32_t const sequence::ui32GetSequenceDuration()
- * 
- * Instance getter.
- * 
- * Returns the sequence duration. 
- * Used to set the interval for tPlaySequenceInLoop. */
-uint32_t const sequence::ui32GetSequenceDuration(beat const & __beat) const {
-  uint32_t __ui32SequenceDuration = 0;
-  uint16_t __ui16BarCountInSequence = ui16GetBarCountInSequence();
-  for (uint16_t __ui = 0; __ui < __ui16BarCountInSequence; __ui++) {
-    __ui32SequenceDuration += getBarsArray().at(__ui).ui32GetBarDuration(__beat);
-  }
-
-  return __ui32SequenceDuration;
-}
-
-
-
 /**beat const & sequence::getAssociatedBeat() const 
  * 
  * Instance getter.
@@ -187,6 +169,9 @@ int16_t const sequence::ui16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequ
 
 
 
+
+
+
 //****************************************************************//
 // Sequences //***************************************************//
 //****************************************************************//
@@ -203,14 +188,13 @@ sequences::sequences(
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast sequenceIndex as an int16, to initialize at -1
   nextSequence(),
   sequenceFileName("/sequences.json"),
-  tPlaySequenceInLoop(),
   tPlaySequence(),
   tPreloadNextSequence(),
   _defaultSequence(),
   _activeSequence(_defaultSequence)
 {
-  // 1. Disable and reset the Task tPlaySequence and tPlaySequenceInLoop
-  disableAndResetPlaySequenceTasks();
+  // 1. Disable and reset the Task tPlaySequence
+  disableAndResetTPlaySequence();
 
   // 2. Define sequencesArray, an array containing a series of hard coded sequences
 
@@ -228,8 +212,8 @@ sequences::sequences(
    *  match the key given at the beginning of the sequence).
    * 
    *  As a consequence of the removal of this param, bars sized to any number of base notes
-   *  can be inserted in sequence, and the sequence will just adapt its tPlaySequence and 
-   *  tPlaySequenceInLoop interval to the various bars durations.
+   *  can be inserted in sequence, and sequences will just adapt its tPlaySequence
+   *  interval to the various bars durations.
    * */
   
 
@@ -313,7 +297,7 @@ sequences::sequences(
  *  public instance setter 
  * */
 uint16_t sequences::setActive(const sequence & __activeSequence) {
-  disableAndResetPlaySequenceTasks();
+  disableAndResetTPlaySequence();
   _activeSequence = __activeSequence;
   _bars.ui16IxNumbOfBarToPreload = _activeSequence.ui16GetFirstBarIndexNumber();
   _bars.tPreloadNextBar.restart();
@@ -326,19 +310,10 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
 
 
 
-/** sequences::disableAndResetPlaySequenceTasks(): public setter method
+/** sequences::disableAndResetTPlaySequence(): public setter method
  * 
- *  Resets the parameters of the Tasks [tPlaySequence/tPlaySequenceInLoop] 
- *  to their default parameters, to play a sequence, as instructed from a boxState
- *  or stand alone. 
- * 
- *  Task tPlaySequenceInLoop default parameters:
- *  - interval: 0 second;
- *  - iteration forever;
- *  - main callback: &_tcbPlaySequenceInLoop;
- *  - onEnable callback: &_oetcbPlaySequenceInLoop;
- *  - onDisable callback: &_odtcbPlaySequenceInLoop;
- *  - added to myScheduler in setup(); disabled by default.
+ *  Resets the parameters of the Tasks tPlaySequence to its default parameters, 
+ *  to play a sequence, as instructed from a boxState or stand alone. 
  * 
  *  Task tPlaySequence default parameters:
  *  - interval: 0 second;
@@ -351,13 +326,10 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  *  This method disableAndResetPlaySequenceTasks() is called by sequences (from
  *  sequences.setActive()).
  * 
- *  Task tPlaySequenceInLoop is enabled upon entering a new boxState.
- *  It is disabled upon exiting a boxState.
- * 
- *  Task tPlaySequence is enabled by tPlaySequenceInLoop onEnable callback.
+ *  Task tPlaySequence is enabled upon entering a new boxState.
  *  It is disabled:
  *  - alone, at the expiration of its programmed iterations; or
- *  - by the onDisable callback of tPlaySequenceInLoop.
+ *  - by the onDisable callback of tPlayBoxState.
  *  
  *  Each iteration of tPlaySequence corresponds to one bar in the sequence.
  *  Task tPlaySequence iterations parameter is set, once, in its onEnable callback.
@@ -365,12 +337,20 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  * 
  *  public instance setter 
  * */
-void sequences::disableAndResetPlaySequenceTasks() {
+void sequences::disableAndResetTPlaySequence() {
   _bars.disableAndResetTPlayBar();
   tPlaySequence.disable();
   tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
-  tPlaySequenceInLoop.disable();
-  tPlaySequenceInLoop.set(0, -1, [&](){_tcbPlaySequenceInLoop();}, [&](){return _oetcbPlaySequenceInLoop();}, [&](){return _odtcbPlaySequenceInLoop();});
+}
+
+
+
+
+
+
+
+void sequences::setStopCallbackForTPlaySequence() {
+  tPlaySequence.setOnDisable([&](){return _odtcbPlaySequenceStop();});
 }
 
 
@@ -433,9 +413,8 @@ sequence const & sequences::getSequenceFromSequenceArray(const uint16_t __ui16_s
  * 
  *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose)
- *  {@ params} task & __sequenceTask: either tPlaySequence or tPlaySequenceInLoop 
  * */
-uint16_t const sequences::playSequence(const sequence & __target_sequence, Task & __sequenceTask) {
+uint16_t const sequences::playSequence(const sequence & __target_sequence) {
   // 0. Do not do anything if the beat has not been set
   if ((__target_sequence._beat.getBaseBeatInBpm() == 0) || (__target_sequence._beat.getBaseNoteForBeat() == 0)) {
     return 0;
@@ -447,7 +426,7 @@ uint16_t const sequences::playSequence(const sequence & __target_sequence, Task 
   }
 
   // 2. restart the tPlaySequence or tPlaySequenceStandAlone Task
-  __sequenceTask.restart();
+  tPlaySequence.restart();
 
   // 3. return 2 for success
   return 2;
@@ -458,110 +437,8 @@ uint16_t const sequences::playSequence(const sequence & __target_sequence, Task 
 
 
 
-
-
-
-
-
-
 ///////////////////////////////////
-// Loop Player
-///////////////////////////////////
-/**
- *  tPlayBoxState plays once (unless restarted by tPlayBoxStates)
- *    - tPlayBoxState -> onEnable: enables tPlaySequenceInLoop by calling
- *      playSequenceInBoxState();
- *    - tPlayBoxState -> onDisable: disables tPlaySequenceInLoop
- *  tPlaySequenceInLoop plays forever (until interrupt by tPlayBoxState):
- *    - tPlaySequenceInLoop -> onEnable: calculates the sequence duration and
- *      sets the interval for tPlaySequenceInLoop
- *    - tPlaySequenceInLoop -> main callback: starts tPlaySequence
- *    - tPlaySequenceInLoop -> onDisable: plays sequence 5 (all off) */
-
-/** tPlaySequenceInLoop
- * 
- *  tPlaySequenceInLoop plays a sequence in loop, for an unlimited number
- *  of iterations, until it is disabled by tPlayBoxState.
- * 
- *  tPlaySequenceInLoop is enabled and disabled by the onEnable and
- *  onDisable callbacks of tPlayBoxState.
- * 
- *  Upon entering a new boxState (startup, IR signal received, etc.), the onEnable 
- *  callback of tPlayBoxState task calls the playSequenceInBoxState() method of
- *  sequence::sequences[_currentBoxState.ui16AssociatedSequence].
- * 
- *  _currentBoxState.ui16AssociatedSequence is the index number, in the 
- *  sequences array, of the sequence associated with the calling boxState.
- * 
- *  This Task tPlaySequenceInLoop is enabled by playSequenceInBoxState, until 
- *  being disabled by the bxStateColl.tPlayBoxState onDisable callback
- *  (bxStateColl._odtcbPlayBoxState).
- * */
-
-
-
-/** bool sequences::_oetcbPlaySequenceInLoop()
- * 
- *  Set the interval between each iteration of tPlaySequenceInLoop.
- *  Each iteration will restart the Task tPlaySequence. Accordingly,
- *  this interval shall be equal to the duration of the sequence.
- * 
- *  This interval will only be taken into account AFTER the MAIN 
- *  callback has been called ==> the forenext iteration. Accordingly,
- *  the first iteration of the Task tPlaySequenceInLoop will occur "immediately 
- *  after" the onEnable callback, as the default interval for this Task is set to 0.
- * 
- *  The calculation of the interval is made based on the basis of the 
- *  base beat in bpm, the base note per beat, the number of base notes 
- *  per bars and the number of bars in the sequence.
- * 
- *  _oetcbPlaySequenceInLoop() does NOT start playing the sequence (i.e. it does
- *  NOT restart Task tPlaySequence). Task tPlaySequence is restarted in the main 
- *  callback of tPlaySequenceInLoop.
- * */
-bool sequences::_oetcbPlaySequenceInLoop() {
-  Serial.println("sequences::_oetcbPlaySequenceInLoop(). starting. *****");
-
-  tPlaySequenceInLoop.setInterval(_activeSequence.ui32GetSequenceDuration(_activeSequence._beat));
-
-  Serial.println("sequences::_oetcbPlaySequenceInLoop(). over.");
-  return true;
-}
-
-
-
-
-void sequences::_tcbPlaySequenceInLoop() {
-  Serial.println("sequences::_tcbPlaySequenceInLoop(). starting. ******");
-
-  Serial.println("sequences::_tcbPlaySequenceInLoop(). about to enable tPlaySequence");
-  tPlaySequence.restart(); // <-- TODO: replace by a call to playSequenceInBoxState or something similar
-
-  Serial.println("sequences::_tcbPlaySequenceInLoop(). over.");
-}
-
-
-
-
-/** On disable tPlaySequenceInLoop, turn off all the laser by playing
- *  sequence 5 ("all off"). 
- * */
-void sequences::_odtcbPlaySequenceInLoop() {
-  Serial.println("sequences::_odtcbPlaySequenceInLoop(). starting. ******");
-  if (_activeSequence.i16IndexNumber != 5) {
-    playSequence(sequencesArray[5], tPlaySequenceInLoop);
-  }
-  Serial.println("sequences::_odtcbPlaySequenceInLoop(). over.");
-};
-
-
-
-
-
-
-
-///////////////////////////////////
-// Single Sequence Player
+// Sequence Player
 ///////////////////////////////////
 /** Task tPlaySequence.
  *  
@@ -636,14 +513,30 @@ void sequences::_tcbPlaySequence() {
 
 
 
-/** tPlaySequence disable callback */
+/** tPlaySequence disable loop (default) callback 
+ * */
 void sequences::_odtcbPlaySequence() {
-  // if (MY_DG_LASER) {
-  //   Serial.println("----------------------------on disable tPlaySequence ------------------------------");
-  //   Serial.print("sequences::_odtcbPlaySequence(). millis() = ");Serial.println(millis());
-  //   Serial.println("sequences::_odtcbPlaySequence(). tPlaySequence BYE BYE!");
-  // }
+  Serial.println("sequences::_odtcbPlaySequence(). Restarting the sequence.");
+  tPlaySequence.restart(); // <-- TODO: replace by a call to playSequence or something similar
 }
+
+
+
+/** tPlaySequence disable stop (non-default) callback
+ * 
+ *  Turns off all the laser by playing sequence 5 ("all off"). 
+ * */
+void sequences::_odtcbPlaySequenceStop() {
+  Serial.println("sequences::_odtcbPlaySequenceStop(). starting.");
+  if (_activeSequence.i16IndexNumber != 5) {
+    playSequence(sequencesArray[5]);
+}
+  Serial.println("sequences::_odtcbPlaySequenceStop(). over.");
+};
+
+
+
+
 
 
 
