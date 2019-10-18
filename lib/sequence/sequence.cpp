@@ -491,7 +491,7 @@ void sequences::_tcbPlaySequence() {
   _ui16Iter = ((0 == _ui16Iter) ? 0 : (_ui16Iter - 1));
 
   // 2. Calculate the bar duration
-  uint32_t __ui32ThisBarDuration = _activeSequence.getBarsArray().at(_ui16Iter).ui32GetBarDuration(_activeSequence._beat);
+  uint32_t __ui32thisBarDuration = _bars.nextBar.ui32GetBarDuration(_activeSequence._beat);
 
   // 3. Play the corresponding bar
   _bars.playBar(_activeSequence._beat);
@@ -502,7 +502,7 @@ void sequences::_tcbPlaySequence() {
    *    Task sequences::tPlaySequence. This marks the duration of each bar played in the
    *    context of a sequence.
    *  */
-  tPlaySequence.setInterval(__ui32ThisBarDuration);
+  tPlaySequence.setInterval(__ui32thisBarDuration);
 
   /**5. Preload the next bar*/
   _bars.ui16IxNumbOfBarToPreload = _activeSequence.i16GetBarIndexNumber(_ui16Iter + 1);
