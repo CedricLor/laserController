@@ -72,9 +72,7 @@ class bars
     /** getters */
     int16_t const i16GetCurrentBarId() const; // returns the current bar's i16IndexNumber
     bar const & getCurrentBar() const;
-    bar const & getBarFromBarArray(const uint16_t __ui16_bar_id) const;
     notes & getNotes();
-    bar const & at(const uint16_t __ui16_bar_id) const;
 
     /** player */
     uint16_t const playBar(beat const & __beat);
@@ -93,7 +91,6 @@ class bars
     bar _defaultBar;
     bar & _activeBar = _defaultBar;
     notes _notes;
-    std::array<bar, 7> _barsArray;
 
     /** player callbacks */
     void _tcbPlayBar(beat const & __beat);

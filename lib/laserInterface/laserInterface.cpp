@@ -127,7 +127,9 @@ void laserInterface::barNS::initComm() {
 
 
 void laserInterface::barNS::setCurrent(const int16_t __i16_target_bar_id) {
-    globalSequences._bars.setActive(globalSequences._bars.getBarFromBarArray(__i16_target_bar_id));
+    globalSequences._bars.ui16IxNumbOfBarToPreload = __i16_target_bar_id;
+    globalSequences._bars._preloadNextBar(__i16_target_bar_id);
+    globalSequences._bars.setActive(globalSequences._bars.nextBar);
 }
 
 
@@ -147,7 +149,7 @@ void laserInterface::barNS::sendCurrent(const int16_t __i16_current_bar_id) {
  *             for a given beat. ex. 4, a black
  *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
  *             in bpm. ex. 120 bpm (500 ms) */
-void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar) {
+void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar_id) {
   /** 1. lock bar to avoid getting signal from a boxState or sequence player*/
   barNS::lockStack();
 
@@ -159,9 +161,9 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
    * 
    *     TODO: make a choice. And try to change the bar factory in the bars class */
   bar __target_bar;
-  if (__i16_target_bar != -1) {
+  if (__i16_target_bar_id != -1) {
     // 2.a: set the number of the bar to preload from SPIFFS and then preloaded it from SPIFFS
-    globalSequences._bars.ui16IxNumbOfBarToPreload = __i16_target_bar;
+    globalSequences._bars.ui16IxNumbOfBarToPreload = __i16_target_bar_id;
     globalSequences._bars._preloadNextBar(globalSequences._bars.ui16IxNumbOfBarToPreload);
   } else {
     // 2.a: create a bar

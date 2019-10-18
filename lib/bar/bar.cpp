@@ -193,8 +193,7 @@ bars::bars(
   tPlayBar(),
   _defaultBar(),
   _activeBar(_defaultBar),
-  _notes(),
-  _barsArray({})
+  _notes()
 {
   // 1. Disable and reset the Task tPlayBar
   disableAndResetTPlayBar();
@@ -230,18 +229,9 @@ bars::bars(
    * => 2 / 1 
    * {"nts":[{"t":7,"n":1},{"t":8,"n":1}], "ix":0}
    * 
-   * */
-  
-  // Serial.println("bars::bars. before creating _aRelays");
-  std::array<note, 16> _aRelays {note(7,1), note(8,1)};
-  // Serial.println("bars::bars. _aRelays created");
-  _barsArray[0] = {_aRelays, 0};
-  // Serial.println("bars::bars. _barsArray[0] copy assigned");
-  // Serial.printf("bars::bars. _barsArray[0].ui16GetBaseNotesCountInBar() == 2 ? %i\n", _barsArray[0].ui16GetBaseNotesCountInBar() == 2);
-  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getToneNumber() = %u\n", _barsArray[0].getNotesArray().at(0).getToneNumber());
-  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getToneNumber() == 7 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getToneNumber() == 7) ? "true" : "false") );
-  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getNote() = %u\n", _barsArray[0].getNotesArray().at(0).getNote());
-  // Serial.printf("bars::bars. _barsArray[0].getNotesArray().at(0).getNote() == 1 ? %s\n", ( (_barsArray[0].getNotesArray().at(0).getNote() == 1) ? "true" : "false") );
+   * */  
+  // std::array<note, 16> _aRelays {note(7,1), note(8,1)};
+  // _barsArray[0] = {_aRelays, 0};
 
   /** twins
    * duration of a beat in bpm: 2
@@ -251,8 +241,8 @@ bars::bars(
    * {"nts":[{"t":5,"n":1},{"t":6,"n":1}], "ix":1}
    * 
    * */
-  std::array<note, 16> _aTwins {note(5,1), note(6,1)};
-  _barsArray[1] = {_aTwins, 1};
+  // std::array<note, 16> _aTwins {note(5,1), note(6,1)};
+  // _barsArray[1] = {_aTwins, 1};
 
   /** all 
    * duration of a beat in bpm: 2
@@ -262,8 +252,8 @@ bars::bars(
    * {"nts":[{"t":15,"n":1},{"t":1,"n":1}], "ix":2}
    * 
    * */
-  std::array<note, 16> _aAll {note(15,1), note(0,1)};
-  _barsArray[2] = {_aAll, 2};
+  // std::array<note, 16> _aAll {note(15,1), note(0,1)};
+  // _barsArray[2] = {_aAll, 2};
 
   /** swipeRight
    * duration of a beat in bpm: 120
@@ -273,8 +263,8 @@ bars::bars(
    * {"nts":[{"t":1,"n":1},{"t":2,"n":1},{"t":3,"n":1},{"t":4,"n":1}], "ix":3}
    * 
    * */
-  std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
-  _barsArray[3] = {_aSwipeR, 3};
+  // std::array<note, 16> _aSwipeR {note(1,1), note(2,1), note(2,1), note(4,1)};
+  // _barsArray[3] = {_aSwipeR, 3};
 
   /** swipeLeft
    * duration of a beat in bpm: 120
@@ -284,8 +274,8 @@ bars::bars(
    * {"nts":[{"t":4,"n":1},{"t":3,"n":1},{"t":2,"n":1},{"t":1,"n":1}], "ix":3}
    * 
    * */
-  std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
-  _barsArray[4] = {_aSwipeL, 4};
+  // std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
+  // _barsArray[4] = {_aSwipeL, 4};
 
   /** all off
    * duration of a beat in bpm: 2
@@ -295,8 +285,8 @@ bars::bars(
    * {"nts":[{"t":5,"n":1},{"t":0,"n":1}], "ix":3}
    * 
    * */
-  std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
-  _barsArray[5] = {_aAllOff, 5};
+  // std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
+  // _barsArray[5] = {_aAllOff, 5};
 
 }
 
@@ -386,30 +376,11 @@ bar const & bars::getCurrentBar() const {
 
 
 
-/** bar const & bars::getBarFromBarArray(const uint16_t __ui16_bar_id)
- * 
- * Returns a ref to one of the hard coded bars given its index number */
-bar const & bars::getBarFromBarArray(const uint16_t __ui16_bar_id) const {
-  return _barsArray.at(__ui16_bar_id);
-}
-
-
-
 /** notes & bar::getNotes()
  * 
  * Returns a ref to the notes instance stored in bars */
 notes & bars::getNotes() {
   return _notes;
-}
-
-
-
-
-/** bar const & bars::at(const uint16_t __ui16_bar_id) const
- * 
- * Returns a ref to the notes instance stored in bars */
-bar const & bars::at(const uint16_t __ui16_bar_id) const {
-  return _barsArray.at(__ui16_bar_id);
 }
 
 
@@ -476,12 +447,15 @@ bool bars::_oetcbPlayBar(){
 /** _tcbPlayBar(): Task tPlayBar main callback
  *  Each pass corresponds to a note in the notes array property of the
  *  currently active bar.
- *   We leverage that to reset the interval of tPlayBar to the duration
- *   of the note.
- *   - At this iteration of tPlayBar, _tcbPlayBar enables tPlayNote (for a
- *     default duration of 30s. -> in the definition of tPlayNote, in class note.)
- *   - At the next iteration, which will occur after the interval corresponding
- *     to duration of the current note, tPlayBar will disable tPlayNote. 
+ * 
+ *  Accordingly, we reset the interval of tPlayBar to the duration of the note.
+ * 
+ *  - At this iteration of tPlayBar, _tcbPlayBar enables tPlayNote (for a
+ *    default duration of 30s. -> in the definition of tPlayNote, in class note.)
+ * 
+ *  - At the next iteration, which will occur after the interval corresponding
+ *    to duration of the current note, tPlayBar will disable tPlayNote (to stop 
+ *    playing the former note) and restart it (to start playing the next note).
  * */
 void bars::_tcbPlayBar(beat const & __beat){
   Serial.println("bars::_tcbPlayBar(). starting.");
