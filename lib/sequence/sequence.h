@@ -79,11 +79,6 @@ class sequences
     /** Task tPreloadNextSequence - preload next sequence from SPIFFS */
     Task tPreloadNextSequence;
 
-    void _preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload);
-    void _tcbPreloadNextSequence();
-    void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
-    std::array<int16_t, 8> _parseJsonBarsArray(const JsonArray& _jaBarsArray);
-
   private:
     // variables
     sequence _defaultSequence;
@@ -94,6 +89,13 @@ class sequences
     void _tcbPlaySequence();
     void _odtcbPlaySequence();
     void _odtcbPlaySequenceStop();
+
+    /** Task tPreloadNextSequence - callbacks and methods */
+    void _preloadNextSequence(const uint16_t _ui16IxNumbOfSequenceToPreload);
+    void _tcbPreloadNextSequence();
+    void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
+    std::array<int16_t, 8> _parseJsonBarsArray(const JsonArray& _jaBarsArray);
+
 };
 
 #endif
