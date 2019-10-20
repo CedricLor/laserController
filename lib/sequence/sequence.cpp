@@ -23,26 +23,30 @@ Traductions en anglais:
 sequence::sequence():
   i16IndexNumber(-2),
   _beat(beat{0, 0}),
-  _i16BarIxNumbsArray({-2, -2, -2, -2, -2, -2, -2, -2})
-{ 
+  _i16BarIxNumbsArray({}),
+  _i16barsArraySize(0)
+{
 }
 
 // parameterized constructor
 sequence::sequence(
   const beat & __beat,
   std::array<int16_t, 8> & __i16BarIxNumbsArray,
+  int16_t __i16barsArraySize,
   int16_t __i16IndexNumber
 ):
   i16IndexNumber(__i16IndexNumber),
   _beat(__beat),
-  _i16BarIxNumbsArray(__i16BarIxNumbsArray)
+  _i16BarIxNumbsArray(__i16BarIxNumbsArray),
+  _i16barsArraySize(__i16barsArraySize)
 { }
 
 // copy constructor
 sequence::sequence(const sequence& __sequence):
   i16IndexNumber(__sequence.i16IndexNumber),
   _beat(__sequence._beat),
-  _i16BarIxNumbsArray(__sequence._i16BarIxNumbsArray)
+  _i16BarIxNumbsArray(__sequence._i16BarIxNumbsArray),
+  _i16barsArraySize(__sequence._i16barsArraySize)
 { }
 
 // assignement operator
@@ -52,6 +56,7 @@ sequence& sequence::operator=(const sequence& __sequence)
     i16IndexNumber = __sequence.i16IndexNumber;
     _beat = __sequence._beat;
     _i16BarIxNumbsArray = __sequence._i16BarIxNumbsArray;
+    _i16barsArraySize = __sequence._i16barsArraySize;
   }
   return *this;
 }
@@ -74,11 +79,7 @@ sequence& sequence::operator=(const sequence& __sequence)
  *  
  * Returns the bar count in a given sequence. */
 uint16_t const sequence::ui16GetBarCountInSequence() const {
-  uint16_t __ui16BarCountInSequence = 0;
-  while (getBarsIxNumbsArray().at(__ui16BarCountInSequence) != -2) {
-    __ui16BarCountInSequence++;
-  }
-  return __ui16BarCountInSequence;
+  return _i16barsArraySize;
 }
 
 
@@ -199,7 +200,7 @@ sequences::sequences(
   const beat _beat_2_1(2,1);
   // Serial.printf("\nsequence::initSequences(). Passed building _beat_2_1.\n");
   // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
-  sequencesArray[0] = {_beat_2_1, _relaysBarsArray, 0};
+  sequencesArray[0] = {_beat_2_1, _relaysBarsArray, 1, 0};
   // {"bt":{"bpm":2,"base":1}, "brs":[0], "ix":0}
   // Serial.printf("\nsequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
   // Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
@@ -208,13 +209,13 @@ sequences::sequences(
 
   // --> Sequence 1: "Twins"
   std::array<int16_t, 8> _twinsBarsArray {1};
-  sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1};
+  sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1, 1};
   // {"bt":{"bpm":2,"base":1}, "brs":[1], "ix":1}
 
 
   // --> Sequence 2: "All"
   std::array<int16_t, 8> _allBarsArray {2};
-  sequencesArray[2] = {_beat_2_1, _allBarsArray, 2};
+  sequencesArray[2] = {_beat_2_1, _allBarsArray, 1, 2};
   // {"bt":{"bpm":2,"base":1}, "brs":[2], "ix":2}
 
 
@@ -225,19 +226,19 @@ sequences::sequences(
    *    _ui16BaseNoteForBeat = 1; a white 
    * */
   const beat _beat_120_1(120,1);
-  sequencesArray[3] = {_beat_120_1, _swipeRBarsArray, 3};
+  sequencesArray[3] = {_beat_120_1, _swipeRBarsArray, 1, 3};
   // {"bt":{"bpm":120,"base":1}, "brs":[3], "ix":3}
 
 
   // --> Sequence 4: "Swipe Left"
   std::array<int16_t, 8> _swipeLBarsArray {4};
-  sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 4};
+  sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 1, 4};
   // {"bt":{"bpm":120,"base":1}, "brs":[4], "ix":4}
 
 
   // --> Sequence 5: "All Off"
   std::array<int16_t, 8> _allOffBarsArray {5};
-  sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 5};
+  sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 1, 5};
   // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
 
   tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);

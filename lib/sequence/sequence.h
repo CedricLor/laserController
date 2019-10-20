@@ -18,7 +18,7 @@ class sequence
   public:
     /** constructors */
     sequence();
-    sequence(const beat & __beat, std::array<int16_t, 8> & __i16BarsArray, int16_t __i16IndexNumber=-2);
+    sequence(const beat & __beat, std::array<int16_t, 8> & __i16BarsArray, int16_t __i16barsArraySize, int16_t __i16IndexNumber=-2);
     sequence(const sequence& __sequence);
     sequence& operator=(const sequence& __sequence);
 
@@ -37,6 +37,7 @@ class sequence
     // instance properties
     beat _beat;
     std::array<int16_t, 8> _i16BarIxNumbsArray;
+    int16_t _i16barsArraySize;
 };
 
 
