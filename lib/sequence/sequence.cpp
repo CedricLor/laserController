@@ -299,8 +299,7 @@ sequences::sequences(
 uint16_t sequences::setActive(const sequence & __activeSequence) {
   disableAndResetTPlaySequence();
   _activeSequence = __activeSequence;
-  _bars.ui16IxNumbOfBarToPreload = _activeSequence.i16GetFirstBarIndexNumber();
-  _bars.tPreloadNextBar.restart();
+  _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
   return _activeSequence.i16IndexNumber;
 }
 
@@ -488,7 +487,6 @@ void sequences::_tcbPlaySequence() {
 
   // 1. Get the number of iterations (each iteration corresponds to one bar)
   uint16_t _ui16Iter = tPlaySequence.getRunCounter();
-  _ui16Iter = ((0 == _ui16Iter) ? 0 : (_ui16Iter - 1));
 
   // 2. Calculate the bar duration
   uint32_t __ui32thisBarDuration = _bars.nextBar.ui32GetBarDuration(_activeSequence._beat);
@@ -505,8 +503,7 @@ void sequences::_tcbPlaySequence() {
   tPlaySequence.setInterval(__ui32thisBarDuration);
 
   /**5. Preload the next bar*/
-  _bars.ui16IxNumbOfBarToPreload = _activeSequence.i16GetBarIndexNumber(_ui16Iter + 1);
-  _bars.tPreloadNextBar.restart();
+  _bars.preloadNextBarThroughTask(_ui16Iter);
 
   Serial.println("sequences::_tcbPlaySequence(). over.");
 };

@@ -82,6 +82,7 @@ class bars
     Task tPreloadNextBar;
 
     void preloadNextBarStraight(uint16_t _ui16IxNumbOfBarToPreload);
+    void preloadNextBarThroughTask(uint16_t _ui16IxNumbOfBarToPreload);
 
   private:
 
