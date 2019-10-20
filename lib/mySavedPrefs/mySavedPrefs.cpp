@@ -46,7 +46,6 @@ mySavedPrefs::mySavedPrefs() :
   *  gi16BoxDefaultState
   *  gui16NodeName
   *  gui8DefaultMasterNodeName;
-  *  iSlaveOnOffReaction
   *  isInterface
   */
 

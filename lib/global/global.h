@@ -31,14 +31,9 @@ extern bool               isInterface;
 extern bool               isRoot;
 extern uint32_t           ui32RootNodeId;
 
-extern const short        I_DEFAULT_SLAVE_ON_OFF_REACTION;
-
 extern uint16_t           gui16ControllerBoxPrefix;
 
-extern short              iSlaveOnOffReaction;
 extern uint16_t           gui16InterfaceNodeName;
-
-extern const char*        slaveReactionHtml[4];
 
 extern uint16_t           gui16BoxesCount;
 

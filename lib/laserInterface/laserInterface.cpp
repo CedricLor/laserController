@@ -14,12 +14,12 @@ sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init() {
   beatNS::init();
-  mns::myScheduler.addTask(globalSequences.tPreloadNextSequence);
-  mns::myScheduler.addTask(globalSequences._bars.tPreloadNextBar);
+  globalVariables.scheduler.addTask(globalSequences.tPreloadNextSequence);
+  globalVariables.scheduler.addTask(globalSequences._bars.tPreloadNextBar);
 
-  mns::myScheduler.addTask(globalSequences.tPlaySequence);
-  mns::myScheduler.addTask(globalSequences._bars.tPlayBar);
-  mns::myScheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
+  globalVariables.scheduler.addTask(globalSequences.tPlaySequence);
+  globalVariables.scheduler.addTask(globalSequences._bars.tPlayBar);
+  globalVariables.scheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
 
   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
 }
@@ -44,7 +44,7 @@ laserInterface::laserScheduler::laserScheduler(_Mode __mode)
 // boxStates stack
 /*******************/
 void laserInterface::boxStateNS::initComm() {
-    // boxState::sendCurrentBoxState = sendCurrent;
+    // bxStateColl.sendCurrentBoxState = sendCurrent;
 }
 
 
