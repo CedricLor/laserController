@@ -115,7 +115,15 @@ int16_t const sequence::i16GetFirstBarIndexNumber() const {
  * number in the array of bars associated to this sequence
  *  */
 int16_t const sequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSequence) const {
-  return _i16BarIxNumbsArray.at(__ui16BarIxNumbInSequence);
+  int16_t _ui16BarIxNumb = 5; // sequence 5: allOff
+  try {
+    _ui16BarIxNumb = _i16BarIxNumbsArray.at(__ui16BarIxNumbInSequence);
+}
+  catch (const std::out_of_range& oor) {
+    Serial.printf("sequence::i16GetBarIndexNumber() called with __ui16BarIxNumbInSequence. Out of range error: \n");
+    Serial.println(oor.what());
+  }
+  return _ui16BarIxNumb;
 }
 
 
