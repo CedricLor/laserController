@@ -72,11 +72,11 @@ class sequences
     sequence const & getCurrentSequence() const;
     sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const;
 
-    /** Task - sequence players */
+    /** Task tPlaySequence - sequence players */
     uint16_t const playSequence(const sequence & __target_sequence);
     Task tPlaySequence;
 
-    /** Task - preload next sequence from SPIFFS */
+    /** Task tPreloadNextSequence - preload next sequence from SPIFFS */
     Task tPreloadNextSequence;
 
     void _preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload);
@@ -89,7 +89,7 @@ class sequences
     sequence _defaultSequence;
     sequence & _activeSequence = _defaultSequence;
 
-    // tasks callbacks
+    /** Task tPlaySequence - callbacks and methods */
     bool _oetcbPlaySequence();
     void _tcbPlaySequence();
     void _odtcbPlaySequence();

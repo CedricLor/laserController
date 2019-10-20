@@ -118,7 +118,7 @@ int16_t const sequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSeq
   int16_t _ui16BarIxNumb = 5; // sequence 5: allOff
   try {
     _ui16BarIxNumb = _i16BarIxNumbsArray.at(__ui16BarIxNumbInSequence);
-}
+  }
   catch (const std::out_of_range& oor) {
     Serial.printf("sequence::i16GetBarIndexNumber() called with __ui16BarIxNumbInSequence. Out of range error: \n");
     Serial.println(oor.what());
@@ -461,36 +461,32 @@ void sequences::_tcbPlaySequence() {
   Serial.println("sequences::_tcbPlaySequence(). starting.");
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
-  // 1. Get the number of iterations (each iteration corresponds to one bar)
-  uint16_t _ui16Iter = tPlaySequence.getRunCounter();
-
-  // 2. Calculate the bar duration
-  uint32_t __ui32thisBarDuration = _bars._activeBar.ui32GetBarDuration(_activeSequence._beat);
-
-  // 3. Play the corresponding bar
+  /**1. Play the active bar*/
   _bars.playBar(_activeSequence._beat);
 
-  /**4. Set the interval for next iteration of tPlaySequence
+  /**2. Set the interval for next iteration of tPlaySequence
    * 
-   *    At each pass, reset the interval before the next iteration of this 
-   *    Task sequences::tPlaySequence. This marks the duration of each bar played in the
-   *    context of a sequence.
+   *    At each pass, reset the interval before the next iteration of this Task.
+   *    This marks the duration of each bar played in the context of a sequence.
    *  */
-  tPlaySequence.setInterval(__ui32thisBarDuration);
+  tPlaySequence.setInterval(_bars.nextBar.ui32GetBarDuration(_activeSequence._beat));
 
-  /**5. Preload the next bar*/
-  _bars.preloadNextBarThroughTask(_ui16Iter);
+  /**3. Preload the next bar*/
+  _bars.preloadNextBarThroughTask(_activeSequence.i16GetBarIndexNumber(tPlaySequence.getRunCounter()));
 
   Serial.println("sequences::_tcbPlaySequence(). over.");
 };
 
 
 
-/** tPlaySequence disable loop (default) callback 
+/** sequences::_odtcbPlaySequence()
+ * 
+ *  tPlaySequence disable loop (default) callback 
  * */
 void sequences::_odtcbPlaySequence() {
-  Serial.println("sequences::_odtcbPlaySequence(). Restarting the sequence.");
-  tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeSequence._beat)); // <-- TODO: replace by a call to playSequence or something similar
+  Serial.println("sequences::_odtcbPlaySequence(). Will restart playing the active sequence once its last bar has been played.");
+  _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
+  tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeSequence._beat));
 }
 
 
@@ -500,11 +496,10 @@ void sequences::_odtcbPlaySequence() {
  *  Turns off all the laser by playing sequence 5 ("all off"). 
  * */
 void sequences::_odtcbPlaySequenceStop() {
-  Serial.println("sequences::_odtcbPlaySequenceStop(). starting.");
+  Serial.println("sequences::_odtcbPlaySequenceStop(). Will start to play sequence 5 (allOff).");
   if (_activeSequence.i16IndexNumber != 5) {
     playSequence(sequencesArray[5]);
 }
-  Serial.println("sequences::_odtcbPlaySequenceStop(). over.");
 };
 
 
