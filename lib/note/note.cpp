@@ -358,7 +358,7 @@ bool const notes::playNote(const note & __note, const beat & __beat) {
  *  On enable Task _tNote, turn the lasers to a given laserTone */
 bool notes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). starting");
-  if (MY_DG_LASER) {
+  if (globalBaseVariables.MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play laserTone number (_activeNote.getLaserToneNumber()) %u\n", _activeNote.getLaserToneNumber());
     Serial.printf("note::_oetcbPlayNote(). Going to play laserTone number (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber) %i\n", _laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber);
     Serial.printf("note::_oetcbPlayNote(). TEST: (_activeNote.getLaserToneNumber()) == (_laser_tones.at(_activeNote.getLaserToneNumber()).i16IndexNumber): [%i]\n", (_activeNote.getLaserToneNumber()) == (_laserTones.at(_activeNote.getLaserToneNumber()).i16IndexNumber));
@@ -377,7 +377,7 @@ bool notes::_oetcbPlayNote() {
  *  On disable Task _tNote, turn off all the lasers */
 void notes::_odtcbPlayNote() {
   Serial.println("note::_odtcbPlayNote(). starting");
-  if (MY_DG_LASER) {
+  if (globalBaseVariables.MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");
   }
   _activeNote._setLaserTone(_laserTones.at(0)); // _laserTones.at(0) means turn off all the lasers

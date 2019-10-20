@@ -33,7 +33,7 @@ myMeshStarter::myMeshStarter() {};
 
 
 void myMeshStarter::myMeshSetup() {
-  if ( MY_DEBUG == true ) {
+  if ( globalBaseVariables.MY_DEBUG == true ) {
     // laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
     laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
   }

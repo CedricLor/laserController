@@ -14,12 +14,12 @@ sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init() {
   beatNS::init();
-  globalVariables.scheduler.addTask(globalSequences.tPreloadNextSequence);
-  globalVariables.scheduler.addTask(globalSequences._bars.tPreloadNextBar);
+  globalBaseVariables.scheduler.addTask(globalSequences.tPreloadNextSequence);
+  globalBaseVariables.scheduler.addTask(globalSequences._bars.tPreloadNextBar);
 
-  globalVariables.scheduler.addTask(globalSequences.tPlaySequence);
-  globalVariables.scheduler.addTask(globalSequences._bars.tPlayBar);
-  globalVariables.scheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
+  globalBaseVariables.scheduler.addTask(globalSequences.tPlaySequence);
+  globalBaseVariables.scheduler.addTask(globalSequences._bars.tPlayBar);
+  globalBaseVariables.scheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
 
   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
 }

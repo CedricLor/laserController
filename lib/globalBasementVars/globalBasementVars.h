@@ -10,8 +10,12 @@ class globalBasementVars
 
     /**members*/
     Scheduler          scheduler;
-  
-    uint16_t           relayPins[]; 
+
+    /**
+     * uint16_t relayPins[]  = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
+     * uint16_t relayPins[]  = { 22, 21, 19, 18, 5, 17, 16, 4 }; SCL, SDA, MISO, SCK
+     * */  
+    uint16_t           relayPins[4]; 
 
     const bool         MY_DEBUG;
     const bool         MY_DG_LASER;
@@ -53,6 +57,6 @@ class globalBasementVars
 
 };
 
-extern globalBasementVars globalVariables;
+extern globalBasementVars globalBaseVariables;
 
 #endif

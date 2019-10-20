@@ -6,6 +6,7 @@
 #define ControlerBox_h
 
 #include "Arduino.h"
+#include <globalBasementVars.h>
 #include <global.h>
 
 class ControlerBox

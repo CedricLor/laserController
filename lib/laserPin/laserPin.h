@@ -4,7 +4,7 @@
 */
 
 #include "Arduino.h"
-#include <global.h>
+#include <globalBasementVars.h>
 
 #ifndef laserPin_h
 #define laserPin_h

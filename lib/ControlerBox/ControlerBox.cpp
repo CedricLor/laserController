@@ -89,7 +89,7 @@ void ControlerBox::updateThisBoxProperties() {
   ui16NodeName = gui16NodeName;
   // For this box, i16BoxActiveState, boxActiveStateHasBeenSignaled and ui32BoxActiveStateStartTime are updated
   // by a call to setBoxActiveState from boxState
-  if (MY_DEBUG == true) {
+  if (globalBaseVariables.MY_DEBUG == true) {
     Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
     thisBox.printProperties(findIndexByNodeName(thisBox.ui16NodeName));
   };
@@ -389,7 +389,7 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   }
 
   // Print out the updated properties
-  if (MY_DEBUG == true) {
+  if (globalBaseVariables.MY_DEBUG == true) {
     Serial.printf("%s Updated box index %u. Calling printProperties().\n", _subName, __ui16BoxIndex);
     printProperties(__ui16BoxIndex);
   }
@@ -475,6 +475,6 @@ void ControlerBox::deleteBoxByNodeId(uint32_t _ui32nodeId) {
 Task ControlerBox::tReboot(3000, TASK_ONCE, NULL, NULL, false, NULL, &_reboot);
 
 void ControlerBox::_reboot() {
-  if (MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
+  if (globalBaseVariables.MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
   ESP.restart();
 }

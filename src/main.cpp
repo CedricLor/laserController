@@ -46,7 +46,7 @@ void setup() {
   serialInit();
   // test _test;
 
-  globalVariables.scheduler.init();
+  globalBaseVariables.scheduler.init();
 
   // TRUE IS READONLY and FALSE IS RW!!!
   mySavedPrefs _myPrefsRef;
@@ -58,18 +58,18 @@ void setup() {
     return;
   }
 
-  globalVariables.scheduler.addTask(ControlerBox::tReboot);
-  globalVariables.scheduler.addTask(myMeshStarter::tRestart);
+  globalBaseVariables.scheduler.addTask(ControlerBox::tReboot);
+  globalBaseVariables.scheduler.addTask(myMeshStarter::tRestart);
 
-  globalVariables.scheduler.addTask(myMesh::tChangedConnection);
-  globalVariables.scheduler.addTask(myMesh::tIamAloneTimeOut);
-  globalVariables.scheduler.addTask(myMesh::tPrintMeshTopo);
-  globalVariables.scheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
-  globalVariables.scheduler.addTask(myMesh::tSaveNodeMap);
+  globalBaseVariables.scheduler.addTask(myMesh::tChangedConnection);
+  globalBaseVariables.scheduler.addTask(myMesh::tIamAloneTimeOut);
+  globalBaseVariables.scheduler.addTask(myMesh::tPrintMeshTopo);
+  globalBaseVariables.scheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
+  globalBaseVariables.scheduler.addTask(myMesh::tSaveNodeMap);
 
   if (isInterface) {
-    globalVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
-    globalVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
+    globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
+    globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
 
   thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
@@ -92,11 +92,11 @@ void setup() {
   }
 
   if ((isInterface == false) || (isRoot == false)) {
-    globalVariables.scheduler.addTask(ControlerBox::tSetBoxState);
-    globalVariables.scheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
-    globalVariables.scheduler.addTask(pirController::tSpeedBumper);
-    globalVariables.scheduler.addTask(stepColl.tPreloadNextStep);
-    globalVariables.scheduler.addTask(bxStateColl.tPlayBoxState);
+    globalBaseVariables.scheduler.addTask(ControlerBox::tSetBoxState);
+    globalBaseVariables.scheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
+    globalBaseVariables.scheduler.addTask(pirController::tSpeedBumper);
+    globalBaseVariables.scheduler.addTask(stepColl.tPreloadNextStep);
+    globalBaseVariables.scheduler.addTask(bxStateColl.tPlayBoxState);
     // _test.beforeSequenceStacks();
     laserInterface::init();
     // _test.sequenceStack();
@@ -106,7 +106,7 @@ void setup() {
 
   // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("Box number: %i\n", gui16NodeName);
-  Serial.printf("Version: %i\n", VERSION);
+  Serial.printf("Version: %i\n", globalBaseVariables.VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   __mySpiffs.listDir("/", 0);
 }
@@ -123,7 +123,7 @@ void loop() {
     return;
   }
 
-  globalVariables.scheduler.execute();
+  globalBaseVariables.scheduler.execute();
   laserControllerMesh.update();
   if ((isInterface == false) || (isRoot == false)) {
     myPirController.check();

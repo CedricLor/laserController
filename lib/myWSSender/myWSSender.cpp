@@ -59,13 +59,13 @@ Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDa
 
 void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
-  // if (MY_DG_WS) {
+  // if (globalBaseVariables.MY_DG_WS) {
   //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
   //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
   // }
 
   myWSSender _myWSSender;
-  if (MY_DG_WS) {
+  if (globalBaseVariables.MY_DG_WS) {
     Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
   }
   /** TODO: treat the nullprt issue:
@@ -122,7 +122,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // if the box is an unsignaled new box
     if (ControlerBoxes[_ui16BoxIndex].isNewBoxHasBeenSignaled == false) {
-      if (MY_DG_WS) {
+      if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%u] has joined.\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
       }
       _obj["action"]      = "addBox";
@@ -136,7 +136,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // if the box has an unsignaled change of default state
     if (ControlerBoxes[_ui16BoxIndex].sBoxDefaultStateChangeHasBeenSignaled == false) {
-      if (MY_DG_WS) {
+      if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Default state of box [%u] has changed\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
       }
       _obj["action"] = "changeBox";
@@ -149,7 +149,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // if the box has an unsignaled change of state
     if (ControlerBoxes[_ui16BoxIndex].boxActiveStateHasBeenSignaled == false) {
-      if (MY_DG_WS) {
+      if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. State of box [%u] has changed\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
       }
       _obj["action"] = "changeBox";
@@ -162,7 +162,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // if the box master has changed
     if (ControlerBoxes[_ui16BoxIndex].bMasterBoxNameChangeHasBeenSignaled == false) {
-      if (MY_DG_WS) {
+      if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Box [%u] has changed master: ", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
         Serial.printf("ControlerBoxes[%u].ui16MasterBoxName == %u\n", _ui16BoxIndex, ControlerBoxes[_ui16BoxIndex].ui16MasterBoxName);
       }
@@ -176,7 +176,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // if the box is an unsignaled deleted box
     if (ControlerBoxes[_ui16BoxIndex].boxDeletionHasBeenSignaled == false) {
-      if (MY_DG_WS) {
+      if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", ControlerBoxes[_ui16BoxIndex].ui16NodeName);
       }
       _obj["action"] = "deleteBox";
@@ -186,7 +186,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
 
     // in each of the above cases, send a message to the clients
     if (_obj["action"] != "-1") {
-      if (MY_DG_WS) {
+      if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
       }
       _myWSSender.sendWSData(_obj);
@@ -207,12 +207,12 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
 
   // message 0 on handshake: activate the exchange of station IP, ssid and pass
   if (_i8messageType == 0) {
-    if (MY_DG_WS) {
+    if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]\n", _i8messageType);
       Serial.printf("- myWSSender::prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _i8messageType);
     }
     tSendWSDataIfChangeStationIp.enable();
-    if (MY_DG_WS) {
+    if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
     }
     // expected JSON obj: {"action":0}
@@ -222,7 +222,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
   if (_i8messageType == 0 /*|| _i8messageType == 1*/ || _i8messageType == 2) {
     const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
     __newObj["message"] = _messages_array[_i8messageType];
-    if (MY_DG_WS) {
+    if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData. _messages_array[%i] = %s\n", _i8messageType, _messages_array[_i8messageType]);
     }
     // expected JSON obj: {"action":0;"message":"Hello WS Client"}
@@ -238,7 +238,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
      * "rootIF":{"roNNa":200,"IFNNA":200},
      * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
-    if (MY_DG_WS) {
+    if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
       Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
     }
@@ -288,7 +288,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
   // Send a message to the newly connected client
   sendWSData(__newObj, _client);
 
-  if (MY_DG_WS) {
+  if (globalBaseVariables.MY_DG_WS) {
     Serial.println("- myWSSender::prepareWSData. over.");
   }
 }
@@ -307,7 +307,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
 
 
 void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
-    if (MY_DG_WS) {
+    if (globalBaseVariables.MY_DG_WS) {
       Serial.println("- myWSSender::sendWSData. starting.");
     }
 
@@ -343,7 +343,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
     // The message is addressed to a specific client, send it to the targeted client
     _client->text(_buffer);
 
-    if (MY_DG_WS) {
+    if (globalBaseVariables.MY_DG_WS) {
       Serial.println(F("- myWSSender::sendWSData. over."));
     }
 }

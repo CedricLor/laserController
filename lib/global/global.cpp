@@ -19,22 +19,6 @@
 
 
 
-/** short relayPins[PIN_COUNT]: array of pins connected to the lasers
- * in ControlerBoxes */ 
-uint16_t relayPins[]                            = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
-// uint16_t relayPins[]                           = { 22, 21, 19, 18, 5, 17, 16, 4 }; SCL, SDA, MISO, SCK
-
-
-// Debug variables: setting them to true or false enables or disables more
-// Serial.prints
-const bool MY_DEBUG                           = true;
-const bool MY_DG_LASER                        = false;
-const bool MY_DG_WS                           = true;
-const bool MY_DG_WEB                          = true;
-const bool MY_DG_MESH                         = true;
-const bool MY_DEEP_DG_MESH                    = false;
-
-const short VERSION                           = 0;
 
 
 /** gui8DefaultMasterNodeName:

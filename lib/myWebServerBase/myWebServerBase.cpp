@@ -82,7 +82,7 @@ myWebServerBase::myWebServerBase()
 void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
   //Handle body
   if(!index){
-    if (MY_DG_WEB) {
+    if (globalBaseVariables.MY_DG_WEB) {
       Serial.printf("myWebServerBase::_onBody. BodyStart: %u B\n", total);
     }
   }
@@ -90,7 +90,7 @@ void myWebServerBase::_onBody(AsyncWebServerRequest *request, uint8_t *data, siz
     Serial.write(data[i]);
   }
   if(index + len == total){
-    if (MY_DG_WEB) {
+    if (globalBaseVariables.MY_DG_WEB) {
       Serial.printf("BodyEnd: %u B\n", total);
     }
   }

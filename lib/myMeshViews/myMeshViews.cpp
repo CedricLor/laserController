@@ -55,7 +55,7 @@ myMeshViews::myMeshViews()
 
 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::statusMsg(): starting.");
   }
   // prepare the JSON string to be sent via the mesh
@@ -78,7 +78,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // => set my own boxActiveStateHasBeenSignaled to true
   thisBox.boxActiveStateHasBeenSignaled = true;
 
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::statusMsg(): over.");
   }
 }
@@ -110,7 +110,7 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.print("myMeshViews::_changeBoxRequest(): starting.\n");
   }
 
@@ -126,7 +126,7 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::_changeBoxRequest(): over.");
   }
 }
@@ -139,14 +139,14 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::_changedBoxConfirmation(): starting.");
   }
 
   // broadcast confirmation
   _sendMsg(obj);
 
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::changedMasterBoxConfirmation(): over.");
   }
 }
@@ -187,7 +187,7 @@ void myMeshViews::_addIps(JsonObject& _joMsg) {
       _StIP.add(thisBox.stationIP[_i]);
     }
   }
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
   // }
 }
@@ -198,14 +198,14 @@ void myMeshViews::_addIps(JsonObject& _joMsg) {
 
 
 void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::_sendMsg(): starting.");
     // Serial.println("myMeshViews::_sendMsg(): about to allote thisBox.ui16NodeName to _joMsg[\"senderNodeName\"]");
   }
 
   // adding my nodeName to the JSON to be sent to other boxes
   _joMsg["NNa"] = thisBox.ui16NodeName;
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
   // }
 
@@ -213,22 +213,22 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   int size_buff = 254;
   char output[size_buff];
 
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
   // }
   serializeJson(_joMsg, output, size_buff);
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
   // }
 
 
   // JSON conversion to String for painlessMesh
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
   // }
   String str;
   str = output;
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
   // }
 
@@ -240,7 +240,7 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   }
 
 
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.print("myMeshViews:_sendMsg(): done. Sent message: ");Serial.println(str);
   }
 }

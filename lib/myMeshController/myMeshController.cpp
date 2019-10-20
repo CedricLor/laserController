@@ -36,14 +36,14 @@ Created by Cedric Lor, January 22, 2019.
 myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, void (*meshInit)()*/)
 : /*_meshInit(meshInit),*/ _ui32SenderNodeId(_ui32SenderNodeId)
 {
-  if (MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
+  if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
 
   // Convert the document to an object
   _nsobj = _nsdoc.to<JsonObject>();
   
   // deserialize the message _msg received from the mesh into the StaticJsonDocument _nsdoc
   DeserializationError _err = deserializeJson(_nsdoc, _msg);
-  if (MY_DG_MESH) Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
+  if (globalBaseVariables.MY_DG_MESH) Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
   
   // parse and act
   _main();
@@ -57,7 +57,7 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, v
 
 void myMeshController::_main()
 {
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.print("myMeshController::_main: starting\n");
   }
   
@@ -65,7 +65,7 @@ void myMeshController::_main()
   const char* _action = _nsobj["action"];
 
   // if debug, serial print the action field
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.printf("myMeshController::_main: _action = %s\n", _action);
   }
 
@@ -234,9 +234,9 @@ void myMeshController::_changeBoxRequest() {
     if (_nsobj["key"] == "apply") {
       // myMeshStarter::tRestart.setCallback(
       //   [this]() {
-      //     if (MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");}
+      //     if (globalBaseVariables.MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");}
       //       this->_meshInit();
-      //     if (MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");}
+      //     if (globalBaseVariables.MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");}
       //   }
       // );
       myMeshStarter::tRestart.restartDelayed();
@@ -333,7 +333,7 @@ void myMeshController::_changedBoxConfirmation() {
  *  _savegi8RequestedOTAReboots(); */
 void myMeshController::_updateMyValFromWeb() {
 // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%i]\n", (_nsobj["val"].as<int16_t>()));
   }
 
@@ -347,7 +347,7 @@ void myMeshController::_updateMyValFromWeb() {
 
 void myMeshController::_updateMyMasterBoxName() {
   // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to [%u] + the prefix \n", _nsobj["val"].as<uint16_t>());
   }
 
@@ -365,7 +365,7 @@ void myMeshController::_updateMyMasterBoxName() {
 
 void myMeshController::_updateMyDefaultState() {
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to [%u]\n", _nsobj["val"].as<uint16_t>());
   }
 
@@ -383,7 +383,7 @@ void myMeshController::_updateMyDefaultState() {
 void myMeshController::_rebootEsp() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1, save: 0, st: 1} // reboot without saving
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1, save: 1, st: 1} // reboot and save
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.printf("myMeshController::_rebootEsp: about to reboot\n");
   }
 
@@ -451,11 +451,11 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 void myMeshController::_changeBoxSendConfirmationMsg() {
   // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox 
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate 
-  if (MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: starting\n");
+  if (globalBaseVariables.MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: starting\n");
 
   // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
   _nsobj["st"] = 2;
-  if (MY_DG_MESH) {
+  if (globalBaseVariables.MY_DG_MESH) {
     Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: _obj[\"st\"] = %u\n", _nsobj["st"].as<uint16_t>());
   }
 
@@ -470,24 +470,24 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   myMeshViews __myMeshViews;
   __myMeshViews._changedBoxConfirmation(_nsobj);
   // send back the received JSON object with its amended "st" key
-  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");
+  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");
   // _tChangeBoxSendConfirmationMsg.setInterval(0);
-  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the callback for _tChangeBoxSendConfirmationMsg \n");
+  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the callback for _tChangeBoxSendConfirmationMsg \n");
   // _tChangeBoxSendConfirmationMsg.setCallback(
   //   [&_obj]() {
-  //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
+  //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
   //     myMeshViews __myMeshViews;
   //     __myMeshViews._changedBoxConfirmation(_obj);
-  //     if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
+  //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
   //   }
   // );
-  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Set the iterations\n");
+  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Set the iterations\n");
   // _tChangeBoxSendConfirmationMsg.setIterations(1);
-  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Adding the Task to the Scheduler\n");
+  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Adding the Task to the Scheduler\n");
   // userScheduler.addTask(_tChangeBoxSendConfirmationMsg);
-  // if (MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Restarting the Task _tChangeBoxSendConfirmationMsg\n");
+  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Restarting the Task _tChangeBoxSendConfirmationMsg\n");
   // _tChangeBoxSendConfirmationMsg.restart();
-  // if (MY_DG_MESH) {
+  // if (globalBaseVariables.MY_DG_MESH) {
   //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
   // }
 }
@@ -505,7 +505,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 
 // PROTOTYPE FOR A MORE ABSTRACT CHANGE PROPERTY HANDLER
 // void myMeshController::_updateMyProperty(char& _cPropertyKey, JsonObject& _nsobj) {
-//   if (MY_DG_MESH) {
+//   if (globalBaseVariables.MY_DG_MESH) {
 //     Serial.printf("myMeshController::_updateMyProperty: will change my property %s to %u\n", _nsobj[_cPropertyKey].as<uint8_t>());
 //   }
 //
@@ -524,7 +524,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 // void myMeshController::_updatePropertyForBox(char& _cPropertyKey, uint8_t _ui16BoxIndex, JsonObject& _nsobj) {
 //   // get the new property from the JSON
 //   int8_t __i8PropertyValue = _nsobj[_cPropertyKey].as<uint8_t>();
-//   if (MY_DG_MESH) {
+//   if (globalBaseVariables.MY_DG_MESH) {
 //     Serial.printf("myMeshController::_updateSenderProperty: %s = %i\n", _cPropertyKey, __i8PropertyValue);
 //   }
 //
@@ -536,7 +536,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 //   // a. ControlerBoxes[_ui16BoxIndex].updateProperty needs to be drafted
 //   ControlerBoxes[_ui16BoxIndex].updateProperty(_cPropertyKey, __i8PropertyValue);
 //
-//   if (MY_DG_MESH) {
+//   if (globalBaseVariables.MY_DG_MESH) {
 //     Serial.printf("myMeshController::_updateSenderProperty: ControlerBoxes[%u], property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
 //   }
 // }
