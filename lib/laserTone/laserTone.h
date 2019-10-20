@@ -33,7 +33,7 @@ class laserTone
 #ifndef laserTones_h
 #define laserTones_h
 class laserTones {
-  friend class note;
+  friend class laserNote;
   friend class test;
   
   public:

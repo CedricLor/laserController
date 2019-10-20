@@ -1,5 +1,5 @@
 /*
-  note.h - laserNotes are laserTones played for a given length (expressed in base beat)
+  laserNote.h - laserNotes are laserTones played for a given length (expressed in base beat)
   Created by Cedric Lor, June 28, 2019.
 */
 
@@ -10,23 +10,23 @@
 #include <beat.h>
 #include <laserTone.h>
 
-class note
+class laserNote
 {
   friend class laserNotes;
   friend class test;
   public:
 
     /** default empty constructor */
-    note();
+    laserNote();
     /** main parameterized constructor */
-    note(
+    laserNote(
       const uint16_t __ui16_laser_tone,
       const uint16_t __ui16_note
     );
-    note(const note & __note);
-    note& operator=(const note& __note);
-    note(note&& __note);
-    note & operator=(note&& __note);
+    laserNote(const laserNote & __laserNote);
+    laserNote& operator=(const laserNote& __laserNote);
+    laserNote(laserNote&& __laserNote);
+    laserNote & operator=(laserNote&& __laserNote);
 
     /** getters */
     uint16_t const getLaserToneNumber() const;
@@ -67,13 +67,13 @@ class laserNotes
     void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note);
 
     /** setters */
-    void setActive(const note & __activeNote);
+    void setActive(const laserNote & __activeLaserNote);
 
     /** getter */
-    const note &getCurrentNote() const;
+    const laserNote &getCurrentNote() const;
 
     /** player */
-    bool const playNote(const note & __note, const beat & __beat);
+    bool const playNote(const laserNote & __laserNote, const beat & __beat);
 
     /** member */
     Task tPlayNote;
@@ -83,8 +83,8 @@ class laserNotes
     void _disableAndResetTPlayNote();
 
     /** private members */
-    note _defaultNote;
-    note & _activeNote = _defaultNote;
+    laserNote _defaultLaserNote;
+    laserNote & _activeLaserNote = _defaultLaserNote;
     laserTones _laserTones;
 
     /** player callbacks */

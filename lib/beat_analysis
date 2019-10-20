@@ -8,7 +8,7 @@ bars: bars rely on laserInterface::activeBeat, when played within the context of
 
 laserNotes: laserNotes rely on laserInterface::activeBeat, when played within the context of a sequence;
        they rely on a passed-in beat, when played "stand alone"
-->  laserNotes::playNote(const note & __note, beat const & __beat)
+->  laserNotes::playNote(const note & __laserNote, beat const & __beat)
 
 
 laserInterface: laserInterface::beatNS::init() sets the initial parameters of laserInterface::activeBeat;

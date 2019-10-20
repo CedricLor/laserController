@@ -15,7 +15,7 @@ class beat
   friend class bar;
   friend class bars;
   friend class laserNotes;
-  friend class note;
+  friend class laserNote;
   friend class test;
 
   public:
@@ -52,8 +52,8 @@ class beat
     // static std::array<beat, 7> _beats;
 
     /** private instance properties */
-    uint16_t _ui16BaseBeatInBpm; // basic time unit for the one signle base note (_ui16BaseNoteForBeat)
-    uint16_t _ui16BaseNoteForBeat; // base note for the beat
+    uint16_t _ui16BaseBeatInBpm; // basic time unit for the one signle base laserNote (_ui16BaseNoteForBeat)
+    uint16_t _ui16BaseNoteForBeat; // base laserNote for the beat
 };
 
 #endif

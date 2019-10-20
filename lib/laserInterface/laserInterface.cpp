@@ -146,7 +146,7 @@ void laserInterface::barNS::sendCurrent(const int16_t __i16_current_bar_id) {
 
 /** laserInterface::playBar():
  * 
- *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base note 
+ *  {@ params} uint16_t const __ui16_base_note_for_beat: pass the base laserNote 
  *             for a given beat. ex. 4, a black
  *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
  *             in bpm. ex. 120 bpm (500 ms) */
@@ -156,7 +156,7 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
 
   /** 2. set the active bar from the passed-in parameters or create a bar
    *     TODO: check how the activeBarId is set and where it is used; maybe get rid of it
-   *     TODO: we need to be able to pass an std::array<note, 16> to this method to create new bars
+   *     TODO: we need to be able to pass an std::array<laserNote, 16> to this method to create new bars
    * 
    *     two ways ---> 2. (i) create a bar or (ii) select a bar in the hard coded bars array
    * 
@@ -167,7 +167,7 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
     globalSequences._bars.preloadNextBarStraight(__i16_target_bar_id);
   } else {
     // 2.a: create a bar
-    __target_bar = bar{std::array<note, 16>{note(4,8), note(3,8), note(2,8), note(1,8), note(2,8), note(3,8), note(4,8), note(0,8)}, -2};
+    __target_bar = bar{std::array<laserNote, 16>{laserNote(4,8), laserNote(3,8), laserNote(2,8), laserNote(1,8), laserNote(2,8), laserNote(3,8), laserNote(4,8), laserNote(0,8)}, -2};
     globalSequences._bars.nextBar = __target_bar;
   }
 
@@ -202,12 +202,12 @@ void laserInterface::noteNS::initComm() {
 
 
 void laserInterface::noteNS::setCurrent(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
-    globalSequences._bars.getNotes().setActive(note(__ui16_target_laser_tone, __ui16_target_note));
+    globalSequences._bars.getNotes().setActive(laserNote(__ui16_target_laser_tone, __ui16_target_note));
 }
 
 
 void laserInterface::noteNS::getCurrent() {
-    const note & _note = globalSequences._bars.getNotes().getCurrentNote();
+    const laserNote & _note = globalSequences._bars.getNotes().getCurrentNote();
     noteNS::sendCurrent(_note.getLaserToneNumber(), _note.getNote());
 }
 
@@ -220,10 +220,10 @@ void laserInterface::noteNS::sendCurrent(const uint16_t __ui16_target_laser_tone
 void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
   // 1. lock laserNotes to avoid getting signal from a boxState, sequence or bar player
   noteNS::lockStack();
-  // 2. set the note and play it
+  // 2. set the laserNote and play it
   laserNotes _laserNotes;
   activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
-  _laserNotes.playNote(note(__ui16_target_laser_tone, __ui16_target_note), activeBeat);
+  _laserNotes.playNote(laserNote(__ui16_target_laser_tone, __ui16_target_note), activeBeat);
 }
 
 

@@ -19,7 +19,7 @@ class bar
   public:
     /** default empty constructor */
     bar();
-    bar(std::array<note, 16> __laserNotesArray, const int16_t __i16IndexNumber=-2); 
+    bar(std::array<laserNote, 16> __laserNotesArray, const int16_t __i16IndexNumber=-2); 
     bar( const bar& __bar);
     bar& operator=(const bar& __bar);
  
@@ -27,14 +27,14 @@ class bar
     uint16_t const ui16GetNotesCountInBar() const;
     uint16_t const ui16GetBaseNotesCountInBar(const beat & _beat) const;
     uint32_t const ui32GetBarDuration(const beat & _beat) const;
-    const std::array<note, 16> & getNotesArray() const;
+    const std::array<laserNote, 16> & getNotesArray() const;
 
     /** public instance properties */
     int16_t i16IndexNumber;
 
   private:
     /** private instance properties */
-    std::array<note, 16> _laserNotesArray;
+    std::array<laserNote, 16> _laserNotesArray;
 };
 
 class bars
@@ -90,7 +90,7 @@ class bars
     void _preloadNextBar(uint16_t _ui16IxNumbOfBarToPreload);
     void _tcbPreloadNextBar();
     void _preloadNextBarFromJSON(const JsonObject& _joBar);
-    std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
+    std::array<laserNote, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
 
     // properties
     bar _defaultBar;

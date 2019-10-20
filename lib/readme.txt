@@ -31,8 +31,8 @@ Dependency structure
 |  |  |  |
 |  |  |  |--bar.cpp (an array of bars (micro-sequences of laserNotes, each with a tempo in ms)
 |  |  |  |  |--bar.h
-|  |  |  |  |--note.cpp (a static class playing a note for a maximum 30 seconds)
-|  |  |  |  |  |--note.h
+|  |  |  |  |--laserNote.cpp (a static class playing a laserNote for a maximum 30 seconds)
+|  |  |  |  |  |--laserNote.h
 |  |  |  |  |  |--laserTone.cpp (an array of laserTones, containing all the possible lasers on/off configurations)
 |  |  |  |  |  |  |--laserTone.h
 |  |  |  |

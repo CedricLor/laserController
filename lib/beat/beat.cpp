@@ -107,16 +107,16 @@ beat & beat::operator=(beat&& __beat) {
 
 //   /** Signature of a beat:
 //    *  a. the duration of a beat in bpm (i.e. the tempo);
-//    *  b. the base note for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance) */
+//    *  b. the base laserNote for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance) */
 
 //   /** 2 per minute
 //    * duration of a beat in bpm: 2
-//    * base note: 1 (a full) */
+//    * base laserNote: 1 (a full) */
 //   _beats[0] = { 2, 1 };
 
 //   /** 120 per minute
 //    * duration of a beat in bpm: 120
-//    * base note: 1 (a full) */
+//    * base laserNote: 1 (a full) */
 //   _beats[1] = { 120, 1 };
 
 //   Serial.println("void bar::initBeats(). over.");
@@ -141,7 +141,7 @@ uint16_t const beat::getBaseBeatInBpm() const {
 
 /** uint16_t beat::getBaseNoteForBeat(): public instance getter method
  *  
- *  Returns the base note (the base note corresponding to one beat) 
+ *  Returns the base laserNote (the base laserNote corresponding to one beat) 
  *  of a beat instance. */
 uint16_t const beat::getBaseNoteForBeat() const {
   return _ui16BaseNoteForBeat;
@@ -150,7 +150,7 @@ uint16_t const beat::getBaseNoteForBeat() const {
 
 /** uint16_t beat::ui16GetBaseNoteDurationInMs(): public instance getter method
  *  
- *  Returns the duration, in ms, of the base note of a beat instance. */
+ *  Returns the duration, in ms, of the base laserNote of a beat instance. */
 uint16_t const beat::ui16GetBaseNoteDurationInMs() const {
   // Serial.println("beat::ui16GetBaseNoteDurationInMs(). starting.");
   // Serial.println(F("------------- DEBUG --------- beat --------- DEBUG -------------"));

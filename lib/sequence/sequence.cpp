@@ -176,7 +176,7 @@ sequences::sequences(
   /** Signature of a sequence:
    *  a. a beat instance, composed of:
    *    1. _ui16BaseBeatInBpm: the base beat in bpm (e.g. 120 bpm, 2 bpm, etc.);
-   *    2. _ui16BaseNoteForBeat: the base note for each beat (e.g. 4 -> black, etc.; the 4 in 2/4);
+   *    2. _ui16BaseNoteForBeat: the base laserNote for each beat (e.g. 4 -> black, etc.; the 4 in 2/4);
    *  b. the array of bars to be played in the sequence (_barsArray);
    *  c. the sequence's index number in the sequencesArray.
    * 
