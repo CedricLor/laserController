@@ -457,7 +457,7 @@ void sequences::_tcbPlaySequence() {
   uint16_t _ui16Iter = tPlaySequence.getRunCounter();
 
   // 2. Calculate the bar duration
-  uint32_t __ui32thisBarDuration = _bars.nextBar.ui32GetBarDuration(_activeSequence._beat);
+  uint32_t __ui32thisBarDuration = _bars._activeBar.ui32GetBarDuration(_activeSequence._beat);
 
   // 3. Play the corresponding bar
   _bars.playBar(_activeSequence._beat);

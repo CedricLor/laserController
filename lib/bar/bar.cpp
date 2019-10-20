@@ -189,7 +189,7 @@ bars::bars(
   sendCurrentBar(_sendCurrentBar),
   ui16IxNumbOfBarToPreload(0),  // <-- TODO: review setters method here; maybe need to cast barIndex as an int16, to initialize at -1
   nextBar(),
-  barFileName("bars.json"),
+  barFileName("/bars.json"),
   tPlayBar(),
   _defaultBar(),
   _activeBar(_defaultBar),
@@ -215,18 +215,9 @@ bars::bars(
    *        - {1,8} -> a white with laserTone 8. 
    *  b. the bar's index number in the barsArray
    * 
-   *  It used to include:
-   *  a. a beat object, which contains:
-   *     1. the duration of a beat in bpm (i.e. the tempo);
-   *     2. the base note for each beat (full, half, quarter, etc.) 
-   *        (the 4 in 2/4, for instance; the 2 is defined at the sequence level);
    * */
 
   /** relays
-   * duration of a beat in bpm: 2
-   * base note: 1 (a full)
-   * count of base notes per bar: 2
-   * => 2 / 1 
    * {"nts":[{"t":7,"n":1},{"t":8,"n":1}], "ix":0}
    * 
    * */  
@@ -234,10 +225,6 @@ bars::bars(
   // _barsArray[0] = {_aRelays, 0};
 
   /** twins
-   * duration of a beat in bpm: 2
-   * base note: 1 (a full)
-   * count of base notes per bar: 2
-   * => 2 / 1 
    * {"nts":[{"t":5,"n":1},{"t":6,"n":1}], "ix":1}
    * 
    * */
@@ -245,10 +232,6 @@ bars::bars(
   // _barsArray[1] = {_aTwins, 1};
 
   /** all 
-   * duration of a beat in bpm: 2
-   * base note: 1 (a full)
-   * count of base notes per bar: 2
-   * => 2 / 1 
    * {"nts":[{"t":15,"n":1},{"t":1,"n":1}], "ix":2}
    * 
    * */
@@ -256,10 +239,6 @@ bars::bars(
   // _barsArray[2] = {_aAll, 2};
 
   /** swipeRight
-   * duration of a beat in bpm: 120
-   * base note: 1 (a full)
-   * count of base notes per bar: 4
-   * => 4 / 1 
    * {"nts":[{"t":1,"n":1},{"t":2,"n":1},{"t":3,"n":1},{"t":4,"n":1}], "ix":3}
    * 
    * */
@@ -267,27 +246,19 @@ bars::bars(
   // _barsArray[3] = {_aSwipeR, 3};
 
   /** swipeLeft
-   * duration of a beat in bpm: 120
-   * base note: 1 (a full)
-   * count of base notes per bar: 4
-   * => 4 / 1 
-   * {"nts":[{"t":4,"n":1},{"t":3,"n":1},{"t":2,"n":1},{"t":1,"n":1}], "ix":3}
+   * {"nts":[{"t":4,"n":1},{"t":3,"n":1},{"t":2,"n":1},{"t":1,"n":1}], "ix":4}
    * 
    * */
   // std::array<note, 16> _aSwipeL {note(4,1), note(3,1), note(2,1), note(1,1)};
   // _barsArray[4] = {_aSwipeL, 4};
 
   /** all off
-   * duration of a beat in bpm: 2
-   * base note: 1 (a full)
-   * count of base notes per bar: 1
-   * => 1 / 1 
-   * {"nts":[{"t":5,"n":1},{"t":0,"n":1}], "ix":3}
+   * {"nts":[{"t":5,"n":1},{"t":0,"n":1}], "ix":5}
    * 
    * */
   // std::array<note, 16> _aAllOff {note(5,1), note(0,1)};
   // _barsArray[5] = {_aAllOff, 5};
-
+  tPreloadNextBar.set(0, 1, [&](){ return _tcbPreloadNextBar(); }, NULL, NULL);
 }
 
 
