@@ -81,12 +81,16 @@ class bars
     /** Task - preload next bar from SPIFFS */
     Task tPreloadNextBar;
 
+    void preloadNextBarStraight(uint16_t _ui16IxNumbOfBarToPreload);
+
+  private:
+
+    /** Task - preload next bar from SPIFFS */
     void _preloadNextBar(uint16_t _ui16IxNumbOfBarToPreload);
     void _tcbPreloadNextBar();
     void _preloadNextBarFromJSON(const JsonObject& _joBar);
     std::array<note, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
 
-  private:
     // properties
     bar _defaultBar;
     bar & _activeBar = _defaultBar;

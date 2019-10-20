@@ -499,6 +499,17 @@ void bars::_tcbPlayBar(beat const & __beat){
 ///////////////////////////////////
 // Bar Loader
 ///////////////////////////////////
+void bars::preloadNextBarStraight(uint16_t _ui16IxNumbOfBarToPreload){
+  Serial.printf("sequences::preloadNextBarStraight(): starting\n");
+  // read next bar values from the file system
+  ui16IxNumbOfBarToPreload = _ui16IxNumbOfBarToPreload;
+  _preloadNextBar(ui16IxNumbOfBarToPreload);
+  Serial.printf("sequences::preloadNextBarStraight(): ending\n");
+}
+
+
+
+
 void bars::_tcbPreloadNextBar() {
   Serial.printf("sequences::_tcbPreloadNextBar(): starting\n");
   // read next bar values from the file system
