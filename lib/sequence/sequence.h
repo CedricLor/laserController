@@ -70,7 +70,6 @@ class sequences
     /** getters */
     int16_t const i16GetCurrentSequenceId() const; // returns the current sequence i16IndexNumber
     sequence const & getCurrentSequence() const;
-    sequence const & getSequenceFromSequenceArray(const uint16_t __ui16_sequence_id) const;
 
     /** Task tPlaySequence - sequence players */
     uint16_t const playSequence(const sequence & __target_sequence);
