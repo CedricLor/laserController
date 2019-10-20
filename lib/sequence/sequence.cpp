@@ -265,7 +265,7 @@ sequences::sequences(
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** sequences::setActive()
+/** sequences::setActive(const sequence & __activeSequence)
  * 
  *  sets the class instance variable _activeSequence 
  *  from a passed in lvalue const sequence reference.
@@ -277,6 +277,24 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
   _activeSequence = __activeSequence;
   _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
   return _activeSequence.i16IndexNumber;
+}
+
+
+
+
+
+
+
+/** sequences::setActive(const sequence & __activeSequence)
+ * 
+ *  sets the class instance variable _activeSequence 
+ *  from a passed in index number.
+ * 
+ *  public instance setter 
+ * */
+uint16_t sequences::setActive(const uint16_t __target_sequence_ix_numb) {
+  _preloadNextSequence(__target_sequence_ix_numb);
+  return setActive(nextSequence);
 }
 
 
