@@ -6,7 +6,7 @@
 */
 #include "Arduino.h"
 #include <mySpiffs.h>
-#include <note.h>
+#include <laserNote.h>
 
 #ifndef bar_h
 #define bar_h

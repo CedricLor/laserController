@@ -13,7 +13,7 @@
 */
 
 #include "Arduino.h"
-#include "note.h"
+#include "laserNote.h"
 
 
 

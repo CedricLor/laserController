@@ -3,12 +3,12 @@
   Created by Cedric Lor, June 28, 2019.
 */
 
+#ifndef laserNote_h
+#define laserNote_h
+
 #include "Arduino.h"
 #include <beat.h>
 #include <laserTone.h>
-
-#ifndef note_h
-#define note_h
 
 class note
 {
@@ -48,10 +48,6 @@ class note
 };
 
 
-#endif
-
-#ifndef laserNotes_h
-#define laserNotes_h
 
 class laserNotes
 {

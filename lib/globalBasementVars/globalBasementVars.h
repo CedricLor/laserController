@@ -15,7 +15,7 @@ class globalBasementVars
      * uint16_t relayPins[]  = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
      * uint16_t relayPins[]  = { 22, 21, 19, 18, 5, 17, 16, 4 }; SCL, SDA, MISO, SCK
      * */  
-    uint16_t           relayPins[4]; 
+    std::array<uint16_t, 4> relayPins; 
 
     const bool         MY_DEBUG;
     const bool         MY_DG_LASER;
@@ -24,7 +24,7 @@ class globalBasementVars
     const bool         MY_DG_MESH;
     const bool         MY_DEEP_DG_MESH;
 
-    const short        VERSION;
+    const short        VERSION = 2;
 
     // BOX BY BOX
     uint8_t            gui8DefaultMasterNodeName;
