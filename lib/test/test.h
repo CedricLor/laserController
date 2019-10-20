@@ -31,17 +31,17 @@ class test
     void noteStackCopyConstructorAndCopyAssignment(const char * _methodName);
     void noteStackValidNote(const char * _methodName);
 
-    void notesArrayStackEmptyArray(const char * _methodName);
-    void notesArrayStackToneSelection(const char * _methodName);
-    void notesArrayStack();
+    void laserNotesArrayStackEmptyArray(const char * _methodName);
+    void laserNotesArrayStackToneSelection(const char * _methodName);
+    void laserNotesArrayStack();
 
     void rawNotesStackConstructors(const char * _methodName);
-    void rawNotesStackDefaultResetters(const char * _methodName, laserPins & _laserPins, notes & _notes);
-    void rawNotesStackDefaultMembers(const char * _methodName, notes & _notes);
-    void rawNotesStackDefaultPlayTone(const char * _methodName, laserPins & _laserPins, notes & _notes);
-    void rawNotesStackDefaultLaserPins(const char * _methodName, notes & _notes);
-    void rawNotesStackDefaultSettersAndGetters(const char * _methodName, notes & _notes);
-    void rawNotesStackDefaultPlayers(const char * _methodName, notes & _notes);
+    void rawNotesStackDefaultResetters(const char * _methodName, laserPins & _laserPins, laserNotes & _laserNotes);
+    void rawNotesStackDefaultMembers(const char * _methodName, laserNotes & _laserNotes);
+    void rawNotesStackDefaultPlayTone(const char * _methodName, laserPins & _laserPins, laserNotes & _laserNotes);
+    void rawNotesStackDefaultLaserPins(const char * _methodName, laserNotes & _laserNotes);
+    void rawNotesStackDefaultSettersAndGetters(const char * _methodName, laserNotes & _laserNotes);
+    void rawNotesStackDefaultPlayers(const char * _methodName, laserNotes & _laserNotes);
     void rawNotesStackDefault(const char * _methodName);
     void rawNotesStack();
     static void rawNotesStackSender(const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note);

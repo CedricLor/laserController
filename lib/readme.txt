@@ -29,7 +29,7 @@ Dependency structure
 |  |  |  |--global.cpp (called to start some tasks and play some functions)
 |  |  |  |  |--global.h
 |  |  |  |
-|  |  |  |--bar.cpp (an array of bars (micro-sequences of notes, each with a tempo in ms)
+|  |  |  |--bar.cpp (an array of bars (micro-sequences of laserNotes, each with a tempo in ms)
 |  |  |  |  |--bar.h
 |  |  |  |  |--note.cpp (a static class playing a note for a maximum 30 seconds)
 |  |  |  |  |  |--note.h
@@ -172,7 +172,7 @@ DONE:
 - review webServerControler to start decoding requests properly
 - add additional states as drafted on the paper
 
-- refactor the notes and sequences to get closer to a music score player
+- refactor the laserNotes and sequences to get closer to a music score player
 
 - on new connection callback (Mesh), the laser boxes send a message. As currently drafted,
 when I will have 10 laser boxes, this will overflow the mesh: add speed bumper

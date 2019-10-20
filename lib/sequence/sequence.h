@@ -1,5 +1,5 @@
 /*
-  sequence.h - sequences are precoded sequences of notes
+  sequence.h - sequences are precoded sequences of laserNotes
   Created by Cedric Lor, June 4, 2019.
 
 */

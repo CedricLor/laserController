@@ -1,5 +1,5 @@
 /*
-  note.h - notes are laserTones played for a given length (expressed in base beat)
+  note.h - laserNotes are laserTones played for a given length (expressed in base beat)
   Created by Cedric Lor, June 28, 2019.
 */
 
@@ -12,7 +12,7 @@
 
 class note
 {
-  friend class notes;
+  friend class laserNotes;
   friend class test;
   public:
 
@@ -50,22 +50,22 @@ class note
 
 #endif
 
-#ifndef notes_h
-#define notes_h
+#ifndef laserNotes_h
+#define laserNotes_h
 
-class notes
+class laserNotes
 {
   friend class bars;
   friend class test;
   public:
     /** default constructor */
-    notes(
+    laserNotes(
       void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note)=nullptr
     );
-    notes(const notes & __notes);
-    notes & operator=(const notes & __notes);
-    notes(notes&& __notes);
-    notes & operator=(notes&& __notes);
+    laserNotes(const laserNotes & __laserNotes);
+    laserNotes & operator=(const laserNotes & __laserNotes);
+    laserNotes(laserNotes&& __laserNotes);
+    laserNotes & operator=(laserNotes&& __laserNotes);
 
     /** sender to mesh */
     void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note);

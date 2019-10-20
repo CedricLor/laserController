@@ -32,7 +32,7 @@ namespace laserInterface {
       // beat & _activeBeat;
 
       // players
-      notes _notes;
+      laserNotes _laserNotes;
       bars _bars;
       sequences _sequences;
       

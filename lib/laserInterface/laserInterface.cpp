@@ -185,17 +185,17 @@ void laserInterface::barNS::lockStack() {
 
 
 /*******************/
-// notes stack
+// laserNotes stack
 /*******************/
 void laserInterface::noteNS::initComm() {
     // TODO: initNoteComm(), in the end, this namespace shall be used to initialize the whole laser stack
     // change its name
-    notes _notes{noteNS::sendCurrent};
+    laserNotes _laserNotes{noteNS::sendCurrent};
     /**
-     *  TODO: This expression won't be very usefull -> the _notes instance that is created here 
+     *  TODO: This expression won't be very usefull -> the _laserNotes instance that is created here 
      *        will be automatically deleted when this method will terminate...
      * 
-     *        Such an expression shall be used on a global variable or at least, on a notes
+     *        Such an expression shall be used on a global variable or at least, on a laserNotes
      *        instance that is going to last and be used for sthg. 
      * */
 }
@@ -218,12 +218,12 @@ void laserInterface::noteNS::sendCurrent(const uint16_t __ui16_target_laser_tone
 
 
 void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
-  // 1. lock notes to avoid getting signal from a boxState, sequence or bar player
+  // 1. lock laserNotes to avoid getting signal from a boxState, sequence or bar player
   noteNS::lockStack();
   // 2. set the note and play it
-  notes _notes;
+  laserNotes _laserNotes;
   activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
-  _notes.playNote(note(__ui16_target_laser_tone, __ui16_target_note), activeBeat);
+  _laserNotes.playNote(note(__ui16_target_laser_tone, __ui16_target_note), activeBeat);
 }
 
 

@@ -36,7 +36,7 @@
      - JSON
      - Mesh
      - Web
-  III. Create the stack for notes/laserTones:
+  III. Create the stack for laserNotes/laserTones:
      - JSON
      - Mesh
      - Web

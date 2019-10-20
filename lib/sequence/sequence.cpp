@@ -181,12 +181,12 @@ sequences::sequences(
    *  c. the sequence's index number in the sequencesArray.
    * 
    *  There used to be an additional param/member:
-   *  - _ui16BaseNotesCountPerBar: the number of base notes per bar (the 2 in 2/4).
+   *  - _ui16BaseNotesCountPerBar: the number of base laserNotes per bar (the 2 in 2/4).
    *  This param/member has been removed. This comment is kept for reference purposes,
    *  The purpose was to match traditional musical notation (where all the keys of the bars 
    *  match the key given at the beginning of the sequence).
    * 
-   *  As a consequence of the removal of this param, bars sized to any number of base notes
+   *  As a consequence of the removal of this param, bars sized to any number of base laserNotes
    *  can be inserted in sequence, and sequences will just adapt its tPlaySequence
    *  interval to the various bars durations.
    * */

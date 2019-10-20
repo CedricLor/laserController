@@ -1,5 +1,5 @@
 /*
-  bar.h - bars are precoded sequences of notes
+  bar.h - bars are precoded sequences of laserNotes
   Created by Cedric Lor, June 4, 2019.
 
 
@@ -19,7 +19,7 @@ class bar
   public:
     /** default empty constructor */
     bar();
-    bar(std::array<note, 16> __notesArray, const int16_t __i16IndexNumber=-2); 
+    bar(std::array<note, 16> __laserNotesArray, const int16_t __i16IndexNumber=-2); 
     bar( const bar& __bar);
     bar& operator=(const bar& __bar);
  
@@ -34,7 +34,7 @@ class bar
 
   private:
     /** private instance properties */
-    std::array<note, 16> _notesArray;
+    std::array<note, 16> _laserNotesArray;
 };
 
 class bars
@@ -46,7 +46,7 @@ class bars
   public:
     /** default constructor 
      * 
-     *  The bars' properties (_activeBar, _notes) 
+     *  The bars' properties (_activeBar, _laserNotes) 
      *  are defined in bars constructor, calling their default constructors without
      *  parameters.
      * 
@@ -72,7 +72,7 @@ class bars
     /** getters */
     int16_t const i16GetCurrentBarId() const; // returns the current bar's i16IndexNumber
     bar const & getCurrentBar() const;
-    notes & getNotes();
+    laserNotes & getNotes();
 
     /** player */
     uint16_t const playBar(beat const & __beat);
@@ -95,7 +95,7 @@ class bars
     // properties
     bar _defaultBar;
     bar & _activeBar = _defaultBar;
-    notes _notes;
+    laserNotes _laserNotes;
 
     /** player callbacks */
     void _tcbPlayBar(beat const & __beat);

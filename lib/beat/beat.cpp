@@ -1,5 +1,5 @@
 /*
-  beat.cpp - beat handles the beat timing at which notes, bars and sequences shall be played
+  beat.cpp - beat handles the beat timing at which laserNotes, bars and sequences shall be played
   Created by Cedric Lor, September 6, 2019.
 
 

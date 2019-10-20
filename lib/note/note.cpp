@@ -1,5 +1,5 @@
 /*
-  note.cpp - notes are laserTones played for a given length (expressed in base beat)
+  note.cpp - laserNotes are laserTones played for a given length (expressed in base beat)
   Created by Cedric Lor, June 28, 2019.
 
   * 1. ronde                   : 16 : 16 / 1
@@ -97,7 +97,7 @@ uint16_t note::_setLaserTone(const laserTone & _target_laser_tone) {
 
 /** note::_validNote(): private instance setter method
  * 
- *  changes passed-in notes to the valid notes. */
+ *  changes passed-in laserNotes to the valid laserNotes. */
 uint16_t note::_ui16ValidNote() {
   if (_ui16Note == 5) {
     _ui16Note = 6;
@@ -199,7 +199,7 @@ const int16_t note::_playLaserTone(laserTones const & __laser_tones) const {
 // Notes //*******************************************************//
 //****************************************************************//
 
-notes::notes(
+laserNotes::laserNotes(
   void (*_sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note)
 ):
   sendCurrentNote(_sendCurrentNote),
@@ -208,44 +208,44 @@ notes::notes(
   _disableAndResetTPlayNote();
 }
 // copy constructor
-notes::notes(const notes & __notes):
-  sendCurrentNote(__notes.sendCurrentNote),
-  _activeNote(__notes._activeNote),
-  _laserTones(__notes._laserTones)
+laserNotes::laserNotes(const laserNotes & __laserNotes):
+  sendCurrentNote(__laserNotes.sendCurrentNote),
+  _activeNote(__laserNotes._activeNote),
+  _laserTones(__laserNotes._laserTones)
 {
   _disableAndResetTPlayNote();
 }
 // copy assignment operator
-notes & notes::operator=(const notes & __notes) {
-  if (&__notes != this) {
-    sendCurrentNote = __notes.sendCurrentNote;
-    _activeNote = __notes._activeNote;
-    _laserTones = __notes._laserTones;
+laserNotes & laserNotes::operator=(const laserNotes & __laserNotes) {
+  if (&__laserNotes != this) {
+    sendCurrentNote = __laserNotes.sendCurrentNote;
+    _activeNote = __laserNotes._activeNote;
+    _laserTones = __laserNotes._laserTones;
     _disableAndResetTPlayNote();
   }
   return *this;
 }
 // move constructor
-notes::notes(notes&& __notes):
+laserNotes::laserNotes(laserNotes&& __laserNotes):
   sendCurrentNote(nullptr),
   _laserTones({})
 {
-  *this = std::move(__notes);
+  *this = std::move(__laserNotes);
 }
 // move assignment op
-notes & notes::operator=(notes&& __notes) {
-  if (this != &__notes) {
+laserNotes & laserNotes::operator=(laserNotes&& __laserNotes) {
+  if (this != &__laserNotes) {
     sendCurrentNote = nullptr;
     _activeNote = note{};
     _laserTones = {};
 
-    sendCurrentNote = __notes.sendCurrentNote;
-    _activeNote = __notes._activeNote;
-    _laserTones = __notes._laserTones;
+    sendCurrentNote = __laserNotes.sendCurrentNote;
+    _activeNote = __laserNotes._activeNote;
+    _laserTones = __laserNotes._laserTones;
 
-    __notes.sendCurrentNote = nullptr;
-    __notes._activeNote = note{};
-    __notes._laserTones = {};
+    __laserNotes.sendCurrentNote = nullptr;
+    __laserNotes._activeNote = note{};
+    __laserNotes._laserTones = {};
 
     _disableAndResetTPlayNote();
   }
@@ -257,30 +257,30 @@ notes & notes::operator=(notes&& __notes) {
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** notes::setActive(const note & __activeNote): public instance setter method
+/** laserNotes::setActive(const note & __activeNote): public instance setter method
  * 
  *  sets the instance variable _activeNote from a passed in note reference.
  *  
  *  The _activeNote is then used: 
- *  (i)  in this class (notes), to provide 
+ *  (i)  in this class (laserNotes), to provide 
  *       (a) the interval param to Task tPlayNote (ie. the note duration);
  *       (b) to call _playLaserTone (ie. the note laserTone). <-- TODO: correct erroneous comments
  *  (ii) in laserInterface, to retrieve the params (_ui16Note and _ui16Tone) of
  *       the currently active note and send them to the mesh. */
-void notes::setActive(const note & __activeNote) {
-  // Serial.println("notes::setActive: starting");
+void laserNotes::setActive(const note & __activeNote) {
+  // Serial.println("laserNotes::setActive: starting");
   _disableAndResetTPlayNote();
-  // Serial.println("notes::setActive: tPlayNote disabled");
-  // Serial.printf("notes::setActive: __activeNote._ui16Tone: %u\n", __activeNote._ui16Tone);
-  // Serial.printf("notes::setActive: __activeNote._ui16Note: %u\n", __activeNote._ui16Note);
-  // Serial.printf("notes::setActive: _activeNote._ui16Tone: %u\n", _activeNote._ui16Tone);
-  // Serial.printf("notes::setActive: _activeNote._ui16Note: %u\n", _activeNote._ui16Note);
+  // Serial.println("laserNotes::setActive: tPlayNote disabled");
+  // Serial.printf("laserNotes::setActive: __activeNote._ui16Tone: %u\n", __activeNote._ui16Tone);
+  // Serial.printf("laserNotes::setActive: __activeNote._ui16Note: %u\n", __activeNote._ui16Note);
+  // Serial.printf("laserNotes::setActive: _activeNote._ui16Tone: %u\n", _activeNote._ui16Tone);
+  // Serial.printf("laserNotes::setActive: _activeNote._ui16Note: %u\n", _activeNote._ui16Note);
   _activeNote = __activeNote;
-  // Serial.println("notes::setActive: over");
+  // Serial.println("laserNotes::setActive: over");
 }
 
 
-/** notes::_disableAndResetTPlayNote(): public setter method
+/** laserNotes::_disableAndResetTPlayNote(): public setter method
  * 
  *  disables Task tPlayNote and resets its default parameters, so as
  *  it be ready to play any note.
@@ -304,7 +304,7 @@ void notes::setActive(const note & __activeNote) {
  *   for a given note type (--> full, half, ..., set in the bar) at a given
  *   beat rate. 
  *  */
-void notes::_disableAndResetTPlayNote() {
+void laserNotes::_disableAndResetTPlayNote() {
   tPlayNote.disable();
   tPlayNote.set(30000, 1, NULL, [&](){return this->_oetcbPlayNote();}, [&](){this->_odtcbPlayNote();});
 }
@@ -315,10 +315,10 @@ void notes::_disableAndResetTPlayNote() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** const note &notes::getCurrentNote() const: public static getter method
+/** const note &laserNotes::getCurrentNote() const: public static getter method
  *  
  *  returns a reference to the note instance that is currently active. */
-const note &notes::getCurrentNote() const {
+const note &laserNotes::getCurrentNote() const {
   return _activeNote;
 }
 
@@ -326,7 +326,7 @@ const note &notes::getCurrentNote() const {
 ///////////////////////////////////
 // Task - Player
 ///////////////////////////////////
-/** bool const notes::playNote(const note & __note, const beat & __beat):
+/** bool const laserNotes::playNote(const note & __note, const beat & __beat):
  *  
  *  Play a single note for a given duration (calculated using the passed-in beat)
  *  or the maximum duration (30.000 ms) if the calculated duration exceeds 30000 ms.
@@ -335,28 +335,28 @@ const note &notes::getCurrentNote() const {
  *  Task tPlayNote may then be disabled by calls to _disableAndResetTPlayNote().
  * 
  *  {@ params} const note & __note: pass a constant reference to a note used
- *             to calculate the notes duration
+ *             to calculate the laserNotes duration
  *  {@ params} const beat & beat: pass a constant reference to a beat used
- *             to calculate the notes duration.
+ *             to calculate the laserNotes duration.
  * */
-bool const notes::playNote(const note & __note, const beat & __beat) {
-  Serial.println("notes::playNote: starting");
+bool const laserNotes::playNote(const note & __note, const beat & __beat) {
+  Serial.println("laserNotes::playNote: starting");
   if ((__beat.getBaseNoteForBeat() == 0) || (__beat.getBaseBeatInBpm() == 0)) {
     return false;
   }
   setActive(__note);
   tPlayNote.setInterval(__note.ui16GetNoteDurationInMs(__beat));
   tPlayNote.restartDelayed();
-  Serial.println("notes::playNote: over");
+  Serial.println("laserNotes::playNote: over");
   return true;
 }
 
 
 
 
-/** notes::_oetcbPlayNote()
+/** laserNotes::_oetcbPlayNote()
  *  On enable Task _tNote, turn the lasers to a given laserTone */
-bool notes::_oetcbPlayNote() {
+bool laserNotes::_oetcbPlayNote() {
   Serial.println("note::_oetcbPlayNote(). starting");
   if (globalBaseVariables.MY_DG_LASER) {
     Serial.printf("note::_oetcbPlayNote(). Going to play laserTone number (_activeNote.getLaserToneNumber()) %u\n", _activeNote.getLaserToneNumber());
@@ -372,10 +372,10 @@ bool notes::_oetcbPlayNote() {
 }
 
 
-/** notes::_odtcbPlayNote()
+/** laserNotes::_odtcbPlayNote()
  * 
  *  On disable Task _tNote, turn off all the lasers */
-void notes::_odtcbPlayNote() {
+void laserNotes::_odtcbPlayNote() {
   Serial.println("note::_odtcbPlayNote(). starting");
   if (globalBaseVariables.MY_DG_LASER) {
     Serial.print("note::_oetcbPlayNote(). Turning off all the lasers");

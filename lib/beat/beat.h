@@ -1,5 +1,5 @@
 /*
-  beat.h - beat handles the beat timing at which notes, bars and sequences shall be played
+  beat.h - beat handles the beat timing at which laserNotes, bars and sequences shall be played
   Created by Cedric Lor, September 6, 2019.
 */
 
@@ -14,7 +14,7 @@ class beat
   friend class sequence;
   friend class bar;
   friend class bars;
-  friend class notes;
+  friend class laserNotes;
   friend class note;
   friend class test;
 

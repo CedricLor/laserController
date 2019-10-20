@@ -1,5 +1,5 @@
 /*
-  bar.cpp - bars are precoded sequences of notes
+  bar.cpp - bars are precoded sequences of laserNotes
   Created by Cedric Lor, June 4, 2019.
 
 
@@ -28,13 +28,13 @@ Traductions en anglais:
 // default
 bar::bar() :
   i16IndexNumber(-2), /** default initialization at -2 */
-  _notesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, notes, note, laserTones, laserTone, laserPins) */
+  _laserNotesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, laserNotes, note, laserTones, laserTone, laserPins) */
 {
 }
 
 // parameterized
 bar::bar(
-  /** TODO: Here, I am not passing the __notesArray by reference; 
+  /** TODO: Here, I am not passing the __laserNotesArray by reference; 
    *        - check other constructors of other classes; 
    *            OK for laserPin; nothing to do with laserPins
    *            OK for laserTone (std::array<bool, 4> _laserPinsStatesArr)
@@ -43,18 +43,18 @@ bar::bar(
    *        - review history of why this is this way here (I think this was a bug correction);
    *        - check whether the solution adopted here (passing in by value)
    *          shall not be duplicated in other classes. */
-  std::array<note, 16> __notesArray,
+  std::array<note, 16> __laserNotesArray,
   const int16_t __i16IndexNumber
 ):
   i16IndexNumber(__i16IndexNumber),
-  _notesArray{__notesArray} 
+  _laserNotesArray{__laserNotesArray} 
 {
 }
 
 // copy constructor
 bar::bar(const bar& __bar):
   i16IndexNumber(__bar.i16IndexNumber),
-  _notesArray{__bar._notesArray}
+  _laserNotesArray{__bar._laserNotesArray}
 {
 }
 
@@ -63,21 +63,21 @@ bar& bar::operator=(const bar& __bar)
 {
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- Before assignment ---------------");
   // Serial.printf("bar& bar::operator=(const bar& __bar). __bar.ui16GetBaseNotesCountInBar() = %u\n", __bar.ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getToneNumber() = %u\n", __bar._notesArray[0].getToneNumber());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._notesArray[0].getNote() = %u\n", __bar._notesArray[0].getNote());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._laserNotesArray[0].getToneNumber() = %u\n", __bar._laserNotesArray[0].getToneNumber());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). __bar._laserNotesArray[0].getNote() = %u\n", __bar._laserNotesArray[0].getNote());
   // Serial.printf("bar& bar::operator=(const bar& __bar). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getToneNumber() = %u\n", _notesArray[0].getToneNumber());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _laserNotesArray[0].getToneNumber() = %u\n", _laserNotesArray[0].getToneNumber());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _laserNotesArray[0].getNote() = %u\n", _laserNotesArray[0].getNote());
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- End before assignment ---------------");
   if (&__bar != this) {
     // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- Passed self test ---------------");
     i16IndexNumber = __bar.i16IndexNumber;
-    _notesArray = __bar._notesArray;
+    _laserNotesArray = __bar._laserNotesArray;
   }
   // Serial.println("bar& bar::operator=(const bar& __bar). ----------------------- After assignment ---------------");
   // Serial.printf("bar& bar::operator=(const bar& __bar). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getToneNumber() = %u\n", _notesArray[0].getToneNumber());
-  // Serial.printf("bar& bar::operator=(const bar& __bar). _notesArray[0].getNote() = %u\n", _notesArray[0].getNote());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _laserNotesArray[0].getToneNumber() = %u\n", _laserNotesArray[0].getToneNumber());
+  // Serial.printf("bar& bar::operator=(const bar& __bar). _laserNotesArray[0].getNote() = %u\n", _laserNotesArray[0].getNote());
   return *this;
 }
 
@@ -96,12 +96,12 @@ bar& bar::operator=(const bar& __bar)
 ///////////////////////////////////
 /** uint16_t const bar::ui16GetNotesCountInBar() const
  * 
- * Returns the effective number of notes (as opposed to 
+ * Returns the effective number of laserNotes (as opposed to 
  * the base note count) in a bar */
 uint16_t const bar::ui16GetNotesCountInBar() const {
   // Serial.println("bar::ui16GetNotesCountInBar(): starting.");
   uint16_t __ui = 0;
-  while (_notesArray[__ui].getNote() != 0) {
+  while (_laserNotesArray[__ui].getNote() != 0) {
     __ui++;
   }
   // Serial.printf("bar::ui16GetNotesCountInBar(): about to return [%u]\n", __ui);
@@ -111,7 +111,7 @@ uint16_t const bar::ui16GetNotesCountInBar() const {
 /** uint16_t const ui16GetBaseNotesCountInBar() const
  * 
  * Returns the base note count (as opposed to the effective
- * number of notes) in a bar */
+ * number of laserNotes) in a bar */
 uint16_t const bar::ui16GetBaseNotesCountInBar(const beat & _beat) const {
   // Serial.printf("bar::ui16GetBaseNotesCountInBar(): starting\n");
   if (_beat.getBaseNoteForBeat() == 0) {
@@ -129,7 +129,7 @@ uint16_t const bar::ui16GetBaseNotesCountInBar(const beat & _beat) const {
    * 8. croche                  : 2  : 16 / 8
    * 16. double croche          : 1  : 16 / 16
   */
-  while ((__ui16Note = _notesArray[__ui].getNote()) != 0) {
+  while ((__ui16Note = _laserNotesArray[__ui].getNote()) != 0) {
     // Serial.printf("bar::ui16GetBaseNotesCountInBar: __ui16Note = [%u]\n", __ui16Note);
     // Serial.printf("bar::ui16GetBaseNotesCountInBar: __ui = [%u]\n", __ui);
     __ui++;
@@ -170,7 +170,7 @@ uint32_t const bar::ui32GetBarDuration(const beat & _beat) const {
  * 
  * Returns a pointer to the associated bars array */
 const std::array<note, 16> & bar::getNotesArray() const {
-  return _notesArray;
+  return _laserNotesArray;
 }
 
 
@@ -193,7 +193,7 @@ bars::bars(
   tPlayBar(),
   _defaultBar(),
   _activeBar(_defaultBar),
-  _notes()
+  _laserNotes()
 {
   // 1. Disable and reset the Task tPlayBar
   disableAndResetTPlayBar();
@@ -201,16 +201,16 @@ bars::bars(
   // 2. Define _barsArray, an array containing a series of hard coded bars
 
   /** Signature of a bar:
-   *  a. std::array<note, 16> & _notesArray: a reference to an array of notes. Each note
+   *  a. std::array<note, 16> & _laserNotesArray: a reference to an array of laserNotes. Each note
    *     is composed of:
    *     (i) its duration (expressed in base note - full, half, quarter, etc.) and;
    *     (ii) its laserTone.
    *     ex.: { 2, 1, 2, 2, {{1,7},{1,8}}}
    *     a. 2: the bar shall be played at 2 beats per minutes => the base note last 30 seconds.
    *     b. 1: the base note is a white
-   *     c. 2: we have two notes per bar;
-   *     d. 2: we have two effective notes in this specific bar;
-   *     e. the two notes are:
+   *     c. 2: we have two laserNotes per bar;
+   *     d. 2: we have two effective laserNotes in this specific bar;
+   *     e. the two laserNotes are:
    *        - {1,7} -> a white with laserTone 7.
    *        - {1,8} -> a white with laserTone 8. 
    *  b. the bar's index number in the barsArray
@@ -316,7 +316,7 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  *   at a given beat rate.
  * */
 void bars::disableAndResetTPlayBar() {
-  _notes._disableAndResetTPlayNote();
+  _laserNotes._disableAndResetTPlayNote();
   tPlayBar.disable();
   tPlayBar.set(0, 1, [&](){_tcbPlayBar(beat{});}, [&](){return _oetcbPlayBar();}, NULL);
 }
@@ -347,11 +347,11 @@ bar const & bars::getCurrentBar() const {
 
 
 
-/** notes & bar::getNotes()
+/** laserNotes & bar::getNotes()
  * 
- * Returns a ref to the notes instance stored in bars */
-notes & bars::getNotes() {
-  return _notes;
+ * Returns a ref to the laserNotes instance stored in bars */
+laserNotes & bars::getNotes() {
+  return _laserNotes;
 }
 
 
@@ -365,7 +365,7 @@ notes & bars::getNotes() {
  *  play the preloaded bar.
  * 
  *  {@ params} beat const & __beat: beat to be taken into account
- *             to calculate the notes duration */
+ *             to calculate the laserNotes duration */
 uint16_t const bars::playBar(beat const & __beat) {
   // 0. Do not do anything if the beat has not been set
   if ((__beat.getBaseBeatInBpm() == 0) || (__beat.getBaseNoteForBeat() == 0)) {
@@ -373,7 +373,7 @@ uint16_t const bars::playBar(beat const & __beat) {
   }
 
   // 1. set the passed-in bar as active (setActive() will also call 
-  //    disableAndResetTPlayBar() and _notes._disableAndResetTPlayNote())
+  //    disableAndResetTPlayBar() and _laserNotes._disableAndResetTPlayNote())
   if (setActive(nextBar) == -2) {
     return 1;
   };
@@ -397,15 +397,15 @@ uint16_t const bars::playBar(beat const & __beat) {
  *  for Task tPlayBar.
  * 
  *  Each iteration of Task tPlayBar stops and starts the tPlayNote Task, which plays
- *  the notes stored in the bar.
+ *  the laserNotes stored in the bar.
  * 
  *  Accordingly, the number of iterations of Task tPlayBar shall be equal to 
- *  the effective number of notes in the bar.  
+ *  the effective number of laserNotes in the bar.  
  * */
 bool bars::_oetcbPlayBar(){
   // Serial.println("bars::_oetcbPlayBar(). starting.");
 
-  /**1. set the number of iterations base of the effective number of notes in the bar*/
+  /**1. set the number of iterations base of the effective number of laserNotes in the bar*/
   tPlayBar.setIterations(_activeBar.ui16GetNotesCountInBar());
 
   // Serial.println("bars::_oetcbPlayBar(). over.");
@@ -416,7 +416,7 @@ bool bars::_oetcbPlayBar(){
 
 
 /** _tcbPlayBar(): Task tPlayBar main callback
- *  Each pass corresponds to a note in the notes array property of the
+ *  Each pass corresponds to a note in the laserNotes array property of the
  *  currently active bar.
  * 
  *  Accordingly, we reset the interval of tPlayBar to the duration of the note.
@@ -445,7 +445,7 @@ void bars::_tcbPlayBar(beat const & __beat){
    *       as _activeNote in the note class;
    *    c. restartDelayed tPlayNote. 
    * */
-  _notes.playNote(_activeBar.getNotesArray().at(_ui16Iter), __beat);
+  _laserNotes.playNote(_activeBar.getNotesArray().at(_ui16Iter), __beat);
 
   /**3. Set the interval for next iteration of tPlayBar
    * 
@@ -517,11 +517,11 @@ void bars::_preloadNextBarFromJSON(const JsonObject& _joBar) {
   // {"nts":[{"t":7,"n":1},{"t":8,"n":1}], "ix":0}
   Serial.println("bars::_preloadNextBarFromJSON: starting");
   // Load _joBar["nts"] into an std::array
-  std::array<note, 16> _notesArray = _parseJsonNotesArray(_joBar["nts"].as<JsonArray>());
+  std::array<note, 16> _laserNotesArray = _parseJsonNotesArray(_joBar["nts"].as<JsonArray>());
 
   // Load the next sequence into a sequence instance
   nextBar = {
-    _notesArray,
+    _laserNotesArray,
     _joBar["ix"].as<int16_t>()
   };
 }
@@ -530,13 +530,13 @@ void bars::_preloadNextBarFromJSON(const JsonObject& _joBar) {
 
 std::array<note, 16> const bars::_parseJsonNotesArray(const JsonArray& _JsonNotesArray) {
   uint16_t _noteIx = 0;
-  std::array<note, 16> _notesArray;
+  std::array<note, 16> _laserNotesArray;
   for (JsonVariant _JsonNote : _JsonNotesArray) {
-    _notesArray.at(_noteIx) = {
+    _laserNotesArray.at(_noteIx) = {
       _JsonNote["t"].as<uint16_t>(),
       _JsonNote["n"].as<uint16_t>()
     };
     _noteIx++;
   }
-  return _notesArray;
+  return _laserNotesArray;
 }
