@@ -4,7 +4,6 @@
 */
 
 #include "Arduino.h"
-#include <mns.h>
 #include <beat.h>
 #include <laserTone.h>
 

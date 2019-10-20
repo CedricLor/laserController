@@ -6,7 +6,6 @@
 #define controllerBoxesCollection_h
 
 #include "Arduino.h"
-#include <mns.h>
 #include <global.h>
 #include <signal.h>
 

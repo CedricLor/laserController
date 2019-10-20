@@ -1,5 +1,5 @@
 /*
-  boxState.h - precoded boxes states that will trigger various configuration of the box for various durations
+  boxState.h - precoded box states that will trigger various configuration of the box for various durations
   Created by Cedric Lor, June 10, 2019.
 
 */

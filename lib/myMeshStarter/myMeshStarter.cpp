@@ -47,7 +47,7 @@ void myMeshStarter::myMeshSetup() {
 }
 
 
-Task myMeshStarter::tRestart(0, 1, NULL, NULL/*&mns::myScheduler*/, false, &oetcbRestart, NULL);
+Task myMeshStarter::tRestart(0, 1, NULL, NULL, false, &oetcbRestart, NULL);
 
 
 bool myMeshStarter::oetcbRestart() {

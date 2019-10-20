@@ -6,6 +6,7 @@
 #define laserInterface_h
 
 #include "Arduino.h"
+#include <mns.h>
 #include "myMeshController.h"
 #include "sequence.h"
 

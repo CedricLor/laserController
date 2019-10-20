@@ -55,7 +55,7 @@ myWSSender::myWSSender()
 
 // Web Socket Message Senders
 // Send WS message when I change Station IP
-Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, NULL/*&mns::myScheduler*/, false, NULL, NULL);
+Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, NULL, false, NULL, NULL);
 
 void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
@@ -98,7 +98,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
 // This task runs for ever and checks whether the boxState of any of the Controller boxes connected to
 // lasers has changed in the ControlerBox array of the Interface controller.
 // If so, it send a WS message with the new information.
-Task myWSSender::tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, NULL/*&mns::myScheduler*/, false, NULL, NULL);
+Task myWSSender::tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, NULL, false, NULL, NULL);
 
 void myWSSender::_tcbSendWSDataIfChangeBoxState() {
   // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): starting.");

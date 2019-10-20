@@ -96,7 +96,7 @@ Task pirController::tSetPirTimeStampAndBrdcstMsg(
     _myMeshViews._IRHighMsg();
     }, 
   /** scheduler */
-  NULL/*&mns::myScheduler*/, 
+  NULL, 
   /** enabled */
   false, 
   /** onEnable callback */
@@ -119,4 +119,4 @@ Task pirController::tSetPirTimeStampAndBrdcstMsg(
 
 
 
-Task pirController::tSpeedBumper(0, TASK_ONCE, NULL, NULL/*&mns::myScheduler*/, false, NULL, NULL);
+Task pirController::tSpeedBumper(0, TASK_ONCE, NULL, NULL, false, NULL, NULL);

@@ -43,7 +43,6 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
-#include <mns.h>
 #include <secret.h>
 #include <ControlerBox.h>
 

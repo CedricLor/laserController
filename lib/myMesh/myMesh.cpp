@@ -232,7 +232,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
     callback, this Task is reset by the onDroppedConnection callback to send a
     dropped box notification instead.
 */
-Task myMesh::tChangedConnection(0, 1, NULL, NULL/*&mns::myScheduler*/, false, NULL, &_odtcbChangedConnection);
+Task myMesh::tChangedConnection(0, 1, NULL, NULL, false, NULL, &_odtcbChangedConnection);
 
 void myMesh::_odtcbChangedConnection() {
     if (MY_DEEP_DG_MESH) Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
@@ -353,7 +353,7 @@ bool myMesh::IamAlone() {
    Task enabled when the node detects that it is alone.
    If after 20 seconds, it is still alone, it will restart the mesh.
 */
-Task myMesh::tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, NULL/*&mns::myScheduler*/, false, NULL, NULL);
+Task myMesh::tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, NULL, false, NULL, NULL);
 
 /* _tcbIamAloneTimeOut()
    Restarts the mesh if the node is no longer connected.
@@ -375,7 +375,7 @@ void myMesh::_tcbIamAloneTimeOut() {
    Used for debug purposes.
    Calls _printNodeListAndTopology() every 30 seconds.
 */
-Task myMesh::tPrintMeshTopo(60*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, NULL/*&mns::myScheduler*/, false, NULL, NULL);
+Task myMesh::tPrintMeshTopo(60*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopology, NULL, false, NULL, NULL);
 
 /* _printNodeListAndTopology()
    Used for debug purposes.
@@ -537,7 +537,7 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   This Task is called on various occasions, to keep an 
   up-to-date vision of the mesh layout.
 */
-Task myMesh::tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, NULL/*&mns::myScheduler*/, false, NULL, NULL);
+Task myMesh::tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, NULL, false, NULL, NULL);
 
 void myMesh::_tcbSaveNodeMap() {
   if (MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(tSaveNodeMap.getIterations()));
