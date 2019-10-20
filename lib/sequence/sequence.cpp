@@ -482,7 +482,7 @@ void sequences::_tcbPlaySequence() {
  * */
 void sequences::_odtcbPlaySequence() {
   Serial.println("sequences::_odtcbPlaySequence(). Restarting the sequence.");
-  tPlaySequence.restart(); // <-- TODO: replace by a call to playSequence or something similar
+  tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeSequence._beat)); // <-- TODO: replace by a call to playSequence or something similar
 }
 
 
