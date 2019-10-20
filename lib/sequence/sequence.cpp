@@ -94,39 +94,6 @@ beat const & sequence::getAssociatedBeat() const {
 
 
 
-/**std::array<bar, 8> const & sequence::getBarsArray() const
- * 
- * Instance getter.
- * 
- * Returns a const ref to the associated bars array
- *  */
-// std::array<bar, 8> const & sequence::getBarsArray() const {
-/** ** ** ** ** ** ** ** **/
-//   uint16_t _i = 0;
-//   std::array<uint16_t, 8> barIndexNumbersArray;
-//   for (auto _bar: _barsArray) {
-//     barIndexNumbersArray.at(_i) = _bar.i16IndexNumber;
-//     _i++;
-//   }
-/** ** ** ** ** ** ** ** **/
-//   return _barsArray;
-// }
-
-
-
-/**std::array<int16_t, 8> const & sequence::getBarsIxNumbsArray() const
- * 
- * Instance getter.
- * 
- * Returns a const ref to an array of bars index numbers
- *  */
-std::array<int16_t, 8> const & sequence::getBarsIxNumbsArray() const
-{
-  return _i16BarIxNumbsArray;
-}
-
-
-
 /**int16_t const sequence::i16GetFirstBarIndexNumber
  * 
  * Instance getter.

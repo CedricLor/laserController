@@ -26,7 +26,6 @@ class sequence
     uint16_t const ui16GetBarCountInSequence() const;
     uint32_t const ui32GetSequenceDuration(beat const & __beat) const;
     beat const & getAssociatedBeat() const;
-    std::array<int16_t, 8> const & getBarsIxNumbsArray() const;
     int16_t const i16GetFirstBarIndexNumber() const;
     int16_t const i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const;
 
