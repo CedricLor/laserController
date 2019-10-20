@@ -250,7 +250,7 @@ sequences::sequences(
   // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
 
   tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
-  tPreloadNextSequence.restart();
+  // tPreloadNextSequence.restart();
 
   Serial.println("sequences::sequences(). over.");
 }
