@@ -364,7 +364,7 @@ int16_t const sequences::i16GetCurrentSequenceId() const {
 ///////////////////////////////////
 // Sequence Players
 ///////////////////////////////////
-/** sequences::playSequence():
+/** sequences::playSequence(const sequence & __target_sequence):
  *  
  *  play a single sequence calculating the durations on the basis of the passed-in beat.
  * 
@@ -387,6 +387,26 @@ uint16_t const sequences::playSequence(const sequence & __target_sequence) {
 
   // 3. return 2 for success
   return 2;
+}
+
+
+
+
+
+
+/** sequences::playSequence(const uint16_t __target_sequence_ix_numb):
+ *  
+ *  play a single sequence calculating the durations on the basis of the passed-in beat.
+ * 
+ *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
+ *             sequence array (might be needed for debug and interface purpose)
+ * */
+uint16_t const sequences::playSequence(const uint16_t __target_sequence_ix_numb) {
+  // 1. Load the sequence into memory
+  _preloadNextSequence(__target_sequence_ix_numb);
+
+  // 2. Call playSequence(const sequence & __target_sequence)
+  return playSequence(nextSequence);
 }
 
 
@@ -480,7 +500,7 @@ void sequences::_odtcbPlaySequence() {
 void sequences::_odtcbPlaySequenceStop() {
   Serial.println("sequences::_odtcbPlaySequenceStop(). Will start to play sequence 5 (allOff).");
   if (_activeSequence.i16IndexNumber != 5) {
-    playSequence(sequencesArray[5]);
+    playSequence(5);
 }
 };
 

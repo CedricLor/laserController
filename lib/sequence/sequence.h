@@ -73,6 +73,7 @@ class sequences
 
     /** Task tPlaySequence - sequence players */
     uint16_t const playSequence(const sequence & __target_sequence);
+    uint16_t const playSequence(const uint16_t __target_sequence_ix_numb);
     Task tPlaySequence;
 
     /** Task tPreloadNextSequence - preload next sequence from SPIFFS */
