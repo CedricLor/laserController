@@ -268,9 +268,9 @@ sequences::sequences(
  *  sets the class instance variable _activeSequence 
  *  from a passed in lvalue const sequence reference.
  * 
- *  public instance setter 
+ *  private instance setter 
  * */
-uint16_t sequences::setActive(const sequence & __activeSequence) {
+uint16_t sequences::_setActive(const sequence & __activeSequence) {
   disableAndResetTPlaySequence();
   _activeSequence = __activeSequence;
   _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
@@ -292,7 +292,7 @@ uint16_t sequences::setActive(const sequence & __activeSequence) {
  * */
 uint16_t sequences::setActive(const uint16_t __target_sequence_ix_numb) {
   _preloadNextSequence(__target_sequence_ix_numb);
-  return setActive(nextSequence);
+  return _setActive(nextSequence);
 }
 
 
@@ -394,7 +394,7 @@ uint16_t const sequences::_playSequence(const sequence & __target_sequence) {
   }
 
   // 1. set the active sequence and the active beat
-  if (setActive(__target_sequence) == -2) {
+  if (_setActive(__target_sequence) == -2) {
     return 1;
   }
 

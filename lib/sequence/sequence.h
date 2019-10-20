@@ -62,7 +62,6 @@ class sequences
     char sequenceFileName[20];
     
     /** setters */
-    uint16_t setActive(const sequence & __ActiveSequence);
     uint16_t setActive(const uint16_t __target_sequence_ix_numb);
     void disableAndResetTPlaySequence();
     void setStopCallbackForTPlaySequence();
@@ -82,6 +81,9 @@ class sequences
     // variables
     sequence _defaultSequence;
     sequence & _activeSequence = _defaultSequence;
+
+    /** setters */
+    uint16_t _setActive(const sequence & __active_sequence);
 
     /** Task tPlaySequence - callbacks and methods */
     uint16_t const _playSequence(const sequence & __target_sequence);
