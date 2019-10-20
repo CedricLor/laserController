@@ -387,7 +387,7 @@ int16_t const sequences::i16GetCurrentSequenceId() const {
  *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose)
  * */
-uint16_t const sequences::playSequence(const sequence & __target_sequence) {
+uint16_t const sequences::_playSequence(const sequence & __target_sequence) {
   // 0. Do not do anything if the beat has not been set
   if ((__target_sequence._beat.getBaseBeatInBpm() == 0) || (__target_sequence._beat.getBaseNoteForBeat() == 0)) {
     return 0;
@@ -422,7 +422,7 @@ uint16_t const sequences::playSequence(const uint16_t __target_sequence_ix_numb)
   _preloadNextSequence(__target_sequence_ix_numb);
 
   // 2. Call playSequence(const sequence & __target_sequence)
-  return playSequence(nextSequence);
+  return _playSequence(nextSequence);
 }
 
 

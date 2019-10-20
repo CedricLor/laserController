@@ -72,7 +72,6 @@ class sequences
     sequence const & getCurrentSequence() const;
 
     /** Task tPlaySequence - sequence players */
-    uint16_t const playSequence(const sequence & __target_sequence);
     uint16_t const playSequence(const uint16_t __target_sequence_ix_numb);
     Task tPlaySequence;
 
@@ -85,6 +84,7 @@ class sequences
     sequence & _activeSequence = _defaultSequence;
 
     /** Task tPlaySequence - callbacks and methods */
+    uint16_t const _playSequence(const sequence & __target_sequence);
     bool _oetcbPlaySequence();
     void _tcbPlaySequence();
     void _odtcbPlaySequence();
