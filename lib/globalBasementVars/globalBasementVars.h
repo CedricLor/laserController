@@ -1,12 +1,12 @@
 
-#ifndef globalVars_h
+#ifndef globalBasementVars_h
 #include <painlessMesh.h>
-#define globalVars_h
+#define globalBasementVars_h
 
-class globalVars
+class globalBasementVars
 {
   public:
-    globalVars();
+    globalBasementVars();
 
     /**members*/
     Scheduler          scheduler;
@@ -53,6 +53,6 @@ class globalVars
 
 };
 
-extern globalVars globalVariables;
+extern globalBasementVars globalVariables;
 
 #endif

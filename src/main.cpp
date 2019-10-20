@@ -8,7 +8,7 @@
 
 extern constexpr short    UI8_BOXES_COUNT                     = 10;
 
-#include <globalVars.h>
+#include <globalBasementVars.h>
 #include <mySavedPrefs.h>
 #include <myOta.h>
 #include <controllerBoxesCollection.h>

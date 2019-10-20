@@ -1,10 +1,10 @@
 
 
-#include <globalVars.h>
+#include <globalBasementVars.h>
 
-globalVars                globalVariables;
+globalBasementVars                globalVariables;
 
-globalVars::globalVars():
+globalBasementVars::globalBasementVars():
   scheduler(),
   MY_DEBUG(false),
   MY_DG_LASER(false),
