@@ -159,7 +159,6 @@ sequences::sequences(
   void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
-  sequencesArray(),
   _bars(),
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
   nextSequence(),
@@ -200,15 +199,15 @@ sequences::sequences(
    *  In the following _relaysBarsArray exemple, the array of bars only contains
    *  one single bar (0)). It could contain more.
    * */
-  std::array<int16_t, 8> _relaysBarsArray {0};
+  // std::array<int16_t, 8> _relaysBarsArray {0};
   /** const beat _beat_2_1(2,1): an instance of beat
    *    _ui16BaseBeatInBpm = 2 for 2 bpm -> a beat every 30 seconds
    *    _ui16BaseNoteForBeat = 1; a white 
    * */
-  const beat _beat_2_1(2,1);
+  // const beat _beat_2_1(2,1);
   // Serial.printf("\nsequence::initSequences(). Passed building _beat_2_1.\n");
   // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
-  sequencesArray[0] = {_beat_2_1, _relaysBarsArray, 1, 0};
+  // sequencesArray[0] = {_beat_2_1, _relaysBarsArray, 1, 0};
   // {"bt":{"bpm":2,"base":1}, "brs":[0], "ix":0}
   // Serial.printf("\nsequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
   // Serial.printf("sequence::initSequences(). sequences[0].getBarsArray()[0].getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%i]\n", sequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
@@ -216,41 +215,40 @@ sequences::sequences(
 
 
   // --> Sequence 1: "Twins"
-  std::array<int16_t, 8> _twinsBarsArray {1};
-  sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1, 1};
+  // std::array<int16_t, 8> _twinsBarsArray {1};
+  // sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1, 1};
   // {"bt":{"bpm":2,"base":1}, "brs":[1], "ix":1}
 
 
   // --> Sequence 2: "All"
-  std::array<int16_t, 8> _allBarsArray {2};
-  sequencesArray[2] = {_beat_2_1, _allBarsArray, 1, 2};
+  // std::array<int16_t, 8> _allBarsArray {2};
+  // sequencesArray[2] = {_beat_2_1, _allBarsArray, 1, 2};
   // {"bt":{"bpm":2,"base":1}, "brs":[2], "ix":2}
 
 
   // --> Sequence 3: "Swipe Right"
-  std::array<int16_t, 8> _swipeRBarsArray {3};
+  // std::array<int16_t, 8> _swipeRBarsArray {3};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
    *    _ui16BaseNoteForBeat = 1; a white 
    * */
-  const beat _beat_120_1(120,1);
-  sequencesArray[3] = {_beat_120_1, _swipeRBarsArray, 1, 3};
+  // const beat _beat_120_1(120,1);
+  // sequencesArray[3] = {_beat_120_1, _swipeRBarsArray, 1, 3};
   // {"bt":{"bpm":120,"base":1}, "brs":[3], "ix":3}
 
 
   // --> Sequence 4: "Swipe Left"
-  std::array<int16_t, 8> _swipeLBarsArray {4};
-  sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 1, 4};
+  // std::array<int16_t, 8> _swipeLBarsArray {4};
+  // sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 1, 4};
   // {"bt":{"bpm":120,"base":1}, "brs":[4], "ix":4}
 
 
   // --> Sequence 5: "All Off"
-  std::array<int16_t, 8> _allOffBarsArray {5};
-  sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 1, 5};
+  // std::array<int16_t, 8> _allOffBarsArray {5};
+  // sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 1, 5};
   // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
 
   tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
-  // tPreloadNextSequence.restart();
 
   Serial.println("sequences::sequences(). over.");
 }
@@ -544,7 +542,7 @@ void sequences::_tcbPreloadNextSequence() {
 
 
 
-void sequences::_preloadNextSequence(uint16_t _ui16IxNumbOfSequenceToPreload){
+void sequences::_preloadNextSequence(const uint16_t _ui16IxNumbOfSequenceToPreload){
   Serial.printf("stepCollection::_preloadNextSequence: Reading file: %s\r\n", sequenceFileName);
 
   mySpiffs __mySpiffs;

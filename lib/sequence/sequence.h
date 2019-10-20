@@ -54,7 +54,6 @@ class sequences
     void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
 
     /** public properties */
-    std::array<sequence, 7> sequencesArray; // <-- TODO: make it private at some point
     bars _bars;  // <-- TODO: make it private at some point
 
     /** Variables to read sequences from SPIFSS */
