@@ -42,7 +42,6 @@ const bool IS_ROOT                            = false;                        //
 // const bool IS_ROOT                         = true;                         // BOX BY BOX
 
 
-uint16_t gui16NodeName                        = UI8_NODE_NAME;
 bool isInterface                              = IS_INTERFACE;
 bool isRoot                                   = IS_ROOT;
 

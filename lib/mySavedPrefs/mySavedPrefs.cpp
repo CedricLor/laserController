@@ -236,16 +236,16 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   if (_obj["val"] == "RoSet") {
 
     uint16_t _ui16receivedRootNodeName = _obj["dataset"]["roNNa"];
-    if ( (isRoot && (_ui16receivedRootNodeName == gui16NodeName) ) || (!(isRoot) && (_ui16receivedRootNodeName != gui16NodeName) ) ) {
+    if ( (isRoot && (_ui16receivedRootNodeName == globalBaseVariables.gui16NodeName) ) || (!(isRoot) && (_ui16receivedRootNodeName != globalBaseVariables.gui16NodeName) ) ) {
       return;
     }
-    if ( !(isRoot) && (_ui16receivedRootNodeName == gui16NodeName) ) {
+    if ( !(isRoot) && (_ui16receivedRootNodeName == globalBaseVariables.gui16NodeName) ) {
       isRoot = true;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
       return;
     }
-    if (isRoot && (_ui16receivedRootNodeName != gui16NodeName) ) {
+    if (isRoot && (_ui16receivedRootNodeName != globalBaseVariables.gui16NodeName) ) {
       isRoot = false;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
@@ -257,7 +257,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   if (_obj["val"] == "IFSet") {
 
     uint16_t _ui16receivedIFName = _obj["dataset"]["IFNNA"];
-    if (_ui16receivedIFName == gui16NodeName) {
+    if (_ui16receivedIFName == globalBaseVariables.gui16NodeName) {
       isInterface = true;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsInterface, _myPrefsRef);
@@ -495,7 +495,7 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
   // -> fix: call ControlerBox::updateThisBoxProperties
   // this value is then used in ControlerBox::updateThisBoxProperties
   // to set thisBox.ui16NodeName
-  _saveUi16ToUCharTypePrefs("ui8NdeName", "gui16NodeName", gui16NodeName);
+  _saveUi16ToUCharTypePrefs("ui8NdeName", "gui16NodeName", globalBaseVariables.gui16NodeName);
 
  _saveIsInterface();
 _saveIsRoot();
@@ -835,7 +835,7 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading Node Essential Preferences");
 
   // gui16NodeName
-  _loadUCharToUi16TypePrefs("ui8NdeName", "gui16NodeName", gui16NodeName);
+  _loadUCharToUi16TypePrefs("ui8NdeName", "gui16NodeName", globalBaseVariables.gui16NodeName);
 
   _loadIsInterface();
   _loadIsRoot();

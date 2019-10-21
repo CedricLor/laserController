@@ -9,6 +9,16 @@ globalBasementVars::globalBasementVars():
   UI8_NODE_NAME{201},
   IS_INTERFACE{false},
   IS_ROOT{false},
+
+  // UI8_NODE_NAME{202},
+  // IS_INTERFACE{false},
+  // IS_ROOT{false},
+
+  // UI8_NODE_NAME{200},
+  // IS_INTERFACE{true},
+  // IS_ROOT{true},
+  
+  gui16NodeName{UI8_NODE_NAME},
   relayPins({5, 17, 16, 4}),
   gui8DefaultMasterNodeName(254),
   UI8_CONTROLLER_BOX_PREFIX{200},

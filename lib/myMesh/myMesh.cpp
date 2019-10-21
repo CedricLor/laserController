@@ -259,7 +259,7 @@ void myMesh::changedConnectionCallback() {
   // in case a new comer is joining or be interrupted by the droppedConnection callback
   // if the changedConnectionCallback was triggered by a direct dropper for this box.
   Serial.printf("myMesh::changedConnectionCallback(): I am not alone. Sending my status.\n");
-  tChangedConnection.setInterval(2900 + gui16NodeName);
+  tChangedConnection.setInterval(2900 + globalBaseVariables.gui16NodeName);
   tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
   tChangedConnection.restartDelayed();
 

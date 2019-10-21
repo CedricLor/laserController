@@ -142,7 +142,7 @@ void myMeshStarter::_interfaceOnAPInit() {
 }
 
 void myMeshStarter::_setupMdns() {
-  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName);
+  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)(globalBaseVariables.gui16NodeName));
   // laserControllerMesh.setHostname(gcHostnamePrefix);
   // begin mDNS responder: argument is the name to broadcast. In this example
   // "ESP32_200". It will be broadcasted as ESP32_200.local.

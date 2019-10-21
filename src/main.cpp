@@ -107,7 +107,7 @@ void setup() {
   enableTasks();
 
   // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
-  Serial.printf("Box number: %i\n", gui16NodeName);
+  Serial.printf("Box number: %i\n", globalBaseVariables.gui16NodeName);
   Serial.printf("Version: %i\n", globalBaseVariables.VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   __mySpiffs.listDir("/", 0);

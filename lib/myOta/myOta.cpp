@@ -23,7 +23,7 @@ void myOta::OTAConfig()
   Serial.print("SETUP: OTAConfig(): about to connect to Wifi\n");
   mySavedPrefs::ui8OTASuccessErrorCodeWitness = 11;
   WiFi.mode(WIFI_STA);
-  WiFi.config(IPAddress(192, 168, 43, gui16NodeName),  IPAddress(192, 168, 43, 0), IPAddress(255, 255, 255, 0));
+  WiFi.config(IPAddress(192, 168, 43, globalBaseVariables.gui16NodeName),  IPAddress(192, 168, 43, 0), IPAddress(255, 255, 255, 0));
   WiFi.begin(ssid, pass);
   mySavedPrefs::ui8OTASuccessErrorCodeWitness = 10;
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -39,7 +39,7 @@ void myOta::OTAConfig()
   _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::saveOTASuccess, _myPrefsRef);
 
   // Set the hostname
-  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)gui16NodeName); // LaserBox_201, etc.
+  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)globalBaseVariables.gui16NodeName); // LaserBox_201, etc.
   ArduinoOTA.setHostname(gcHostnamePrefix);
   mySavedPrefs::ui8OTASuccessErrorCodeWitness = 8;
   _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::saveOTASuccess, _myPrefsRef);
