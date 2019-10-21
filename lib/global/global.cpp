@@ -25,8 +25,8 @@
 
 /** CONTROLLER BOX 201 
  *  node id in the current configuration 2760608337 */
-const uint8_t UI8_NODE_NAME                   = 201;                          // BOX BY BOX
-const bool IS_INTERFACE                       = false;                        // BOX BY BOX
+// const uint8_t UI8_NODE_NAME                   = 201;                          // BOX BY BOX
+// const bool IS_INTERFACE                       = false;                        // BOX BY BOX
 const bool IS_ROOT                            = false;                        // BOX BY BOX
 
 /** CONTROLLER BOX 202 
@@ -42,7 +42,6 @@ const bool IS_ROOT                            = false;                        //
 // const bool IS_ROOT                         = true;                         // BOX BY BOX
 
 
-bool isInterface                              = IS_INTERFACE;
 bool isRoot                                   = IS_ROOT;
 
 const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;

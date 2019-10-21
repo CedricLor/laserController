@@ -258,7 +258,7 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
     uint16_t _ui16receivedIFName = _obj["dataset"]["IFNNA"];
     if (_ui16receivedIFName == globalBaseVariables.gui16NodeName) {
-      isInterface = true;
+      globalBaseVariables.isInterface = true;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsInterface, _myPrefsRef);
       return;
@@ -514,7 +514,7 @@ void mySavedPrefs::_saveIsInterface() {
     -> runtime change possible; would require a restart of painlessMesh
     See below for possible implications with isRoot
   */
- _saveBoolTypePrefs("isIF", "isInterface", isInterface);
+ _saveBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
 }
 
 
@@ -853,7 +853,7 @@ void mySavedPrefs::_loadIsInterface(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading isInterface Preferences");
 
   // isInterface
-  _loadBoolTypePrefs("isIF", "isInterface", isInterface);
+  _loadBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
 
   Serial.println(String(debugLoadMsgStart) + " --- End isInterface Preferences");
 }

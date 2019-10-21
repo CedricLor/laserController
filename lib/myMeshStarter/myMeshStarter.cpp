@@ -75,7 +75,7 @@ void myMeshStarter::_initMesh() {
   /** If this ESP is defined as IF and is NOT Root node:
    *  - it shall connect to the mesh using its "station" interface;
    *  - it shall serve the web IF on its softAP. */
-  if (isInterface && !(isRoot)) {
+  if (globalBaseVariables.isInterface && !(isRoot)) {
     // Special init for case of physically mobile interface (web interface served on AP)
     _interfaceOnAPInit();
   } 
@@ -97,7 +97,7 @@ void myMeshStarter::_initMesh() {
   by the devs of painlessMesh.)
 */
 void myMeshStarter::_initStationManual() {
-  if (isInterface && isRoot) {
+  if (globalBaseVariables.isInterface && isRoot) {
     laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, fixedIP, fixedNetmaskIP);
     // laserControllerMesh.stationManual(ssid, pass);
   }

@@ -105,7 +105,7 @@ void myMesh::start() {
         _tcbUpdateCBOnChangedConnections();
 
         // enable the Task sending changes in ControlerBoxes states to connected browsers
-        if (isInterface) {
+        if (globalBaseVariables.isInterface) {
           myWSSender::tSendWSDataIfChangeBoxState.enable();
         }
       }
@@ -338,7 +338,7 @@ bool myMesh::IamAlone() {
      *  question "Am I alone?" but to the question "When I am alone, have I already 
      *  planned steps to find other nodes?"
      *  */
-    if ((!(isInterface)) && (!(tIamAloneTimeOut.isEnabled()))) {
+    if ((!(globalBaseVariables.isInterface)) && (!(tIamAloneTimeOut.isEnabled()))) {
       Serial.println("\nmyMesh::IamAlone(): Enabling tIamAloneTimeOut.\n");
     }
     return true;

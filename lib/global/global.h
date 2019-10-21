@@ -11,7 +11,6 @@
 #include <ESPAsyncWebServer.h>
 
 // BOX BY BOX
-extern bool               isInterface;
 extern bool               isRoot;
 extern uint32_t           ui32RootNodeId;
 

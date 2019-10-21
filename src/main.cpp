@@ -69,7 +69,7 @@ void setup() {
   globalBaseVariables.scheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
   globalBaseVariables.scheduler.addTask(myMesh::tSaveNodeMap);
 
-  if (isInterface) {
+  if (globalBaseVariables.isInterface) {
     globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
     globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
@@ -89,11 +89,11 @@ void setup() {
   __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
   Serial.println("\n");
 
-  if (isInterface) {
+  if (globalBaseVariables.isInterface) {
     myWebServerBase _myWebServer;
   }
 
-  if ((isInterface == false) || (isRoot == false)) {
+  if ((globalBaseVariables.isInterface == false) || (isRoot == false)) {
     globalBaseVariables.scheduler.addTask(ControlerBox::tSetBoxState);
     globalBaseVariables.scheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
     globalBaseVariables.scheduler.addTask(pirController::tSpeedBumper);
@@ -127,7 +127,7 @@ void loop() {
 
   globalBaseVariables.scheduler.execute();
   laserControllerMesh.update();
-  if ((isInterface == false) || (isRoot == false)) {
+  if ((globalBaseVariables.isInterface == false) || (isRoot == false)) {
     myPirController.check();
   }
 }
@@ -151,7 +151,7 @@ void serialInit() {
 
 
 void enableTasks() {
-  if ( (isInterface == false) || (isRoot == false) ) {
+  if ( (globalBaseVariables.isInterface == false) || (isRoot == false) ) {
     _signal.startup();
     // cntrllerBoxesCollection.signalHandlers.startup();
   } else {
