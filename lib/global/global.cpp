@@ -43,10 +43,6 @@
 
 
 
-const uint8_t UI8_CONTROLLER_BOX_PREFIX       = 200;              // Used to calculate the index of this box in the ControlerBoxes array
-uint16_t gui16ControllerBoxPrefix             = UI8_CONTROLLER_BOX_PREFIX;
-
-
 /** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
 uint16_t gui16BoxesCount                      = 10; // Former constexpr
 

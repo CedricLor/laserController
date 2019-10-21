@@ -11,8 +11,6 @@
 #include <ESPAsyncWebServer.h>
 
 // BOX BY BOX
-extern uint16_t           gui16ControllerBoxPrefix;
-
 extern uint16_t           gui16BoxesCount;
 
 extern int16_t            gi16BoxDefaultState;

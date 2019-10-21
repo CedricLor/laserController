@@ -23,6 +23,7 @@ globalBasementVars::globalBasementVars():
   isRoot{IS_ROOT},
 
   UI8_CONTROLLER_BOX_PREFIX{200},
+  gui16ControllerBoxPrefix{UI8_CONTROLLER_BOX_PREFIX},
   UI8_DEFAULT_INTERFACE_NODE_NAME{200},
   gui16InterfaceNodeName(UI8_DEFAULT_INTERFACE_NODE_NAME),
   ui32RootNodeId{0},

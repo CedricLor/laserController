@@ -464,7 +464,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   // replace it with thix box's index number so that the ControlerBoxes array
   // be properly updated in _changedBoxConfirmation
   if ((_nsobj["lb"] == "LBs") || (_nsobj["lb"] == "all")) {
-    _nsobj["lb"] = thisBox.ui16NodeName - gui16ControllerBoxPrefix;
+    _nsobj["lb"] = thisBox.ui16NodeName - globalBaseVariables.gui16ControllerBoxPrefix;
   }
 
   myMeshViews __myMeshViews;

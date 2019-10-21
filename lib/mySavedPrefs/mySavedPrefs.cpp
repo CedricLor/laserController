@@ -37,7 +37,7 @@ mySavedPrefs::mySavedPrefs() :
 
   /* variables to be saved in NVS:
   *  globalBaseVariables.gui16InterfaceNodeName (e.g. 201)
-  *  gui16ControllerBoxPrefix
+  *  globalBaseVariables.gui16ControllerBoxPrefix
   *  gui16BoxesCount
   *  PIN_COUNT
   *  ssid
@@ -426,13 +426,13 @@ void mySavedPrefs::_saveIfOnSoftAPCredentials() {
 
 
 /*
-  gui16ControllerBoxPrefix
+  globalBaseVariables.gui16ControllerBoxPrefix
   gui16BoxesCount
 */
 void mySavedPrefs::_saveNetworkEssentialPreferences() {
-  // save value of gui16ControllerBoxPrefix
+  // save value of globalBaseVariables.gui16ControllerBoxPrefix
   // -> no reboot
-  _saveUi16ToUCharTypePrefs("bContrBPref", "gui16ControllerBoxPrefix", gui16ControllerBoxPrefix);
+  _saveUi16ToUCharTypePrefs("bContrBPref", "gui16ControllerBoxPrefix", globalBaseVariables.gui16ControllerBoxPrefix);
 
   // save value of gui16BoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant UI8_BOXES_COUNT
@@ -762,12 +762,12 @@ void mySavedPrefs::_loadIfOnSoftAPCredentials() {
 
 
 /*
-  gui16ControllerBoxPrefix
+  globalBaseVariables.gui16ControllerBoxPrefix
   gui16BoxesCount
 */
 void mySavedPrefs::_loadNetworkEssentialPreferences(){
-  // gui16ControllerBoxPrefix
-  _loadUCharToUi16TypePrefs("bContrBPref", "gui16ControllerBoxPrefix", gui16ControllerBoxPrefix);
+  // globalBaseVariables.gui16ControllerBoxPrefix
+  _loadUCharToUi16TypePrefs("bContrBPref", "gui16ControllerBoxPrefix", globalBaseVariables.gui16ControllerBoxPrefix);
 
   // gui16BoxesCount
   _loadUCharToUi16TypePrefs("BoxesCount", "gui16BoxesCount", gui16BoxesCount);
