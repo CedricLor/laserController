@@ -247,7 +247,7 @@ uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
    *  deleted anyway. */
   uint16_t __ui16BoxIndex = 254;
 
-  for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if ((ControlerBoxes[_i].nodeId == 0) && (__ui16BoxIndex == 254)) { 
       __ui16BoxIndex = _i;
       continue;
@@ -277,7 +277,7 @@ uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
 uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
   Serial.printf("ControlerBox::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   uint16_t __ui16BoxIndex = 254;
-  for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
       __ui16BoxIndex = _i;
@@ -300,7 +300,7 @@ void ControlerBox::printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm,
 uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
   const char * _subName = "ControlerBox::findIndexByNodeName():";
   Serial.printf("%s looking for ControlerBox with uint16_t ui16NodeName = %u\n", _subName, _ui16NodeName);
-  for (uint16_t _i = 0; _i < gui16BoxesCount; _i++) {
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
       printSearchResults(_i, (uint32_t)_ui16NodeName, "_ui16NodeName");
       return _i;
@@ -460,7 +460,7 @@ void ControlerBox::deleteBox() {
 
 void ControlerBox::deleteBoxByNodeId(uint32_t _ui32nodeId) {
   Serial.println("ControlerBox::deleteBoxByNodeId(): starting");
-  for (uint16_t __it = 0; __it < gui16BoxesCount; __it++) {
+  for (uint16_t __it = 0; __it < globalBaseVariables.gui16BoxesCount; __it++) {
     if (ControlerBoxes[__it].nodeId == _ui32nodeId) {
       ControlerBoxes[__it].deleteBox();
       break;

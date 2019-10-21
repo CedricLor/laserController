@@ -437,7 +437,7 @@ void mySavedPrefs::_saveNetworkEssentialPreferences() {
   // save value of gui16BoxesCount
   // Not a very usefull value: the number of boxes created at startup is based on the constant UI8_BOXES_COUNT
   // Even a reboot would not suffice to have this param taken into account
-  _saveUi16ToUCharTypePrefs("BoxesCount", "gui16BoxesCount", gui16BoxesCount);
+  _saveUi16ToUCharTypePrefs("BoxesCount", "gui16BoxesCount", globalBaseVariables.gui16BoxesCount);
 }
 
 
@@ -770,7 +770,7 @@ void mySavedPrefs::_loadNetworkEssentialPreferences(){
   _loadUCharToUi16TypePrefs("bContrBPref", "gui16ControllerBoxPrefix", globalBaseVariables.gui16ControllerBoxPrefix);
 
   // gui16BoxesCount
-  _loadUCharToUi16TypePrefs("BoxesCount", "gui16BoxesCount", gui16BoxesCount);
+  _loadUCharToUi16TypePrefs("BoxesCount", "gui16BoxesCount", globalBaseVariables.gui16BoxesCount);
 }
 
 

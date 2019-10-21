@@ -43,9 +43,6 @@
 
 
 
-/** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
-uint16_t gui16BoxesCount                      = 10; // Former constexpr
-
 int16_t gi16BoxDefaultState                   = 5;
 
 

@@ -110,7 +110,7 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
   // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): WS has some client connected.");
   // else check the relevant changes and inform the clients
   myWSSender _myWSSender;
-  for (uint16_t _ui16BoxIndex = 1; _ui16BoxIndex < gui16BoxesCount; _ui16BoxIndex++) {
+  for (uint16_t _ui16BoxIndex = 1; _ui16BoxIndex < globalBaseVariables.gui16BoxesCount; _ui16BoxIndex++) {
     // prepare a JSON document
     StaticJsonDocument<256> _doc;
     JsonObject _obj = _doc.to<JsonObject>();

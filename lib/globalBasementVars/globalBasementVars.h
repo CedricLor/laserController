@@ -22,6 +22,9 @@ class globalBasementVars
     uint16_t                gui16ControllerBoxPrefix;
     const uint8_t           UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
     uint16_t                gui16InterfaceNodeName;
+
+    uint16_t                gui16BoxesCount;
+
     /** uint32_t ui32RootNodeId
      *  
      *  Set to 0 at startup.
@@ -37,8 +40,6 @@ class globalBasementVars
      *  in myMeshStarter and myMesh. Accordingly, I leave in the general section.
      *  */
     uint32_t                ui32RootNodeId;
-
-    uint16_t                gui16BoxesCount;
 
     int16_t                 gi16BoxDefaultState;
 
