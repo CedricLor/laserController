@@ -63,8 +63,6 @@ uint16_t gui16ControllerBoxPrefix             = UI8_CONTROLLER_BOX_PREFIX;
 
 uint16_t gui16InterfaceNodeName               = UI8_DEFAULT_INTERFACE_NODE_NAME;
 
-const char* slaveReactionHtml[4]              = {"syn", "opp", "aon", "aof"};
-
 /** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
 uint16_t gui16BoxesCount                      = 10; // Former constexpr
 

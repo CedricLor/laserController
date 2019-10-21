@@ -10,21 +10,24 @@ class globalBasementVars
 
 
     /** In all the configurations */
-    /**members*/
-    Scheduler          scheduler;
-    uint16_t           gui16NodeName;
-    bool               isInterface;
-    bool               isRoot;
+    Scheduler               scheduler;
+    const uint8_t           UI8_NODE_NAME; //   = 201;                          // BOX BY BOX
+    const bool              IS_INTERFACE;  //   = false;                        // BOX BY BOX
+    const bool              IS_ROOT;       //   = false;                        // BOX BY BOX
+    uint16_t                gui16NodeName;
+    bool                    isInterface;
+    bool                    isRoot;
 
 
-    /** For laserBoxes only: */
-    /** relayPins (hasLasers): 
+    /** I. For laserBoxes only (hasLasers): */
+    /** -> relayPins (hasLasers): 
      * 
      *  defines the pins connnected to the lasers
      * uint16_t relayPins[]  = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
      * uint16_t relayPins[]  = { 22, 21, 19, 18, 5, 17, 16, 4 }; SCL, SDA, MISO, SCK
      * */  
-    std::array<uint16_t, 4> relayPins; 
+    std::array<uint16_t, 4> relayPins;
+
     /** gui8DefaultMasterNodeName (hasLasers):
      * 
      * All the ControlerBoxes() are initialized with default master at 254.
@@ -46,9 +49,9 @@ class globalBasementVars
     uint8_t            gui8DefaultMasterNodeName;
 
     uint32_t           ui32RootNodeId;
-
+    const uint8_t      UI8_CONTROLLER_BOX_PREFIX; // 200
     uint16_t           gui16ControllerBoxPrefix;
-
+    const uint8_t      UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
     uint16_t           gui16InterfaceNodeName;
 
     uint16_t           gui16BoxesCount;
