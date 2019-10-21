@@ -21,24 +21,6 @@
 
 
 
-/** gui8DefaultMasterNodeName:
- * 
- * All the ControlerBoxes() are initialized with default master at 254.
- * 254 shall mean no master. This value may be changed here (at compile time).
- * This value sets the ui16MasterBoxName property of this ControlerBox:
- *
- *     thisBox.ui16MasterBoxName
- *
- * If the NVS has a different value saved under key 
- *
- *     bMasterNName,
- *
- * the saved value will prevail over this one at start up.
- * 
- * !! infinite loop potential: do not set a box to be its own master!!
- * gui8DefaultMasterNodeName shall never be equal to UI8_NODE_NAME
- * Todo: draft a security */
-uint8_t gui8DefaultMasterNodeName                 = 254; // 254 means no one
 
 
 /** CONTROLLER BOX 201 

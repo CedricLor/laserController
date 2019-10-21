@@ -552,7 +552,7 @@ void mySavedPrefs::_saveBoxBehaviorPreferences() {
   // save value of gui8DefaultMasterNodeName
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
-  _saveUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", gui8DefaultMasterNodeName);
+  _saveUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", globalBaseVariables.gui8DefaultMasterNodeName);
 }
 
 
@@ -886,7 +886,7 @@ void mySavedPrefs::_loadBoxBehaviorPreferences(){
   _loadI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", gi16BoxDefaultState);
 
   // gui8DefaultMasterNodeName
-  _loadUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", gui8DefaultMasterNodeName);
+  _loadUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", globalBaseVariables.gui8DefaultMasterNodeName);
 }
 
 

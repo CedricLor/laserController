@@ -46,7 +46,7 @@ ControlerBox::ControlerBox()
 
   // ui16MasterBoxName
   // setters:
-  // - here; -> from the global.gui8DefaultMasterNodeName
+  // - here; -> from the globalBaseVariables.gui8DefaultMasterNodeName
   // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
   //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
   //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
@@ -56,7 +56,7 @@ ControlerBox::ControlerBox()
   // - here (printProperties)
   // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
   // - in mySavedPrefs::savePreferences()
-  ui16MasterBoxName = gui8DefaultMasterNodeName;
+  ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
 
   /** bMasterBoxNameChangeHasBeenSignaled
    *  
@@ -438,7 +438,7 @@ void ControlerBox::deleteBox() {
   boxDeletionHasBeenSignaled = false;
   Serial.printf("%s boxDeletionHasBeenSignaled set to FALSE\n", _subName);
 
-  ui16MasterBoxName = gui8DefaultMasterNodeName;
+  ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
   Serial.printf("%s ui16MasterBoxName set to %u\n", _subName, ui16MasterBoxName);
   bMasterBoxNameChangeHasBeenSignaled = true;
   Serial.printf("%s bMasterBoxNameChangeHasBeenSignaled set to true\n", _subName);

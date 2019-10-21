@@ -11,8 +11,6 @@
 #include <ESPAsyncWebServer.h>
 
 // BOX BY BOX
-extern uint8_t            gui8DefaultMasterNodeName;
-
 extern uint16_t           gui16NodeName;
 extern bool               isInterface;
 extern bool               isRoot;

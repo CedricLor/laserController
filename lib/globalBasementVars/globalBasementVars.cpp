@@ -13,6 +13,7 @@ globalBasementVars::globalBasementVars():
   MY_DG_WEB{true},
   MY_DG_MESH{true},
   MY_DEEP_DG_MESH{false},
-  VERSION{2}
+  VERSION{2},
+  gui8DefaultMasterNodeName(254)
 {  }
 

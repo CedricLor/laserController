@@ -74,7 +74,7 @@ void setup() {
     globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
 
-  thisBox.ui16MasterBoxName = gui8DefaultMasterNodeName;
+  thisBox.ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
   thisBox.sBoxDefaultState = gi16BoxDefaultState;
 
   myMesh::start();
