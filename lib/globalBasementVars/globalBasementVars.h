@@ -8,26 +8,24 @@ class globalBasementVars
   public:
     globalBasementVars();
 
+
+    /** In all the configurations */
     /**members*/
     Scheduler          scheduler;
+    uint16_t           gui16NodeName;
+    bool               isInterface;
+    bool               isRoot;
 
-    /**
+
+    /** For laserBoxes only: */
+    /** relayPins (hasLasers): 
+     * 
+     *  defines the pins connnected to the lasers
      * uint16_t relayPins[]  = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
      * uint16_t relayPins[]  = { 22, 21, 19, 18, 5, 17, 16, 4 }; SCL, SDA, MISO, SCK
      * */  
     std::array<uint16_t, 4> relayPins; 
-
-    const bool         MY_DEBUG;
-    const bool         MY_DG_LASER;
-    const bool         MY_DG_WS;
-    const bool         MY_DG_WEB;
-    const bool         MY_DG_MESH;
-    const bool         MY_DEEP_DG_MESH;
-
-    const short        VERSION;
-
-    // BOX BY BOX
-    /** gui8DefaultMasterNodeName:
+    /** gui8DefaultMasterNodeName (hasLasers):
      * 
      * All the ControlerBoxes() are initialized with default master at 254.
      * 254 shall mean no master. This value may be changed here (at compile time).
@@ -47,9 +45,6 @@ class globalBasementVars
      * */
     uint8_t            gui8DefaultMasterNodeName;
 
-    uint16_t           gui16NodeName;
-    bool               isInterface;
-    bool               isRoot;
     uint32_t           ui32RootNodeId;
 
     uint16_t           gui16ControllerBoxPrefix;
@@ -70,6 +65,17 @@ class globalBasementVars
     uint16_t           uiMeshSize;
 
     // painlessMesh       laserControllerMesh;
+
+    /** For debug purposes only */
+    const bool         MY_DEBUG;
+    const bool         MY_DG_LASER;
+    const bool         MY_DG_WS;
+    const bool         MY_DG_WEB;
+    const bool         MY_DG_MESH;
+    const bool         MY_DEEP_DG_MESH;
+
+    /** For software development purposes only */
+    const short        VERSION;
 
   private:
 
