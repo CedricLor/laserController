@@ -261,7 +261,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     if (globalBaseVariables.isRoot) {
       __rootIFSettings["roNNa"] = thisBox.ui16NodeName;
     } else {
-      uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);
+      uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(globalBaseVariables.ui32RootNodeId);
       __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : ControlerBoxes[_bxIndex].ui16NodeName );
     }
     __rootIFSettings["IFNNA"]   = thisBox.ui16NodeName;

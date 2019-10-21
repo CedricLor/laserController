@@ -264,13 +264,13 @@ void myMesh::changedConnectionCallback() {
   tChangedConnection.restartDelayed();
 
   // 5. If I do not know the number of the root node, try and figure out whether the mesh knows it
-  if (!(ui32RootNodeId)) {
+  if (!(globalBaseVariables.ui32RootNodeId)) {
     // {"nodeId":2760139053,"root":true}
     char* _ptr = strstr(laserControllerMesh.subConnectionJson().c_str(), ",\"root\":true");
     char _cRootNodeId[12];
     if (_ptr != nullptr) {
       strncpy(_cRootNodeId, _ptr - 10, 11);
-      ui32RootNodeId = strtoul(_cRootNodeId, NULL, 10);
+      globalBaseVariables.ui32RootNodeId = strtoul(_cRootNodeId, NULL, 10);
     }
   }
 

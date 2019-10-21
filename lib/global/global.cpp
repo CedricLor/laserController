@@ -43,16 +43,6 @@
 
 
 
-/** uint32_t ui32RootNodeId
- *  
- *  Set to 0 at startup.
- * 
- *  Shall be equal to one of the nodes IDs if the IF is (IF is served on AP Interface of the ESP):
- *    (i) not set as root and 
- *    (ii) served on the SoftAP of one of the nodes.
-*/
-uint32_t ui32RootNodeId                       = 0;
-
 const uint8_t UI8_CONTROLLER_BOX_PREFIX       = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 uint16_t gui16ControllerBoxPrefix             = UI8_CONTROLLER_BOX_PREFIX;
 

@@ -9,7 +9,7 @@ class globalBasementVars
     globalBasementVars();
 
 
-    /** In all the configurations */
+    /** I. In all the configurations */
     Scheduler               scheduler;
     const uint8_t           UI8_NODE_NAME; //   = 201;                          // BOX BY BOX
     const bool              IS_INTERFACE;  //   = false;                        // BOX BY BOX
@@ -18,11 +18,40 @@ class globalBasementVars
     bool                    isInterface;
     bool                    isRoot;
 
-    uint32_t                ui32RootNodeId;
     const uint8_t           UI8_CONTROLLER_BOX_PREFIX; // 200
     uint16_t                gui16ControllerBoxPrefix;
     const uint8_t           UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
     uint16_t                gui16InterfaceNodeName;
+    /** uint32_t ui32RootNodeId
+     *  
+     *  Set to 0 at startup.
+     * 
+     *  Shall be equal to one of the nodes IDs if the IF is:
+     *    (i) not set as root and 
+     *    (ii) served on the SoftAP of one of the nodes.
+     *  (In the officially recommended painlessmesh configuration, the 
+     *  IF is served on AP Interface of the ESP.)
+     * 
+     *  This variable is actually here to provide the root node id to the web
+     *  browser (in myWSSender). However, the process for setting it is located 
+     *  in myMeshStarter and myMesh. Accordingly, I leave in the general section.
+     *  */
+    uint32_t                ui32RootNodeId;
+
+    uint16_t                gui16BoxesCount;
+
+    int16_t                 gi16BoxDefaultState;
+
+    int8_t                  gi8OTAReboot;
+    int8_t                  gi8RequestedOTAReboots;
+    int8_t                  gi8OTA1Success;
+    int8_t                  gi8OTA2Success;
+
+    char                    gcHostnamePrefix[];
+
+    uint16_t                uiMeshSize;
+
+    // painlessMesh           laserControllerMesh;
 
     /** I. For laserBoxes only (hasLasers): */
     /** -> relayPins (hasLasers): 
@@ -51,22 +80,8 @@ class globalBasementVars
      * gui8DefaultMasterNodeName shall never be equal to UI8_NODE_NAME
      * Todo: draft a security 
      * */
-    uint8_t            gui8DefaultMasterNodeName;
+    uint8_t                 gui8DefaultMasterNodeName;
 
-    uint16_t           gui16BoxesCount;
-
-    int16_t            gi16BoxDefaultState;
-
-    int8_t             gi8OTAReboot;
-    int8_t             gi8RequestedOTAReboots;
-    int8_t             gi8OTA1Success;
-    int8_t             gi8OTA2Success;
-
-    char               gcHostnamePrefix[];
-
-    uint16_t           uiMeshSize;
-
-    // painlessMesh       laserControllerMesh;
 
     /** For debug purposes only */
     const bool         MY_DEBUG;

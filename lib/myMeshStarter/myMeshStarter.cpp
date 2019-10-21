@@ -110,7 +110,7 @@ void myMeshStarter::_initStationManual() {
 void myMeshStarter::_rootTheMesh() {
   if (globalBaseVariables.isRoot) {
     laserControllerMesh.setRoot(true);
-    ui32RootNodeId = laserControllerMesh.getNodeId();
+    globalBaseVariables.ui32RootNodeId = laserControllerMesh.getNodeId();
   }
   laserControllerMesh.setContainsRoot(true);
 }
