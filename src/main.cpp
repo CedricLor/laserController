@@ -93,7 +93,7 @@ void setup() {
     myWebServerBase _myWebServer;
   }
 
-  if ((globalBaseVariables.isInterface == false) || (isRoot == false)) {
+  if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
     globalBaseVariables.scheduler.addTask(ControlerBox::tSetBoxState);
     globalBaseVariables.scheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
     globalBaseVariables.scheduler.addTask(pirController::tSpeedBumper);
@@ -127,7 +127,7 @@ void loop() {
 
   globalBaseVariables.scheduler.execute();
   laserControllerMesh.update();
-  if ((globalBaseVariables.isInterface == false) || (isRoot == false)) {
+  if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
     myPirController.check();
   }
 }
@@ -151,7 +151,7 @@ void serialInit() {
 
 
 void enableTasks() {
-  if ( (globalBaseVariables.isInterface == false) || (isRoot == false) ) {
+  if ( (globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false) ) {
     _signal.startup();
     // cntrllerBoxesCollection.signalHandlers.startup();
   } else {

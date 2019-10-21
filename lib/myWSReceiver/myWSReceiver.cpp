@@ -166,7 +166,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
     return;
   }
 
-  //  If this is a save or apply message for Wifi, softAP, mesh, isRoot or isInterface settings
+  //  If this is a save or apply message for Wifi, softAP, mesh, globalBaseVariables.isRoot or globalBaseVariables.isInterface settings
   if (( (_obj["key"] == "save") || (_obj["key"] == "apply") ) && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet") )) {
     if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("myWSReceiver::_requestIFChange(): This is a SAVE %s settings message.\n", _obj["val"].as<const char*>());

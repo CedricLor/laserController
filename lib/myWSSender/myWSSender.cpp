@@ -244,7 +244,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     }
 
     // Real IP of the Interface
-    __newObj["serverIP"]        = ( isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
+    __newObj["serverIP"]        = ( globalBaseVariables.isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
     
     // Wifi Settings of External Network (in case the IF is served on the station interface of the ESP)
     JsonObject __wifiSettings   = __newObj.createNestedObject("wifi");
@@ -258,7 +258,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
 
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
-    if (isRoot) {
+    if (globalBaseVariables.isRoot) {
       __rootIFSettings["roNNa"] = thisBox.ui16NodeName;
     } else {
       uint16_t _bxIndex           = ControlerBox::findIndexByNodeId(ui32RootNodeId);

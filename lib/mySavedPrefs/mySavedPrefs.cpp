@@ -46,7 +46,7 @@ mySavedPrefs::mySavedPrefs() :
   *  gi16BoxDefaultState
   *  gui16NodeName
   *  gui8DefaultMasterNodeName;
-  *  isInterface
+  *  globalBaseVariables.isInterface
   */
 
 
@@ -236,17 +236,17 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
   if (_obj["val"] == "RoSet") {
 
     uint16_t _ui16receivedRootNodeName = _obj["dataset"]["roNNa"];
-    if ( (isRoot && (_ui16receivedRootNodeName == globalBaseVariables.gui16NodeName) ) || (!(isRoot) && (_ui16receivedRootNodeName != globalBaseVariables.gui16NodeName) ) ) {
+    if ( (globalBaseVariables.isRoot && (_ui16receivedRootNodeName == globalBaseVariables.gui16NodeName) ) || (!(globalBaseVariables.isRoot) && (_ui16receivedRootNodeName != globalBaseVariables.gui16NodeName) ) ) {
       return;
     }
-    if ( !(isRoot) && (_ui16receivedRootNodeName == globalBaseVariables.gui16NodeName) ) {
-      isRoot = true;
+    if ( !(globalBaseVariables.isRoot) && (_ui16receivedRootNodeName == globalBaseVariables.gui16NodeName) ) {
+      globalBaseVariables.isRoot = true;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
       return;
     }
-    if (isRoot && (_ui16receivedRootNodeName != globalBaseVariables.gui16NodeName) ) {
-      isRoot = false;
+    if (globalBaseVariables.isRoot && (_ui16receivedRootNodeName != globalBaseVariables.gui16NodeName) ) {
+      globalBaseVariables.isRoot = false;
       mySavedPrefs _myPrefsRef;
       _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsRoot, _myPrefsRef);
     }
@@ -483,9 +483,9 @@ void mySavedPrefs::_resetOTASuccess() {
 
 
 /*
-  gui16NodeName
-  isInterface
-  isRoot
+  globalBaseVariables.gui16NodeName
+  globalBaseVariables.isInterface
+  globalBaseVariables.isRoot
 */
 // Need a reboot
 void mySavedPrefs::_saveBoxEssentialPreferences() {
@@ -510,9 +510,9 @@ _saveIsRoot();
  *  dynamic reload: need restarting the mesh */
 void mySavedPrefs::_saveIsInterface() {
   /*
-    Save value of isInterface
+    Save value of globalBaseVariables.isInterface
     -> runtime change possible; would require a restart of painlessMesh
-    See below for possible implications with isRoot
+    See below for possible implications with globalBaseVariables.isRoot
   */
  _saveBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
 }
@@ -525,7 +525,7 @@ void mySavedPrefs::_saveIsInterface() {
  *  dynamic reload: need restarting the mesh */
 void mySavedPrefs::_saveIsRoot() {
   /*
-    Save value of isRoot
+    Save value of globalBaseVariables.isRoot
     -> runtime change possible, but 
       - would require a restart of painlessMesh on this node
       - would also require a symetric change to be done on another
@@ -533,7 +533,7 @@ void mySavedPrefs::_saveIsRoot() {
       another node shall be assigned this role and painlessMesh shall 
       also be restarted on the other node)
   */
- _saveBoolTypePrefs("isRoot", "isRoot", isRoot);
+ _saveBoolTypePrefs("isRoot", "isRoot", globalBaseVariables.isRoot);
 }
 
 
@@ -827,9 +827,9 @@ void mySavedPrefs::_loadUselessPreferences(){
 
 
 /* _loadBoxEssentialPreferences()
-  gui16NodeName
-  isInterface
-  isRoot
+  globalBaseVariables.gui16NodeName
+  globalBaseVariables.isInterface
+  globalBaseVariables.isRoot
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading Node Essential Preferences");
@@ -852,7 +852,7 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
 void mySavedPrefs::_loadIsInterface(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading isInterface Preferences");
 
-  // isInterface
+  // globalBaseVariables.isInterface
   _loadBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
 
   Serial.println(String(debugLoadMsgStart) + " --- End isInterface Preferences");
@@ -868,7 +868,7 @@ void mySavedPrefs::_loadIsRoot(){
   Serial.println(String(debugLoadMsgStart) + " --- Loading isRoot Preferences");
 
   // isRoot
-  _loadBoolTypePrefs("isRoot", "isRoot", isRoot);
+  _loadBoolTypePrefs("isRoot", "isRoot", globalBaseVariables.isRoot);
 
   Serial.println(String(debugLoadMsgStart) + " --- End isRoot Preferences");
 }
