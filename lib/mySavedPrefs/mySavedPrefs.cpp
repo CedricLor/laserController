@@ -36,7 +36,7 @@ mySavedPrefs::mySavedPrefs() :
 
 
   /* variables to be saved in NVS:
-  *  gui16InterfaceNodeName (e.g. 201)
+  *  globalBaseVariables.gui16InterfaceNodeName (e.g. 201)
   *  gui16ControllerBoxPrefix
   *  gui16BoxesCount
   *  PIN_COUNT
@@ -445,10 +445,10 @@ void mySavedPrefs::_saveNetworkEssentialPreferences() {
 
 
 /*
-  gui16InterfaceNodeName
+  globalBaseVariables.gui16InterfaceNodeName
 */
 void mySavedPrefs::_saveUselessPreferences() {
-  _saveUi16ToUCharTypePrefs("sIFNodNam", "gui16InterfaceNodeName", gui16InterfaceNodeName);
+  _saveUi16ToUCharTypePrefs("sIFNodNam", "gui16InterfaceNodeName", globalBaseVariables.gui16InterfaceNodeName);
 }
 
 
@@ -812,11 +812,11 @@ void mySavedPrefs::_loadOTASuccess() {
 
 
 /*
-  gui16InterfaceNodeName
+  globalBaseVariables.gui16InterfaceNodeName
 */
 void mySavedPrefs::_loadUselessPreferences(){
   // gui16InterfaceNodeName
-  _loadUCharToUi16TypePrefs("sIFNodNam", "gui16InterfaceNodeName", gui16InterfaceNodeName);
+  _loadUCharToUi16TypePrefs("sIFNodNam", "gui16InterfaceNodeName", globalBaseVariables.gui16InterfaceNodeName);
 }
 
 

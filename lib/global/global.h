@@ -15,8 +15,6 @@ extern uint32_t           ui32RootNodeId;
 
 extern uint16_t           gui16ControllerBoxPrefix;
 
-extern uint16_t           gui16InterfaceNodeName;
-
 extern uint16_t           gui16BoxesCount;
 
 extern int16_t            gi16BoxDefaultState;

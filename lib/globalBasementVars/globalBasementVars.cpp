@@ -21,10 +21,15 @@ globalBasementVars::globalBasementVars():
   gui16NodeName{UI8_NODE_NAME},
   isInterface{IS_INTERFACE},
   isRoot{IS_ROOT},
+  
   relayPins({5, 17, 16, 4}),
   gui8DefaultMasterNodeName(254),
+  
   UI8_CONTROLLER_BOX_PREFIX{200},
+  
   UI8_DEFAULT_INTERFACE_NODE_NAME{200},
+  gui16InterfaceNodeName(UI8_DEFAULT_INTERFACE_NODE_NAME),
+
   MY_DEBUG{true},
   MY_DG_LASER{false},
   MY_DG_WS{true},

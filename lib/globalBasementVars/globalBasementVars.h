@@ -18,6 +18,11 @@ class globalBasementVars
     bool                    isInterface;
     bool                    isRoot;
 
+    uint32_t                ui32RootNodeId;
+    const uint8_t           UI8_CONTROLLER_BOX_PREFIX; // 200
+    uint16_t                gui16ControllerBoxPrefix;
+    const uint8_t           UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
+    uint16_t                gui16InterfaceNodeName;
 
     /** I. For laserBoxes only (hasLasers): */
     /** -> relayPins (hasLasers): 
@@ -47,12 +52,6 @@ class globalBasementVars
      * Todo: draft a security 
      * */
     uint8_t            gui8DefaultMasterNodeName;
-
-    uint32_t           ui32RootNodeId;
-    const uint8_t      UI8_CONTROLLER_BOX_PREFIX; // 200
-    uint16_t           gui16ControllerBoxPrefix;
-    const uint8_t      UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
-    uint16_t           gui16InterfaceNodeName;
 
     uint16_t           gui16BoxesCount;
 

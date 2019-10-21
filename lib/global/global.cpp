@@ -42,7 +42,6 @@
 // const bool IS_ROOT                         = true;                         // BOX BY BOX
 
 
-const uint8_t UI8_DEFAULT_INTERFACE_NODE_NAME = 200;
 
 /** uint32_t ui32RootNodeId
  *  
@@ -57,7 +56,6 @@ uint32_t ui32RootNodeId                       = 0;
 const uint8_t UI8_CONTROLLER_BOX_PREFIX       = 200;              // Used to calculate the index of this box in the ControlerBoxes array
 uint16_t gui16ControllerBoxPrefix             = UI8_CONTROLLER_BOX_PREFIX;
 
-uint16_t gui16InterfaceNodeName               = UI8_DEFAULT_INTERFACE_NODE_NAME;
 
 /** UI8_BOXES_COUNT is defined in as a constexpr in global.h */
 uint16_t gui16BoxesCount                      = 10; // Former constexpr
