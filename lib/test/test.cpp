@@ -757,19 +757,15 @@ void test::rawBarsStackPlayer(const char * _methodName, bars & _bars, bar & _bar
 
   Serial.printf("%s testing players\n", _methodName);
 
-  // play a stand alone bar
   Serial.printf("%s calling _bars.disableAndResetTPlayBar()\n", _methodName);
-  _bars.disableAndResetTPlayBar();
-  laserInterface::activeBeat = beat(5, 1);
-  Serial.printf("%s _bars.playBarStandAlone(_bar, laserInterface::activeBeat) shall be 1. Is [%i]\n", _methodName,
-    _bars.playBar(_bar, laserInterface::activeBeat));
   _bars.disableAndResetTPlayBar();
 
-  // play a bar in a sequence
-  Serial.printf("%s calling _bars.disableAndResetTPlayBar()\n", _methodName);
-  _bars.disableAndResetTPlayBar();
-  Serial.printf("%s _bar.playBar() shall fail because beat is set to default (beat == 0 and base laserNote == 0). Shall be 0. Is [%i]\n", _methodName,
-    _bars.playBar(_bars._barsArray.at(0), laserInterface::activeBeat));
+  _bars.setActive(_bar);
+  Serial.printf("%s _bars.playBar(beat(5, 1)) shall be 2. Is [%i]\n", _methodName,
+    _bars.playBar(beat(5, 1)));
+
+  Serial.printf("%s _bar.playBar(beat(0, 0)) shall fail because beat is set to base beat == 0 bpm and base note == 0). Shall be 0. Is [%i]\n", _methodName,
+    _bars.playBar(beat(0, 0)));
   _bars.disableAndResetTPlayBar();
 }
 
@@ -848,7 +844,6 @@ void test::implementedBarsStack() {
   const char * _methodName = "test::rawBarsStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  laserInterface::globalSequences._bars.setActive(laserInterface::globalSequences._bars.at(1));
   rawBarsStackNestedNotes(_methodName, laserInterface::globalSequences._bars);
   rawBarsStackTaskCallbacks(_methodName, laserInterface::globalSequences._bars);
   rawBarsStackTaskAccessFromAndToActiveBar(_methodName, laserInterface::globalSequences._bars);
@@ -878,49 +873,95 @@ void test::beforeSequenceStacks() {
 void test::sequenceStack() {
   const char * _methodName = "test::sequenceStack:";
   Serial.printf("\n%s starting\n", _methodName);
-  laserInterface::activeBeat = beat{laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat()};
+  Serial.printf("\n%s testing laserInterface::globalSequences.setActive(0)\n", _methodName);
+  laserInterface::globalSequences.setActive(1);
+  Serial.printf("%s laserInterface::globalSequences._activeSequence.i16IndexNumber shall be 1. Is [%i]\n", _methodName, laserInterface::globalSequences._activeSequence.i16IndexNumber);
 
-  Serial.printf("\n%s testing laserInterface::globalSequences.sequencesArray[0]\n", _methodName);
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat().getBaseBeatInBpm() shall be 2. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("\n%s alloting laserInterface::globalSequences._activeSequence to local variable sequence & _activeSequence\n", _methodName);  
+  sequence & _activeSequence = laserInterface::globalSequences._activeSequence;
 
-  Serial.printf("\n%s testing laserNotes in existing bar\n", _methodName);
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getNote() shall be equal to 1. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getLaserToneNumber() shall be equal to 7. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).getLaserToneNumber());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs() shall be equal to 3000. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).getNotesArray().at(0).ui16GetNoteDurationInMs(laserInterface::activeBeat));
+  Serial.printf("\n%s testing _activeSequence.getAssociatedBeat() submethods\n", _methodName);
+  Serial.printf("%s _activeSequence.getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
+    _activeSequence.getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("%s _activeSequence.getAssociatedBeat().getBaseBeatInBpm() shall be 2. Is [%u]\n", _methodName, 
+    _activeSequence.getAssociatedBeat().getBaseBeatInBpm());
 
-  Serial.printf("\n%s testing methods of existing bar\n", _methodName);
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetNotesCountInBar());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar(laserInterface::activeBeat) shall be equal to 2. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration(laserInterface::activeBeat) shall be equal to 60000. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui32GetBarDuration(laserInterface::activeBeat));
+  Serial.printf("\n%s testing access to the methods of _activeSequence\n", _methodName);
+  Serial.printf("%s _activeSequence.ui16GetBarCountInSequence() shall be equal to 1. Is [%u]\n", _methodName, 
+    _activeSequence.ui16GetBarCountInSequence());
+  Serial.printf("%s _activeSequence.i16GetFirstBarIndexNumber() shall be equal to 1. Is [%i]\n", _methodName, 
+    _activeSequence.i16GetFirstBarIndexNumber());
+  Serial.printf("%s _activeSequence.i16GetBarIndexNumber(0) shall be equal to 1. Is [%i]\n", _methodName, 
+    _activeSequence.i16GetBarIndexNumber(0));
 
-  Serial.printf("\n%s testing laserNotes in \"beyond bound\" bar\n", _methodName);
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getNote() shall be equal to 0. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getNote());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getLaserToneNumber() shall be equal to 0. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).getNotesArray().at(0).getLaserToneNumber());
+  Serial.printf("\n%s testing access to the members of laserInterface::globalSequences.\n", _methodName);
+  Serial.printf("%s laserInterface::globalSequences.ui16IxNumbOfSequenceToPreload shall be equal to 1. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences.ui16IxNumbOfSequenceToPreload);
+  Serial.printf("%s laserInterface::globalSequences.nextSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences.nextSequence.i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences._defaultSequence.sequenceFileName shall be equal to \"/sequences.json\". Is [%s]\n", _methodName, 
+    laserInterface::globalSequences.sequenceFileName);
+  Serial.printf("%s laserInterface::globalSequences.getActiveSequence().i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences.getActiveSequence().i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences._activeSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._activeSequence.i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences._defaultSequence.i16IndexNumber shall be equal to -2. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._defaultSequence.i16IndexNumber);
+  
+  Serial.printf("\n%s alloting _activeSequence to local variable sequence & _activeSequence\n", _methodName);  
+  sequence & _activeSequence = laserInterface::globalSequences._activeSequence;
 
-  Serial.printf("\n%s testing methods of \"beyond bound\" bar\n", _methodName);
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetNotesCountInBar() shall be equal to 0. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetNotesCountInBar());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui16GetBaseNotesCountInBar(laserInterface::activeBeat) shall be equal to 2. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(0).ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration(laserInterface::activeBeat) shall be equal to 0. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].getBarsArray().at(2).ui32GetBarDuration(laserInterface::activeBeat));
+  Serial.printf("\n%s testing access laserInterface::globalSequences._bars members\n", _methodName);
+  Serial.printf("%s laserInterface::globalSequences._bars.ui16IxNumbOfBarToPreload shall be equal to 1. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars.ui16IxNumbOfBarToPreload);
+  Serial.printf("%s laserInterface::globalSequences._bars.nextBar.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._bars.nextBar.i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences._bars.barFileName shall be equal to \"/sequences.json\". Is [%s]\n", _methodName, 
+    laserInterface::globalSequences._bars.barFileName);
+  Serial.printf("%s laserInterface::globalSequences._bars.i16GetActiveBarId() shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._bars.i16GetActiveBarId());
+  Serial.printf("%s laserInterface::globalSequences._bars._defaultBar.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._bars._defaultBar.i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences._bars._defaultBar.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._bars._defaultBar.i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.i16IndexNumber);
 
-  Serial.printf("\n%s testing sequence methods\n", _methodName);
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].i16GetBarCountInSequence() shall be equal to 1. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].ui16GetBarCountInSequence());
-  Serial.printf("%s laserInterface::globalSequences.sequencesArray[0].ui32GetSequenceDuration() shall be equal to 60000. Is [%u]\n", _methodName, 
-    laserInterface::globalSequences.sequencesArray[0].ui32GetSequenceDuration(laserInterface::globalSequences.sequencesArray[0].getAssociatedBeat()));
+  Serial.printf("\n%s alloting _activeSequence.getAssociatedBeat() to laserInterface::activeBeat\n", _methodName);  
+  laserInterface::activeBeat = _activeSequence.getAssociatedBeat();
+
+  Serial.printf("\n%s testing access to laserNotes of laserInterface::globalSequences._bars._activeBar\n", _methodName);
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.getNotesArray().at(0).getNote() shall be equal to 1. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.getNotesArray().at(0).getNote());
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.getNotesArray().at(0).getLaserToneNumber() shall be equal to 5. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.getNotesArray().at(0).getLaserToneNumber());
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.getNotesArray().at(0).ui16GetNoteDurationInMs() shall be equal to 3000. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.getNotesArray().at(0).ui16GetNoteDurationInMs(laserInterface::activeBeat));
+
+  Serial.printf("\n%s testing members and methods of laserInterface::globalSequences._bars._activeBar\n", _methodName);
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.ui16GetNotesCountInBar() shall be equal to 2. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.ui16GetNotesCountInBar());
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat) shall be equal to 2. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.ui16GetBaseNotesCountInBar(laserInterface::activeBeat));
+  Serial.printf("%s laserInterface::globalSequences._bars._activeBar.ui32GetBarDuration(laserInterface::activeBeat) shall be equal to 60000. Is [%u]\n", _methodName, 
+    laserInterface::globalSequences._bars._activeBar.ui32GetBarDuration(laserInterface::activeBeat));
+
+  Serial.printf("\n%s testing preloading a \"beyond bound\" sequence\n", _methodName);
+  Serial.printf("%s calling laserInterface::globalSequences._preloadNextSequence(10), 10 being out of bound\n", _methodName);
+  laserInterface::globalSequences._preloadNextSequence(10);
+  Serial.printf("%s laserInterface::globalSequences.nextSequence.i16IndexNumber is [%i]\n", _methodName, 
+    laserInterface::globalSequences.nextSequence.i16IndexNumber);
+  Serial.printf("%s laserInterface::globalSequences.nextSequence.ui16GetBarCountInSequence() is [%u]\n", _methodName, 
+    laserInterface::globalSequences.nextSequence.ui16GetBarCountInSequence());
+  Serial.printf("%s laserInterface::globalSequences.nextSequence.getAssociatedBeat() is [%u]\n", _methodName, 
+    laserInterface::globalSequences.nextSequence.getAssociatedBeat());
+  Serial.printf("%s laserInterface::globalSequences.nextSequence.i16GetFirstBarIndexNumber() is [%i]\n", _methodName, 
+    laserInterface::globalSequences.nextSequence.i16GetFirstBarIndexNumber());
+  Serial.printf("%s laserInterface::globalSequences.nextSequence._i16barsArraySize is [%i]\n", _methodName, 
+    laserInterface::globalSequences.nextSequence._i16barsArraySize);
+
+  Serial.printf("\n%s testing setting the \"beyond bound\" nextBar as _activeBar\n", _methodName);
+  // TO BE DRAFTED
 
   laserInterface::activeBeat = beat{};
   Serial.printf("\n%s over\n\n", _methodName);

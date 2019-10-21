@@ -168,7 +168,7 @@ uint32_t const bar::ui32GetBarDuration(const beat & _beat) const {
  * 
  * Instance getter.
  * 
- * Returns a pointer to the associated bars array */
+ * Returns a pointer to the associated notes array */
 const std::array<laserNote, 16> & bar::getNotesArray() const {
   return _laserNotesArray;
 }
@@ -282,7 +282,7 @@ bars::bars(
 uint16_t const bars::setActive(const bar & __activeBar) {
   disableAndResetTPlayBar();
   _activeBar = __activeBar;
-  return i16GetCurrentBarId();
+  return i16GetActiveBarId();
 }
 
 
@@ -329,20 +329,11 @@ void bars::disableAndResetTPlayBar() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** int16_t const bars::i16GetCurrentBarId() const
+/** int16_t const bars::i16GetActiveBarId() const
  * 
  * Returns the active bar index number */
-int16_t const bars::i16GetCurrentBarId() const {
+int16_t const bars::i16GetActiveBarId() const {
   return _activeBar.i16IndexNumber;
-}
-
-
-
-/** bar & bars::getCurrentBar() const
- * 
- * Returns the active bar as a bar */
-bar const & bars::getCurrentBar() const {
-  return _activeBar;
 }
 
 

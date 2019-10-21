@@ -90,7 +90,7 @@ void laserInterface::sequenceNS::setCurrent(const int16_t __i16_sequence_id) {
 
 
 void laserInterface::sequenceNS::getCurrent() {
-    sequenceNS::sendCurrent(globalSequences.getCurrentSequence().i16IndexNumber);
+    sequenceNS::sendCurrent(globalSequences.getActiveSequence().i16IndexNumber);
 }
 
 
@@ -135,7 +135,7 @@ void laserInterface::barNS::setCurrent(const int16_t __i16_target_bar_id) {
 
 
 void laserInterface::barNS::getCurrent() {
-    globalSequences._bars.sendCurrentBar(globalSequences._bars.i16GetCurrentBarId());
+    globalSequences._bars.sendCurrentBar(globalSequences._bars.i16GetActiveBarId());
 }
 
 

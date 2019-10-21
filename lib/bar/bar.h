@@ -70,8 +70,7 @@ class bars
     void disableAndResetTPlayBar();
 
     /** getters */
-    int16_t const i16GetCurrentBarId() const; // returns the current bar's i16IndexNumber
-    bar const & getCurrentBar() const;
+    int16_t const i16GetActiveBarId() const; // returns the current bar's i16IndexNumber
     laserNotes & getNotes();
 
     /** player */

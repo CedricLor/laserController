@@ -263,7 +263,7 @@ sequences::sequences(
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** sequences::setActive(const sequence & __activeSequence)
+/** sequences::_setActive(const sequence & __activeSequence)
  * 
  *  sets the class instance variable _activeSequence 
  *  from a passed in lvalue const sequence reference.
@@ -350,25 +350,11 @@ void sequences::setStopCallbackForTPlaySequence() {
 
 
 
-/** sequence const & sequences::getCurrentSequence() const
+/** sequence const & sequences::getActiveSequence() const
  * 
  * Returns the active sequence as a sequence */
-sequence const & sequences::getCurrentSequence() const {
+sequence const & sequences::getActiveSequence() const {
   return _activeSequence;
-}
-
-
-
-
-
-
-
-/** int16_t const bars::i16GetCurrentSequenceId() const
- * 
- * Returns the active sequence index number 
- * */
-int16_t const sequences::i16GetCurrentSequenceId() const {
-  return _activeSequence.i16IndexNumber;
 }
 
 

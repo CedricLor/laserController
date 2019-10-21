@@ -15,6 +15,7 @@
 class sequence
 {
   friend class sequences;
+  friend class test;
   public:
     /** constructors */
     sequence();
@@ -24,7 +25,6 @@ class sequence
 
     /** getters */
     uint16_t const ui16GetBarCountInSequence() const;
-    uint32_t const ui32GetSequenceDuration(beat const & __beat) const;
     beat const & getAssociatedBeat() const;
     int16_t const i16GetFirstBarIndexNumber() const;
     int16_t const i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const;
@@ -43,7 +43,7 @@ class sequence
 
 class sequences
 {
-
+  friend class test;
   public:
     /** constructors */
     sequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
@@ -67,8 +67,7 @@ class sequences
     void setStopCallbackForTPlaySequence();
 
     /** getters */
-    int16_t const i16GetCurrentSequenceId() const; // returns the current sequence i16IndexNumber
-    sequence const & getCurrentSequence() const;
+    sequence const & getActiveSequence() const;
 
     /** Task tPlaySequence - sequence players */
     uint16_t const playSequence(const uint16_t __target_sequence_ix_numb);
@@ -97,7 +96,6 @@ class sequences
     void _tcbPreloadNextSequence();
     void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
     std::array<int16_t, 8> _parseJsonBarsArray(const JsonArray& _jaBarsArray);
-
 };
 
 #endif
