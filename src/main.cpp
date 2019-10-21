@@ -1,3 +1,5 @@
+#ifndef UNIT_TEST
+
 #include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
 #include <ESPAsyncWebServer.h>
 #include <painlessMesh.h>
@@ -156,3 +158,5 @@ void enableTasks() {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }
 }
+
+#endif
