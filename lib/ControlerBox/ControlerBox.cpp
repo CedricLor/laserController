@@ -133,11 +133,11 @@ uint16_t ControlerBox::getMasterBoxNameForWeb() {
 // Setter for the activeState and associated variables
 // Called only from this class (for the other boxes) and by
 // boxState (when an effective update has been made).
-const bool ControlerBox::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("ControlerBox::setBoxActiveState(): starting");
 
-  if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
-    i16BoxActiveState = _sBoxActiveState;
+  if ( (i16BoxActiveState != _i16boxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
+    i16BoxActiveState = _i16boxActiveState;
 
     boxActiveStateHasBeenSignaled = false;
     // setters:
