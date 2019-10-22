@@ -22,7 +22,7 @@ class controllerBoxesCollection
     signal signalHandlers;
 
     /** setters */
-    void setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
+    // void setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
     // Class utilities (finders, etc.)

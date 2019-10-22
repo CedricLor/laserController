@@ -26,40 +26,48 @@ controllerBoxesCollection::controllerBoxesCollection():
 
 /** Setters */
 
-/** void controllerBoxesCollection::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
- *  
- * Setter for the activeState and associated variables
- * 
- * Called only from this class (for the other boxes) and by
- * boxState (when an effective update has been made). 
- * 
- * params:  const int16_t _i16boxActiveState:
- *          const uint32_t _ui32BoxActiveStateStartTime:
- * */
-void controllerBoxesCollection::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
-  // Serial.println("controllerBoxesCollection::setBoxActiveState(): starting");
+// /** void controllerBoxesCollection::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
+//  *  
+//  * Setter for the activeState and associated variables
+//  * 
+//  * Called only from this class (for the other boxes) and by
+//  * boxState (when an effective update has been made). 
+//  * 
+//  * params:  const int16_t _i16boxActiveState:
+//  *          const uint32_t _ui32BoxActiveStateStartTime:
+//  * */
+// void controllerBoxesCollection::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+//   // Serial.println("controllerBoxesCollection::setBoxActiveState(): starting");
 
-  if ( (thisBox.i16BoxActiveState != _i16boxActiveState) || (thisBox.ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
-    thisBox.i16BoxActiveState = _i16boxActiveState;
-    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).i16BoxActiveState: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).i16BoxActiveState);
+//   if ( (thisBox.i16BoxActiveState != _i16boxActiveState) || (thisBox.ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
+//     thisBox.i16BoxActiveState = _i16boxActiveState;
+//     // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).i16BoxActiveState: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).i16BoxActiveState);
 
-    thisBox.boxActiveStateHasBeenSignaled = false;
-    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).boxActiveStateHasBeenSignaled);
+//     thisBox.boxActiveStateHasBeenSignaled = false;
+//     // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).boxActiveStateHasBeenSignaled);
+//     /** thisBox.boxActiveStateHasBeenSignaled setters:
+//      *  - by default to true upon init (controlerBox constructor);
+//      *  - to false here (when called from boxStateCollection::_restartPlayBoxState());
+//      *  - to false in myWSReceiver and to true in myWSSender, in the IF: to track change request
+//      *    coming from the web and whether the states of other boxes have been received;
+//      *  - to true in myMeshViews (for this box only, upon sending a statusMsg);
+//      * */
 
-    thisBox.ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).ui32BoxActiveStateStartTime);
+//     thisBox.ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
+//     // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).ui32BoxActiveStateStartTime);
 
-    /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it.
-     * 
-     *  Testing whether the ControlerBox is not thisBox (thisBox does not read its own mesh high
-     *  signals; it sends mesh high signals). */
-    tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbIfMeshTriggered(thisBox);});
-    tSetBoxState.restart();
-  }
+//     /** Set the Task that will check whether this change shall have an impact
+//      *  on thisBox boxState, add it to the Scheduler and restart it.
+//      * 
+//      *  The following comments are coming from ControlerBox::setBoxActiveState()
+//      *  -> Testing whether the ControlerBox is not thisBox (thisBox does not read its own mesh high
+//      *  signals; it sends mesh high signals). */
+//     tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbIfMeshTriggered(thisBox);});
+//     tSetBoxState.restart();
+//   }
 
-  // Serial.println("controllerBoxesCollection::setBoxActiveState(): over");
-}
+//   // Serial.println("controllerBoxesCollection::setBoxActiveState(): over");
+// }
 
 
 /** Setter for i16boxStateRequestedFromWeb
