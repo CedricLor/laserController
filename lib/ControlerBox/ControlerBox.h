@@ -115,14 +115,6 @@ class ControlerBox
     static void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
     // -------- Public Static Methods -----------------
-
-    // Class utilities (finders, etc.)
-    static uint16_t updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj);
-    static uint16_t findIndexByNodeId(uint32_t _ui32nodeId);
-    static void printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier);
-    static uint16_t findIndexByNodeName(uint16_t _ui16NodeName);
-    static void deleteBoxByNodeId(uint32_t _ui32nodeId);
-
     // Box counter
     static void updateConnectedBoxCount(short int _newConnectedBoxesCount);
     static short int connectedBoxesCount;

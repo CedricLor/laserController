@@ -1,7 +1,6 @@
 /*
   ControlerBox.cpp - Library to replace box_type struct - handles the ControlerBox attributes
   Created by Cedric Lor, January 2, 2019.
-
 */
 
 #include "Arduino.h"
@@ -91,22 +90,22 @@ void ControlerBox::updateThisBoxProperties() {
 
 
 void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].nodeId: %u\n", __ui16BoxIndex, nodeId);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].APIP:", __ui16BoxIndex);Serial.println(APIP.toString());
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].stationIP:", __ui16BoxIndex);Serial.println(stationIP.toString());
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui16NodeName: %u\n", __ui16BoxIndex, ui16NodeName);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).nodeId: %u\n", __ui16BoxIndex, nodeId);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).APIP:", __ui16BoxIndex);Serial.println(APIP.toString());
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).stationIP:", __ui16BoxIndex);Serial.println(stationIP.toString());
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).ui16NodeName: %u\n", __ui16BoxIndex, ui16NodeName);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, i16BoxActiveState);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ui32BoxActiveStateStartTime);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, boxActiveStateHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).i16BoxActiveState: %u\n", __ui16BoxIndex, i16BoxActiveState);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ui32BoxActiveStateStartTime);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, boxActiveStateHasBeenSignaled);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].ui32lastRecPirHighTime: %u\n", __ui16BoxIndex, ui32lastRecPirHighTime);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).ui32lastRecPirHighTime: %u\n", __ui16BoxIndex, ui32lastRecPirHighTime);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).isNewBoxHasBeenSignaled: %i\n", __ui16BoxIndex, isNewBoxHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).boxDeletionHasBeenSignaled: %i\n", __ui16BoxIndex, boxDeletionHasBeenSignaled);
 
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultState: %u\n", __ui16BoxIndex, sBoxDefaultState);
-  Serial.printf("ControlerBox::printProperties(): ControlerBoxes[%u].sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).sBoxDefaultState: %u\n", __ui16BoxIndex, sBoxDefaultState);
+  Serial.printf("ControlerBox::printProperties(): cntrllerBoxesCollection.controllerBoxesArray.at(%u).sBoxDefaultStateChangeHasBeenSignaled: %i\n", __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
 
@@ -210,95 +209,6 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
 
 
 // Static Methods
-
-
-/** ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
- * 
- *  Upon receiving a statusMsg from another laser box, this static method will 
- *  try to find the corresponding box in the ControlerBoxes array, using the 
- *  _ui32nodeId.
- * 
- *  If it finds it, it will overwrite the data corresponding to this box 
- *  in the relevant entry of the CB array.
- *  Else, it will save such data in the next empty slot. */
-uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
-  Serial.printf("ControlerBox::updateOrCreate(): starting with _ui32nodeId = %u\n", _ui32nodeId);
-  /** 1. look for the relevant box by nodeId.
-   * 
-   *  Why looking by NodeID rather than by NodeName?
-   *  If I decide to change the nodeName at runtime, the nodeID will stay the same and I
-   *  will find my box and would just need to update the data relating to it.
-   *  If my nodeId has changed for the same nodeName, it means that I have unplugged an ESP
-   *  and physically changed the device. In such a case, the nodeName will probably have been
-   *  deleted anyway. */
-  uint16_t __ui16BoxIndex = 254;
-
-  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if ((ControlerBoxes[_i].nodeId == 0) && (__ui16BoxIndex == 254)) { 
-      __ui16BoxIndex = _i;
-      continue;
-    }
-    if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
-      printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
-      __ui16BoxIndex = _i;
-      break;
-    }
-  }
-
-  /** If we found an existing box or if we have a slot where to save the data from the JSON object 
-   *  => save the data */
-  if (__ui16BoxIndex != 254) {
-    ControlerBoxes[__ui16BoxIndex].updateOtherBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
-  }
-
-  /** In any case, return the index number to the caller. 
-   *  Returning 254 means that: 
-   *  (i) the box was not found; and 
-   *  (ii) there was no empty slot left in the CB array to save the new data. */
-  return __ui16BoxIndex;
-}
-
-
-
-uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
-  Serial.printf("ControlerBox::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-  uint16_t __ui16BoxIndex = 254;
-  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
-      printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
-      __ui16BoxIndex = _i;
-      break;
-    }
-  }
-  Serial.printf("ControlerBox::findIndexByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-  return __ui16BoxIndex;
-}
-
-
-
-void ControlerBox::printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier) {
-  Serial.printf("ControlerBox::printSearchResults(): found ControlerBox with %s = %u\n", _saughtIdentifier, _ui32saughtTerm);
-  Serial.printf("ControlerBox::printSearchResults(): ControlerBox with %s %u has index: %u\n", _saughtIdentifier, _ui32saughtTerm, _index);
-}
-
-
-
-uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
-  const char * _subName = "ControlerBox::findIndexByNodeName():";
-  Serial.printf("%s looking for ControlerBox with uint16_t ui16NodeName = %u\n", _subName, _ui16NodeName);
-  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
-      printSearchResults(_i, (uint32_t)_ui16NodeName, "_ui16NodeName");
-      return _i;
-    }
-  }
-  Serial.printf("%s did not find ControlerBox with _ui16NodeName = %u\n", _subName, _ui16NodeName);
-  return 254;
-}
-
-
-
-
 Task ControlerBox::tSetBoxState(0, 1, NULL, NULL, false, NULL, NULL);
 
 /** Setter for i16boxStateRequestedFromWeb
@@ -437,20 +347,6 @@ void ControlerBox::deleteBox() {
 }
 
 
-
-
-
-
-void ControlerBox::deleteBoxByNodeId(uint32_t _ui32nodeId) {
-  Serial.println("ControlerBox::deleteBoxByNodeId(): starting");
-  for (uint16_t __it = 0; __it < globalBaseVariables.gui16BoxesCount; __it++) {
-    if (ControlerBoxes[__it].nodeId == _ui32nodeId) {
-      ControlerBoxes[__it].deleteBox();
-      break;
-    }
-  }
-  Serial.println("ControlerBox::deleteBoxByNodeId(): over");
-}
 
 
 
