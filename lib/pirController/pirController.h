@@ -13,7 +13,7 @@
 class pirController
 {
   public:
-    pirController(const uint8_t _INPUT_PIN);
+    pirController(const uint8_t _INPUT_PIN=12);
     
     void check();
 

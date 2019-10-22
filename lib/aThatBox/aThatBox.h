@@ -27,6 +27,11 @@ class aThatbox
     aThatbox & operator=(aThatbox&& __aThatbox);
 
     /** members */
+    globalBasementVars          globBaseVars;
+    controllerBoxesCollection   ctlBxColl;
+    signal                      thisSignalHandler;
+    ControlerBox &              thisLaserBox;
+    pirController               thisPirController;
 
     /** getters */
 
