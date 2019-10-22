@@ -70,7 +70,7 @@ void controllerBoxesCollection::setBoxActiveStateFromWeb(const int16_t _i16boxSt
   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
    *  on thisBox boxState, add it to the Scheduler and restart it. */
-  tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbSetBoxStateFromWeb();});
+  tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbSetBoxStateFromWeb();}, NULL, NULL);
   tSetBoxState.restart();
 }
 
