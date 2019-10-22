@@ -174,8 +174,8 @@ uint16_t controllerBoxesCollection::findIndexByNodeName(uint16_t _ui16NodeName) 
 
 
 void controllerBoxesCollection::printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier) {
-  Serial.printf("ControlerBox::printSearchResults(): found ControlerBox with %s = %u\n", _saughtIdentifier, _ui32saughtTerm);
-  Serial.printf("ControlerBox::printSearchResults(): ControlerBox with %s %u has index: %u\n", _saughtIdentifier, _ui32saughtTerm, _index);
+  Serial.printf("controllerBoxesCollection::printSearchResults(): found ControlerBox with %s = %u\n", _saughtIdentifier, _ui32saughtTerm);
+  Serial.printf("controllerBoxesCollection::printSearchResults(): ControlerBox with %s %u has index: %u\n", _saughtIdentifier, _ui32saughtTerm, _index);
 }
 
 
@@ -184,12 +184,12 @@ void controllerBoxesCollection::printSearchResults(uint16_t _index, uint32_t _ui
 
 
 void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
-  Serial.println("ControlerBox::deleteBoxByNodeId(): starting");
+  Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): starting");
   for (uint16_t __it = 0; __it < globalBaseVariables.gui16BoxesCount; __it++) {
     if (controllerBoxesArray[__it].nodeId == _ui32nodeId) {
       controllerBoxesArray[__it].deleteBox();
       break;
     }
   }
-  Serial.println("ControlerBox::deleteBoxByNodeId(): over");
+  Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): over");
 }
