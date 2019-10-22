@@ -133,7 +133,6 @@ class ControlerBox
     static void _reboot();
 };
 
-extern ControlerBox ControlerBoxes[];
 extern ControlerBox & thisBox;
 
 #endif
