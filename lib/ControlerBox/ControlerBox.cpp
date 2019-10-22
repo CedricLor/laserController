@@ -138,10 +138,8 @@ const bool ControlerBox::setBoxActiveState(const short _sBoxActiveState, const u
 
   if ( (i16BoxActiveState != _sBoxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
     i16BoxActiveState = _sBoxActiveState;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
 
     boxActiveStateHasBeenSignaled = false;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
     // setters:
     // - by default to true upon init (controlerBox constructor);
     // - to false here (usefull for the IF, for the received states of other boxes);
@@ -150,7 +148,6 @@ const bool ControlerBox::setBoxActiveState(const short _sBoxActiveState, const u
     // used by the interface mostly
 
     ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-    // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it testing
@@ -179,13 +176,8 @@ const bool ControlerBox::setBoxActiveState(const short _sBoxActiveState, const u
 // Called only from this class (for the other boxes).
 void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   // Serial.println("ControlerBox::setBoxDefaultState(): starting");
-
   sBoxDefaultState = _sBoxDefaultState;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
-
   sBoxDefaultStateChangeHasBeenSignaled = false;
-  // Serial.printf("ControlerBox::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
-
   // Serial.println("ControlerBox::setBoxDefaultState(): over");
 }
 
@@ -354,16 +346,13 @@ void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   // set the IPs
   if ( _obj.containsKey("APIP")){ 
     APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
-    // Serial.printf("%s ControlerBoxes[%u].APIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].APIP);
   }
   if ( _obj.containsKey("StIP")) {
     stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
-    // Serial.print("%s ControlerBoxes[%u].stationIP = ", __ui16BoxIndex);Serial.println(ControlerBoxes[__ui16BoxIndex].stationIP);
   }
 
   // set the ui16NodeName
   ui16NodeName = _obj["NNa"];
-  // Serial.printf("%s ControlerBoxes[%u].ui16NodeName = %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui16NodeName);
 
   // Setting activeState stack
   // need to send via myMeshViews and add to ControlerBox the time

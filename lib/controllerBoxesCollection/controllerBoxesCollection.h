@@ -28,11 +28,10 @@ class controllerBoxesCollection
     void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
     // Class utilities (finders, etc.)
-    uint16_t updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj);
-    uint16_t findIndexByNodeId(uint32_t _ui32nodeId);
-    void printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier);
-    uint16_t findIndexByNodeName(uint16_t _ui16NodeName);
-    void deleteBoxByNodeId(uint32_t _ui32nodeId);
+    uint16_t updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj); // <-
+    uint16_t findIndexByNodeId(uint32_t _ui32nodeId); // <-
+    uint16_t findIndexByNodeName(uint16_t _ui16NodeName); // <-
+    void deleteBoxByNodeId(uint32_t _ui32nodeId); // <-
 
     // Boxes counter
     void updateConnectedBoxCount(short int _newConnectedBoxesCount);
@@ -53,8 +52,8 @@ class controllerBoxesCollection
 
   private:
     /**reset Task tSetBoxState*/
-    void resetTSetBoxState();
-    void _reboot();
+    void _resetTSetBoxState();
+    void _reboot(); // <-- does not belong to controllerBoxesCollection: to be moved to another class
 };
 
 extern controllerBoxesCollection cntrllerBoxesCollection;
