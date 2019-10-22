@@ -34,10 +34,13 @@ class controllerBoxesCollection
     uint16_t findIndexByNodeName(uint16_t _ui16NodeName);
     void deleteBoxByNodeId(uint32_t _ui32nodeId);
 
-    // Box counter
+    // Boxes counter
     void updateConnectedBoxCount(short int _newConnectedBoxesCount);
     short int connectedBoxesCount;
     short int previousConnectedBoxesCount;
+
+    // Boxes array
+    std::array<ControlerBox, 10> ControlerBoxes;
 
     // Tasks
     Task tReboot;
