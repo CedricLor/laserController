@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
-#include <signal.h>
+#include <ControlerBox.h>
 
 class controllerBoxesCollection
 {
@@ -19,7 +19,7 @@ class controllerBoxesCollection
     /** - Signal catchers ----------------- */
     int16_t i16boxStateRequestedFromWeb;
     /** - Signal instance ----------------- */
-    signal signalHandlers;
+    // signal signalHandlers;
 
     /** setters */
     // void setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);

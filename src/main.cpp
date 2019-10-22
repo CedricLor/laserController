@@ -14,6 +14,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <mySavedPrefs.h>
 #include <myOta.h>
 #include <controllerBoxesCollection.h>
+#include <signal.h>
 #include <myMesh.h>
 #include <myMeshStarter.h>
 #include <pirController.h>
