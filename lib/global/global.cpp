@@ -52,10 +52,6 @@ int8_t gi8RequestedOTAReboots                 = 0;
 
 
 
-// Used in myOta and myMesh for the mDNS service.
-// Rebooting twice may be usefull if you have to first upload a 
-// sketch and then a SPIFFS file system.
-char gcHostnamePrefix[10]                     = "LaserBox_";
 
 uint16_t uiMeshSize                           = 0;
 

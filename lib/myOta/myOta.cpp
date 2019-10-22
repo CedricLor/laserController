@@ -39,8 +39,8 @@ void myOta::OTAConfig()
   _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::saveOTASuccess, _myPrefsRef);
 
   // Set the hostname
-  snprintf(gcHostnamePrefix, 10, "%s%u", gcHostnamePrefix, (uint32_t)globalBaseVariables.gui16NodeName); // LaserBox_201, etc.
-  ArduinoOTA.setHostname(gcHostnamePrefix);
+  snprintf(globalBaseVariables.gcHostnamePrefix, 10, "%s%u", globalBaseVariables.gcHostnamePrefix, (uint32_t)globalBaseVariables.gui16NodeName); // LaserBox_201, etc.
+  ArduinoOTA.setHostname(globalBaseVariables.gcHostnamePrefix);
   mySavedPrefs::ui8OTASuccessErrorCodeWitness = 8;
   _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::saveOTASuccess, _myPrefsRef);
 

@@ -22,6 +22,8 @@ globalBasementVars::globalBasementVars():
   isInterface{IS_INTERFACE},
   isRoot{IS_ROOT},
 
+  gcHostnamePrefix{"LaserBox_"},
+
   UI8_CONTROLLER_BOX_PREFIX{200},
   gui16ControllerBoxPrefix{UI8_CONTROLLER_BOX_PREFIX},
   UI8_DEFAULT_INTERFACE_NODE_NAME{200},

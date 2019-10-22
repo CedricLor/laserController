@@ -18,6 +18,12 @@ class globalBasementVars
     bool                    isInterface;
     bool                    isRoot;
 
+    // Used in myOta and myMesh for the mDNS service.
+    // Rebooting twice may be usefull if you have to first upload a 
+    // sketch and then a SPIFFS file system.
+    char                    gcHostnamePrefix[10];
+    uint16_t                uiMeshSize;
+
     const uint8_t           UI8_CONTROLLER_BOX_PREFIX; // 200
     uint16_t                gui16ControllerBoxPrefix;
     const uint8_t           UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
@@ -49,9 +55,6 @@ class globalBasementVars
     int8_t                  gi8RequestedOTAReboots;
     int8_t                  gi8OTA1Success;
     int8_t                  gi8OTA2Success;
-
-    char                    gcHostnamePrefix[];
-    uint16_t                uiMeshSize;
 
     /**********************************************************************/
     /** IV. In the configuration: hasLasers*/
