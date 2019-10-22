@@ -14,14 +14,11 @@
 
 // Constructors
 controllerBoxesCollection::controllerBoxesCollection():
-  i16boxStateRequestedFromWeb(-1),
   connectedBoxesCount(1),
   previousConnectedBoxesCount(1),
   controllerBoxesArray(),
   thisBox(controllerBoxesArray[0])
-{
-  _resetTSetBoxState();
-}
+{ }
 
 
 
@@ -72,17 +69,17 @@ controllerBoxesCollection::controllerBoxesCollection():
 // }
 
 
-/** Setter for i16boxStateRequestedFromWeb
- * 
- *  Called from: 
- *  - myMeshController, upon receiving a changeBox request from the web. */
-void controllerBoxesCollection::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
-  i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
-  /** Set the Task that will check whether this change shall have an impact
-   *  on thisBox boxState, add it to the Scheduler and restart it. */
-  // tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbSetBoxStateFromWeb();}, NULL, NULL);
-  tSetBoxState.restart();
-}
+// /** Setter for i16boxStateRequestedFromWeb
+//  * 
+//  *  Called from: 
+//  *  - myMeshController, upon receiving a changeBox request from the web. */
+// void controllerBoxesCollection::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
+//   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
+//   /** Set the Task that will check whether this change shall have an impact
+//    *  on thisBox boxState, add it to the Scheduler and restart it. */
+//   // tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbSetBoxStateFromWeb();}, NULL, NULL);
+//   tSetBoxState.restart();
+// }
 
 
 
@@ -137,13 +134,13 @@ uint16_t controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObj
 
 
 
-/** Task tSetBoxState resetter
- * 
- *  private method
- */
-void controllerBoxesCollection::_resetTSetBoxState() {
-  tSetBoxState.set(0, 1, NULL, NULL, NULL);
-}
+// /** Task tSetBoxState resetter
+//  * 
+//  *  private method
+//  */
+// void controllerBoxesCollection::_resetTSetBoxState() {
+//   tSetBoxState.set(0, 1, NULL, NULL, NULL);
+// }
 
 
 
