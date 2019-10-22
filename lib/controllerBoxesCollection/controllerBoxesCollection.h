@@ -55,6 +55,9 @@ class controllerBoxesCollection
     /**reset Task tSetBoxState*/
     void _resetTSetBoxState();
     void _reboot(); // <-- does not belong to controllerBoxesCollection: to be moved to another class
+
+    /** helpers */
+    void printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier);
 };
 
 extern controllerBoxesCollection cntrllerBoxesCollection;

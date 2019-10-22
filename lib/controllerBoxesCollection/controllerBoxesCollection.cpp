@@ -168,3 +168,10 @@ uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
   Serial.printf("%s did not find ControlerBox with _ui16NodeName = %u\n", _subName, _ui16NodeName);
   return 254;
 }
+
+
+
+void controllerBoxesCollection::printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier) {
+  Serial.printf("ControlerBox::printSearchResults(): found ControlerBox with %s = %u\n", _saughtIdentifier, _ui32saughtTerm);
+  Serial.printf("ControlerBox::printSearchResults(): ControlerBox with %s %u has index: %u\n", _saughtIdentifier, _ui32saughtTerm, _index);
+}
