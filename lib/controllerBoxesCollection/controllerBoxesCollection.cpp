@@ -193,3 +193,17 @@ void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
   }
   Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): over");
 }
+
+
+
+
+
+void controllerBoxesCollection::updateConnectedBoxCount(short int newConnectedBoxesCount) {
+  previousConnectedBoxesCount = connectedBoxesCount;
+  connectedBoxesCount = newConnectedBoxesCount;
+}
+
+
+
+
+
