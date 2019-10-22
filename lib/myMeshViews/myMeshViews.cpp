@@ -1,31 +1,24 @@
-/*
-  myMeshViews.cpp - Library to handle functions related to the JSON messages sent by the box over the mesh.
-  Created by Cedric Lor, January 22, 2019.
-*/
-
+/**
+ * myMeshViews.cpp - Library to handle functions related to the JSON messages 
+ * sent by the box over the mesh.
+ * 
+ * Created by Cedric Lor, January 22, 2019.
+ * */
 #include "Arduino.h"
 #include "myMeshViews.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// myMeshViews: message sender for controller boxes
-// myMeshViews::myMeshViews()
-/*
-   Upon instantiation, the constructor updates the properties of this ControlerBox
-   in the array of ControlerBoxes (APIP, StationIP, NodeName).
-   After having instantiating it, you have to call a message builder, that will:
-   2. create a structured String with the params you passed it on;
-   3. passe this String to the sendBroadcast or sendSingle methods of painlessMesh.
-   painlessMesh takes care of the broadcast/sending.
-*/
 
 
-
-
-
-
-
-
-// Constructor
+///////////////////////////////////////////////////////////////////////////////////
+/** myMeshViews::myMeshViews(): message sender for controller boxes
+ * 
+ * Upon instantiation, the constructor updates the properties of this ControlerBox
+ * in the array of ControlerBoxes (APIP, StationIP, NodeName).
+ * After having instantiating it, you have to call a message builder, that will:
+ * 2. create a structured String with the params you passed it on;
+ * 3. passe this String to the sendBroadcast or sendSingle methods of painlessMesh.
+ * painlessMesh takes care of the broadcast/sending.
+ * */
 myMeshViews::myMeshViews()
 {
   thisBox.updateThisBoxProperties();
