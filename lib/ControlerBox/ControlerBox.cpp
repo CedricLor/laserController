@@ -234,7 +234,7 @@ void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedF
 
 // updater of the properties of the other boxes in the mesh
 // called from myMeshController
-void ControlerBox::updateOtherBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
+void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   const char * _subName = "ControlerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);
 

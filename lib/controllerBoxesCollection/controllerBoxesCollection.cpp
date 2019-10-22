@@ -122,7 +122,7 @@ uint16_t controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObj
   /** If we found an existing box or if we have a slot where to save the data from the JSON object 
    *  => save the data */
   if (__ui16BoxIndex != 254) {
-    controllerBoxesArray.at(__ui16BoxIndex).updateOtherBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
+    controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
   }
 
   /** In any case, return the index number to the caller. 
