@@ -28,8 +28,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 controllerBoxesCollection     cntrllerBoxesCollection;
-ControlerBox                  ControlerBoxes[UI8_BOXES_COUNT];
-ControlerBox &thisBox =       ControlerBoxes[0];
+ControlerBox &thisBox =       cntrllerBoxesCollection.controllerBoxesArray.at(0);
 signal                        _signal;
 boxStateCollection            bxStateColl;
 
