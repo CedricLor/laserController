@@ -1,3 +1,7 @@
+/*
+  globalBasementVars.cpp - Library for storing global variables.
+  Created by Cedric Lor, October 20, 2019.
+*/
 
 
 #include <globalBasementVars.h>
@@ -46,6 +50,7 @@ globalBasementVars::globalBasementVars():
   MY_DG_WEB{true},
   MY_DG_MESH{true},
   MY_DEEP_DG_MESH{false},
-  VERSION{2}
+  VERSION{2},
+  laserControllerMesh{}
 {  }
 

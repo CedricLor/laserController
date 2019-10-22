@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include <FS.h>
 #include <SPIFFS.h>
-#include <global.h>
+#include <globalBasementVars.h>
 #define FORMAT_SPIFFS_IF_FAILED true
 
 class mySpiffs

@@ -23,7 +23,7 @@
   |  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
   |  |  |  |  |--ControlerBox.h
   |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
-  |  |  |  |  |--global.h
+  |  |  |  |  |--globalBasementVars.h
   |  |  |  |--//LaserPin.cpp
   |  |  |
   |  |  |--myWebServerWS
@@ -61,7 +61,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
   // if (globalBaseVariables.MY_DG_WS) {
   //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-  //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
+  //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
   // }
 
   myWSSender _myWSSender;
@@ -239,8 +239,8 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
      * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
-      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((laserControllerMesh.getStationIP()).toString());
+      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (globalBaseVariables.laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
+      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((globalBaseVariables.laserControllerMesh.getStationIP()).toString());
     }
 
     // Real IP of the Interface

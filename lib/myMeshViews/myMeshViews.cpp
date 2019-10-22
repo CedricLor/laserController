@@ -164,7 +164,7 @@ void myMeshViews::_IRHighMsg() {
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "IR";
   _joMsg["time"] = thisBox.ui32lastRecPirHighTime;
-  _joMsg["now"] = laserControllerMesh.getNodeTime();
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
 
   // broadcast IR high message
   _sendMsg(_joMsg);
@@ -234,9 +234,9 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
 
   // diffusion
   if (destNodeId) {
-    laserControllerMesh.sendSingle(destNodeId, str);
+    globalBaseVariables.laserControllerMesh.sendSingle(destNodeId, str);
   } else {
-    laserControllerMesh.sendBroadcast(str);
+    globalBaseVariables.laserControllerMesh.sendBroadcast(str);
   }
 
 

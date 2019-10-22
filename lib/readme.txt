@@ -17,7 +17,7 @@ Dependency structure
 |  |  |  |--ControlerBox.cpp
 |  |  |  |  |--ControlerBox.h
 |  |  |  |--global.cpp
-|  |  |  |  |--global.h
+|  |  |  |  |--globalBasementVars.h
 |  |
 |  |--boxState.cpp
 |  |  |--boxState.h
@@ -27,7 +27,7 @@ Dependency structure
 |  |  |--sequence.cpp
 |  |  |  |--sequence.h
 |  |  |  |--global.cpp (called to start some tasks and play some functions)
-|  |  |  |  |--global.h
+|  |  |  |  |--globalBasementVars.h
 |  |  |  |
 |  |  |  |--bar.cpp (an array of bars (micro-sequences of laserNotes, each with a tempo in ms)
 |  |  |  |  |--bar.h
@@ -39,7 +39,7 @@ Dependency structure
 |  |  |  |--laserTone.cpp
 |  |  |  |  |--laserTone.h
 |  |  |  |  |--global.cpp (called to retrieve some values)
-|  |  |  |  |  |--global.h
+|  |  |  |  |  |--globalBasementVars.h
 |  |  |  |
 |  |  |--myMeshViews.cpp
 |  |  |  |--myMeshViews.h

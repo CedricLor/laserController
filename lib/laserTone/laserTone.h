@@ -4,7 +4,7 @@
 
 */
 #include "Arduino.h"
-#include <global.h>
+#include <globalBasementVars.h>
 #include <laserPin.h>
 
 #ifndef laserTone_h

@@ -41,12 +41,12 @@ void myMesh::init() {
   tPrintMeshTopo.enable();
   tSaveNodeMap.restart();
 
-  laserControllerMesh.onReceive(&receivedCallback);
-  laserControllerMesh.onNewConnection(&newConnectionCallback);
-  laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  // laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  // laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
-  laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
+  globalBaseVariables.laserControllerMesh.onReceive(&receivedCallback);
+  globalBaseVariables.laserControllerMesh.onNewConnection(&newConnectionCallback);
+  globalBaseVariables.laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  // globalBaseVariables.laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  // globalBaseVariables.laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
+  globalBaseVariables.laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
 
   myMeshStarter::hasBeenStarted = true;
 }
@@ -97,7 +97,7 @@ void myMesh::start() {
         MDNS.end();
 
         // restart the mesh
-        laserControllerMesh.stop();
+        globalBaseVariables.laserControllerMesh.stop();
         myMesh::init();
 
         // reset the node map and the controller boxes array
@@ -266,7 +266,7 @@ void myMesh::changedConnectionCallback() {
   // 5. If I do not know the number of the root node, try and figure out whether the mesh knows it
   if (!(globalBaseVariables.ui32RootNodeId)) {
     // {"nodeId":2760139053,"root":true}
-    char* _ptr = strstr(laserControllerMesh.subConnectionJson().c_str(), ",\"root\":true");
+    char* _ptr = strstr(globalBaseVariables.laserControllerMesh.subConnectionJson().c_str(), ",\"root\":true");
     char _cRootNodeId[12];
     if (_ptr != nullptr) {
       strncpy(_cRootNodeId, _ptr - 10, 11);
@@ -290,7 +290,7 @@ void myMesh::changedConnectionCallback() {
 
 // void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
 //   if (globalBaseVariables.MY_DG_MESH) {
-//     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", laserControllerMesh.getNodeTime(), offset);
+//     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", globalBaseVariables.laserControllerMesh.laserControllerMesh.getNodeTime(), offset);
 //   }
 // }
 
@@ -326,8 +326,8 @@ bool myMesh::IamAlone() {
    *  (i) is the size of the nodeList < 2 (=> equal to 1 or 0)?
    *  (ii) is the last item of the nodeList equal to 0? <-- this second test is suspect. */
   if (
-    laserControllerMesh.getNodeList().size() < 2 && 
-    0 == *laserControllerMesh.getNodeList().rbegin()
+    globalBaseVariables.laserControllerMesh.getNodeList().size() < 2 && 
+    0 == *globalBaseVariables.laserControllerMesh.getNodeList().rbegin()
     ) {
     Serial.printf("myMesh::IamAlone(): Yes\n");
     /** Tests:
@@ -383,10 +383,10 @@ Task myMesh::tPrintMeshTopo(60*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopo
    iterates over the nodeList to print their values.
 */
 void myMesh::_printNodeListAndTopology() {
-  Serial.printf("myMesh::_printNodeListAndTopology(): Mesh topology: %s\n", laserControllerMesh.subConnectionJson().c_str());
-  Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", laserControllerMesh.getNodeList().size());
+  Serial.printf("myMesh::_printNodeListAndTopology(): Mesh topology: %s\n", globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
+  Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", globalBaseVariables.laserControllerMesh.getNodeList().size());
   int16_t _i = 0;
-  for (int n : laserControllerMesh.getNodeList()) {
+  for (int n : globalBaseVariables.laserControllerMesh.getNodeList()) {
     Serial.printf("myMesh::_printNodeListAndTopology(): node [%i] id: %u\n", _i++, n);
   }
   Serial.printf("myMesh::_printNodeListAndTopology(): ending -------\n");
@@ -429,7 +429,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
   tSaveNodeMap.disable();
 
   // 2. Create a _newNodeList containing the new mesh layout
-  // std::list<uint32_t> _newNodeList = laserControllerMesh.getNodeList();
+  // std::list<uint32_t> _newNodeList = globalBaseVariables.laserControllerMesh.getNodeList();
   // _newNodeList.remove(0);
   // _newNodeList.sort();
   // auto _newListNode = _newNodeList.begin();
@@ -448,7 +448,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
   //    The boxes which have not been set to 1 or 2 will remain 
   //    marked as 0 -> for deletion.
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Before iteration over the list. Time: " + String(millis()));
-  for (uint32_t _newNode : laserControllerMesh.getNodeList()) {
+  for (uint32_t _newNode : globalBaseVariables.laserControllerMesh.getNodeList()) {
     if (_newNode == (uint32_t)0) continue;
     std::map<uint32_t, uint16_t>::iterator _nodeInMap = _nodeMap.find(_newNode);
     if (_nodeInMap != _nodeMap.end()) {
@@ -558,7 +558,7 @@ void myMesh::_saveNodeMap() {
   _nodeMap.clear();
   // Serial.println("myMesh::_saveNodeMap(): Before iteration. Time: " + String(millis()));
   // for (uint32_t _savedNode : _savedNodeList) {
-  for (uint32_t _nodeFromList : laserControllerMesh.getNodeList()) {
+  for (uint32_t _nodeFromList : globalBaseVariables.laserControllerMesh.getNodeList()) {
     if (_nodeFromList == (uint32_t)0) continue;
     _nodeMap.emplace(_nodeFromList, 1);
   }

@@ -6,7 +6,7 @@
 #define controllerBoxesCollection_h
 
 #include "Arduino.h"
-#include <global.h>
+#include <globalBasementVars.h>
 #include <signal.h>
 
 class controllerBoxesCollection

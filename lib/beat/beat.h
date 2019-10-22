@@ -4,7 +4,7 @@
 */
 
 #include "Arduino.h"
-#include <global.h>
+#include <globalBasementVars.h>
 
 #ifndef beat_h
 #define beat_h

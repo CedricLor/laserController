@@ -26,7 +26,6 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-painlessMesh              laserControllerMesh;
 ControlerBox              ControlerBoxes[UI8_BOXES_COUNT];
 ControlerBox &thisBox =   ControlerBoxes[0];
 signal                    _signal;
@@ -106,7 +105,7 @@ void setup() {
 
   enableTasks();
 
-  // Serial.printf("setup. laserControllerMesh.subConnectionJson() = %s\n",laserControllerMesh.subConnectionJson().c_str());
+  // Serial.printf("setup. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
   Serial.printf("Box number: %i\n", globalBaseVariables.gui16NodeName);
   Serial.printf("Version: %i\n", globalBaseVariables.VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
@@ -126,7 +125,7 @@ void loop() {
   }
 
   globalBaseVariables.scheduler.execute();
-  laserControllerMesh.update();
+  globalBaseVariables.laserControllerMesh.update();
   if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
     myPirController.check();
   }

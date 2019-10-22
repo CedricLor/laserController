@@ -1,7 +1,14 @@
+/*
+  globalBasementVars.cpp - Library for storing global variables.
+  Created by Cedric Lor, October 20, 2019.
+*/
 
 #ifndef globalBasementVars_h
-#include <painlessMesh.h>
 #define globalBasementVars_h
+
+#include "Arduino.h"
+#include <painlessMesh.h>
+#include <ESPAsyncWebServer.h>
 
 class globalBasementVars
 {
@@ -108,6 +115,8 @@ class globalBasementVars
     /** For software development purposes only */
     const short        VERSION;
 
+    /** I. In all the configurations: Scheduler and mesh parameters */
+    painlessMesh       laserControllerMesh;
   private:
 
 };

@@ -23,7 +23,7 @@
   |  |  |  |--ControlerBox.cpp (called to set some values, in particular on the other boxes in the mesh)
   |  |  |  |  |--ControlerBox.h
   |  |  |  |--global.cpp (called to retrieve some values re. master/slave box reactions in global)
-  |  |  |  |  |--global.h
+  |  |  |  |  |--globalBasementVars.h
   |  |  |  |--//LaserPin.cpp
   |  |  |
   |  |  |--myWebServerWS
