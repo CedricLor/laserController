@@ -145,6 +145,9 @@ void myMeshViews::_IRHighMsg() {
 }
 
 
+
+
+
 /** _addIps(JsonObject& _joMsg) left unused for the moment. */
 void myMeshViews::_addIps(JsonObject& _joMsg) {
   // adding the APIP and the StationIP to the JSON to be sent to other boxes
@@ -218,22 +221,3 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
     Serial.print("myMeshViews:_sendMsg(): done. Sent message: ");Serial.println(str);
   }
 }
-
-
-
-
-
-
-
-
-
-
-// Helper functions
-// serialization of message to be sent
-// JsonObject myMeshViews::_createJsonobject() {
-//   const int capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
-//   StaticJsonDocument<capacity> doc;
-//
-//   JsonObject msg = doc.to<JsonObject>();
-//   return msg;
-// }
