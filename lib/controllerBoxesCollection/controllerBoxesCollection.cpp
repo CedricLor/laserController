@@ -1,5 +1,5 @@
 /*
-  controllerBoxesCollection.cpp - Library to handle ControlerBoxes collection
+  controllerBoxesCollection.cpp - Library to handle the collection of ControlerBoxes
   Created by Cedric Lor, Octobre 14, 2019.
 */
 
@@ -41,19 +41,13 @@ void controllerBoxesCollection::setBoxActiveState(const short _sBoxActiveState, 
 
   if ( (thisBox.i16BoxActiveState != _sBoxActiveState) || (thisBox.ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
     thisBox.i16BoxActiveState = _sBoxActiveState;
-    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): ControlerBoxes[%u].i16BoxActiveState: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].i16BoxActiveState);
+    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).i16BoxActiveState: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).i16BoxActiveState);
 
     thisBox.boxActiveStateHasBeenSignaled = false;
-    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): ControlerBoxes[%u].boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].boxActiveStateHasBeenSignaled);
-    // setters:
-    // - by default to true upon init (controlerBox constructor);
-    // - to false here (usefull for the IF, for the received states of other boxes);
-    // - to true in myMeshViews (for this box only, upon sending a statusMsg);
-    // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
-    // used by the interface mostly
+    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).boxActiveStateHasBeenSignaled: %i\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).boxActiveStateHasBeenSignaled);
 
     thisBox.ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): ControlerBoxes[%u].ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, ControlerBoxes[__ui16BoxIndex].ui32BoxActiveStateStartTime);
+    // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).ui32BoxActiveStateStartTime: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).ui32BoxActiveStateStartTime);
 
     /** Set the Task that will check whether this change shall have an impact
      *  on thisBox boxState, add it to the Scheduler and restart it.
@@ -144,7 +138,7 @@ uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
   Serial.printf("controllerBoxesCollection::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   uint16_t __ui16BoxIndex = 254;
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
+    if (controllerBoxesArray.at(_i).nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
       __ui16BoxIndex = _i;
       break;
@@ -160,7 +154,7 @@ uint16_t controllerBoxesCollection::findIndexByNodeName(uint16_t _ui16NodeName) 
   const char * _subName = "controllerBoxesCollection::findIndexByNodeName():";
   Serial.printf("%s looking for ControlerBox with uint16_t ui16NodeName = %u\n", _subName, _ui16NodeName);
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
+    if (controllerBoxesArray.at(_i).ui16NodeName == _ui16NodeName) {
       printSearchResults(_i, (uint32_t)_ui16NodeName, "_ui16NodeName");
       return _i;
     }
