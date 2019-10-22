@@ -2,13 +2,6 @@
   ControlerBox.cpp - Library to replace box_type struct - handles the ControlerBox attributes
   Created by Cedric Lor, January 2, 2019.
 
-  |--main.cpp
-  |  |
-  |  |--ControlerBox.cpp
-  |  |  |--ControlerBox.h
-  |  |  |--global.cpp (laserControllerMesh)
-  |  |  |  |--globalBasementVars.h
-
 */
 
 #include "Arduino.h"

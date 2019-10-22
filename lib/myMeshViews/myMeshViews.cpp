@@ -1,25 +1,6 @@
 /*
   myMeshViews.cpp - Library to handle functions related to the JSON messages sent by the box over the mesh.
   Created by Cedric Lor, January 22, 2019.
-
-  |--main.cpp
-  |  |
-  |  |--myMesh.cpp
-  |  |  |--myMesh.h
-  |  |  |
-  |  |  |--myMeshControler.cpp (private - called only from my Mesh)
-  |  |  |  |--myMeshControler.h
-  |  |  |  |--MasterSlaveBox.cpp
-  |  |  |  |  |--MasterSlaveBox.h
-  |  |  |  |--//LaserGroupedUnitsArray.cpp
-  |  |  |  |  |--//LaserGroupedUnitsArray.h
-  |  |  |
-  |  |  |--myMeshViews.cpp
-  |  |  |  |--myMeshViews.h
-  |  |  |  |--ControlerBox.cpp
-  |  |  |  |  |--ControlerBox.h
-  |  |  |  |--//LaserGroupedUnitsArray.cpp
-  |  |  |  |  |--//LaserGroupedUnitsArray.h
 */
 
 #include "Arduino.h"

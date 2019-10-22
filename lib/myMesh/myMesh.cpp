@@ -2,24 +2,6 @@
   myMesh.cpp - Library to handle painlessMesh core related functions.
   Created by Cedric Lor, January 17, 2019.
 
-  |--main.cpp
-  |  |
-  |  |--myMesh.cpp
-  |  |  |--myMesh.h
-  |  |  |
-  |  |  |--myMeshControler.cpp (private - called only from my Mesh)
-  |  |  |  |--myMeshControler.h
-  |  |  |  |--MasterSlaveBox.cpp
-  |  |  |  |  |--MasterSlaveBox.h
-  |  |  |  |--//LaserGroupedUnitsArray.cpp
-  |  |  |  |  |--//LaserGroupedUnitsArray.h
-  |  |  |
-  |  |  |--myMeshViews.cpp
-  |  |  |  |--myMeshViews.h
-  |  |  |  |--ControlerBox.cpp
-  |  |  |  |  |--ControlerBox.h
-  |  |  |  |--//LaserGroupedUnitsArray.cpp
-  |  |  |  |  |--//LaserGroupedUnitsArray.h
 */
 
 #include "Arduino.h"
