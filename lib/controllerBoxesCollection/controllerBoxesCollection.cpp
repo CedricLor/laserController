@@ -26,21 +26,21 @@ controllerBoxesCollection::controllerBoxesCollection():
 
 /** Setters */
 
-/** void controllerBoxesCollection::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
+/** void controllerBoxesCollection::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
  *  
  * Setter for the activeState and associated variables
  * 
  * Called only from this class (for the other boxes) and by
  * boxState (when an effective update has been made). 
  * 
- * params:  const short _sBoxActiveState:
+ * params:  const int16_t _i16boxActiveState:
  *          const uint32_t _ui32BoxActiveStateStartTime:
  * */
-void controllerBoxesCollection::setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+void controllerBoxesCollection::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("controllerBoxesCollection::setBoxActiveState(): starting");
 
-  if ( (thisBox.i16BoxActiveState != _sBoxActiveState) || (thisBox.ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
-    thisBox.i16BoxActiveState = _sBoxActiveState;
+  if ( (thisBox.i16BoxActiveState != _i16boxActiveState) || (thisBox.ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
+    thisBox.i16BoxActiveState = _i16boxActiveState;
     // Serial.printf("controllerBoxesCollection::updateOtherBoxProperties(): controllerBoxesArray.at(%u).i16BoxActiveState: %u\n", __ui16BoxIndex, controllerBoxesArray.at(__ui16BoxIndex).i16BoxActiveState);
 
     thisBox.boxActiveStateHasBeenSignaled = false;
