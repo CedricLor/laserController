@@ -81,7 +81,7 @@ void ControlerBox::updateThisBoxProperties() {
   // by a call to setBoxActiveState from boxState
   if (globalBaseVariables.MY_DEBUG == true) {
     Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
-    thisBox.printProperties(findIndexByNodeName(thisBox.ui16NodeName));
+    thisBox.printProperties(0);
   };
 }
 
