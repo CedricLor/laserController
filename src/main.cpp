@@ -75,7 +75,7 @@ void setup() {
   }
 
   thisBox.ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
-  thisBox.sBoxDefaultState = gi16BoxDefaultState;
+  thisBox.sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
 
   myMesh::start();
 

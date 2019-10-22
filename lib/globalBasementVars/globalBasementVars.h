@@ -8,8 +8,8 @@ class globalBasementVars
   public:
     globalBasementVars();
 
-
-    /** I. In all the configurations */
+    /*****************************************************************/
+    /** I. In all the configurations: Scheduler and mesh parameters */
     Scheduler               scheduler;
     const uint8_t           UI8_NODE_NAME; //   = 201;                          // BOX BY BOX
     const bool              IS_INTERFACE;  //   = false;                        // BOX BY BOX
@@ -23,8 +23,10 @@ class globalBasementVars
     const uint8_t           UI8_DEFAULT_INTERFACE_NODE_NAME; // 200
     uint16_t                gui16InterfaceNodeName;
 
-    uint16_t                gui16BoxesCount;
-
+    /*****************************************************************/
+    /** II. In all the configurations: to get identification of the root node 
+     *      (see the comment below)
+    */
     /** uint32_t ui32RootNodeId
      *  
      *  Set to 0 at startup.
@@ -35,27 +37,27 @@ class globalBasementVars
      *  (In the officially recommended painlessmesh configuration, the 
      *  IF is served on AP Interface of the ESP.)
      * 
-     *  This variable is actually here to provide the root node id to the web
+     *  --> comment here: This variable is actually here to provide the root node id to the web
      *  browser (in myWSSender). However, the process for setting it is located 
      *  in myMeshStarter and myMesh. Accordingly, I leave in the general section.
      *  */
     uint32_t                ui32RootNodeId;
 
-    int16_t                 gi16BoxDefaultState;
-
+    /**********************************************************************/
+    /** III. In all the configurations: for the ControllerBoxes collection*/
     int8_t                  gi8OTAReboot;
     int8_t                  gi8RequestedOTAReboots;
     int8_t                  gi8OTA1Success;
     int8_t                  gi8OTA2Success;
 
     char                    gcHostnamePrefix[];
-
     uint16_t                uiMeshSize;
 
-    // painlessMesh           laserControllerMesh;
+    /**********************************************************************/
+    /** IV. In the configuration: hasLasers*/
+    uint16_t                gui16BoxesCount;
 
-    /** I. For laserBoxes only (hasLasers): */
-    /** -> relayPins (hasLasers): 
+    /** -> relayPins: 
      * 
      *  defines the pins connnected to the lasers
      * uint16_t relayPins[]  = { 5, 17, 16, 4 }; // SS, ??, EXTERNAL_NUM_INTERRUPTS || NUM_ANALOG_INPUTS, A10
@@ -63,9 +65,11 @@ class globalBasementVars
      * */  
     std::array<uint16_t, 4> relayPins;
 
+    /**********************************************************************/
+    /** V. In the configurations: hasLasers or hasIr */
     /** gui8DefaultMasterNodeName (hasLasers):
      * 
-     * All the ControlerBoxes() are initialized with default master at 254.
+     * All the ControlerBoxes are initialized with default master at 254.
      * 254 shall mean no master. This value may be changed here (at compile time).
      * This value sets the ui16MasterBoxName property of this ControlerBox:
      *
@@ -82,6 +86,7 @@ class globalBasementVars
      * Todo: draft a security 
      * */
     uint8_t                 gui8DefaultMasterNodeName;
+    int16_t                 gi16BoxDefaultState;
 
 
     /** For debug purposes only */

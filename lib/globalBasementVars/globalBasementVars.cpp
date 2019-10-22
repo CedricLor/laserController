@@ -26,11 +26,14 @@ globalBasementVars::globalBasementVars():
   gui16ControllerBoxPrefix{UI8_CONTROLLER_BOX_PREFIX},
   UI8_DEFAULT_INTERFACE_NODE_NAME{200},
   gui16InterfaceNodeName(UI8_DEFAULT_INTERFACE_NODE_NAME),
-  gui16BoxesCount{10},
+
   ui32RootNodeId{0},
+
+  gui16BoxesCount{10},
 
   relayPins({5, 17, 16, 4}),
   gui8DefaultMasterNodeName(254),
+  gi16BoxDefaultState{5},
   
   MY_DEBUG{true},
   MY_DG_LASER{false},

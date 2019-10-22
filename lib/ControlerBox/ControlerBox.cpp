@@ -73,7 +73,7 @@ ControlerBox::ControlerBox()
    *    the browser). */
   bMasterBoxNameChangeHasBeenSignaled = true;
 
-  sBoxDefaultState = gi16BoxDefaultState;
+  sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
   sBoxDefaultStateChangeHasBeenSignaled = true;
 }
 
@@ -443,7 +443,7 @@ void ControlerBox::deleteBox() {
   bMasterBoxNameChangeHasBeenSignaled = true;
   Serial.printf("%s bMasterBoxNameChangeHasBeenSignaled set to true\n", _subName);
 
-  sBoxDefaultState = gi16BoxDefaultState;
+  sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
   Serial.printf("%s sBoxDefaultState set to %i\n", _subName, sBoxDefaultState);
   sBoxDefaultStateChangeHasBeenSignaled = true;
   Serial.printf("%s sBoxDefaultStateChangeHasBeenSignaled set to true\n", _subName);

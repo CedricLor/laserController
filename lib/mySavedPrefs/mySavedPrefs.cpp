@@ -43,8 +43,8 @@ mySavedPrefs::mySavedPrefs() :
   *  ssid
   *  pass
 
-  *  gi16BoxDefaultState
-  *  gui16NodeName
+  *  globalBaseVariables.gi16BoxDefaultState
+  *  globalBaseVariables.gui16NodeName
   *  gui8DefaultMasterNodeName;
   *  globalBaseVariables.isInterface
   */
@@ -540,16 +540,16 @@ void mySavedPrefs::_saveIsRoot() {
 
 
 /*
-  gi16BoxDefaultState
-  gui8DefaultMasterNodeName
+  globalBaseVariables.gi16BoxDefaultState
+  globalBaseVariables.gui8DefaultMasterNodeName
 */
 void mySavedPrefs::_saveBoxBehaviorPreferences() {
-  // save value of gi16BoxDefaultState
+  // save value of globalBaseVariables.gi16BoxDefaultState
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
-  _saveI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", gi16BoxDefaultState);
+  _saveI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", globalBaseVariables.gi16BoxDefaultState);
 
-  // save value of gui8DefaultMasterNodeName
+  // save value of globalBaseVariables.gui8DefaultMasterNodeName
   // Note to use Prefs without reboot (would be updated without reboot):
   // -> no reboot (this is saving the value straight from thisBox)
   _saveUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", globalBaseVariables.gui8DefaultMasterNodeName);
@@ -879,11 +879,11 @@ void mySavedPrefs::_loadIsRoot(){
 
 
 /**
- * gi16BoxDefaultState
+ * globalBaseVariables.gi16BoxDefaultState
  * gui8DefaultMasterNodeName */
 void mySavedPrefs::_loadBoxBehaviorPreferences(){
-  // gi16BoxDefaultState
-  _loadI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", gi16BoxDefaultState);
+  // globalBaseVariables.gi16BoxDefaultState
+  _loadI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", globalBaseVariables.gi16BoxDefaultState);
 
   // gui8DefaultMasterNodeName
   _loadUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", globalBaseVariables.gui8DefaultMasterNodeName);

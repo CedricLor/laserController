@@ -43,9 +43,6 @@
 
 
 
-int16_t gi16BoxDefaultState                   = 5;
-
-
 // Used in mySavedPrefs, to reboot one or two times in OTA mode.
 // Rebooting twice may be usefull if you have to first upload a 
 // sketch and then a SPIFFS file system.
