@@ -1,5 +1,5 @@
 /*
-  ControlerBox.h - Library to replace box_type struct - handles the ControlerBox attributes.
+  ControlerBox.h - Library to handle the ControlerBox attributes.
   Created by Cedric Lor, January 2, 2019.
 */
 #ifndef ControlerBox_h
