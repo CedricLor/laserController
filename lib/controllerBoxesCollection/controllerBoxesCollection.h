@@ -20,8 +20,6 @@ class controllerBoxesCollection
     int16_t i16boxStateRequestedFromWeb;
     /** - Signal instance ----------------- */
     signal signalHandlers;
-    /** - this ControlerBox instance reference ----------------- */
-    ControlerBox & thisBox;
 
     /** setters */
     void setBoxActiveState(const short _sBoxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
@@ -40,6 +38,9 @@ class controllerBoxesCollection
 
     // Boxes array
     std::array<ControlerBox, 10> ControllerBoxesArray;
+
+    // this ControlerBox instance reference
+    ControlerBox & thisBox;
 
     // Tasks
     Task tReboot;
