@@ -15,6 +15,8 @@
 // Constructors
 controllerBoxesCollection::controllerBoxesCollection():
   i16boxStateRequestedFromWeb(-1),
+  connectedBoxesCount(1),
+  previousConnectedBoxesCount(1),
   controllerBoxesArray(),
   thisBox(controllerBoxesArray[0])
 {
