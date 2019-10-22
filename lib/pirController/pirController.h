@@ -7,7 +7,7 @@
 #define pirController_h
 
 #include "Arduino.h"
-#include <ControlerBox.h>
+#include <controllerBoxesCollection.h>
 #include <myMeshViews.h>
 
 class pirController

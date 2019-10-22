@@ -10,7 +10,7 @@
 #include <painlessMesh.h>
 #include <globalBasementVars.h>
 #include <secret.h>
-#include <ControlerBox.h>
+#include <controllerBoxesCollection.h>
 
 class myWSSender
 {

@@ -12,7 +12,7 @@
 #include <painlessMesh.h>
 #include <ESPmDNS.h>
 #include <mySavedPrefs.h>
-#include <ControlerBox.h>
+#include <controllerBoxesCollection.h>
 
 
 class myMeshStarter
