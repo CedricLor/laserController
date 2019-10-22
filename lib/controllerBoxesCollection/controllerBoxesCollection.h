@@ -32,7 +32,7 @@ class controllerBoxesCollection
     void deleteBoxByNodeId(uint32_t _ui32nodeId); // <-
 
     // Boxes counter
-    void updateConnectedBoxCount(short int _newConnectedBoxesCount);
+    uint16_t const updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount);
     short int connectedBoxesCount;
     short int previousConnectedBoxesCount;
 

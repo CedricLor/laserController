@@ -200,9 +200,9 @@ void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
 
 
 
-void controllerBoxesCollection::updateConnectedBoxCount(short int newConnectedBoxesCount) {
+uint16_t const controllerBoxesCollection::updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount) {
   previousConnectedBoxesCount = connectedBoxesCount;
-  connectedBoxesCount = newConnectedBoxesCount;
+  return connectedBoxesCount = _ui16newConnectedBoxesCount;
 }
 
 
