@@ -1,18 +1,15 @@
-/*
-  beat.cpp - beat handles the beat timing at which laserNotes, bars and sequences shall be played
-  Created by Cedric Lor, September 6, 2019.
-
-
-Traductions en anglais:
-- mesure = bar
-- partition = score
-- morceau = tune or composition
-*/
-
+/**
+ * beat.cpp - beat handles the beat timing at which laserNotes, bars and sequences shall be played
+ * Created by Cedric Lor, September 6, 2019.
+ * 
+ * Traductions en anglais:
+ * - mesure = bar
+ * - partition = score
+ * - morceau = tune or composition
+ * */
 #include "Arduino.h"
 #include "beat.h"
 
-// std::array<beat, 7> beat::_beats;
 
 
 
@@ -99,36 +96,6 @@ beat & beat::operator=(beat&& __beat) {
 
 
 ///////////////////////////////////
-// Initialisers
-///////////////////////////////////
-// void beat::initBeats() {
-//   Serial.println("void beat::initBeats(). starting.");
-//   // define an array containing predefined beats
-
-//   /** Signature of a beat:
-//    *  a. the duration of a beat in bpm (i.e. the tempo);
-//    *  b. the base laserNote for each beat (full, half, quarter, etc.) (the 4 in 2/4, for instance) */
-
-//   /** 2 per minute
-//    * duration of a beat in bpm: 2
-//    * base laserNote: 1 (a full) */
-//   _beats[0] = { 2, 1 };
-
-//   /** 120 per minute
-//    * duration of a beat in bpm: 120
-//    * base laserNote: 1 (a full) */
-//   _beats[1] = { 120, 1 };
-
-//   Serial.println("void bar::initBeats(). over.");
-// }
-
-
-
-
-
-
-
-///////////////////////////////////
 // Getters
 ///////////////////////////////////
 /** uint16_t beat::getBaseBeatInBpm(): public instance getter method
@@ -139,6 +106,8 @@ uint16_t const beat::getBaseBeatInBpm() const {
 }
 
 
+
+
 /** uint16_t beat::getBaseNoteForBeat(): public instance getter method
  *  
  *  Returns the base laserNote (the base laserNote corresponding to one beat) 
@@ -146,6 +115,8 @@ uint16_t const beat::getBaseBeatInBpm() const {
 uint16_t const beat::getBaseNoteForBeat() const {
   return _ui16BaseNoteForBeat;
 }
+
+
 
 
 /** uint16_t beat::ui16GetBaseNoteDurationInMs(): public instance getter method
