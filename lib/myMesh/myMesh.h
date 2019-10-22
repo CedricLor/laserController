@@ -89,7 +89,7 @@ class myMesh
     // For debug purposes
     static void _printNodeListAndTopology();
 
-    // To update the ControlerBoxes array
+    // To update the cntrllerBoxesCollection.controllerBoxesArray
     static bool _oetcbUpdateCBOnChangedConnections();
     static void _tcbUpdateCBOnChangedConnections();
     static void _odtcbUpdateCBOnChangedConnections();

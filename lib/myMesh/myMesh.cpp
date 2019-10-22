@@ -86,7 +86,7 @@ void myMesh::start() {
         _saveNodeMap();
         _tcbUpdateCBOnChangedConnections();
 
-        // enable the Task sending changes in ControlerBoxes states to connected browsers
+        // enable the Task which signals to connected browsers the changes in ControlerBoxes' states
         if (globalBaseVariables.isInterface) {
           myWSSender::tSendWSDataIfChangeBoxState.enable();
         }
@@ -383,7 +383,7 @@ void myMesh::_printNodeListAndTopology() {
 /* _tUpdateCDOnDroppedConnections
   In case a connection dropped, we need to update the DB. This is easy for the dropper,
   as it is signaled.
-  However, the sub nodes which may be in the ControlerBoxes[] array are not signaled as dropped.
+  However, the sub nodes which may be in the cntrllerBoxesCollection.controllerBoxesArray are not signaled as dropped.
   Each remaining node should know how to delete the subs.
   Upon such events, this Task does the job after 10 seconds.
 */
@@ -450,7 +450,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
   // }
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): After iteration over the list. Time: " + String(millis()));
 
-  // 4. Delete the boxes marked as 0 from the ControlerBoxes[] array
+  // 4. Delete the boxes marked as 0 from the cntrllerBoxesCollection.controllerBoxesArray
   _deleteBoxesFromCBArray(_nodeMap);
 
   Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): over. Time: " + String(millis()));
@@ -494,17 +494,18 @@ void myMesh::_deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap) {
 }
 
 uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
-  // 1. check if the box is listed in my ControlerBoxes[]
-  uint16_t _ui16droppedIndex = ControlerBox::findIndexByNodeId(nodeId);
+  // 1. check if the box is listed in my cntrllerBoxesCollection.controllerBoxesArray
+  uint16_t _ui16droppedIndex = cntrllerBoxesCollection.findIndexByNodeId(nodeId);
 
   // 2. if the box index is different than 254, it exists
   if (_ui16droppedIndex == 254) {
-    if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println(F("myMesh::_deleteBoxFromCBArray(): ending (box not found in ControlerBoxes[])."));
+    if (globalBaseVariables.MY_DEEP_DG_MESH) 
+      Serial.println(F("myMesh::_deleteBoxFromCBArray(): ending (box not found in cntrllerBoxesCollection.controllerBoxesArray)."));
     return 0;
   }
 
-  // 3. delete the box from ControlerBoxes[]
-  ControlerBoxes[_ui16droppedIndex].deleteBox();
+  // 3. delete the box from cntrllerBoxesCollection.controllerBoxesArray
+  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16droppedIndex).deleteBox();
 
   return _ui16droppedIndex;
 }

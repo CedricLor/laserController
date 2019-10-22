@@ -93,7 +93,7 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
     _sendMsg(_obj);
   } else {
     // get the destination nodeId
-    uint32_t _destNodeId = ControlerBoxes[_obj["lb"].as<uint8_t>()].nodeId;
+    uint32_t _destNodeId = cntrllerBoxesCollection.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).nodeId;
     _sendMsg(_obj, _destNodeId);
   }
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
