@@ -53,5 +53,4 @@ int8_t gi8RequestedOTAReboots                 = 0;
 
 
 
-uint16_t uiMeshSize                           = 0;
 

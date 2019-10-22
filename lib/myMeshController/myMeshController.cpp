@@ -290,10 +290,10 @@ void myMeshController::_changedBoxConfirmation() {
     ControlerBoxes[__ui16BoxIndex].deleteBox();
     // only decrease the MeshSize by one if it is a dropped connection message
     // note: dropped connection message are sent by the box which first detected
-    // the dropped box. Such box has already updated its uiMeshSize in the
+    // the dropped box. Such box has already updated its globalBaseVariables.uiMeshSize in the
     // dropped connection callback, in myMesh class
     if (_nsobj["key"] == "dropped"){
-      uiMeshSize = uiMeshSize - 1;
+      globalBaseVariables.uiMeshSize = globalBaseVariables.uiMeshSize - 1;
     }
     return;
   }
