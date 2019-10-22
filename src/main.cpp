@@ -55,7 +55,7 @@ void setup() {
   _myPrefsRef.loadPrefsWrapper();
 
   // The ESP was restarted with an OTA request saved in mySavedPrefs
-  if (gi8OTAReboot) {
+  if (globalBaseVariables.gi8OTAReboot) {
     myOta::OTAConfig();
     return;
   }
@@ -120,7 +120,7 @@ void setup() {
 
 
 void loop() {
-  if (gi8OTAReboot) {
+  if (globalBaseVariables.gi8OTAReboot) {
     ArduinoOTA.handle();
     return;
   }

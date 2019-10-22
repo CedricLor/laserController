@@ -40,17 +40,3 @@
 // const uint8_t UI8_NODE_NAME                = 200;                          // BOX BY BOX
 // const bool IS_INTERFACE                    = true;                         // BOX BY BOX
 // const bool IS_ROOT                         = true;                         // BOX BY BOX
-
-
-
-// Used in mySavedPrefs, to reboot one or two times in OTA mode.
-// Rebooting twice may be usefull if you have to first upload a 
-// sketch and then a SPIFFS file system.
-int8_t gi8OTAReboot                           = 0;
-int8_t gi8RequestedOTAReboots                 = 0;
-
-
-
-
-
-

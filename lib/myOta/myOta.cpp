@@ -88,7 +88,7 @@ void myOta::_startOTA()
 
 void myOta::_endOTA()
 {
-  Serial.print("OTA Update End: switching gi8RequestedOTAReboots to true and resetStartupTypePreferences\n");
+  Serial.print("OTA Update End: resetStartupTypePreferences\n");
   // if 1, this means that there will be another OTA reboot after this one
   // else, it is 0, this means that there will be not be another OTA reboot after this one
   mySavedPrefs::ui8OTASuccessErrorCodeWitness = 6;

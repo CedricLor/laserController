@@ -11,8 +11,6 @@
 #include <ESPAsyncWebServer.h>
 
 // BOX BY BOX
-extern int8_t             gi8OTAReboot;
-extern int8_t             gi8RequestedOTAReboots;
 extern int8_t             gi8OTA1Success;
 extern int8_t             gi8OTA2Success;
 

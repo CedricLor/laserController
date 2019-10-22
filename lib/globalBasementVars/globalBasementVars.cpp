@@ -31,6 +31,8 @@ globalBasementVars::globalBasementVars():
   gui16InterfaceNodeName(UI8_DEFAULT_INTERFACE_NODE_NAME),
 
   ui32RootNodeId{0},
+  gi8OTAReboot{0},
+  gi8RequestedOTAReboots{0},
 
   gui16BoxesCount{10},
 

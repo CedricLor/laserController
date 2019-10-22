@@ -51,6 +51,11 @@ class globalBasementVars
 
     /**********************************************************************/
     /** III. In all the configurations: for the ControllerBoxes collection*/
+    /**
+     * Used in mySavedPrefs, to reboot one or two times in OTA mode.
+     * Rebooting twice may be usefull if you have to first upload a 
+     * sketch and then a SPIFFS file system.
+    */
     int8_t                  gi8OTAReboot;
     int8_t                  gi8RequestedOTAReboots;
     int8_t                  gi8OTA1Success;
