@@ -16,7 +16,7 @@
 controllerBoxesCollection::controllerBoxesCollection():
   i16boxStateRequestedFromWeb(-1),
   controllerBoxesArray(),
-  thisBox(ControlerBoxes[0])
+  thisBox(controllerBoxesArray[0])
 {
   _resetTSetBoxState();
 }
