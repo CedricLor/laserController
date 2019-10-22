@@ -9,8 +9,6 @@
 
 // STATIC VARIABLES - SIGNAL CATCHERS
 int16_t ControlerBox::i16boxStateRequestedFromWeb = -1;
-short int ControlerBox::connectedBoxesCount = 1;
-short int ControlerBox::previousConnectedBoxesCount = 1;
 void (*ControlerBox::_tcbIfMeshTriggered)(const ControlerBox & _callingBox) = nullptr;
 void (*ControlerBox::_tcbIfIRTriggered)(const ControlerBox & _callingBox) = nullptr;
 void (*ControlerBox::_tcbSetBoxStateFromWeb)() = nullptr;
@@ -240,7 +238,6 @@ void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _
 
   // set the nodeId
   if (nodeId == 0) {
-    updateConnectedBoxCount(connectedBoxesCount + 1);
     isNewBoxHasBeenSignaled = false;
     Serial.printf("%s ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", _subName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   }
@@ -294,17 +291,8 @@ void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _
 
 
 
-void ControlerBox::updateConnectedBoxCount(short int newConnectedBoxesCount) {
-  previousConnectedBoxesCount = connectedBoxesCount;
-  connectedBoxesCount = newConnectedBoxesCount;
-}
-
-
-
-
-
-void ControlerBox::deleteBox() {
-  const char * _subName = "ControlerBox::deleteBox():";
+void ControlerBox::_deleteBox() {
+  const char * _subName = "ControlerBox::_deleteBox():";
   Serial.printf("%s starting\n", _subName);
   // Serial.printf("%s Received _ui16BoxIndex %u\n", );
   nodeId = 0;
@@ -341,8 +329,6 @@ void ControlerBox::deleteBox() {
   sBoxDefaultStateChangeHasBeenSignaled = true;
   Serial.printf("%s sBoxDefaultStateChangeHasBeenSignaled set to true\n", _subName);
 
-  updateConnectedBoxCount(connectedBoxesCount - 1);
-  Serial.printf("%s updated ConnectedBoxCount\n", _subName);
   Serial.printf("%s over\n", _subName);
 }
 

@@ -505,7 +505,7 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   }
 
   // 3. delete the box from cntrllerBoxesCollection.controllerBoxesArray
-  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16droppedIndex).deleteBox();
+  cntrllerBoxesCollection.deleteBoxByBoxIndex(_ui16droppedIndex);
 
   return _ui16droppedIndex;
 }

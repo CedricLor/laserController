@@ -30,6 +30,7 @@ class controllerBoxesCollection
     uint16_t findIndexByNodeId(uint32_t _ui32nodeId); // <-
     uint16_t findIndexByNodeName(uint16_t _ui16NodeName); // <-
     void deleteBoxByNodeId(uint32_t _ui32nodeId); // <-
+    void deleteBoxByBoxIndex(uint16_t _ui16index); // <-
 
     // Boxes counter
     uint16_t const updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount);

@@ -280,17 +280,17 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
   if (__joBoxesStatesInDOM.size() == 0) {
     if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): no boxRow in the DOM \n");
-      Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object ControlerBox::connectedBoxesCount =  %i.\n", ControlerBox::connectedBoxesCount);
+      Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object cntrllerBoxesCollection.connectedBoxesCount =  %i.\n", cntrllerBoxesCollection.connectedBoxesCount);
     }
     // there are no boxRows in the DOM
-    if (ControlerBox::connectedBoxesCount == 1) {
+    if (cntrllerBoxesCollection.connectedBoxesCount == 1) {
       // there are no boxes connected to the mesh (and no boxes in the DOM), just return
       if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending action type \"handshake\", because there are no boxRow in DOM nor connectedBoxes.\n");
       }
       return;
     }
-    else // re. if (ControlerBox::connectedBoxesCount == 1)
+    else // re. if (cntrllerBoxesCollection.connectedBoxesCount == 1)
     // there are boxes connected to the mesh (and no boxes in the DOM), look for the missing boxes
     {
       if (globalBaseVariables.MY_DG_WS) {
@@ -309,10 +309,10 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
   // there are boxRows in DOM
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in the DOM \n");
-    Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object ControlerBox::connectedBoxesCount =  %i.\n", ControlerBox::connectedBoxesCount);
+    Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object cntrllerBoxesCollection.connectedBoxesCount =  %i.\n", cntrllerBoxesCollection.connectedBoxesCount);
   }
   {
-    if (ControlerBox::connectedBoxesCount == 1) {
+    if (cntrllerBoxesCollection.connectedBoxesCount == 1) {
       // there are no connected boxes (and boxes in the DOM):
       if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in DOM but no connectedBoxes.\n");
@@ -354,7 +354,7 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
 void myWSReceiver::_checkConsistancyDOMDB(JsonObject& _joBoxState) {
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object _joBoxState.size: %i. There are currently boxRow(s) in the DOM.\n", _joBoxState.size());
-    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object ControlerBox::connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", ControlerBox::connectedBoxesCount);
+    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object cntrllerBoxesCollection.connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", cntrllerBoxesCollection.connectedBoxesCount);
     Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): about to iterate over the boxRows, looking for the existing boxRow and boxState in DOM\n");
   }
 

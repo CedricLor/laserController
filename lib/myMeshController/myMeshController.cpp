@@ -268,7 +268,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if ((_nsobj["key"] == "reboot") || (_nsobj["key"] == "dropped")) {
     // Serial.println("----------------- THIS A REBOOT CONFIRMATION ---------------");
-    cntrllerBoxesCollection.controllerBoxesArray.at(__ui16BoxIndex).deleteBox();
+    cntrllerBoxesCollection.deleteBoxByBoxIndex(__ui16BoxIndex);
     // only decrease the MeshSize by one if it is a dropped connection message
     // note: dropped connection message are sent by the box which first detected
     // the dropped box. Such box has already updated its globalBaseVariables.uiMeshSize in the

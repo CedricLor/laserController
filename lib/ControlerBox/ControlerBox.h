@@ -10,6 +10,8 @@
 
 class ControlerBox
 {
+  friend class controllerBoxesCollection;
+
   public:
     /** constructor */
     ControlerBox();
@@ -77,7 +79,7 @@ class ControlerBox
     /** bool boxDeletionHasBeenSignaled: 
      * 
      * - read and set by myWSSender, myWSReceiver (in the consistency check between
-     * browser data and ControlerBox database) and ControlerBox::deleteBox.
+     * browser data and ControlerBox database) and ControlerBox::_deleteBox.
      * 
      * Usefull on the IF: allows myWSSender to know of disconnections and reboots
      * of ControlerBoxes and inform the user by sending a WS message to the
@@ -103,7 +105,6 @@ class ControlerBox
     const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);
     void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
-    void deleteBox();
 
 
 
@@ -115,11 +116,6 @@ class ControlerBox
     static void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
     // -------- Public Static Methods -----------------
-    // Box counter
-    static void updateConnectedBoxCount(short int _newConnectedBoxesCount);
-    static short int connectedBoxesCount;
-    static short int previousConnectedBoxesCount;
-
     // Tasks
     static Task tReboot;
 
@@ -130,6 +126,7 @@ class ControlerBox
     static void (*_tcbSetBoxStateFromWeb)();
 
   private:
+    void _deleteBox();
     static void _reboot();
 };
 

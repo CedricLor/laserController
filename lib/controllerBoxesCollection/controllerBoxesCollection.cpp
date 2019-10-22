@@ -122,6 +122,9 @@ uint16_t controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObj
   /** If we found an existing box or if we have a slot where to save the data from the JSON object 
    *  => save the data */
   if (__ui16BoxIndex != 254) {
+    if (controllerBoxesArray.at(__ui16BoxIndex).nodeId == 0) {
+      updateConnectedBoxCount(connectedBoxesCount + 1);
+    }
     controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
   }
 
@@ -189,11 +192,25 @@ void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
   Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): starting");
   for (uint16_t __it = 0; __it < globalBaseVariables.gui16BoxesCount; __it++) {
     if (controllerBoxesArray[__it].nodeId == _ui32nodeId) {
-      controllerBoxesArray[__it].deleteBox();
+      controllerBoxesArray[__it]._deleteBox();
+      updateConnectedBoxCount(connectedBoxesCount - 1);
+      Serial.printf("controllerBoxesCollection::deleteBoxByNodeId(): updated ConnectedBoxCount\n");
+
       break;
     }
   }
   Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): over");
+}
+
+
+
+
+
+void controllerBoxesCollection::deleteBoxByBoxIndex(uint16_t _ui16index) {
+  Serial.println("controllerBoxesCollection::deleteBoxByBoxIndex(): starting");
+  controllerBoxesArray[_ui16index]._deleteBox();
+  updateConnectedBoxCount(connectedBoxesCount - 1);
+  Serial.println("controllerBoxesCollection::deleteBoxByBoxIndex(): over");
 }
 
 
