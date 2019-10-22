@@ -39,7 +39,7 @@ class controllerBoxesCollection
     short int previousConnectedBoxesCount;
 
     // Boxes array
-    std::array<ControlerBox, 10> ControlerBoxes;
+    std::array<ControlerBox, 10> ControllerBoxesArray;
 
     // Tasks
     Task tReboot;
