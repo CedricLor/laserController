@@ -82,17 +82,17 @@ void controllerBoxesCollection::setBoxActiveStateFromWeb(const int16_t _i16boxSt
 
 
 
-/** ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
+/** controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
  * 
  *  Upon receiving a statusMsg from another laser box, this static method will 
- *  try to find the corresponding box in the ControlerBoxes array, using the 
+ *  try to find the corresponding box in controllerBoxesArray, using the 
  *  _ui32nodeId.
  * 
  *  If it finds it, it will overwrite the data corresponding to this box 
  *  in the relevant entry of the CB array.
  *  Else, it will save such data in the next empty slot. */
-uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
-  Serial.printf("ControlerBox::updateOrCreate(): starting with _ui32nodeId = %u\n", _ui32nodeId);
+uint16_t controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
+  Serial.printf("controllerBoxesCollection::updateOrCreate(): starting with _ui32nodeId = %u\n", _ui32nodeId);
   /** 1. look for the relevant box by nodeId.
    * 
    *  Why looking by NodeID rather than by NodeName?
@@ -104,11 +104,11 @@ uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
   uint16_t __ui16BoxIndex = 254;
 
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if ((ControlerBoxes[_i].nodeId == 0) && (__ui16BoxIndex == 254)) { 
+    if ((controllerBoxesArray.at(_i).nodeId == 0) && (__ui16BoxIndex == 254)) { 
       __ui16BoxIndex = _i;
       continue;
     }
-    if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
+    if (controllerBoxesArray.at(_i).nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
       __ui16BoxIndex = _i;
       break;
@@ -118,7 +118,7 @@ uint16_t ControlerBox::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
   /** If we found an existing box or if we have a slot where to save the data from the JSON object 
    *  => save the data */
   if (__ui16BoxIndex != 254) {
-    ControlerBoxes[__ui16BoxIndex].updateOtherBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
+    controllerBoxesArray.at(__ui16BoxIndex).updateOtherBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
   }
 
   /** In any case, return the index number to the caller. 
@@ -140,8 +140,8 @@ void controllerBoxesCollection::_resetTSetBoxState() {
 
 
 
-uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
-  Serial.printf("ControlerBox::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
+uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
+  Serial.printf("controllerBoxesCollection::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   uint16_t __ui16BoxIndex = 254;
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].nodeId == _ui32nodeId) {
@@ -150,14 +150,14 @@ uint16_t ControlerBox::findIndexByNodeId(uint32_t _ui32nodeId) {
       break;
     }
   }
-  Serial.printf("ControlerBox::findIndexByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
+  Serial.printf("controllerBoxesCollection::findIndexByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   return __ui16BoxIndex;
 }
 
 
 
-uint16_t ControlerBox::findIndexByNodeName(uint16_t _ui16NodeName) {
-  const char * _subName = "ControlerBox::findIndexByNodeName():";
+uint16_t controllerBoxesCollection::findIndexByNodeName(uint16_t _ui16NodeName) {
+  const char * _subName = "controllerBoxesCollection::findIndexByNodeName():";
   Serial.printf("%s looking for ControlerBox with uint16_t ui16NodeName = %u\n", _subName, _ui16NodeName);
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if (ControlerBoxes[_i].ui16NodeName == _ui16NodeName) {
