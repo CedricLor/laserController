@@ -10,7 +10,6 @@
 #include <painlessMesh.h>
 #include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
 #include <globalBasementVars.h>
-#include <globalBasementVars.h>       
 #include <secret.h>       
 
 class mySavedPrefs

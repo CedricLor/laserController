@@ -7,7 +7,6 @@
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
-#include <globalBasementVars.h>
 
 class ControlerBox
 {
