@@ -37,7 +37,7 @@ class controllerBoxesCollection
     short int previousConnectedBoxesCount;
 
     // Boxes array
-    std::array<ControlerBox, 10> ControllerBoxesArray;
+    std::array<ControlerBox, 10> controllerBoxesArray;
 
     // this ControlerBox instance reference
     ControlerBox & thisBox;
