@@ -140,12 +140,13 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
     i16BoxActiveState = _i16boxActiveState;
 
     boxActiveStateHasBeenSignaled = false;
-    // setters:
-    // - by default to true upon init (controlerBox constructor);
-    // - to false here (usefull for the IF, for the received states of other boxes);
-    // - to true in myMeshViews (for this box only, upon sending a statusMsg);
-    // - to true and false in myWebServerBase (by the IF, for the other boxes) --> tracing if it has sent an update to the browser
-    // used by the interface mostly
+    /** boxActiveStateHasBeenSignaled setters:
+     *  - by default to true upon init (controlerBox constructor);
+     *  - to false here (when called from boxStateCollection::_restartPlayBoxState());
+     *  - to false in myWSReceiver and to true in myWSSender, in the IF: to track change request
+     *    coming from the web and whether the states of other boxes have been received;
+     *  - to true in myMeshViews (for this box only, upon sending a statusMsg);
+     * */
 
     ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
 
