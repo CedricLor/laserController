@@ -1,5 +1,6 @@
 /*
-myMeshController.cpp - Library to handle mesh controller related functions.
+myMeshController.cpp - Library that decodes the requests coming from the mesh 
+and executes them.
 Created by Cedric Lor, January 22, 2019.
 */
 

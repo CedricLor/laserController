@@ -13,10 +13,8 @@ class ControlerBox
   friend class controllerBoxesCollection;
 
   public:
-    /** constructor */
+    /** -------- constructors -------- */
     ControlerBox();
-
-
 
 
     /** -------- Public Instance Variables -----------------
@@ -53,6 +51,7 @@ class ControlerBox
      * - set by boxState events, by steps or manually by WS requests.
      * - read by myWSSender, myMeshViews, myWSReceiver and boxState. */
     int16_t i16BoxActiveState;
+
     /** bool boxActiveStateHasBeenSignaled:
      * 
      * - set by the ControlerBox itself upon a changes of i16BoxActiveState 
@@ -64,17 +63,16 @@ class ControlerBox
      * of the ControlerBoxes and inform the user by sending a WS message to the
      * browser. */
     bool boxActiveStateHasBeenSignaled;
+
     /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
      *  by a call to meshNodeTime.
      * 
      * Set via ControlerBox::setBoxActiveState. */
     uint32_t ui32BoxActiveStateStartTime;
 
-
     /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
      *  sent a PIR high signal. */
     uint32_t ui32lastRecPirHighTime;
-
 
     /** bool boxDeletionHasBeenSignaled: 
      * 
@@ -87,11 +85,12 @@ class ControlerBox
     bool boxDeletionHasBeenSignaled;
 
     uint16_t ui16MasterBoxName;
+
     bool bMasterBoxNameChangeHasBeenSignaled;
 
     short int sBoxDefaultState;
+    
     bool sBoxDefaultStateChangeHasBeenSignaled;
-
 
 
 
@@ -105,8 +104,6 @@ class ControlerBox
     const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);
     void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
-
-
 
 
 

@@ -69,20 +69,6 @@ controllerBoxesCollection::controllerBoxesCollection():
 // }
 
 
-// /** Setter for i16boxStateRequestedFromWeb
-//  * 
-//  *  Called from: 
-//  *  - myMeshController, upon receiving a changeBox request from the web. */
-// void controllerBoxesCollection::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
-//   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
-//   /** Set the Task that will check whether this change shall have an impact
-//    *  on thisBox boxState, add it to the Scheduler and restart it. */
-//   // tSetBoxState.set(0, 1, [&](){return signalHandlers._tcbSetBoxStateFromWeb();}, NULL, NULL);
-//   tSetBoxState.restart();
-// }
-
-
-
 /** controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
  * 
  *  Upon receiving a statusMsg from another laser box, this static method will 
