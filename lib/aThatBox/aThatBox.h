@@ -12,19 +12,19 @@
 
 #define aThatBox_h
 
-class aThatbox
+class aThatBox
 {
   public:
     /** default empty constructor */
-    aThatbox();
+    aThatBox();
     /** copy constructor */
-    aThatbox(const aThatbox & __aThatbox);
+    aThatBox(const aThatBox & __aThatBox);
     /** assignement operator */
-    aThatbox& operator=(const aThatbox & __aThatbox);
+    aThatBox& operator=(const aThatBox & __aThatBox);
     /** move constructor */
-    aThatbox(aThatbox&& __aThatbox);
+    aThatBox(aThatBox&& __aThatBox);
     /** move assignement operator */
-    aThatbox & operator=(aThatbox&& __aThatbox);
+    aThatBox & operator=(aThatBox&& __aThatBox);
 
     /** members */
     globalBasementVars          globBaseVars;

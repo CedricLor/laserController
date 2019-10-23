@@ -7,7 +7,7 @@
 #include "Arduino.h"
 #include "aThatBox.h"
 
-aThatbox::aThatbox():
+aThatBox::aThatBox():
   globBaseVars(),
   ctlBxColl(),
   thisSignalHandler(),
