@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 #include "globalBasementVars.h"
-#include "myMeshController.h"
+#include "myMeshViews.h"
 #include "sequence.h"
 
 namespace laserInterface {
