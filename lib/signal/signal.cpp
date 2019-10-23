@@ -46,9 +46,9 @@ signal::signal():
    * 
    *  Each of these functions will then check whether the signal is a trigger to change
    *  a boxState. If so, they reset the boxState. */
-  ControlerBox::_tcbSetBoxStateFromWeb = _tcbSetBoxStateFromWeb;
-  ControlerBox::_tcbIfMeshTriggered = _tcbIfMeshTriggered;
-  ControlerBox::_tcbIfIRTriggered = _tcbIfIRTriggered;
+  // ControlerBox::_tcbSetBoxStateFromWeb = _tcbSetBoxStateFromWeb;
+  // ControlerBox::_tcbIfMeshTriggered = _tcbIfMeshTriggered;
+  // ControlerBox::_tcbIfIRTriggered = _tcbIfIRTriggered;
 }
 
 
