@@ -33,20 +33,7 @@ class controllerBoxesCollection
     // this ControlerBox instance reference
     ControlerBox & thisBox;
 
-    // Tasks
-    // Task tReboot;
-
-    // boxState Setters Tasks
-    // Task tSetBoxState;
-    // void (*_tcbIfMeshTriggered)(const ControlerBox & _callingBox);
-    // void (*_tcbIfIRTriggered)(const ControlerBox & _callingBox);
-    // void (*_tcbSetBoxStateFromWeb)();
-
   private:
-    /**reset Task tSetBoxState*/
-    // void _resetTSetBoxState();
-    // void _reboot(); // <-- does not belong to controllerBoxesCollection: to be moved to another class
-
     /** helpers */
     void printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier);
 };

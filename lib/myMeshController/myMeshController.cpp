@@ -381,7 +381,7 @@ void myMeshController::_rebootEsp() {
 
   // reboot
   Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
-  ControlerBox::tReboot.enableDelayed();
+  thisControllerBox.tReboot.restartDelayed();
 }
 
 
@@ -423,7 +423,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 
   // reboot
   Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
-  ControlerBox::tReboot.enableDelayed();
+  thisControllerBox.tReboot.restartDelayed();
 }
 
 

@@ -113,9 +113,6 @@ class ControlerBox
     static void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
 
     // -------- Public Static Methods -----------------
-    // Tasks
-    static Task tReboot;
-
     // boxState Setters Tasks
     static Task tSetBoxState;
     static void (*_tcbIfMeshTriggered)(const ControlerBox & _callingBox);
@@ -124,7 +121,6 @@ class ControlerBox
 
   private:
     void _deleteBox();
-    static void _reboot();
 };
 
 extern ControlerBox & thisBox;

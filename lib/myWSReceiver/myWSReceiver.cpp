@@ -168,7 +168,7 @@ void myWSReceiver::_rebootIF(JsonObject& _obj) {
   _requestBoxChange(_obj, true /*_bBroadcast*/);
 
   // reboot with a little delay
-  ControlerBox::tReboot.restartDelayed();
+  thisControllerBox.tReboot.restartDelayed();
 }
 
 
@@ -232,7 +232,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   if (_obj["key"] == "reboot") {
     // If reboot "all", IF shall be also rebooted
     if (_obj["lb"] == "all") {
-      ControlerBox::tReboot.enableDelayed();
+      thisControllerBox.tReboot.enableDelayed();
     }
   }
 

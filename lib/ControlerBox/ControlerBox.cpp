@@ -331,15 +331,3 @@ void ControlerBox::_deleteBox() {
 
   Serial.printf("%s over\n", _subName);
 }
-
-
-
-
-
-
-Task ControlerBox::tReboot(3000, TASK_ONCE, NULL, NULL, false, NULL, &_reboot);
-
-void ControlerBox::_reboot() {
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
-  ESP.restart();
-}
