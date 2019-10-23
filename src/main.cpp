@@ -59,6 +59,7 @@ void setup() {
     return;
   }
 
+  globalBaseVariables.scheduler.addTask(thisControllerBox.tReboot);
   globalBaseVariables.scheduler.addTask(ControlerBox::tReboot);
   globalBaseVariables.scheduler.addTask(myMeshStarter::tRestart);
 

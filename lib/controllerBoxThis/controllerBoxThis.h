@@ -32,9 +32,12 @@ class controllerBoxThis
     ControlerBox &              thisCtrlerBox;
     pirController               thisPirController;
 
-    /** getters */
+    /** Reboot Task */
+    Task tReboot;
 
   private:
+    void _reboot();
+};
 
 extern controllerBoxThis             thisControllerBox;;
 
