@@ -487,18 +487,12 @@ void mySavedPrefs::_resetOTASuccess() {
   globalBaseVariables.isInterface
   globalBaseVariables.isRoot
 */
-// Need a reboot
+// Needs a reboot
 void mySavedPrefs::_saveBoxEssentialPreferences() {
-  // save value of gui16NodeName (global int8_t nodeName)
-  // Note to use Prefs without reboot:
-  // -> would need a reboot
-  // -> fix: call ControlerBox::updateThisBoxProperties
-  // this value is then used in ControlerBox::updateThisBoxProperties
-  // to set thisBox.ui16NodeName
+  /** save value of gui16NodeName (global int8_t nodeName) */
   _saveUi16ToUCharTypePrefs("ui8NdeName", "gui16NodeName", globalBaseVariables.gui16NodeName);
-
- _saveIsInterface();
-_saveIsRoot();
+  _saveIsInterface();
+  _saveIsRoot();
 }
 
 
@@ -514,7 +508,7 @@ void mySavedPrefs::_saveIsInterface() {
     -> runtime change possible; would require a restart of painlessMesh
     See below for possible implications with globalBaseVariables.isRoot
   */
- _saveBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
+  _saveBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
 }
 
 
