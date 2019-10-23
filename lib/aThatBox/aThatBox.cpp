@@ -9,8 +9,7 @@
 
 aThatBox::aThatBox():
   globBaseVars(),
-  ctlBxColl(),
   thisSignalHandler(),
-  thisLaserBox(ctlBxColl.controllerBoxesArray.at(0)),
+  thisCtrlerBox(thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0)),
   thisPirController()
 {}

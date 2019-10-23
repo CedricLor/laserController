@@ -28,9 +28,8 @@ class aThatBox
 
     /** members */
     globalBasementVars          globBaseVars;
-    controllerBoxesCollection   ctlBxColl;
     signal                      thisSignalHandler;
-    ControlerBox &              thisLaserBox;
+    ControlerBox &              thisCtrlerBox;
     pirController               thisPirController;
 
     /** getters */
