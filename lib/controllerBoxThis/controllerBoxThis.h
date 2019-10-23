@@ -36,7 +36,6 @@ class controllerBoxThis
 
   private:
 
-    /** private instance properties */
-};
+extern controllerBoxThis             thisControllerBox;;
 
 #endif
