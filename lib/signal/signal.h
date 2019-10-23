@@ -12,15 +12,17 @@
 
 class signal
 {
-  friend class controllerBoxesCollection;
+  friend class aThatBox;
   public:
     signal();
 
     void startup();
 
   private:
-    static void _tcbSetBoxStateFromWeb();
-    static void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
+    controllerBoxesCollection     ctlBxColl;
+    stepCollection                stepColl;
+    boxStateCollection            bxStateColl;
+
     bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
     static void _tcbIfIRTriggered(const ControlerBox & _callingBox);
     bool _testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);

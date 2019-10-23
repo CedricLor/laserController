@@ -7,7 +7,10 @@
 #include "signal.h"
 
 
-signal::signal()
+signal::signal():
+  ctlBxColl{},
+  stepColl{},
+  bxStateColl{}
 {
   /** 
    *  --> NOT SURE 1. will be needed
