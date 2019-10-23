@@ -12,7 +12,7 @@
 
 class signal
 {
-  friend class aThatBox;
+  friend class controllerBoxThis;
   public:
     signal();
 

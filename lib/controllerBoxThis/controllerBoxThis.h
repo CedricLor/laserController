@@ -1,30 +1,30 @@
 /*
-  aThatBox.h - aThatBox integrates signal (controllerBoxesCollection + boxState) with
+  controllerBoxThis.h - controllerBoxThis integrates signal (controllerBoxesCollection + boxState) with
   pirController.
   Created by Cedric Lor, Octobre 23, 2019.
 */
 
-#ifndef aThatBox_h
+#ifndef controllerBoxThis_h
 
 #include "Arduino.h"
 #include <signal.h>
 #include <pirController.h>
 
-#define aThatBox_h
+#define controllerBoxThis_h
 
-class aThatBox
+class controllerBoxThis
 {
   public:
     /** default empty constructor */
-    aThatBox();
+    controllerBoxThis();
     /** copy constructor */
-    aThatBox(const aThatBox & __aThatBox);
+    controllerBoxThis(const controllerBoxThis & __controllerBoxThis);
     /** assignement operator */
-    aThatBox& operator=(const aThatBox & __aThatBox);
+    controllerBoxThis& operator=(const controllerBoxThis & __controllerBoxThis);
     /** move constructor */
-    aThatBox(aThatBox&& __aThatBox);
+    controllerBoxThis(controllerBoxThis&& __controllerBoxThis);
     /** move assignement operator */
-    aThatBox & operator=(aThatBox&& __aThatBox);
+    controllerBoxThis & operator=(controllerBoxThis&& __controllerBoxThis);
 
     /** members */
     globalBasementVars          globBaseVars;
