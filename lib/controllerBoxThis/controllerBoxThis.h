@@ -1,6 +1,6 @@
 /*
   controllerBoxThis.h - controllerBoxThis integrates signal (controllerBoxesCollection + boxState) with
-  pirController.
+  pirController
   Created by Cedric Lor, Octobre 23, 2019.
 */
 
