@@ -8,8 +8,6 @@
 #define boxState_h
 
 #include "Arduino.h"
-#include <painlessMesh.h>
-#include <mySpiffs.h>
 #include <sequence.h>
 
 class step
@@ -116,11 +114,15 @@ class boxStateCollection
     /** constructors*/
     /** default constructor: used to define the boxStates array */
     boxStateCollection(
+      ControlerBox & __thisBox,
       void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr
     );
 
     // boxStates array
     std::array<boxState, 14> boxStatesArray;
+
+    // _thisBox
+    ControlerBox & _thisBox;
 
     // step mode switch stack
     void toggleStepControlled(uint16_t _ui16Mode);

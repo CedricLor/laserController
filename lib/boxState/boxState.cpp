@@ -512,7 +512,12 @@ void (boxStateCollection::*restartPBS)() = nullptr;
 
 /** Constructors */
 /** default constructor */
-boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)):
+boxStateCollection::boxStateCollection(
+    ControlerBox & __thisBox,
+    void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)
+  ):
+  boxStatesArray{},
+  _thisBox(__thisBox),
   ui16Mode(0),
   sendCurrentBoxState(_sendCurrentBoxState),
   _sequences(),
@@ -734,8 +739,8 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray.at(_boxTargetState).i16Duration));
   // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
-  // 2. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
-  thisBox.setBoxActiveState(_boxTargetState, globalBaseVariables.laserControllerMesh.getNodeTime());
+  // 2. Set the i16BoxActiveState of _thisBox (ControllerBox) to the _boxTargetState
+  _thisBox.setBoxActiveState(_boxTargetState, globalBaseVariables.laserControllerMesh.getNodeTime());
   // Serial.println("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState about to be enabled");
 
   // 3. Restart tPlayBoxState
@@ -778,10 +783,10 @@ void boxStateCollection::_restartTaskPlayBoxState() {
 
 bool boxStateCollection::_oetcbPlayBoxState(){
   Serial.println("boxStateCollection::_oetcbPlayBoxState(). starting.");
-  // Serial.print("boxStateCollection::_oetcbPlayBoxState(). Box State Number: ");Serial.println(thisBox.i16BoxActiveState);
+  // Serial.print("boxStateCollection::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.i16BoxActiveState);
 
   // 1. select the currently active state
-  boxState& _currentBoxState = boxStatesArray[thisBox.i16BoxActiveState];
+  boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
 
   // 2. Select the desired sequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
@@ -791,7 +796,7 @@ bool boxStateCollection::_oetcbPlayBoxState(){
   
   // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
-    sendCurrentBoxState(thisBox.i16BoxActiveState);
+    sendCurrentBoxState(_thisBox.i16BoxActiveState);
   }
 
   Serial.println("boxStateCollection::_oetcbPlayBoxState(). over.");
@@ -811,12 +816,12 @@ void boxStateCollection::_odtcbPlayBoxState(){
   // Serial.print("boxStateCollection::_odtcbPlayBoxState() tPlayBoxState.getInterval(): ");
   // Serial.println(tPlayBoxState.getInterval());
 
-  boxState& _currentBoxState = boxStatesArray[thisBox.i16BoxActiveState];
+  boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
   _sequences.setStopCallbackForTPlaySequence();
   _sequences.tPlaySequence.disable();
-  // Serial.println("boxStateCollection::_odtcbPlayBoxState(): thisBox i16BoxActiveState number");
+  // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _boxTargetState");
   // Serial.println(_boxTargetState);
@@ -826,7 +831,7 @@ void boxStateCollection::_odtcbPlayBoxState(){
   if (_currentBoxState.i16onExpire != -1) {
     _setBoxTargetState(_currentBoxState.i16onExpire);
   } else {
-    _setBoxTargetState(thisBox.sBoxDefaultState);
+    _setBoxTargetState(_thisBox.sBoxDefaultState);
 
   }
   Serial.println("boxStateCollection::_odtcbPlayBoxState(). over.");

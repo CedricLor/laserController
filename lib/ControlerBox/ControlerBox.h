@@ -109,6 +109,4 @@ class ControlerBox
     void _deleteBox();
 };
 
-extern ControlerBox & thisBox;
-
 #endif

@@ -5,7 +5,6 @@
 */
 #include "Arduino.h"
 #include <painlessMesh.h>
-#include <mySpiffs.h>
 #include <bar.h>
 
 #ifndef sequence_h

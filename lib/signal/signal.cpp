@@ -10,7 +10,7 @@
 signal::signal():
   ctlBxColl{},
   stepColl{},
-  bxStateColl{}
+  bxStateColl{ctlBxColl.controllerBoxesArray.at(0)}
 {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
 }
@@ -24,7 +24,7 @@ void signal::startup() {
    *  TODO for next implementation: 
    *  - define a isIr bool in global;
    *  - define a isLaser bool in global;
-   *  - if isIr and isLaser, block thisBox -> setPir for 60 seconds at startup */
+   *  - if isIr and isLaser, block this box -> setPir for 60 seconds at startup */
 }
 
 
@@ -40,7 +40,7 @@ void signal::startup() {
 void signal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
-   *  on thisBox boxState, add it to the Scheduler and restart it. */
+   *  on this box's boxState, add it to the Scheduler and restart it. */
   tSetBoxState.setInterval(0);
   tSetBoxState.setIterations(1);
   tSetBoxState.setCallback([&](){_tcbSetBoxStateFromWeb();});
@@ -63,9 +63,9 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
   // Serial.println("signal::checkImpactOfChangeInActiveStateOfOtherBox(): starting");
 
   /** Set the Task that will check whether this change shall have an impact
-   *  on thisBox boxState, add it to the Scheduler and restart it testing
+   *  on this box's boxState, add it to the Scheduler and restart it testing
    *  whether the callback _tcbIfMeshTriggered has been set and that 
-   *  the ControlerBox is not thisBox (thisBox does not read its own mesh high
+   *  the ControlerBox is not this box (this box does not read its own mesh high
    *  signals; it sends mesh high signals). */
   tSetBoxState.setInterval(0);
   tSetBoxState.setIterations(1);
@@ -84,7 +84,7 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
  *  - the pirController, upon IR high. */
 const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex) {
   /** Set the Task that will check whether this change shall have an impact
-   *  on thisBox boxState, add it to the Scheduler and restart it. 
+   *  on this box's boxState, add it to the Scheduler and restart it. 
    *  
    *  TODO: for the moment, restricted to my own IR signal; 
    *        in the future, add an i16onMasterIRTrigger property to boxState
@@ -128,10 +128,10 @@ void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
 /** signal::_testIfMeshisHigh: tests, in the following order, whether:
  *  1. the caller is among the monitored masters;
  *  2. the masterBox new active state corresponds to one of the states
- *     monitored by thisBox in its currentState;
- *  3. if the masterBox new active state has been set more recently than the currentState of thisBox.*/
+ *     monitored by this box in its currentState;
+ *  3. if the masterBox new active state has been set more recently than the currentState of this box.*/
 bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
-  // is calling box being monitored by thisBox in its current state?
+  // is calling box being monitored by this box in its current state?
   if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState)) ) {
     return false;
   }
@@ -165,7 +165,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
 
 
 /** signal::_testIfIRisHigh() tests, in the following order, whether:
- *  1. the calling box is thisBox;
+ *  1. the calling box is this box;
  *  2. the signal is more recent than the last registered box state time stamp;
  * 
  * No longer testing:
@@ -174,7 +174,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *  
  *  TODO in future implementation:
  *  1. activate 3 and 4 re. _testIfIRHighIsAmongMasters;
- *     timestamp of thisBox's current state. */
+ *     timestamp of this box's current state. */
 bool signal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
   return _testIfIRisHighIsMine(_callingBox);
   // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState);
