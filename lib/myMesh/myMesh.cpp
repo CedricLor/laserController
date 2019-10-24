@@ -475,7 +475,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
     _nodeMap.emplace(_newNode, 2); // new node
   }
 
-  // 4. Delete the boxes marked as 0 from the cntrllerBoxesCollection.controllerBoxesArray
+  // 4. Delete the boxes marked as 0 from the controller boxes' array
   _deleteBoxesFromCBArray(_nodeMap);
 
   Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): over. Time: " + String(millis()));
@@ -490,18 +490,18 @@ void myMesh::_deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap) {
 }
 
 uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
-  // 1. check if the box is listed in my cntrllerBoxesCollection.controllerBoxesArray
-  uint16_t _ui16droppedIndex = cntrllerBoxesCollection.findIndexByNodeId(nodeId);
+  // 1. check if the box is listed in the controller boxes' array
+  uint16_t _ui16droppedIndex = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(nodeId);
 
   // 2. if the box index is different than 254, it exists
   if (_ui16droppedIndex == 254) {
     if (globalBaseVariables.MY_DEEP_DG_MESH) 
-      Serial.println(F("myMesh::_deleteBoxFromCBArray(): ending (box not found in cntrllerBoxesCollection.controllerBoxesArray)."));
+      Serial.println(F("myMesh::_deleteBoxFromCBArray(): ending (box not found in the controller boxes' array)."));
     return 0;
   }
 
-  // 3. delete the box from cntrllerBoxesCollection.controllerBoxesArray
-  cntrllerBoxesCollection.deleteBoxByBoxIndex(_ui16droppedIndex);
+  // 3. delete the box from the controller boxes' array
+  thisControllerBox.thisSignalHandler.ctlBxColl.deleteBoxByBoxIndex(_ui16droppedIndex);
 
   return _ui16droppedIndex;
 }
