@@ -22,7 +22,7 @@ void myMeshStarter::myMeshSetup() {
   _initAndConfigureMesh();
 
   // Serial.println("myMesh::meshSetup(): About to call updateThisBoxProperties:");
-  thisBox.updateThisBoxProperties();
+  thisControllerBox.thisSignalHandler.ctlBxColl.thisBox.updateThisBoxProperties();
 
   _setupMdns();
 }
