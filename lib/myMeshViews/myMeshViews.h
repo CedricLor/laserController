@@ -13,6 +13,7 @@ constexpr short    MESH_REQUEST_CAPACITY               = 20;
 
 class myMeshViews
 {
+  friend class pirController;
   public:
     myMeshViews();
     // Views
