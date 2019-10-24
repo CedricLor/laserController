@@ -63,7 +63,7 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
     if (controllerBoxesArray.at(__ui16BoxIndex).nodeId == 0) {
       updateConnectedBoxCount(connectedBoxesCount + 1);
     }
-    controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
+    controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex, controllerBoxesArray.at(0));
   }
 
   /** In any case, return the index number to the caller. 

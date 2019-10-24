@@ -183,14 +183,14 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
 
 
 
-/**void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex)
+/**void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex, ControlerBox & __thisBox)
  * 
  *  Updater of the properties of the controller boxes in the mesh
  *  (including this one, at index 0 of the controller boxes array).
  *  
  *  Called from controllerBoxesCollection::_updateOrCreate() exclusively
 */
-void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
+void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex, ControlerBox & __thisBox) {
   const char * _subName = "ControlerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);
 
@@ -233,7 +233,7 @@ void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _
   }
 
   if (_obj["action"] == "usi" && _obj["key"] == "IR") {
-    thisBox.setBoxIRTimes(_obj["time"].as<uint32_t>());
+    __thisBox.setBoxIRTimes(_obj["time"].as<uint32_t>());
   }
 
   // Print out the updated properties
