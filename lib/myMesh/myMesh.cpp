@@ -381,13 +381,20 @@ void myMesh::_printNodeListAndTopology() {
 
 /** _tUpdateCDOnDroppedConnections 
  *
- *  When a connection is dropped, 
- * In case a connection dropped, we need to update the DB. This is easy for the dropper,
-  as its dropping out is signaled to the rest of the mesh.
-
-  However, the sub nodes which may be in the cntrllerBoxesCollection.controllerBoxesArray are not signaled as dropped.
-  Each remaining node should know how to delete the subs.
-  Upon such events, this Task does the job after 10 seconds.
+ *  When a connection is dropped, we need to update the controller boxes' array.
+ * 
+ * 
+ *  We know that the dropper has dropped. However, the subnodes are not immediatelly 
+ *  marked as also dropped, even though they will not be available until the mesh reforms.
+ * 
+ *  Such subnodes may be controller boxes marked in the controller boxes' array. If the master
+ *  of this box is such a subnode, this box may be waiting for ever a signal coming from 
+ *  such master.
+ * 
+ *  Upon a dropped connection, after a delay of 10 seconds, this Task will compare the 
+ *  new node list returned by painlessMesh with the _nodeMap of myMesh.
+ * 
+ *  It will then pass the _nodeMap to _deleteBoxesFromCBArray() to update the controller boxes' array.
 */
 Task myMesh::tUpdateCBArrayOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCBOnChangedConnections, NULL, false, &_oetcbUpdateCBOnChangedConnections, &_odtcbUpdateCBOnChangedConnections);
 
