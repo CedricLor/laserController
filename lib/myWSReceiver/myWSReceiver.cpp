@@ -280,17 +280,17 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
   if (__joBoxesStatesInDOM.size() == 0) {
     if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): no boxRow in the DOM \n");
-      Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object cntrllerBoxesCollection.connectedBoxesCount =  %i.\n", cntrllerBoxesCollection.connectedBoxesCount);
+      Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
     }
     // there are no boxRows in the DOM
-    if (cntrllerBoxesCollection.connectedBoxesCount == 1) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1) {
       // there are no boxes connected to the mesh (and no boxes in the DOM), just return
       if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending action type \"handshake\", because there are no boxRow in DOM nor connectedBoxes.\n");
       }
       return;
     }
-    else // re. if (cntrllerBoxesCollection.connectedBoxesCount == 1)
+    else // re. if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1)
     // there are boxes connected to the mesh (and no boxes in the DOM), look for the missing boxes
     {
       if (globalBaseVariables.MY_DG_WS) {
@@ -309,10 +309,10 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
   // there are boxRows in DOM
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in the DOM \n");
-    Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object cntrllerBoxesCollection.connectedBoxesCount =  %i.\n", cntrllerBoxesCollection.connectedBoxesCount);
+    Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
   }
   {
-    if (cntrllerBoxesCollection.connectedBoxesCount == 1) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1) {
       // there are no connected boxes (and boxes in the DOM):
       if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in DOM but no connectedBoxes.\n");
@@ -332,7 +332,7 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
     }
     else // re. if (ControlerBox::connectedBoxesCount == 1)
     // there are boxes connected to the mesh (and boxes in the DOM):
-    // -> check consistency between the DOM and cntrllerBoxesCollection.controllerBoxesArray
+    // -> check consistency between the DOM and thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray
     {
       if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in DOM and connectedBoxes.\n");
@@ -354,7 +354,7 @@ void myWSReceiver::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_ob
 void myWSReceiver::_checkConsistancyDOMDB(JsonObject& _joBoxState) {
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object _joBoxState.size: %i. There are currently boxRow(s) in the DOM.\n", _joBoxState.size());
-    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): JSON Object cntrllerBoxesCollection.connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", cntrllerBoxesCollection.connectedBoxesCount);
+    Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i. There are currently boxes connected to the mesh.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
     Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): about to iterate over the boxRows, looking for the existing boxRow and boxState in DOM\n");
   }
 
@@ -363,7 +363,7 @@ void myWSReceiver::_checkConsistancyDOMDB(JsonObject& _joBoxState) {
 
     if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): new iteration.\n");
-      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): about to use the key of the current pair of the JSON object to check whether the ControlerBox corresponding to the boxRow in the DOM really exists in cntrllerBoxesCollection.controllerBoxesArray.\n");
+      Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): about to use the key of the current pair of the JSON object to check whether the ControlerBox corresponding to the boxRow in the DOM really exists in thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.\n");
       Serial.printf("myWSReceiver::_checkConsistancyDOMDB(): testing p.key().c_str(): %s\n", _p.key().c_str());
     }
 
@@ -394,22 +394,22 @@ void myWSReceiver::_lookForDisconnectedBoxes(JsonPair& _p) {
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
 
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): using this value to select a ControlerBox in cntrllerBoxesCollection.controllerBoxesArray\n");
-    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).nodeId == 0 is %s\n", 
-      ((cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).nodeId == 0) ? "true" : "false")
+    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): using this value to select a ControlerBox in thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray\n");
+    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId == 0 is %s\n", 
+      ((thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId == 0) ? "true" : "false")
     );
   }
 
   // check if it still is connected; if not, request an update of the DOM
-  if (cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).nodeId == 0) {
+  if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId == 0) {
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).nodeId);
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): about to turn cntrllerBoxesCollection.controllerBoxesArray.at(%i).boxDeletionHasBeenSignaled to false.\n", _iBoxIndex);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): about to turn thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i).boxDeletionHasBeenSignaled to false.\n", _iBoxIndex);
     }
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-    cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).boxDeletionHasBeenSignaled = false;
+    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).boxDeletionHasBeenSignaled = false;
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): cntrllerBoxesCollection.controllerBoxesArray.at(%i).boxDeletionHasBeenSignaled turned to %i.\n", _iBoxIndex, cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).boxDeletionHasBeenSignaled);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i).boxDeletionHasBeenSignaled turned to %i.\n", _iBoxIndex, thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).boxDeletionHasBeenSignaled);
       Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): this shall be caught by the task _tSendWSDataIfChangeBoxState at next pass.\n");
     }
   } // if
@@ -424,17 +424,17 @@ void myWSReceiver::_checkBoxStateConsistancy(JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState == %i\n", cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState);
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState == %i\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState);
     Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): (int)(_p.value().as<char*>()) = %i\n.", (int)(_p.value().as<char*>()));
-    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): comparison between the two: %i\n.", (cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState == (int)(_p.value().as<char*>())));
+    Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): comparison between the two: %i\n.", (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState == (int)(_p.value().as<char*>())));
   }
   // check if it has the correct boxState; if not, ask for an update
-  if (cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState != (int)(_p.value().as<char*>())) {
+  if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState != (int)(_p.value().as<char*>())) {
     if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): the state of the ControlerBox corresponding to the current boxRow is different than its boxState in the DOM. Update it in the DOM.\n");}
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-    cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled = false;
+    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled = false;
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled = %i.\n", cntrllerBoxesCollection.controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled);
+      Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled = %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled);
       Serial.printf("myWSReceiver::_checkBoxStateConsistancy(): this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n");
     }
   } // end if
@@ -446,7 +446,7 @@ void myWSReceiver::_checkBoxStateConsistancy(JsonPair& _p) {
 
 void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("myWSReceiver::_lookForDOMMissingRows(): about to iterate over cntrllerBoxesCollection.controllerBoxesArray to look if any is missing from the JSON object containing the boxRows from the DOM.\n");
+    Serial.printf("myWSReceiver::_lookForDOMMissingRows(): about to iterate over thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray to look if any is missing from the JSON object containing the boxRows from the DOM.\n");
   }
 
   // iterate over all the potentially existing laser boxes (note that it starts at 1)
@@ -454,14 +454,14 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
     char _c[3];  // declare an array of char of 3 characters ("   ")
     itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
     const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
-    if ((cntrllerBoxesCollection.controllerBoxesArray.at(_i).nodeId != 0) && _keyInJson == nullptr) {
-      // if the cntrllerBoxesCollection.controllerBoxesArray.at(_i) has a nodeID and the corresponding _joBoxState[_c] is a nullprt
+    if ((thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).nodeId != 0) && _keyInJson == nullptr) {
+      // if the thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i) has a nodeID and the corresponding _joBoxState[_c] is a nullprt
       // there is a missing box in the DOM
-      if (globalBaseVariables.MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): cntrllerBoxesCollection.controllerBoxesArray.at(%i) is missing box in the DOM. Add it.\n", _i);}
+      if (globalBaseVariables.MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i) is missing box in the DOM. Add it.\n", _i);}
       // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-      cntrllerBoxesCollection.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): cntrllerBoxesCollection.controllerBoxesArray.at(%i).isNewBoxHasBeenSignaled = %i\n", _i, cntrllerBoxesCollection.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled);
+        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i).isNewBoxHasBeenSignaled = %i\n", _i, thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled);
         Serial.printf("myWSReceiver::_lookForDOMMissingRows(): this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n");
       }
     } // if
