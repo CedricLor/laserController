@@ -49,7 +49,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
     *   */
   _myWSSender.prepareWSData(3, nullptr); // 3 for message sent in case of change in station IP
 
-  thisBox.updateThisBoxProperties();
+  cntrllerBoxesCollection.controllerBoxesArray.at(0).updateThisBoxProperties();
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
 }
 
@@ -224,12 +224,12 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
     if (globalBaseVariables.isRoot) {
-      __rootIFSettings["roNNa"] = thisBox.ui16NodeName;
+      __rootIFSettings["roNNa"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui16NodeName;
     } else {
       uint16_t _bxIndex           = cntrllerBoxesCollection.findIndexByNodeId(globalBaseVariables.ui32RootNodeId);
       __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : cntrllerBoxesCollection.controllerBoxesArray.at(_bxIndex).ui16NodeName );
     }
-    __rootIFSettings["IFNNA"]   = thisBox.ui16NodeName;
+    __rootIFSettings["IFNNA"]   = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
     JsonObject __softAPSettings = __newObj.createNestedObject("softAP");
