@@ -12,7 +12,6 @@
 
 namespace laserInterface {
 
-  extern beat activeBeat;
   extern sequences globalSequences;
 
   void init(controllerBoxesCollection * __cntrllerBoxesCollection);
@@ -91,10 +90,10 @@ namespace laserInterface {
     void send();
   }
 
-  namespace beatNS {
-    void init();
-    void sendCurrent(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
-  }
+  // namespace beatNS {
+  //   void init();
+  //   void sendCurrent(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
+  // }
 
   namespace sequenceNS {
     // sequence stack

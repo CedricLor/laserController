@@ -9,11 +9,9 @@
 using namespace laserInterface;
 
 
-beat laserInterface::activeBeat;
 sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
-  beatNS::init();
 
   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
 }
@@ -45,22 +43,6 @@ void laserInterface::boxStateNS::initComm() {
 void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) {
     // myMeshViews _myMeshViews(cntrllerBoxesCollection);
     // _myMeshViews.statusMsg();
-}
-
-
-
-
-
-/*******************/
-// beat stack
-/*******************/
-void laserInterface::beatNS::init() {
-    activeBeat = beat(2, 1, beatNS::sendCurrent);
-}
-
-
-void laserInterface::beatNS::sendCurrent(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat) {
-    // Do something smart
 }
 
 
@@ -165,10 +147,10 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
     globalSequences._bars.nextBar = __target_bar;
   }
 
-  activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  beat _beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
 
   // 3. play it
-  globalSequences._bars.playBar(activeBeat);
+  globalSequences._bars.playBar(_beat);
 }
 
 
@@ -216,8 +198,8 @@ void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint
   noteNS::lockStack();
   // 2. set the laserNote and play it
   laserNotes _laserNotes;
-  activeBeat = beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
-  _laserNotes.playNote(laserNote(__ui16_target_laser_tone, __ui16_target_note), activeBeat);
+  beat _beat(__ui16_base_note_for_beat, __ui16_base_beat_in_bpm);
+  _laserNotes.playNote(laserNote(__ui16_target_laser_tone, __ui16_target_note), _beat);
 }
 
 

@@ -18,7 +18,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <myMesh.h>
 #include <myMeshStarter.h>
 #include <myWebServerBase.h>
-// #include <test.h>
+#include <test.h>
 
 
 
