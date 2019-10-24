@@ -34,7 +34,6 @@ class myMeshViews
     // Helpers
     void _addIps(JsonObject& _obj);
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);
-    JsonObject _createJsonobject();
 };
 
 #endif
