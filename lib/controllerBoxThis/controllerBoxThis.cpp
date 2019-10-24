@@ -8,7 +8,7 @@
 #include "controllerBoxThis.h"
 
 controllerBoxThis::controllerBoxThis():
-  globBaseVars(),
+  globBaseVars(globalBaseVariables),
   thisSignalHandler(),
   thisCtrlerBox(thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0)),
   thisMeshViews(myMeshViews(thisSignalHandler.ctlBxColl)),

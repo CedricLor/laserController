@@ -19,7 +19,7 @@ class controllerBoxThis
     controllerBoxThis();
 
     /** members */
-    globalBasementVars          globBaseVars;
+    globalBasementVars &        globBaseVars;
     signal                      thisSignalHandler;
     ControlerBox &              thisCtrlerBox;
     myMeshViews                 thisMeshViews;
