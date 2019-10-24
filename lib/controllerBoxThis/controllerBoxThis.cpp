@@ -39,12 +39,12 @@ void controllerBoxThis::updateThisBoxProperties() {
 
 
 void controllerBoxThis::addLaserTasks() {
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences.tPreloadNextSequence);
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences._bars.tPreloadNextBar);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences.tPreloadNextSequence);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.tPreloadNextBar);
 
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences.tPlaySequence);
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences._bars.tPlayBar);
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences._bars.getNotes().tPlayNote);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences.tPlaySequence);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.tPlayBar);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.getNotes().tPlayNote);
 }
 
 

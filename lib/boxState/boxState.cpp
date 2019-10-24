@@ -183,9 +183,9 @@ step & step::operator=(step&& __step) {
   return *this;
 }
 
-/** step::applyStep(): applies the values of this step to the relevant boxState */
-void step::applyStep() {
-  Serial.println("step::applyStep(). starting");
+/** step::_applyStep(): applies the values of this step to the relevant boxState */
+void step::_applyStep() {
+  Serial.println("step::_applyStep(). starting");
   bxStateColl.boxStatesArray.at(_i16stepBoxStateNb) = {
     _i16StateDuration,
     _ui16AssociatedSequence,
@@ -195,7 +195,7 @@ void step::applyStep() {
     _ui16monitoredMasterBoxesNodeNames,
     _i16monitoredMasterStates
   };
-  Serial.println("step::applyStep(). ending");
+  Serial.println("step::_applyStep(). ending");
 }
 
 
@@ -705,7 +705,7 @@ void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
   // Serial.println("void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode(). starting.");
   if (stepColl.i16maxStepIndexNb > -1) {
     /** 1. configure the params of the pending boxState. */
-    stepColl.nextStep.applyStep();
+    stepColl.nextStep._applyStep();
     if ((stepColl.ui16stepCounter < stepColl.i16maxStepIndexNb)) {
       /** 2. increment the step counter. */
       stepColl.ui16stepCounter = stepColl.ui16stepCounter + 1;

@@ -30,9 +30,9 @@ class step
     step(step&& __step);
     step & operator=(step&& __step);
 
-    void applyStep();
 
   private:
+    void _applyStep();
     // boxState criteria (variables) setter
     int16_t _i16stepBoxStateNb;
     int16_t _i16StateDuration;

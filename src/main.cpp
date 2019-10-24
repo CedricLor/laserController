@@ -26,7 +26,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 controllerBoxThis                                       thisControllerBox;
-boxStateCollection        &   bxStateColl             = thisControllerBox.thisSignalHandler.bxStateColl;
+boxStateCollection        &   bxStateColl             = thisControllerBox.thisSignalHandler.thisBxStateColl;
 stepCollection            &   stepColl                = thisControllerBox.thisSignalHandler.stepColl;
 
 
@@ -96,7 +96,7 @@ void setup() {
     globalBaseVariables.scheduler.addTask(thisControllerBox.tSetPirTimeStampAndBrdcstMsg);
     globalBaseVariables.scheduler.addTask(thisControllerBox.tPirSpeedBumper);
     globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.stepColl.tPreloadNextStep);
-    globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.bxStateColl.tPlayBoxState);
+    globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.thisBxStateColl.tPlayBoxState);
 
     thisControllerBox.addLaserTasks();
     // _test.beforeSequenceStacks();

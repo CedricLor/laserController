@@ -10,7 +10,7 @@
 signal::signal():
   ctlBxColl{},
   stepColl{},
-  bxStateColl{ctlBxColl.controllerBoxesArray.at(0)}
+  thisBxStateColl{ctlBxColl.controllerBoxesArray.at(0)}
 {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
 }
@@ -19,7 +19,7 @@ signal::signal():
 
 
 void signal::startup() {
-  bxStateColl._setBoxTargetState(2); 
+  thisBxStateColl._setBoxTargetState(2); 
   /** 2 for pir Startup; at startUp, put the box in pirStartup state 
    *  TODO for next implementation: 
    *  - define a isIr bool in global;
@@ -51,7 +51,7 @@ void signal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb
 /** signal::_tcbSetBoxStateFromWeb() set the target boxState from
  *  a changeBox request. */
 void signal::_tcbSetBoxStateFromWeb() {
-  bxStateColl._setBoxTargetState(i16boxStateRequestedFromWeb);
+  thisBxStateColl._setBoxTargetState(i16boxStateRequestedFromWeb);
 }
 
 
@@ -111,14 +111,14 @@ const bool signal::checkImpactOfThisBoxsIRHigh() {
 
 /***/
 void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
-  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
+  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
     return;
   }
   // 2. if so, check whether mesh has been triggered and act
   if (_testIfMeshisHigh(_currentBoxState, _callingBox)) {
-    bxStateColl._setBoxTargetState(_currentBoxState.i16onMeshTrigger);
+    thisBxStateColl._setBoxTargetState(_currentBoxState.i16onMeshTrigger);
   }
 }
 
@@ -150,14 +150,14 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  *  1. add an i16onMasterIRTrigger property to boxState to handle the masterBox(es) IR signals; */
 void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
-  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
+  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
   // 1. check whether the current boxState is IR sensitive
   if (_currentBoxState.i16onIRTrigger == -1) {
     return;
   }
   // 2. if so, check whether IR has been triggered
   if (_testIfIRisHigh(_callingBox, _currentBoxState)) {
-    bxStateColl._setBoxTargetState(_currentBoxState.i16onIRTrigger);
+    thisBxStateColl._setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
 }
 
