@@ -17,14 +17,6 @@ class controllerBoxThis
   public:
     /** default empty constructor */
     controllerBoxThis();
-    /** copy constructor */
-    controllerBoxThis(const controllerBoxThis & __controllerBoxThis);
-    /** assignement operator */
-    controllerBoxThis& operator=(const controllerBoxThis & __controllerBoxThis);
-    /** move constructor */
-    controllerBoxThis(controllerBoxThis&& __controllerBoxThis);
-    /** move assignement operator */
-    controllerBoxThis & operator=(controllerBoxThis&& __controllerBoxThis);
 
     /** members */
     globalBasementVars          globBaseVars;
