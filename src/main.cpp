@@ -27,7 +27,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 controllerBoxThis                                       thisControllerBox;
 controllerBoxesCollection &   cntrllerBoxesCollection = thisControllerBox.thisSignalHandler.ctlBxColl;
-ControlerBox              &   thisBox                 = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0);
+ControlerBox              &   thisBox                 = thisControllerBox.thisCtrlerBox;
 boxStateCollection        &   bxStateColl             = thisControllerBox.thisSignalHandler.bxStateColl;
 stepCollection            &   stepColl                = thisControllerBox.thisSignalHandler.stepColl;
 
@@ -73,8 +73,8 @@ void setup() {
     globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
 
-  thisBox.ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
-  thisBox.sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
+  thisControllerBox.thisCtrlerBox.ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
+  thisControllerBox.thisCtrlerBox.sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
 
   myMesh::start();
 
@@ -85,7 +85,7 @@ void setup() {
   }
   mySpiffs __mySpiffs;
   __mySpiffs.listDir("/", 0);
-  __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisBox.ui16NodeName);
+  __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisControllerBox.thisCtrlerBox.ui16NodeName);
   Serial.println("\n");
 
   if (globalBaseVariables.isInterface) {
