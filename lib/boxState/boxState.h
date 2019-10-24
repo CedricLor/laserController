@@ -76,7 +76,7 @@ class boxState
     /** constructors*/
     /** default constructor: used to define the boxStates array */
     boxState();
-    /** "little constructor": used to initialize the default boxStates */
+    /** "little constructor": used to initialize the hard coded boxStates */
     boxState(const int16_t _i16Duration, 
       const uint16_t _ui16AssociatedSequence, 
       const int16_t _i16onIRTrigger, 
