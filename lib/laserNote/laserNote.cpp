@@ -315,7 +315,7 @@ void laserNotes::_disableAndResetTPlayNote() {
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/** const laserNote &laserNotes::getCurrentNote() const: public static getter method
+/** const laserNote &laserNotes::getCurrentNote() const: public getter method
  *  
  *  returns a reference to the laserNote instance that is currently active. */
 const laserNote &laserNotes::getCurrentNote() const {

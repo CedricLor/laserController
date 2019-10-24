@@ -37,8 +37,6 @@ class beat
     /** move assignement operator */
     beat & operator=(beat&& __beat);
 
-    /** objects array initializer */
-    // static void initBeats(); /** initializer of the array of beats */
     /** sender to mesh */
     void (*sendCurrentBeat)(const uint16_t __ui16_base_beat_in_bpm, const uint16_t __ui16_base_note_for_beat);
 
@@ -48,9 +46,6 @@ class beat
     uint16_t const ui16GetBaseNoteDurationInMs() const;
 
   private:
-
-    /** static properties */
-    // static std::array<beat, 7> _beats;
 
     /** private instance properties */
     uint16_t _ui16BaseBeatInBpm; // basic time unit for the one signle base laserNote (_ui16BaseNoteForBeat)
