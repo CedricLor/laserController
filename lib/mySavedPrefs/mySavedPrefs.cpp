@@ -539,13 +539,9 @@ void mySavedPrefs::_saveIsRoot() {
 */
 void mySavedPrefs::_saveBoxBehaviorPreferences() {
   // save value of globalBaseVariables.gi16BoxDefaultState
-  // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot (this is saving the value straight from thisBox)
   _saveI16TypePrefs("sBoxDefSta", "gi16BoxDefaultState", globalBaseVariables.gi16BoxDefaultState);
 
   // save value of globalBaseVariables.gui8DefaultMasterNodeName
-  // Note to use Prefs without reboot (would be updated without reboot):
-  // -> no reboot (this is saving the value straight from thisBox)
   _saveUCharTypePrefs("bMasterNName", "gui8DefaultMasterNodeName", globalBaseVariables.gui8DefaultMasterNodeName);
 }
 
