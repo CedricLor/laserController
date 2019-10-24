@@ -119,10 +119,15 @@ uint16_t ControlerBox::getMasterBoxNameForWeb() {
 
 
 
-
-// Setter for the activeState and associated variables
-// Called only from this class (for the other boxes) and by
-// boxState (when an effective update has been made).
+/** const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
+ *  
+ *  Setter for the activeState and associated variables.
+ * 
+ *  Called from:
+ *  - boxStateCollection::_restartTaskPlayBoxState(): for this box, when this box's boxState has changed;
+ *  - ControlerBox::updateBoxProperties(): for the other boxes, upon receiving a notification of a boxState
+ *    change from the mesh.
+*/
 const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("ControlerBox::setBoxActiveState(): starting");
 
@@ -132,7 +137,7 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
     boxActiveStateHasBeenSignaled = false;
     /** boxActiveStateHasBeenSignaled setters:
      *  - by default to true upon init (controlerBox constructor);
-     *  - to false here (when called from boxStateCollection::_restartPlayBoxState());
+     *  - to false here;
      *  - to false in myWSReceiver and to true in myWSSender, in the IF: to track change request
      *    coming from the web and whether the states of other boxes have been received;
      *  - to true in myMeshViews (for this box only, upon sending a statusMsg);
@@ -163,6 +168,7 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
 
 
 
+
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
 void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
@@ -178,7 +184,11 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 /** Setter for ui32lastRecPirHighTime
  * 
  *  Called from: 
- *  - this class, upon receiving an IR high message from the other boxes;
+ *  - this class (from the method updateBoxProperties), upon receiving 
+ *    an upstream information (limited for the moment to IR High)
+ *    message from the other boxes; updateBoxProperties is itself 
+ *    called by the _updateOrCreate() method in controllerBoxesCollection, which is 
+ *    itself called from the meshController
  *  - the pirController, upon IR high. */
 void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
