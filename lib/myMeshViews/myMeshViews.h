@@ -32,7 +32,6 @@ class myMeshViews
     void _IRHighMsg();
 
     // Helpers
-    void _addIps(JsonObject& _obj);
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);
 };
 

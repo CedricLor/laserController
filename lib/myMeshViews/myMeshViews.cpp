@@ -155,32 +155,16 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
 
   // adding my nodeName to the JSON to be sent to other boxes
   _joMsg["NNa"] = _ctlBxColl.controllerBoxesArray.at(0).ui16NodeName;
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
-  // }
 
   // JSON serialization
   int size_buff = 254;
   char output[size_buff];
 
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //   Serial.println("myMeshViews::_sendMsg(): about to serialize JSON object");
-  // }
   serializeJson(_joMsg, output, size_buff);
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //   Serial.println("myMeshViews::_sendMsg(): JSON object serialized");
-  // }
-
 
   // JSON conversion to String for painlessMesh
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //   Serial.println("myMeshViews::_sendMsg(): About to convert serialized object to String");
-  // }
   String str;
   str = output;
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //   Serial.println("myMeshViews::_sendMsg(): About to send message as String");
-  // }
 
   // diffusion
   if (destNodeId) {
