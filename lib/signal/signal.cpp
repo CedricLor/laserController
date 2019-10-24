@@ -165,8 +165,8 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
 
 
 /** signal::_testIfIRisHigh() tests, in the following order, whether:
- *  1. the caller is thisBox;
- *  2. thisBox IR sensor has received a new signal;
+ *  1. the calling box is thisBox;
+ *  2. the signal is more recent than the last registered box state time stamp;
  * 
  * No longer testing:
  *  3. the callingBox is a masterBox;
