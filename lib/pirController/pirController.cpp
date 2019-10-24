@@ -91,7 +91,7 @@ void pirController::check() {
  * */
 void pirController::_tcbSetPirTimeStampAndBrdcstMsg() {
   Serial.println("pirController::_tcbSetPirTimeStampAndBrdcstMsg(): ---------- PIR Mouvement Detected ----------");
-  thisBox.setBoxIRTimes(globalBaseVariables.laserControllerMesh.getNodeTime());
+  _signal.ctlBxColl.controllerBoxesArray.at(0).setBoxIRTimes(globalBaseVariables.laserControllerMesh.getNodeTime());
   _signal.checkImpactOfThisBoxsIRHigh();
   myMeshViews _myMeshViews;
   _myMeshViews._IRHighMsg();
