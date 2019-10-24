@@ -19,39 +19,35 @@ class signal
 
     void startup();
 
-    /** web signal */
+    /** USER MANUAL SIGNAL (from web) */
     int16_t i16boxStateRequestedFromWeb;
-
     /** void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb)
      * 
-     *  -> _tcbSetBoxStateFromWeb()*/
+     *  Sets Task tSetBoxState to use _tcbSetBoxStateFromWeb() as main callback*/
     void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
     
+    /** MESH SIGNAL (change of state of another box in the mesh) */
     const bool checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __ui16BoxIndex);
     /** const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
      * 
      *  -> _tcbIfMeshTriggered()
-     *  TODO: The same-name method in controlerBox needs to be kept but stripped of 
-     *  the part that calls the Task. */
-    const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
+     *  */
 
+    /** IR SIGNAL (from PIR Controller or upstream info (usi) from other boxes in the mesh) */
     const bool checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex);
     const bool checkImpactOfThisBoxsIRHigh();
-    /** void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime)
-     * 
-     *  -> _tcbIfIRTriggered()
-     *  TODO: Analyse whether the same-name method in controlerBox needs to be scrapped 
-     *  and replaced by this one. */
-    void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
 
-    /** boxState setter Task */
+    /** TASK tSetBoxState */
     Task tSetBoxState;
 
+    /** Members */
     controllerBoxesCollection     ctlBxColl;
     stepCollection                stepColl;
     boxStateCollection            bxStateColl;
 
   private:
+
+    /** The Brain: analyze signals and triggers reactions */
     void _tcbSetBoxStateFromWeb();
 
     void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
