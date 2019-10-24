@@ -451,8 +451,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
     _nsobj["lb"] = thisControllerBox.thisCtrlerBox.ui16NodeName - globalBaseVariables.gui16ControllerBoxPrefix;
   }
 
-  myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
-  __myMeshViews._changedBoxConfirmation(_nsobj);
+  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
   // send back the received JSON object with its amended "st" key
   // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");
   // _tChangeBoxSendConfirmationMsg.setInterval(0);
@@ -460,8 +459,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   // _tChangeBoxSendConfirmationMsg.setCallback(
   //   [&_obj]() {
   //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
-  //     myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
-  //     __myMeshViews._changedBoxConfirmation(_obj);
+  //     thisControllerBox.thisMeshViews._changedBoxConfirmation(_obj);
   //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
   //   }
   // );
