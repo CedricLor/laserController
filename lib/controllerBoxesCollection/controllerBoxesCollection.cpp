@@ -16,8 +16,7 @@
 controllerBoxesCollection::controllerBoxesCollection():
   connectedBoxesCount(1),
   previousConnectedBoxesCount(1),
-  controllerBoxesArray(),
-  thisBox(controllerBoxesArray[0])
+  controllerBoxesArray()
 { }
 
 

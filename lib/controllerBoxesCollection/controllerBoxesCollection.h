@@ -30,9 +30,6 @@ class controllerBoxesCollection
     // Boxes array
     std::array<ControlerBox, 10> controllerBoxesArray;
 
-    // this ControlerBox instance reference
-    ControlerBox & thisBox;
-
   private:
     uint16_t _updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj);
 
