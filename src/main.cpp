@@ -153,7 +153,6 @@ void serialInit() {
 void enableTasks() {
   if ( (globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false) ) {
     thisControllerBox.thisSignalHandler.startup();
-    // cntrllerBoxesCollection.signalHandlers.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
   }

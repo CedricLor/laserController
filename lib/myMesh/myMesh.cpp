@@ -379,9 +379,12 @@ void myMesh::_printNodeListAndTopology() {
 
 
 
-/* _tUpdateCDOnDroppedConnections
-  In case a connection dropped, we need to update the DB. This is easy for the dropper,
-  as it is signaled.
+/** _tUpdateCDOnDroppedConnections 
+ *
+ *  When a connection is dropped, 
+ * In case a connection dropped, we need to update the DB. This is easy for the dropper,
+  as its dropping out is signaled to the rest of the mesh.
+
   However, the sub nodes which may be in the cntrllerBoxesCollection.controllerBoxesArray are not signaled as dropped.
   Each remaining node should know how to delete the subs.
   Upon such events, this Task does the job after 10 seconds.
@@ -391,7 +394,9 @@ Task myMesh::tUpdateCBArrayOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCB
 
 bool myMesh::_oetcbUpdateCBOnChangedConnections() {
   // Disable the Task tSaveNodeMap (just in case)
-  if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_oetcbUpdateCBOnChangedConnections(): tSaveNodeMap disabled.\n");
+  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+    Serial.println("\nmyMesh::_oetcbUpdateCBOnChangedConnections(): tSaveNodeMap disabled.\n");
+  }
   tSaveNodeMap.disable();
   return true;
 }
@@ -399,89 +404,74 @@ bool myMesh::_oetcbUpdateCBOnChangedConnections() {
 
 void myMesh::_odtcbUpdateCBOnChangedConnections() {
   // Enable the Task tSaveNodeMap
-  if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_odtcbUpdateCBOnChangedConnections(): tSaveNodeMap restarted.\n");
+  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+    Serial.println("\nmyMesh::_odtcbUpdateCBOnChangedConnections(): tSaveNodeMap restarted.\n");
+  }
   tSaveNodeMap.restart();
 }
 
 
 void myMesh::_tcbUpdateCBOnChangedConnections() {
-  if (globalBaseVariables.MY_DG_MESH) Serial.println("\nmyMesh::_tcbUpdateCBOnChangedConnections(): starting. Time: " + String(millis()));
+  if (globalBaseVariables.MY_DG_MESH) {
+    Serial.println("\nmyMesh::_tcbUpdateCBOnChangedConnections(): starting. Time: " + String(millis()));
+  }
   // 1. Disable the Task tSaveNodeMap (just in case)
   tSaveNodeMap.disable();
 
-  // 2. Create a _newNodeList containing the new mesh layout
-  // std::list<uint32_t> _newNodeList = globalBaseVariables.laserControllerMesh.getNodeList();
-  // _newNodeList.remove(0);
-  // _newNodeList.sort();
-  // auto _newListNode = _newNodeList.begin();
-
-  // 3. Set all the values of the _nodeMap to 0
-  //    (box for deletion because no longer available).
-  // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Before iteration over the map. Time: " + String(millis()));
+  /** 2. Set all the values of the _nodeMap to 0.
+   * 
+   *     The _nodeMap is a map of all the nodes that connect to the mesh.
+   * 
+   *     Its keys are the node ids, and its values are 0, 1 or 2.
+   * 
+   *     0 means that a box is not available.
+   *     1 means that a box is available in the mesh.
+   *     2 means that the box was not previously available in the mesh and is new.
+   *   
+   *     When we mark a box at 0 here, it means, that "the box is
+   *     marked deletion because no longer available". 
+   * 
+   *     Here, we mark all the boxes that are listed in the _nodeMap as 
+   *     no longer available.
+   * 
+   *     In step 3, we are going to iterate through the nodeList provided by 
+   *     painlessmesh to identify which one of the formerly avaiable nodes are 
+   *     still avaiable.
+   * 
+   *     In step 4, we are going to pass the updated nodeMap and look in the controller
+   *     boxes' array which are the boxes that we should remove.
+   * */
   for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
     _node.second = 0;
   }
-  // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Before iteration over the map. Time: " + String(millis()));
 
-  // 3. Iterate through the _newNodeList containing the new mesh layout.
-  //    Look for each box in the _nodeMap. If any is found, 
-  //    set its value in the _nodeMap to 1 (box is still here).
-  //    The boxes which have not been set to 1 or 2 will remain 
-  //    marked as 0 -> for deletion.
+  /** 3. a. Iterate through the _newNodeList containing the new mesh layout.
+   *  
+   *     b. Look for each box in the _nodeMap.
+   * 
+   *     c. If any is found, set its value in the _nodeMap to 1 (box is still here).
+   *  
+   *     d. If any new box is found, emplace: set its key to the node id and 
+   *        its value to 2 (new box).
+   * 
+   *     The boxes which have not been set to 1 or 2 will remain 
+   *     marked as 0 => for deletion. 
+   * */
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Before iteration over the list. Time: " + String(millis()));
   for (uint32_t _newNode : globalBaseVariables.laserControllerMesh.getNodeList()) {
     if (_newNode == (uint32_t)0) continue;
     std::map<uint32_t, uint16_t>::iterator _nodeInMap = _nodeMap.find(_newNode);
     if (_nodeInMap != _nodeMap.end()) {
-      _nodeInMap->second = 1; // now existed and is still existing
+      _nodeInMap->second = 1; // node existed and is still existing
       continue;
     }
     _nodeMap.emplace(_newNode, 2); // new node
   }
-  // if (globalBaseVariables.MY_DEBUG) {
-  //   uint16_t _it = 0;
-  //   Serial.printf("\nmyMesh::_tcbUpdateCBOnChangedConnections(): Printing out the map:\n");
-  //   for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
-  //     Serial.printf("myMesh::_tcbUpdateCBOnChangedConnections(): node [%u]: %u\n", _it, _node.first);
-  //     _it++;
-  //   }
-  //   Serial.printf("myMesh::_tcbUpdateCBOnChangedConnections(): ---\n\n");
-  // }
-  // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): After iteration over the list. Time: " + String(millis()));
 
   // 4. Delete the boxes marked as 0 from the cntrllerBoxesCollection.controllerBoxesArray
   _deleteBoxesFromCBArray(_nodeMap);
 
   Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): over. Time: " + String(millis()));
-
-  // This code was when iterating over the _savedNodeList
-  // and comparing it with the _newNodeList
-  // for (uint32_t n : _savedNodeList) {
-  //   if (*_newListNode == n) {
-  //     // the node is still here
-  //     _nodeMap.emplace(n, 1);
-  //     _newListNode = std::next(_newListNode);
-  //     _newNodeList.remove(*(std::prev(_newListNode)));
-  //     continue;
-  //   }
-  //   if (*_newListNode > n) {
-  //     // the node has been disconnected
-  //     _nodeMap.emplace(n, 0);
-  //     continue;
-  //   }
-  //   while (*_newListNode < n) {
-  //     // this is a new node
-  //     _nodeMap.emplace(*_newListNode, 2);
-  //     _newListNode = std::next(_newListNode);
-  //     _newNodeList.remove(*(std::prev(_newListNode)));
-  //   }
-  // }
-
-  // if (_newNodeList.size() > 0) {
-  //   for (uint32_t _newNode : _newNodeList) {
-  //     _nodeMap.emplace(_newNode, 2);
-  //   }
-  // }
 }
 
 void myMesh::_deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap) {
@@ -522,14 +512,20 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
 Task myMesh::tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, NULL, false, NULL, NULL);
 
 void myMesh::_tcbSaveNodeMap() {
-  if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(tSaveNodeMap.getIterations()));
+  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+    Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(tSaveNodeMap.getIterations()));
+  }
   if (tUpdateCBArrayOnChangedConnections.isEnabled()) {
-    if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): tUpdateCBArrayOnChangedConnections is enabled. Passing this iteration.");
+    if (globalBaseVariables.MY_DEEP_DG_MESH) {
+      Serial.println("myMesh::_tcbSaveNodeMap(): tUpdateCBArrayOnChangedConnections is enabled. Passing this iteration.");
+    }
     tSaveNodeMap.setIterations(tSaveNodeMap.getIterations() + 1);
     return;
   }
   tSaveNodeMap.setInterval(20 * TASK_SECOND);
-  if (globalBaseVariables.MY_DG_MESH) Serial.println("myMesh::_tcbSaveNodeMap(): tUpdateCBArrayOnChangedConnections is not enabled. Updating mesh topo map.");
+  if (globalBaseVariables.MY_DG_MESH) {
+    Serial.println("myMesh::_tcbSaveNodeMap(): tUpdateCBArrayOnChangedConnections is not enabled. Updating mesh topo map.");
+  }
   _saveNodeMap();
 }
 
@@ -539,22 +535,10 @@ void myMesh::_saveNodeMap() {
   // Serial.println("myMesh::_saveNodeMap(): starting. Time: " + String(millis()));
   _nodeMap.clear();
   // Serial.println("myMesh::_saveNodeMap(): Before iteration. Time: " + String(millis()));
-  // for (uint32_t _savedNode : _savedNodeList) {
   for (uint32_t _nodeFromList : globalBaseVariables.laserControllerMesh.getNodeList()) {
     if (_nodeFromList == (uint32_t)0) continue;
     _nodeMap.emplace(_nodeFromList, 1);
   }
-
-  // if (globalBaseVariables.MY_DEBUG) {
-  //   uint16_t _it = 0;
-  //   Serial.printf("\nmyMesh::_saveNodeMap(): Printing out the map:\n");
-  //   for (std::pair<std::uint32_t, uint16_t> _node : _nodeMap) {
-  //     Serial.printf("myMesh::_saveNodeMap(): node [%u]: %u\n", _it, _node.first);
-  //     _it++;
-  //   }
-  //   Serial.printf("myMesh::_saveNodeMap(): ---\n\n");
-  // }
-  // Serial.println("myMesh::_saveNodeMap(): over. Time: " + String(millis()));
 }
 
 
