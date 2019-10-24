@@ -22,6 +22,7 @@ class controllerBoxThis
     globalBasementVars          globBaseVars;
     signal                      thisSignalHandler;
     ControlerBox &              thisCtrlerBox;
+    myMeshViews                 thisMeshViews;
     pirController               thisPirController;
 
     /** void updateThisBoxProperties()
