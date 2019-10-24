@@ -975,9 +975,9 @@ void test::sequenceStack() {
   Serial.printf("%s _sequences.nextSequence.ui16GetBarCountInSequence() is [%u]\n", _methodName, 
     _sequences.nextSequence.ui16GetBarCountInSequence());
   Serial.printf("%s _sequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm shall be 0. Is [%u]\n", _methodName, 
-    _sequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm);
+    _sequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm());
   Serial.printf("%s _sequences.nextSequence.getAssociatedBeat().getBaseNoteForBeat shall be 0. Is [%u]\n", _methodName, 
-    _sequences.nextSequence.getAssociatedBeat().getBaseNoteForBeat);
+    _sequences.nextSequence.getAssociatedBeat().getBaseNoteForBeat());
   Serial.printf("%s _sequences.nextSequence.i16GetFirstBarIndexNumber() is [%i]\n", _methodName, 
     _sequences.nextSequence.i16GetFirstBarIndexNumber());
   Serial.printf("%s _sequences.nextSequence._i16barsArraySize is [%i]\n", _methodName, 

@@ -5,6 +5,7 @@
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
+#include <myMeshViews.h>
 
 #ifndef beat_h
 #define beat_h

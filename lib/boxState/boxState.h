@@ -11,7 +11,6 @@
 #include <painlessMesh.h>
 #include <mySpiffs.h>
 #include <sequence.h>
-#include <laserInterface.h>
 
 class step
 {
