@@ -40,9 +40,9 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   JsonObject _joMsg = _jDoc.to<JsonObject>();
 
   // load the JSON document with values
-  _joMsg["actSt"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).i16BoxActiveState;
-  _joMsg["actStStartT"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui32BoxActiveStateStartTime; // gets the recorded mesh time
-  _joMsg["boxDefstate"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).sBoxDefaultState;
+  _joMsg["actSt"] = _ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState;
+  _joMsg["actStStartT"] = _ctlBxColl.controllerBoxesArray.at(0).ui32BoxActiveStateStartTime; // gets the recorded mesh time
+  _joMsg["boxDefstate"] = _ctlBxColl.controllerBoxesArray.at(0).sBoxDefaultState;
   _joMsg["action"] = "s";
 
   // send to the sender
@@ -50,7 +50,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
-  cntrllerBoxesCollection.controllerBoxesArray.at(0).boxActiveStateHasBeenSignaled = true;
+  _ctlBxColl.controllerBoxesArray.at(0).boxActiveStateHasBeenSignaled = true;
 
   if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::statusMsg(): over.");
@@ -93,7 +93,7 @@ void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
     _sendMsg(_obj);
   } else {
     // get the destination nodeId
-    uint32_t _destNodeId = cntrllerBoxesCollection.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).nodeId;
+    uint32_t _destNodeId = _ctlBxColl.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).nodeId;
     _sendMsg(_obj, _destNodeId);
   }
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
@@ -137,7 +137,7 @@ void myMeshViews::_IRHighMsg() {
   // load the JSON document with values
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "IR";
-  _joMsg["time"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui32lastRecPirHighTime;
+  _joMsg["time"] = _ctlBxColl.controllerBoxesArray.at(0).ui32lastRecPirHighTime;
   _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
 
   // broadcast IR high message
@@ -153,15 +153,15 @@ void myMeshViews::_addIps(JsonObject& _joMsg) {
   // adding the APIP and the StationIP to the JSON to be sent to other boxes
   if (_joMsg.containsKey("APIP") && _joMsg.containsKey("StIP")) {
     for (short _i = 0; _i < 4; _i++) {
-      _joMsg["APIP"][_i] = cntrllerBoxesCollection.controllerBoxesArray.at(0).APIP[_i];
-      _joMsg["StIP"][_i] = cntrllerBoxesCollection.controllerBoxesArray.at(0).stationIP[_i];
+      _joMsg["APIP"][_i] = _ctlBxColl.controllerBoxesArray.at(0).APIP[_i];
+      _joMsg["StIP"][_i] = _ctlBxColl.controllerBoxesArray.at(0).stationIP[_i];
     }
   } else {
     JsonArray _APIP = _joMsg.createNestedArray("APIP");
     JsonArray _StIP = _joMsg.createNestedArray("StIP");
     for (short _i = 0; _i < 4; _i++) {
-      _APIP.add(cntrllerBoxesCollection.controllerBoxesArray.at(0).APIP[_i]);
-      _StIP.add(cntrllerBoxesCollection.controllerBoxesArray.at(0).stationIP[_i]);
+      _APIP.add(_ctlBxColl.controllerBoxesArray.at(0).APIP[_i]);
+      _StIP.add(_ctlBxColl.controllerBoxesArray.at(0).stationIP[_i]);
     }
   }
   // if (globalBaseVariables.MY_DG_MESH) {
@@ -177,11 +177,11 @@ void myMeshViews::_addIps(JsonObject& _joMsg) {
 void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::_sendMsg(): starting.");
-    // Serial.println("myMeshViews::_sendMsg(): about to allote cntrllerBoxesCollection.controllerBoxesArray.at(0).ui16NodeName to _joMsg[\"senderNodeName\"]");
+    // Serial.println("myMeshViews::_sendMsg(): about to allote _ctlBxColl.controllerBoxesArray.at(0).ui16NodeName to _joMsg[\"senderNodeName\"]");
   }
 
   // adding my nodeName to the JSON to be sent to other boxes
-  _joMsg["NNa"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui16NodeName;
+  _joMsg["NNa"] = _ctlBxColl.controllerBoxesArray.at(0).ui16NodeName;
   // if (globalBaseVariables.MY_DG_MESH) {
   //  Serial.println("myMeshViews::_sendMsg(): about to allocate APIP to _joMsg[\"senderAPIP\"]");
   // }

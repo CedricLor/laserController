@@ -460,7 +460,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
   // _tChangeBoxSendConfirmationMsg.setCallback(
   //   [&_obj]() {
   //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
-  //     myMeshViews __myMeshViews;
+  //     myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
   //     __myMeshViews._changedBoxConfirmation(_obj);
   //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
   //   }
