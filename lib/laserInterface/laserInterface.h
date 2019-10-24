@@ -14,7 +14,7 @@ namespace laserInterface {
 
   extern sequences globalSequences;
 
-  void init(controllerBoxesCollection * __cntrllerBoxesCollection);
+  // void init(controllerBoxesCollection * __cntrllerBoxesCollection);
 
   enum class _Mode : uint16_t { step_controlled, automatic, sequence_manual, bar_manual, note_manual };
 
@@ -64,13 +64,13 @@ namespace laserInterface {
     }
   }
 
-  namespace boxStateNS {
-    // boxStates stack
-    void initComm();
-    /** not being implemented for the moment; activeState set by direct call from meshController to ControlerBox */
-    // void setBoxState();
-    void sendCurrent(const int16_t _i16CurrentStateNbr);
-  }
+  // namespace boxStateNS {
+  //   // boxStates stack
+  //   void initComm();
+  //   /** not being implemented for the moment; activeState set by direct call from meshController to ControlerBox */
+  //   // void setBoxState();
+  //   void sendCurrent(const int16_t _i16CurrentStateNbr);
+  // }
 
   namespace monitoredMasterBoxes {
     // masterBoxes stack

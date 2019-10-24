@@ -11,10 +11,10 @@ using namespace laserInterface;
 
 sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
-void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
+// void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
 
-  globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
-}
+//   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
+// }
 
 
 
@@ -35,15 +35,15 @@ laserInterface::laserScheduler::laserScheduler(_Mode __mode)
 /*******************/
 // boxStates stack
 /*******************/
-void laserInterface::boxStateNS::initComm() {
-    // bxStateColl.sendCurrentBoxState = sendCurrent;
-}
+// void laserInterface::boxStateNS::initComm() {
+//     // bxStateColl.sendCurrentBoxState = sendCurrent;
+// }
 
 
-void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) {
-    // myMeshViews _myMeshViews(cntrllerBoxesCollection);
-    // _myMeshViews.statusMsg();
-}
+// void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) {
+//     // myMeshViews _myMeshViews(cntrllerBoxesCollection);
+//     // _myMeshViews.statusMsg();
+// }
 
 
 

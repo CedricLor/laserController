@@ -18,7 +18,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <myMesh.h>
 #include <myMeshStarter.h>
 #include <myWebServerBase.h>
-#include <test.h>
+// #include <test.h>
 
 
 
@@ -102,7 +102,6 @@ void setup() {
 
     thisControllerBox.addLaserTasks();
     // _test.beforeSequenceStacks();
-    laserInterface::init(&cntrllerBoxesCollection);
     // _test.sequenceStack();
   }
 
