@@ -555,10 +555,10 @@ boxStateCollection::boxStateCollection(
   /** sequence "twins" for 60 seconds, no interrupt from IR, interrupts from mesh */
   /** {Duration = 60 sec., AssocSeqce = 1 ("twins"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
-   *   onMeshTrigger = 12 (possible val: 0-2 12-13 with restrictions 
+   *   onMeshTrigger = 2 (possible val: 0-2 12-13 with restrictions)
    *   (restrictions --> no subsequent IR before expiration of 60 seconds startup delay)),
    *   onExpire = 3 (repeat)} */
-  boxStatesArray.at(2) = {60, 1, -1, 8, 3};
+  boxStatesArray.at(2) = {60, 1, -1, 2, 3};
 
 
   // ********* WAITING STATES (3 STATES + STATE 0) ****************************
