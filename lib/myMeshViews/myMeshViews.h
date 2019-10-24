@@ -14,16 +14,17 @@ constexpr short    MESH_REQUEST_CAPACITY               = 20;
 class myMeshViews
 {
   friend class pirController;
+  friend class myWSReceiver;
+  friend class myMeshController;
+  friend class myMesh;
+
   public:
-    myMeshViews();
+    myMeshViews(controllerBoxesCollection & __ctlBxColl);
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
   private:
-    friend class myWSReceiver;
-    friend class myMeshController;
-    friend class myMesh;
-    friend class pirController;
+    controllerBoxesCollection & _ctlBxColl;
 
     void _changedBoxConfirmation(JsonObject& obj);
     void _changeBoxRequest(JsonObject& _obj, bool _bBroadcast=false);

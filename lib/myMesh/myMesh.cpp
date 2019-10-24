@@ -129,7 +129,7 @@ void myMesh::_tcbSendStatusOnNewConnection() {
     return; 
     Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): I am alone. ending."));
   }
-  myMeshViews __myMeshViews;
+  myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
   __myMeshViews.statusMsg();
   Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): sent status message. ending."));
 }
@@ -160,7 +160,7 @@ void myMesh::_tcbSendNotifOnDroppedConnection(uint32_t nodeId) {
     if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): I am alone. ending."));
     return; 
   }
-  myMeshViews __myMeshViews;
+  myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
   __myMeshViews._droppedNodeNotif(_ui16droppedIndex);
   Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): sent message. ending."));
 };

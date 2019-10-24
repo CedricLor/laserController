@@ -451,7 +451,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
     _nsobj["lb"] = thisControllerBox.thisCtrlerBox.ui16NodeName - globalBaseVariables.gui16ControllerBoxPrefix;
   }
 
-  myMeshViews __myMeshViews;
+  myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
   __myMeshViews._changedBoxConfirmation(_nsobj);
   // send back the received JSON object with its amended "st" key
   // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");

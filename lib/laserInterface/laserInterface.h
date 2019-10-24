@@ -15,7 +15,9 @@ namespace laserInterface {
   extern beat activeBeat;
   extern sequences globalSequences;
 
-  void init();
+  controllerBoxesCollection * _cntrllerBoxesCollection;
+
+  void init(controllerBoxesCollection * __cntrllerBoxesCollection);
 
   enum class _Mode : uint16_t { step_controlled, automatic, sequence_manual, bar_manual, note_manual };
 

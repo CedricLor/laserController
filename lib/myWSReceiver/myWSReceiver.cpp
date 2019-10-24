@@ -207,7 +207,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
   _obj["st"] = 1; // add a "st" field, for "execution status" of the request. 1 is "forwarded to the box"; 2 is "executed"
 
   // instantiate a mesh view to send a message to the relevant box
-  myMeshViews __myMeshViews;
+  myMeshViews __myMeshViews(thisControllerBox.thisSignalHandler.ctlBxColl);
   __myMeshViews._changeBoxRequest(_obj, _bBroadcast);
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8

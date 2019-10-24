@@ -19,11 +19,11 @@
  * 3. passe this String to the sendBroadcast or sendSingle methods of painlessMesh.
  * painlessMesh takes care of the broadcast/sending.
  * */
-myMeshViews::myMeshViews()
+myMeshViews::myMeshViews(controllerBoxesCollection & __ctlBxColl):
+  _ctlBxColl(__ctlBxColl)
 {
-  cntrllerBoxesCollection.controllerBoxesArray.at(0).updateThisBoxProperties();
+  _ctlBxColl.controllerBoxesArray.at(0).updateThisBoxProperties();
 }
-
 
 
 

@@ -12,7 +12,9 @@ using namespace laserInterface;
 beat laserInterface::activeBeat;
 sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
-void laserInterface::init() {
+controllerBoxesCollection * _cntrllerBoxesCollection = nullptr;
+
+void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
   beatNS::init();
   globalBaseVariables.scheduler.addTask(globalSequences.tPreloadNextSequence);
   globalBaseVariables.scheduler.addTask(globalSequences._bars.tPreloadNextBar);
@@ -22,6 +24,8 @@ void laserInterface::init() {
   globalBaseVariables.scheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
 
   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
+
+  _cntrllerBoxesCollection = __cntrllerBoxesCollection;
 }
 
 
@@ -49,7 +53,7 @@ void laserInterface::boxStateNS::initComm() {
 
 
 void laserInterface::boxStateNS::sendCurrent(const int16_t _i16CurrentStateNbr) {
-    myMeshViews _myMeshViews;
+    myMeshViews _myMeshViews(*_cntrllerBoxesCollection);
     _myMeshViews.statusMsg();
 }
 
