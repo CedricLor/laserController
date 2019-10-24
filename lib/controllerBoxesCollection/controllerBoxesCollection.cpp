@@ -23,17 +23,19 @@ controllerBoxesCollection::controllerBoxesCollection():
 
 
 
-/** controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
+/** controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
  * 
- *  Upon receiving a statusMsg from another laser box, this static method will 
- *  try to find the corresponding box in controllerBoxesArray, using the 
- *  _ui32nodeId.
+ *  Upon receiving a statusMsg or an upstream information message from another controller box
+ *  (the calling box), this method will try to find, by node id, an entry corresponding to such
+ *  calling box in the controller boxes array.
  * 
- *  If it finds it, it will overwrite the data corresponding to this box 
- *  in the relevant entry of the CB array.
- *  Else, it will save such data in the next empty slot. */
-uint16_t controllerBoxesCollection::updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
-  Serial.printf("controllerBoxesCollection::updateOrCreate(): starting with _ui32nodeId = %u\n", _ui32nodeId);
+ *  If this method finds an entry with the calling boxe's node id in the controller boxes' array, 
+ *  it will overwrite the data in the corresponding entry of the controller boxes array, with the data
+ *  contained in the JsonObject.
+ * 
+ *  Otherwise, it will save such data in the controller boxes array in the first empty slot it finds. */
+uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
+  Serial.printf("controllerBoxesCollection::_updateOrCreate(): starting with _ui32nodeId = %u\n", _ui32nodeId);
   /** 1. look for the relevant box by nodeId.
    * 
    *  Why looking by NodeID rather than by NodeName?

@@ -69,7 +69,7 @@ class stepCollection
     void _parseJsonArray(const JsonObject& _joStep, const char * key, ARRAY & _array);
 };
 
-extern stepCollection stepColl;
+extern stepCollection & stepColl;
 
 class boxState
 {
@@ -155,6 +155,6 @@ class boxStateCollection
     unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
 };
 
-extern boxStateCollection bxStateColl;
+extern boxStateCollection & bxStateColl;
 
 #endif

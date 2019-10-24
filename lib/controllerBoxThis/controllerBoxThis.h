@@ -32,8 +32,18 @@ class controllerBoxThis
     ControlerBox &              thisCtrlerBox;
     pirController               thisPirController;
 
+    /** void updateThisBoxProperties()
+     * 
+     *  TODO: The same-name method in controlerBox needs to be scrapped 
+     *  and replaced by this one. */
+    void updateThisBoxProperties();
+
     /** Reboot Task */
     Task tReboot;
+
+    /** IR related Tasks */
+    Task tSetPirTimeStampAndBrdcstMsg;
+    Task tPirSpeedBumper;
 
   private:
     void _reboot();

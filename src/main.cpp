@@ -25,12 +25,12 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+controllerBoxThis                                       thisControllerBox;
+controllerBoxesCollection &   cntrllerBoxesCollection = thisControllerBox.thisSignalHandler.ctlBxColl;
+ControlerBox              &   thisBox                 = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0);
+boxStateCollection        &   bxStateColl             = thisControllerBox.thisSignalHandler.bxStateColl;
+stepCollection            &   stepColl                = thisControllerBox.thisSignalHandler.stepColl;
 
-controllerBoxesCollection     cntrllerBoxesCollection;
-ControlerBox &thisBox =       cntrllerBoxesCollection.controllerBoxesArray.at(0);
-signal                        _signal;
-boxStateCollection            bxStateColl;
-controllerBoxThis             thisControllerBox;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Prototypes //////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,12 +92,13 @@ void setup() {
     myWebServerBase _myWebServer;
   }
 
+  // conditional?
+  globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.tSetBoxState);
   if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
-    globalBaseVariables.scheduler.addTask(ControlerBox::tSetBoxState);
-    globalBaseVariables.scheduler.addTask(pirController::tSetPirTimeStampAndBrdcstMsg);
-    globalBaseVariables.scheduler.addTask(pirController::tSpeedBumper);
-    globalBaseVariables.scheduler.addTask(stepColl.tPreloadNextStep);
-    globalBaseVariables.scheduler.addTask(bxStateColl.tPlayBoxState);
+    globalBaseVariables.scheduler.addTask(thisControllerBox.tSetPirTimeStampAndBrdcstMsg);
+    globalBaseVariables.scheduler.addTask(thisControllerBox.tPirSpeedBumper);
+    globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.stepColl.tPreloadNextStep);
+    globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.bxStateColl.tPlayBoxState);
     // _test.beforeSequenceStacks();
     laserInterface::init();
     // _test.sequenceStack();
@@ -127,7 +128,7 @@ void loop() {
   globalBaseVariables.scheduler.execute();
   globalBaseVariables.laserControllerMesh.update();
   if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
-    myPirController.check();
+    thisControllerBox.thisPirController.check();
   }
 }
 
@@ -151,7 +152,7 @@ void serialInit() {
 
 void enableTasks() {
   if ( (globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false) ) {
-    _signal.startup();
+    thisControllerBox.thisSignalHandler.startup();
     // cntrllerBoxesCollection.signalHandlers.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();

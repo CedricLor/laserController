@@ -62,7 +62,8 @@ void myMeshController::_main()
    *  read and save the relevant information (on the other
    *  box) in thisBox CB array. */
   if (_nsobj["action"] == "s") {
-    cntrllerBoxesCollection.updateOrCreate(_ui32SenderNodeId, _nsobj);
+    const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
+    thisControllerBox.thisSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
     return;
   }
 
@@ -80,7 +81,8 @@ void myMeshController::_main()
    *  read and save the relevant information (on the other
    *  box) in thisBox CB array. */
   if (_nsobj["action"] == "usi") {
-    cntrllerBoxesCollection.updateOrCreate(_ui32SenderNodeId, _nsobj);
+    const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
+    thisControllerBox.thisSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
     return;
   }
 
@@ -319,8 +321,8 @@ void myMeshController::_updateMyValFromWeb() {
     Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%i]\n", (_nsobj["val"].as<int16_t>()));
   }
 
-  // update the i16boxStateRequestedFromWeb
-  ControlerBox::setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
+  // update variable i16boxStateRequestedFromWeb in the signal class
+  thisControllerBox.thisSignalHandler.setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
   /** not sending any confirmation, as boxState will send an automatic
    *  status message. */
 }

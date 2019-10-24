@@ -105,20 +105,6 @@ class ControlerBox
     void setBoxDefaultState(const short _sBoxDefaultState);
     void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
 
-
-
-    /** -------- Public Static Variables - Signal catchers -----------------
-     * */
-    static int16_t i16boxStateRequestedFromWeb;
-    static void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
-
-    // -------- Public Static Methods -----------------
-    // boxState Setters Tasks
-    static Task tSetBoxState;
-    static void (*_tcbIfMeshTriggered)(const ControlerBox & _callingBox);
-    static void (*_tcbIfIRTriggered)(const ControlerBox & _callingBox);
-    static void (*_tcbSetBoxStateFromWeb)();
-
   private:
     void _deleteBox();
 };

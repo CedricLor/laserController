@@ -7,7 +7,6 @@
 #include "pirController.h"
 
 
-const uint8_t INPUT_PIN = 12;               // choose the input pin (for PIR sensor) //
 // ESP32 Pin Layout
 // LEFT COLUMN
 //                    3,3 V           <-- not fit
@@ -51,72 +50,69 @@ const uint8_t INPUT_PIN = 12;               // choose the input pin (for PIR sen
 //                    GND;             <-- not fit
 // 
 
-pirController myPirController(INPUT_PIN);
-
-uint16_t pirController::_speedBumper = 0;
-
-pirController::pirController(const uint8_t INPUT_PIN):_inputPin(INPUT_PIN)
+pirController::pirController(signal & __signal, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, const uint8_t _INPUT_PIN):
+  _signal(__signal),
+  _inputPin(_INPUT_PIN),
+  _speedBumper(0),
+  _tSetPirTimeStampAndBrdcstMsg(__tSetPirTimeStampAndBrdcstMsg),
+  _tPirSpeedBumper(__tPirSpeedBumper)
 {
-  // Serial.print("SETUP: pirController::pirController(): starting\n");
-  init();
-  // Serial.printf("SETUP: pirController::pirController(): pin number %u set as INPUT pin\n", _inputPin);
+  pinMode(_inputPin, INPUT);                                // declare sensor as input
+  _tSetPirTimeStampAndBrdcstMsg.set(0, TASK_ONCE, [&](){_tcbSetPirTimeStampAndBrdcstMsg();}, [&](){return _oetcbSetPirTimeStampAndBrdcstMsg();}, NULL);
+  _tPirSpeedBumper.set(0, TASK_ONCE, NULL, NULL, NULL);
 }
 
 
 
-void pirController::init() {
-  pinMode(myPirController._inputPin, INPUT);                                // declare sensor as input
-}
 
+/** void pirController::check()
+ * 
+ *  called at each pass of the main loop, to check whether the IR has detected any move
+ * 
+ *  If so, restarts the Task _tSetPirTimeStampAndBrdcstMsg
+ * */
 void pirController::check() {
-  // ui16touchSensorValue = touchRead(T3);
-  // if (ui16touchSensorValue < 50) {
-  //   Serial.println( ui16touchSensorValue);
-  //   Serial.println("pirController::check()");
-  // }
-  // Serial.println("pirController::check(): starting");
   if (digitalRead(_inputPin)) {
     Serial.println("pirController::check(): digitalRead(_inputPin) is HIGH");
-    tSetPirTimeStampAndBrdcstMsg.enable();
+    _tSetPirTimeStampAndBrdcstMsg.restart();
   }
-  // Serial.println("pirController::check(): ending");
 }
 
 
 
 
-Task pirController::tSetPirTimeStampAndBrdcstMsg(
-  0, 
-  TASK_ONCE, 
-  /** main callback */
-  [](){
-    Serial.println("pirController::tSetPirTimeStampAndBrdcstMsg(): ---------- PIR Mouvement Detected ----------");
-    thisBox.setBoxIRTimes(globalBaseVariables.laserControllerMesh.getNodeTime());
-    myMeshViews _myMeshViews;
-    _myMeshViews._IRHighMsg();
-    }, 
-  /** scheduler */
-  NULL, 
-  /** enabled */
-  false, 
-  /** onEnable callback */
-  [](){
-    /** Test whether tSpeedBumper.isEnabled().
-     * 
-     *  If it is, return false and disable this Task.
-     *  If it is not, restart tSpeedBumper for 3 seconds and return true
-     *  to execute the main callback. */
+/** void pirController::_tcbSetPirTimeStampAndBrdcstMsg()
+ * 
+ *  main callback for Task tSetPirTimeStampAndBrdcstMsg
+ * 
+ *  Sets this boxes IR High time.
+ *  Starts the Task 
+ *  Broadcasts a message to the mesh with its IR High time.
+ * */
+void pirController::_tcbSetPirTimeStampAndBrdcstMsg() {
+  Serial.println("pirController::_tcbSetPirTimeStampAndBrdcstMsg(): ---------- PIR Mouvement Detected ----------");
+  thisBox.setBoxIRTimes(globalBaseVariables.laserControllerMesh.getNodeTime());
+  _signal.checkImpactOfThisBoxsIRHigh();
+  myMeshViews _myMeshViews;
+  _myMeshViews._IRHighMsg();
+}
+
+
+
+
+/** pirController::_oetcbSetPirTimeStampAndBrdcstMsg()
+ * 
+ *  onEnable callback for Task tSetPirTimeStampAndBrdcstMsg
+ * 
+ *  Test whether tSpeedBumper.isEnabled().
+ *  If it is, return false and disable this Task.
+ *  If it is not, restart tSpeedBumper for 3 seconds and return true
+ *  to execute the main callback. 
+ * */
+bool pirController::_oetcbSetPirTimeStampAndBrdcstMsg() {
     // Serial.printf("pirController::tSetPirTimeStampAndBrdcstMsg(): onEnable callback: is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
-    if (tSpeedBumper.isEnabled()) { return false; }
-    tSpeedBumper.restartDelayed(3000);
+    if (_tPirSpeedBumper.isEnabled()) { return false; }
+    _tPirSpeedBumper.restartDelayed(3000);
     // Serial.printf("pirController::tSetPirTimeStampAndBrdcstMsg(): onEnable callback: tSpeedBumper.isEnabled() was not enabled. now, is tSpeedBumper.isEnabled()? %i\n", tSpeedBumper.isEnabled());
     return true;
-  }, 
-  /** onDisable callback */
-  NULL
-);
-
-
-
-
-Task pirController::tSpeedBumper(0, TASK_ONCE, NULL, NULL, false, NULL, NULL);
+}

@@ -11,12 +11,12 @@
 
 class controllerBoxesCollection
 {
+  friend class myMeshController;
   public:
     // default constructor
     controllerBoxesCollection();
 
     // Class utilities (finders, etc.)
-    uint16_t updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj); // <-
     uint16_t findIndexByNodeId(uint32_t _ui32nodeId); // <-
     uint16_t findIndexByNodeName(uint16_t _ui16NodeName); // <-
     void deleteBoxByNodeId(uint32_t _ui32nodeId); // <-
@@ -34,10 +34,12 @@ class controllerBoxesCollection
     ControlerBox & thisBox;
 
   private:
+    uint16_t _updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj);
+
     /** helpers */
     void printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier);
 };
 
-extern controllerBoxesCollection cntrllerBoxesCollection;
+extern controllerBoxesCollection & cntrllerBoxesCollection;
 
 #endif

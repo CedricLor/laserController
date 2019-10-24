@@ -7,13 +7,6 @@
 #include "ControlerBox.h"
 
 
-// STATIC VARIABLES - SIGNAL CATCHERS
-int16_t ControlerBox::i16boxStateRequestedFromWeb = -1;
-void (*ControlerBox::_tcbIfMeshTriggered)(const ControlerBox & _callingBox) = nullptr;
-void (*ControlerBox::_tcbIfIRTriggered)(const ControlerBox & _callingBox) = nullptr;
-void (*ControlerBox::_tcbSetBoxStateFromWeb)() = nullptr;
-
-
 // PUBLIC
 // Instance Methods
 
@@ -145,19 +138,6 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
 
     ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
 
-    /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it testing
-     *  whether the callback _tcbIfMeshTriggered has been set and that 
-     *  the ControlerBox is not thisBox (thisBox does not read its own mesh high
-     *  signals; it sends mesh high signals). */
-    if ( (_tcbIfMeshTriggered != nullptr) && ( std::addressof((ControlerBox&)(*this)) != std::addressof(thisBox) ) ) {
-      tSetBoxState.setInterval(0);
-      tSetBoxState.setIterations(1);
-      tSetBoxState.setCallback([this](){
-        _tcbIfMeshTriggered(*this);
-      });
-      tSetBoxState.restart();
-    }
     return true;
   }
   // Serial.println("ControlerBox::setBoxActiveState(): over");
@@ -193,20 +173,6 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
-    /** Set the Task that will check whether this change shall have an impact
-     *  on thisBox boxState, add it to the Scheduler and restart it. 
-     *  
-     *  TODO: for the moment, restricted to my own IR signal; 
-     *        in the future, add an i16onMasterIRTrigger property to boxState
-     *        to handle the masterBox(es) IR signals. */
-    if ( (_tcbIfIRTriggered != nullptr) && ( std::addressof((ControlerBox&)(*this)) == std::addressof(thisBox) ) ) {
-      tSetBoxState.setInterval(0);
-      tSetBoxState.setIterations(1);
-      tSetBoxState.setCallback([this](){
-        _tcbIfIRTriggered(*this);
-      });
-      tSetBoxState.restart();
-    }
   }
 }
 
@@ -216,32 +182,13 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
 
 
 
-// Static Methods
-Task ControlerBox::tSetBoxState(0, 1, NULL, NULL, false, NULL, NULL);
-
-/** Setter for i16boxStateRequestedFromWeb
+/**void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex)
  * 
- *  Called from: 
- *  - myMeshController, upon receiving a changeBox request from the web. */
-void ControlerBox::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
-  i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
-  /** Set the Task that will check whether this change shall have an impact
-   *  on thisBox boxState, add it to the Scheduler and restart it. */
-  if (_tcbSetBoxStateFromWeb != nullptr) {
-    tSetBoxState.setInterval(0);
-    tSetBoxState.setIterations(1);
-    tSetBoxState.setCallback(_tcbSetBoxStateFromWeb);
-    tSetBoxState.restart();
-  }
-}
-
-
-
-
-
-
-// updater of the properties of the other boxes in the mesh
-// called from myMeshController
+ *  Updater of the properties of the controller boxes in the mesh
+ *  (including this one, at index 0 of the controller boxes array).
+ *  
+ *  Called from controllerBoxesCollection::_updateOrCreate() exclusively
+*/
 void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   const char * _subName = "ControlerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);

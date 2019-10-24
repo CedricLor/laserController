@@ -210,8 +210,6 @@ void step::applyStep() {
 // stepCollection class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-stepCollection stepColl;
-
 stepCollection::stepCollection():
   ui16stepCounter(0),
   stepFileName("/sessions.json"),
