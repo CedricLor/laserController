@@ -660,7 +660,7 @@ boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_
   // Set Task tPlayBoxState
   tPlayBoxState.set(0, 1, NULL, [&](){ return _oetcbPlayBoxState();}, [&](){ return _odtcbPlayBoxState();});
 
-  restartPBS = &boxStateCollection::_restartPlayBoxState;
+  restartPBS = &boxStateCollection::_restartTaskPlayBoxState;
 
   Serial.println("boxStateCollection::initBoxStates(). over.\n");
 }
@@ -680,9 +680,9 @@ void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
   ui16Mode = _ui16Mode;
   stepColl.reset();
   if (ui16Mode) {
-    restartPBS = &boxStateCollection::_restartPlayBoxStateInStepControlledMode;
+    restartPBS = &boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode;
   } else {
-    restartPBS = &boxStateCollection::_restartPlayBoxState;
+    restartPBS = &boxStateCollection::_restartTaskPlayBoxState;
   }
   (*this.*restartPBS)();
   Serial.println("void boxStateCollection::toggleStepControlled(). ending.");
@@ -693,12 +693,12 @@ void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
-/** void boxStateCollection::_restartPlayBoxStateInStepControlledMode()
+/** void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode()
  * 
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
 */
-void boxStateCollection::_restartPlayBoxStateInStepControlledMode() {
-  // Serial.println("void boxStateCollection::_restartPlayBoxStateInStepControlledMode(). starting.");
+void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode(). starting.");
   if (stepColl.i16maxStepIndexNb > -1) {
     /** 1. configure the params of the pending boxState. */
     stepColl.nextStep.applyStep();
@@ -709,18 +709,18 @@ void boxStateCollection::_restartPlayBoxStateInStepControlledMode() {
       stepColl.tPreloadNextStep.restart();
     }
   }
-  /** 4. call the generic _restartPlayBoxState()*/
-  _restartPlayBoxState();
+  /** 4. call the generic _restartTaskPlayBoxState()*/
+  _restartTaskPlayBoxState();
 }
 
 
-/** void boxStateCollection::_restartPlayBoxState()
+/** void boxStateCollection::_restartTaskPlayBoxState()
  * 
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
 */
-void boxStateCollection::_restartPlayBoxState() {
-  // Serial.println("void boxStateCollection::_restartPlayBoxState(). starting.");
-  // Serial.print("void boxStateCollection::_restartPlayBoxState(). Iteration:");
+void boxStateCollection::_restartTaskPlayBoxState() {
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState(). starting.");
+  // Serial.print("void boxStateCollection::_restartTaskPlayBoxState(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
   /** If the targetState has been reset, start playing the corresponding state:
@@ -731,22 +731,22 @@ void boxStateCollection::_restartPlayBoxState() {
    *  3. restart/enable the "children" Task tPlayBoxState.*/
 
   // 1. Set the duration of Task tPlayBoxState
-  // Serial.print("void boxStateCollection::_restartPlayBoxState() bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration: "); Serial.println(bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
+  // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration: "); Serial.println(bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
   tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray.at(_boxTargetState).i16Duration));
-  // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
+  // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
   // 2. Set the i16BoxActiveState of thisBox in ControlerBox to the _boxTargetState
   thisBox.setBoxActiveState(_boxTargetState, globalBaseVariables.laserControllerMesh.getNodeTime());
-  // Serial.println("void boxStateCollection::_restartPlayBoxState() tPlayBoxState about to be enabled");
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState about to be enabled");
 
   // 3. Restart tPlayBoxState
   tPlayBoxState.restartDelayed();
-  // Serial.println("void boxStateCollection::_restartPlayBoxState() tPlayBoxState enabled");
-  // Serial.print("void boxStateCollection::_restartPlayBoxState() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState enabled");
+  // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState.getInterval(): ");Serial.println(tPlayBoxState.getInterval());
   // Serial.println("*********************************************************");
 
 
-  // Serial.println("void boxStateCollection::_restartPlayBoxState(). over.");
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState(). over.");
 };
 
 
@@ -760,9 +760,9 @@ void boxStateCollection::_restartPlayBoxState() {
 
 /*
   tPlayBoxState starts and stops new boxStates.
-  It iterates only once. It is enabled by _restartPlayBoxState.
+  It iterates only once. It is enabled by _restartTaskPlayBoxState.
   Its main iteration is delayed until aInterval has expired. aInterval is set in
-  _restartPlayBoxState. Such interval is equal to the duration of the new boxState.
+  _restartTaskPlayBoxState. Such interval is equal to the duration of the new boxState.
 
   Upon being enabled, its onEnable callback:
   1. looks for the new boxState number, stored in this ControlerBox's
@@ -842,7 +842,6 @@ void boxStateCollection::_setBoxTargetState(const short __boxTargetState) {
   Serial.println("boxStateCollection::_setBoxTargetState(). starting.");
   Serial.printf("boxStateCollection::_setBoxTargetState(). __boxTargetState (passed in parameters): %u\n", __boxTargetState);
   _boxTargetState = __boxTargetState;
-  // _restartPlayBoxState();
   (*this.*restartPBS)();
   Serial.printf("boxStateCollection::_setBoxTargetState(). _boxTargetState (boxStateCollection instance variable): %u\n", _boxTargetState);
   Serial.println("boxStateCollection::_setBoxTargetState(). over.");

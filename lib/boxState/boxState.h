@@ -144,8 +144,8 @@ class boxStateCollection
 
     short int _boxTargetState;
 
-    void _restartPlayBoxState();
-    void _restartPlayBoxStateInStepControlledMode();
+    void _restartTaskPlayBoxState();
+    void _restartTaskPlayBoxStateInStepControlledMode();
 
     bool _oetcbPlayBoxState();
     void _odtcbPlayBoxState();
