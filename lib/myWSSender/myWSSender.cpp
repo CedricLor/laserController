@@ -33,7 +33,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   if (globalBaseVariables.MY_DG_WS) {
     Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
   }
-  /** TODO: treat the nullprt issue:
+  /** TODO: treat the nullptr issue:
     * This Task shall be enabled:
     * (i) if one of the network parameter has changed, an array of all the clients shall be constructed,
     *  the new data shall be broadcasted to all the clients, the clients shall be removed from the array
@@ -49,7 +49,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
     *   */
   _myWSSender.prepareWSData(3, nullptr); // 3 for message sent in case of change in station IP
 
-  cntrllerBoxesCollection.controllerBoxesArray.at(0).updateThisBoxProperties();
+  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0).updateThisBoxProperties();
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
 }
 
@@ -86,63 +86,63 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
     // expected _obj = {lb:1; action:-1}
 
     // if the box is an unsignaled new box
-    if (cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled == false) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled == false) {
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%u] has joined.\n", cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%u] has joined.\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
       }
       _obj["action"]      = "addBox";
-      _obj["boxState"]    = cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
-      _obj["masterbox"]   = cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).getMasterBoxNameForWeb();
-      _obj["boxDefstate"] = cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
+      _obj["boxState"]    = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
+      _obj["masterbox"]   = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).getMasterBoxNameForWeb();
+      _obj["boxDefstate"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
       // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
       // reset all the booleans to true
       _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
     }
 
     // if the box has an unsignaled change of default state
-    if (cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled == false) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled == false) {
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Default state of box [%u] has changed\n", cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Default state of box [%u] has changed\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "boxDefstate";
-      _obj["val"] = cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
+      _obj["val"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
       _obj["st"] = 2;
       // expected _obj = {lb:1; action:"changeBox"; key: "boxDefstate"; val: 4; st: 2}
-      cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
+      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
     }
 
     // if the box has an unsignaled change of state
-    if (cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled == false) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled == false) {
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. State of box [%u] has changed\n", cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. State of box [%u] has changed\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "boxState";
-      _obj["val"] = cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
+      _obj["val"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
       _obj["st"] = 2;
       // expected _obj = {lb:1; action:"changeBox"; key: "boxState"; val: 6; st: 2}
-      cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
+      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
     }
 
     // if the box master has changed
-    if (cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled == false) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled == false) {
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Box [%u] has changed master: ", cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
-        Serial.printf("cntrllerBoxesCollection.controllerBoxesArray.at(%u).ui16MasterBoxName == %u\n", _ui16BoxIndex, cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).ui16MasterBoxName);
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Box [%u] has changed master: ", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+        Serial.printf("thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%u).ui16MasterBoxName == %u\n", _ui16BoxIndex, thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16MasterBoxName);
       }
       _obj["action"] = "changeBox";
       _obj["key"] = "masterbox";
-      _obj["val"] = cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).getMasterBoxNameForWeb();
+      _obj["val"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).getMasterBoxNameForWeb();
       _obj["st"] = 2; // "st" for status, 2 for executed
       // expected _obj = {lb:1; action:"changeBox"; key: "masterbox"; val: 9; st: 2}
-      cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled = true;
+      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled = true;
     }
 
     // if the box is an unsignaled deleted box
-    if (cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled == false) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled == false) {
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
       }
       _obj["action"] = "deleteBox";
       _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
@@ -224,12 +224,12 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
     if (globalBaseVariables.isRoot) {
-      __rootIFSettings["roNNa"] = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui16NodeName;
+      __rootIFSettings["roNNa"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0).ui16NodeName;
     } else {
-      uint16_t _bxIndex           = cntrllerBoxesCollection.findIndexByNodeId(globalBaseVariables.ui32RootNodeId);
-      __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : cntrllerBoxesCollection.controllerBoxesArray.at(_bxIndex).ui16NodeName );
+      uint16_t _bxIndex           = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(globalBaseVariables.ui32RootNodeId);
+      __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_bxIndex).ui16NodeName );
     }
-    __rootIFSettings["IFNNA"]   = cntrllerBoxesCollection.controllerBoxesArray.at(0).ui16NodeName;
+    __rootIFSettings["IFNNA"]   = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0).ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
     JsonObject __softAPSettings = __newObj.createNestedObject("softAP");
@@ -318,9 +318,9 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
 
 
 void myWSSender::_resetAllControlerBoxBoolsToTrue(const uint16_t _ui16BoxIndex) {
-  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled = true;
-  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
-  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
-  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled = true;
-  cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled = true;
+  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled = true;
+  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
+  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
+  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled = true;
+  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled = true;
 }
