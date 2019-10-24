@@ -102,7 +102,7 @@ void myMeshController::_main()
    *  boxes.
    * 
    *  Upon reception of such messages, this box should update the corresponding values 
-   *  in the controllerBoxesArray of cntrllerBoxesCollection. 
+   *  in the controller boxes' array. 
    * 
    *  If the recipient (i.e. this box) is the IF, this change will be detected by 
    *  myWSSender and a message will be sent to the browser.
@@ -255,7 +255,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   if (_nsobj["key"] == "masterbox") {
     // Serial.println("----------------- THIS A MASTERBOX CONFIRMATION ---------------");
-    cntrllerBoxesCollection.controllerBoxesArray.at(__ui16BoxIndex).updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
+    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex).updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
     return;
   }
 
@@ -263,7 +263,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   if (_nsobj["key"] == "boxDefstate") {
     // Serial.println("----------------- THIS A DEFAULT STATE CONFIRMATION ---------------");
-    cntrllerBoxesCollection.controllerBoxesArray.at(__ui16BoxIndex).setBoxDefaultState(_nsobj["val"].as<uint16_t>());
+    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex).setBoxDefaultState(_nsobj["val"].as<uint16_t>());
     return;
   }
 
@@ -271,7 +271,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if ((_nsobj["key"] == "reboot") || (_nsobj["key"] == "dropped")) {
     // Serial.println("----------------- THIS A REBOOT CONFIRMATION ---------------");
-    cntrllerBoxesCollection.deleteBoxByBoxIndex(__ui16BoxIndex);
+    thisControllerBox.thisSignalHandler.ctlBxColl.deleteBoxByBoxIndex(__ui16BoxIndex);
     // only decrease the MeshSize by one if it is a dropped connection message
     // note: dropped connection message are sent by the box which first detected
     // the dropped box. Such box has already updated its globalBaseVariables.uiMeshSize in the
@@ -445,7 +445,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 
   // if the message was a "changeNet" request, it was broadcasted and
   // its "lb" field was equal to either "LBs" or "all";
-  // replace it with thix box's index number so that cntrllerBoxesCollection.controllerBoxesArray
+  // replace it with thix box's index number so that the controller boxes' array
   // be properly updated in _changedBoxConfirmation
   if ((_nsobj["lb"] == "LBs") || (_nsobj["lb"] == "all")) {
     _nsobj["lb"] = thisControllerBox.thisCtrlerBox.ui16NodeName - globalBaseVariables.gui16ControllerBoxPrefix;
@@ -500,7 +500,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 //   _changeBoxSendConfirmationMsg();
 //
 //   // mark the change as signaled
-//   cntrllerBoxesCollection.controllerBoxesArray.at(__ui16BoxIndex)._cPropertyKey = true;
+//   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex)._cPropertyKey = true;
 // }
 
 
@@ -512,16 +512,16 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 //     Serial.printf("myMeshController::_updateSenderProperty: %s = %i\n", _cPropertyKey, __i8PropertyValue);
 //   }
 //
-//   // 1. set the new property of the relevant ControlerBox in 
-//   // cntrllerBoxesCollection.controllerBoxesArray
+//   // 1. set the new property of the relevant Controler Box in 
+//   // the controller boxes's array
 //   // 2. set the bool announcing that the change has not been signaled,
 //   // to have it caught by the webServerTask (on the interface).
 //   // TODO:
-//   // a. cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).updateProperty needs to be drafted
-//   cntrllerBoxesCollection.controllerBoxesArray.at(_ui16BoxIndex).updateProperty(_cPropertyKey, __i8PropertyValue);
+//   // a. thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty needs to be drafted
+//   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty(_cPropertyKey, __i8PropertyValue);
 //
 //   if (globalBaseVariables.MY_DG_MESH) {
-//     Serial.printf("myMeshController::_updateSenderProperty: cntrllerBoxesCollection.controllerBoxesArray.at(%u), property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
+//     Serial.printf("myMeshController::_updateSenderProperty: thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%u), property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
 //   }
 // }
 
