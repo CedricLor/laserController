@@ -10,6 +10,7 @@
 #include "Arduino.h"
 #include <painlessMesh.h>
 #include <mySpiffs.h>
+#include <sequence.h>
 #include <laserInterface.h>
 
 class step
@@ -137,6 +138,8 @@ class boxStateCollection
     void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
 
   private:
+    sequences _sequences;
+
     const std::array<uint16_t, 4> _monitorNoMaster; // {254}
     const std::array<int16_t, 4> _monitorNoStates;// {-1};
     const std::array<int16_t, 4> _IRStates;// {6, 7, 8, 9};

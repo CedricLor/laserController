@@ -515,6 +515,7 @@ void (boxStateCollection::*restartPBS)() = nullptr;
 boxStateCollection::boxStateCollection(void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)):
   ui16Mode(0),
   sendCurrentBoxState(_sendCurrentBoxState),
+  _sequences(),
   _monitorNoMaster({254}),
   _monitorNoStates({-1}),
   _IRStates({6, 7, 8, 9}),
@@ -767,7 +768,7 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   i16BoxActiveState property and set by _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState:
   2. in the currently active boxState, it reads the associated sequence number in its properties;
-  3. sets the new sequence to be played (by calling globalSequences.playSequence()).
+  3. sets the new sequence to be played (by calling _sequences.playSequence()).
 
   It iterates only once and does not have a main callback.
 
@@ -784,9 +785,9 @@ bool boxStateCollection::_oetcbPlayBoxState(){
 
   // 2. Select the desired sequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
-  laserInterface::globalSequences.playSequence(_currentBoxState.ui16AssociatedSequence);
-  // laserInterface::globalSequences.playSequence(
-  //   laserInterface::globalSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
+  _sequences.playSequence(_currentBoxState.ui16AssociatedSequence);
+  // _sequences.playSequence(
+  //   _sequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
   
   // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
@@ -813,8 +814,8 @@ void boxStateCollection::_odtcbPlayBoxState(){
   boxState& _currentBoxState = boxStatesArray[thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
-  laserInterface::globalSequences.setStopCallbackForTPlaySequence();
-  laserInterface::globalSequences.tPlaySequence.disable();
+  _sequences.setStopCallbackForTPlaySequence();
+  _sequences.tPlaySequence.disable();
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _boxTargetState");
