@@ -111,7 +111,7 @@ const bool signal::checkImpactOfThisBoxsIRHigh() {
 
 /***/
 void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
-  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(thisBox.i16BoxActiveState);
+  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
     return;
@@ -150,7 +150,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  *  1. add an i16onMasterIRTrigger property to boxState to handle the masterBox(es) IR signals; */
 void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
-  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(thisBox.i16BoxActiveState);
+  const boxState & _currentBoxState = bxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
   // 1. check whether the current boxState is IR sensitive
   if (_currentBoxState.i16onIRTrigger == -1) {
     return;
@@ -184,7 +184,7 @@ bool signal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & 
 
 bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
   if ( _isCallerThisBox(_callingBox) ) {
-    return (_isSignalFresherThanBoxStateStamp(thisBox.ui32lastRecPirHighTime));
+    return (_isSignalFresherThanBoxStateStamp(ctlBxColl.controllerBoxesArray.at(0).ui32lastRecPirHighTime));
   }
   return false;
 }
@@ -193,7 +193,7 @@ bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
 
 
 bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
-  return (std::addressof(_callingBox) == std::addressof((thisBox)));
+  return (std::addressof(_callingBox) == std::addressof((ctlBxColl.controllerBoxesArray.at(0))));
 }
 
 
@@ -241,5 +241,5 @@ bool signal::_isCallerStateInMonitoredStates(const ControlerBox & _callingBox, c
 
 
 bool signal::_isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime) {
-  return (_ui32SignalTime > thisBox.ui32BoxActiveStateStartTime);
+  return (_ui32SignalTime > ctlBxColl.controllerBoxesArray.at(0).ui32BoxActiveStateStartTime);
 }
