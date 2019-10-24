@@ -21,9 +21,7 @@
  * */
 myMeshViews::myMeshViews(controllerBoxesCollection & __ctlBxColl):
   _ctlBxColl(__ctlBxColl)
-{
-  _ctlBxColl.controllerBoxesArray.at(0).updateThisBoxProperties();
-}
+{ }
 
 
 
@@ -32,6 +30,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   if (globalBaseVariables.MY_DG_MESH) {
     Serial.println("myMeshViews::statusMsg(): starting.");
   }
+  
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
@@ -143,32 +142,6 @@ void myMeshViews::_IRHighMsg() {
   // broadcast IR high message
   _sendMsg(_joMsg);
 }
-
-
-
-
-
-/** _addIps(JsonObject& _joMsg) left unused for the moment. */
-void myMeshViews::_addIps(JsonObject& _joMsg) {
-  // adding the APIP and the StationIP to the JSON to be sent to other boxes
-  if (_joMsg.containsKey("APIP") && _joMsg.containsKey("StIP")) {
-    for (short _i = 0; _i < 4; _i++) {
-      _joMsg["APIP"][_i] = _ctlBxColl.controllerBoxesArray.at(0).APIP[_i];
-      _joMsg["StIP"][_i] = _ctlBxColl.controllerBoxesArray.at(0).stationIP[_i];
-    }
-  } else {
-    JsonArray _APIP = _joMsg.createNestedArray("APIP");
-    JsonArray _StIP = _joMsg.createNestedArray("StIP");
-    for (short _i = 0; _i < 4; _i++) {
-      _APIP.add(_ctlBxColl.controllerBoxesArray.at(0).APIP[_i]);
-      _StIP.add(_ctlBxColl.controllerBoxesArray.at(0).stationIP[_i]);
-    }
-  }
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //  Serial.println("myMeshViews::_sendMsg(): added IPs to the JSON object before sending");
-  // }
-}
-
 
 
 

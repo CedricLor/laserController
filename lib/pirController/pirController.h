@@ -13,7 +13,7 @@
 class pirController
 {
   public:
-    pirController(signal & __signal, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, const uint8_t _INPUT_PIN=12);
+    pirController(signal & __signal, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, myMeshViews & __thisMeshView, const uint8_t _INPUT_PIN=12);
     
     void check();
 
@@ -21,12 +21,14 @@ class pirController
     signal & _signal;
     const uint8_t _inputPin;
 
-    uint16_t _speedBumper;
     Task & _tSetPirTimeStampAndBrdcstMsg;
-    Task & _tPirSpeedBumper;
     void _tcbSetPirTimeStampAndBrdcstMsg();
     bool _oetcbSetPirTimeStampAndBrdcstMsg();
 
+    uint16_t _speedBumper;
+    Task & _tPirSpeedBumper;
+
+    myMeshViews & _thisMeshView;
 };
 
 #endif

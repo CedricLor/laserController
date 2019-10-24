@@ -50,12 +50,12 @@
 //                    GND;             <-- not fit
 // 
 
-pirController::pirController(signal & __signal, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, const uint8_t _INPUT_PIN):
+pirController::pirController(signal & __signal, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, myMeshViews & __thisMeshView, const uint8_t _INPUT_PIN):
   _signal(__signal),
   _inputPin(_INPUT_PIN),
-  _speedBumper(0),
   _tSetPirTimeStampAndBrdcstMsg(__tSetPirTimeStampAndBrdcstMsg),
-  _tPirSpeedBumper(__tPirSpeedBumper)
+  _tPirSpeedBumper(__tPirSpeedBumper),
+  _thisMeshView(__thisMeshView)
 {
   pinMode(_inputPin, INPUT);                                // declare sensor as input
   _tSetPirTimeStampAndBrdcstMsg.set(0, TASK_ONCE, [&](){_tcbSetPirTimeStampAndBrdcstMsg();}, [&](){return _oetcbSetPirTimeStampAndBrdcstMsg();}, NULL);
@@ -93,8 +93,7 @@ void pirController::_tcbSetPirTimeStampAndBrdcstMsg() {
   Serial.println("pirController::_tcbSetPirTimeStampAndBrdcstMsg(): ---------- PIR Mouvement Detected ----------");
   _signal.ctlBxColl.controllerBoxesArray.at(0).setBoxIRTimes(globalBaseVariables.laserControllerMesh.getNodeTime());
   _signal.checkImpactOfThisBoxsIRHigh();
-  myMeshViews _myMeshViews(_signal.ctlBxColl);
-  _myMeshViews._IRHighMsg();
+  _thisMeshView._IRHighMsg();
 }
 
 
