@@ -37,6 +37,4 @@ class controllerBoxesCollection
     void printSearchResults(uint16_t _index, uint32_t _ui32saughtTerm, const char * _saughtIdentifier);
 };
 
-extern controllerBoxesCollection & cntrllerBoxesCollection;
-
 #endif

@@ -26,7 +26,6 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 controllerBoxThis                                       thisControllerBox;
-controllerBoxesCollection &   cntrllerBoxesCollection = thisControllerBox.thisSignalHandler.ctlBxColl;
 ControlerBox              &   thisBox                 = thisControllerBox.thisCtrlerBox;
 boxStateCollection        &   bxStateColl             = thisControllerBox.thisSignalHandler.bxStateColl;
 stepCollection            &   stepColl                = thisControllerBox.thisSignalHandler.stepColl;
