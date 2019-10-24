@@ -60,7 +60,7 @@ void myMeshController::_main()
    *  
    *  Upon receiving a status message from another box,
    *  read and save the relevant information (on the other
-   *  box) in thisBox CB array. */
+   *  box) in my controller boxes' array. */
   if (_nsobj["action"] == "s") {
     const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
     thisControllerBox.thisSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
@@ -79,7 +79,7 @@ void myMeshController::_main()
    *  
    *  Upon receiving a "usi" message from another box,
    *  read and save the relevant information (on the other
-   *  box) in thisBox CB array. */
+   *  box) in my controller boxes' array. */
   if (_nsobj["action"] == "usi") {
     const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
     thisControllerBox.thisSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
