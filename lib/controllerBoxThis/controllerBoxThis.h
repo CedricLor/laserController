@@ -31,6 +31,8 @@ class controllerBoxThis
      *  and replaced by this one. */
     void updateThisBoxProperties();
 
+    void addLaserTasks();
+
     /** Reboot Task */
     Task tReboot;
 

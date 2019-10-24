@@ -99,6 +99,8 @@ void setup() {
     globalBaseVariables.scheduler.addTask(thisControllerBox.tPirSpeedBumper);
     globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.stepColl.tPreloadNextStep);
     globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.bxStateColl.tPlayBoxState);
+
+    thisControllerBox.addLaserTasks();
     // _test.beforeSequenceStacks();
     laserInterface::init(&cntrllerBoxesCollection);
     // _test.sequenceStack();

@@ -14,15 +14,8 @@ sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
   beatNS::init();
-  globalBaseVariables.scheduler.addTask(globalSequences.tPreloadNextSequence);
-  globalBaseVariables.scheduler.addTask(globalSequences._bars.tPreloadNextBar);
-
-  globalBaseVariables.scheduler.addTask(globalSequences.tPlaySequence);
-  globalBaseVariables.scheduler.addTask(globalSequences._bars.tPlayBar);
-  globalBaseVariables.scheduler.addTask(globalSequences._bars.getNotes().tPlayNote);
 
   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
-
 }
 
 

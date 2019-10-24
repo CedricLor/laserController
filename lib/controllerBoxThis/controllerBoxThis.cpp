@@ -38,6 +38,19 @@ void controllerBoxThis::updateThisBoxProperties() {
 
 
 
+void controllerBoxThis::addLaserTasks() {
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences.tPreloadNextSequence);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences._bars.tPreloadNextBar);
+
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences.tPlaySequence);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences._bars.tPlayBar);
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.bxStateColl._sequences._bars.getNotes().tPlayNote);
+}
+
+
+
+
+
 void controllerBoxThis::_reboot() {
   if (globalBaseVariables.MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
   ESP.restart();
