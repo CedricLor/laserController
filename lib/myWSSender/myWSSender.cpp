@@ -49,7 +49,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
     *   */
   _myWSSender.prepareWSData(3, nullptr); // 3 for message sent in case of change in station IP
 
-  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0).updateThisBoxProperties();
+  thisControllerBox.updateThisBoxProperties();
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
 }
 

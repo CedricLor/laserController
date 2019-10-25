@@ -65,21 +65,6 @@ ControlerBox::ControlerBox()
 
 
 
-void ControlerBox::updateThisBoxProperties() {
-  nodeId = globalBaseVariables.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
-  APIP = globalBaseVariables.laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
-  stationIP = globalBaseVariables.laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  ui16NodeName = globalBaseVariables.gui16NodeName;
-  // For this box, i16BoxActiveState, boxActiveStateHasBeenSignaled and ui32BoxActiveStateStartTime are updated
-  // by a call to setBoxActiveState from boxState
-  if (globalBaseVariables.MY_DEBUG == true) {
-    Serial.println("ControlerBox::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
-    this->printProperties(0);
-  };
-}
-
-
-
 void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _boilerPlate = "ControlerBox::printProperties(): Box n. ";
   Serial.printf("%s[%u] -> nodeId: %u\n", _boilerPlate, __ui16BoxIndex, nodeId);

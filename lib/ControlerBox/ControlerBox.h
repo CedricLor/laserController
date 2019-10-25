@@ -96,7 +96,6 @@ class ControlerBox
 
     /** -------- Public Instance Methods -----------------
      * */
-    void updateThisBoxProperties();
     void printProperties(const uint16_t _ui16BoxIndex);
     void updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxName);
     uint16_t getMasterBoxNameForWeb();
