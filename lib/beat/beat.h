@@ -12,7 +12,7 @@
 
 class beat
 {
-  friend class sequence;
+  friend class laserSequence;
   friend class bar;
   friend class bars;
   friend class laserNotes;

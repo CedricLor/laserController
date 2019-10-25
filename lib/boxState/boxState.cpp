@@ -17,8 +17,8 @@
   - The signal class provides an interface to the boxState class for events registered in
     the ControlerBox class.
   - bxStateColl._setBoxTargetState() is the only contact point for the signal class.
-  - bxStateColl.tPlayBoxState starts and stops the boxState and underlying sequence, depending
-    on the settings (duration, associated sequence number) of the currently active
+  - bxStateColl.tPlayBoxState starts and stops the boxState and underlying laserSequence, depending
+    on the settings (duration, associated laserSequence number) of the currently active
     boxState, and upon request from _setBoxTargetState().
   - bxStateColl._setBoxTargetState() parameterize bxStateColl.tPlayBoxState before starting it.
   - upon being re-enabled, bxStateColl.tPlayBoxState sends a status message to the mesh.
@@ -204,7 +204,7 @@ stepCollection::stepCollection():
   - no passenger */
   // stepsArray[0] = {4, -1, 5, 6, -1, 4, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
   // Serial.println("stepCollection::stepCollection():");
-  /* boxState: 4 - waiting IR, duration: -1 - infinite, sequence: 5 - all Off,
+  /* boxState: 4 - waiting IR, duration: -1 - infinite, laserSequence: 5 - all Off,
     onIRTrigger: apply state 6, onMeshTrigger: -1 (no mesh trigger),
     onExpire: 4 (no expiration, repeat), 
     _ui16monitoredMasterBoxesNodeNames: [254] (_monitorNoMaster),
@@ -214,7 +214,7 @@ stepCollection::stepCollection():
   - passenger at box 1 (this box) */
   // std::array<uint16_t, 4> _arrMonitor_202_203 {202, 203};
   // stepsArray[1] = {6, 60, 0, 6, 12, 6/*repeat once*/, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, sequence: 0 - relays,
+  /* boxState: 6 - PIR High, waiting both, duration: 60 seconds, laserSequence: 0 - relays,
     onIRTrigger: apply state 6 (repeat), onMeshTrigger: 12 (Mesh High, waiting mesh),
     onExpire: 6 (repeat)[-- TO BE IMPROVED: repeat once], 
     _ui16monitoredMasterBoxesNodeNames: [202, 203],
@@ -224,7 +224,7 @@ stepCollection::stepCollection():
   - passenger at boxes 2 or 3, going to boxes 5 or 6 */
   // std::array<uint16_t, 4> _arrMonitor_205_206 {205, 206};
   // stepsArray[2] = {12, 60, 5, -1, 12, 12, _arrMonitor_205_206, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, sequence: 5 - all Off,
+  /* boxState: 12 - Mesh High, waiting mesh, duration: 60 seconds, laserSequence: 5 - all Off,
     onIRTrigger: -1, onMeshTrigger: 12 (repeat Mesh High, waiting mesh),
     onExpire: 12 (repeat), 
     _ui16stepMasterBoxName: [205, 206],
@@ -233,7 +233,7 @@ stepCollection::stepCollection():
   /* step 3: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going between boxes 5 and 6 */
   // stepsArray[3] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, laserSequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), 
     _ui16stepMasterBoxName: [202, 203],
@@ -242,7 +242,7 @@ stepCollection::stepCollection():
   /* step 4: Mesh High, waiting mesh, relays
   - passenger at boxes 5 or 6, going to box 4 */
   // stepsArray[4] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, laserSequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), 
     _ui16stepMasterBoxName: [202, 203],
@@ -251,7 +251,7 @@ stepCollection::stepCollection():
   /* step 5: Mesh High, waiting mesh, relays
   - passenger at box 4, going to box 2 or 3 */
   // stepsArray[5] = {12, -1, 0, -1, 11, 12, _arrMonitor_202_203, bxStateColl._IRStates};
-  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+  /* boxState: 12 - Mesh High, waiting IR, duration: -1 - infinite, laserSequence: 0 - relays,
     onIRTrigger: -1, onMeshTrigger: 11 (mesh high, waiting IR),
     onExpire: 12 (repeat until mesh trigger), 
     _ui16stepMasterBoxName: [202, 203],
@@ -260,7 +260,7 @@ stepCollection::stepCollection():
   /* step 6: Mesh High, IR interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
   // stepsArray[6] = {11, -1, 0, 9, 11, 11, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
-  /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, sequence: 0 - relays,
+  /* boxState: 11 - Mesh High, waiting IR, duration: -1 - infinite, laserSequence: 0 - relays,
     onIRTrigger: 9 (IR high, no interrupt), onMeshTrigger: 11 (repeat),
     onExpire: 11 (repeat once), 
     _ui16stepMasterBoxName: [254] (_monitorNoMaster),
@@ -269,7 +269,7 @@ stepCollection::stepCollection():
   /* step 7: IR High, no interrupt, relays
   - passenger at boxes 2 or 3, going to box 1 */
   // stepsArray[7] = {9, -1, 0, -1, -1, 9, bxStateColl._monitorNoMaster, bxStateColl._monitorNoStates};
-  /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, sequence: 0 - relays,
+  /* boxState: 9 - IR High, no interrupt, duration: -1 - infinite, laserSequence: 0 - relays,
     onIRTrigger: -1 (IR high, no interrupt), onMeshTrigger: -1 (none),
     onExpire: 9 (repeat once), 
     _ui16stepMasterBoxName: [254] (_monitorNoMaster), 
@@ -529,7 +529,7 @@ boxStateCollection::boxStateCollection(
   // const int16_t _i16onIRTrigger, const int16_t _i16onMeshTrigger, const int16_t _i16onExpire
 
   // --> STATE 1: align lasers
-  /** sequence "twins" for indefinite time, without interrupts.
+  /** laserSequence "twins" for indefinite time, without interrupts.
    *  {Duration = -1 (indefinite), AssocSeqce = 1 ("twins"), 
    *   onIRTrigger = -1, 
    *   onMeshTrigger = -1, 
@@ -537,7 +537,7 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(1) = {-1, 1, -1, -1, 1};
 
   // --> STATE 2: pir startup waiting mesh
-  /** sequence "twins" for 60 seconds, no interrupt from IR, interrupts from mesh */
+  /** laserSequence "twins" for 60 seconds, no interrupt from IR, interrupts from mesh */
   /** {Duration = 60 sec., AssocSeqce = 1 ("twins"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 2 (possible val: 0-2 12-13 with restrictions)
@@ -549,7 +549,7 @@ boxStateCollection::boxStateCollection(
   // ********* WAITING STATES (3 STATES + STATE 0) ****************************
   // ----- 3, 4, 5, 0
   // --> STATE 3: Waiting Both
-  /** sequence "all of" for indefinite time, IR and mesh interrupts.
+  /** laserSequence "all of" for indefinite time, IR and mesh interrupts.
    *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
@@ -557,7 +557,7 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(3) = {-1, 5, 6, 10, 3}; 
 
   // --> STATE 4: Waiting IR
-  /** sequence "all of" for indefinite time, IR interrupts.
+  /** laserSequence "all of" for indefinite time, IR interrupts.
    *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
@@ -565,7 +565,7 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(4) = {-1, 5, 6, -1, 4}; 
 
   // --> STATE 5: Waiting Mesh
-  /** sequence "all of" for indefinite time, mesh interrupts.
+  /** laserSequence "all of" for indefinite time, mesh interrupts.
    *  {Duration = -1 (indefinite), AssocSeqce = 5 ("all of"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
@@ -576,7 +576,7 @@ boxStateCollection::boxStateCollection(
   // ********* PIR HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) *******
   // ----- 6, 7, 8, 9
   // --> STATE 6: PIR High Both interrupt
-  /** sequence "relays" for 120 seconds, IR and mesh interrupts.
+  /** laserSequence "relays" for 120 seconds, IR and mesh interrupts.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
@@ -584,17 +584,17 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(6) = {120, 0, 6, 10, 3}; 
 
   // --> STATE 7: PIR High IR interrupt
-  /** sequence "relays" for 120 seconds, IR interrupts.
+  /** laserSequence "relays" for 120 seconds, IR interrupts.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
    *   onExpire = 4 (fall back to waiting IR)(possible val: any except technical: 0 3-13)} */
   boxStatesArray.at(7) = {120, 0, 6, -1, 4}; 
-  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
+  /** laserSequence "relays" for 2 minutes with "interrupt/restart" triggers 
    * from IR only */
 
   // --> STATE 8: PIR High Mesh interrupt
-  /** sequence "relays" for 120 seconds, mesh interrupts.
+  /** laserSequence "relays" for 120 seconds, mesh interrupts.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
@@ -602,7 +602,7 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(8) = {120, 0, -1, 10, 5}; 
 
   // --> STATE 9: PIR High no interrupt
-  /** sequence "relays" for 120 seconds, no interrupt.
+  /** laserSequence "relays" for 120 seconds, no interrupt.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
@@ -613,7 +613,7 @@ boxStateCollection::boxStateCollection(
   // ********* MESH HIGH STATES (4 STATES DEPENDING ON THEIR INTERRUPTS) ******
   // ----- 10, 11, 12, 13
   // --> STATE 10: Mesh High Both interrupt
-  /** sequence "relays" for 120 seconds, IR and mesh interrupts.
+  /** laserSequence "relays" for 120 seconds, IR and mesh interrupts.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
@@ -621,7 +621,7 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(10) = {120, 0, 6, 10, 3}; 
 
   // --> STATE 11: Mesh High IR interrupt
-  /** sequence "relays" for 120 seconds, IR interrupts.
+  /** laserSequence "relays" for 120 seconds, IR interrupts.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = 6 (possible val: IR High: 6-9), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
@@ -629,17 +629,17 @@ boxStateCollection::boxStateCollection(
   boxStatesArray.at(11) = {120, 0, 6, -1, 4}; 
 
   // --> STATE 12: Mesh High Mesh interrupt
-  /** sequence "relays" for 120 seconds, mesh interrupt.
+  /** laserSequence "relays" for 120 seconds, mesh interrupt.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = 10 (possible val: Mesh High: 10-13), 
    *   onExpire = 5 (fall back to waiting mesh)(possible val: any except technical: 0 3-13)} */
   boxStatesArray.at(12) = {120, 0, -1, 10, 5/*possible val: 0 3-13*/}; 
-  /** sequence "relays" for 2 minutes with "interrupt/restart" triggers 
+  /** laserSequence "relays" for 2 minutes with "interrupt/restart" triggers 
    * from mesh only */
 
   // --> STATE 13: mesh High no interrupt
-  /** sequence "relays" for 120 seconds, no interrupt.
+  /** laserSequence "relays" for 120 seconds, no interrupt.
    *  {Duration = 120 seconds, AssocSeqce = 0 ("relays"), 
    *   onIRTrigger = -1 (possible val: no IR High: -1), 
    *   onMeshTrigger = -1 (possible val: no Mesh High: -1), 
@@ -780,8 +780,8 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   1. looks for the new boxState number, stored in this ControlerBox's
   i16BoxActiveState property and set by _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState:
-  2. in the currently active boxState, it reads the associated sequence number in its properties;
-  3. sets the new sequence to be played (by calling _laserSequences.playSequence()).
+  2. in the currently active boxState, it reads the associated laserSequence number in its properties;
+  3. sets the new laserSequence to be played (by calling _laserSequences.playSequence()).
 
   It iterates only once and does not have a main callback.
 
@@ -796,7 +796,7 @@ bool boxStateCollection::_oetcbPlayBoxState(){
   // 1. select the currently active state
   boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
 
-  // 2. Select the desired sequence and play it in loop
+  // 2. Select the desired laserSequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
   _laserSequences.playSequence(_currentBoxState.ui16AssociatedSequence);
   // _laserSequences.playSequence(
@@ -815,7 +815,7 @@ bool boxStateCollection::_oetcbPlayBoxState(){
 
 
 /* Upon disabling the task which plays a given boxState,
-  (i) disable the associated sequence player; and
+  (i) disable the associated laserSequence player; and
   (ii) if the state which was being played was not the default state,
   set it to its default state.
 */
@@ -826,7 +826,7 @@ void boxStateCollection::_odtcbPlayBoxState(){
 
   boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
 
-  // 1. Disable the associated sequence player
+  // 1. Disable the associated laserSequence player
   _laserSequences.setStopCallbackForTPlaySequence();
   _laserSequences.tPlaySequence.disable();
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisBox i16BoxActiveState number");

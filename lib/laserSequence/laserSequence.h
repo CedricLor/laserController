@@ -10,16 +10,16 @@
 #ifndef laserSequence_h
 #define laserSequence_h
 
-class sequence
+class laserSequence
 {
   friend class laserSequences;
   friend class test;
   public:
     /** constructors */
-    sequence();
-    sequence(const beat & __beat, std::array<int16_t, 8> & __i16BarsArray, int16_t __i16barsArraySize, int16_t __i16IndexNumber=-2);
-    sequence(const sequence& __laserSequence);
-    sequence& operator=(const sequence& __laserSequence);
+    laserSequence();
+    laserSequence(const beat & __beat, std::array<int16_t, 8> & __i16BarsArray, int16_t __i16barsArraySize, int16_t __i16IndexNumber=-2);
+    laserSequence(const laserSequence& __laserSequence);
+    laserSequence& operator=(const laserSequence& __laserSequence);
 
     /** getters */
     uint16_t const ui16GetBarCountInSequence() const;
@@ -54,7 +54,7 @@ class laserSequences
 
     /** Variables to read laserSequences from SPIFSS */
     uint16_t ui16IxNumbOfSequenceToPreload;
-    sequence nextSequence;
+    laserSequence nextSequence;
     char sequenceFileName[25];
     
     /** setters */
@@ -63,25 +63,25 @@ class laserSequences
     void setStopCallbackForTPlaySequence();
 
     /** getters */
-    sequence const & getActiveSequence() const;
+    laserSequence const & getActiveSequence() const;
 
-    /** Task tPlaySequence - sequence players */
+    /** Task tPlaySequence - laserSequence players */
     uint16_t const playSequence(const uint16_t __target_laser_sequence_ix_numb);
     Task tPlaySequence;
 
-    /** Task tPreloadNextSequence - preload next sequence from SPIFFS */
+    /** Task tPreloadNextSequence - preload next laserSequence from SPIFFS */
     Task tPreloadNextSequence;
 
   private:
     // variables
-    sequence _defaultSequence;
-    sequence & _activeSequence = _defaultSequence;
+    laserSequence _defaultSequence;
+    laserSequence & _activeSequence = _defaultSequence;
 
     /** setters */
-    uint16_t _setActive(const sequence & __active_laser_sequence);
+    uint16_t _setActive(const laserSequence & __active_laser_sequence);
 
     /** Task tPlaySequence - callbacks and methods */
-    uint16_t const _playSequence(const sequence & __target_laser_sequence);
+    uint16_t const _playSequence(const laserSequence & __target_laser_sequence);
     bool _oetcbPlaySequence();
     void _tcbPlaySequence();
     void _odtcbPlaySequence();

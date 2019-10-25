@@ -26,7 +26,7 @@ laserSequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 laserInterface::laserScheduler::laserScheduler(_Mode __mode)
   // _activeBeat(activeBeat),
   // _laserSequences(globalSequences)
-  // _activeSequence(sequence::globalSequence)
+  // _activeSequence(laserSequence::globalSequence)
 { }
 
 
@@ -57,7 +57,7 @@ void laserInterface::sequenceNS::initComm() {
 }
 
 // TODO: for the moment, setCurrentSequence can only be called with a sequence_id
-// no way to dynamically pass an ad hoc sequence. Refacto to give possibility to
+// no way to dynamically pass an ad hoc laserSequence. Refacto to give possibility to
 // pass non static laserSequences
 // Same issue with setCurrentBar
 void laserInterface::sequenceNS::setCurrent(const int16_t __i16_laser_sequence_id) {
@@ -72,7 +72,7 @@ void laserInterface::sequenceNS::getCurrent() {
 
 void laserInterface::sequenceNS::sendCurrent(const int16_t _i16CurrentStateNbr) {
     /** TODO: either draft a call to myMeshViews, or include
-     *  sending sequence with statusMsg (since one single sequence
+     *  sending laserSequence with statusMsg (since one single laserSequence
      *  is associated to one single boxState).  */
 }
 
@@ -127,7 +127,7 @@ void laserInterface::barNS::sendCurrent(const int16_t __i16_current_bar_id) {
  *  {@ params} uint16_t const __ui16_base_beat_in_bpm: pass the base beat 
  *             in bpm. ex. 120 bpm (500 ms) */
 void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const uint16_t __ui16_base_beat_in_bpm, const int16_t __i16_target_bar_id) {
-  /** 1. lock bar to avoid getting signal from a boxState or sequence player*/
+  /** 1. lock bar to avoid getting signal from a boxState or laserSequence player*/
   barNS::lockStack();
 
   /** 2. set the active bar from the passed-in parameters or create a bar
@@ -194,7 +194,7 @@ void laserInterface::noteNS::sendCurrent(const uint16_t __ui16_target_laser_tone
 
 
 void laserInterface::noteNS::play(uint16_t const __ui16_base_note_for_beat, uint16_t const __ui16_base_beat_in_bpm, const uint16_t __ui16_target_laser_tone, const uint16_t __ui16_target_note) {
-  // 1. lock laserNotes to avoid getting signal from a boxState, sequence or bar player
+  // 1. lock laserNotes to avoid getting signal from a boxState, laserSequence or bar player
   noteNS::lockStack();
   // 2. set the laserNote and play it
   laserNotes _laserNotes;

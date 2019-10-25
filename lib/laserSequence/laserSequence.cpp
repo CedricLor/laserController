@@ -20,7 +20,7 @@ Traductions en anglais:
 // Constructors
 ///////////////////////////////////
 // default constructor
-sequence::sequence():
+laserSequence::laserSequence():
   i16IndexNumber(-2),
   _beat(beat{0, 0}),
   _i16BarIxNumbsArray({}),
@@ -29,7 +29,7 @@ sequence::sequence():
 }
 
 // parameterized constructor
-sequence::sequence(
+laserSequence::laserSequence(
   const beat & __beat,
   std::array<int16_t, 8> & __i16BarIxNumbsArray,
   int16_t __i16barsArraySize,
@@ -42,7 +42,7 @@ sequence::sequence(
 { }
 
 // copy constructor
-sequence::sequence(const sequence& __laserSequence):
+laserSequence::laserSequence(const laserSequence& __laserSequence):
   i16IndexNumber(__laserSequence.i16IndexNumber),
   _beat(__laserSequence._beat),
   _i16BarIxNumbsArray(__laserSequence._i16BarIxNumbsArray),
@@ -50,7 +50,7 @@ sequence::sequence(const sequence& __laserSequence):
 { }
 
 // assignement operator
-sequence& sequence::operator=(const sequence& __laserSequence)
+laserSequence& laserSequence::operator=(const laserSequence& __laserSequence)
 {
   if (&__laserSequence != this) {
     i16IndexNumber = __laserSequence.i16IndexNumber;
@@ -73,54 +73,54 @@ sequence& sequence::operator=(const sequence& __laserSequence)
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/**uint16_t const sequence::ui16GetBarCountInSequence() const 
+/**uint16_t const laserSequence::ui16GetBarCountInSequence() const 
  *  
  * Instance getter.
  *  
- * Returns the bar count in a given sequence. */
-uint16_t const sequence::ui16GetBarCountInSequence() const {
+ * Returns the bar count in a given laserSequence. */
+uint16_t const laserSequence::ui16GetBarCountInSequence() const {
   return _i16barsArraySize;
 }
 
 
 
-/**beat const & sequence::getAssociatedBeat() const 
+/**beat const & laserSequence::getAssociatedBeat() const 
  * 
  * Instance getter.
  * 
  * Returns the associated beat */
-beat const & sequence::getAssociatedBeat() const {
+beat const & laserSequence::getAssociatedBeat() const {
   return _beat;
 }
 
 
 
-/**int16_t const sequence::i16GetFirstBarIndexNumber
+/**int16_t const laserSequence::i16GetFirstBarIndexNumber
  * 
  * Instance getter.
  * 
- * Returns the index number of the first bar in the sequence as a const uint16_t
+ * Returns the index number of the first bar in the laserSequence as a const uint16_t
  *  */
-int16_t const sequence::i16GetFirstBarIndexNumber() const {
+int16_t const laserSequence::i16GetFirstBarIndexNumber() const {
   return _i16BarIxNumbsArray.at(0);
 }
 
 
 
-/**int16_t const sequence::i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const
+/**int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const
  * 
  * Instance getter.
  * 
  * Returns the index number of a bar in the bars database, given such bar's index
- * number in the array of bars associated to this sequence
+ * number in the array of bars associated to this laserSequence
  *  */
-int16_t const sequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSequence) const {
-  int16_t _ui16BarIxNumb = 5; // sequence 5: allOff
+int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSequence) const {
+  int16_t _ui16BarIxNumb = 5; // laserSequence 5: allOff
   try {
     _ui16BarIxNumb = _i16BarIxNumbsArray.at(__ui16BarIxNumbInSequence);
   }
   catch (const std::out_of_range& oor) {
-    Serial.printf("sequence::i16GetBarIndexNumber() called with __ui16BarIxNumbInSequence. Out of range error: \n");
+    Serial.printf("laserSequence::i16GetBarIndexNumber() called with __ui16BarIxNumbInSequence. Out of range error: \n");
     Serial.println(oor.what());
   }
   return _ui16BarIxNumb;
@@ -173,29 +173,29 @@ laserSequences::laserSequences(
 
   // 2. Define sequencesArray, an array containing a series of hard coded laserSequences
 
-  /** Signature of a sequence:
+  /** Signature of a laserSequence:
    *  a. a beat instance, composed of:
    *    1. _ui16BaseBeatInBpm: the base beat in bpm (e.g. 120 bpm, 2 bpm, etc.);
    *    2. _ui16BaseNoteForBeat: the base laserNote for each beat (e.g. 4 -> black, etc.; the 4 in 2/4);
-   *  b. the array of bars to be played in the sequence (_barsArray);
-   *  c. the sequence's index number in the sequencesArray.
+   *  b. the array of bars to be played in the laserSequence (_barsArray);
+   *  c. the laserSequence's index number in the sequencesArray.
    * 
    *  There used to be an additional param/member:
    *  - _ui16BaseNotesCountPerBar: the number of base laserNotes per bar (the 2 in 2/4).
    *  This param/member has been removed. This comment is kept for reference purposes,
    *  The purpose was to match traditional musical notation (where all the keys of the bars 
-   *  match the key given at the beginning of the sequence).
+   *  match the key given at the beginning of the laserSequence).
    * 
    *  As a consequence of the removal of this param, bars sized to any number of base laserNotes
-   *  can be inserted in sequence, and laserSequences will just adapt its tPlaySequence
+   *  can be inserted in laserSequence, and laserSequences will just adapt its tPlaySequence
    *  interval to the various bars durations.
    * */
   
 
-  // --> Sequence 0: "Relays"
+  // --> laserSequence 0: "Relays"
   /** std::array<uint16_t, 8> _relaysBarsArray {0};
    * 
-   *  Defines the array of bars to be played in the sequence. 
+   *  Defines the array of bars to be played in the laserSequence. 
    *  In the following _relaysBarsArray exemple, the array of bars only contains
    *  one single bar (0)). It could contain more.
    * */
@@ -206,27 +206,27 @@ laserSequences::laserSequences(
    * */
   // const beat _beat_2_1(2,1);
   // Serial.printf("\nsequence::initSequences(). Passed building _beat_2_1.\n");
-  // Serial.printf("sequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
+  // Serial.printf("laserSequence::initSequences(). _beat_2_1.getBaseBeatInBpm() should be equal to 2. Is equal to [%u].\n", _beat_2_1.getBaseBeatInBpm());
   // sequencesArray[0] = {_beat_2_1, _relaysBarsArray, 1, 0};
   // {"bt":{"bpm":2,"base":1}, "brs":[0], "ix":0}
   // Serial.printf("\nsequence::initSequences(). laserSequences[0].getBarsArray()[0].getNotesArray().at(0).getNote() shall be equal to 1. Is equal to [%i]\n", laserSequences[0].getBarsArray().at(0).getNotesArray().at(0).getNote());
-  // Serial.printf("sequence::initSequences(). laserSequences[0].getBarsArray()[0].getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%i]\n", laserSequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
-  // Serial.printf("sequence::initSequences(). laserSequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", laserSequences[0].getAssociatedBeat().getBaseBeatInBpm());
+  // Serial.printf("laserSequence::initSequences(). laserSequences[0].getBarsArray()[0].getNotesArray().at(0).getToneNumber() shall be equal to 7. Is equal to [%i]\n", laserSequences[0].getBarsArray().at(0).getNotesArray().at(0).getToneNumber());
+  // Serial.printf("laserSequence::initSequences(). laserSequences[0].getAssociatedBeat().getBaseBeatInBpm() should be equal to 2. Is equal to [%u]\n", laserSequences[0].getAssociatedBeat().getBaseBeatInBpm());
 
 
-  // --> Sequence 1: "Twins"
+  // --> laserSequence 1: "Twins"
   // std::array<int16_t, 8> _twinsBarsArray {1};
   // sequencesArray[1] = {_beat_2_1, _twinsBarsArray, 1, 1};
   // {"bt":{"bpm":2,"base":1}, "brs":[1], "ix":1}
 
 
-  // --> Sequence 2: "All"
+  // --> laserSequence 2: "All"
   // std::array<int16_t, 8> _allBarsArray {2};
   // sequencesArray[2] = {_beat_2_1, _allBarsArray, 1, 2};
   // {"bt":{"bpm":2,"base":1}, "brs":[2], "ix":2}
 
 
-  // --> Sequence 3: "Swipe Right"
+  // --> laserSequence 3: "Swipe Right"
   // std::array<int16_t, 8> _swipeRBarsArray {3};
   /** const beat _beat_120_1(120,1): an instance of beat
    *    _ui16BaseBeatInBpm = 120 for 120 bpm -> a beat every 500 milliseconds
@@ -237,13 +237,13 @@ laserSequences::laserSequences(
   // {"bt":{"bpm":120,"base":1}, "brs":[3], "ix":3}
 
 
-  // --> Sequence 4: "Swipe Left"
+  // --> laserSequence 4: "Swipe Left"
   // std::array<int16_t, 8> _swipeLBarsArray {4};
   // sequencesArray[4] = {_beat_120_1, _swipeLBarsArray, 1, 4};
   // {"bt":{"bpm":120,"base":1}, "brs":[4], "ix":4}
 
 
-  // --> Sequence 5: "All Off"
+  // --> laserSequence 5: "All Off"
   // std::array<int16_t, 8> _allOffBarsArray {5};
   // sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 1, 5};
   // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
@@ -263,14 +263,14 @@ laserSequences::laserSequences(
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** laserSequences::_setActive(const sequence & __activeSequence)
+/** laserSequences::_setActive(const laserSequence & __activeSequence)
  * 
  *  sets the class instance variable _activeSequence 
- *  from a passed in lvalue const sequence reference.
+ *  from a passed in lvalue const laserSequence reference.
  * 
  *  private instance setter 
  * */
-uint16_t laserSequences::_setActive(const sequence & __activeSequence) {
+uint16_t laserSequences::_setActive(const laserSequence & __activeSequence) {
   disableAndResetTPlaySequence();
   _activeSequence = __activeSequence;
   _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
@@ -283,7 +283,7 @@ uint16_t laserSequences::_setActive(const sequence & __activeSequence) {
 
 
 
-/** laserSequences::setActive(const sequence & __activeSequence)
+/** laserSequences::setActive(const laserSequence & __activeSequence)
  * 
  *  sets the class instance variable _activeSequence 
  *  from a passed in index number.
@@ -304,7 +304,7 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
 /** laserSequences::disableAndResetTPlaySequence(): public setter method
  * 
  *  Resets the parameters of the Tasks tPlaySequence to its default parameters, 
- *  to play a sequence, as instructed from a boxState or stand alone. 
+ *  to play a laserSequence, as instructed from a boxState or stand alone. 
  * 
  *  Task tPlaySequence default parameters:
  *  - interval: 0 second;
@@ -322,7 +322,7 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
  *  - alone, at the expiration of its programmed iterations; or
  *  - by the onDisable callback of tPlayBoxState.
  *  
- *  Each iteration of tPlaySequence corresponds to one bar in the sequence.
+ *  Each iteration of tPlaySequence corresponds to one bar in the laserSequence.
  *  Task tPlaySequence iterations parameter is set, once, in its onEnable callback.
  *  Task tPlaySequence interval is reset at each iteration in its main callback.
  * 
@@ -350,10 +350,10 @@ void laserSequences::setStopCallbackForTPlaySequence() {
 
 
 
-/** sequence const & laserSequences::getActiveSequence() const
+/** laserSequence const & laserSequences::getActiveSequence() const
  * 
- * Returns the active sequence as a sequence */
-sequence const & laserSequences::getActiveSequence() const {
+ * Returns the active laserSequence as a laserSequence */
+laserSequence const & laserSequences::getActiveSequence() const {
   return _activeSequence;
 }
 
@@ -364,22 +364,22 @@ sequence const & laserSequences::getActiveSequence() const {
 
 
 ///////////////////////////////////
-// Sequence Players
+// laserSequence Players
 ///////////////////////////////////
-/** laserSequences::playSequence(const sequence & __target_laser_sequence):
+/** laserSequences::playSequence(const laserSequence & __target_laser_sequence):
  *  
- *  play a single sequence calculating the durations on the basis of the passed-in beat.
+ *  play a single laserSequence calculating the durations on the basis of the passed-in beat.
  * 
- *  {@ params} const int16_t __i16_laser_sequence_id: optional sequence id in the 
- *             sequence array (might be needed for debug and interface purpose)
+ *  {@ params} const int16_t __i16_laser_sequence_id: optional laserSequence id in the 
+ *             laserSequence array (might be needed for debug and interface purpose)
  * */
-uint16_t const laserSequences::_playSequence(const sequence & __target_laser_sequence) {
+uint16_t const laserSequences::_playSequence(const laserSequence & __target_laser_sequence) {
   // 0. Do not do anything if the beat has not been set
   if ((__target_laser_sequence._beat.getBaseBeatInBpm() == 0) || (__target_laser_sequence._beat.getBaseNoteForBeat() == 0)) {
     return 0;
   }
 
-  // 1. set the active sequence and the active beat
+  // 1. set the active laserSequence and the active beat
   if (_setActive(__target_laser_sequence) == -2) {
     return 1;
   }
@@ -398,16 +398,16 @@ uint16_t const laserSequences::_playSequence(const sequence & __target_laser_seq
 
 /** laserSequences::playSequence(const uint16_t __target_laser_sequence_ix_numb):
  *  
- *  play a single sequence calculating the durations on the basis of the passed-in beat.
+ *  play a single laserSequence calculating the durations on the basis of the passed-in beat.
  * 
- *  {@ params} const int16_t __i16_laser_sequence_id: optional sequence id in the 
- *             sequence array (might be needed for debug and interface purpose)
+ *  {@ params} const int16_t __i16_laser_sequence_id: optional laserSequence id in the 
+ *             laserSequence array (might be needed for debug and interface purpose)
  * */
 uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequence_ix_numb) {
-  // 1. Load the sequence into memory
+  // 1. Load the laserSequence into memory
   _preloadNextSequence(__target_laser_sequence_ix_numb);
 
-  // 2. Call playSequence(const sequence & __target_laser_sequence)
+  // 2. Call playSequence(const laserSequence & __target_laser_sequence)
   return _playSequence(nextSequence);
 }
 
@@ -417,24 +417,24 @@ uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequen
 
 
 ///////////////////////////////////
-// Sequence Player
+// laserSequence Player
 ///////////////////////////////////
 /** Task tPlaySequence.
  *  
- * It plays a given sequence once.
+ * It plays a given laserSequence once.
  * */
 
 
 
 /** bool laserSequences::_oetcbPlaySequence(): onEnable callback for tPlaySequence
  *  
- *  sets the number of iterations of tPlaySequence to the number of bars in this sequence.
+ *  sets the number of iterations of tPlaySequence to the number of bars in this laserSequence.
  * */
 bool laserSequences::_oetcbPlaySequence() {
-  /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the sequence. */
+  /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the laserSequence. */
   tPlaySequence.setIterations(_activeSequence.ui16GetBarCountInSequence());
 
-  /** 2. Signal the change of sequence to the mesh. */
+  /** 2. Signal the change of laserSequence to the mesh. */
   if (sendCurrentSequence != nullptr) {
     sendCurrentSequence(_activeSequence.i16IndexNumber);
   }
@@ -451,14 +451,14 @@ bool laserSequences::_oetcbPlaySequence() {
  *  The number of iterations for the Task have been set in its onEnable 
  *  callback and do not change on each iterations.
  * 
- *  To the difference of musical partitions (where bars in a sequence always have the 
+ *  To the difference of musical partitions (where bars in a laserSequence always have the 
  *  same duration), the duration of each bar is recalculated at each iteration. This
- *  allows more flexibility (bars of various durations may be inserted in a sequence).
+ *  allows more flexibility (bars of various durations may be inserted in a laserSequence).
  * 
  *  At each iteration of tPlaySequence:
  *  - recalculate the bar duration (steps 1 and 2 below);
  *  - set the Task interval before next iteration accordingly (step 4);
- *  - call _bars.playBar (step 3) to play the bar which is currently active in the sequence;
+ *  - call _bars.playBar (step 3) to play the bar which is currently active in the laserSequence;
  *  - preload the next bar from SPIFFS.
  * */
 void laserSequences::_tcbPlaySequence() {
@@ -471,7 +471,7 @@ void laserSequences::_tcbPlaySequence() {
   /**2. Set the interval for next iteration of tPlaySequence
    * 
    *    At each pass, reset the interval before the next iteration of this Task.
-   *    This marks the duration of each bar played in the context of a sequence.
+   *    This marks the duration of each bar played in the context of a laserSequence.
    *  */
   tPlaySequence.setInterval(_bars.nextBar.ui32GetBarDuration(_activeSequence._beat));
 
@@ -488,7 +488,7 @@ void laserSequences::_tcbPlaySequence() {
  *  tPlaySequence disable loop (default) callback 
  * */
 void laserSequences::_odtcbPlaySequence() {
-  Serial.println("laserSequences::_odtcbPlaySequence(). Will restart playing the active sequence once its last bar has been played.");
+  Serial.println("laserSequences::_odtcbPlaySequence(). Will restart playing the active laserSequence once its last bar has been played.");
   _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
   tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeSequence._beat));
 }
@@ -497,10 +497,10 @@ void laserSequences::_odtcbPlaySequence() {
 
 /** tPlaySequence disable stop (non-default) callback
  * 
- *  Turns off all the laser by playing sequence 5 ("all off"). 
+ *  Turns off all the laser by playing laserSequence 5 ("all off"). 
  * */
 void laserSequences::_odtcbPlaySequenceStop() {
-  Serial.println("laserSequences::_odtcbPlaySequenceStop(). Will start to play sequence 5 (allOff).");
+  Serial.println("laserSequences::_odtcbPlaySequenceStop(). Will start to play laserSequence 5 (allOff).");
   if (_activeSequence.i16IndexNumber != 5) {
     playSequence(5);
 }
@@ -516,7 +516,7 @@ void laserSequences::_odtcbPlaySequenceStop() {
 
 
 ///////////////////////////////////
-// Sequence Loader
+// laserSequence Loader
 ///////////////////////////////////
 void laserSequences::_tcbPreloadNextSequence() {
   Serial.printf("laserSequences::_tcbPreloadNextSequence(): starting\n");
@@ -551,7 +551,7 @@ void laserSequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence)
   // Load _joSequence["brs"] into an std::array
   std::array<int16_t, 8> __i16BarsIxNumbsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
 
-  // Load the next sequence into a sequence instance
+  // Load the next laserSequence into a laserSequence instance
   nextSequence = {
     beat{
       _joSequence["bt"]["bpm"].as<uint16_t>(),

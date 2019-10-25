@@ -25,7 +25,7 @@ namespace laserInterface {
     public:
       laserScheduler(_Mode __mode=_Mode::automatic);
     private:
-      // laserSchedule mode: 1. automatic (laserSequences connected to boxStates), 2. sequence manual, 3. bar manual, 4. laserNote manual
+      // laserSchedule mode: 1. automatic (laserSequences connected to boxStates), 2. laserSequence manual, 3. bar manual, 4. laserNote manual
       uint16_t _activeMode;
 
       // beat & _activeBeat;
@@ -39,10 +39,10 @@ namespace laserInterface {
       beat const _defaultBeat;
       laserNote const _defaultLaserNote;
       bar const _defaultBar;
-      sequence const _defaultSequence;
+      laserSequence const _defaultSequence;
 
       // active item
-      // sequence & _activeSequence;
+      // laserSequence & _activeSequence;
       // bar & _activeBar;
       // laserNote & _activeLaserNote;
   };
@@ -96,7 +96,7 @@ namespace laserInterface {
   // }
 
   namespace sequenceNS {
-    // sequence stack
+    // laserSequence stack
     void initComm();
     void setCurrent(const int16_t __i16ActiveSequenceNb);
     void getCurrent();

@@ -28,7 +28,7 @@ Traductions en anglais:
 // default
 bar::bar() :
   i16IndexNumber(-2), /** default initialization at -2 */
-  _laserNotesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (sequence, bars, laserNotes, laserNote, laserTones, laserTone, laserPins) */
+  _laserNotesArray{{}} /** TODO: This initialization is supposed to be the good one. Check initialization of other classes (laserSequence, bars, laserNotes, laserNote, laserTones, laserTone, laserPins) */
 {
 }
 
@@ -38,7 +38,7 @@ bar::bar(
    *        - check other constructors of other classes; 
    *            OK for laserPin; nothing to do with laserPins
    *            OK for laserTone (std::array<bool, 4> _laserPinsStatesArr)
-   *            sequence: not done; waiting complete refacto of sequence
+   *            laserSequence: not done; waiting complete refacto of laserSequence
    *        - see whether this is optimal;
    *        - review history of why this is this way here (I think this was a bug correction);
    *        - check whether the solution adopted here (passing in by value)
@@ -291,7 +291,7 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  *  
  *  Disables and resets the parameters of the Task tPlayNote (by calling
  *  _disableAndResetTPlayNote) and  Task tPlayBar to its default parameters, to
- *  play bars read from a sequence. 
+ *  play bars read from a laserSequence. 
  * 
  *   Task tPlayBar default parameters:
  *   - an interval of 0 second;
@@ -304,7 +304,7 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  *   - setActive() in the bars class (which is itself called by playBar());
  *   - the test file (test.cpp);
  *   - the laserInterface;
- *   - playSequence in the sequence class;
+ *   - playSequence in the laserSequences class;
  * 
  *   The Task tPlayBar is enabled upon entering a new bar by playBar.
  * 
@@ -510,7 +510,7 @@ void bars::_preloadNextBarFromJSON(const JsonObject& _joBar) {
   // Load _joBar["nts"] into an std::array
   std::array<laserNote, 16> _laserNotesArray = _parseJsonNotesArray(_joBar["nts"].as<JsonArray>());
 
-  // Load the next sequence into a sequence instance
+  // Load the next laserSequence into a laserSequence instance
   nextBar = {
     _laserNotesArray,
     _joBar["ix"].as<int16_t>()

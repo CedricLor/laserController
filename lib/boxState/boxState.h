@@ -92,7 +92,7 @@ class boxState
 
     // instance variables
     int16_t i16Duration; // duration for which the state shall stay active before automatically returning to default
-    uint16_t ui16AssociatedSequence;  // sequence associated to a given state
+    uint16_t ui16AssociatedSequence;  // laserSequence associated to a given state
     int16_t i16onIRTrigger;
     int16_t i16onMeshTrigger;
     int16_t i16onExpire;

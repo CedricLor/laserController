@@ -901,8 +901,8 @@ void test::sequenceStack() {
   _laserSequences.setActive(1);
   Serial.printf("%s _laserSequences._activeSequence.i16IndexNumber shall be 1. Is [%i]\n", _methodName, _laserSequences._activeSequence.i16IndexNumber);
 
-  Serial.printf("\n%s alloting _laserSequences._activeSequence to local variable sequence & _activeSequence\n", _methodName);  
-  sequence & _activeSequence = _laserSequences._activeSequence;
+  Serial.printf("\n%s alloting _laserSequences._activeSequence to local variable laserSequence & _activeSequence\n", _methodName);  
+  laserSequence & _activeSequence = _laserSequences._activeSequence;
 
   Serial.printf("\n%s testing _activeSequence.getAssociatedBeat() submethods\n", _methodName);
   Serial.printf("%s _activeSequence.getAssociatedBeat().getBaseNoteForBeat() shall be 1. Is [%u]\n", _methodName, 
@@ -967,7 +967,7 @@ void test::sequenceStack() {
   Serial.printf("%s _laserSequences._bars._activeBar.ui32GetBarDuration(_beat) shall be equal to 60000. Is [%u]\n", _methodName, 
     _laserSequences._bars._activeBar.ui32GetBarDuration(_beat));
 
-  Serial.printf("\n%s testing preloading a \"beyond bound\" sequence\n", _methodName);
+  Serial.printf("\n%s testing preloading a \"beyond bound\" laserSequence\n", _methodName);
   Serial.printf("%s calling _laserSequences._preloadNextSequence(10), 10 being out of bound\n", _methodName);
   _laserSequences._preloadNextSequence(10);
   Serial.printf("%s _laserSequences.nextSequence.i16IndexNumber is [%i]\n", _methodName, 
