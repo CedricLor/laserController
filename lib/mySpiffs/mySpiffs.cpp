@@ -78,21 +78,12 @@ void mySpiffs::removeDir(const char * path){
         return;
     }
 
-    // Serial.println("mySpiffs::removeDir(): - opened directory");
     File file = root.openNextFile();
-    // Serial.println("mySpiffs::removeDir(): - opened next file");
-    // char _extPath[20];
-    // strcat(_extPath, path);
-    // Serial.println("mySpiffs::removeDir(): - stored path in _exPath");
-    // strcat(_extPath, "/");
-    // Serial.println("mySpiffs::removeDir(): - added slash to _exPath");
 
     Serial.println("mySpiffs::removeDir(): - iterating over subfiles");
     while(file){
-      // if (strstr(_extPath, file.name()) == (file.name())) {
       deleteFile(file.name());
       Serial.printf("mySpiffs::removeDir(): deleted file %s\n", file.name());
-      // }
       file = root.openNextFile();
     }
     Serial.println("mySpiffs::removeDir(): dir is empty");
