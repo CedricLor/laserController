@@ -63,7 +63,7 @@ class laserSequences
     void setStopCallbackForTPlaySequence();
 
     /** getters */
-    laserSequence const & getActiveSequence() const;
+    laserSequence const & getActiveLaserSequence() const;
 
     /** Task tPlaySequence - laserSequence players */
     uint16_t const playSequence(const uint16_t __target_laser_sequence_ix_numb);
@@ -75,7 +75,7 @@ class laserSequences
   private:
     // variables
     laserSequence _defaultLaserSequence;
-    laserSequence & _activeSequence = _defaultLaserSequence;
+    laserSequence & _activeLaserSequence = _defaultLaserSequence;
 
     /** setters */
     uint16_t _setActive(const laserSequence & __active_laser_sequence);

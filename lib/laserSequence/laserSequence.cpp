@@ -166,7 +166,7 @@ laserSequences::laserSequences(
   tPlaySequence(),
   tPreloadNextSequence(),
   _defaultLaserSequence(),
-  _activeSequence(_defaultLaserSequence)
+  _activeLaserSequence(_defaultLaserSequence)
 {
   // 1. Disable and reset the Task tPlaySequence
   disableAndResetTPlaySequence();
@@ -263,18 +263,18 @@ laserSequences::laserSequences(
 ///////////////////////////////////
 // Setters
 ///////////////////////////////////
-/** laserSequences::_setActive(const laserSequence & __activeSequence)
+/** laserSequences::_setActive(const laserSequence & __activeLaserSequence)
  * 
- *  sets the class instance variable _activeSequence 
+ *  sets the class instance variable _activeLaserSequence 
  *  from a passed in lvalue const laserSequence reference.
  * 
  *  private instance setter 
  * */
-uint16_t laserSequences::_setActive(const laserSequence & __activeSequence) {
+uint16_t laserSequences::_setActive(const laserSequence & __activeLaserSequence) {
   disableAndResetTPlaySequence();
-  _activeSequence = __activeSequence;
-  _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
-  return _activeSequence.i16IndexNumber;
+  _activeLaserSequence = __activeLaserSequence;
+  _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetFirstBarIndexNumber());
+  return _activeLaserSequence.i16IndexNumber;
 }
 
 
@@ -283,9 +283,9 @@ uint16_t laserSequences::_setActive(const laserSequence & __activeSequence) {
 
 
 
-/** laserSequences::setActive(const laserSequence & __activeSequence)
+/** laserSequences::setActive(const laserSequence & __activeLaserSequence)
  * 
- *  sets the class instance variable _activeSequence 
+ *  sets the class instance variable _activeLaserSequence 
  *  from a passed in index number.
  * 
  *  public instance setter 
@@ -350,11 +350,11 @@ void laserSequences::setStopCallbackForTPlaySequence() {
 
 
 
-/** laserSequence const & laserSequences::getActiveSequence() const
+/** laserSequence const & laserSequences::getActiveLaserSequence() const
  * 
  * Returns the active laserSequence as a laserSequence */
-laserSequence const & laserSequences::getActiveSequence() const {
-  return _activeSequence;
+laserSequence const & laserSequences::getActiveLaserSequence() const {
+  return _activeLaserSequence;
 }
 
 
@@ -432,11 +432,11 @@ uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequen
  * */
 bool laserSequences::_oetcbPlaySequence() {
   /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the laserSequence. */
-  tPlaySequence.setIterations(_activeSequence.ui16GetBarCountInSequence());
+  tPlaySequence.setIterations(_activeLaserSequence.ui16GetBarCountInSequence());
 
   /** 2. Signal the change of laserSequence to the mesh. */
   if (sendCurrentSequence != nullptr) {
-    sendCurrentSequence(_activeSequence.i16IndexNumber);
+    sendCurrentSequence(_activeLaserSequence.i16IndexNumber);
   }
 
   return true;
@@ -466,17 +466,17 @@ void laserSequences::_tcbPlaySequence() {
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   /**1. Play the active bar*/
-  _bars.playBar(_activeSequence._beat);
+  _bars.playBar(_activeLaserSequence._beat);
 
   /**2. Set the interval for next iteration of tPlaySequence
    * 
    *    At each pass, reset the interval before the next iteration of this Task.
    *    This marks the duration of each bar played in the context of a laserSequence.
    *  */
-  tPlaySequence.setInterval(_bars.nextBar.ui32GetBarDuration(_activeSequence._beat));
+  tPlaySequence.setInterval(_bars.nextBar.ui32GetBarDuration(_activeLaserSequence._beat));
 
   /**3. Preload the next bar*/
-  _bars.preloadNextBarThroughTask(_activeSequence.i16GetBarIndexNumber(tPlaySequence.getRunCounter()));
+  _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetBarIndexNumber(tPlaySequence.getRunCounter()));
 
   Serial.println("laserSequences::_tcbPlaySequence(). over.");
 };
@@ -489,8 +489,8 @@ void laserSequences::_tcbPlaySequence() {
  * */
 void laserSequences::_odtcbPlaySequence() {
   Serial.println("laserSequences::_odtcbPlaySequence(). Will restart playing the active laserSequence once its last bar has been played.");
-  _bars.preloadNextBarThroughTask(_activeSequence.i16GetFirstBarIndexNumber());
-  tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeSequence._beat));
+  _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetFirstBarIndexNumber());
+  tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeLaserSequence._beat));
 }
 
 
@@ -501,7 +501,7 @@ void laserSequences::_odtcbPlaySequence() {
  * */
 void laserSequences::_odtcbPlaySequenceStop() {
   Serial.println("laserSequences::_odtcbPlaySequenceStop(). Will start to play laserSequence 5 (allOff).");
-  if (_activeSequence.i16IndexNumber != 5) {
+  if (_activeLaserSequence.i16IndexNumber != 5) {
     playSequence(5);
 }
 };

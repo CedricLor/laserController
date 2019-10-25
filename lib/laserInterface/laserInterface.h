@@ -42,7 +42,7 @@ namespace laserInterface {
       laserSequence const _defaultLaserSequence;
 
       // active item
-      // laserSequence & _activeSequence;
+      // laserSequence & _activeLaserSequence;
       // bar & _activeBar;
       // laserNote & _activeLaserNote;
   };
@@ -98,9 +98,9 @@ namespace laserInterface {
   namespace sequenceNS {
     // laserSequence stack
     void initComm();
-    void setCurrent(const int16_t __i16ActiveSequenceNb);
+    void setCurrent(const int16_t __i16activeLaserSequenceNb);
     void getCurrent();
-    void sendCurrent(const int16_t __i16ActiveSequenceNb);
+    void sendCurrent(const int16_t __i16activeLaserSequenceNb);
     void play(const int16_t __i16SequenceNb);
     void lockStack();
   }

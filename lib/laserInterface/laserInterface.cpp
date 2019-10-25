@@ -26,7 +26,7 @@ laserSequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 laserInterface::laserScheduler::laserScheduler(_Mode __mode)
   // _activeBeat(activeBeat),
   // _laserSequences(globalSequences)
-  // _activeSequence(laserSequence::globalSequence)
+  // _activeLaserSequence(laserSequence::globalSequence)
 { }
 
 
@@ -66,7 +66,7 @@ void laserInterface::sequenceNS::setCurrent(const int16_t __i16_laser_sequence_i
 
 
 void laserInterface::sequenceNS::getCurrent() {
-    sequenceNS::sendCurrent(globalSequences.getActiveSequence().i16IndexNumber);
+    sequenceNS::sendCurrent(globalSequences.getActiveLaserSequence().i16IndexNumber);
 }
 
 
