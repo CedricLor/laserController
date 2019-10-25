@@ -827,7 +827,7 @@ void boxStateCollection::_odtcbPlayBoxState(){
   boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
 
   // 1. Disable the associated laserSequence player
-  _laserSequences.setStopCallbackForTPlaySequence();
+  _laserSequences.setStopCallbackForTPlayLaserSequence();
   _laserSequences.tPlaySequence.disable();
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);

@@ -340,7 +340,7 @@ void laserSequences::disableAndResetTPlayLaserSequence() {
 
 
 
-void laserSequences::setStopCallbackForTPlaySequence() {
+void laserSequences::setStopCallbackForTPlayLaserSequence() {
   tPlaySequence.setOnDisable([&](){return _odtcbPlaySequenceStop();});
 }
 

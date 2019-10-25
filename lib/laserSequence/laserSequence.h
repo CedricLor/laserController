@@ -60,7 +60,7 @@ class laserSequences
     /** setters */
     uint16_t setActive(const uint16_t __target_laser_sequence_ix_numb);
     void disableAndResetTPlayLaserSequence();
-    void setStopCallbackForTPlaySequence();
+    void setStopCallbackForTPlayLaserSequence();
 
     /** getters */
     laserSequence const & getActiveLaserSequence() const;

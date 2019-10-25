@@ -86,7 +86,7 @@ void laserInterface::sequenceNS::play(const int16_t __i16SequenceNb) {
 
 void laserInterface::sequenceNS::lockStack() {
   // ControlerBox::setBoxActiveStateFromWeb(0);
-  globalSequences.setStopCallbackForTPlaySequence();
+  globalSequences.setStopCallbackForTPlayLaserSequence();
   globalSequences.tPlaySequence.disable();
 }
 
