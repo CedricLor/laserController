@@ -140,7 +140,7 @@ class boxStateCollection
 
   private:
     stepCollection _stepColl;
-    sequences _sequences;
+    laserSequences _sequences;
 
     const std::array<uint16_t, 4> _monitorNoMaster; // {254}
     const std::array<int16_t, 4> _monitorNoStates;// {-1};

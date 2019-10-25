@@ -9,7 +9,7 @@
 using namespace laserInterface;
 
 
-sequences laserInterface::globalSequences(sequenceNS::sendCurrent);
+laserSequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 // void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
 
@@ -50,7 +50,7 @@ laserInterface::laserScheduler::laserScheduler(_Mode __mode)
 
 
 /*******************/
-// sequences stack
+// laserSequences stack
 /*******************/
 void laserInterface::sequenceNS::initComm() {
     globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
@@ -58,7 +58,7 @@ void laserInterface::sequenceNS::initComm() {
 
 // TODO: for the moment, setCurrentSequence can only be called with a sequence_id
 // no way to dynamically pass an ad hoc sequence. Refacto to give possibility to
-// pass non static sequences
+// pass non static laserSequences
 // Same issue with setCurrentBar
 void laserInterface::sequenceNS::setCurrent(const int16_t __i16_sequence_id) {
     globalSequences.setActive(__i16_sequence_id);

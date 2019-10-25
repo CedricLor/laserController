@@ -1,5 +1,5 @@
 /*
-  laserSequence.h - sequences are precoded sequences of laserNotes
+  laserSequence.h - laserSequences are precoded sequences of laserNotes
   Created by Cedric Lor, June 4, 2019.
 
 */
@@ -12,7 +12,7 @@
 
 class sequence
 {
-  friend class sequences;
+  friend class laserSequences;
   friend class test;
   public:
     /** constructors */
@@ -39,14 +39,12 @@ class sequence
 };
 
 
-class sequences
+class laserSequences
 {
   friend class test;
   public:
     /** constructors */
-    sequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
-    // sequences(const sequences& __sequences);
-    // sequences & operator=(const sequences& __sequences);
+    laserSequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
 
     /** interface to mesh */
     void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
@@ -54,7 +52,7 @@ class sequences
     /** public properties */
     bars _bars;  // <-- TODO: make it private at some point
 
-    /** Variables to read sequences from SPIFSS */
+    /** Variables to read laserSequences from SPIFSS */
     uint16_t ui16IxNumbOfSequenceToPreload;
     sequence nextSequence;
     char sequenceFileName[20];

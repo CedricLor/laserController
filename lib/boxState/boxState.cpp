@@ -32,7 +32,7 @@
      - JSON
      - Mesh
      - Web
-  II. Create the stack for sequences:
+  II. Create the stack for laserSequences:
      - JSON
      - Mesh
      - Web

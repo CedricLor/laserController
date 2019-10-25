@@ -40,7 +40,7 @@ class bar
 class bars
 {
   friend class sequence;
-  friend class sequences;
+  friend class laserSequences;
   friend class test;
   
   public:

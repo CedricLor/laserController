@@ -12,7 +12,7 @@
 
 namespace laserInterface {
 
-  extern sequences globalSequences;
+  extern laserSequences globalSequences;
 
   // void init(controllerBoxesCollection * __cntrllerBoxesCollection);
 
@@ -25,7 +25,7 @@ namespace laserInterface {
     public:
       laserScheduler(_Mode __mode=_Mode::automatic);
     private:
-      // laserSchedule mode: 1. automatic (sequences connected to boxStates), 2. sequence manual, 3. bar manual, 4. laserNote manual
+      // laserSchedule mode: 1. automatic (laserSequences connected to boxStates), 2. sequence manual, 3. bar manual, 4. laserNote manual
       uint16_t _activeMode;
 
       // beat & _activeBeat;
@@ -33,7 +33,7 @@ namespace laserInterface {
       // players
       laserNotes _laserNotes;
       bars _bars;
-      sequences _sequences;
+      laserSequences _sequences;
       
       // default item
       beat const _defaultBeat;

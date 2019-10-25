@@ -865,7 +865,7 @@ void test::implementedBarsStack() {
   const char * _methodName = "test::rawBarsStack:";
   Serial.printf("\n\n%s starting\n", _methodName);
 
-  sequences _sequences;
+  laserSequences _sequences;
 
   rawBarsStackNestedNotes(_methodName, _sequences._bars);
   rawBarsStackTaskCallbacks(_methodName, _sequences._bars);
@@ -895,7 +895,7 @@ void test::beforeSequenceStacks() {
 
 void test::sequenceStack() {
   const char * _methodName = "test::sequenceStack:";
-  sequences _sequences;
+  laserSequences _sequences;
   Serial.printf("\n%s starting\n", _methodName);
   Serial.printf("\n%s testing _sequences.setActive(0)\n", _methodName);
   _sequences.setActive(1);
@@ -923,7 +923,7 @@ void test::sequenceStack() {
     _sequences.ui16IxNumbOfSequenceToPreload);
   Serial.printf("%s _sequences.nextSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
     _sequences.nextSequence.i16IndexNumber);
-  Serial.printf("%s _sequences._defaultSequence.sequenceFileName shall be equal to \"/sequences.json\". Is [%s]\n", _methodName, 
+  Serial.printf("%s _sequences._defaultSequence.sequenceFileName shall be equal to \"/laserSequences.json\". Is [%s]\n", _methodName, 
     _sequences.sequenceFileName);
   Serial.printf("%s _sequences.getActiveSequence().i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
     _sequences.getActiveSequence().i16IndexNumber);
@@ -937,7 +937,7 @@ void test::sequenceStack() {
     _sequences._bars.ui16IxNumbOfBarToPreload);
   Serial.printf("%s _sequences._bars.nextBar.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
     _sequences._bars.nextBar.i16IndexNumber);
-  Serial.printf("%s _sequences._bars.barFileName shall be equal to \"/sequences.json\". Is [%s]\n", _methodName, 
+  Serial.printf("%s _sequences._bars.barFileName shall be equal to \"/laserSequences.json\". Is [%s]\n", _methodName, 
     _sequences._bars.barFileName);
   Serial.printf("%s _sequences._bars.i16GetActiveBarId() shall be equal to 1. Is [%i]\n", _methodName, 
     _sequences._bars.i16GetActiveBarId());
