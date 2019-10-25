@@ -66,23 +66,23 @@ ControlerBox::ControlerBox()
 
 
 void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
-  const char * _boilerPlate = "ControlerBox::printProperties(): Box n. ";
-  Serial.printf("%s[%u] -> nodeId: %u\n", _boilerPlate, __ui16BoxIndex, nodeId);
-  Serial.printf("%s[%u] -> APIP:", _boilerPlate, __ui16BoxIndex);Serial.println(APIP.toString());
-  Serial.printf("%s[%u] -> stationIP:", _boilerPlate, __ui16BoxIndex);Serial.println(stationIP.toString());
-  Serial.printf("%s[%u] -> ui16NodeName: %u\n", _boilerPlate, __ui16BoxIndex, ui16NodeName);
+  const char * _methodName = "ControlerBox::printProperties(): Box n. ";
+  Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, nodeId);
+  Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
+  Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
+  Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, ui16NodeName);
 
-  Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _boilerPlate, __ui16BoxIndex, i16BoxActiveState);
-  Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _boilerPlate, __ui16BoxIndex, ui32BoxActiveStateStartTime);
-  Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _boilerPlate, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
+  Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
+  Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _methodName, __ui16BoxIndex, ui32BoxActiveStateStartTime);
+  Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
 
-  Serial.printf("%s[%u] -> ui32lastRecPirHighTime: %u\n", _boilerPlate, __ui16BoxIndex, ui32lastRecPirHighTime);
+  Serial.printf("%s[%u] -> ui32lastRecPirHighTime: %u\n", _methodName, __ui16BoxIndex, ui32lastRecPirHighTime);
 
-  Serial.printf("%s[%u] -> isNewBoxHasBeenSignaled: %i\n", _boilerPlate, __ui16BoxIndex, isNewBoxHasBeenSignaled);
-  Serial.printf("%s[%u] -> boxDeletionHasBeenSignaled: %i\n", _boilerPlate, __ui16BoxIndex, boxDeletionHasBeenSignaled);
+  Serial.printf("%s[%u] -> isNewBoxHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
+  Serial.printf("%s[%u] -> boxDeletionHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxDeletionHasBeenSignaled);
 
-  Serial.printf("%s[%u] -> sBoxDefaultState: %u\n", _boilerPlate, __ui16BoxIndex, sBoxDefaultState);
-  Serial.printf("%s[%u] -> sBoxDefaultStateChangeHasBeenSignaled: %i\n", _boilerPlate, __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
+  Serial.printf("%s[%u] -> sBoxDefaultState: %u\n", _methodName, __ui16BoxIndex, sBoxDefaultState);
+  Serial.printf("%s[%u] -> sBoxDefaultStateChangeHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
 
