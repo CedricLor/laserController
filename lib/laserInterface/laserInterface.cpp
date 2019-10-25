@@ -25,7 +25,7 @@ laserSequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 /*******************/
 laserInterface::laserScheduler::laserScheduler(_Mode __mode)
   // _activeBeat(activeBeat),
-  // _sequences(globalSequences)
+  // _laserSequences(globalSequences)
   // _activeSequence(sequence::globalSequence)
 { }
 

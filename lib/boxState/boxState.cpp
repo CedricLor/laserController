@@ -505,7 +505,7 @@ boxStateCollection::boxStateCollection(
   ui16Mode(0),
   sendCurrentBoxState(_sendCurrentBoxState),
   _stepColl(),
-  _sequences(),
+  _laserSequences(),
   _monitorNoMaster({254}),
   _monitorNoStates({-1}),
   _IRStates({6, 7, 8, 9}),
@@ -781,7 +781,7 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   i16BoxActiveState property and set by _restart_tPlayBoxState.
   Using this number, its selects the currently active boxState:
   2. in the currently active boxState, it reads the associated sequence number in its properties;
-  3. sets the new sequence to be played (by calling _sequences.playSequence()).
+  3. sets the new sequence to be played (by calling _laserSequences.playSequence()).
 
   It iterates only once and does not have a main callback.
 
@@ -798,9 +798,9 @@ bool boxStateCollection::_oetcbPlayBoxState(){
 
   // 2. Select the desired sequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
-  _sequences.playSequence(_currentBoxState.ui16AssociatedSequence);
-  // _sequences.playSequence(
-  //   _sequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
+  _laserSequences.playSequence(_currentBoxState.ui16AssociatedSequence);
+  // _laserSequences.playSequence(
+  //   _laserSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
   
   // 3. Signal the change of state to the mesh
   if (sendCurrentBoxState != nullptr) {
@@ -827,8 +827,8 @@ void boxStateCollection::_odtcbPlayBoxState(){
   boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
 
   // 1. Disable the associated sequence player
-  _sequences.setStopCallbackForTPlaySequence();
-  _sequences.tPlaySequence.disable();
+  _laserSequences.setStopCallbackForTPlaySequence();
+  _laserSequences.tPlaySequence.disable();
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _boxTargetState");

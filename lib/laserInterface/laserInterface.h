@@ -33,7 +33,7 @@ namespace laserInterface {
       // players
       laserNotes _laserNotes;
       bars _bars;
-      laserSequences _sequences;
+      laserSequences _laserSequences;
       
       // default item
       beat const _defaultBeat;
