@@ -169,7 +169,7 @@ laserSequences::laserSequences(
   _activeLaserSequence(_defaultLaserSequence)
 {
   // 1. Disable and reset the Task tPlaySequence
-  disableAndResetTPlaySequence();
+  disableAndResetTPlayLaserSequence();
 
   // 2. Define sequencesArray, an array containing a series of hard coded laserSequences
 
@@ -271,7 +271,7 @@ laserSequences::laserSequences(
  *  private instance setter 
  * */
 uint16_t laserSequences::_setActive(const laserSequence & __activeLaserSequence) {
-  disableAndResetTPlaySequence();
+  disableAndResetTPlayLaserSequence();
   _activeLaserSequence = __activeLaserSequence;
   _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetFirstBarIndexNumber());
   return _activeLaserSequence.i16IndexNumber;
@@ -301,7 +301,7 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
 
 
 
-/** laserSequences::disableAndResetTPlaySequence(): public setter method
+/** laserSequences::disableAndResetTPlayLaserSequence(): public setter method
  * 
  *  Resets the parameters of the Tasks tPlaySequence to its default parameters, 
  *  to play a laserSequence, as instructed from a boxState or stand alone. 
@@ -328,7 +328,7 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
  * 
  *  public instance setter 
  * */
-void laserSequences::disableAndResetTPlaySequence() {
+void laserSequences::disableAndResetTPlayLaserSequence() {
   _bars.disableAndResetTPlayBar();
   tPlaySequence.disable();
   tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
