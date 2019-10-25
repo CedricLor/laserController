@@ -8,11 +8,12 @@
 #define myMeshSenderMessage_h
 
 #include "Arduino.h"
-#include <controllerBoxesCollection.h>
+#include "ArduinoJson.h"
 
 constexpr short    MESH_REQUEST_CAPACITY               = 20;
+constexpr int      _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
 
-class myMeshViews
+class myMeshSenderMessage
 {
   friend class pirController;
   friend class myWSReceiver;
@@ -20,20 +21,13 @@ class myMeshViews
   friend class myMesh;
 
   public:
-    myMeshViews(controllerBoxesCollection & __ctlBxColl);
-    // Views
-    void statusMsg(uint32_t destNodeId=0);
+    myMeshSenderMessage();
 
+    void statusMsg(uint32_t destNodeId);
+
+    StaticJsonDocument<_capacity> _jDoc;
+    JsonObject _joMsg = _jDoc.to<JsonObject>();
   private:
-    controllerBoxesCollection & _ctlBxColl;
-
-    void _changedBoxConfirmation(JsonObject& obj);
-    void _changeBoxRequest(JsonObject& _obj, bool _bBroadcast=false);
-    void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
-    void _IRHighMsg();
-
-    // Helpers
-    void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);
 };
 
 #endif
