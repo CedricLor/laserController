@@ -161,10 +161,10 @@ laserSequences::laserSequences(
   sendCurrentLaserSequence(_sendCurrentLaserSequence),
   _bars(),
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
-  nextSequence(),
+  nextLaserSequence(),
   sequenceFileName("/laserSequences.json"),
   tPlayLaserSequence(),
-  tPreloadNextSequence(),
+  tPreloadNextLaserSequence(),
   _defaultLaserSequence(),
   _activeLaserSequence(_defaultLaserSequence)
 {
@@ -248,7 +248,7 @@ laserSequences::laserSequences(
   // sequencesArray[5] = {_beat_2_1, _allOffBarsArray, 1, 5};
   // {"bt":{"bpm":2,"base":1}, "brs":[5], "ix":5}
 
-  tPreloadNextSequence.set(0, 1, [&](){ return _tcbPreloadNextSequence(); }, NULL, NULL);
+  tPreloadNextLaserSequence.set(0, 1, [&](){ return _tcbPreloadNextLaserSequence(); }, NULL, NULL);
 
   Serial.println("laserSequences::laserSequences(). over.");
 }
@@ -291,8 +291,8 @@ uint16_t laserSequences::_setActive(const laserSequence & __activeLaserSequence)
  *  public instance setter 
  * */
 uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_numb) {
-  _preloadNextSequence(__target_laser_sequence_ix_numb);
-  return _setActive(nextSequence);
+  _preloadNextLaserSequence(__target_laser_sequence_ix_numb);
+  return _setActive(nextLaserSequence);
 }
 
 
@@ -309,9 +309,9 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
  *  Task tPlayLaserSequence default parameters:
  *  - interval: 0 second;
  *  - 0 iteration;
- *  - main callback: &_oetcbPlaySequence;
- *  - onEnable callback:  &_oetcbPlaySequence;
- *  - onDisable callback: &_odtcbPlaySequence)
+ *  - main callback: &_tcbPlayLaserSequence;
+ *  - onEnable callback:  &_oetcbPlayLaserSequence;
+ *  - onDisable callback: &_odtcbPlayLaserSequence)
  *  - added to myScheduler in setup(); disabled by default.
  * 
  *  This method disableAndResetPlayLaserSequenceTasks() is called by laserSequences (from
@@ -331,7 +331,7 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
 void laserSequences::disableAndResetTPlayLaserSequence() {
   _bars.disableAndResetTPlayBar();
   tPlayLaserSequence.disable();
-  tPlayLaserSequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
+  tPlayLaserSequence.set(0, 1, [&](){_tcbPlayLaserSequence();}, [&](){return _oetcbPlayLaserSequence();}, [&](){return _odtcbPlayLaserSequence();});
 }
 
 
@@ -341,7 +341,7 @@ void laserSequences::disableAndResetTPlayLaserSequence() {
 
 
 void laserSequences::setStopCallbackForTPlayLaserSequence() {
-  tPlayLaserSequence.setOnDisable([&](){return _odtcbPlaySequenceStop();});
+  tPlayLaserSequence.setOnDisable([&](){return _odtcbPlayLaserSequenceStop();});
 }
 
 
@@ -373,7 +373,7 @@ laserSequence const & laserSequences::getActiveLaserSequence() const {
  *  {@ params} const int16_t __i16_laser_sequence_id: optional laserSequence id in the 
  *             laserSequence array (might be needed for debug and interface purpose)
  * */
-uint16_t const laserSequences::_playSequence(const laserSequence & __target_laser_sequence) {
+uint16_t const laserSequences::_playLaserSequence(const laserSequence & __target_laser_sequence) {
   // 0. Do not do anything if the beat has not been set
   if ((__target_laser_sequence._beat.getBaseBeatInBpm() == 0) || (__target_laser_sequence._beat.getBaseNoteForBeat() == 0)) {
     return 0;
@@ -405,10 +405,10 @@ uint16_t const laserSequences::_playSequence(const laserSequence & __target_lase
  * */
 uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequence_ix_numb) {
   // 1. Load the laserSequence into memory
-  _preloadNextSequence(__target_laser_sequence_ix_numb);
+  _preloadNextLaserSequence(__target_laser_sequence_ix_numb);
 
   // 2. Call playSequence(const laserSequence & __target_laser_sequence)
-  return _playSequence(nextSequence);
+  return _playLaserSequence(nextLaserSequence);
 }
 
 
@@ -426,11 +426,11 @@ uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequen
 
 
 
-/** bool laserSequences::_oetcbPlaySequence(): onEnable callback for tPlayLaserSequence
+/** bool laserSequences::_oetcbPlayLaserSequence(): onEnable callback for tPlayLaserSequence
  *  
  *  sets the number of iterations of tPlayLaserSequence to the number of bars in this laserSequence.
  * */
-bool laserSequences::_oetcbPlaySequence() {
+bool laserSequences::_oetcbPlayLaserSequence() {
   /** 1. Set the number of iterations of the tPlayLaserSequence task from the number of bars in the laserSequence. */
   tPlayLaserSequence.setIterations(_activeLaserSequence.ui16GetBarCountInLaserSequence());
 
@@ -444,7 +444,7 @@ bool laserSequences::_oetcbPlaySequence() {
 
 
 
-/** void laserSequences::_tcbPlaySequence(): Main callback for tPlayLaserSequence
+/** void laserSequences::_tcbPlayLaserSequence(): Main callback for tPlayLaserSequence
  * 
  *  Each iteration of tPlayLaserSequence corresponds to a bar.
  * 
@@ -461,8 +461,8 @@ bool laserSequences::_oetcbPlaySequence() {
  *  - call _bars.playBar (step 3) to play the bar which is currently active in the laserSequence;
  *  - preload the next bar from SPIFFS.
  * */
-void laserSequences::_tcbPlaySequence() {
-  Serial.println("laserSequences::_tcbPlaySequence(). starting.");
+void laserSequences::_tcbPlayLaserSequence() {
+  Serial.println("laserSequences::_tcbPlayLaserSequence(). starting.");
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   /**1. Play the active bar*/
@@ -478,17 +478,17 @@ void laserSequences::_tcbPlaySequence() {
   /**3. Preload the next bar*/
   _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetBarIndexNumber(tPlayLaserSequence.getRunCounter()));
 
-  Serial.println("laserSequences::_tcbPlaySequence(). over.");
+  Serial.println("laserSequences::_tcbPlayLaserSequence(). over.");
 };
 
 
 
-/** laserSequences::_odtcbPlaySequence()
+/** laserSequences::_odtcbPlayLaserSequence()
  * 
  *  tPlayLaserSequence disable loop (default) callback 
  * */
-void laserSequences::_odtcbPlaySequence() {
-  Serial.println("laserSequences::_odtcbPlaySequence(). Will restart playing the active laserSequence once its last bar has been played.");
+void laserSequences::_odtcbPlayLaserSequence() {
+  Serial.println("laserSequences::_odtcbPlayLaserSequence(). Will restart playing the active laserSequence once its last bar has been played.");
   _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetFirstBarIndexNumber());
   tPlayLaserSequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeLaserSequence._beat));
 }
@@ -499,8 +499,8 @@ void laserSequences::_odtcbPlaySequence() {
  * 
  *  Turns off all the laser by playing laserSequence 5 ("all off"). 
  * */
-void laserSequences::_odtcbPlaySequenceStop() {
-  Serial.println("laserSequences::_odtcbPlaySequenceStop(). Will start to play laserSequence 5 (allOff).");
+void laserSequences::_odtcbPlayLaserSequenceStop() {
+  Serial.println("laserSequences::_odtcbPlayLaserSequenceStop(). Will start to play laserSequence 5 (allOff).");
   if (_activeLaserSequence.i16IndexNumber != 5) {
     playSequence(5);
 }
@@ -518,18 +518,18 @@ void laserSequences::_odtcbPlaySequenceStop() {
 ///////////////////////////////////
 // laserSequence Loader
 ///////////////////////////////////
-void laserSequences::_tcbPreloadNextSequence() {
-  Serial.printf("laserSequences::_tcbPreloadNextSequence(): starting\n");
+void laserSequences::_tcbPreloadNextLaserSequence() {
+  Serial.printf("laserSequences::_tcbPreloadNextLaserSequence(): starting\n");
   // read next step values from the file system
-  _preloadNextSequence(ui16IxNumbOfSequenceToPreload);
-  Serial.printf("laserSequences::_tcbPreloadNextSequence(): ending\n");
+  _preloadNextLaserSequence(ui16IxNumbOfSequenceToPreload);
+  Serial.printf("laserSequences::_tcbPreloadNextLaserSequence(): ending\n");
 }
 
 
 
 
-void laserSequences::_preloadNextSequence(const uint16_t _ui16IxNumbOfSequenceToPreload){
-  Serial.printf("stepCollection::_preloadNextSequence: Reading file: %s\r\n", sequenceFileName);
+void laserSequences::_preloadNextLaserSequence(const uint16_t _ui16IxNumbOfSequenceToPreload){
+  Serial.printf("stepCollection::_preloadNextLaserSequence: Reading file: %s\r\n", sequenceFileName);
 
   mySpiffs __mySpiffs;
   if (!(__mySpiffs.readCollectionItemParamsInFile(sequenceFileName, _ui16IxNumbOfSequenceToPreload))) {
@@ -539,20 +539,20 @@ void laserSequences::_preloadNextSequence(const uint16_t _ui16IxNumbOfSequenceTo
   // Get a reference to the root object
   JsonObject _joSequence = __mySpiffs._jdItemParams.as<JsonObject>();
 
-  _preloadNextSequenceFromJSON(_joSequence);
+  _preloadNextLaserSequenceFromJSON(_joSequence);
 }
 
 
 
 
-void laserSequences::_preloadNextSequenceFromJSON(const JsonObject& _joSequence) {
+void laserSequences::_preloadNextLaserSequenceFromJSON(const JsonObject& _joSequence) {
   // {"bt":{"bpm":2,"base":1}, "brs":[0,3,2,6], "ix":0}
-  Serial.println("laserSequences::_preloadNextSequenceFromJSON: starting");
+  Serial.println("laserSequences::_preloadNextLaserSequenceFromJSON: starting");
   // Load _joSequence["brs"] into an std::array
   std::array<int16_t, 8> __i16BarsIxNumbsArray = _parseJsonBarsArray(_joSequence["brs"].as<JsonArray>());
 
   // Load the next laserSequence into a laserSequence instance
-  nextSequence = {
+  nextLaserSequence = {
     beat{
       _joSequence["bt"]["bpm"].as<uint16_t>(),
       _joSequence["bt"]["base"].as<uint16_t>()

@@ -54,7 +54,7 @@ class laserSequences
 
     /** Variables to read laserSequences from SPIFSS */
     uint16_t ui16IxNumbOfSequenceToPreload;
-    laserSequence nextSequence;
+    laserSequence nextLaserSequence;
     char sequenceFileName[25];
     
     /** setters */
@@ -69,8 +69,8 @@ class laserSequences
     uint16_t const playSequence(const uint16_t __target_laser_sequence_ix_numb);
     Task tPlayLaserSequence;
 
-    /** Task tPreloadNextSequence - preload next laserSequence from SPIFFS */
-    Task tPreloadNextSequence;
+    /** Task tPreloadNextLaserSequence - preload next laserSequence from SPIFFS */
+    Task tPreloadNextLaserSequence;
 
   private:
     // variables
@@ -81,16 +81,16 @@ class laserSequences
     uint16_t _setActive(const laserSequence & __active_laser_sequence);
 
     /** Task tPlayLaserSequence - callbacks and methods */
-    uint16_t const _playSequence(const laserSequence & __target_laser_sequence);
-    bool _oetcbPlaySequence();
-    void _tcbPlaySequence();
-    void _odtcbPlaySequence();
-    void _odtcbPlaySequenceStop();
+    uint16_t const _playLaserSequence(const laserSequence & __target_laser_sequence);
+    bool _oetcbPlayLaserSequence();
+    void _tcbPlayLaserSequence();
+    void _odtcbPlayLaserSequence();
+    void _odtcbPlayLaserSequenceStop();
 
-    /** Task tPreloadNextSequence - callbacks and methods */
-    void _preloadNextSequence(const uint16_t _ui16IxNumbOfSequenceToPreload);
-    void _tcbPreloadNextSequence();
-    void _preloadNextSequenceFromJSON(const JsonObject& _joSequence);
+    /** Task tPreloadNextLaserSequence - callbacks and methods */
+    void _preloadNextLaserSequence(const uint16_t _ui16IxNumbOfSequenceToPreload);
+    void _tcbPreloadNextLaserSequence();
+    void _preloadNextLaserSequenceFromJSON(const JsonObject& _joSequence);
     std::array<int16_t, 8> _parseJsonBarsArray(const JsonArray& _jaBarsArray);
 };
 

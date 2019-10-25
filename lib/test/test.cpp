@@ -921,8 +921,8 @@ void test::sequenceStack() {
   Serial.printf("\n%s testing access to the members of _laserSequences.\n", _methodName);
   Serial.printf("%s _laserSequences.ui16IxNumbOfSequenceToPreload shall be equal to 1. Is [%u]\n", _methodName, 
     _laserSequences.ui16IxNumbOfSequenceToPreload);
-  Serial.printf("%s _laserSequences.nextSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
-    _laserSequences.nextSequence.i16IndexNumber);
+  Serial.printf("%s _laserSequences.nextLaserSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
+    _laserSequences.nextLaserSequence.i16IndexNumber);
   Serial.printf("%s _laserSequences._defaultLaserSequence.sequenceFileName shall be equal to \"/laserSequences.json\". Is [%s]\n", _methodName, 
     _laserSequences.sequenceFileName);
   Serial.printf("%s _laserSequences.getActiveLaserSequence().i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
@@ -968,20 +968,20 @@ void test::sequenceStack() {
     _laserSequences._bars._activeBar.ui32GetBarDuration(_beat));
 
   Serial.printf("\n%s testing preloading a \"beyond bound\" laserSequence\n", _methodName);
-  Serial.printf("%s calling _laserSequences._preloadNextSequence(10), 10 being out of bound\n", _methodName);
-  _laserSequences._preloadNextSequence(10);
-  Serial.printf("%s _laserSequences.nextSequence.i16IndexNumber is [%i]\n", _methodName, 
-    _laserSequences.nextSequence.i16IndexNumber);
-  Serial.printf("%s _laserSequences.nextSequence.ui16GetBarCountInLaserSequence() is [%u]\n", _methodName, 
-    _laserSequences.nextSequence.ui16GetBarCountInLaserSequence());
-  Serial.printf("%s _laserSequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm shall be 0. Is [%u]\n", _methodName, 
-    _laserSequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm());
-  Serial.printf("%s _laserSequences.nextSequence.getAssociatedBeat().getBaseNoteForBeat shall be 0. Is [%u]\n", _methodName, 
-    _laserSequences.nextSequence.getAssociatedBeat().getBaseNoteForBeat());
-  Serial.printf("%s _laserSequences.nextSequence.i16GetFirstBarIndexNumber() is [%i]\n", _methodName, 
-    _laserSequences.nextSequence.i16GetFirstBarIndexNumber());
-  Serial.printf("%s _laserSequences.nextSequence._i16barsArraySize is [%i]\n", _methodName, 
-    _laserSequences.nextSequence._i16barsArraySize);
+  Serial.printf("%s calling _laserSequences._preloadNextLaserSequence(10), 10 being out of bound\n", _methodName);
+  _laserSequences._preloadNextLaserSequence(10);
+  Serial.printf("%s _laserSequences.nextLaserSequence.i16IndexNumber is [%i]\n", _methodName, 
+    _laserSequences.nextLaserSequence.i16IndexNumber);
+  Serial.printf("%s _laserSequences.nextLaserSequence.ui16GetBarCountInLaserSequence() is [%u]\n", _methodName, 
+    _laserSequences.nextLaserSequence.ui16GetBarCountInLaserSequence());
+  Serial.printf("%s _laserSequences.nextLaserSequence.getAssociatedBeat().getBaseBeatInBpm shall be 0. Is [%u]\n", _methodName, 
+    _laserSequences.nextLaserSequence.getAssociatedBeat().getBaseBeatInBpm());
+  Serial.printf("%s _laserSequences.nextLaserSequence.getAssociatedBeat().getBaseNoteForBeat shall be 0. Is [%u]\n", _methodName, 
+    _laserSequences.nextLaserSequence.getAssociatedBeat().getBaseNoteForBeat());
+  Serial.printf("%s _laserSequences.nextLaserSequence.i16GetFirstBarIndexNumber() is [%i]\n", _methodName, 
+    _laserSequences.nextLaserSequence.i16GetFirstBarIndexNumber());
+  Serial.printf("%s _laserSequences.nextLaserSequence._i16barsArraySize is [%i]\n", _methodName, 
+    _laserSequences.nextLaserSequence._i16barsArraySize);
 
   Serial.printf("\n%s testing setting the \"beyond bound\" nextBar as _activeBar\n", _methodName);
   // TO BE DRAFTED
