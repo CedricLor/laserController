@@ -18,8 +18,8 @@ class sequence
     /** constructors */
     sequence();
     sequence(const beat & __beat, std::array<int16_t, 8> & __i16BarsArray, int16_t __i16barsArraySize, int16_t __i16IndexNumber=-2);
-    sequence(const sequence& __sequence);
-    sequence& operator=(const sequence& __sequence);
+    sequence(const sequence& __laserSequence);
+    sequence& operator=(const sequence& __laserSequence);
 
     /** getters */
     uint16_t const ui16GetBarCountInSequence() const;

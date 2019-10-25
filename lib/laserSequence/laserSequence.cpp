@@ -42,21 +42,21 @@ sequence::sequence(
 { }
 
 // copy constructor
-sequence::sequence(const sequence& __sequence):
-  i16IndexNumber(__sequence.i16IndexNumber),
-  _beat(__sequence._beat),
-  _i16BarIxNumbsArray(__sequence._i16BarIxNumbsArray),
-  _i16barsArraySize(__sequence._i16barsArraySize)
+sequence::sequence(const sequence& __laserSequence):
+  i16IndexNumber(__laserSequence.i16IndexNumber),
+  _beat(__laserSequence._beat),
+  _i16BarIxNumbsArray(__laserSequence._i16BarIxNumbsArray),
+  _i16barsArraySize(__laserSequence._i16barsArraySize)
 { }
 
 // assignement operator
-sequence& sequence::operator=(const sequence& __sequence)
+sequence& sequence::operator=(const sequence& __laserSequence)
 {
-  if (&__sequence != this) {
-    i16IndexNumber = __sequence.i16IndexNumber;
-    _beat = __sequence._beat;
-    _i16BarIxNumbsArray = __sequence._i16BarIxNumbsArray;
-    _i16barsArraySize = __sequence._i16barsArraySize;
+  if (&__laserSequence != this) {
+    i16IndexNumber = __laserSequence.i16IndexNumber;
+    _beat = __laserSequence._beat;
+    _i16BarIxNumbsArray = __laserSequence._i16BarIxNumbsArray;
+    _i16barsArraySize = __laserSequence._i16barsArraySize;
   }
   return *this;
 }
