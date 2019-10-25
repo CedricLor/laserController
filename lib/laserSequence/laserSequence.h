@@ -65,9 +65,9 @@ class laserSequences
     /** getters */
     laserSequence const & getActiveLaserSequence() const;
 
-    /** Task tPlaySequence - laserSequence players */
+    /** Task tPlayLaserSequence - laserSequence players */
     uint16_t const playSequence(const uint16_t __target_laser_sequence_ix_numb);
-    Task tPlaySequence;
+    Task tPlayLaserSequence;
 
     /** Task tPreloadNextSequence - preload next laserSequence from SPIFFS */
     Task tPreloadNextSequence;
@@ -80,7 +80,7 @@ class laserSequences
     /** setters */
     uint16_t _setActive(const laserSequence & __active_laser_sequence);
 
-    /** Task tPlaySequence - callbacks and methods */
+    /** Task tPlayLaserSequence - callbacks and methods */
     uint16_t const _playSequence(const laserSequence & __target_laser_sequence);
     bool _oetcbPlaySequence();
     void _tcbPlaySequence();

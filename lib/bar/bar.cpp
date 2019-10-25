@@ -310,7 +310,7 @@ uint16_t const bars::setActive(const bar & __activeBar) {
  * 
  *   It is disabled:
  *   - once it has performed all of its iterations; or
- *   - by the callback of tPlaySequence.
+ *   - by the callback of tPlayLaserSequence.
  * 
  *   task tPlayBar plays a given bar (set in bars::activeBar) 
  *   at a given beat rate.

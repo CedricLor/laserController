@@ -786,7 +786,7 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   It iterates only once and does not have a main callback.
 
   Upon expiration of the Task, its onDisable callback disables
-  Task tPlaySequence.
+  Task tPlayLaserSequence.
 */
 
 bool boxStateCollection::_oetcbPlayBoxState(){
@@ -828,7 +828,7 @@ void boxStateCollection::_odtcbPlayBoxState(){
 
   // 1. Disable the associated laserSequence player
   _laserSequences.setStopCallbackForTPlayLaserSequence();
-  _laserSequences.tPlaySequence.disable();
+  _laserSequences.tPlayLaserSequence.disable();
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisBox i16BoxActiveState number");
   // Serial.println(_thisBox.i16BoxActiveState);
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _boxTargetState");

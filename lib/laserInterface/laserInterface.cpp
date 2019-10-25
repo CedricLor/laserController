@@ -80,14 +80,14 @@ void laserInterface::sequenceNS::sendCurrent(const int16_t _i16CurrentStateNbr) 
 void laserInterface::sequenceNS::play(const int16_t __i16SequenceNb) {
   sequenceNS::lockStack();
   sequenceNS::setCurrent(__i16SequenceNb); // <-- TODO: this does not do anything. Draft sthing similar to playBar
-  globalSequences.tPlaySequence.restartDelayed();
+  globalSequences.tPlayLaserSequence.restartDelayed();
 }
 
 
 void laserInterface::sequenceNS::lockStack() {
   // ControlerBox::setBoxActiveStateFromWeb(0);
   globalSequences.setStopCallbackForTPlayLaserSequence();
-  globalSequences.tPlaySequence.disable();
+  globalSequences.tPlayLaserSequence.disable();
 }
 
 
@@ -156,7 +156,7 @@ void laserInterface::barNS::play(const uint16_t __ui16_base_note_for_beat, const
 
 void laserInterface::barNS::lockStack() {
   sequenceNS::lockStack();
-  globalSequences.tPlaySequence.disable();
+  globalSequences.tPlayLaserSequence.disable();
 }
 
 

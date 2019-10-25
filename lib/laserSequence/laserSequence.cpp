@@ -163,12 +163,12 @@ laserSequences::laserSequences(
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
   nextSequence(),
   sequenceFileName("/laserSequences.json"),
-  tPlaySequence(),
+  tPlayLaserSequence(),
   tPreloadNextSequence(),
   _defaultLaserSequence(),
   _activeLaserSequence(_defaultLaserSequence)
 {
-  // 1. Disable and reset the Task tPlaySequence
+  // 1. Disable and reset the Task tPlayLaserSequence
   disableAndResetTPlayLaserSequence();
 
   // 2. Define sequencesArray, an array containing a series of hard coded laserSequences
@@ -187,7 +187,7 @@ laserSequences::laserSequences(
    *  match the key given at the beginning of the laserSequence).
    * 
    *  As a consequence of the removal of this param, bars sized to any number of base laserNotes
-   *  can be inserted in laserSequence, and laserSequences will just adapt its tPlaySequence
+   *  can be inserted in laserSequence, and laserSequences will just adapt its tPlayLaserSequence
    *  interval to the various bars durations.
    * */
   
@@ -303,10 +303,10 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
 
 /** laserSequences::disableAndResetTPlayLaserSequence(): public setter method
  * 
- *  Resets the parameters of the Tasks tPlaySequence to its default parameters, 
+ *  Resets the parameters of the Tasks tPlayLaserSequence to its default parameters, 
  *  to play a laserSequence, as instructed from a boxState or stand alone. 
  * 
- *  Task tPlaySequence default parameters:
+ *  Task tPlayLaserSequence default parameters:
  *  - interval: 0 second;
  *  - 0 iteration;
  *  - main callback: &_oetcbPlaySequence;
@@ -314,24 +314,24 @@ uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_num
  *  - onDisable callback: &_odtcbPlaySequence)
  *  - added to myScheduler in setup(); disabled by default.
  * 
- *  This method disableAndResetPlaySequenceTasks() is called by laserSequences (from
+ *  This method disableAndResetPlayLaserSequenceTasks() is called by laserSequences (from
  *  laserSequences.setActive()).
  * 
- *  Task tPlaySequence is enabled upon entering a new boxState.
+ *  Task tPlayLaserSequence is enabled upon entering a new boxState.
  *  It is disabled:
  *  - alone, at the expiration of its programmed iterations; or
  *  - by the onDisable callback of tPlayBoxState.
  *  
- *  Each iteration of tPlaySequence corresponds to one bar in the laserSequence.
- *  Task tPlaySequence iterations parameter is set, once, in its onEnable callback.
- *  Task tPlaySequence interval is reset at each iteration in its main callback.
+ *  Each iteration of tPlayLaserSequence corresponds to one bar in the laserSequence.
+ *  Task tPlayLaserSequence iterations parameter is set, once, in its onEnable callback.
+ *  Task tPlayLaserSequence interval is reset at each iteration in its main callback.
  * 
  *  public instance setter 
  * */
 void laserSequences::disableAndResetTPlayLaserSequence() {
   _bars.disableAndResetTPlayBar();
-  tPlaySequence.disable();
-  tPlaySequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
+  tPlayLaserSequence.disable();
+  tPlayLaserSequence.set(0, 1, [&](){_tcbPlaySequence();}, [&](){return _oetcbPlaySequence();}, [&](){return _odtcbPlaySequence();});
 }
 
 
@@ -341,7 +341,7 @@ void laserSequences::disableAndResetTPlayLaserSequence() {
 
 
 void laserSequences::setStopCallbackForTPlayLaserSequence() {
-  tPlaySequence.setOnDisable([&](){return _odtcbPlaySequenceStop();});
+  tPlayLaserSequence.setOnDisable([&](){return _odtcbPlaySequenceStop();});
 }
 
 
@@ -384,8 +384,8 @@ uint16_t const laserSequences::_playSequence(const laserSequence & __target_lase
     return 1;
   }
 
-  // 2. restart the tPlaySequence or tPlaySequenceStandAlone Task
-  tPlaySequence.restart();
+  // 2. restart the tPlayLaserSequence or tPlayLaserSequenceStandAlone Task
+  tPlayLaserSequence.restart();
 
   // 3. return 2 for success
   return 2;
@@ -419,20 +419,20 @@ uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequen
 ///////////////////////////////////
 // laserSequence Player
 ///////////////////////////////////
-/** Task tPlaySequence.
+/** Task tPlayLaserSequence.
  *  
  * It plays a given laserSequence once.
  * */
 
 
 
-/** bool laserSequences::_oetcbPlaySequence(): onEnable callback for tPlaySequence
+/** bool laserSequences::_oetcbPlaySequence(): onEnable callback for tPlayLaserSequence
  *  
- *  sets the number of iterations of tPlaySequence to the number of bars in this laserSequence.
+ *  sets the number of iterations of tPlayLaserSequence to the number of bars in this laserSequence.
  * */
 bool laserSequences::_oetcbPlaySequence() {
-  /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the laserSequence. */
-  tPlaySequence.setIterations(_activeLaserSequence.ui16GetBarCountInLaserSequence());
+  /** 1. Set the number of iterations of the tPlayLaserSequence task from the number of bars in the laserSequence. */
+  tPlayLaserSequence.setIterations(_activeLaserSequence.ui16GetBarCountInLaserSequence());
 
   /** 2. Signal the change of laserSequence to the mesh. */
   if (sendCurrentLaserSequence != nullptr) {
@@ -444,9 +444,9 @@ bool laserSequences::_oetcbPlaySequence() {
 
 
 
-/** void laserSequences::_tcbPlaySequence(): Main callback for tPlaySequence
+/** void laserSequences::_tcbPlaySequence(): Main callback for tPlayLaserSequence
  * 
- *  Each iteration of tPlaySequence corresponds to a bar.
+ *  Each iteration of tPlayLaserSequence corresponds to a bar.
  * 
  *  The number of iterations for the Task have been set in its onEnable 
  *  callback and do not change on each iterations.
@@ -455,7 +455,7 @@ bool laserSequences::_oetcbPlaySequence() {
  *  same duration), the duration of each bar is recalculated at each iteration. This
  *  allows more flexibility (bars of various durations may be inserted in a laserSequence).
  * 
- *  At each iteration of tPlaySequence:
+ *  At each iteration of tPlayLaserSequence:
  *  - recalculate the bar duration (steps 1 and 2 below);
  *  - set the Task interval before next iteration accordingly (step 4);
  *  - call _bars.playBar (step 3) to play the bar which is currently active in the laserSequence;
@@ -468,15 +468,15 @@ void laserSequences::_tcbPlaySequence() {
   /**1. Play the active bar*/
   _bars.playBar(_activeLaserSequence._beat);
 
-  /**2. Set the interval for next iteration of tPlaySequence
+  /**2. Set the interval for next iteration of tPlayLaserSequence
    * 
    *    At each pass, reset the interval before the next iteration of this Task.
    *    This marks the duration of each bar played in the context of a laserSequence.
    *  */
-  tPlaySequence.setInterval(_bars.nextBar.ui32GetBarDuration(_activeLaserSequence._beat));
+  tPlayLaserSequence.setInterval(_bars.nextBar.ui32GetBarDuration(_activeLaserSequence._beat));
 
   /**3. Preload the next bar*/
-  _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetBarIndexNumber(tPlaySequence.getRunCounter()));
+  _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetBarIndexNumber(tPlayLaserSequence.getRunCounter()));
 
   Serial.println("laserSequences::_tcbPlaySequence(). over.");
 };
@@ -485,17 +485,17 @@ void laserSequences::_tcbPlaySequence() {
 
 /** laserSequences::_odtcbPlaySequence()
  * 
- *  tPlaySequence disable loop (default) callback 
+ *  tPlayLaserSequence disable loop (default) callback 
  * */
 void laserSequences::_odtcbPlaySequence() {
   Serial.println("laserSequences::_odtcbPlaySequence(). Will restart playing the active laserSequence once its last bar has been played.");
   _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetFirstBarIndexNumber());
-  tPlaySequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeLaserSequence._beat));
+  tPlayLaserSequence.restartDelayed(_bars._activeBar.ui32GetBarDuration(_activeLaserSequence._beat));
 }
 
 
 
-/** tPlaySequence disable stop (non-default) callback
+/** tPlayLaserSequence disable stop (non-default) callback
  * 
  *  Turns off all the laser by playing laserSequence 5 ("all off"). 
  * */
