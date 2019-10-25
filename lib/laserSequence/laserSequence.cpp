@@ -73,12 +73,12 @@ laserSequence& laserSequence::operator=(const laserSequence& __laserSequence)
 ///////////////////////////////////
 // Getters
 ///////////////////////////////////
-/**uint16_t const laserSequence::ui16GetBarCountInSequence() const 
+/**uint16_t const laserSequence::ui16GetBarCountInLaserSequence() const 
  *  
  * Instance getter.
  *  
  * Returns the bar count in a given laserSequence. */
-uint16_t const laserSequence::ui16GetBarCountInSequence() const {
+uint16_t const laserSequence::ui16GetBarCountInLaserSequence() const {
   return _i16barsArraySize;
 }
 
@@ -432,7 +432,7 @@ uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequen
  * */
 bool laserSequences::_oetcbPlaySequence() {
   /** 1. Set the number of iterations of the tPlaySequence task from the number of bars in the laserSequence. */
-  tPlaySequence.setIterations(_activeLaserSequence.ui16GetBarCountInSequence());
+  tPlaySequence.setIterations(_activeLaserSequence.ui16GetBarCountInLaserSequence());
 
   /** 2. Signal the change of laserSequence to the mesh. */
   if (sendCurrentSequence != nullptr) {

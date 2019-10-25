@@ -22,7 +22,7 @@ class laserSequence
     laserSequence& operator=(const laserSequence& __laserSequence);
 
     /** getters */
-    uint16_t const ui16GetBarCountInSequence() const;
+    uint16_t const ui16GetBarCountInLaserSequence() const;
     beat const & getAssociatedBeat() const;
     int16_t const i16GetFirstBarIndexNumber() const;
     int16_t const i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const;

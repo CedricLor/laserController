@@ -911,8 +911,8 @@ void test::sequenceStack() {
     _activeLaserSequence.getAssociatedBeat().getBaseBeatInBpm());
 
   Serial.printf("\n%s testing access to the methods of _activeLaserSequence\n", _methodName);
-  Serial.printf("%s _activeLaserSequence.ui16GetBarCountInSequence() shall be equal to 1. Is [%u]\n", _methodName, 
-    _activeLaserSequence.ui16GetBarCountInSequence());
+  Serial.printf("%s _activeLaserSequence.ui16GetBarCountInLaserSequence() shall be equal to 1. Is [%u]\n", _methodName, 
+    _activeLaserSequence.ui16GetBarCountInLaserSequence());
   Serial.printf("%s _activeLaserSequence.i16GetFirstBarIndexNumber() shall be equal to 1. Is [%i]\n", _methodName, 
     _activeLaserSequence.i16GetFirstBarIndexNumber());
   Serial.printf("%s _activeLaserSequence.i16GetBarIndexNumber(0) shall be equal to 1. Is [%i]\n", _methodName, 
@@ -972,8 +972,8 @@ void test::sequenceStack() {
   _laserSequences._preloadNextSequence(10);
   Serial.printf("%s _laserSequences.nextSequence.i16IndexNumber is [%i]\n", _methodName, 
     _laserSequences.nextSequence.i16IndexNumber);
-  Serial.printf("%s _laserSequences.nextSequence.ui16GetBarCountInSequence() is [%u]\n", _methodName, 
-    _laserSequences.nextSequence.ui16GetBarCountInSequence());
+  Serial.printf("%s _laserSequences.nextSequence.ui16GetBarCountInLaserSequence() is [%u]\n", _methodName, 
+    _laserSequences.nextSequence.ui16GetBarCountInLaserSequence());
   Serial.printf("%s _laserSequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm shall be 0. Is [%u]\n", _methodName, 
     _laserSequences.nextSequence.getAssociatedBeat().getBaseBeatInBpm());
   Serial.printf("%s _laserSequences.nextSequence.getAssociatedBeat().getBaseNoteForBeat shall be 0. Is [%u]\n", _methodName, 
