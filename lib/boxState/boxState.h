@@ -66,7 +66,7 @@ class stepCollection
     void _parseJsonArray(const JsonObject& _joStep, const char * key, ARRAY & _array);
 };
 
-extern stepCollection & stepColl;
+
 
 class boxState
 {
@@ -139,6 +139,7 @@ class boxStateCollection
     void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
 
   private:
+    stepCollection _stepColl;
     sequences _sequences;
 
     const std::array<uint16_t, 4> _monitorNoMaster; // {254}

@@ -42,7 +42,6 @@ class signal
 
     /** Members */
     controllerBoxesCollection     ctlBxColl;
-    stepCollection                stepColl;
     boxStateCollection            thisBxStateColl;
 
   private:

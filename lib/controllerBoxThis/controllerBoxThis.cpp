@@ -39,12 +39,23 @@ void controllerBoxThis::updateThisBoxProperties() {
 
 
 void controllerBoxThis::addLaserTasks() {
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences.tPreloadNextSequence);
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.tPreloadNextBar);
 
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences.tPlaySequence);
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.tPlayBar);
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.getNotes().tPlayNote);
+  // conditional?
+  globalBaseVariables.scheduler.addTask(thisSignalHandler.tSetBoxState);
+  if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
+    globalBaseVariables.scheduler.addTask(tSetPirTimeStampAndBrdcstMsg);
+    globalBaseVariables.scheduler.addTask(tPirSpeedBumper);
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._stepColl.tPreloadNextStep);
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl.tPlayBoxState);
+
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences.tPreloadNextSequence);
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.tPreloadNextBar);
+
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences.tPlaySequence);
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.tPlayBar);
+    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._sequences._bars.getNotes().tPlayNote);
+  }
+
 }
 
 

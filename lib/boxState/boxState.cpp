@@ -504,6 +504,7 @@ boxStateCollection::boxStateCollection(
   _thisBox(__thisBox),
   ui16Mode(0),
   sendCurrentBoxState(_sendCurrentBoxState),
+  _stepColl(),
   _sequences(),
   _monitorNoMaster({254}),
   _monitorNoStates({-1}),
@@ -666,7 +667,7 @@ boxStateCollection::boxStateCollection(
 void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
   Serial.println("void boxStateCollection::toggleStepControlled(). starting.");
   ui16Mode = _ui16Mode;
-  stepColl.reset();
+  _stepColl.reset();
   if (ui16Mode) {
     restartPBS = &boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode;
   } else {
@@ -687,14 +688,14 @@ void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
 */
 void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
   // Serial.println("void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode(). starting.");
-  if (stepColl.i16maxStepIndexNb > -1) {
+  if (_stepColl.i16maxStepIndexNb > -1) {
     /** 1. configure the params for the next boxState. */
     _applyNextStep();
-    if ((stepColl.ui16stepCounter < stepColl.i16maxStepIndexNb)) {
+    if ((_stepColl.ui16stepCounter < _stepColl.i16maxStepIndexNb)) {
       /** 2. increment the step counter. */
-      stepColl.ui16stepCounter = stepColl.ui16stepCounter + 1;
+      _stepColl.ui16stepCounter = _stepColl.ui16stepCounter + 1;
       /** 3. preload the next step from flash memory. */
-      stepColl.tPreloadNextStep.restart();
+      _stepColl.tPreloadNextStep.restart();
     }
   }
   /** 4. call the generic _restartTaskPlayBoxState()*/
@@ -710,7 +711,7 @@ void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
  *  Called from boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() only.
 */
 void boxStateCollection::_applyNextStep() {
-  step & _nextStep = stepColl.nextStep;
+  step & _nextStep = _stepColl.nextStep;
   boxState _nextBoxState{
     _nextStep._i16StateDuration,
     _nextStep._ui16AssociatedSequence,

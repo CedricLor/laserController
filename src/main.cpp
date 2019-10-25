@@ -26,7 +26,6 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 // Global Variables //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 controllerBoxThis                                       thisControllerBox;
-stepCollection            &   stepColl                = thisControllerBox.thisSignalHandler.stepColl;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,18 +88,7 @@ void setup() {
     myWebServerBase _myWebServer;
   }
 
-  // conditional?
-  globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.tSetBoxState);
-  if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
-    globalBaseVariables.scheduler.addTask(thisControllerBox.tSetPirTimeStampAndBrdcstMsg);
-    globalBaseVariables.scheduler.addTask(thisControllerBox.tPirSpeedBumper);
-    globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.stepColl.tPreloadNextStep);
-    globalBaseVariables.scheduler.addTask(thisControllerBox.thisSignalHandler.thisBxStateColl.tPlayBoxState);
-
-    thisControllerBox.addLaserTasks();
-    // _test.beforeSequenceStacks();
-    // _test.sequenceStack();
-  }
+  thisControllerBox.addLaserTasks();
 
   enableTasks();
 

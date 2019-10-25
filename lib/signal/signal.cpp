@@ -9,7 +9,6 @@
 
 signal::signal():
   ctlBxColl{},
-  stepColl{},
   thisBxStateColl{ctlBxColl.controllerBoxesArray.at(0)}
 {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
