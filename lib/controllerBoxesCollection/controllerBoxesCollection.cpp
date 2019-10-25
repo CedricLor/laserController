@@ -120,8 +120,7 @@ void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
   Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): starting");
   for (uint16_t __it = 0; __it < globalBaseVariables.gui16BoxesCount; __it++) {
     if (controllerBoxesArray[__it].nodeId == _ui32nodeId) {
-      controllerBoxesArray[__it]._deleteBox();
-      updateConnectedBoxCount(connectedBoxesCount - 1);
+      deleteBoxByBoxIndex(__it);
       Serial.printf("controllerBoxesCollection::deleteBoxByNodeId(): updated ConnectedBoxCount\n");
 
       break;
@@ -136,7 +135,7 @@ void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
 
 void controllerBoxesCollection::deleteBoxByBoxIndex(uint16_t _ui16index) {
   Serial.println("controllerBoxesCollection::deleteBoxByBoxIndex(): starting");
-  controllerBoxesArray[_ui16index]._deleteBox();
+  controllerBoxesArray[_ui16index]._deleteBox(_ui16index);
   updateConnectedBoxCount(connectedBoxesCount - 1);
   Serial.println("controllerBoxesCollection::deleteBoxByBoxIndex(): over");
 }

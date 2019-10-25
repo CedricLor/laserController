@@ -105,7 +105,7 @@ class ControlerBox
     void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
 
   private:
-    void _deleteBox();
+    void _deleteBox(const uint16_t _ui16BoxIndex);
 };
 
 #endif

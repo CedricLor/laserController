@@ -202,7 +202,7 @@ void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _
   // need to send via myMeshViews and add to ControlerBox the time
   // for which the new sender boxState shall apply
   // extract the __senderBoxActiveState from the JSON
-  if (_obj.containsKey("boxDefstate")) {
+  if (_obj.containsKey("actSt")) {
     const short int __senderBoxActiveState = _obj["actSt"];
     const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
     setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
@@ -234,43 +234,14 @@ void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _
 
 
 
-void ControlerBox::_deleteBox() {
+void ControlerBox::_deleteBox(const uint16_t _ui16BoxIndex) {
   const char * _subName = "ControlerBox::_deleteBox():";
-  Serial.printf("%s starting\n", _subName);
-  // Serial.printf("%s Received _ui16BoxIndex %u\n", );
-  nodeId = 0;
-  Serial.printf("%s NodeId reset to 0\n", _subName);
-  APIP = {0,0,0,0};
-  Serial.printf("%s APIP reset to 0.0.0.0\n", _subName);
-  stationIP = {0,0,0,0};
-  Serial.printf("%s stationIP reset to 0.0.0.0\n", _subName);
-  ui16NodeName = 254;
-  Serial.printf("%s ui16NodeName reset to 0\n", _subName);
 
-  i16BoxActiveState = -1;
-  Serial.printf("%s i16BoxActiveState reset to -1\n", _subName);
-  ui32BoxActiveStateStartTime = 0;
-  Serial.printf("%s ui32BoxActiveStateStartTime reset to 0\n", _subName);
-  boxActiveStateHasBeenSignaled = true;
-  Serial.printf("%s ui32BoxActiveStateStartTime reset to true\n", _subName);
-
-  Serial.printf("%s ui32lastRecPirHighTime reset to 0\n", _subName);
-  ui32lastRecPirHighTime = 0;
-
-  isNewBoxHasBeenSignaled = true;
-  Serial.printf("%s isNewBoxHasBeenSignaled reset to true\n", _subName);
+  *this = ControlerBox{};
   boxDeletionHasBeenSignaled = false;
   Serial.printf("%s boxDeletionHasBeenSignaled set to FALSE\n", _subName);
 
-  ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
-  Serial.printf("%s ui16MasterBoxName set to %u\n", _subName, ui16MasterBoxName);
-  bMasterBoxNameChangeHasBeenSignaled = true;
-  Serial.printf("%s bMasterBoxNameChangeHasBeenSignaled set to true\n", _subName);
-
-  sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
-  Serial.printf("%s sBoxDefaultState set to %i\n", _subName, sBoxDefaultState);
-  sBoxDefaultStateChangeHasBeenSignaled = true;
-  Serial.printf("%s sBoxDefaultStateChangeHasBeenSignaled set to true\n", _subName);
+  printProperties(_ui16BoxIndex);
 
   Serial.printf("%s over\n", _subName);
 }
