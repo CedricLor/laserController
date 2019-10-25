@@ -1,5 +1,5 @@
 /*
-  sequence.cpp - sequences are precoded sequences of bars
+  laserSequence.cpp - sequences are precoded sequences of bars
   Created by Cedric Lor, June 4, 2019.
 
 Traductions en anglais:
@@ -9,7 +9,7 @@ Traductions en anglais:
 */
 
 #include "Arduino.h"
-#include "sequence.h"
+#include "laserSequence.h"
 
 
 

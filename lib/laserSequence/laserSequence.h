@@ -1,5 +1,5 @@
 /*
-  sequence.h - sequences are precoded sequences of laserNotes
+  laserSequence.h - sequences are precoded sequences of laserNotes
   Created by Cedric Lor, June 4, 2019.
 
 */
@@ -7,8 +7,8 @@
 #include <painlessMesh.h>
 #include <bar.h>
 
-#ifndef sequence_h
-#define sequence_h
+#ifndef laserSequence_h
+#define laserSequence_h
 
 class sequence
 {
