@@ -8,6 +8,7 @@
 #define boxState_h
 
 #include "Arduino.h"
+#include "ControlerBox.h"
 #include <laserSequence.h>
 
 class step

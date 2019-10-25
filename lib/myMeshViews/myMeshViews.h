@@ -7,7 +7,8 @@
 #define myMeshViews_h
 
 #include "Arduino.h"
-#include <controllerBoxesCollection.h>
+#include "globalBasementVars.h"
+#include "ControlerBox.h"
 #include <myMeshSenderMessage.h>
 
 
@@ -19,12 +20,12 @@ class myMeshViews
   friend class myMesh;
 
   public:
-    myMeshViews(controllerBoxesCollection & __ctlBxColl);
+    myMeshViews(ControlerBox & __thisbox);
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
   private:
-    controllerBoxesCollection & _ctlBxColl;
+    ControlerBox & _thisBox;
 
     void _changedBoxConfirmation(JsonObject& obj);
     void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
