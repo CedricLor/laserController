@@ -60,8 +60,8 @@ void laserInterface::sequenceNS::initComm() {
 // no way to dynamically pass an ad hoc sequence. Refacto to give possibility to
 // pass non static laserSequences
 // Same issue with setCurrentBar
-void laserInterface::sequenceNS::setCurrent(const int16_t __i16_sequence_id) {
-    globalSequences.setActive(__i16_sequence_id);
+void laserInterface::sequenceNS::setCurrent(const int16_t __i16_laser_sequence_id) {
+    globalSequences.setActive(__i16_laser_sequence_id);
 }
 
 

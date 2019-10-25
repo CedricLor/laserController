@@ -44,10 +44,10 @@ class laserSequences
   friend class test;
   public:
     /** constructors */
-    laserSequences(void (*_sendCurrentSequence)(const int16_t __i16_current_sequence_id)=nullptr);
+    laserSequences(void (*_sendCurrentSequence)(const int16_t __i16_current_laser_sequence_id)=nullptr);
 
     /** interface to mesh */
-    void (*sendCurrentSequence)(const int16_t __i16_active_sequence_id);
+    void (*sendCurrentSequence)(const int16_t __i16_active_laser_sequence_id);
 
     /** public properties */
     bars _bars;  // <-- TODO: make it private at some point
@@ -58,7 +58,7 @@ class laserSequences
     char sequenceFileName[25];
     
     /** setters */
-    uint16_t setActive(const uint16_t __target_sequence_ix_numb);
+    uint16_t setActive(const uint16_t __target_laser_sequence_ix_numb);
     void disableAndResetTPlaySequence();
     void setStopCallbackForTPlaySequence();
 
@@ -66,7 +66,7 @@ class laserSequences
     sequence const & getActiveSequence() const;
 
     /** Task tPlaySequence - sequence players */
-    uint16_t const playSequence(const uint16_t __target_sequence_ix_numb);
+    uint16_t const playSequence(const uint16_t __target_laser_sequence_ix_numb);
     Task tPlaySequence;
 
     /** Task tPreloadNextSequence - preload next sequence from SPIFFS */
@@ -78,10 +78,10 @@ class laserSequences
     sequence & _activeSequence = _defaultSequence;
 
     /** setters */
-    uint16_t _setActive(const sequence & __active_sequence);
+    uint16_t _setActive(const sequence & __active_laser_sequence);
 
     /** Task tPlaySequence - callbacks and methods */
-    uint16_t const _playSequence(const sequence & __target_sequence);
+    uint16_t const _playSequence(const sequence & __target_laser_sequence);
     bool _oetcbPlaySequence();
     void _tcbPlaySequence();
     void _odtcbPlaySequence();

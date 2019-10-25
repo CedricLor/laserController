@@ -156,7 +156,7 @@ int16_t const sequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSeq
  * 
  *  default constructor */
 laserSequences::laserSequences(
-  void (*_sendCurrentSequence)(const int16_t __i16_active_sequence_id)
+  void (*_sendCurrentSequence)(const int16_t __i16_active_laser_sequence_id)
 ): 
   sendCurrentSequence(_sendCurrentSequence),
   _bars(),
@@ -290,8 +290,8 @@ uint16_t laserSequences::_setActive(const sequence & __activeSequence) {
  * 
  *  public instance setter 
  * */
-uint16_t laserSequences::setActive(const uint16_t __target_sequence_ix_numb) {
-  _preloadNextSequence(__target_sequence_ix_numb);
+uint16_t laserSequences::setActive(const uint16_t __target_laser_sequence_ix_numb) {
+  _preloadNextSequence(__target_laser_sequence_ix_numb);
   return _setActive(nextSequence);
 }
 
@@ -366,21 +366,21 @@ sequence const & laserSequences::getActiveSequence() const {
 ///////////////////////////////////
 // Sequence Players
 ///////////////////////////////////
-/** laserSequences::playSequence(const sequence & __target_sequence):
+/** laserSequences::playSequence(const sequence & __target_laser_sequence):
  *  
  *  play a single sequence calculating the durations on the basis of the passed-in beat.
  * 
- *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
+ *  {@ params} const int16_t __i16_laser_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose)
  * */
-uint16_t const laserSequences::_playSequence(const sequence & __target_sequence) {
+uint16_t const laserSequences::_playSequence(const sequence & __target_laser_sequence) {
   // 0. Do not do anything if the beat has not been set
-  if ((__target_sequence._beat.getBaseBeatInBpm() == 0) || (__target_sequence._beat.getBaseNoteForBeat() == 0)) {
+  if ((__target_laser_sequence._beat.getBaseBeatInBpm() == 0) || (__target_laser_sequence._beat.getBaseNoteForBeat() == 0)) {
     return 0;
   }
 
   // 1. set the active sequence and the active beat
-  if (_setActive(__target_sequence) == -2) {
+  if (_setActive(__target_laser_sequence) == -2) {
     return 1;
   }
 
@@ -396,18 +396,18 @@ uint16_t const laserSequences::_playSequence(const sequence & __target_sequence)
 
 
 
-/** laserSequences::playSequence(const uint16_t __target_sequence_ix_numb):
+/** laserSequences::playSequence(const uint16_t __target_laser_sequence_ix_numb):
  *  
  *  play a single sequence calculating the durations on the basis of the passed-in beat.
  * 
- *  {@ params} const int16_t __i16_sequence_id: optional sequence id in the 
+ *  {@ params} const int16_t __i16_laser_sequence_id: optional sequence id in the 
  *             sequence array (might be needed for debug and interface purpose)
  * */
-uint16_t const laserSequences::playSequence(const uint16_t __target_sequence_ix_numb) {
+uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequence_ix_numb) {
   // 1. Load the sequence into memory
-  _preloadNextSequence(__target_sequence_ix_numb);
+  _preloadNextSequence(__target_laser_sequence_ix_numb);
 
-  // 2. Call playSequence(const sequence & __target_sequence)
+  // 2. Call playSequence(const sequence & __target_laser_sequence)
   return _playSequence(nextSequence);
 }
 
