@@ -27,9 +27,8 @@ class myMeshViews
     controllerBoxesCollection & _ctlBxColl;
 
     void _changedBoxConfirmation(JsonObject& obj);
-    void _changeBoxRequest(JsonObject& _obj, bool _bBroadcast=false);
     void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
-    void _IRHighMsg();
+    void _IRHighMsg(uint32_t _ui32IRHighTime);
 
     // Helpers
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);

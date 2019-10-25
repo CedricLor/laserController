@@ -63,7 +63,7 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
     if (controllerBoxesArray.at(__ui16BoxIndex).nodeId == 0) {
       updateConnectedBoxCount(connectedBoxesCount + 1);
     }
-    controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex, controllerBoxesArray.at(0));
+    controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
   }
 
   /** In any case, return the index number to the caller. 
@@ -72,16 +72,6 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
    *  (ii) there was no empty slot left in the CB array to save the new data. */
   return __ui16BoxIndex;
 }
-
-
-
-// /** Task tSetBoxState resetter
-//  * 
-//  *  private method
-//  */
-// void controllerBoxesCollection::_resetTSetBoxState() {
-//   tSetBoxState.set(0, 1, NULL, NULL, NULL);
-// }
 
 
 

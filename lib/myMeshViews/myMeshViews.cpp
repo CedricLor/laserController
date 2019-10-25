@@ -70,32 +70,6 @@ void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
 
 
 
-/** _changeBoxRequest(JsonObject& _obj, bool _bBroadcast) is  */
-void myMeshViews::_changeBoxRequest(JsonObject& _obj, bool _bBroadcast) {
-  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-  Serial.print("myMeshViews::_changeBoxRequest(): starting.\n");
-
-  // broadcast or send the message
-  if (_bBroadcast) {
-    _sendMsg(_obj);
-  } else {
-    // get the destination nodeId
-    uint32_t _destNodeId = _ctlBxColl.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).nodeId;
-    _sendMsg(_obj, _destNodeId);
-  }
-  // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-
-  Serial.println("myMeshViews::_changeBoxRequest(): over.");
-}
-
-
-
-
-
 void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
   // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
@@ -112,13 +86,13 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
 
 
 
-void myMeshViews::_IRHighMsg() {
+void myMeshViews::_IRHighMsg(uint32_t _ui32IRHighTime) {
   myMeshSenderMessage _msg;
 
   // load the JSON document with values
   _msg._joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _msg._joMsg["key"] = "IR";
-  _msg._joMsg["time"] = _ctlBxColl.controllerBoxesArray.at(0).ui32lastRecPirHighTime;
+  _msg._joMsg["time"] = _ui32IRHighTime;
   _msg._joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
 
   // broadcast IR high message
