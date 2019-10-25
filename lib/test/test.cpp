@@ -923,14 +923,14 @@ void test::sequenceStack() {
     _laserSequences.ui16IxNumbOfSequenceToPreload);
   Serial.printf("%s _laserSequences.nextSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
     _laserSequences.nextSequence.i16IndexNumber);
-  Serial.printf("%s _laserSequences._defaultSequence.sequenceFileName shall be equal to \"/laserSequences.json\". Is [%s]\n", _methodName, 
+  Serial.printf("%s _laserSequences._defaultLaserSequence.sequenceFileName shall be equal to \"/laserSequences.json\". Is [%s]\n", _methodName, 
     _laserSequences.sequenceFileName);
   Serial.printf("%s _laserSequences.getActiveSequence().i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
     _laserSequences.getActiveSequence().i16IndexNumber);
   Serial.printf("%s _laserSequences._activeSequence.i16IndexNumber shall be equal to 1. Is [%i]\n", _methodName, 
     _laserSequences._activeSequence.i16IndexNumber);
-  Serial.printf("%s _laserSequences._defaultSequence.i16IndexNumber shall be equal to -2. Is [%i]\n", _methodName, 
-    _laserSequences._defaultSequence.i16IndexNumber);
+  Serial.printf("%s _laserSequences._defaultLaserSequence.i16IndexNumber shall be equal to -2. Is [%i]\n", _methodName, 
+    _laserSequences._defaultLaserSequence.i16IndexNumber);
   
   Serial.printf("\n%s testing access _laserSequences._bars members\n", _methodName);
   Serial.printf("%s _laserSequences._bars.ui16IxNumbOfBarToPreload shall be equal to 1. Is [%u]\n", _methodName, 

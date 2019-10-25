@@ -74,8 +74,8 @@ class laserSequences
 
   private:
     // variables
-    laserSequence _defaultSequence;
-    laserSequence & _activeSequence = _defaultSequence;
+    laserSequence _defaultLaserSequence;
+    laserSequence & _activeSequence = _defaultLaserSequence;
 
     /** setters */
     uint16_t _setActive(const laserSequence & __active_laser_sequence);

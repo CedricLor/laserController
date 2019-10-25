@@ -165,8 +165,8 @@ laserSequences::laserSequences(
   sequenceFileName("/laserSequences.json"),
   tPlaySequence(),
   tPreloadNextSequence(),
-  _defaultSequence(),
-  _activeSequence(_defaultSequence)
+  _defaultLaserSequence(),
+  _activeSequence(_defaultLaserSequence)
 {
   // 1. Disable and reset the Task tPlaySequence
   disableAndResetTPlaySequence();

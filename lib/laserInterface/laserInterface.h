@@ -39,7 +39,7 @@ namespace laserInterface {
       beat const _defaultBeat;
       laserNote const _defaultLaserNote;
       bar const _defaultBar;
-      laserSequence const _defaultSequence;
+      laserSequence const _defaultLaserSequence;
 
       // active item
       // laserSequence & _activeSequence;
