@@ -13,7 +13,7 @@ laserSequences laserInterface::globalSequences(sequenceNS::sendCurrent);
 
 // void laserInterface::init(controllerBoxesCollection * __cntrllerBoxesCollection) {
 
-//   globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
+//   globalSequences.sendCurrentLaserSequence = sequenceNS::sendCurrent;
 // }
 
 
@@ -53,7 +53,7 @@ laserInterface::laserScheduler::laserScheduler(_Mode __mode)
 // laserSequences stack
 /*******************/
 void laserInterface::sequenceNS::initComm() {
-    globalSequences.sendCurrentSequence = sequenceNS::sendCurrent;
+    globalSequences.sendCurrentLaserSequence = sequenceNS::sendCurrent;
 }
 
 // TODO: for the moment, setCurrentSequence can only be called with a sequence_id

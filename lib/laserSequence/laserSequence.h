@@ -44,10 +44,10 @@ class laserSequences
   friend class test;
   public:
     /** constructors */
-    laserSequences(void (*_sendCurrentSequence)(const int16_t __i16_current_laser_sequence_id)=nullptr);
+    laserSequences(void (*_sendCurrentLaserSequence)(const int16_t __i16_current_laser_sequence_id)=nullptr);
 
     /** interface to mesh */
-    void (*sendCurrentSequence)(const int16_t __i16_active_laser_sequence_id);
+    void (*sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id);
 
     /** public properties */
     bars _bars;  // <-- TODO: make it private at some point

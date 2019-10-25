@@ -156,9 +156,9 @@ int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumb
  * 
  *  default constructor */
 laserSequences::laserSequences(
-  void (*_sendCurrentSequence)(const int16_t __i16_active_laser_sequence_id)
+  void (*_sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id)
 ): 
-  sendCurrentSequence(_sendCurrentSequence),
+  sendCurrentLaserSequence(_sendCurrentLaserSequence),
   _bars(),
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
   nextSequence(),
@@ -435,8 +435,8 @@ bool laserSequences::_oetcbPlaySequence() {
   tPlaySequence.setIterations(_activeLaserSequence.ui16GetBarCountInLaserSequence());
 
   /** 2. Signal the change of laserSequence to the mesh. */
-  if (sendCurrentSequence != nullptr) {
-    sendCurrentSequence(_activeLaserSequence.i16IndexNumber);
+  if (sendCurrentLaserSequence != nullptr) {
+    sendCurrentLaserSequence(_activeLaserSequence.i16IndexNumber);
   }
 
   return true;
