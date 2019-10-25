@@ -107,20 +107,20 @@ int16_t const laserSequence::i16GetFirstBarIndexNumber() const {
 
 
 
-/**int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInSequence) const
+/**int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t ui16BarIxNumbInLaserSequence) const
  * 
  * Instance getter.
  * 
  * Returns the index number of a bar in the bars database, given such bar's index
  * number in the array of bars associated to this laserSequence
  *  */
-int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInSequence) const {
+int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumbInLaserSequence) const {
   int16_t _ui16BarIxNumb = 5; // laserSequence 5: allOff
   try {
-    _ui16BarIxNumb = _i16BarIxNumbsArray.at(__ui16BarIxNumbInSequence);
+    _ui16BarIxNumb = _i16BarIxNumbsArray.at(__ui16BarIxNumbInLaserSequence);
   }
   catch (const std::out_of_range& oor) {
-    Serial.printf("laserSequence::i16GetBarIndexNumber() called with __ui16BarIxNumbInSequence. Out of range error: \n");
+    Serial.printf("laserSequence::i16GetBarIndexNumber() called with __ui16BarIxNumbInLaserSequence. Out of range error: \n");
     Serial.println(oor.what());
   }
   return _ui16BarIxNumb;
