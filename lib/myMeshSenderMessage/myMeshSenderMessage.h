@@ -23,10 +23,9 @@ class myMeshSenderMessage
   public:
     myMeshSenderMessage();
 
-    void statusMsg(uint32_t destNodeId);
-
     StaticJsonDocument<_capacity> _jDoc;
     JsonObject _joMsg = _jDoc.to<JsonObject>();
+
   private:
 };
 

@@ -18,29 +18,29 @@ myMeshSenderMessage::myMeshSenderMessage()
 
 
 
-void myMeshSenderMessage::statusMsg(uint32_t destNodeId) {
-  Serial.println("myMeshSenderMessage::statusMsg(): starting.");
+// void myMeshSenderMessage::statusMsg(uint32_t destNodeId) {
+//   Serial.println("myMeshSenderMessage::statusMsg(): starting.");
   
-  // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
+//   // prepare the JSON string to be sent via the mesh
+//   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
-  _joMsg = _jDoc.to<JsonObject>();
+//   _joMsg = _jDoc.to<JsonObject>();
 
-  // load the JSON document with values
-  // _joMsg["actSt"] = _ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState;
-  // _joMsg["actStStartT"] = _ctlBxColl.controllerBoxesArray.at(0).ui32BoxActiveStateStartTime; // gets the recorded mesh time
-  // _joMsg["boxDefstate"] = _ctlBxColl.controllerBoxesArray.at(0).sBoxDefaultState;
-  // _joMsg["action"] = "s";
+//   // load the JSON document with values
+//   // _joMsg["actSt"] = _ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState;
+//   // _joMsg["actStStartT"] = _ctlBxColl.controllerBoxesArray.at(0).ui32BoxActiveStateStartTime; // gets the recorded mesh time
+//   // _joMsg["boxDefstate"] = _ctlBxColl.controllerBoxesArray.at(0).sBoxDefaultState;
+//   // _joMsg["action"] = "s";
 
-  // send to the sender
-  // _sendMsg(_joMsg, destNodeId);
+//   // send to the sender
+//   // _sendMsg(_joMsg, destNodeId);
 
-  // I signaled my boxState change.
-  // => set my own boxActiveStateHasBeenSignaled to true
-  // _ctlBxColl.controllerBoxesArray.at(0).boxActiveStateHasBeenSignaled = true;
+//   // I signaled my boxState change.
+//   // => set my own boxActiveStateHasBeenSignaled to true
+//   // _ctlBxColl.controllerBoxesArray.at(0).boxActiveStateHasBeenSignaled = true;
 
-  Serial.println("myMeshSenderMessage::statusMsg(): over.");
-}
+//   Serial.println("myMeshSenderMessage::statusMsg(): over.");
+// }
 
 
 
