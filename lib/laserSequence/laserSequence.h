@@ -55,7 +55,7 @@ class laserSequences
     /** Variables to read laserSequences from SPIFSS */
     uint16_t ui16IxNumbOfSequenceToPreload;
     sequence nextSequence;
-    char sequenceFileName[20];
+    char sequenceFileName[25];
     
     /** setters */
     uint16_t setActive(const uint16_t __target_sequence_ix_numb);
