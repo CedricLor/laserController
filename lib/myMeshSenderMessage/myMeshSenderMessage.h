@@ -15,10 +15,6 @@ constexpr int      _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
 
 class myMeshSenderMessage
 {
-  friend class pirController;
-  friend class myWSReceiver;
-  friend class myMeshController;
-  friend class myMesh;
 
   public:
     myMeshSenderMessage();
