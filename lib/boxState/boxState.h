@@ -32,7 +32,6 @@ class step
 
 
   private:
-    void _applyStep();
     // boxState criteria (variables) setter
     int16_t _i16stepBoxStateNb;
     int16_t _i16StateDuration;
@@ -151,6 +150,7 @@ class boxStateCollection
 
     void _restartTaskPlayBoxState();
     void _restartTaskPlayBoxStateInStepControlledMode();
+    void _applyNextStep();
 
     bool _oetcbPlayBoxState();
     void _odtcbPlayBoxState();
@@ -160,6 +160,5 @@ class boxStateCollection
     unsigned long _ulCalcInterval(int16_t _i16IntervalInS);
 };
 
-extern boxStateCollection & bxStateColl;
 
 #endif

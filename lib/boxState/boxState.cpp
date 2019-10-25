@@ -183,22 +183,6 @@ step & step::operator=(step&& __step) {
   return *this;
 }
 
-/** step::_applyStep(): applies the values of this step to the relevant boxState */
-void step::_applyStep() {
-  Serial.println("step::_applyStep(). starting");
-  bxStateColl.boxStatesArray.at(_i16stepBoxStateNb) = {
-    _i16StateDuration,
-    _ui16AssociatedSequence,
-    _i16onIRTrigger,
-    _i16onMeshTrigger,
-    _i16onExpire,
-    _ui16monitoredMasterBoxesNodeNames,
-    _i16monitoredMasterStates
-  };
-  Serial.println("step::_applyStep(). ending");
-}
-
-
 
 
 
@@ -704,8 +688,8 @@ void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
 void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
   // Serial.println("void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode(). starting.");
   if (stepColl.i16maxStepIndexNb > -1) {
-    /** 1. configure the params of the pending boxState. */
-    stepColl.nextStep._applyStep();
+    /** 1. configure the params for the next boxState. */
+    _applyNextStep();
     if ((stepColl.ui16stepCounter < stepColl.i16maxStepIndexNb)) {
       /** 2. increment the step counter. */
       stepColl.ui16stepCounter = stepColl.ui16stepCounter + 1;
@@ -716,6 +700,29 @@ void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
   /** 4. call the generic _restartTaskPlayBoxState()*/
   _restartTaskPlayBoxState();
 }
+
+
+
+/** void boxStateCollection::_applyNextStep()
+ * 
+ *  Applies the next step to the relevant boxState for such next step
+ * 
+ *  Called from boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() only.
+*/
+void boxStateCollection::_applyNextStep() {
+  step & _nextStep = stepColl.nextStep;
+  boxState _nextBoxState{
+    _nextStep._i16StateDuration,
+    _nextStep._ui16AssociatedSequence,
+    _nextStep._i16onIRTrigger,
+    _nextStep._i16onMeshTrigger,
+    _nextStep._i16onExpire,
+    _nextStep._ui16monitoredMasterBoxesNodeNames,
+    _nextStep._i16monitoredMasterStates
+  };
+  boxStatesArray.at(_nextStep._i16stepBoxStateNb) = _nextBoxState;
+}
+
 
 
 /** void boxStateCollection::_restartTaskPlayBoxState()
