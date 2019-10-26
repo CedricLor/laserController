@@ -15,8 +15,6 @@
 myWSControllerBox::myWSControllerBox(ControlerBox & _controllerBox):
   _controllerBox(_controllerBox),
   
-  sBoxDefaultState(globalBaseVariables.gi16BoxDefaultState),
-
   isNewBoxHasBeenSignaled(true),
   boxDeletionHasBeenSignaled(true),
   boxActiveStateHasBeenSignaled(true), // has it been signaled to the browser by the interface?
@@ -39,7 +37,7 @@ void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("%s[%u] -> isNewBoxHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("%s[%u] -> boxDeletionHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxDeletionHasBeenSignaled);
 
-  Serial.printf("%s[%u] -> sBoxDefaultState: %u\n", _methodName, __ui16BoxIndex, sBoxDefaultState);
+  Serial.printf("%s[%u] -> sBoxDefaultState: %u\n", _methodName, __ui16BoxIndex, _controllerBox.sBoxDefaultState);
   Serial.printf("%s[%u] -> sBoxDefaultStateChangeHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
@@ -80,11 +78,11 @@ const bool myWSControllerBox::setBoxActiveState(const int16_t _i16boxActiveState
 
 
 
-// Setter for the defaultState and associated variables
-// Called only from this class (for the other boxes).
+/** Setter for the defaultState and associated variables
+ *  Called only from this class (for the other boxes). */
 void myWSControllerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   // Serial.println("myWSControllerBox::setBoxDefaultState(): starting");
-  sBoxDefaultState = _sBoxDefaultState;
+  _controllerBox.setBoxDefaultState(_sBoxDefaultState);
   sBoxDefaultStateChangeHasBeenSignaled = false;
   // Serial.println("myWSControllerBox::setBoxDefaultState(): over");
 }

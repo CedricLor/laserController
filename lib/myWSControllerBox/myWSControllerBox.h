@@ -22,8 +22,6 @@ class myWSControllerBox
      * */
     ControlerBox & _controllerBox;
 
-    short int sBoxDefaultState;
-
     bool isNewBoxHasBeenSignaled;
     /** bool boxDeletionHasBeenSignaled: 
      * 
