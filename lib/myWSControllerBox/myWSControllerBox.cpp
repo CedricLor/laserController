@@ -104,7 +104,7 @@ void myWSControllerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
 void myWSControllerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   const char * _subName = "myWSControllerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);
-  _controllerBox.updateBoxProperties(_ui32SenderNodeId, _obj, __ui16BoxIndex);
+  _controllerBox._updateBoxProperties(_ui32SenderNodeId, _obj, __ui16BoxIndex);
   Serial.println("%s over");
 }
 

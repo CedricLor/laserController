@@ -66,7 +66,7 @@ const bool ControlerBox::_isBoxActiveStateGoingToChange(const int16_t _i16boxAct
  * 
  *  Called from:
  *  - boxStateCollection::_restartTaskPlayBoxState(): for this box, when this box's boxState has changed;
- *  - ControlerBox::updateBoxProperties(): for the other boxes, upon receiving a notification of a boxState
+ *  - ControlerBox::_updateBoxProperties(): for the other boxes, upon receiving a notification of a boxState
  *    change from the mesh.
 */
 const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
@@ -106,9 +106,9 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 /** Setter for ui32lastRecPirHighTime
  * 
  *  Called from: 
- *  - this class (from the method updateBoxProperties), upon receiving 
+ *  - this class (from the method _updateBoxProperties), upon receiving 
  *    an upstream information (limited for the moment to IR High)
- *    message from the other boxes; updateBoxProperties is itself 
+ *    message from the other boxes; _updateBoxProperties is itself 
  *    called by the _updateOrCreate() method in controllerBoxesCollection, which is 
  *    itself called from the meshController
  *  - the pirController, upon IR high. */
@@ -120,14 +120,14 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
 
 
 
-/**void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex)
+/**void ControlerBox::_updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex)
  * 
  *  Updater of the properties of the controller boxes in the mesh
  *  (including this one, at index 0 of the controller boxes array).
  *  
  *  Called from controllerBoxesCollection::_updateOrCreate() exclusively
 */
-void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
+void ControlerBox::_updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   const char * _subName = "ControlerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);
 
