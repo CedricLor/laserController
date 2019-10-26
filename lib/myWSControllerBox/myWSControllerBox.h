@@ -22,11 +22,6 @@ class myWSControllerBox
      * */
     ControlerBox & _controllerBox;
 
-
-    /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
-     *  by a call to meshNodeTime.
-     * Set via ControlerBox::setBoxActiveState. */
-    uint32_t ui32BoxActiveStateStartTime;
     /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
      *  sent a PIR high signal. */
     uint32_t ui32lastRecPirHighTime;
