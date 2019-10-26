@@ -22,10 +22,7 @@ class myWSControllerBox
      * */
     ControlerBox & _controllerBox;
 
-    /** int16_t i16BoxActiveState:
-     * - set by boxState events, by steps or manually by WS requests.
-     * - read by myWSSender, myMeshViews, myWSReceiver and boxState. */
-    int16_t i16BoxActiveState;
+
     /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
      *  by a call to meshNodeTime.
      * Set via ControlerBox::setBoxActiveState. */
