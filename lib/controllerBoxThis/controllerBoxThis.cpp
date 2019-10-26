@@ -30,7 +30,7 @@ void controllerBoxThis::updateThisBoxProperties() {
   // by calls to setBoxActiveState from boxState
   if (globalBaseVariables.MY_DEBUG == true) {
     Serial.println("controllerBoxThis::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
-    thisCtrlerBox.printProperties(0);
+    thisCtrlerBox._printProperties(0);
   };
 }
 

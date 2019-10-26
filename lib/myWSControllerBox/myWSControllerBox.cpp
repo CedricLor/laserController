@@ -26,7 +26,7 @@ myWSControllerBox::myWSControllerBox(ControlerBox & _controllerBox):
 
 void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "myWSControllerBox::printProperties(): Box n. ";
-  _controllerBox.printProperties(__ui16BoxIndex);
+  _controllerBox._printProperties(__ui16BoxIndex);
 
   Serial.printf("%s[%u] -> isNewBoxHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("%s[%u] -> boxDeletionHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxDeletionHasBeenSignaled);

@@ -30,7 +30,7 @@ ControlerBox::ControlerBox():
 
 
 
-void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
+void ControlerBox::_printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "ControlerBox::printProperties(): Box n. ";
   Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, networkData.nodeId);
   Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(networkData.stationIP.toString());
@@ -167,7 +167,7 @@ void ControlerBox::_updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& 
   // Print out the updated properties
   if (globalBaseVariables.MY_DEBUG == true) {
     Serial.printf("%s Updated box index %u. Calling printProperties().\n", _subName, __ui16BoxIndex);
-    printProperties(__ui16BoxIndex);
+    _printProperties(__ui16BoxIndex);
   }
   Serial.println("%s over");
 }
@@ -184,7 +184,7 @@ void ControlerBox::_deleteBox(const uint16_t _ui16BoxIndex) {
   boxDeletionHasBeenSignaled = false;
   Serial.printf("%s boxDeletionHasBeenSignaled set to FALSE\n", _subName);
 
-  printProperties(_ui16BoxIndex);
+  _printProperties(_ui16BoxIndex);
 
   Serial.printf("%s over\n", _subName);
 }
