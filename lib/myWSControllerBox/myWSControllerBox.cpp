@@ -79,21 +79,6 @@ void myWSControllerBox::setBoxDefaultState(const short _sBoxDefaultState) {
 
 
 
-/** Setter for ui32lastRecPirHighTime
- * 
- *  Called from: 
- *  - this class (from the method updateBoxProperties), upon receiving 
- *    an upstream information (limited for the moment to IR High)
- *    message from the other boxes; updateBoxProperties is itself 
- *    called by the _updateOrCreate() method in controllerBoxesCollection, which is 
- *    itself called from the meshController
- *  - the pirController, upon IR high. */
-void myWSControllerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
-  _controllerBox.setBoxIRTimes(_ui32lastRecPirHighTime);
-}
-
-
-
 /**void myWSControllerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex)
  * 
  *  Updater of the properties of the controller boxes in the mesh
