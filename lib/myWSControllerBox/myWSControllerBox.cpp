@@ -89,9 +89,7 @@ void myWSControllerBox::setBoxDefaultState(const short _sBoxDefaultState) {
  *    itself called from the meshController
  *  - the pirController, upon IR high. */
 void myWSControllerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
-  if (_controllerBox.ui32lastRecPirHighTime < _ui32lastRecPirHighTime) {
-    _controllerBox.ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
-  }
+  _controllerBox.setBoxIRTimes(_ui32lastRecPirHighTime);
 }
 
 
@@ -106,45 +104,7 @@ void myWSControllerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
 void myWSControllerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex) {
   const char * _subName = "myWSControllerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);
-
-  // set the nodeId
-  // if (_controllerBox.networkData.nodeId == 0) {
-  //   isNewBoxHasBeenSignaled = false;
-  //   Serial.printf("%s ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", _subName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
-  // }
-  // _controllerBox.networkData.update(_ui32SenderNodeId, _obj);
-
-  // set the ui16NodeName
-  _controllerBox.ui16NodeName = _obj["NNa"];
-
-  // Setting activeState stack
-  // need to send via myMeshViews and add to ControlerBox the time
-  // for which the new sender boxState shall apply
-  // extract the __senderBoxActiveState from the JSON
-  if (_obj.containsKey("actSt")) {
-    const short int __senderBoxActiveState = _obj["actSt"];
-    const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
-    setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
-  }
-  
-  // Setting defaultState stack
-  // need to send via myMeshViews and add to ControlerBox the time
-  // for which the new sender boxState shall apply
-  // extract the __senderBoxActiveState from the JSON
-  if (_obj.containsKey("boxDefstate")) {
-    const short int __senderBoxDefaultState = _obj["boxDefstate"];
-    setBoxDefaultState(__senderBoxDefaultState);
-  }
-
-  if (_obj["action"] == "usi" && _obj["key"] == "IR") {
-    setBoxIRTimes(_obj["time"].as<uint32_t>());
-  }
-
-  // Print out the updated properties
-  if (globalBaseVariables.MY_DEBUG == true) {
-    Serial.printf("%s Updated box index %u. Calling printProperties().\n", _subName, __ui16BoxIndex);
-    printProperties(__ui16BoxIndex);
-  }
+  _controllerBox.updateBoxProperties(_ui32SenderNodeId, _obj, __ui16BoxIndex);
   Serial.println("%s over");
 }
 
