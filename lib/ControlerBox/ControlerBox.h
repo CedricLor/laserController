@@ -22,12 +22,6 @@ class ControlerBox
      * */
     controllerBoxNetworkData networkData;
 
-    /** IPAddress APIP: stores the APIP  (by reading painlessMesh.APIP or wifi.APIP).
-     * 
-     * The APIP set by painlessMesh, calculated from the ESP's mac address or set manually
-     * when the IF is broadcasted on this ESP's AP interface. */
-    IPAddress APIP;
-
     /** uint16_t ui16NodeName:
      * 
      * set by me, in global (201, 202, etc.) */

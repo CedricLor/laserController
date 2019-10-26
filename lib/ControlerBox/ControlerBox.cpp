@@ -13,13 +13,14 @@
 // Constructor
 ControlerBox::ControlerBox():
   networkData(),
-  APIP{0,0,0,0},
   
   ui16NodeName(254),
+
   i16BoxActiveState(-1),
   ui32BoxActiveStateStartTime(0),
   boxActiveStateHasBeenSignaled(true), // has it been signaled to the browser by the interface?
   ui32lastRecPirHighTime(0),
+  
   isNewBoxHasBeenSignaled(true),
   boxDeletionHasBeenSignaled(true),
   sBoxDefaultState(globalBaseVariables.gi16BoxDefaultState),
@@ -32,8 +33,8 @@ ControlerBox::ControlerBox():
 void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "ControlerBox::printProperties(): Box n. ";
   Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, networkData.nodeId);
-  Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
   Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(networkData.stationIP.toString());
+  Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(networkData.APIP.toString());
   Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, ui16NodeName);
 
   Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
