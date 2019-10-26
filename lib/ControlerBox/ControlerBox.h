@@ -20,7 +20,7 @@ class ControlerBox
 
     /** -------- Public Instance Variables -----------------
      * */
-
+    ControllerBoxNetworkData networkData;
     /** uint32_t nodeId: calculated by painlessMesh from the ESP's mac address */
     uint32_t nodeId;
 

@@ -12,6 +12,7 @@
 
 // Constructor
 ControlerBox::ControlerBox():
+  networkData(),
   nodeId(0),
   stationIP{0,0,0,0},
   APIP{0,0,0,0},
