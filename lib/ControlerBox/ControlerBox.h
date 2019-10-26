@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
-#include <ControllerBoxNetworkData.h>
+#include <controllerBoxNetworkData.h>
 
 class ControlerBox
 {
@@ -20,7 +20,7 @@ class ControlerBox
 
     /** -------- Public Instance Variables -----------------
      * */
-    ControllerBoxNetworkData networkData;
+    controllerBoxNetworkData networkData;
     /** uint32_t nodeId: calculated by painlessMesh from the ESP's mac address */
     uint32_t nodeId;
 

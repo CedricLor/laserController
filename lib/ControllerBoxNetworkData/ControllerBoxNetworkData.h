@@ -1,20 +1,20 @@
 /*
-  ControllerBoxNetworkData.h - Library to handle the ControlerBox network data attributes.
+  controllerBoxNetworkData.h - Library to handle the ControlerBox network data attributes.
   Created by Cedric Lor, October 26, 2019.
 */
-#ifndef ControllerBoxNetworkData_h
-#define ControllerBoxNetworkData_h
+#ifndef controllerBoxNetworkData_h
+#define controllerBoxNetworkData_h
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
 
-class ControllerBoxNetworkData
+class controllerBoxNetworkData
 {
   friend class ControlerBox;
 
   public:
     /** -------- constructors -------- */
-    ControllerBoxNetworkData();
+    controllerBoxNetworkData();
 
 
     uint32_t nodeId;
@@ -25,7 +25,7 @@ class ControllerBoxNetworkData
      * when the IF is broadcasted on this ESP's AP interface. */
     IPAddress APIP;
 
-    void printProperties(const uint16_t _ui16BoxIndex);
+    // void printProperties(const uint16_t _ui16BoxIndex);
 
   private:
     void update(uint32_t _ui32SenderNodeId, JsonObject& _obj);

@@ -1,17 +1,17 @@
 /*
-  ControllerBoxNetworkData.cpp - Library to handle the ControlerBox network data attributes.
+  controllerBoxNetworkData.cpp - Library to handle the ControlerBox network data attributes.
   Created by Cedric Lor, October 26, 2019.
 */
 
 #include "Arduino.h"
-#include "ControllerBoxNetworkData.h"
+#include "controllerBoxNetworkData.h"
 
 
 // PUBLIC
 // Instance Methods
 
 // Constructor
-ControllerBoxNetworkData::ControllerBoxNetworkData():
+controllerBoxNetworkData::controllerBoxNetworkData():
   nodeId(0),
   stationIP{0,0,0,0},
   APIP{0,0,0,0}  
@@ -20,23 +20,22 @@ ControllerBoxNetworkData::ControllerBoxNetworkData():
 
 
 
-void ControllerBoxNetworkData::printProperties(const uint16_t __ui16BoxIndex) {
-  const char * _methodName = "ControllerBoxNetworkData::printProperties(): Box n. ";
-  Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, nodeId);
-  Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
-  Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
-}
+// void controllerBoxNetworkData::printProperties(const uint16_t __ui16BoxIndex) {
+//   const char * _methodName = "controllerBoxNetworkData::printProperties(): Box n. ";
+//   Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, nodeId);
+//   Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
+//   Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
+// }
 
 
 
-/**void ControllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj)
+/**void controllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj)
  * 
- *  Updater of the properties of the controller boxes in the mesh
- *  (including this one, at index 0 of the controller boxes array).
+ *  Updater of the network properties of the (other) controller boxes in the mesh.
  *  
- *  Called from controllerBoxesCollection::_updateOrCreate() exclusively
+ *  Called from ControlerBox exclusively
 */
-void ControllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+void controllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
   const char * _subName = "ControlerBox::update():";
   Serial.printf("%s starting\n", _subName);
 
