@@ -15,7 +15,6 @@
 myWSControllerBox::myWSControllerBox(ControlerBox & _controllerBox):
   _controllerBox(_controllerBox),
   
-  ui32lastRecPirHighTime(0),
   sBoxDefaultState(globalBaseVariables.gi16BoxDefaultState),
 
   isNewBoxHasBeenSignaled(true),
@@ -35,7 +34,7 @@ void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _methodName, __ui16BoxIndex, _controllerBox.ui32BoxActiveStateStartTime);
   Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
 
-  Serial.printf("%s[%u] -> ui32lastRecPirHighTime: %u\n", _methodName, __ui16BoxIndex, ui32lastRecPirHighTime);
+  Serial.printf("%s[%u] -> ui32lastRecPirHighTime: %u\n", _methodName, __ui16BoxIndex, _controllerBox.ui32lastRecPirHighTime);
 
   Serial.printf("%s[%u] -> isNewBoxHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("%s[%u] -> boxDeletionHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxDeletionHasBeenSignaled);
@@ -102,8 +101,8 @@ void myWSControllerBox::setBoxDefaultState(const short _sBoxDefaultState) {
  *    itself called from the meshController
  *  - the pirController, upon IR high. */
 void myWSControllerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
-  if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
-    ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
+  if (_controllerBox.ui32lastRecPirHighTime < _ui32lastRecPirHighTime) {
+    _controllerBox.ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
   }
 }
 

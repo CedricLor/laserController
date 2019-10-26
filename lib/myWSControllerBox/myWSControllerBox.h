@@ -22,9 +22,6 @@ class myWSControllerBox
      * */
     ControlerBox & _controllerBox;
 
-    /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
-     *  sent a PIR high signal. */
-    uint32_t ui32lastRecPirHighTime;
     short int sBoxDefaultState;
 
     bool isNewBoxHasBeenSignaled;
