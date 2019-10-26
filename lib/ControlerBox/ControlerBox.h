@@ -14,6 +14,9 @@ class ControlerBox
   friend class myWSControllerBox;
   friend class controllerBoxesCollection;
   friend class controllerBoxThis;
+  friend class pirController;
+  friend class myMeshController;
+  friend class boxStateCollection;
 
   public:
     /** -------- constructors -------- */
@@ -70,15 +73,11 @@ class ControlerBox
     bool sBoxDefaultStateChangeHasBeenSignaled;
 
 
-
-    /** -------- Public Instance Methods -----------------
-     * */
-    const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
-    void setBoxDefaultState(const short _sBoxDefaultState);
-    void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
-
   private:
     void _printProperties(const uint16_t _ui16BoxIndex);
+    const bool _setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
+    void _setBoxDefaultState(const short _sBoxDefaultState);
+    void _setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
     void _updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     const bool _isBoxActiveStateGoingToChange(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) const;
     void _deleteBox(const uint16_t _ui16BoxIndex);

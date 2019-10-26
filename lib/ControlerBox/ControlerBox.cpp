@@ -69,7 +69,7 @@ const bool ControlerBox::_isBoxActiveStateGoingToChange(const int16_t _i16boxAct
  *  - ControlerBox::_updateBoxProperties(): for the other boxes, upon receiving a notification of a boxState
  *    change from the mesh.
 */
-const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
+const bool ControlerBox::_setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("ControlerBox::setBoxActiveState(): starting");
 
   if ( _isBoxActiveStateGoingToChange(_i16boxActiveState, _ui32BoxActiveStateStartTime) ) {
@@ -94,11 +94,11 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
 
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
-void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
-  // Serial.println("ControlerBox::setBoxDefaultState(): starting");
+void ControlerBox::_setBoxDefaultState(const short _sBoxDefaultState) {
+  // Serial.println("ControlerBox::_setBoxDefaultState(): starting");
   sBoxDefaultState = _sBoxDefaultState;
   sBoxDefaultStateChangeHasBeenSignaled = false;
-  // Serial.println("ControlerBox::setBoxDefaultState(): over");
+  // Serial.println("ControlerBox::_setBoxDefaultState(): over");
 }
 
 
@@ -112,7 +112,7 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
  *    called by the _updateOrCreate() method in controllerBoxesCollection, which is 
  *    itself called from the meshController
  *  - the pirController, upon IR high. */
-void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
+void ControlerBox::_setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
   if (_ui32lastRecPirHighTime != ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
   }
@@ -148,7 +148,7 @@ void ControlerBox::_updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& 
   if (_obj.containsKey("actSt")) {
     const short int __senderBoxActiveState = _obj["actSt"];
     const uint32_t __uiSenderBoxActiveStateStartTime = _obj["actStStartT"];
-    setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
+    _setBoxActiveState(__senderBoxActiveState, __uiSenderBoxActiveStateStartTime);
   }
   
   // Setting defaultState stack
@@ -157,11 +157,11 @@ void ControlerBox::_updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& 
   // extract the __senderBoxActiveState from the JSON
   if (_obj.containsKey("boxDefstate")) {
     const short int __senderBoxDefaultState = _obj["boxDefstate"];
-    setBoxDefaultState(__senderBoxDefaultState);
+    _setBoxDefaultState(__senderBoxDefaultState);
   }
 
   if (_obj["action"] == "usi" && _obj["key"] == "IR") {
-    setBoxIRTimes(_obj["time"].as<uint32_t>());
+    _setBoxIRTimes(_obj["time"].as<uint32_t>());
   }
 
   // Print out the updated properties

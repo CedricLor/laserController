@@ -51,7 +51,7 @@ void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
 const bool myWSControllerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("myWSControllerBox::setBoxActiveState(): starting");
 
-  if (_controllerBox.setBoxActiveState(_i16boxActiveState, _ui32BoxActiveStateStartTime)) {
+  if (_controllerBox._setBoxActiveState(_i16boxActiveState, _ui32BoxActiveStateStartTime)) {
     boxActiveStateHasBeenSignaled = false;
     /** boxActiveStateHasBeenSignaled setters:
      *  - by default to true upon init (controlerBox constructor);
@@ -72,7 +72,7 @@ const bool myWSControllerBox::setBoxActiveState(const int16_t _i16boxActiveState
  *  Called only from this class (for the other boxes). */
 void myWSControllerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   // Serial.println("myWSControllerBox::setBoxDefaultState(): starting");
-  _controllerBox.setBoxDefaultState(_sBoxDefaultState);
+  _controllerBox._setBoxDefaultState(_sBoxDefaultState);
   sBoxDefaultStateChangeHasBeenSignaled = false;
   // Serial.println("myWSControllerBox::setBoxDefaultState(): over");
 }
