@@ -74,6 +74,7 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
 
   if ( _isBoxActiveStateGoingToChange(_i16boxActiveState, _ui32BoxActiveStateStartTime) ) {
     i16BoxActiveState = _i16boxActiveState;
+    ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
 
     boxActiveStateHasBeenSignaled = false;
     /** boxActiveStateHasBeenSignaled setters:
@@ -83,9 +84,6 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
      *    coming from the web and whether the states of other boxes have been received;
      *  - to true in myMeshViews (for this box only, upon sending a statusMsg);
      * */
-
-    ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-
     return true;
   }
   // Serial.println("ControlerBox::setBoxActiveState(): over");
