@@ -26,18 +26,11 @@ myWSControllerBox::myWSControllerBox(ControlerBox & _controllerBox):
 
 void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "myWSControllerBox::printProperties(): Box n. ";
-  Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, _controllerBox.ui16NodeName);
-
-  Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _methodName, __ui16BoxIndex, _controllerBox.i16BoxActiveState);
-  Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _methodName, __ui16BoxIndex, _controllerBox.ui32BoxActiveStateStartTime);
-  Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
-
-  Serial.printf("%s[%u] -> ui32lastRecPirHighTime: %u\n", _methodName, __ui16BoxIndex, _controllerBox.ui32lastRecPirHighTime);
+  _controllerBox.printProperties(__ui16BoxIndex);
 
   Serial.printf("%s[%u] -> isNewBoxHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   Serial.printf("%s[%u] -> boxDeletionHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxDeletionHasBeenSignaled);
-
-  Serial.printf("%s[%u] -> sBoxDefaultState: %u\n", _methodName, __ui16BoxIndex, _controllerBox.sBoxDefaultState);
+  Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
   Serial.printf("%s[%u] -> sBoxDefaultStateChangeHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
