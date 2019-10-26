@@ -1,6 +1,11 @@
 /*
   myWSControllerBox.h - Library wrapping around the ControlerBox class, to keep track of changes
   requests and confirmations exchanged between the ControlerBoxes, the Interface and the Browser.
+
+  In principle, accessed only by myWSSender and myWSReceiver (and eventually, myMeshController or 
+  some bridge between myMeshController and myWSSender, upon reception of confirmation messages
+  from the mesh).
+  
   Created by Cedric Lor, October 26, 2019.
 */
 #ifndef myWSControllerBox_h
@@ -12,7 +17,6 @@
 
 class myWSControllerBox
 {
-
   public:
     /** -------- constructors -------- */
     myWSControllerBox(ControlerBox & _controllerBox);
