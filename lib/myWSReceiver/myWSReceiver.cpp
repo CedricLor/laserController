@@ -463,7 +463,7 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
       // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
       if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i).isNewBoxHasBeenSignaled = %i\n", _i, thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled);
+        Serial.printf("myWSReceiver::_lookForDOMMissingRows(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i).isNewBoxHasBeenSignaled == %i\n", _i, thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled);
         Serial.printf("myWSReceiver::_lookForDOMMissingRows(): this shall be caught by the task  _tSendWSDataIfChangeBoxState at next pass.\n");
       }
     } // if
