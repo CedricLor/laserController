@@ -13,7 +13,6 @@
 // Constructor
 ControlerBox::ControlerBox():
   networkData(),
-  nodeId(0),
   stationIP{0,0,0,0},
   APIP{0,0,0,0},
   
@@ -33,7 +32,7 @@ ControlerBox::ControlerBox():
 
 void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "ControlerBox::printProperties(): Box n. ";
-  Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, nodeId);
+  Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, networkData.nodeId);
   Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
   Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
   Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, ui16NodeName);
@@ -128,20 +127,11 @@ void ControlerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _
   Serial.printf("%s starting\n", _subName);
 
   // set the nodeId
-  if (nodeId == 0) {
+  if (networkData.nodeId == 0) {
     isNewBoxHasBeenSignaled = false;
     Serial.printf("%s ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", _subName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   }
-  nodeId = _ui32SenderNodeId;
-  // Serial.printf("%s ControlerBoxes[%u].nodeId = %u\n", __ui16BoxIndex, _ui32SenderNodeId);
-
-  // set the IPs
-  if ( _obj.containsKey("APIP")){ 
-    APIP = IPAddress(_obj["APIP"][0], _obj["APIP"][1], _obj["APIP"][2], _obj["APIP"][3]);
-  }
-  if ( _obj.containsKey("StIP")) {
-    stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
-  }
+  networkData.update(_ui32SenderNodeId, _obj);
 
   // set the ui16NodeName
   ui16NodeName = _obj["NNa"];

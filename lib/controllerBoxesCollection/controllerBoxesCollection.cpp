@@ -46,11 +46,11 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
   uint16_t __ui16BoxIndex = 254;
 
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if ((controllerBoxesArray.at(_i).nodeId == 0) && (__ui16BoxIndex == 254)) { 
+    if ((controllerBoxesArray.at(_i).networkData.nodeId == 0) && (__ui16BoxIndex == 254)) { 
       __ui16BoxIndex = _i;
       continue;
     }
-    if (controllerBoxesArray.at(_i).nodeId == _ui32nodeId) {
+    if (controllerBoxesArray.at(_i).networkData.nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
       __ui16BoxIndex = _i;
       break;
@@ -60,7 +60,7 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
   /** If we found an existing box or if we have a slot where to save the data from the JSON object 
    *  => save the data */
   if (__ui16BoxIndex != 254) {
-    if (controllerBoxesArray.at(__ui16BoxIndex).nodeId == 0) {
+    if (controllerBoxesArray.at(__ui16BoxIndex).networkData.nodeId == 0) {
       updateConnectedBoxCount(connectedBoxesCount + 1);
     }
     controllerBoxesArray.at(__ui16BoxIndex).updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
@@ -79,7 +79,7 @@ uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
   Serial.printf("controllerBoxesCollection::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
   uint16_t __ui16BoxIndex = 254;
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if (controllerBoxesArray.at(_i).nodeId == _ui32nodeId) {
+    if (controllerBoxesArray.at(_i).networkData.nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
       __ui16BoxIndex = _i;
       break;
@@ -119,7 +119,7 @@ void controllerBoxesCollection::printSearchResults(uint16_t _index, uint32_t _ui
 void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
   Serial.println("controllerBoxesCollection::deleteBoxByNodeId(): starting");
   for (uint16_t __it = 0; __it < globalBaseVariables.gui16BoxesCount; __it++) {
-    if (controllerBoxesArray[__it].nodeId == _ui32nodeId) {
+    if (controllerBoxesArray[__it].networkData.nodeId == _ui32nodeId) {
       deleteBoxByBoxIndex(__it);
       Serial.printf("controllerBoxesCollection::deleteBoxByNodeId(): updated ConnectedBoxCount\n");
 

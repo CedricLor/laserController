@@ -21,8 +21,6 @@ class ControlerBox
     /** -------- Public Instance Variables -----------------
      * */
     controllerBoxNetworkData networkData;
-    /** uint32_t nodeId: calculated by painlessMesh from the ESP's mac address */
-    uint32_t nodeId;
 
     /** IPAddress stationIP: stores the stationIP (by reading painlessMesh.stationIP or wifi.stationIP).
      * 

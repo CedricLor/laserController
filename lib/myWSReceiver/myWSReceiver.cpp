@@ -209,7 +209,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
     thisControllerBox.thisMeshViews._sendMsg(_obj);
   } else {
     // get the destination nodeId
-    uint32_t _destNodeId = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).nodeId;
+    uint32_t _destNodeId = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).networkData.nodeId;
     thisControllerBox.thisMeshViews._sendMsg(_obj, _destNodeId);
   }
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
@@ -397,15 +397,15 @@ void myWSReceiver::_lookForDisconnectedBoxes(JsonPair& _p) {
 
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): using this value to select a ControlerBox in thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray\n");
-    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId == 0 is %s\n", 
-      ((thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId == 0) ? "true" : "false")
+    Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).networkData.nodeId == 0 is %s\n", 
+      ((thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).networkData.nodeId == 0) ? "true" : "false")
     );
   }
 
   // check if it still is connected; if not, request an update of the DOM
-  if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId == 0) {
+  if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).networkData.nodeId == 0) {
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): the ControlerBox corresponding to the current boxRow has a nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).nodeId);
+      Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): the ControlerBox corresponding to the current boxRow has a networkData.nodeId of: %i. It is no longer connected to the mesh. Delete from the DOM.", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_iBoxIndex).networkData.nodeId);
       Serial.printf("myWSReceiver::_lookForDisconnectedBoxes(): about to turn thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i).boxDeletionHasBeenSignaled to false.\n", _iBoxIndex);
     }
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
@@ -456,8 +456,8 @@ void myWSReceiver::_lookForDOMMissingRows(JsonObject& _joBoxState) {
     char _c[3];  // declare an array of char of 3 characters ("   ")
     itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
     const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
-    if ((thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).nodeId != 0) && _keyInJson == nullptr) {
-      // if the thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i) has a nodeID and the corresponding _joBoxState[_c] is a nullprt
+    if ((thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).networkData.nodeId != 0) && _keyInJson == nullptr) {
+      // if the thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i) has a networkData.nodeId and the corresponding _joBoxState[_c] is a nullprt
       // there is a missing box in the DOM
       if (globalBaseVariables.MY_DG_WS) {Serial.printf("myWSReceiver::_lookForDOMMissingRows(): thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%i) is missing box in the DOM. Add it.\n", _i);}
       // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState

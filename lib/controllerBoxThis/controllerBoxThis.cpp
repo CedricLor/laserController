@@ -22,7 +22,7 @@ controllerBoxThis::controllerBoxThis():
 
 
 void controllerBoxThis::updateThisBoxProperties() {
-  thisCtrlerBox.nodeId = globalBaseVariables.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
+  thisCtrlerBox.networkData.nodeId = globalBaseVariables.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   thisCtrlerBox.APIP = globalBaseVariables.laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
   thisCtrlerBox.stationIP = globalBaseVariables.laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   thisCtrlerBox.ui16NodeName = globalBaseVariables.gui16NodeName;
