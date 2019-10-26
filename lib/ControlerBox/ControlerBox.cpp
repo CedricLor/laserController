@@ -53,6 +53,13 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
 
 
 
+const bool ControlerBox::_isBoxActiveStateGoingToChange(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) const {
+  return ((i16BoxActiveState != _i16boxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime));
+}
+
+
+
+
 /** const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
  *  
  *  Setter for the activeState and associated variables.
@@ -65,7 +72,7 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
 const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("ControlerBox::setBoxActiveState(): starting");
 
-  if ( (i16BoxActiveState != _i16boxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime) ) {
+  if ( _isBoxActiveStateGoingToChange(_i16boxActiveState, _ui32BoxActiveStateStartTime) ) {
     i16BoxActiveState = _i16boxActiveState;
 
     boxActiveStateHasBeenSignaled = false;

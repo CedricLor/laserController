@@ -78,6 +78,7 @@ class ControlerBox
     void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
 
   private:
+    const bool _isBoxActiveStateGoingToChange(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) const;
     void _deleteBox(const uint16_t _ui16BoxIndex);
 };
 
