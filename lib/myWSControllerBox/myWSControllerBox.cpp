@@ -15,8 +15,6 @@
 myWSControllerBox::myWSControllerBox(ControlerBox & _controllerBox):
   _controllerBox(_controllerBox),
   
-  ui16NodeName(254),
-
   i16BoxActiveState(-1),
   ui32BoxActiveStateStartTime(0),
   ui32lastRecPirHighTime(0),
@@ -33,7 +31,7 @@ myWSControllerBox::myWSControllerBox(ControlerBox & _controllerBox):
 
 void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "myWSControllerBox::printProperties(): Box n. ";
-  Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, ui16NodeName);
+  Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, _controllerBox.ui16NodeName);
 
   Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
   Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _methodName, __ui16BoxIndex, ui32BoxActiveStateStartTime);
@@ -125,14 +123,14 @@ void myWSControllerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   Serial.printf("%s starting\n", _subName);
 
   // set the nodeId
-  // if (networkData.nodeId == 0) {
+  // if (_controllerBox.networkData.nodeId == 0) {
   //   isNewBoxHasBeenSignaled = false;
   //   Serial.printf("%s ControlerBoxes[%u].isNewBoxHasBeenSignaled = %i\n", _subName, __ui16BoxIndex, isNewBoxHasBeenSignaled);
   // }
-  // networkData.update(_ui32SenderNodeId, _obj);
+  // _controllerBox.networkData.update(_ui32SenderNodeId, _obj);
 
   // set the ui16NodeName
-  ui16NodeName = _obj["NNa"];
+  _controllerBox.ui16NodeName = _obj["NNa"];
 
   // Setting activeState stack
   // need to send via myMeshViews and add to ControlerBox the time

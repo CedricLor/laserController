@@ -22,11 +22,6 @@ class myWSControllerBox
      * */
     ControlerBox & _controllerBox;
 
-    /** uint16_t ui16NodeName:
-     * 
-     * set by me, in global (201, 202, etc.) */
-    uint16_t ui16NodeName;
-
     /** int16_t i16BoxActiveState:
      * - set by boxState events, by steps or manually by WS requests.
      * - read by myWSSender, myMeshViews, myWSReceiver and boxState. */
