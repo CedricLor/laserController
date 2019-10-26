@@ -28,17 +28,28 @@ class ControlerBox
     uint16_t ui16NodeName;
 
     /** int16_t i16BoxActiveState:
-     * 
      * - set by boxState events, by steps or manually by WS requests.
      * - read by myWSSender, myMeshViews, myWSReceiver and boxState. */
     int16_t i16BoxActiveState;
-
     /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
      *  by a call to meshNodeTime.
-     * 
      * Set via ControlerBox::setBoxActiveState. */
     uint32_t ui32BoxActiveStateStartTime;
+    /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
+     *  sent a PIR high signal. */
+    uint32_t ui32lastRecPirHighTime;
+    short int sBoxDefaultState;
 
+    bool isNewBoxHasBeenSignaled;
+    /** bool boxDeletionHasBeenSignaled: 
+     * 
+     * - read and set by myWSSender, myWSReceiver (in the consistency check between
+     * browser data and ControlerBox database) and ControlerBox::_deleteBox.
+     * 
+     * Usefull on the IF: allows myWSSender to know of disconnections and reboots
+     * of ControlerBoxes and inform the user by sending a WS message to the
+     * browser. */
+    bool boxDeletionHasBeenSignaled;
     /** bool boxActiveStateHasBeenSignaled:
      * 
      * - set by the ControlerBox itself upon a changes of i16BoxActiveState 
@@ -50,28 +61,10 @@ class ControlerBox
      * of the ControlerBoxes and inform the user by sending a WS message to the
      * browser. */
     bool boxActiveStateHasBeenSignaled;
-
-    /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
-     *  sent a PIR high signal. */
-    uint32_t ui32lastRecPirHighTime;
-
     /** bool isNewBoxHasBeenSignaled: allows myWSSender to detect new boxes and
      *  inform the user by sending a WS message to the browser.
      * 
      * - read and set by ControlerBox, myMeshViews, myWSReceiver and myWSSender.*/
-    bool isNewBoxHasBeenSignaled;
-
-    /** bool boxDeletionHasBeenSignaled: 
-     * 
-     * - read and set by myWSSender, myWSReceiver (in the consistency check between
-     * browser data and ControlerBox database) and ControlerBox::_deleteBox.
-     * 
-     * Usefull on the IF: allows myWSSender to know of disconnections and reboots
-     * of ControlerBoxes and inform the user by sending a WS message to the
-     * browser. */
-    bool boxDeletionHasBeenSignaled;
-
-    short int sBoxDefaultState;
     bool sBoxDefaultStateChangeHasBeenSignaled;
 
 

@@ -18,12 +18,12 @@ ControlerBox::ControlerBox():
 
   i16BoxActiveState(-1),
   ui32BoxActiveStateStartTime(0),
-  boxActiveStateHasBeenSignaled(true), // has it been signaled to the browser by the interface?
   ui32lastRecPirHighTime(0),
-  
+  sBoxDefaultState(globalBaseVariables.gi16BoxDefaultState),
+
   isNewBoxHasBeenSignaled(true),
   boxDeletionHasBeenSignaled(true),
-  sBoxDefaultState(globalBaseVariables.gi16BoxDefaultState),
+  boxActiveStateHasBeenSignaled(true), // has it been signaled to the browser by the interface?
   sBoxDefaultStateChangeHasBeenSignaled(true)
 { }
 
