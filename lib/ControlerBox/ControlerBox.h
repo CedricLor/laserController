@@ -22,12 +22,6 @@ class ControlerBox
      * */
     controllerBoxNetworkData networkData;
 
-    /** IPAddress stationIP: stores the stationIP (by reading painlessMesh.stationIP or wifi.stationIP).
-     * 
-     * The stationIP may be set automatically (by an AP to which this box connects)
-     * or manually (see myMeshStarter, etc.). */
-    IPAddress stationIP;
-
     /** IPAddress APIP: stores the APIP  (by reading painlessMesh.APIP or wifi.APIP).
      * 
      * The APIP set by painlessMesh, calculated from the ESP's mac address or set manually

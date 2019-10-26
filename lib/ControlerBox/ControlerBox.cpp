@@ -13,7 +13,6 @@
 // Constructor
 ControlerBox::ControlerBox():
   networkData(),
-  stationIP{0,0,0,0},
   APIP{0,0,0,0},
   
   ui16NodeName(254),
@@ -34,7 +33,7 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   const char * _methodName = "ControlerBox::printProperties(): Box n. ";
   Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, networkData.nodeId);
   Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
-  Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
+  Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(networkData.stationIP.toString());
   Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, ui16NodeName);
 
   Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
