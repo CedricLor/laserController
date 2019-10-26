@@ -11,6 +11,7 @@
 #include <globalBasementVars.h>
 #include <secret.h>
 #include <controllerBoxThis.h>
+#include <myWSControllerBox.h>
 
 class myWSSender
 {
