@@ -7,6 +7,7 @@
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
+#include <ControllerBoxNetworkData.h>
 
 class ControlerBox
 {

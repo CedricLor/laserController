@@ -15,6 +15,7 @@ ControlerBox::ControlerBox():
   nodeId(0),
   stationIP{0,0,0,0},
   APIP{0,0,0,0},
+  
   ui16NodeName(254),
   i16BoxActiveState(-1),
   ui32BoxActiveStateStartTime(0),
