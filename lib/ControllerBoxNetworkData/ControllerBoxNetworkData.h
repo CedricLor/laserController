@@ -25,14 +25,10 @@ class ControllerBoxNetworkData
      * when the IF is broadcasted on this ESP's AP interface. */
     IPAddress APIP;
 
-  private:
-    /** -------- Public Instance Methods -----------------
-     * */
-    void update(uint32_t _ui32SenderNodeId, JsonObject& _obj);
-    const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
-    void setBoxDefaultState(const short _sBoxDefaultState);
-    void setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
+    void printProperties(const uint16_t _ui16BoxIndex);
 
+  private:
+    void update(uint32_t _ui32SenderNodeId, JsonObject& _obj);
 };
 
 #endif

@@ -20,6 +20,15 @@ ControllerBoxNetworkData::ControllerBoxNetworkData():
 
 
 
+void ControllerBoxNetworkData::printProperties(const uint16_t __ui16BoxIndex) {
+  const char * _methodName = "ControllerBoxNetworkData::printProperties(): Box n. ";
+  Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, nodeId);
+  Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
+  Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
+}
+
+
+
 /**void ControllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj)
  * 
  *  Updater of the properties of the controller boxes in the mesh
