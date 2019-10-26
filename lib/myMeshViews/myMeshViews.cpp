@@ -72,14 +72,13 @@ void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
 
 void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   Serial.println("myMeshViews::_changedBoxConfirmation(): starting.");
 
   // broadcast confirmation
   _sendMsg(obj);
 
-  Serial.println("myMeshViews::changedMasterBoxConfirmation(): over.");
+  Serial.println("myMeshViews::_changedBoxConfirmation(): over.");
 }
 
 

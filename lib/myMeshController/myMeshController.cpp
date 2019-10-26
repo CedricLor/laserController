@@ -98,8 +98,7 @@ void myMeshController::_main()
    *  root or IF).
    *  
    *  All the messages always relates to requested or confirmed changes in
-   *  the active state, the default state or the master node number of one or several
-   *  boxes.
+   *  the active state or the default state of one or several boxes.
    * 
    *  Upon reception of such messages, this box should update the corresponding values 
    *  in the controller boxes' array. 
@@ -132,10 +131,8 @@ void myMeshController::_main()
 void myMeshController::_changeBox() {
   // ON REQUEST:
   // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
   // ON CONFIRMATION:
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
 
   // if this is a change request
@@ -174,14 +171,6 @@ void myMeshController::_changeBoxRequest() {
   if (_nsobj["key"] == "boxState") {
     // Serial.println("------------------------------ THIS IS A CHANGE BOXSTATE REQUEST ---------------------------");
     _updateMyValFromWeb();
-    return;
-  }
-
-  // if this is a change master box request
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  if (_nsobj["key"] == "masterbox") {
-    // Serial.println("------------------------------ THIS IS A CHANGE MASTERBOX REQUEST ---------------------------");
-    _updateMyMasterBoxName();
     return;
   }
 
@@ -245,19 +234,10 @@ void myMeshController::_changeBoxRequest() {
 
 // CHANGED BOX CONFIRMATION (received by the interface and all the other boxes)
 void myMeshController::_changedBoxConfirmation() {
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
 
   // get the index number of the sender
   uint16_t __ui16BoxIndex = _nsobj["lb"];
-
-  // if this is a "change master box request" confirmation
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 2} // masterbox // ancient 8
-  if (_nsobj["key"] == "masterbox") {
-    // Serial.println("----------------- THIS A MASTERBOX CONFIRMATION ---------------");
-    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex).updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
-    return;
-  }
 
   // if this is a "change default state request" confirmation
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
@@ -309,7 +289,6 @@ void myMeshController::_changedBoxConfirmation() {
 
 /** HELPER FUNCTIONS for _changeBoxRequest (on _obj["action"] = "changeBox"):
  *  _updateMyValFromWeb();
- *  _updateMyMasterBoxName();
  *  _updateMyDefaultState();
  *  _rebootEsp();
  *  _save();
@@ -325,24 +304,6 @@ void myMeshController::_updateMyValFromWeb() {
   thisControllerBox.thisSignalHandler.setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
   /** not sending any confirmation, as boxState will send an automatic
    *  status message. */
-}
-
-
-
-void myMeshController::_updateMyMasterBoxName() {
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
-  if (globalBaseVariables.MY_DG_MESH) {
-    Serial.printf("myMeshController::_updateMyMasterBoxName: will change my master to [%u] + the prefix \n", _nsobj["val"].as<uint16_t>());
-  }
-
-  // update ui16MasterBoxName and bMasterBoxNameChangeHasBeenSignaled for my box
-  thisControllerBox.thisCtrlerBox.updateMasterBoxNameFromWeb(_nsobj["val"].as<uint16_t>());
-
-  // send confirmation message
-  _changeBoxSendConfirmationMsg();
-
-  // mark the change as signaled
-  thisControllerBox.thisCtrlerBox.bMasterBoxNameChangeHasBeenSignaled = true;
 }
 
 
@@ -433,7 +394,6 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 
 // sends a message to the IF telling it that this box has executed its request
 void myMeshController::_changeBoxSendConfirmationMsg() {
-  // _nsobj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox 
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate 
   if (globalBaseVariables.MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: starting\n");
 

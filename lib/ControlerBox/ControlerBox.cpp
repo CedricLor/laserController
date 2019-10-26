@@ -11,56 +11,20 @@
 // Instance Methods
 
 // Constructor
-ControlerBox::ControlerBox()
-{
-  nodeId = 0;
-  APIP = {0,0,0,0};
-  stationIP = {0,0,0,0};
-  ui16NodeName = 254;
-
-  i16BoxActiveState = -1;
-  ui32BoxActiveStateStartTime = 0;
-  boxActiveStateHasBeenSignaled = true; // to the browser by the interface
-
-  ui32lastRecPirHighTime = 0;
-
-  isNewBoxHasBeenSignaled = true;
-  boxDeletionHasBeenSignaled = true;
-
-  // ui16MasterBoxName
-  // setters:
-  // - here; -> from the globalBaseVariables.gui8DefaultMasterNodeName
-  // - in updateMasterBoxName() below. updateMasterBoxName() is called from:
-  //    - myMeshController constructor (on the laser box, because receiving an action "m" (change master box request) from the interface)
-  //    - myMeshController constructor (on the interface, because on receiving an action "mc" (master changed confirmation) message)
-  // - in mySavedPrefs::loadPreferences()
-  // tested or used in:
-  // - boxState class (on the laser boxes)
-  // - here (printProperties)
-  // - in myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) to send various messages
-  // - in mySavedPrefs::savePreferences()
-  ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
-
-  /** bMasterBoxNameChangeHasBeenSignaled
-   *  
-   *  Setters:
-   *  - here; 
-   *  - in updateMasterBoxName() below (called from from stepCollection._applyStep(),
-   *    from myMeshController::_updateMyMasterBoxName() and 
-   *    myMeshController::_changedBoxConfirmation());
-   *  - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) 
-   *    (setting it to true, once a message has been sent to the browser).
-   *  Testers:
-   *  - myWebServerBase::_tcbSendWSDataIfChangeBoxState (on the interface) 
-   *    (tests whether a change has been made and whether it needs to inform 
-   *    the browser). */
-  bMasterBoxNameChangeHasBeenSignaled = true;
-
-  sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
-  sBoxDefaultStateChangeHasBeenSignaled = true;
-}
-
-
+ControlerBox::ControlerBox():
+  nodeId(0),
+  stationIP{0,0,0,0},
+  APIP{0,0,0,0},
+  ui16NodeName(254),
+  i16BoxActiveState(-1),
+  ui32BoxActiveStateStartTime(0),
+  boxActiveStateHasBeenSignaled(true), // has it been signaled to the browser by the interface?
+  ui32lastRecPirHighTime(0),
+  isNewBoxHasBeenSignaled(true),
+  boxDeletionHasBeenSignaled(true),
+  sBoxDefaultState(globalBaseVariables.gi16BoxDefaultState),
+  sBoxDefaultStateChangeHasBeenSignaled(true)
+{ }
 
 
 
@@ -85,16 +49,6 @@ void ControlerBox::printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("%s[%u] -> sBoxDefaultStateChangeHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
 }
 
-
-
-void ControlerBox::updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxNameFromWeb) {
-}
-
-
-
-uint16_t ControlerBox::getMasterBoxNameForWeb() {
-  return (ui16MasterBoxName - globalBaseVariables.gui16ControllerBoxPrefix);
-}
 
 
 
@@ -132,9 +86,6 @@ const bool ControlerBox::setBoxActiveState(const int16_t _i16boxActiveState, con
 
 
 
-
-
-
 // Setter for the defaultState and associated variables
 // Called only from this class (for the other boxes).
 void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
@@ -143,7 +94,6 @@ void ControlerBox::setBoxDefaultState(const short _sBoxDefaultState) {
   sBoxDefaultStateChangeHasBeenSignaled = false;
   // Serial.println("ControlerBox::setBoxDefaultState(): over");
 }
-
 
 
 
@@ -161,10 +111,6 @@ void ControlerBox::setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime) {
     ui32lastRecPirHighTime = _ui32lastRecPirHighTime;
   }
 }
-
-
-
-
 
 
 

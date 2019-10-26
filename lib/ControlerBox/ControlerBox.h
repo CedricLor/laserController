@@ -23,12 +23,6 @@ class ControlerBox
     /** uint32_t nodeId: calculated by painlessMesh from the ESP's mac address */
     uint32_t nodeId;
 
-    /** bool isNewBoxHasBeenSignaled: allows myWSSender to detect new boxes and
-     *  inform the user by sending a WS message to the browser.
-     * 
-     * - read and set by ControlerBox, myMeshViews, myWSReceiver and myWSSender.*/
-    bool isNewBoxHasBeenSignaled;
-
     /** IPAddress stationIP: stores the stationIP (by reading painlessMesh.stationIP or wifi.stationIP).
      * 
      * The stationIP may be set automatically (by an AP to which this box connects)
@@ -52,6 +46,12 @@ class ControlerBox
      * - read by myWSSender, myMeshViews, myWSReceiver and boxState. */
     int16_t i16BoxActiveState;
 
+    /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
+     *  by a call to meshNodeTime.
+     * 
+     * Set via ControlerBox::setBoxActiveState. */
+    uint32_t ui32BoxActiveStateStartTime;
+
     /** bool boxActiveStateHasBeenSignaled:
      * 
      * - set by the ControlerBox itself upon a changes of i16BoxActiveState 
@@ -64,15 +64,15 @@ class ControlerBox
      * browser. */
     bool boxActiveStateHasBeenSignaled;
 
-    /** uint32_t ui32BoxActiveStateStartTime: registers the starting time of a new boxState,
-     *  by a call to meshNodeTime.
-     * 
-     * Set via ControlerBox::setBoxActiveState. */
-    uint32_t ui32BoxActiveStateStartTime;
-
     /** uint32_t ui32lastRecPirHighTime records the last time the relevant ControlerBox 
      *  sent a PIR high signal. */
     uint32_t ui32lastRecPirHighTime;
+
+    /** bool isNewBoxHasBeenSignaled: allows myWSSender to detect new boxes and
+     *  inform the user by sending a WS message to the browser.
+     * 
+     * - read and set by ControlerBox, myMeshViews, myWSReceiver and myWSSender.*/
+    bool isNewBoxHasBeenSignaled;
 
     /** bool boxDeletionHasBeenSignaled: 
      * 
@@ -84,12 +84,7 @@ class ControlerBox
      * browser. */
     bool boxDeletionHasBeenSignaled;
 
-    uint16_t ui16MasterBoxName;
-
-    bool bMasterBoxNameChangeHasBeenSignaled;
-
     short int sBoxDefaultState;
-    
     bool sBoxDefaultStateChangeHasBeenSignaled;
 
 
@@ -97,8 +92,6 @@ class ControlerBox
     /** -------- Public Instance Methods -----------------
      * */
     void printProperties(const uint16_t _ui16BoxIndex);
-    void updateMasterBoxNameFromWeb(const uint16_t _ui16MasterBoxName);
-    uint16_t getMasterBoxNameForWeb();
     void updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
     const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime);
     void setBoxDefaultState(const short _sBoxDefaultState);

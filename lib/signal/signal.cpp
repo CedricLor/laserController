@@ -131,7 +131,7 @@ void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
  *  3. if the masterBox new active state has been set more recently than the currentState of this box.*/
 bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
   // is calling box being monitored by this box in its current state?
-  if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState)) ) {
+  if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState.ui16monitoredMasterBoxesNodeNames)) ) {
     return false;
   }
   // check whether the boxState of the masterBox (_callingBox) matches with any of the monitored states
@@ -176,7 +176,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *     timestamp of this box's current state. */
 bool signal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
   return _testIfIRisHighIsMine(_callingBox);
-  // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState);
+  // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState.ui16monitoredMasterBoxesNodeNames);
 }
 
 
@@ -197,8 +197,8 @@ bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
 
 
 
-bool signal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
-  if (_isCallerInMonitoredArray(_callingBox, _currentBoxState)) {
+bool signal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
+  if (_isCallerInMonitoredArray(_callingBox, __ui16monitoredMasterBoxesNodeNames)) {
     return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32lastRecPirHighTime));
   }
   return false;
@@ -214,12 +214,12 @@ bool signal::_isCallerMonitored(const ControlerBox & _callingBox, const uint16_t
 
 
 
-bool signal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+bool signal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
   return (std::find(
-    std::begin(_currentBoxState.ui16monitoredMasterBoxesNodeNames), 
-    std::end(_currentBoxState.ui16monitoredMasterBoxesNodeNames),
+    std::begin(__ui16monitoredMasterBoxesNodeNames), 
+    std::end(__ui16monitoredMasterBoxesNodeNames),
     _callingBox.ui16NodeName) 
-    != std::end(_currentBoxState.ui16monitoredMasterBoxesNodeNames)
+    != std::end(__ui16monitoredMasterBoxesNodeNames)
   );
 }
 

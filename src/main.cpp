@@ -69,7 +69,6 @@ void setup() {
     globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
 
-  thisControllerBox.thisCtrlerBox.ui16MasterBoxName = globalBaseVariables.gui8DefaultMasterNodeName;
   thisControllerBox.thisCtrlerBox.sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
 
   myMesh::start();

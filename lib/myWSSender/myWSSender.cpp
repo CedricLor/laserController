@@ -92,9 +92,8 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       }
       _obj["action"]      = "addBox";
       _obj["boxState"]    = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
-      _obj["masterbox"]   = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).getMasterBoxNameForWeb();
       _obj["boxDefstate"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
-      // expected _obj = {lb:1; action:"addBox"; boxState: 3; masterbox: 4; boxDefstate: 6}
+      // expected _obj = {lb:1; action:"addBox"; boxState: 3; boxDefstate: 6}
       // reset all the booleans to true
       _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
     }
@@ -123,20 +122,6 @@ void myWSSender::_tcbSendWSDataIfChangeBoxState() {
       _obj["st"] = 2;
       // expected _obj = {lb:1; action:"changeBox"; key: "boxState"; val: 6; st: 2}
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
-    }
-
-    // if the box master has changed
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled == false) {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Box [%u] has changed master: ", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
-        Serial.printf("thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%u).ui16MasterBoxName == %u\n", _ui16BoxIndex, thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16MasterBoxName);
-      }
-      _obj["action"] = "changeBox";
-      _obj["key"] = "masterbox";
-      _obj["val"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).getMasterBoxNameForWeb();
-      _obj["st"] = 2; // "st" for status, 2 for executed
-      // expected _obj = {lb:1; action:"changeBox"; key: "masterbox"; val: 9; st: 2}
-      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled = true;
     }
 
     // if the box is an unsignaled deleted box
@@ -322,5 +307,4 @@ void myWSSender::_resetAllControlerBoxBoolsToTrue(const uint16_t _ui16BoxIndex) 
   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled = true;
-  thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).bMasterBoxNameChangeHasBeenSignaled = true;
 }

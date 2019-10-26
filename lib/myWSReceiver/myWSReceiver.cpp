@@ -77,12 +77,11 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
-  // Former 4 (change boxState), 8 (change master) and 9 (change default state)
+  // Former 4 (change boxState) and 9 (change default state)
   // added also key "reboot" and "save"
   if (_obj["action"] == "changeBox") {
     // send a mesh request to the relevant laser box
     // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-    // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
     // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
     // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 0} // reboot without saving
     // _obj = {action: "changeBox"; key: "reboot"; lb: 1, save: 1} // reboot and save
@@ -201,7 +200,6 @@ void myWSReceiver::_savegi8RequestedOTAReboots(JsonObject& _obj) {
 
 void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3} // boxDefstate // ancient 9
 
   _obj["st"] = 1; // add a "st" field, for "execution status" of the request. 1 is "forwarded to the box"; 2 is "executed"
@@ -215,7 +213,6 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
     thisControllerBox.thisMeshViews._sendMsg(_obj, _destNodeId);
   }
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _obj = {action: "changeBox", key: "masterbox"; lb: 1, val: 4, st: 1} // masterbox // ancient 8
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   // send a response to the browser telling the instruction is in course of being executed

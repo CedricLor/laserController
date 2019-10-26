@@ -51,10 +51,10 @@ class signal
 
     bool _isCallerThisBox(const ControlerBox & _callingBox);
 
-    bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames);
 
     bool _isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName);
-    bool _isCallerInMonitoredArray(const ControlerBox & _callingBox, const boxState & _currentBoxState);
+    bool _isCallerInMonitoredArray(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames);
     bool _isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     bool _isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime);
 };
