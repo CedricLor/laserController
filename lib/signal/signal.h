@@ -20,21 +20,14 @@ class signal
     void startup();
 
     /** USER MANUAL SIGNAL (from web) */
-    int16_t i16boxStateRequestedFromWeb;
-    /** void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb)
-     * 
-     *  Sets Task tSetBoxState to use _tcbSetBoxStateFromWeb() as main callback*/
-    void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb);
-    
+    int16_t i16boxStateRequestedFromWeb;    
+    void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb); /** --> _tcbSetBoxStateFromWeb() as main callback*/
+
     /** MESH SIGNAL (change of state of another box in the mesh) */
-    const bool checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __ui16BoxIndex);
-    /** const bool setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime)
-     * 
-     *  -> _tcbIfMeshTriggered()
-     *  */
+    const bool checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __ui16BoxIndex); /**  --> _tcbIfMeshTriggered() */
 
     /** IR SIGNAL (from PIR Controller or upstream info (usi) from other boxes in the mesh) */
-    const bool checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex);
+    const bool checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex); /**  --> _tcbIfIRTriggered() */
     const bool checkImpactOfThisBoxsIRHigh();
 
     /** TASK tSetBoxState */
