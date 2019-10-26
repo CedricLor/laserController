@@ -45,13 +45,13 @@ void myWSControllerBox::printProperties(const uint16_t __ui16BoxIndex) {
  *  - boxStateCollection::_restartTaskPlayBoxState(): for this box, when this box's boxState has changed;
  *  - myWSControllerBox::updateBoxProperties(): for the other boxes, upon receiving a notification of a boxState
  *    change from the mesh.
+ * 
+ *  TODO: Check whether this function will ever be called from anywhere
 */
 const bool myWSControllerBox::setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
   // Serial.println("myWSControllerBox::setBoxActiveState(): starting");
 
-  if ( (_controllerBox.i16BoxActiveState != _i16boxActiveState) || (_controllerBox.ui32BoxActiveStateStartTime < _ui32BoxActiveStateStartTime) ) {
-    _controllerBox.i16BoxActiveState = _i16boxActiveState;
-
+  if (_controllerBox.setBoxActiveState(_i16boxActiveState, _ui32BoxActiveStateStartTime)) {
     boxActiveStateHasBeenSignaled = false;
     /** boxActiveStateHasBeenSignaled setters:
      *  - by default to true upon init (controlerBox constructor);
@@ -60,9 +60,6 @@ const bool myWSControllerBox::setBoxActiveState(const int16_t _i16boxActiveState
      *    coming from the web and whether the states of other boxes have been received;
      *  - to true in myMeshViews (for this box only, upon sending a statusMsg);
      * */
-
-    _controllerBox.ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-
     return true;
   }
   // Serial.println("myWSControllerBox::setBoxActiveState(): over");
