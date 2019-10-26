@@ -11,6 +11,7 @@
 
 class ControlerBox
 {
+  friend class myWSControllerBox;
   friend class controllerBoxesCollection;
 
   public:
