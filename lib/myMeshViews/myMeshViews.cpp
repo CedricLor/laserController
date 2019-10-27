@@ -32,16 +32,16 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
 
-  myMeshSenderMessage _msg;
+  _jDoc.clear();
 
   // load the JSON document with values
-  _msg._joMsg["actSt"] = _thisBox.i16BoxActiveState;
-  _msg._joMsg["actStStartT"] = _thisBox.ui32BoxActiveStateStartTime; // gets the recorded mesh time
-  _msg._joMsg["boxDefstate"] = _thisBox.sBoxDefaultState;
-  _msg._joMsg["action"] = "s";
+  _joMsg["actSt"] = _thisBox.i16BoxActiveState;
+  _joMsg["actStStartT"] = _thisBox.ui32BoxActiveStateStartTime; // gets the recorded mesh time
+  _joMsg["boxDefstate"] = _thisBox.sBoxDefaultState;
+  _joMsg["action"] = "s";
 
   // send to the sender
-  _sendMsg(_msg._joMsg, destNodeId);
+  _sendMsg(_joMsg, destNodeId);
 
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
@@ -55,15 +55,15 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
-  myMeshSenderMessage _msg;
+  _jDoc.clear();
 
   // load the JSON document with values
-  _msg._joMsg["action"] = "changeBox";
-  _msg._joMsg["key"] = "dropped";
-  _msg._joMsg["lb"] = _ui16droppedNodeIndexInCB;
-  _msg._joMsg["st"] = 2;
+  _joMsg["action"] = "changeBox";
+  _joMsg["key"] = "dropped";
+  _joMsg["lb"] = _ui16droppedNodeIndexInCB;
+  _joMsg["st"] = 2;
 
-  _sendMsg(_msg._joMsg);
+  _sendMsg(_joMsg);
 }
 
 
@@ -86,16 +86,16 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
 
 
 void myMeshViews::_IRHighMsg(uint32_t _ui32IRHighTime) {
-  myMeshSenderMessage _msg;
+  _jDoc.clear();
 
   // load the JSON document with values
-  _msg._joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
-  _msg._joMsg["key"] = "IR";
-  _msg._joMsg["time"] = _ui32IRHighTime;
-  _msg._joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "IR";
+  _joMsg["time"] = _ui32IRHighTime;
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
 
   // broadcast IR high message
-  _sendMsg(_msg._joMsg);
+  _sendMsg(_joMsg);
 }
 
 

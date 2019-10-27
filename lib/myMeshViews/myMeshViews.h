@@ -9,8 +9,9 @@
 #include "Arduino.h"
 #include "globalBasementVars.h"
 #include "ControlerBox.h"
-#include <myMeshSenderMessage.h>
 
+constexpr short    MESH_REQUEST_CAPACITY               = 20;
+constexpr int      _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
 
 class myMeshViews
 {
@@ -26,6 +27,9 @@ class myMeshViews
 
   private:
     ControlerBox & _thisBox;
+
+    StaticJsonDocument<_capacity> _jDoc;
+    JsonObject _joMsg = _jDoc.to<JsonObject>();
 
     void _changedBoxConfirmation(JsonObject& obj);
     void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
