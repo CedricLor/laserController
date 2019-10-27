@@ -26,6 +26,9 @@ class myMeshViews
 
     void sendBoxState(const int16_t _i16BoxStateIdNbr);
     void sendSequence(const int16_t _i16SequenceIdNbr);
+    void sendBar(const int16_t _i16BarIdNbr);
+    void sendNote(const uint16_t _ui16LaserToneIdNbr, const uint16_t _ui16LaserNote);
+    void sendTone(const uint16_t _ui16LaserToneIdNbr);
 
   private:
     ControlerBox & _thisBox;

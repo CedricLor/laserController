@@ -78,6 +78,43 @@ void myMeshViews::sendSequence(const int16_t _i16SequenceIdNbr) {
 
 
 
+void myMeshViews::sendBar(const int16_t _i16BarIdNbr) {
+  _jDoc.clear();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "ba";
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["bs"] = _i16BarIdNbr;
+}
+
+
+
+
+
+void myMeshViews::sendNote(const uint16_t _ui16LaserToneIdNbr, const uint16_t _ui16LaserNote) {
+  _jDoc.clear();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "nt";
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["tn"] = _ui16LaserToneIdNbr;
+  _joMsg["nt"] = _ui16LaserNote;
+}
+
+
+
+
+
+void myMeshViews::sendTone(const uint16_t _ui16LaserToneIdNbr) {
+  _jDoc.clear();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "tn";
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["bs"] = _ui16LaserToneIdNbr;
+}
+
+
+
+
+
 void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
   _jDoc.clear();
 
