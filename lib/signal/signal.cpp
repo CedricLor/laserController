@@ -9,7 +9,7 @@
 
 signal::signal(myMeshViews & __thisMeshViews):
   ctlBxColl{},
-  thisBxStateColl{ctlBxColl.controllerBoxesArray.at(0)}
+  thisBxStateColl(ctlBxColl.controllerBoxesArray.at(0))
 {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
 }
