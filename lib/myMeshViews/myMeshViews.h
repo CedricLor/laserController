@@ -24,6 +24,9 @@ class myMeshViews
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
+    void sendBoxState(const int16_t _i16BoxStateIdNbr);
+    void sendSequence(const int16_t _i16SequenceIdNbr);
+
   private:
     ControlerBox & _thisBox;
 

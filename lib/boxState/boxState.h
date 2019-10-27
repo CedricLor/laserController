@@ -138,6 +138,10 @@ class boxStateCollection
     Task tPlayBoxState;
 
   private:
+    /** interface to mesh */
+    myMeshViews & _thisMeshViews;
+    // void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
+
     stepCollection _stepColl;
     laserSequences _laserSequences;
 
@@ -147,11 +151,6 @@ class boxStateCollection
     const std::array<int16_t, 4> _MeshStates;// {10, 11, 12, 13};
 
     short int _boxTargetState;
-
-    /** interface to mesh */
-    myMeshViews & _thisMeshViews;
-    void _sendBoxState(const int16_t _i16CurrentStateNbr);
-    // void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
 
     /** Task control and callbacks */
     void _restartTaskPlayBoxState();

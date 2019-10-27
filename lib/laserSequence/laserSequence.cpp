@@ -156,15 +156,17 @@ int16_t const laserSequence::i16GetBarIndexNumber(const uint16_t __ui16BarIxNumb
  * 
  *  default constructor */
 laserSequences::laserSequences(
-  void (*_sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id)
+  myMeshViews & __thisMeshViews
+  // void (*_sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id)
 ): 
-  sendCurrentLaserSequence(_sendCurrentLaserSequence),
+  // sendCurrentLaserSequence(_sendCurrentLaserSequence),
   _bars(),
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
   nextLaserSequence(),
   sequenceFileName("/laserSequences.json"),
   tPlayLaserSequence(),
   tPreloadNextLaserSequence(),
+  _thisMeshViews(__thisMeshViews),
   _defaultLaserSequence(),
   _activeLaserSequence(_defaultLaserSequence)
 {
@@ -421,7 +423,7 @@ uint16_t const laserSequences::playSequence(const uint16_t __target_laser_sequen
 ///////////////////////////////////
 /** Task tPlayLaserSequence.
  *  
- * It plays a given laserSequence once.
+ * Plays a given laserSequence once.
  * */
 
 
@@ -435,9 +437,10 @@ bool laserSequences::_oetcbPlayLaserSequence() {
   tPlayLaserSequence.setIterations(_activeLaserSequence.ui16GetBarCountInLaserSequence());
 
   /** 2. Signal the change of laserSequence to the mesh. */
-  if (sendCurrentLaserSequence != nullptr) {
-    sendCurrentLaserSequence(_activeLaserSequence.i16IndexNumber);
-  }
+  // if (sendCurrentLaserSequence != nullptr) {
+  //   sendCurrentLaserSequence(_activeLaserSequence.i16IndexNumber);
+  // }
+  _thisMeshViews.sendSequence(_activeLaserSequence.i16IndexNumber);
 
   return true;
 }

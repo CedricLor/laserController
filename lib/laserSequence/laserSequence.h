@@ -44,10 +44,10 @@ class laserSequences
   friend class test;
   public:
     /** constructors */
-    laserSequences(void (*_sendCurrentLaserSequence)(const int16_t __i16_current_laser_sequence_id)=nullptr);
-
-    /** interface to mesh */
-    void (*sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id);
+    laserSequences(
+      myMeshViews & __thisMeshViews
+      // void (*_sendCurrentLaserSequence)(const int16_t __i16_current_laser_sequence_id)=nullptr
+    );
 
     /** public properties */
     bars _bars;  // <-- TODO: make it private at some point
@@ -73,6 +73,10 @@ class laserSequences
     Task tPreloadNextLaserSequence;
 
   private:
+    /** interface to mesh */
+    myMeshViews & _thisMeshViews;
+    // void (*sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id);
+
     // variables
     laserSequence _defaultLaserSequence;
     laserSequence & _activeLaserSequence = _defaultLaserSequence;

@@ -54,6 +54,30 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
+void myMeshViews::sendBoxState(const int16_t _i16BoxStateIdNbr) {
+  _jDoc.clear();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "bs";
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["bs"] = _i16BoxStateIdNbr;
+}
+
+
+
+
+
+void myMeshViews::sendSequence(const int16_t _i16SequenceIdNbr) {
+  _jDoc.clear();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "sq";
+  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["bs"] = _i16SequenceIdNbr;
+}
+
+
+
+
+
 void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
   _jDoc.clear();
 

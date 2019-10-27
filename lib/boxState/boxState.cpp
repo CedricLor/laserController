@@ -505,14 +505,14 @@ boxStateCollection::boxStateCollection(
   _thisBox(__thisBox),
   ui16Mode(0),
   // sendCurrentBoxState(_sendCurrentBoxState),
+  _thisMeshViews(__thisMeshViews),
   _stepColl(),
-  _laserSequences(),
+  _laserSequences(_thisMeshViews),
   _monitorNoMaster({254}),
   _monitorNoStates({-1}),
   _IRStates({6, 7, 8, 9}),
   _MeshStates({10, 11, 12, 13}),
-  _boxTargetState(0),
-  _thisMeshViews(__thisMeshViews)
+  _boxTargetState(0)
 {
   Serial.println("boxStateCollection::initBoxStates(). starting.");
   /** Constructor signature (using "little constructor")
@@ -688,19 +688,6 @@ void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
 
 
 
-void boxStateCollection::_sendBoxState(const int16_t _i16CurrentStateNbr) {
-  _thisMeshViews.statusMsg();
-}
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////////////////////
 // Task _tPlayBoxStates and its callbacks
 //////////////////////////////////////////////
@@ -825,7 +812,7 @@ bool boxStateCollection::_oetcbPlayBoxState(){
   //   _laserSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
   
   // 3. Signal the change of state to the mesh
-  _sendBoxState(_thisBox.i16BoxActiveState);
+  _thisMeshViews.sendBoxState(_thisBox.i16BoxActiveState);
   // if (sendCurrentBoxState != nullptr) {
   //   sendCurrentBoxState(_thisBox.i16BoxActiveState);
   // }
