@@ -203,7 +203,7 @@ laserNotes::laserNotes(
   myMeshViews & __thisMeshViews
 ):
   _thisMeshViews(__thisMeshViews),
-  _laserTones({})
+  _laserTones(_thisMeshViews)
 {
   _disableAndResetTPlayNote();
 }

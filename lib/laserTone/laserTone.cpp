@@ -61,7 +61,10 @@ int16_t const laserTone::_playLaserTone(const laserPins & __laser_pins) const {
 //****************************************************************//
 
 // default constructor
-laserTones::laserTones() :
+laserTones::laserTones(
+  myMeshViews & __thisMeshViews
+) :
+  _thisMeshViews(__thisMeshViews),
   _laserPins(laserPins{})
 {
 
@@ -122,5 +125,6 @@ laserTone const & laserTones::at (uint16_t const __ui16IndexNumber) const {
  *  _playLaserTone() is mainly a wrapper over the _playLaserTone method of laserTone instances.
 */
 int16_t const laserTones::_playLaserTone(const uint16_t __ui16LaserToneNumber) const {
+  _thisMeshViews.sendTone(__ui16LaserToneNumber);
   return at(__ui16LaserToneNumber)._playLaserTone(_laserPins);
 };

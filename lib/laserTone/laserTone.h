@@ -38,9 +38,13 @@ class laserTones {
   friend class test;
   
   public:
-    laserTones(); // default constructor
+    laserTones(
+      myMeshViews & __thisMeshViews
+    ); // default constructor
     laserTone const & at (uint16_t const __ui16IndexNumber) const;
   private:
+    /** interface to mesh */
+    myMeshViews & _thisMeshViews;
     /** player */
     int16_t const _playLaserTone(const uint16_t __ui16LaserToneNumber) const;
     /** members */

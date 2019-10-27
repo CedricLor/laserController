@@ -79,7 +79,7 @@ class laserNotes
     /** setters */
     void _disableAndResetTPlayNote();
 
-    /** sender to mesh */
+    /** interface to mesh */
     myMeshViews & _thisMeshViews;
 
     /** private members */

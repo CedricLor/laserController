@@ -55,8 +55,6 @@ class bars
       myMeshViews & __thisMeshViews
       // void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
-    // bars(const bars& __bars);
-    // bars& operator=(const bars& __bars);
 
 
     /** Variables to read bars from SPIFSS */
