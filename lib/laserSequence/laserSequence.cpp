@@ -160,13 +160,13 @@ laserSequences::laserSequences(
   // void (*_sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id)
 ): 
   // sendCurrentLaserSequence(_sendCurrentLaserSequence),
-  _bars(),
   ui16IxNumbOfSequenceToPreload(0), // <-- TODO: review setters method here; maybe need to cast ui16IxNumbOfSequenceToPreload as an int16, to initialize at -1
   nextLaserSequence(),
   sequenceFileName("/laserSequences.json"),
   tPlayLaserSequence(),
   tPreloadNextLaserSequence(),
   _thisMeshViews(__thisMeshViews),
+  _bars(),
   _defaultLaserSequence(),
   _activeLaserSequence(_defaultLaserSequence)
 {
@@ -357,6 +357,19 @@ void laserSequences::setStopCallbackForTPlayLaserSequence() {
  * Returns the active laserSequence as a laserSequence */
 laserSequence const & laserSequences::getActiveLaserSequence() const {
   return _activeLaserSequence;
+}
+
+
+
+
+
+
+
+/** bars & laserSequences::getBars()
+ * 
+ * Returns a ref to the bars instance stored in sequences */
+bars & laserSequences::getBars() {
+  return _bars;
 }
 
 

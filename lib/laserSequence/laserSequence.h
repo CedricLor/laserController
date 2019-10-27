@@ -49,9 +49,6 @@ class laserSequences
       // void (*_sendCurrentLaserSequence)(const int16_t __i16_current_laser_sequence_id)=nullptr
     );
 
-    /** public properties */
-    bars _bars;  // <-- TODO: make it private at some point
-
     /** Variables to read laserSequences from SPIFSS */
     uint16_t ui16IxNumbOfSequenceToPreload;
     laserSequence nextLaserSequence;
@@ -64,6 +61,7 @@ class laserSequences
 
     /** getters */
     laserSequence const & getActiveLaserSequence() const;
+    bars & getBars();
 
     /** Task tPlayLaserSequence - laserSequence players */
     uint16_t const playSequence(const uint16_t __target_laser_sequence_ix_numb);
@@ -77,7 +75,7 @@ class laserSequences
     myMeshViews & _thisMeshViews;
     // void (*sendCurrentLaserSequence)(const int16_t __i16_active_laser_sequence_id);
 
-    // variables
+    bars _bars;
     laserSequence _defaultLaserSequence;
     laserSequence & _activeLaserSequence = _defaultLaserSequence;
 
