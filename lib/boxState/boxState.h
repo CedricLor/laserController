@@ -115,7 +115,8 @@ class boxStateCollection
     /** default constructor: used to define the boxStates array */
     boxStateCollection(
       ControlerBox & __thisBox,
-      void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr
+      myMeshViews & __thisMeshViews
+      // void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr
     );
 
     // boxStates array
@@ -136,9 +137,6 @@ class boxStateCollection
      *  for the duration of a single boxState */
     Task tPlayBoxState;
 
-    /** interface to mesh */
-    void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
-
   private:
     stepCollection _stepColl;
     laserSequences _laserSequences;
@@ -150,6 +148,12 @@ class boxStateCollection
 
     short int _boxTargetState;
 
+    /** interface to mesh */
+    myMeshViews & _thisMeshViews;
+    void _sendBoxState(const int16_t _i16CurrentStateNbr);
+    // void (*sendCurrentBoxState)(const int16_t _i16CurrentStateNbr);
+
+    /** Task control and callbacks */
     void _restartTaskPlayBoxState();
     void _restartTaskPlayBoxStateInStepControlledMode();
     void _applyNextStep();
