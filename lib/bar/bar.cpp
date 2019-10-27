@@ -184,16 +184,18 @@ const std::array<laserNote, 16> & bar::getNotesArray() const {
 //****************************************************************//
 
 bars::bars(
-  void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
+  myMeshViews & __thisMeshViews
+  // void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)
 ):
-  sendCurrentBar(_sendCurrentBar),
+  // sendCurrentBar(_sendCurrentBar),
   ui16IxNumbOfBarToPreload(0),  // <-- TODO: review setters method here; maybe need to cast barIndex as an int16, to initialize at -1
   nextBar(),
   barFileName("/bars.json"),
   tPlayBar(),
+  _thisMeshViews(__thisMeshViews),
+  _laserNotes(),
   _defaultBar(),
-  _activeBar(_defaultBar),
-  _laserNotes()
+  _activeBar(_defaultBar)
 {
   // 1. Disable and reset the Task tPlayBar
   disableAndResetTPlayBar();
@@ -396,8 +398,11 @@ uint16_t const bars::playBar(beat const & __beat) {
 bool bars::_oetcbPlayBar(){
   // Serial.println("bars::_oetcbPlayBar(). starting.");
 
-  /**1. set the number of iterations base of the effective number of laserNotes in the bar*/
+  /**1. set the number of iterations base of the effective number of laserNotes in the bar */
   tPlayBar.setIterations(_activeBar.ui16GetNotesCountInBar());
+
+  /**2. Send the bar index number to the mesh */
+  _thisMeshViews.sendBar(_activeBar.i16IndexNumber);
 
   // Serial.println("bars::_oetcbPlayBar(). over.");
   return true;

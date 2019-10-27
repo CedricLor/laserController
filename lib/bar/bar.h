@@ -52,13 +52,12 @@ class bars
      * 
      *  The only parameter, _sendCurrentBar, is an optional callback. */
     bars(
-      void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
+      myMeshViews & __thisMeshViews
+      // void (*_sendCurrentBar)(const int16_t __i16_current_bar_id)=nullptr
     );
     // bars(const bars& __bars);
     // bars& operator=(const bars& __bars);
 
-    /** sender to mesh */
-    void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
 
     /** Variables to read bars from SPIFSS */
     uint16_t ui16IxNumbOfBarToPreload;
@@ -84,17 +83,20 @@ class bars
     void preloadNextBarThroughTask(uint16_t _ui16IxNumbOfBarToPreload);
 
   private:
+    /** interface to mesh */
+    myMeshViews & _thisMeshViews;
+    // void (*sendCurrentBar)(const int16_t __i16_current_bar_id);
+
+    // properties
+    laserNotes _laserNotes;
+    bar _defaultBar;
+    bar & _activeBar = _defaultBar;
 
     /** Task - preload next bar from SPIFFS */
     void _preloadNextBar(uint16_t _ui16IxNumbOfBarToPreload);
     void _tcbPreloadNextBar();
     void _preloadNextBarFromJSON(const JsonObject& _joBar);
     std::array<laserNote, 16> const _parseJsonNotesArray(const JsonArray& _JsonNotesArray);
-
-    // properties
-    bar _defaultBar;
-    bar & _activeBar = _defaultBar;
-    laserNotes _laserNotes;
 
     /** player callbacks */
     void _tcbPlayBar(beat const & __beat);

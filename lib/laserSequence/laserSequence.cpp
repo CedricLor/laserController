@@ -166,7 +166,7 @@ laserSequences::laserSequences(
   tPlayLaserSequence(),
   tPreloadNextLaserSequence(),
   _thisMeshViews(__thisMeshViews),
-  _bars(),
+  _bars(_thisMeshViews),
   _defaultLaserSequence(),
   _activeLaserSequence(_defaultLaserSequence)
 {
