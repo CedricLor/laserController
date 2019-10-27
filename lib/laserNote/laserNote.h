@@ -56,15 +56,12 @@ class laserNotes
   public:
     /** default constructor */
     laserNotes(
-      void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note)=nullptr
+      myMeshViews & __thisMeshViews
     );
-    laserNotes(const laserNotes & __laserNotes);
-    laserNotes & operator=(const laserNotes & __laserNotes);
-    laserNotes(laserNotes&& __laserNotes);
-    laserNotes & operator=(laserNotes&& __laserNotes);
-
-    /** sender to mesh */
-    void (*sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note);
+    // laserNotes(const laserNotes & __laserNotes);
+    // laserNotes & operator=(const laserNotes & __laserNotes);
+    // laserNotes(laserNotes&& __laserNotes);
+    // laserNotes & operator=(laserNotes&& __laserNotes);
 
     /** setters */
     void setActive(const laserNote & __activeLaserNote);
@@ -81,6 +78,9 @@ class laserNotes
   private:
     /** setters */
     void _disableAndResetTPlayNote();
+
+    /** sender to mesh */
+    myMeshViews & _thisMeshViews;
 
     /** private members */
     laserNote _defaultLaserNote;

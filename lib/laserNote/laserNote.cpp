@@ -200,57 +200,57 @@ const int16_t laserNote::_playLaserTone(laserTones const & __laser_tones) const 
 //****************************************************************//
 
 laserNotes::laserNotes(
-  void (*_sendCurrentNote)(const uint16_t __ui16_current_laser_tone, const uint16_t __ui16_current_note)
+  myMeshViews & __thisMeshViews
 ):
-  sendCurrentNote(_sendCurrentNote),
+  _thisMeshViews(__thisMeshViews),
   _laserTones({})
 {
   _disableAndResetTPlayNote();
 }
-// copy constructor
-laserNotes::laserNotes(const laserNotes & __laserNotes):
-  sendCurrentNote(__laserNotes.sendCurrentNote),
-  _activeLaserNote(__laserNotes._activeLaserNote),
-  _laserTones(__laserNotes._laserTones)
-{
-  _disableAndResetTPlayNote();
-}
-// copy assignment operator
-laserNotes & laserNotes::operator=(const laserNotes & __laserNotes) {
-  if (&__laserNotes != this) {
-    sendCurrentNote = __laserNotes.sendCurrentNote;
-    _activeLaserNote = __laserNotes._activeLaserNote;
-    _laserTones = __laserNotes._laserTones;
-    _disableAndResetTPlayNote();
-  }
-  return *this;
-}
-// move constructor
-laserNotes::laserNotes(laserNotes&& __laserNotes):
-  sendCurrentNote(nullptr),
-  _laserTones({})
-{
-  *this = std::move(__laserNotes);
-}
-// move assignment op
-laserNotes & laserNotes::operator=(laserNotes&& __laserNotes) {
-  if (this != &__laserNotes) {
-    sendCurrentNote = nullptr;
-    _activeLaserNote = laserNote{};
-    _laserTones = {};
+// // copy constructor
+// laserNotes::laserNotes(const laserNotes & __laserNotes):
+//   sendCurrentNote(__laserNotes.sendCurrentNote),
+//   _activeLaserNote(__laserNotes._activeLaserNote),
+//   _laserTones(__laserNotes._laserTones)
+// {
+//   _disableAndResetTPlayNote();
+// }
+// // copy assignment operator
+// laserNotes & laserNotes::operator=(const laserNotes & __laserNotes) {
+//   if (&__laserNotes != this) {
+//     sendCurrentNote = __laserNotes.sendCurrentNote;
+//     _activeLaserNote = __laserNotes._activeLaserNote;
+//     _laserTones = __laserNotes._laserTones;
+//     _disableAndResetTPlayNote();
+//   }
+//   return *this;
+// }
+// // move constructor
+// laserNotes::laserNotes(laserNotes&& __laserNotes):
+//   sendCurrentNote(nullptr),
+//   _laserTones({})
+// {
+//   *this = std::move(__laserNotes);
+// }
+// // move assignment op
+// laserNotes & laserNotes::operator=(laserNotes&& __laserNotes) {
+//   if (this != &__laserNotes) {
+//     sendCurrentNote = nullptr;
+//     _activeLaserNote = laserNote{};
+//     _laserTones = {};
 
-    sendCurrentNote = __laserNotes.sendCurrentNote;
-    _activeLaserNote = __laserNotes._activeLaserNote;
-    _laserTones = __laserNotes._laserTones;
+//     sendCurrentNote = __laserNotes.sendCurrentNote;
+//     _activeLaserNote = __laserNotes._activeLaserNote;
+//     _laserTones = __laserNotes._laserTones;
 
-    __laserNotes.sendCurrentNote = nullptr;
-    __laserNotes._activeLaserNote = laserNote{};
-    __laserNotes._laserTones = {};
+//     __laserNotes.sendCurrentNote = nullptr;
+//     __laserNotes._activeLaserNote = laserNote{};
+//     __laserNotes._laserTones = {};
 
-    _disableAndResetTPlayNote();
-  }
-  return *this;
-}
+//     _disableAndResetTPlayNote();
+//   }
+//   return *this;
+// }
 
 
 
@@ -365,6 +365,7 @@ bool laserNotes::_oetcbPlayNote() {
   }
   bool _return = false;
   if (_activeLaserNote._playLaserTone(_laserTones) >= 0) {
+    _thisMeshViews.sendNote(_activeLaserNote._ui16LaserTone, _activeLaserNote._ui16Note);
     _return = true;
   }
   Serial.printf("laserNotes::_oetcbPlayNote(). returning [%s]\n", (_return == true) ? "true" : "false");

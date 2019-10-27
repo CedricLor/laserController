@@ -193,7 +193,7 @@ bars::bars(
   barFileName("/bars.json"),
   tPlayBar(),
   _thisMeshViews(__thisMeshViews),
-  _laserNotes(),
+  _laserNotes(_thisMeshViews),
   _defaultBar(),
   _activeBar(_defaultBar)
 {
