@@ -15,7 +15,7 @@ class signal
   friend class myMeshController;
   friend class controllerBoxThis;
   public:
-    signal();
+    signal(myMeshViews & __thisMeshViews);
 
     void startup();
 

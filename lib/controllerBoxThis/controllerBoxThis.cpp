@@ -11,7 +11,7 @@ controllerBoxThis::controllerBoxThis():
   globBaseVars(globalBaseVariables),
   thisCtrlerBox(thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0)),
   thisMeshViews(myMeshViews(thisCtrlerBox)),
-  thisSignalHandler(),
+  thisSignalHandler(thisMeshViews),
   thisPirController(pirController(thisSignalHandler, tSetPirTimeStampAndBrdcstMsg, tPirSpeedBumper, thisMeshViews, 12))
 {
   tReboot.set(3000, TASK_ONCE, NULL, NULL, [&](){_reboot();});

@@ -7,7 +7,7 @@
 #include "signal.h"
 
 
-signal::signal():
+signal::signal(myMeshViews & __thisMeshViews):
   ctlBxColl{},
   thisBxStateColl{ctlBxColl.controllerBoxesArray.at(0)}
 {
