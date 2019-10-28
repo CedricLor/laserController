@@ -34,7 +34,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
    *  Let's then check if there are boxes the controller boxes array and return.
    * */
   if (__joBoxesStatesInDOM.size() == 0) {
-    _handleCaseNoBoxesInDom(__joBoxesStatesInDOM, _ctlBxColl);
+    _handleCaseNoBoxesInDom(_ctlBxColl);
     return 0;
   }
 
@@ -59,7 +59,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
  * 
  *  If there are boxes connected to the mesh, then the DOM needs an update.
 */
-void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM, controllerBoxesCollection & _ctlBxColl) {
+void myWSReceiverReconcile::_handleCaseNoBoxesInDom(controllerBoxesCollection & _ctlBxColl) {
   /** If there are no boxes connected/registered in the CB array and no boxes in DOM, just return.*/
   if (_ctlBxColl.ui16connectedBoxesCount == 0) {
     return;
