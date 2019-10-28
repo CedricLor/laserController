@@ -9,7 +9,7 @@
 
 controllerBoxThis::controllerBoxThis():
   globBaseVars(globalBaseVariables),
-  thisCtrlerBox(),
+  thisCtrlerBox(globBaseVars.gui16NodeName),
   thisMeshViews(thisCtrlerBox),
   thisSignalHandler(thisCtrlerBox, thisMeshViews),
   thisPirController(thisCtrlerBox, thisSignalHandler, tSetPirTimeStampAndBrdcstMsg, tPirSpeedBumper, thisMeshViews, 12)

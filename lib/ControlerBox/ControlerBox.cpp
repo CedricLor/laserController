@@ -11,10 +11,10 @@
 // Instance Methods
 
 // Constructor
-ControlerBox::ControlerBox():
+ControlerBox::ControlerBox(uint16_t __ui16NodeName):
   networkData(),
   
-  ui16NodeName(254),
+  ui16NodeName(__ui16NodeName),
 
   i16BoxActiveState(-1),
   ui32BoxActiveStateStartTime(0),

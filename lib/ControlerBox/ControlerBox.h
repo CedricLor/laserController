@@ -20,7 +20,7 @@ class ControlerBox
 
   public:
     /** -------- constructors -------- */
-    ControlerBox();
+    ControlerBox(uint16_t __ui16NodeName=254);
 
 
     /** -------- Public Instance Variables -----------------
