@@ -21,11 +21,27 @@ controllerBoxThis::controllerBoxThis():
 
 
 
-void controllerBoxThis::updateThisBoxProperties() {
+void controllerBoxThis::updateThisBoxNetWorkProperties() {
   thisCtrlerBox.networkData.nodeId = globalBaseVariables.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   thisCtrlerBox.networkData.stationIP = globalBaseVariables.laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   thisCtrlerBox.networkData.APIP = globalBaseVariables.laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
+}
+
+
+
+
+
+void controllerBoxThis::updateThisBoxNodeName() {
   thisCtrlerBox.ui16NodeName = globalBaseVariables.gui16NodeName;
+}
+
+
+
+
+
+void controllerBoxThis::updateThisBoxProperties() {
+  updateThisBoxNetWorkProperties();
+  updateThisBoxNodeName();
   // For this box, i16BoxActiveState, boxActiveStateHasBeenSignaled and ui32BoxActiveStateStartTime are updated
   // by calls to setBoxActiveState from boxState
   if (globalBaseVariables.MY_DEBUG == true) {

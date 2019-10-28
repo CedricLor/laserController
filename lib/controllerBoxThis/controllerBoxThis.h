@@ -25,7 +25,9 @@ class controllerBoxThis
     signal                      thisSignalHandler;
     pirController               thisPirController;
 
-    /** void updateThisBoxProperties() */
+    /** properties updaters */
+    void updateThisBoxNetWorkProperties();
+    void updateThisBoxNodeName();
     void updateThisBoxProperties();
 
     void addLaserTasks();
