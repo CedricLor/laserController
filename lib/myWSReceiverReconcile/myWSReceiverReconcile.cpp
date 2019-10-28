@@ -15,7 +15,7 @@
 
 myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxesCollection & _ctlBxColl)
 {
-  _onHandshakeCheckWhetherDOMNeedsUpdate(_obj);
+  _onHandshakeCheckWhetherDOMNeedsUpdate(_obj, _ctlBxColl);
 }
 
 
@@ -24,11 +24,9 @@ myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0
 
 
 
-int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/) {
-
+int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxesCollection & _ctlBxColl) {
   // Declare and define a Json object to read the box numbers and box states from the nested JSON object
   JsonObject __joBoxesStatesInDOM = _obj["boxesStatesInDOM"].as<JsonObject>(); // __joBoxesStatesInDOM = {1:4;2:3}
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object _obj available containing the boxState of each boxRow in the DOM \n"); }
 
   /** If the size of the Json object __joBoxesStatesInDOM is equal to 0,
    *  there are no boxes in the DOM. 
@@ -36,7 +34,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
    *  Let's then check if there are boxes the controller boxes array and return.
    * */
   if (__joBoxesStatesInDOM.size() == 0) {
-    _handleCaseNoBoxesInDom(__joBoxesStatesInDOM);
+    _handleCaseNoBoxesInDom(__joBoxesStatesInDOM, _ctlBxColl);
     return 0;
   }
 
@@ -45,7 +43,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
    * 
    *  Let's then check if there are boxes the controller boxes array.
    * */
-  _handleCaseBoxesInDom(__joBoxesStatesInDOM);
+  _handleCaseBoxesInDom(__joBoxesStatesInDOM, _ctlBxColl);
   return __joBoxesStatesInDOM.size();
 }
 
@@ -61,18 +59,15 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
  * 
  *  If there are boxes connected to the mesh, then the DOM needs an update.
 */
-void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
-  /** If there is only 1 box connected, it is this box. 
-   * 
-   *  Just return.*/
-  if (thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount == 0) {
+void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM, controllerBoxesCollection & _ctlBxColl) {
+  /** If there are no boxes connected/registered in the CB array and no boxes in DOM, just return.*/
+  if (_ctlBxColl.ui16connectedBoxesCount == 0) {
     return;
   }
-  /** If there is more than 1 box connected, look in the Json object 
-   *  received from the browser to detect which boxes are missing in 
-   *  the DOM and send to the browser the relevant information.
-  */
-  _lookForDOMMissingRows(__joBoxesStatesInDOM);
+  /** If there is at least 1 box connected/registered in the CB array, 
+   *  mark all the boxes in the CB array as not signaled, so that the WSSender knows that
+   *  it shall send the corresponding data to the browser. */
+  _markAllBoxesAsUnsignaledNewBox(_ctlBxColl);
   return;
 }
 
@@ -80,10 +75,10 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesI
 
 
 
-void myWSReceiverReconcile::_handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
+void myWSReceiverReconcile::_handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM, controllerBoxesCollection & _ctlBxColl) {
   // there are no connected boxes (and boxes in the DOM):
   // -> send instruction to delete all the boxRows from the DOM
-  if (thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount == 0) {
+  if (_ctlBxColl.ui16connectedBoxesCount == 0) {
     _handleCaseBoxesInDomAndNoBoxesInCBArray(__joBoxesStatesInDOM);
     return;
   }
@@ -164,8 +159,7 @@ void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p) {
 
 
 void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
-
-  // iterate over all the potentially existing laser boxes (note that it starts at 1)
+  // iterate over all the potentially existing laser boxes
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     char _c[3];  // declare an array of char of 3 characters ("   ")
     itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
@@ -175,6 +169,21 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
       // there is a missing box in the DOM
       // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+    } // end if
+  } // end for
+}
+
+
+
+
+
+void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(controllerBoxesCollection & _ctlBxColl) {
+  // iterate over all the potentially existing laser boxes
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+    if ((_ctlBxColl.controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
+      // if the _ctlBxColl.controllerBoxesArray.at(_i) has a networkData.nodeId 
+      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
+      _ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
     } // end if
   } // end for
 }

@@ -27,7 +27,7 @@ void setUp(void) {
 // set stuff up here
   Serial.println("\nStarting SPIFFS");
   if(!SPIFFS.begin(true)){
-    Serial.println("An Error has occurred while mounting SPIFFS");
+    Serial.println("An error has occurred while mounting SPIFFS");
     return;
   }
 }
