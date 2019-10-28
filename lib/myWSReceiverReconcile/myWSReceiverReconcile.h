@@ -23,14 +23,18 @@ class myWSReceiverReconcile
   private:
 
     int16_t _onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj, controllerBoxesCollection & _ctlBxColl);
+
     void _handleCaseNoBoxesInDom(controllerBoxesCollection & _ctlBxColl);
+    void _markAllBoxesAsUnsignaledNewBox(std::array<ControlerBox, 10U> & _controllerBoxesArray);
+
     void _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM, controllerBoxesCollection & _ctlBxColl);
+
     void _handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject& __joBoxesStatesInDOM);
+
     void _checkConsistancyDOMDB(JsonObject& __joBoxesStatesInDOM);
     void _lookForDisconnectedBoxes(JsonPair& _p);
     void _checkBoxStateConsistancy(JsonPair& _p);
     void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM);
-    void _markAllBoxesAsUnsignaledNewBox(controllerBoxesCollection & _ctlBxColl);
 
 };
 #endif

@@ -65,7 +65,7 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom(controllerBoxesCollection & 
   /** If there is at least 1 box connected/registered in the CB array, 
    *  mark all the boxes in the CB array as not signaled, so that the WSSender knows that
    *  it shall send the corresponding data to the browser. */
-  _markAllBoxesAsUnsignaledNewBox(_ctlBxColl);
+  _markAllBoxesAsUnsignaledNewBox(_ctlBxColl.controllerBoxesArray);
   return;
 }
 
@@ -73,13 +73,16 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom(controllerBoxesCollection & 
 
 
 
-void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(controllerBoxesCollection & _ctlBxColl) {
+void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(std::array<ControlerBox, 10U> & _controllerBoxesArray) {
   // iterate over all the potentially existing laser boxes
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if ((_ctlBxColl.controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
-      // if the _ctlBxColl.controllerBoxesArray.at(_i) has a networkData.nodeId 
-      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-      _ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+    if ((_controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
+      /** If the _controllerBoxesArray.at(_i) has a networkData.nodeId, 
+       *  it means that it is a connected box.
+       *  Changing its isNewBoxHasBeenSignaled property to false will trigger 
+       *  in the callback of task _tSendWSDataIfChangeBoxState
+      */
+      _controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
     } // end if
   } // end for
 }
