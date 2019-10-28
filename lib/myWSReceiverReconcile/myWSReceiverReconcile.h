@@ -11,11 +11,9 @@
 #define myWSReceiverReconcile_h
 
 #include "Arduino.h"
-#include <mySavedPrefs.h>
 #include <controllerBoxThis.h>
 #include <myWSSender.h>
-#include <myMeshViews.h>
-#include <myMeshStarter.h>
+
 
 class myWSReceiverReconcile
 {
