@@ -1,5 +1,5 @@
 /*
-  myWSReceiver.cpp - Library web socket related functions.
+  myWSReceiver.h - Web controller.
   Created by Cedric Lor, July 9, 2019.
 */
 
