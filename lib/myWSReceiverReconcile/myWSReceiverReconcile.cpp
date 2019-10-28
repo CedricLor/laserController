@@ -26,37 +26,18 @@ myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0
 
 void myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/) {
 
-  // Declare and define a JSONObject to read the box numbers and box states from the nested JSON object
+  // Declare and define a Json object to read the box numbers and box states from the nested JSON object
   JsonObject __joBoxesStatesInDOM = _obj["boxesStatesInDOM"].as<JsonObject>(); // __joBoxesStatesInDOM = {1:4;2:3}
   if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): JSON Object _obj available containing the boxState of each boxRow in the DOM \n"); }
 
-
+  /** If the size of the Json object __joBoxesStatesInDOM is equal to 0,
+   *  there are no boxes in the DOM. 
+   * 
+   *  Let's then check if there are boxes the controller boxes array.
+   * */
   if (__joBoxesStatesInDOM.size() == 0) {
-    if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): no boxRow in the DOM \n");
-      Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
-    }
-    // there are no boxRows in the DOM
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1) {
-      // there are no boxes connected to the mesh (and no boxes in the DOM), just return
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending action type \"handshake\", because there are no boxRow in DOM nor connectedBoxes.\n");
-      }
-      return;
-    }
-    else // re. if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1)
-    // there are boxes connected to the mesh (and no boxes in the DOM), look for the missing boxes
-    {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): No boxRow in DOM but connectedBoxes.\n");
-        Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): Calling _lookForDOMMissingRows().\n");
-      }
-      _lookForDOMMissingRows(__joBoxesStatesInDOM);
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): Ending after checking missing boxRows.\n");
-      }
-      return;
-    }
+    _handleCaseNoBoxesInDom(__joBoxesStatesInDOM);
+    return;
   }
 
   else // re. (__joBoxesStatesInDOM.size() != 0)
@@ -99,6 +80,38 @@ void myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _
     } // end else
   } // end if (__joBoxesStatesInDOM.size() != 0)
 
+}
+
+
+
+
+
+void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
+    Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): no boxRow in the DOM \n");
+    Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
+  /** If there is only 1 box connected, it is this box. 
+   * 
+   *  Just return.*/
+  if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1) {
+    // there are no boxes connected to the mesh (and no boxes in the DOM), just return
+    // if (globalBaseVariables.MY_DG_WS) {
+    //   Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): Ending action type \"handshake\", because there are no boxRow in DOM nor connectedBoxes.\n");
+    // }
+    return;
+  }
+  /** If there is more than 1 box connected, look in the Json object 
+   *  received from the browser to detect which boxes are missing in 
+   *  the DOM and send to the browser the relevant information.
+  */
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): No boxRow in DOM but connectedBoxes.\n");
+    Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): Calling _lookForDOMMissingRows().\n");
+  }
+  _lookForDOMMissingRows(__joBoxesStatesInDOM);
+  // if (globalBaseVariables.MY_DG_WS) {
+  //   Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): Ending after checking missing boxRows.\n");
+  // }
+  return;
 }
 
 
