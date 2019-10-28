@@ -60,7 +60,8 @@ pirController::pirController(ControlerBox & __thisCtrlerBox, signal & __signal, 
 {
   pinMode(_inputPin, INPUT);                                // declare sensor as input
   _tSetPirTimeStampAndBrdcstMsg.set(0, TASK_ONCE, [&](){_tcbSetPirTimeStampAndBrdcstMsg();}, [&](){return _oetcbSetPirTimeStampAndBrdcstMsg();}, NULL);
-  _tPirSpeedBumper.set(0, TASK_ONCE, NULL, NULL, NULL);
+  _tPirSpeedBumper.setInterval(0);
+  _tPirSpeedBumper.setIterations(TASK_ONCE);
 }
 
 

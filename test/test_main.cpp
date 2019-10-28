@@ -1,57 +1,64 @@
 #ifdef UNIT_TEST
-
 #include <Arduino.h>
+
+#include <ArduinoOTA.h>         //lib to the ArduinoOTA functions
+#include <ESPAsyncWebServer.h>
+#include <painlessMesh.h>
+#include <IPAddress.h>
+#include <Preferences.h>       // Provides friendly access to ESP32's Non-Volatile Storage (same as EEPROM in Arduino)
+#include <SPIFFS.h>
+#define FORMAT_SPIFFS_IF_FAILED true
+
+extern constexpr short    UI8_BOXES_COUNT                     = 10;
+
+#include <globalBasementVars.h>
+#include <mySavedPrefs.h>
+#include <myOta.h>
+#include <controllerBoxThis.h>
+#include <signal.h>
+#include <myMesh.h>
+#include <myMeshStarter.h>
+#include <myWebServerBase.h>
+
 #include <unity.h>
 
-// void setUp(void) {
-// // set stuff up here
-// }
 
-// void tearDown(void) {
-// // clean stuff up here
-// }
-#define LED_BUILTIN 13
-
-void test_led_builtin_pin_number(void) {
-    TEST_ASSERT_EQUAL(13, LED_BUILTIN);
+void setUp(void) {
+// set stuff up here
+  Serial.println("\nStarting SPIFFS");
+  if(!SPIFFS.begin(true)){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
 }
 
-void test_led_state_high(void) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    TEST_ASSERT_EQUAL(HIGH, digitalRead(LED_BUILTIN));
+void tearDown(void) {
+// clean stuff up here
 }
 
-void test_led_state_low(void) {
-    digitalWrite(LED_BUILTIN, LOW);
-    TEST_ASSERT_EQUAL(LOW, digitalRead(LED_BUILTIN));
+void webServer(void) {
+  myWSReceiverReconcile _myWSReceiverReconcile();
+}
+
+void test_WSReceiverReconcile(void) {
+  controllerBoxThis thisControllerBox;
+  const char * _msg = "{action:\"handshake\",boxStateInDOM:{1:4;2:3}}";
+  const int _capacity = JSON_OBJECT_SIZE(2) + 2*JSON_OBJECT_SIZE(1);
+  StaticJsonDocument<_capacity> _jdoc;
+  deserializeJson(_jdoc, _msg);
+  JsonObject _jobj = _jdoc.as<JsonObject>();
+  myWSReceiverReconcile _myWSReceiverReconcile(_jobj);
 }
 
 void setup() {
-    // NOTE!!! Wait for >2 secs
-    // if board doesn't support software reset via Serial.DTR/RTS
-    delay(2000);
+  delay(2000);
+  UNITY_BEGIN();
+  RUN_TEST(test_WSReceiverReconcile);
 
-    UNITY_BEGIN();    // IMPORTANT LINE!
-    RUN_TEST(test_led_builtin_pin_number);
-
-    pinMode(LED_BUILTIN, OUTPUT);
 }
 
-uint8_t i = 0;
-uint8_t max_blinks = 5;
-
 void loop() {
-    if (i < max_blinks)
-    {
-        RUN_TEST(test_led_state_high);
-        delay(500);
-        RUN_TEST(test_led_state_low);
-        delay(500);
-        i++;
-    }
-    else if (i == max_blinks) {
-      UNITY_END(); // stop unit testing
-    }
+  UNITY_END();
 }
 
 #endif

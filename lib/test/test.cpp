@@ -54,7 +54,7 @@ void test::laserPinStack() {
   _laserPin_3.~laserPin();
 
 
-  Serial.printf("%s over. \n\n", _methodName);
+  Serial.printf("%s over \n\n", _methodName);
 }
 
 
@@ -103,7 +103,7 @@ void test::laserToneStack() {
   Serial.printf("test::laserToneStack: calling _laserTone._playLaserTone(_laserPins); shall be -1. Is [%i]\n", 
     _laserTone._playLaserTone(_laserPins));
 
-  Serial.printf("test::laserToneStack: over. \n\n");
+  Serial.printf("test::laserToneStack: over \n\n");
 }
 
 
@@ -517,7 +517,7 @@ void test::rawNotesStackConstructors(const char * _methodName) {
   Serial.printf("%s testing laserNotes assignment op: _laserNotes = _laserNotes3.\n", _methodName);
   _laserNotes = _laserNotes3;
 
-  Serial.printf("%s testing constructor: over.\n\n", _methodName);
+  Serial.printf("%s testing constructor: over\n\n", _methodName);
 }
 
 
@@ -707,7 +707,7 @@ void test::barStack() {
 
   barStackConstructors(_methodName);
 
-  Serial.printf("%s over.\n\n", _methodName);
+  Serial.printf("%s over\n\n", _methodName);
 }
 
 
@@ -745,7 +745,7 @@ void test::barArrayStack() {
 
   barArrayStackBarGetters(_methodName, _barsArray);
 
-  Serial.printf("%s over.\n\n", _methodName);
+  Serial.printf("%s over\n\n", _methodName);
 }
 
 
@@ -855,7 +855,7 @@ void test::rawBarsStack() {
   rawBarsStackConstructors(_methodName);
   rawBarsStackInitializers(_methodName);
 
-  Serial.printf("%s over.\n\n", _methodName);
+  Serial.printf("%s over\n\n", _methodName);
 }
 
 
@@ -871,7 +871,7 @@ void test::implementedBarsStack() {
   rawBarsStackTaskCallbacks(_methodName, _laserSequences._bars);
   rawBarsStackTaskAccessFromAndToActiveBar(_methodName, _laserSequences._bars);
 
-  Serial.printf("%s over.\n\n", _methodName);
+  Serial.printf("%s over\n\n", _methodName);
 }
 
 
