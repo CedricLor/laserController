@@ -100,7 +100,7 @@ uint16_t controllerBoxesCollection::findIndexByNodeName(uint16_t _ui16NodeName) 
       return _i;
     }
   }
-  Serial.printf("%s did not find ControlerBox with _ui16NodeName = %u\n", _subName, _ui16NodeName);
+  Serial.printf("%s did not find ControlerBox with _ui16NodeName == %u\n", _subName, _ui16NodeName);
   return 254;
 }
 
