@@ -13,7 +13,7 @@
 
 
 
-myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/)
+myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxesCollection & _ctlBxColl)
 {
   _onHandshakeCheckWhetherDOMNeedsUpdate(_obj);
 }
@@ -62,8 +62,6 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
  *  If there are boxes connected to the mesh, then the DOM needs an update.
 */
 void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
-  Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): starting \n");
-  Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount ==  %u.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
   /** If there is only 1 box connected, it is this box. 
    * 
    *  Just return.*/

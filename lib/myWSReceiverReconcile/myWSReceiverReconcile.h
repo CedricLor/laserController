@@ -18,7 +18,7 @@
 class myWSReceiverReconcile
 {
   public:
-    myWSReceiverReconcile(JsonObject& _obj);
+    myWSReceiverReconcile(JsonObject& _obj, controllerBoxesCollection & _ctlBxColl);
 
   private:
 

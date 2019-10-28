@@ -47,7 +47,7 @@ void test_WSReceiverReconcile(void) {
   StaticJsonDocument<_capacity> _jdoc;
   deserializeJson(_jdoc, _msg);
   JsonObject _jobj = _jdoc.as<JsonObject>();
-  myWSReceiverReconcile _myWSReceiverReconcile(_jobj);
+  myWSReceiverReconcile _myWSReceiverReconcile(_jobj, thisControllerBox.thisSignalHandler.ctlBxColl);
 }
 
 void setup() {
