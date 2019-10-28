@@ -25,10 +25,7 @@ class controllerBoxThis
     signal                      thisSignalHandler;
     pirController               thisPirController;
 
-    /** void updateThisBoxProperties()
-     * 
-     *  TODO: The same-name method in controlerBox needs to be scrapped 
-     *  and replaced by this one. */
+    /** void updateThisBoxProperties() */
     void updateThisBoxProperties();
 
     void addLaserTasks();
