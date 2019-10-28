@@ -1,10 +1,14 @@
 /*
-  myWSReceiver.cpp - Library web socket related functions.
+  myWSReceiverReconcile.h - Library to handle reconciliation of data relating to 
+  the various controller boxes between the data available in the browser and 
+  and the data that the IF knows about the state of the controller boxes connected
+  to the mesh.
+
   Created by Cedric Lor, July 9, 2019.
 */
 
-#ifndef myWSReceiver_h
-#define myWSReceiver_h
+#ifndef myWSReceiverReconcile_h
+#define myWSReceiverReconcile_h
 
 #include "Arduino.h"
 #include <mySavedPrefs.h>
@@ -13,29 +17,18 @@
 #include <myMeshViews.h>
 #include <myMeshStarter.h>
 
-class myWSReceiver
+class myWSReceiverReconcile
 {
   public:
-    myWSReceiver(uint8_t *_data);
+    myWSReceiverReconcile(JsonObject& _obj);
 
   private:
-
-    void _actionSwitch(JsonObject& _obj);
 
     void _onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj);
     void _checkConsistancyDOMDB(JsonObject& _joBoxState);
     void _lookForDisconnectedBoxes(JsonPair& _p);
     void _checkBoxStateConsistancy(JsonPair& _p);
     void _lookForDOMMissingRows(JsonObject& _joBoxState);
-
-    void _requestBoxChange(JsonObject& _obj, bool _bBroadcast=false);
-    void _requestIFChange(JsonObject& _obj);
-    
-    void _rebootIF(JsonObject& _obj);
-    void _saveIF(JsonObject& _obj);
-
-    void _savegi8RequestedOTAReboots(JsonObject& _obj);
-    void _requestNetChange(JsonObject& _obj);
 
 };
 #endif
