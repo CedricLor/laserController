@@ -22,8 +22,10 @@ class myWSReceiverReconcile
 
   private:
 
-    void _onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj);
+    int16_t _onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj);
     void _handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM);
+    void _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM);
+    void _handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject& __joBoxesStatesInDOM);
     void _checkConsistancyDOMDB(JsonObject& __joBoxesStatesInDOM);
     void _lookForDisconnectedBoxes(JsonPair& _p);
     void _checkBoxStateConsistancy(JsonPair& _p);
