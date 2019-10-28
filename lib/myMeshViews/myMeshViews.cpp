@@ -27,7 +27,7 @@ myMeshViews::myMeshViews(ControlerBox & __thisCtrlerBox):
 
 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
-  Serial.println("myMeshViews::statusMsg(): starting.");
+  Serial.println("myMeshViews::statusMsg(): starting");
   
   // prepare the JSON string to be sent via the mesh
   // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
@@ -47,7 +47,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   // => set my own boxActiveStateHasBeenSignaled to true
   _thisCtrlerBox.boxActiveStateHasBeenSignaled = true;
 
-  Serial.println("myMeshViews::statusMsg(): over.");
+  Serial.println("myMeshViews::statusMsg(): over");
 }
 
 
@@ -140,7 +140,7 @@ void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
 void myMeshViews::_changedBoxConfirmation(JsonObject& __obj) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
-  Serial.println("myMeshViews::_changedBoxConfirmation(): starting.");
+  Serial.println("myMeshViews::_changedBoxConfirmation(): starting");
 
   // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
   __obj["st"] = 2;
@@ -161,7 +161,7 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& __obj) {
   // broadcast confirmation
   _sendMsg(__obj);
 
-  Serial.println("myMeshViews::_changedBoxConfirmation(): over.");
+  Serial.println("myMeshViews::_changedBoxConfirmation(): over");
 }
 
 
@@ -186,7 +186,7 @@ void myMeshViews::_IRHighMsg(uint32_t _ui32IRHighTime) {
 
 
 void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
-  Serial.println("myMeshViews::_sendMsg(): starting.");
+  Serial.println("myMeshViews::_sendMsg(): starting");
 
   // adding my nodeName to the JSON to be sent to other boxes
   _joMsg["NNa"] = _thisCtrlerBox.ui16NodeName;

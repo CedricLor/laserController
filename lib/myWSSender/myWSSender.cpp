@@ -23,7 +23,7 @@ myWSSender::myWSSender()
 Task myWSSender::tSendWSDataIfChangeStationIp(10000, TASK_FOREVER, &_tcbSendWSDataIfChangeStationIp, NULL, false, NULL, NULL);
 
 void myWSSender::_tcbSendWSDataIfChangeStationIp() {
-  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
+  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting");
   // if (globalBaseVariables.MY_DG_WS) {
   //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
   //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
@@ -50,7 +50,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
   _myWSSender.prepareWSData(3, nullptr); // 3 for message sent in case of change in station IP
 
   thisControllerBox.updateThisBoxProperties();
-  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting.");
+  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting");
 }
 
 
@@ -66,7 +66,7 @@ void myWSSender::_tcbSendWSDataIfChangeStationIp() {
 Task myWSSender::tSendWSDataIfChangeBoxState(500, TASK_FOREVER, &_tcbSendWSDataIfChangeBoxState, NULL, false, NULL, NULL);
 
 void myWSSender::_tcbSendWSDataIfChangeBoxState() {
-  // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): starting.");
+  // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): starting");
   // if no client has ever connected, just return
   if (server == nullptr) { return; }
   // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): WS has been started.");
@@ -239,7 +239,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
   sendWSData(__newObj, _client);
 
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.println("- myWSSender::prepareWSData. over.");
+    Serial.println("- myWSSender::prepareWSData. over");
   }
 }
 
@@ -258,7 +258,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
 
 void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.println("- myWSSender::sendWSData. starting.");
+      Serial.println("- myWSSender::sendWSData. starting");
     }
 
     // If no client has ever even tried to connect, the websocket server is not yet started. Return.
@@ -294,7 +294,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
     _client->text(_buffer);
 
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.println(F("- myWSSender::sendWSData. over."));
+      Serial.println(F("- myWSSender::sendWSData. over"));
     }
 }
 

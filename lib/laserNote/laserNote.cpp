@@ -142,7 +142,7 @@ uint16_t const laserNote::getNote() const {
  *  
  *  Returns the duration of a laserNote instance in ms. */
 uint16_t const laserNote::ui16GetNoteDurationInMs(const beat & _beat) const {
-  // Serial.println("laserNote::ui16GetNoteDurationInMs(). starting.");
+  // Serial.println("laserNote::ui16GetNoteDurationInMs(). starting");
   // Serial.println(F("------------- DEBUG --------- laserNote --------- DEBUG -------------"));
   // Serial.printf("laserNote::ui16GetNoteDurationInMs(). _ui16Note == %u\n", _ui16Note);
   // Serial.printf("laserNote::ui16GetNoteDurationInMs(). _beat.getBaseNoteForBeat() == %u\n", _beat.getBaseNoteForBeat());
@@ -171,7 +171,7 @@ uint16_t const laserNote::ui16GetNoteDurationInMs(const beat & _beat) const {
   if (__ui16DurationInMs > 30000) {
     return 30000;
   }
-  // Serial.println("laserNote::ui16GetNoteDurationInMs(). over.");
+  // Serial.println("laserNote::ui16GetNoteDurationInMs(). over");
   return __ui16DurationInMs;
 }
 

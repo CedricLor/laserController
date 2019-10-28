@@ -514,7 +514,7 @@ boxStateCollection::boxStateCollection(
   _MeshStates({10, 11, 12, 13}),
   _boxTargetState(0)
 {
-  Serial.println("boxStateCollection::initBoxStates(). starting.");
+  Serial.println("boxStateCollection::boxStateCollection(). starting");
   /** Constructor signature (using "little constructor")
    * _i16Duration, _ui16AssociatedSequence, _i16onIRTrigger, _i16onMeshTrigger, _i16onExpire */
 
@@ -653,7 +653,7 @@ boxStateCollection::boxStateCollection(
 
   restartPBS = &boxStateCollection::_restartTaskPlayBoxState;
 
-  Serial.println("boxStateCollection::initBoxStates(). over.\n");
+  Serial.println("boxStateCollection::boxStateCollection(). over\n");
 }
 
 
@@ -667,7 +667,7 @@ boxStateCollection::boxStateCollection(
 // Switch to Step Controlled Mode
 //////////////////////////////////////////////
 void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
-  Serial.println("void boxStateCollection::toggleStepControlled(). starting.");
+  Serial.println("void boxStateCollection::toggleStepControlled(). starting");
   ui16Mode = _ui16Mode;
   _stepColl.reset();
   if (ui16Mode) {
@@ -696,7 +696,7 @@ void boxStateCollection::toggleStepControlled(uint16_t _ui16Mode) {
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
 */
 void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode() {
-  // Serial.println("void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode(). starting.");
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxStateInStepControlledMode(). starting");
   if (_stepColl.i16maxStepIndexNb > -1) {
     /** 1. configure the params for the next boxState. */
     _applyNextStep();
@@ -740,7 +740,7 @@ void boxStateCollection::_applyNextStep() {
  *  Called from boxStateCollection::_setBoxTargetState(const short __boxTargetState) only.
 */
 void boxStateCollection::_restartTaskPlayBoxState() {
-  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState(). starting.");
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState(). starting");
   // Serial.print("void boxStateCollection::_restartTaskPlayBoxState(). Iteration:");
   // Serial.println(tPlayBoxStates.getRunCounter());
 
@@ -767,7 +767,7 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   // Serial.println("*********************************************************");
 
 
-  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState(). over.");
+  // Serial.println("void boxStateCollection::_restartTaskPlayBoxState(). over");
 };
 
 
@@ -799,7 +799,7 @@ void boxStateCollection::_restartTaskPlayBoxState() {
 */
 
 bool boxStateCollection::_oetcbPlayBoxState(){
-  Serial.println("boxStateCollection::_oetcbPlayBoxState(). starting.");
+  Serial.println("boxStateCollection::_oetcbPlayBoxState(). starting");
   // Serial.print("boxStateCollection::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisCtrlerBox.i16BoxActiveState);
 
   // 1. select the currently active state
@@ -817,7 +817,7 @@ bool boxStateCollection::_oetcbPlayBoxState(){
   //   sendCurrentBoxState(_thisCtrlerBox.i16BoxActiveState);
   // }
 
-  Serial.println("boxStateCollection::_oetcbPlayBoxState(). over.");
+  Serial.println("boxStateCollection::_oetcbPlayBoxState(). over");
   return true;
 }
 
@@ -830,7 +830,7 @@ bool boxStateCollection::_oetcbPlayBoxState(){
   set it to its default state.
 */
 void boxStateCollection::_odtcbPlayBoxState(){
-  Serial.println("boxStateCollection::_odtcbPlayBoxState(). starting.");
+  Serial.println("boxStateCollection::_odtcbPlayBoxState(). starting");
   // Serial.print("boxStateCollection::_odtcbPlayBoxState() tPlayBoxState.getInterval(): ");
   // Serial.println(tPlayBoxState.getInterval());
 
@@ -852,7 +852,7 @@ void boxStateCollection::_odtcbPlayBoxState(){
     _setBoxTargetState(_thisCtrlerBox.sBoxDefaultState);
 
   }
-  Serial.println("boxStateCollection::_odtcbPlayBoxState(). over.");
+  Serial.println("boxStateCollection::_odtcbPlayBoxState(). over");
 }
 
 
@@ -861,12 +861,12 @@ void boxStateCollection::_odtcbPlayBoxState(){
 
 // _setBoxTargetState is the central entry point to request a boxState change.
 void boxStateCollection::_setBoxTargetState(const short __boxTargetState) {
-  Serial.println("boxStateCollection::_setBoxTargetState(). starting.");
+  Serial.println("boxStateCollection::_setBoxTargetState(). starting");
   Serial.printf("boxStateCollection::_setBoxTargetState(). __boxTargetState (passed in parameters): %u\n", __boxTargetState);
   _boxTargetState = __boxTargetState;
   (*this.*restartPBS)();
   Serial.printf("boxStateCollection::_setBoxTargetState(). _boxTargetState (boxStateCollection instance variable): %u\n", _boxTargetState);
-  Serial.println("boxStateCollection::_setBoxTargetState(). over.");
+  Serial.println("boxStateCollection::_setBoxTargetState(). over");
 };
 
 

@@ -297,7 +297,7 @@ void mySpiffs::_copyPrettyStepsToUgly(File& prettyFile, const char * _uglyFileNa
 
 
 void mySpiffs::convertJsonStepsPrettyToUgly(File& prettyFile, const char * _uglyFileName, const uint16_t _ui16NodeName) {
-    Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): starting.");
+    Serial.println("mySpiffs::convertJsonStepsPrettyToUgly(): starting");
 
 
     // variables definition and declaration

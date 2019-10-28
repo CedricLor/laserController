@@ -13,7 +13,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 {
 
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.println("myWSReceiver::myWSReceiver. starting.");
+    Serial.println("myWSReceiver::myWSReceiver. starting");
   }
 
   // create a StaticJsonDocument entitled _doc
@@ -44,11 +44,11 @@ myWSReceiver::myWSReceiver(uint8_t *_data)
 
 void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("myWSReceiver::_actionSwitch. starting.\n");
+    Serial.printf("myWSReceiver::_actionSwitch. starting\n");
   }
 
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
-  // Received JSON: {action:0, message:{1:4;2:3}}
+  // Received JSON: {action:"handshake", boxStateInDOM:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message
     if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n"); }
     myWSReceiverReconcile _myWSReceiverReconcile(_obj);
@@ -226,7 +226,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
   // {"action":"changeNet","key":"save","dataset":{"sIP":"192.168.5.1","sssid":"ESP32-Access-Point","spass":"123456789","sgw":"192.168.5.1","snm":"255.255.255.0","shi":"0","smc":"10"},"lb":"all","val":"softAP"}
   // {"action":"changeNet","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): starting.\n"); }
+  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): starting\n"); }
 
   // If this is a reboot message
   if (_obj["key"] == "reboot") {
@@ -262,5 +262,5 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   // broadcast the _obj (including its "reboot" or "save" key)
   _requestBoxChange(_obj, true /*_bBroadcast*/);
 
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): over.\n"); }
+  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): over\n"); }
 }

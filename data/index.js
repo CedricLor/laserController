@@ -1330,7 +1330,7 @@ var connectionObj = {
         action:           "handshake",
         boxesStatesInDOM: boxCont.toBoxStateObj()
       }));
-      // {action:0, boxStateInDOM:{1:4;2:3}}
+      // {action:"handshake", boxStateInDOM:{1:4;2:3}}
   },
 
   wsonmessage:     function(e) {

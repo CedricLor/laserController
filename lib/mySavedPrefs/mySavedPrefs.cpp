@@ -140,7 +140,7 @@ void mySavedPrefs::_handleOTAReboots() {
 
 
 void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
-  Serial.println("mySavedPrefs::saveFromNetRequest: starting.");
+  Serial.println("mySavedPrefs::saveFromNetRequest: starting");
 
   // {"action":"changeBox","key":"save","val":"wifi","dataset":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":"192.168.43.1","wgwp":"0","wfip":"192.168.43.50","wnm":"255.255.255.0","wch":"6"},"lb":0}
   // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
@@ -301,7 +301,7 @@ void mySavedPrefs::actOnPrefsThroughCallback(void (mySavedPrefs::*callBack)(), m
 ///////////////////////////////////////////////////
 void mySavedPrefs::saveOTASuccess() {
   // choose the location where to save the error code for this OTA update
-  Serial.println("myOta::_saveOTASuccess: starting.");
+  Serial.println("myOta::_saveOTASuccess: starting");
   char __cOTASuccessErrorNVSKey[9] = "OTASucc";
   snprintf(__cOTASuccessErrorNVSKey, 9, "%s%u", __cOTASuccessErrorNVSKey, (uint32_t)(globalBaseVariables.gi8RequestedOTAReboots + 1));
   

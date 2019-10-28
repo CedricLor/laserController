@@ -99,7 +99,7 @@ bar& bar::operator=(const bar& __bar)
  * Returns the effective number of laserNotes (as opposed to 
  * the base laserNote count) in a bar */
 uint16_t const bar::ui16GetNotesCountInBar() const {
-  // Serial.println("bar::ui16GetNotesCountInBar(): starting.");
+  // Serial.println("bar::ui16GetNotesCountInBar(): starting");
   uint16_t __ui = 0;
   while (_laserNotesArray[__ui].getNote() != 0) {
     __ui++;
@@ -156,7 +156,7 @@ uint16_t const bar::ui16GetBaseNotesCountInBar(const beat & _beat) const {
  * 
  * Returns the current bar effective duration in ms */
 uint32_t const bar::ui32GetBarDuration(const beat & _beat) const {
-  // Serial.println(F("bar::ui32GetBarDuration(). starting."));
+  // Serial.println(F("bar::ui32GetBarDuration(). starting"));
   // Serial.printf("bar::ui32GetBarDuration(). ui16GetBaseNotesCountInBar() = %u\n", ui16GetBaseNotesCountInBar());
   // Serial.printf("bar::ui32GetBarDuration(). _beat.ui16GetBaseNoteDurationInMs() = %u\n", _beat.ui16GetBaseNoteDurationInMs());
   // Serial.printf("bar::ui32GetBarDuration(). about to return the following value: %u\n", ui16GetBaseNotesCountInBar() * _beat.ui16GetBaseNoteDurationInMs());
@@ -396,7 +396,7 @@ uint16_t const bars::playBar(beat const & __beat) {
  *  the effective number of laserNotes in the bar.  
  * */
 bool bars::_oetcbPlayBar(){
-  // Serial.println("bars::_oetcbPlayBar(). starting.");
+  // Serial.println("bars::_oetcbPlayBar(). starting");
 
   /**1. set the number of iterations base of the effective number of laserNotes in the bar */
   tPlayBar.setIterations(_activeBar.ui16GetNotesCountInBar());
@@ -404,7 +404,7 @@ bool bars::_oetcbPlayBar(){
   /**2. Send the bar index number to the mesh */
   _thisMeshViews.sendBar(_activeBar.i16IndexNumber);
 
-  // Serial.println("bars::_oetcbPlayBar(). over.");
+  // Serial.println("bars::_oetcbPlayBar(). over");
   return true;
 }
 
@@ -425,7 +425,7 @@ bool bars::_oetcbPlayBar(){
  *    playing the former laserNote) and restart it (to start playing the next laserNote).
  * */
 void bars::_tcbPlayBar(beat const & __beat){
-  Serial.println("bars::_tcbPlayBar(). starting.");
+  Serial.println("bars::_tcbPlayBar(). starting");
 
   /**1. Get the run counter and decrease it by 1 (the run counter uses "human" numbering; 
    *    i.e. it starts at 1 (0 is 0).
@@ -451,7 +451,7 @@ void bars::_tcbPlayBar(beat const & __beat){
    * */
   tPlayBar.setInterval(_activeBar.getNotesArray().at(_ui16Iter).ui16GetNoteDurationInMs(__beat));
 
-  Serial.println(F("bars::_tcbPlayBar(). over."));
+  Serial.println(F("bars::_tcbPlayBar(). over"));
 };
 
 

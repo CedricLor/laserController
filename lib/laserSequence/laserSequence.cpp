@@ -252,7 +252,7 @@ laserSequences::laserSequences(
 
   tPreloadNextLaserSequence.set(0, 1, [&](){ return _tcbPreloadNextLaserSequence(); }, NULL, NULL);
 
-  Serial.println("laserSequences::laserSequences(). over.");
+  Serial.println("laserSequences::laserSequences(). over");
 }
 
 
@@ -478,7 +478,7 @@ bool laserSequences::_oetcbPlayLaserSequence() {
  *  - preload the next bar from SPIFFS.
  * */
 void laserSequences::_tcbPlayLaserSequence() {
-  Serial.println("laserSequences::_tcbPlayLaserSequence(). starting.");
+  Serial.println("laserSequences::_tcbPlayLaserSequence(). starting");
   Serial.println(F("------------- DEBUG --------- SEQUENCE --------- DEBUG -------------"));
 
   /**1. Play the active bar*/
@@ -494,7 +494,7 @@ void laserSequences::_tcbPlayLaserSequence() {
   /**3. Preload the next bar*/
   _bars.preloadNextBarThroughTask(_activeLaserSequence.i16GetBarIndexNumber(tPlayLaserSequence.getRunCounter()));
 
-  Serial.println("laserSequences::_tcbPlayLaserSequence(). over.");
+  Serial.println("laserSequences::_tcbPlayLaserSequence(). over");
 };
 
 

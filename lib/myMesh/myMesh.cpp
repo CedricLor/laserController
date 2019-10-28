@@ -193,7 +193,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   tChangedConnection.restart();
 
   if (globalBaseVariables.MY_DG_MESH) {
-    Serial.println(F("myMesh::droppedConnectionCallback(): over."));
+    Serial.println(F("myMesh::droppedConnectionCallback(): over"));
   }
 }
 
@@ -338,7 +338,7 @@ Task myMesh::tIamAloneTimeOut(20*TASK_SECOND, 1, &_tcbIamAloneTimeOut, NULL, fal
    Restarts the mesh if the node is no longer connected.
 */
 void myMesh::_tcbIamAloneTimeOut() {
-  Serial.println("myMesh::_tcbIamAloneTimeOut(): starting.");
+  Serial.println("myMesh::_tcbIamAloneTimeOut(): starting");
   if (IamAlone()) {
     Serial.println("myMesh::_tcbIamAloneTimeOut(): Restarting the mesh.");
     // myMeshStarter::tRestart.restartDelayed();
