@@ -44,10 +44,10 @@ void myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _
   // there are boxRows in DOM
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in the DOM \n");
-    Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount =  %u.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
+    Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount ==  %u.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
   }
   {
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount == 1) {
+    if (thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount == 0) {
       // there are no connected boxes (and boxes in the DOM):
       if (globalBaseVariables.MY_DG_WS) {
         Serial.printf("myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(): There are boxRows in DOM but no connectedBoxes.\n");
@@ -65,7 +65,7 @@ void myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _
       }
       return;
     }
-    else // re. if (ControlerBox::ui16connectedBoxesCount == 1)
+    else // re. if (ControlerBox::ui16connectedBoxesCount == 0)
     // there are boxes connected to the mesh (and boxes in the DOM):
     // -> check consistency between the DOM and thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray
     {
@@ -96,7 +96,7 @@ void myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _
 */
 void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
   Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): starting \n");
-  Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount =  %u.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
+  Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount ==  %u.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
   /** If there is only 1 box connected, it is this box. 
    * 
    *  Just return.*/
@@ -126,7 +126,7 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesI
 void myWSReceiverReconcile::_checkConsistancyDOMDB(JsonObject& _joBoxState) {
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("myWSReceiverReconcile::_checkConsistancyDOMDB(): JSON Object _joBoxState.size: %i. There are currently boxRow(s) in the DOM.\n", _joBoxState.size());
-    Serial.printf("myWSReceiverReconcile::_checkConsistancyDOMDB(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount =  %u. There are currently boxes connected to the mesh.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
+    Serial.printf("myWSReceiverReconcile::_checkConsistancyDOMDB(): thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount ==  %u. There are currently boxes connected to the mesh.\n", thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount);
     Serial.printf("myWSReceiverReconcile::_checkConsistancyDOMDB(): about to iterate over the boxRows, looking for the existing boxRow and boxState in DOM\n");
   }
 

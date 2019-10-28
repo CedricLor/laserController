@@ -14,8 +14,8 @@
 
 // Constructors
 controllerBoxesCollection::controllerBoxesCollection():
-  ui16connectedBoxesCount(1),
-  ui16previousConnectedBoxesCount(1),
+  ui16connectedBoxesCount(0),
+  ui16previousConnectedBoxesCount(0),
   controllerBoxesArray()
 { }
 
