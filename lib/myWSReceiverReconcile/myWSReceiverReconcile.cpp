@@ -85,18 +85,23 @@ void myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _
 
 
 
-
+/**void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM)
+ * 
+ *  Handles the case where the browser's tells us that there are no boxes in the DOM.
+ * 
+ *  If there are no connected boxes to the mesh, then the DOM and the controller boxes array 
+ *  are sync. Do nothing.
+ * 
+ *  If there are boxes connected to the mesh, then the DOM needs an update.
+*/
 void myWSReceiverReconcile::_handleCaseNoBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
-    Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): no boxRow in the DOM \n");
-    Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
+  Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): starting \n");
+  Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount =  %i.\n", thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount);
   /** If there is only 1 box connected, it is this box. 
    * 
    *  Just return.*/
   if (thisControllerBox.thisSignalHandler.ctlBxColl.connectedBoxesCount == 1) {
-    // there are no boxes connected to the mesh (and no boxes in the DOM), just return
-    // if (globalBaseVariables.MY_DG_WS) {
-    //   Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): Ending action type \"handshake\", because there are no boxRow in DOM nor connectedBoxes.\n");
-    // }
+    // if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiverReconcile::_handleCaseNoBoxesInDom(): Ending action type \"handshake\", because there are no boxRow in DOM nor connectedBoxes.\n"); }
     return;
   }
   /** If there is more than 1 box connected, look in the Json object 
