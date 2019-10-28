@@ -31,8 +31,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
   /** If the size of the Json object __joBoxesStatesInDOM is equal to 0,
    *  there are no boxes in the DOM. 
    * 
-   *  Let's then check if there are boxes the controller boxes array and return.
-   * */
+   *  Let's then check if there are boxes the controller boxes array and return. */
   if (__joBoxesStatesInDOM.size() == 0) {
     _handleCaseNoBoxesInDom(_ctlBxColl);
     return 0;
@@ -41,8 +40,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject
   /** If the size of the Json object __joBoxesStatesInDOM is superior to 0,
    *  there are boxes in the DOM. 
    * 
-   *  Let's then check if there are boxes the controller boxes array.
-   * */
+   *  Let's then check if there are boxes the controller boxes array. */
   _handleCaseBoxesInDom(__joBoxesStatesInDOM, _ctlBxColl);
   return __joBoxesStatesInDOM.size();
 }
@@ -69,6 +67,21 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom(controllerBoxesCollection & 
    *  it shall send the corresponding data to the browser. */
   _markAllBoxesAsUnsignaledNewBox(_ctlBxColl);
   return;
+}
+
+
+
+
+
+void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(controllerBoxesCollection & _ctlBxColl) {
+  // iterate over all the potentially existing laser boxes
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+    if ((_ctlBxColl.controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
+      // if the _ctlBxColl.controllerBoxesArray.at(_i) has a networkData.nodeId 
+      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
+      _ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+    } // end if
+  } // end for
 }
 
 
@@ -169,21 +182,6 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
       // there is a missing box in the DOM
       // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
-    } // end if
-  } // end for
-}
-
-
-
-
-
-void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(controllerBoxesCollection & _ctlBxColl) {
-  // iterate over all the potentially existing laser boxes
-  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if ((_ctlBxColl.controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
-      // if the _ctlBxColl.controllerBoxesArray.at(_i) has a networkData.nodeId 
-      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-      _ctlBxColl.controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
     } // end if
   } // end for
 }
