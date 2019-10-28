@@ -23,9 +23,9 @@ class controllerBoxesCollection
     void deleteBoxByBoxIndex(uint16_t _ui16index);
 
     // Boxes counter
-    uint16_t const updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount);
-    short int connectedBoxesCount;
-    short int previousConnectedBoxesCount;
+    uint16_t const ui16updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount);
+    uint16_t ui16connectedBoxesCount;
+    uint16_t ui16previousConnectedBoxesCount;
 
     // Boxes array
     std::array<ControlerBox, 10> controllerBoxesArray;

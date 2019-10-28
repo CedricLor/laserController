@@ -14,8 +14,8 @@
 
 // Constructors
 controllerBoxesCollection::controllerBoxesCollection():
-  connectedBoxesCount(1),
-  previousConnectedBoxesCount(1),
+  ui16connectedBoxesCount(1),
+  ui16previousConnectedBoxesCount(1),
   controllerBoxesArray()
 { }
 
@@ -61,7 +61,7 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
    *  => save the data */
   if (__ui16BoxIndex != 254) {
     if (controllerBoxesArray.at(__ui16BoxIndex).networkData.nodeId == 0) {
-      updateConnectedBoxCount(connectedBoxesCount + 1);
+      ui16updateConnectedBoxCount(ui16connectedBoxesCount + 1);
     }
     controllerBoxesArray.at(__ui16BoxIndex)._updateBoxProperties(_ui32nodeId, _obj, __ui16BoxIndex);
   }
@@ -136,7 +136,7 @@ void controllerBoxesCollection::deleteBoxByNodeId(uint32_t _ui32nodeId) {
 void controllerBoxesCollection::deleteBoxByBoxIndex(uint16_t _ui16index) {
   Serial.println("controllerBoxesCollection::deleteBoxByBoxIndex(): starting");
   controllerBoxesArray[_ui16index]._deleteBox(_ui16index);
-  updateConnectedBoxCount(connectedBoxesCount - 1);
+  ui16updateConnectedBoxCount(ui16connectedBoxesCount - 1);
   Serial.println("controllerBoxesCollection::deleteBoxByBoxIndex(): over");
 }
 
@@ -144,9 +144,9 @@ void controllerBoxesCollection::deleteBoxByBoxIndex(uint16_t _ui16index) {
 
 
 
-uint16_t const controllerBoxesCollection::updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount) {
-  previousConnectedBoxesCount = connectedBoxesCount;
-  return connectedBoxesCount = _ui16newConnectedBoxesCount;
+uint16_t const controllerBoxesCollection::ui16updateConnectedBoxCount(uint16_t _ui16newConnectedBoxesCount) {
+  ui16previousConnectedBoxesCount = ui16connectedBoxesCount;
+  return ui16connectedBoxesCount = _ui16newConnectedBoxesCount;
 }
 
 
