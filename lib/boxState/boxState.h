@@ -114,7 +114,7 @@ class boxStateCollection
     /** constructors*/
     /** default constructor: used to define the boxStates array */
     boxStateCollection(
-      ControlerBox & __thisBox,
+      ControlerBox & __thisCtrlerBox,
       myMeshViews & __thisMeshViews
       // void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)=nullptr
     );
@@ -122,8 +122,8 @@ class boxStateCollection
     // boxStates array
     std::array<boxState, 14> boxStatesArray;
 
-    // _thisBox
-    ControlerBox & _thisBox;
+    // _thisCtrlerBox
+    ControlerBox & _thisCtrlerBox;
 
     // step mode switch stack
     void toggleStepControlled(uint16_t _ui16Mode);

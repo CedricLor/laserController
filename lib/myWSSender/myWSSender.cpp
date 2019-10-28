@@ -209,12 +209,12 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     // Root and Interface Nodes Params
     JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
     if (globalBaseVariables.isRoot) {
-      __rootIFSettings["roNNa"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0).ui16NodeName;
+      __rootIFSettings["roNNa"] = thisControllerBox.thisCtrlerBox.ui16NodeName;
     } else {
       uint16_t _bxIndex           = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(globalBaseVariables.ui32RootNodeId);
       __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_bxIndex).ui16NodeName );
     }
-    __rootIFSettings["IFNNA"]   = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0).ui16NodeName;
+    __rootIFSettings["IFNNA"]   = thisControllerBox.thisCtrlerBox.ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
     JsonObject __softAPSettings = __newObj.createNestedObject("softAP");

@@ -9,10 +9,10 @@
 
 controllerBoxThis::controllerBoxThis():
   globBaseVars(globalBaseVariables),
-  thisCtrlerBox(thisSignalHandler.ctlBxColl.controllerBoxesArray.at(0)),
-  thisMeshViews(myMeshViews(thisCtrlerBox)),
-  thisSignalHandler(thisMeshViews),
-  thisPirController(pirController(thisSignalHandler, tSetPirTimeStampAndBrdcstMsg, tPirSpeedBumper, thisMeshViews, 12))
+  thisCtrlerBox(),
+  thisMeshViews(thisCtrlerBox),
+  thisSignalHandler(thisCtrlerBox, thisMeshViews),
+  thisPirController(thisCtrlerBox, thisSignalHandler, tSetPirTimeStampAndBrdcstMsg, tPirSpeedBumper, thisMeshViews, 12)
 {
   tReboot.set(3000, TASK_ONCE, NULL, NULL, [&](){_reboot();});
 }

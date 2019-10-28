@@ -497,12 +497,12 @@ void (boxStateCollection::*restartPBS)() = nullptr;
 /** Constructors */
 /** default constructor */
 boxStateCollection::boxStateCollection(
-    ControlerBox & __thisBox,
+    ControlerBox & __thisCtrlerBox,
     myMeshViews & __thisMeshViews
     // void (*_sendCurrentBoxState)(const int16_t _i16CurrentStateNbr)
   ):
   boxStatesArray{},
-  _thisBox(__thisBox),
+  _thisCtrlerBox(__thisCtrlerBox),
   ui16Mode(0),
   // sendCurrentBoxState(_sendCurrentBoxState),
   _thisMeshViews(__thisMeshViews),
@@ -756,8 +756,8 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray.at(_boxTargetState).i16Duration));
   // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
 
-  // 2. Set the i16BoxActiveState of _thisBox (ControllerBox) to the _boxTargetState
-  _thisBox._setBoxActiveState(_boxTargetState, globalBaseVariables.laserControllerMesh.getNodeTime());
+  // 2. Set the i16BoxActiveState of _thisCtrlerBox (ControllerBox) to the _boxTargetState
+  _thisCtrlerBox._setBoxActiveState(_boxTargetState, globalBaseVariables.laserControllerMesh.getNodeTime());
   // Serial.println("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState about to be enabled");
 
   // 3. Restart tPlayBoxState
@@ -800,10 +800,10 @@ void boxStateCollection::_restartTaskPlayBoxState() {
 
 bool boxStateCollection::_oetcbPlayBoxState(){
   Serial.println("boxStateCollection::_oetcbPlayBoxState(). starting.");
-  // Serial.print("boxStateCollection::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisBox.i16BoxActiveState);
+  // Serial.print("boxStateCollection::_oetcbPlayBoxState(). Box State Number: ");Serial.println(_thisCtrlerBox.i16BoxActiveState);
 
   // 1. select the currently active state
-  boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
+  boxState& _currentBoxState = boxStatesArray[_thisCtrlerBox.i16BoxActiveState];
 
   // 2. Select the desired laserSequence and play it in loop
   //    until tPlayBoxState expires, for the duration mentionned in the activeState
@@ -812,9 +812,9 @@ bool boxStateCollection::_oetcbPlayBoxState(){
   //   _laserSequences.sequencesArray.at(_currentBoxState.ui16AssociatedSequence));
   
   // 3. Signal the change of state to the mesh
-  _thisMeshViews.sendBoxState(_thisBox.i16BoxActiveState);
+  _thisMeshViews.sendBoxState(_thisCtrlerBox.i16BoxActiveState);
   // if (sendCurrentBoxState != nullptr) {
-  //   sendCurrentBoxState(_thisBox.i16BoxActiveState);
+  //   sendCurrentBoxState(_thisCtrlerBox.i16BoxActiveState);
   // }
 
   Serial.println("boxStateCollection::_oetcbPlayBoxState(). over.");
@@ -834,13 +834,13 @@ void boxStateCollection::_odtcbPlayBoxState(){
   // Serial.print("boxStateCollection::_odtcbPlayBoxState() tPlayBoxState.getInterval(): ");
   // Serial.println(tPlayBoxState.getInterval());
 
-  boxState& _currentBoxState = boxStatesArray[_thisBox.i16BoxActiveState];
+  boxState& _currentBoxState = boxStatesArray[_thisCtrlerBox.i16BoxActiveState];
 
   // 1. Disable the associated laserSequence player
   _laserSequences.setStopCallbackForTPlayLaserSequence();
   _laserSequences.tPlayLaserSequence.disable();
-  // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisBox i16BoxActiveState number");
-  // Serial.println(_thisBox.i16BoxActiveState);
+  // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _thisCtrlerBox i16BoxActiveState number");
+  // Serial.println(_thisCtrlerBox.i16BoxActiveState);
   // Serial.println("boxStateCollection::_odtcbPlayBoxState(): _boxTargetState");
   // Serial.println(_boxTargetState);
 
@@ -849,7 +849,7 @@ void boxStateCollection::_odtcbPlayBoxState(){
   if (_currentBoxState.i16onExpire != -1) {
     _setBoxTargetState(_currentBoxState.i16onExpire);
   } else {
-    _setBoxTargetState(_thisBox.sBoxDefaultState);
+    _setBoxTargetState(_thisCtrlerBox.sBoxDefaultState);
 
   }
   Serial.println("boxStateCollection::_odtcbPlayBoxState(). over.");

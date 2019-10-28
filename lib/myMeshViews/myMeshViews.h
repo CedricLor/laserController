@@ -20,7 +20,7 @@ class myMeshViews
   friend class myMesh;
 
   public:
-    myMeshViews(ControlerBox & __thisbox);
+    myMeshViews(ControlerBox & __thisCtrlerBox);
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
@@ -31,7 +31,7 @@ class myMeshViews
     void sendTone(const uint16_t _ui16LaserToneIdNbr);
 
   private:
-    ControlerBox & _thisBox;
+    ControlerBox & _thisCtrlerBox;
 
     StaticJsonDocument<_capacity> _jDoc;
     JsonObject _joMsg = _jDoc.to<JsonObject>();

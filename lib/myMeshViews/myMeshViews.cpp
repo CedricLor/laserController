@@ -19,8 +19,8 @@
  * 3. passe this String to the sendBroadcast or sendSingle methods of painlessMesh.
  * painlessMesh takes care of the broadcast/sending.
  * */
-myMeshViews::myMeshViews(ControlerBox & __thisbox):
-  _thisBox(__thisbox)
+myMeshViews::myMeshViews(ControlerBox & __thisCtrlerBox):
+  _thisCtrlerBox(__thisCtrlerBox)
 { }
 
 
@@ -35,9 +35,9 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
   _jDoc.clear();
 
   // load the JSON document with values
-  _joMsg["actSt"] = _thisBox.i16BoxActiveState;
-  _joMsg["actStStartT"] = _thisBox.ui32BoxActiveStateStartTime; // gets the recorded mesh time
-  _joMsg["boxDefstate"] = _thisBox.sBoxDefaultState;
+  _joMsg["actSt"] = _thisCtrlerBox.i16BoxActiveState;
+  _joMsg["actStStartT"] = _thisCtrlerBox.ui32BoxActiveStateStartTime; // gets the recorded mesh time
+  _joMsg["boxDefstate"] = _thisCtrlerBox.sBoxDefaultState;
   _joMsg["action"] = "s";
 
   // send to the sender
@@ -45,7 +45,7 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
   // I signaled my boxState change.
   // => set my own boxActiveStateHasBeenSignaled to true
-  _thisBox.boxActiveStateHasBeenSignaled = true;
+  _thisCtrlerBox.boxActiveStateHasBeenSignaled = true;
 
   Serial.println("myMeshViews::statusMsg(): over.");
 }
@@ -167,7 +167,7 @@ void myMeshViews::_sendMsg(JsonObject& _joMsg, uint32_t destNodeId) {
   Serial.println("myMeshViews::_sendMsg(): starting.");
 
   // adding my nodeName to the JSON to be sent to other boxes
-  _joMsg["NNa"] = _thisBox.ui16NodeName;
+  _joMsg["NNa"] = _thisCtrlerBox.ui16NodeName;
 
   // JSON serialization
   int size_buff = 254;

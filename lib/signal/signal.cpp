@@ -7,9 +7,10 @@
 #include "signal.h"
 
 
-signal::signal(myMeshViews & __thisMeshViews):
+signal::signal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews):
+  _thisCtrlerBox(__thisCtrlerBox),
   ctlBxColl{},
-  thisBxStateColl(ctlBxColl.controllerBoxesArray.at(0), __thisMeshViews)
+  thisBxStateColl(_thisCtrlerBox, __thisMeshViews)
 {
   tSetBoxState.set(0, 1, NULL, NULL, NULL);
 }
@@ -110,7 +111,7 @@ const bool signal::checkImpactOfThisBoxsIRHigh() {
 
 /***/
 void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
-  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
+  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(_thisCtrlerBox.i16BoxActiveState);
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
     return;
@@ -149,7 +150,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  *  1. add an i16onMasterIRTrigger property to boxState to handle the masterBox(es) IR signals; */
 void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
-  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(ctlBxColl.controllerBoxesArray.at(0).i16BoxActiveState);
+  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(_thisCtrlerBox.i16BoxActiveState);
   // 1. check whether the current boxState is IR sensitive
   if (_currentBoxState.i16onIRTrigger == -1) {
     return;
@@ -183,7 +184,7 @@ bool signal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & 
 
 bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
   if ( _isCallerThisBox(_callingBox) ) {
-    return (_isSignalFresherThanBoxStateStamp(ctlBxColl.controllerBoxesArray.at(0).ui32lastRecPirHighTime));
+    return (_isSignalFresherThanBoxStateStamp(_thisCtrlerBox.ui32lastRecPirHighTime));
   }
   return false;
 }
@@ -192,7 +193,7 @@ bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
 
 
 bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
-  return (std::addressof(_callingBox) == std::addressof((ctlBxColl.controllerBoxesArray.at(0))));
+  return (std::addressof(_callingBox) == std::addressof((_thisCtrlerBox)));
 }
 
 
@@ -240,5 +241,5 @@ bool signal::_isCallerStateInMonitoredStates(const ControlerBox & _callingBox, c
 
 
 bool signal::_isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime) {
-  return (_ui32SignalTime > ctlBxColl.controllerBoxesArray.at(0).ui32BoxActiveStateStartTime);
+  return (_ui32SignalTime > _thisCtrlerBox.ui32BoxActiveStateStartTime);
 }

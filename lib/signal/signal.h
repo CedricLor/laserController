@@ -15,7 +15,7 @@ class signal
   friend class myMeshController;
   friend class controllerBoxThis;
   public:
-    signal(myMeshViews & __thisMeshViews);
+    signal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews);
 
     void startup();
 
@@ -34,6 +34,7 @@ class signal
     Task tSetBoxState;
 
     /** Members */
+    ControlerBox &                _thisCtrlerBox; // TODO: make it private
     controllerBoxesCollection     ctlBxColl;
     boxStateCollection            thisBxStateColl;
 
