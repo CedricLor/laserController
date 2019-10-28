@@ -130,14 +130,36 @@ void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
 
 
 
-
-void myMeshViews::_changedBoxConfirmation(JsonObject& obj) {
+/** void myMeshViews::_changedBoxConfirmation(JsonObject& obj)
+ * 
+ *  Broadcasts a message to the mesh, with particular purpose to the IF,
+ *  confirming that this box has executed its change box request.
+ * 
+ *  The param JsonObject& __obj is the change box message sent by the IF.
+*/
+void myMeshViews::_changedBoxConfirmation(JsonObject& __obj) {
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 2} // boxState // ancient 4
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   Serial.println("myMeshViews::_changedBoxConfirmation(): starting.");
 
+  // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
+  __obj["st"] = 2;
+  if (globalBaseVariables.MY_DG_MESH) {
+    Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: _obj[\"st\"] = %u\n", __obj["st"].as<uint16_t>());
+  }
+
+  /** if the message was a "changeNet" request, it was broadcasted and
+   *  its "lb" field was equal to either "LBs" or "all";
+   * 
+   *  replace it with thix box's index number so that the controller boxes' array
+   *  be properly updated from the _changedBoxConfirmation method of the receiving box's
+   *  meshController. */
+  if ((__obj["lb"] == "LBs") || (__obj["lb"] == "all")) {
+    __obj["lb"] = _thisCtrlerBox.ui16NodeName - globalBaseVariables.gui16ControllerBoxPrefix;
+  }
+
   // broadcast confirmation
-  _sendMsg(obj);
+  _sendMsg(__obj);
 
   Serial.println("myMeshViews::_changedBoxConfirmation(): over.");
 }

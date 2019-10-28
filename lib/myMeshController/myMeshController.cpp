@@ -205,13 +205,6 @@ void myMeshController::_changeBoxRequest() {
     Serial.printf("------------------------------ THIS IS A SAVE %s REQUEST ---------------------------\n", _nsobj["val"].as<const char*>());
     _specificSave();
     if (_nsobj["key"] == "apply") {
-      // myMeshStarter::tRestart.setCallback(
-      //   [this]() {
-      //     if (globalBaseVariables.MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");}
-      //       this->_meshInit();
-      //     if (globalBaseVariables.MY_DG_MESH) {Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");}
-      //   }
-      // );
       myMeshStarter::tRestart.restartDelayed();
     }
     return;
@@ -317,7 +310,7 @@ void myMeshController::_updateMyDefaultState() {
   thisControllerBox.thisCtrlerBox.sBoxDefaultState = _nsobj["val"].as<uint16_t>();
 
   // send confirmation message
-  _changeBoxSendConfirmationMsg();
+  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 
   // mark the change as signaled
   thisControllerBox.thisCtrlerBox.sBoxDefaultStateChangeHasBeenSignaled = true;
@@ -337,10 +330,9 @@ void myMeshController::_rebootEsp() {
     _save();
   }
 
-  // broadcast confirmation message (_changeBoxSendConfirmationMsg()
-  // called without _ui32SenderNodeId param)
+  // broadcast confirmation message
   Serial.println("------------------------------ CONFIRMING REBOOT ---------------------------");
-  _changeBoxSendConfirmationMsg();
+  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 
   // reboot
   Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
@@ -356,7 +348,8 @@ void myMeshController::_save() {
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE ---------------------------");
-  _changeBoxSendConfirmationMsg();
+    // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate 
+  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 }
 
 
@@ -369,7 +362,7 @@ void myMeshController::_specificSave() {
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE WIFI ---------------------------");
-  _changeBoxSendConfirmationMsg();
+  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 }
 
 
@@ -382,7 +375,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 
   // send confirmation message
   Serial.println("------------------------------ CONFIRMING SAVE OTA ---------------------------");
-  _changeBoxSendConfirmationMsg();
+  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 
   // reboot
   Serial.println("------------------------------ ABOUT TO REBOOT ---------------------------");
@@ -390,49 +383,6 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 }
 
 
-// Task myMeshController::_tChangeBoxSendConfirmationMsg;
-
-// sends a message to the IF telling it that this box has executed its request
-void myMeshController::_changeBoxSendConfirmationMsg() {
-  // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate 
-  if (globalBaseVariables.MY_DG_MESH) Serial.printf("\nmyMeshController::_changeBoxSendConfirmationMsg: starting\n");
-
-  // change the "st" key of the received JSON object from 1 (request forwarded) to 2 (request executed)
-  _nsobj["st"] = 2;
-  if (globalBaseVariables.MY_DG_MESH) {
-    Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: _obj[\"st\"] = %u\n", _nsobj["st"].as<uint16_t>());
-  }
-
-  // if the message was a "changeNet" request, it was broadcasted and
-  // its "lb" field was equal to either "LBs" or "all";
-  // replace it with thix box's index number so that the controller boxes' array
-  // be properly updated in _changedBoxConfirmation
-  if ((_nsobj["lb"] == "LBs") || (_nsobj["lb"] == "all")) {
-    _nsobj["lb"] = thisControllerBox.thisCtrlerBox.ui16NodeName - globalBaseVariables.gui16ControllerBoxPrefix;
-  }
-
-  thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
-  // send back the received JSON object with its amended "st" key
-  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the Task _tChangeBoxSendConfirmationMsg\n");
-  // _tChangeBoxSendConfirmationMsg.setInterval(0);
-  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: About to set the callback for _tChangeBoxSendConfirmationMsg \n");
-  // _tChangeBoxSendConfirmationMsg.setCallback(
-  //   [&_obj]() {
-  //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Inside the lambda \n");
-  //     thisControllerBox.thisMeshViews._changedBoxConfirmation(_obj);
-  //     if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Message passed to myMeshViews \n");
-  //   }
-  // );
-  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Set the iterations\n");
-  // _tChangeBoxSendConfirmationMsg.setIterations(1);
-  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Adding the Task to the Scheduler\n");
-  // userScheduler.addTask(_tChangeBoxSendConfirmationMsg);
-  // if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::_changeBoxSendConfirmationMsg: Restarting the Task _tChangeBoxSendConfirmationMsg\n");
-  // _tChangeBoxSendConfirmationMsg.restart();
-  // if (globalBaseVariables.MY_DG_MESH) {
-  //   Serial.printf("myMeshController::myMeshController: just called my mesh views\n");
-  // }
-}
 
 
 
@@ -455,7 +405,7 @@ void myMeshController::_changeBoxSendConfirmationMsg() {
 //   _updatePropertyForBox(_cPropertyKey, gui16MyIndexInCBArray, _nsobj)
 //
 //   // send confirmation message
-//   _changeBoxSendConfirmationMsg();
+//   thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 //
 //   // mark the change as signaled
 //   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex)._cPropertyKey = true;
