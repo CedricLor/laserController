@@ -175,14 +175,51 @@ void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p, std::array<C
 void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState, std::array<ControlerBox, 10U> & _controllerBoxesArray) {
   // iterate over all the potentially existing laser boxes
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    char _c[3];  // declare an array of char of 3 characters ("   ")
-    itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
-    const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
-    if ((_controllerBoxesArray.at(_i).networkData.nodeId != 0) && _keyInJson == nullptr) {
-      // if the _controllerBoxesArray.at(_i) has a networkData.nodeId and the corresponding _joBoxState[_c] is a nullprt
-      // there is a missing box in the DOM
-      // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-      _controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+    if ((_controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
+      char _c[3];  // declare an array of char of 3 characters ("   ")
+      itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
+      const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
+      if (_keyInJson == nullptr) {
+        // if the _controllerBoxesArray.at(_i) has a networkData.nodeId and the corresponding _joBoxState[_c] is a nullprt
+        // there is a missing box in the DOM
+        // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
+        _controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+      }
     } // end if
+  } // end for
+}
+
+
+
+
+
+
+// void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState, std::array<ControlerBox, 10U> & _controllerBoxesArray) {
+//   // iterate over all the potentially existing laser boxes
+//   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+//     if ((_controllerBoxesArray.at(_i).networkData.nodeId != 0)) {
+//       char _c[3];  // declare an array of char of 3 characters ("   ")
+//       itoa(_i, _c, 10); // convert the iterator into a char (ex. "1")
+//       const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
+//       if (_keyInJson == nullptr) {
+//         // if the _controllerBoxesArray.at(_i) has a networkData.nodeId and the corresponding _joBoxState[_c] is a nullprt
+//         // there is a missing box in the DOM
+//         // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
+//         _controllerBoxesArray.at(_i).isNewBoxHasBeenSignaled = false;
+//       }
+//     } // end if
+//   } // end for
+// }
+
+
+
+
+
+
+template <typename F>
+void myWSReceiverReconcile::_parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& lambda) {
+  // iterate over all the potentially existing laser boxes
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+    lambda(_controllerBoxesArray);
   } // end for
 }

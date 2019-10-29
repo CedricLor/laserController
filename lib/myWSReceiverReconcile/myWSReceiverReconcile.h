@@ -36,6 +36,8 @@ class myWSReceiverReconcile
     void _checkBoxStateConsistancy(JsonPair& _p, std::array<ControlerBox, 10U> & _controllerBoxesArray);
     void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM, std::array<ControlerBox, 10U> & _controllerBoxesArray);
 
+    template <typename F>
+    void _parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& lambda);
 };
 #endif
 
