@@ -22,9 +22,10 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 
 #include <unity.h>
 
+controllerBoxThis thisControllerBox;
 
 void setUp(void) {
-// set stuff up here
+  // set stuff up here
   Serial.println("\nStarting SPIFFS");
   if(!SPIFFS.begin(true)){
     Serial.println("An error has occurred while mounting SPIFFS");
@@ -36,8 +37,12 @@ void tearDown(void) {
 // clean stuff up here
 }
 
-void test_WSReceiverReconcile(void) {
-  controllerBoxThis thisControllerBox;
+void test_instantiate_myWebServerBase(void) {
+  myWebServerBase _myWebServer;
+  TEST_ASSERT_EQUAL_INT(_myWebServer.getStatus(), 0);
+}
+
+void test_instantiate_WSReceiverReconcile(void) {
   const char * _msg = "{action:\"handshake\",boxStateInDOM:{1:4;2:3}}";
   const int _capacity = JSON_OBJECT_SIZE(2) + 2*JSON_OBJECT_SIZE(1);
   StaticJsonDocument<_capacity> _jdoc;
@@ -53,9 +58,10 @@ void test_WSReceiverReconcile(void) {
 
 void setup() {
   delay(2000);
-  UNITY_BEGIN();
-  RUN_TEST(test_WSReceiverReconcile);
 
+  UNITY_BEGIN();
+  RUN_TEST(test_instantiate_myWebServerBase);
+  RUN_TEST(test_instantiate_WSReceiverReconcile);
 }
 
 void loop() {
