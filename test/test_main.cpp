@@ -36,10 +36,6 @@ void tearDown(void) {
 // clean stuff up here
 }
 
-void webServer(void) {
-  myWSReceiverReconcile _myWSReceiverReconcile();
-}
-
 void test_WSReceiverReconcile(void) {
   controllerBoxThis thisControllerBox;
   const char * _msg = "{action:\"handshake\",boxStateInDOM:{1:4;2:3}}";
@@ -47,7 +43,7 @@ void test_WSReceiverReconcile(void) {
   StaticJsonDocument<_capacity> _jdoc;
   deserializeJson(_jdoc, _msg);
   JsonObject _jobj = _jdoc.as<JsonObject>();
-  myWSReceiverReconcile _myWSReceiverReconcile(_jobj, thisControllerBox.thisSignalHandler.ctlBxColl);
+  myWSReceiverReconcile _myWSReceiverReconcile(_jobj, thisControllerBox);
 }
 
 void setup() {

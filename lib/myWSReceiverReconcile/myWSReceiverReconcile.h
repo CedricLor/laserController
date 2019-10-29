@@ -18,11 +18,15 @@
 class myWSReceiverReconcile
 {
   public:
-    myWSReceiverReconcile(JsonObject& _obj, controllerBoxesCollection & _ctlBxColl);
+    myWSReceiverReconcile(JsonObject& _obj, controllerBoxThis & _thisControllerBox);
 
   private:
+    JsonObject& _joMsg;
+    controllerBoxesCollection & _ctlBxColl;
+    uint16_t _ui16PotentialBoxesCount;
+    
 
-    int16_t _onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj, controllerBoxesCollection & _ctlBxColl);
+    int16_t _onHandshakeCheckWhetherDOMNeedsUpdate();
 
     void _handleCaseNoBoxesInDom(controllerBoxesCollection & _ctlBxColl);
     void _markAllBoxesAsUnsignaledNewBox(std::array<ControlerBox, 10U> & _controllerBoxesArray);

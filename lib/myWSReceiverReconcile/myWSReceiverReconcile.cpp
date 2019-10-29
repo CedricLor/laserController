@@ -13,9 +13,12 @@
 
 
 
-myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxesCollection & _ctlBxColl)
+myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxThis & _thisControllerBox):
+  _joMsg(_obj),
+  _ctlBxColl(_thisControllerBox.thisSignalHandler.ctlBxColl),
+  _ui16PotentialBoxesCount(_thisControllerBox.globBaseVars.gui16BoxesCount)
 {
-  _onHandshakeCheckWhetherDOMNeedsUpdate(_obj, _ctlBxColl);
+  _onHandshakeCheckWhetherDOMNeedsUpdate();
 }
 
 
@@ -24,9 +27,9 @@ myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0
 
 
 
-int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxesCollection & _ctlBxColl) {
+int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate() {
   // Declare and define a Json object to read the box numbers and box states from the nested JSON object
-  JsonObject __joBoxesStatesInDOM = _obj["boxesStatesInDOM"].as<JsonObject>(); // __joBoxesStatesInDOM = {1:4;2:3}
+  JsonObject __joBoxesStatesInDOM = _joMsg["boxesStatesInDOM"].as<JsonObject>(); // __joBoxesStatesInDOM = {1:4;2:3}
 
   /** If the size of the Json object __joBoxesStatesInDOM is equal to 0,
    *  there are no boxes in the DOM. 
