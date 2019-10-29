@@ -77,7 +77,7 @@ uint16_t myWSReceiverReconcile::_handleCaseNoBoxesInDom() {
 
 
 uint16_t myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox() {
-  return _iterateOverCBArrayAndMarkUnsignaledCBs([&](uint16_t _iterator){
+  return _iterateOverCBArrayAndExecuteLambdaInLoop([&](uint16_t _iterator){
     /** If the _controllerBoxesArray.at(_i) has a networkData.nodeId, 
      *  it means that it is a connected box.
      *  Changing its isNewBoxHasBeenSignaled property to false will trigger 
@@ -174,7 +174,7 @@ void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p) {
 
 
 void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
-  _iterateOverCBArrayAndMarkUnsignaledCBs([&](uint16_t _iterator){
+  _iterateOverCBArrayAndExecuteLambdaInLoop([&](uint16_t _iterator){
       char _c[3];  // declare an array of char of 3 characters ("   ")
       itoa(_iterator, _c, 10); // convert the iterator into a char (ex. "1")
       const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
@@ -193,7 +193,7 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
 
 
 template <typename F>
-uint16_t myWSReceiverReconcile::_iterateOverCBArrayAndMarkUnsignaledCBs(F&& _lambda) {
+uint16_t myWSReceiverReconcile::_iterateOverCBArrayAndExecuteLambdaInLoop(F&& _lambda) {
   // iterate over all the potentially existing laser boxes
   uint16_t _i;
   for (_i = 0; _i < _ui16PotentialBoxesCount; _i++) {

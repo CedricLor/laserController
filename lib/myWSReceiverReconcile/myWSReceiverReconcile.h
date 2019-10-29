@@ -42,7 +42,7 @@ class myWSReceiverReconcile
     void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM);
 
     template <typename F>
-    uint16_t _iterateOverCBArrayAndMarkUnsignaledCBs(F&& _lambda);
+    uint16_t _iterateOverCBArrayAndExecuteLambdaInLoop(F&& _lambda);
 };
 #endif
 
