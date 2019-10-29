@@ -195,7 +195,8 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
 template <typename F>
 uint16_t myWSReceiverReconcile::_iterateOverCBArrayAndMarkUnsignaledCBs(F&& _lambda) {
   // iterate over all the potentially existing laser boxes
-  for (uint16_t _i = 0; _i < _ui16PotentialBoxesCount; _i++) {
+  uint16_t _i;
+  for (_i = 0; _i < _ui16PotentialBoxesCount; _i++) {
     _lambda(_i);
   } // end for
   return _i;
