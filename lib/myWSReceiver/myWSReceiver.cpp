@@ -51,7 +51,12 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   // Received JSON: {action:"handshake", boxStateInDOM:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message
     if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n"); }
-    myWSReceiverReconcile _myWSReceiverReconcile(_obj, thisControllerBox);
+    myWSReceiverReconcile _myWSReceiverReconcile(
+      _obj, 
+      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
+      thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
+      thisControllerBox.globBaseVars.gui16BoxesCount
+    );
     return;
   }
 

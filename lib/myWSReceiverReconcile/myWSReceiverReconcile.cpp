@@ -13,11 +13,11 @@
 
 
 
-myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxThis & _thisControllerBox):
+myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount):
   _joMsg(_obj),
-  _controllerBoxesArray(_thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray),
-  _ui16connectedBoxesCount(_thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount),
-  _ui16PotentialBoxesCount(_thisControllerBox.globBaseVars.gui16BoxesCount)
+  _controllerBoxesArray(__controllerBoxesArray),
+  _ui16connectedBoxesCount(__ui16connectedBoxesCount),
+  _ui16PotentialBoxesCount(__ui16PotentialBoxesCount)
 {
   _onHandshakeCheckWhetherDOMNeedsUpdate();
 }
