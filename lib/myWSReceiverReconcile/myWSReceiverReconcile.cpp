@@ -68,7 +68,7 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom() {
   /** If there is at least 1 box connected/registered in the CB array, 
    *  mark all the boxes in the CB array as not signaled, so that the WSSender knows that
    *  it shall send the corresponding data to the browser. */
-  _markAllBoxesAsUnsignaledNewBox(_controllerBoxesArray);
+  _markAllBoxesAsUnsignaledNewBox();
   return;
 }
 
@@ -76,8 +76,8 @@ void myWSReceiverReconcile::_handleCaseNoBoxesInDom() {
 
 
 
-void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(std::array<ControlerBox, 10U> & _controllerBoxesArray) {
-  _parseCBArrayAndMarkUnsignaledCBs(_controllerBoxesArray, [&](uint16_t _iterator){
+void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox() {
+  _parseCBArrayAndMarkUnsignaledCBs([&](uint16_t _iterator){
     /** If the _controllerBoxesArray.at(_i) has a networkData.nodeId, 
      *  it means that it is a connected box.
      *  Changing its isNewBoxHasBeenSignaled property to false will trigger 
@@ -99,7 +99,7 @@ void myWSReceiverReconcile::_handleCaseBoxesInDom(JsonObject& __joBoxesStatesInD
   }
   // there are boxes connected to the mesh (and boxes in the DOM):
   // -> check consistency between the DOM and _controllerBoxesArray
-  _checkConsistancyDOMDB(__joBoxesStatesInDOM, _controllerBoxesArray);
+  _checkConsistancyDOMDB(__joBoxesStatesInDOM);
 }
 
 
@@ -119,22 +119,22 @@ void myWSReceiverReconcile::_handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject&
 
 
 
-void myWSReceiverReconcile::_checkConsistancyDOMDB(JsonObject& _joBoxState, std::array<ControlerBox, 10U> & _controllerBoxesArray) {
+void myWSReceiverReconcile::_checkConsistancyDOMDB(JsonObject& _joBoxState) {
 
   for (JsonPair _p : _joBoxState) { // for each pair boxIndex:boxState in the DOM,
     // {1:4;2:3;etc.}
 
     // DISCONNECTED BOXES CHECKER
-    _lookForDisconnectedBoxes(_p, _controllerBoxesArray);
+    _lookForDisconnectedBoxes(_p);
 
     // BOXSTATE CHECKER
-    _checkBoxStateConsistancy(_p, _controllerBoxesArray);
+    _checkBoxStateConsistancy(_p);
 
   } // end for (JsonPair _p : _joBoxState)
 
   // MISSING BOXES CHECKER
   // look for missing boxes in the DOM and ask for an update
-  _lookForDOMMissingRows(_joBoxState, _controllerBoxesArray);
+  _lookForDOMMissingRows(_joBoxState);
 
   return;
 }
@@ -143,7 +143,7 @@ void myWSReceiverReconcile::_checkConsistancyDOMDB(JsonObject& _joBoxState, std:
 
 
 
-void myWSReceiverReconcile::_lookForDisconnectedBoxes(JsonPair& _p, std::array<ControlerBox, 10U> & _controllerBoxesArray) {
+void myWSReceiverReconcile::_lookForDisconnectedBoxes(JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
 
@@ -159,7 +159,7 @@ void myWSReceiverReconcile::_lookForDisconnectedBoxes(JsonPair& _p, std::array<C
 
 
 
-void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p, std::array<ControlerBox, 10U> & _controllerBoxesArray) {
+void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p) {
   const char* _ccBoxIndex = _p.key().c_str();
   short _iBoxIndex = (short)strtol(_ccBoxIndex, NULL, 10);
   // check if it has the correct boxState; if not, ask for an update
@@ -173,8 +173,8 @@ void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p, std::array<C
 
 
 
-void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState, std::array<ControlerBox, 10U> & _controllerBoxesArray) {
-  _parseCBArrayAndMarkUnsignaledCBs(_controllerBoxesArray, [&](uint16_t _iterator){
+void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState) {
+  _parseCBArrayAndMarkUnsignaledCBs([&](uint16_t _iterator){
       char _c[3];  // declare an array of char of 3 characters ("   ")
       itoa(_iterator, _c, 10); // convert the iterator into a char (ex. "1")
       const char* _keyInJson = _joBoxState[_c]; // access the object of box-state by the iterator: _joBoxState["1"]
@@ -193,7 +193,7 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState, std:
 
 
 template <typename F>
-void myWSReceiverReconcile::_parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& _lambda) {
+void myWSReceiverReconcile::_parseCBArrayAndMarkUnsignaledCBs(F&& _lambda) {
   // iterate over all the potentially existing laser boxes
   for (uint16_t _i = 0; _i < _ui16PotentialBoxesCount; _i++) {
     _lambda(_i);

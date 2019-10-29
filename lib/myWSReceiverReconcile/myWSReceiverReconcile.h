@@ -30,19 +30,19 @@ class myWSReceiverReconcile
     int16_t _onHandshakeCheckWhetherDOMNeedsUpdate();
 
     void _handleCaseNoBoxesInDom();
-    void _markAllBoxesAsUnsignaledNewBox(std::array<ControlerBox, 10U> & _controllerBoxesArray);
+    void _markAllBoxesAsUnsignaledNewBox();
 
     void _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM);
 
     void _handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject& __joBoxesStatesInDOM);
 
-    void _checkConsistancyDOMDB(JsonObject& __joBoxesStatesInDOM, std::array<ControlerBox, 10U> & _controllerBoxesArray);
-    void _lookForDisconnectedBoxes(JsonPair& _p, std::array<ControlerBox, 10U> & _controllerBoxesArray);
-    void _checkBoxStateConsistancy(JsonPair& _p, std::array<ControlerBox, 10U> & _controllerBoxesArray);
-    void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM, std::array<ControlerBox, 10U> & _controllerBoxesArray);
+    void _checkConsistancyDOMDB(JsonObject& __joBoxesStatesInDOM);
+    void _lookForDisconnectedBoxes(JsonPair& _p);
+    void _checkBoxStateConsistancy(JsonPair& _p);
+    void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM);
 
     template <typename F>
-    void _parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& _lambda);
+    void _parseCBArrayAndMarkUnsignaledCBs(F&& _lambda);
 };
 #endif
 
