@@ -11,13 +11,14 @@
 #include <ESPAsyncWebServer.h>
 #include <myWebServerWS.h>
 
-class myWebServerBase
+class myWebServerBase : public AsyncWebServer
 {
   public:
-    myWebServerBase();
+    myWebServerBase(uint16_t port=80);
+
+    uint8_t getStatus();
 
   private:
-    static AsyncWebServer _asyncServer;
 
     void _onRequest(AsyncWebServerRequest *request);
     void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);

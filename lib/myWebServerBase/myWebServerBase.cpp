@@ -6,49 +6,52 @@
 #include "Arduino.h"
 #include "myWebServerBase.h"
 
-AsyncWebServer myWebServerBase::_asyncServer(80);
 
-myWebServerBase::myWebServerBase()
+myWebServerBase::myWebServerBase(uint16_t port):
+  AsyncWebServer(port)
 {
-  // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
-  // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
+  if (globalBaseVariables.isInterface) {
+    // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
+    // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
+    // attach AsyncWebSocket
+    myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
+    addHandler(&myWebServerWS::ws);
+    // __asyncServer.addHandler(&_ws);
 
-  // attach AsyncWebSocket
-  myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
-  _asyncServer.addHandler(&myWebServerWS::ws);
-  // _asyncServer.addHandler(&_ws);
-
-  // respond to GET requests by sending index.htm to the browser
-  _asyncServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    // Send a response (i.e. display a web page)
-    request->send(SPIFFS, "/index.htm", String(), false);
-  });
-
-  // respond to GET requests requesting index.css by sending index.css to the browser
-  _asyncServer.on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
-     request->send(SPIFFS, "/index.css", "text/css");
-   });
-
-   // respond to GET requests requesting index.js by sending index.js to the browser
-   _asyncServer.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
-      request->send(SPIFFS, "/index.js", "text/javascript");
+    // respond to GET requests by sending index.htm to the browser
+    on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+      // Send a response (i.e. display a web page)
+      request->send(SPIFFS, "/index.htm", String(), false);
     });
 
-  _asyncServer.onNotFound([](AsyncWebServerRequest *request) {
-    request->send(404);
-  });
+    // respond to GET requests requesting index.css by sending index.css to the browser
+    on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/index.css", "text/css");
+    });
 
-  _asyncServer.onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-    this->_onBody(request, data, len, index, total);
-  });
+    // respond to GET requests requesting index.js by sending index.js to the browser
+    on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(SPIFFS, "/index.js", "text/javascript");
+      });
 
-  _asyncServer.begin();
+    onNotFound([](AsyncWebServerRequest *request) {
+      request->send(404);
+    });
+
+    onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+      this->_onBody(request, data, len, index, total);
+    });
+
+    begin();
+  }
 }
 
 
 
 
-  
+uint8_t myWebServerBase::getStatus() {
+  return _server.status();
+}  
 
 
 
