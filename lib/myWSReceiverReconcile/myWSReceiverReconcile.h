@@ -27,22 +27,22 @@ class myWSReceiverReconcile
     uint16_t _ui16PotentialBoxesCount;
     
 
-    int16_t _onHandshakeCheckWhetherDOMNeedsUpdate();
+    uint16_t _onHandshakeCheckWhetherDOMNeedsUpdate();
 
-    void _handleCaseNoBoxesInDom();
-    void _markAllBoxesAsUnsignaledNewBox();
+    uint16_t _handleCaseNoBoxesInDom();
+    uint16_t _markAllBoxesAsUnsignaledNewBox();
 
-    void _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM);
+    uint16_t _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM);
 
     void _handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject& __joBoxesStatesInDOM);
 
-    void _checkConsistancyDOMDB(JsonObject& __joBoxesStatesInDOM);
+    uint16_t _checkConsistancyDOMDB(JsonObject& __joBoxesStatesInDOM);
     void _lookForDisconnectedBoxes(JsonPair& _p);
     void _checkBoxStateConsistancy(JsonPair& _p);
     void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM);
 
     template <typename F>
-    void _parseCBArrayAndMarkUnsignaledCBs(F&& _lambda);
+    uint16_t _iterateOverCBArrayAndMarkUnsignaledCBs(F&& _lambda);
 };
 #endif
 
