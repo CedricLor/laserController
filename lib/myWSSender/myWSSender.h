@@ -8,6 +8,7 @@
 
 #include "Arduino.h"
 #include <painlessMesh.h>
+#include <ESPAsyncWebServer.h>
 #include <globalBasementVars.h>
 #include <secret.h>
 #include <controllerBoxThis.h>
