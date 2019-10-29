@@ -28,10 +28,10 @@ class myWSReceiverReconcile
 
     int16_t _onHandshakeCheckWhetherDOMNeedsUpdate();
 
-    void _handleCaseNoBoxesInDom(controllerBoxesCollection & _ctlBxColl);
+    void _handleCaseNoBoxesInDom();
     void _markAllBoxesAsUnsignaledNewBox(std::array<ControlerBox, 10U> & _controllerBoxesArray);
 
-    void _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM, controllerBoxesCollection & _ctlBxColl);
+    void _handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM);
 
     void _handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject& __joBoxesStatesInDOM);
 
@@ -41,7 +41,7 @@ class myWSReceiverReconcile
     void _lookForDOMMissingRows(JsonObject& __joBoxesStatesInDOM, std::array<ControlerBox, 10U> & _controllerBoxesArray);
 
     template <typename F>
-    void _parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& lambda);
+    void _parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& _lambda);
 };
 #endif
 

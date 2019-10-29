@@ -36,7 +36,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate() {
    * 
    *  Let's then check if there are boxes the controller boxes array and return. */
   if (__joBoxesStatesInDOM.size() == 0) {
-    _handleCaseNoBoxesInDom(_ctlBxColl);
+    _handleCaseNoBoxesInDom();
     return 0;
   }
 
@@ -44,7 +44,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate() {
    *  there are boxes in the DOM. 
    * 
    *  Let's then check if there are boxes the controller boxes array. */
-  _handleCaseBoxesInDom(__joBoxesStatesInDOM, _ctlBxColl);
+  _handleCaseBoxesInDom(__joBoxesStatesInDOM);
   return __joBoxesStatesInDOM.size();
 }
 
@@ -59,7 +59,7 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate() {
  *  are sync. Do nothing.
  * 
  *  If there are boxes connected to the mesh, then the DOM needs an update. */
-void myWSReceiverReconcile::_handleCaseNoBoxesInDom(controllerBoxesCollection & _ctlBxColl) {
+void myWSReceiverReconcile::_handleCaseNoBoxesInDom() {
   /** If there are no boxes connected/registered in the CB array and no boxes in DOM, just return.*/
   if (_ctlBxColl.ui16connectedBoxesCount == 0) {
     return;
@@ -89,7 +89,7 @@ void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(std::array<Controler
 
 
 
-void myWSReceiverReconcile::_handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM, controllerBoxesCollection & _ctlBxColl) {
+void myWSReceiverReconcile::_handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
   /** There are no connected boxes (and boxes in the DOM):
    *  -> send instruction to delete all the boxRows from the DOM */
   if (_ctlBxColl.ui16connectedBoxesCount == 0) {
@@ -192,9 +192,9 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState, std:
 
 
 template <typename F>
-void myWSReceiverReconcile::_parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& lambda) {
+void myWSReceiverReconcile::_parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& _lambda) {
   // iterate over all the potentially existing laser boxes
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    lambda(_i);
+    _lambda(_i);
   } // end for
 }
