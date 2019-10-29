@@ -22,7 +22,8 @@ class myWSReceiverReconcile
 
   private:
     JsonObject& _joMsg;
-    controllerBoxesCollection & _ctlBxColl;
+    std::array<ControlerBox, 10U> & _controllerBoxesArray;
+    uint16_t _ui16connectedBoxesCount;
     uint16_t _ui16PotentialBoxesCount;
     
 

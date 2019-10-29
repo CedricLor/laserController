@@ -15,7 +15,8 @@
 
 myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, controllerBoxThis & _thisControllerBox):
   _joMsg(_obj),
-  _ctlBxColl(_thisControllerBox.thisSignalHandler.ctlBxColl),
+  _controllerBoxesArray(_thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray),
+  _ui16connectedBoxesCount(_thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount),
   _ui16PotentialBoxesCount(_thisControllerBox.globBaseVars.gui16BoxesCount)
 {
   _onHandshakeCheckWhetherDOMNeedsUpdate();
@@ -61,13 +62,13 @@ int16_t myWSReceiverReconcile::_onHandshakeCheckWhetherDOMNeedsUpdate() {
  *  If there are boxes connected to the mesh, then the DOM needs an update. */
 void myWSReceiverReconcile::_handleCaseNoBoxesInDom() {
   /** If there are no boxes connected/registered in the CB array and no boxes in DOM, just return.*/
-  if (_ctlBxColl.ui16connectedBoxesCount == 0) {
+  if (_ui16connectedBoxesCount == 0) {
     return;
   }
   /** If there is at least 1 box connected/registered in the CB array, 
    *  mark all the boxes in the CB array as not signaled, so that the WSSender knows that
    *  it shall send the corresponding data to the browser. */
-  _markAllBoxesAsUnsignaledNewBox(_ctlBxColl.controllerBoxesArray);
+  _markAllBoxesAsUnsignaledNewBox(_controllerBoxesArray);
   return;
 }
 
@@ -92,13 +93,13 @@ void myWSReceiverReconcile::_markAllBoxesAsUnsignaledNewBox(std::array<Controler
 void myWSReceiverReconcile::_handleCaseBoxesInDom(JsonObject& __joBoxesStatesInDOM) {
   /** There are no connected boxes (and boxes in the DOM):
    *  -> send instruction to delete all the boxRows from the DOM */
-  if (_ctlBxColl.ui16connectedBoxesCount == 0) {
+  if (_ui16connectedBoxesCount == 0) {
     _handleCaseBoxesInDomAndNoBoxesInCBArray(__joBoxesStatesInDOM);
     return;
   }
   // there are boxes connected to the mesh (and boxes in the DOM):
-  // -> check consistency between the DOM and thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray
-  _checkConsistancyDOMDB(__joBoxesStatesInDOM, _ctlBxColl.controllerBoxesArray);
+  // -> check consistency between the DOM and _controllerBoxesArray
+  _checkConsistancyDOMDB(__joBoxesStatesInDOM, _controllerBoxesArray);
 }
 
 
@@ -194,7 +195,7 @@ void myWSReceiverReconcile::_lookForDOMMissingRows(JsonObject& _joBoxState, std:
 template <typename F>
 void myWSReceiverReconcile::_parseCBArrayAndMarkUnsignaledCBs(std::array<ControlerBox, 10U> & _controllerBoxesArray, F&& _lambda) {
   // iterate over all the potentially existing laser boxes
-  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+  for (uint16_t _i = 0; _i < _ui16PotentialBoxesCount; _i++) {
     _lambda(_i);
   } // end for
 }
