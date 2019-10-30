@@ -18,6 +18,8 @@ class myWebServerBase : public AsyncWebServer
 
     uint8_t getStatus();
 
+    myWSServer _myWSServer;
+
   private:
 
     void _onRequest(AsyncWebServerRequest *request);

@@ -8,7 +8,8 @@
 
 
 myWebServerBase::myWebServerBase(uint16_t port):
-  AsyncWebServer(port)
+  AsyncWebServer(port),
+  _myWSServer()
 {
   if (globalBaseVariables.hasInterface) {
     // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
