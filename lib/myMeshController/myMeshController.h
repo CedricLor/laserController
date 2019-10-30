@@ -10,7 +10,7 @@
 #include <mySavedPrefs.h>
 #include <myMeshViews.h>
 #include <myMeshStarter.h>
-#include <myWSSender.h>
+#include <myWebServerWS.h>
 #include <controllerBoxThis.h>
 
 class myMeshController
