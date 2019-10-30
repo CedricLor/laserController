@@ -28,11 +28,8 @@ class myWSSender
     static AsyncWebSocket * server;
     
   private:
-
     static void _tcbSendWSDataIfChangeStationIp();
-
     static void _tcbSendWSDataIfChangeBoxState();
-
     static void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
 };
 
