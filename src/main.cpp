@@ -79,10 +79,12 @@ void setup() {
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
-  mySpiffs __mySpiffs;
-  __mySpiffs.listDir("/", 0);
-  __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisControllerBox.thisCtrlerBox.ui16NodeName);
-  Serial.println("\n");
+
+  // IMPORTANT: Uncomment the following lines if a new uploadfs was made on the device
+  // mySpiffs __mySpiffs;
+  // __mySpiffs.listDir("/", 0);
+  // __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisControllerBox.thisCtrlerBox.ui16NodeName);
+  // Serial.println("\n");
 
   if (thisControllerBox.globBaseVars.isInterface) {
     _myWebServer.begin();
