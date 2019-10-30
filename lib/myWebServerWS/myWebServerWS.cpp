@@ -167,6 +167,17 @@ void myWebServerWS::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * clie
 myWSServer::myWSServer():
   _webSocketServer("/") // access at ws://[esp ip]/
 { 
+  /** set _myWSServer.onEvent as the "onEvent callback" 
+   *  of the AsyncWebSocket instance _webSocketServer*.
+   *  (i.e. setting _myWSServer.onEvent() as the callback that will handle 
+   *  websocket calls from the browsers) 
+   * 
+   *  * _webSocketServer is contained inside _myWSServer, the myWSServer instance.
+   *  */
+  // myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
+  _webSocketServer.onEvent([&](AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsEventType __type, void * __arg, uint8_t *__data, size_t __len){
+    onEvent(__server, __client, __type, __arg, __data, __len);
+  });
 }
 
 
@@ -183,21 +194,21 @@ AsyncWebSocket & myWSServer::getWSServer() {
 
 
 
-/** myWSServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len)
+/** myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len)
  * 
  *  Callback on websocket events (i.e. on messages from the browser).
 */
-void myWSServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
+void myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
         //client connected
         if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; server->url(): [%s], client->id(): [%i] connect\n", server->url(), client->id());
+          Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], client->id(): [%i] connect\n", __server->url(), client->id());
           Serial.println("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; About to call myWSSender::prepareWSData");
         }
-        // if no client has ever connected to the server, register the server in myWSSender
+        // if no client has ever connected to the __server, register the __server in myWSSender
         if (myWSSender::server == nullptr) {
-          myWSSender::server = server;
+          myWSSender::server = __server;
         }
         myWSSender _myWSSender;
         _myWSSender.prepareWSData(0, client); // 0 for messageType "handshake"
@@ -206,17 +217,17 @@ void myWSServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client,
     } else if(type == WS_EVT_DISCONNECT){
         //client disconnected
         if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWebServerWS::onEvent: ws[%s] disconnect %i\n", server->url(), client->id());
+          Serial.printf("- myWebServerWS::onEvent: ws[%s] disconnect %i\n", __server->url(), client->id());
         }
     } else if(type == WS_EVT_ERROR){
         //error was received from the other end
         if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
+          Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] error(%u): %s\n", __server->url(), client->id(), *((uint16_t*)arg), (char*)data);
         }
     } else if(type == WS_EVT_PONG){
         //pong message was received (in response to a ping request maybe)
         if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] pong[%u]: %s\n", server->url(), client->id(), len, (len)?(char*)data:"");
+          Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] pong[%u]: %s\n", __server->url(), client->id(), len, (len)?(char*)data:"");
         }
     // receiving data from client
     } else if(type == WS_EVT_DATA){
@@ -226,7 +237,7 @@ void myWSServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client,
         if(info->final && info->index == 0 && info->len == len){
             //the whole message is in a single frame and we got all of it's data
             if (globalBaseVariables.MY_DG_WS) {
-              Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] %s-message length[%llu]: \n", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
+              Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] %s-message length[%llu]: \n", __server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
             }
             if(info->opcode == WS_TEXT) {
 
@@ -269,11 +280,11 @@ void myWSServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client,
             Serial.printf("- myWebServerWS::onEvent: this is a multiple frames message\n");
             if(info->index == 0){
                 if(info->num == 0)
-                    Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] %s-message start\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
-                Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] frame[%u] start[%llu]\n", server->url(), client->id(), info->num, info->len);
+                    Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] %s-message start\n", __server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
+                Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] frame[%u] start[%llu]\n", __server->url(), client->id(), info->num, info->len);
             }
 
-                Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] frame[%u] %s[%llu - %llu]: ", server->url(), client->id(), info->num, (info->message_opcode == WS_TEXT)?"text":"binary", info->index, info->index + len);
+                Serial.printf("- myWebServerWS::onEvent: ws[%s][%u] frame[%u] %s[%llu - %llu]: ", __server->url(), client->id(), info->num, (info->message_opcode == WS_TEXT)?"text":"binary", info->index, info->index + len);
           }
             if(info->message_opcode == WS_TEXT){
               // message is a text message
@@ -297,12 +308,12 @@ void myWSServer::onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client,
             // received the final frame or packet
               if (globalBaseVariables.MY_DG_WS) {
                 Serial.printf("- myWebServerWS::onEvent: this is the final frames of a multiple frames message\n");
-                Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", server->url(), client->id(), info->num, info->len);
+                Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", __server->url(), client->id(), info->num, info->len);
               }
               if(info->final){
                   if (globalBaseVariables.MY_DG_WS) {
                     Serial.printf("- myWebServerWS::onEvent: this is the final frames of a multiple frames message\n");
-                    Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
+                    Serial.printf("ws[%s][%u] %s-message end\n", __server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
                   }
                   if(info->message_opcode == WS_TEXT) {
                     if (globalBaseVariables.MY_DG_WS) {

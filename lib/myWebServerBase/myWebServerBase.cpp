@@ -31,19 +31,6 @@ uint8_t myWebServerBase::getStatus() {
 
 
 void myWebServerBase::_setWebSocketHandler() {
-  /** set _myWSServer.onEvent as the "onEvent callback" 
-   *  of the AsyncWebSocket instance _webSocketServer*.
-   *  (i.e. setting _myWSServer.onEvent() as the callback that will handle 
-   *  websocket calls from the browsers) 
-   * 
-   *  * _webSocketServer is contained inside _myWSServer, the myWSServer instance.
-   * 
-   *  TODO: The following line should probably be externalized into the constructor of 
-   *  class myWSServer.
-   *  */
-  // myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
-  _myWSServer.getWSServer().onEvent(_myWSServer.onEvent);
-
   /** add the AsyncWebSocket instance _webSocketServer as handler to the webserver */
   // addHandler(&myWebServerWS::ws);
   addHandler(&_myWSServer.getWSServer());
