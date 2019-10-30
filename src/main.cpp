@@ -45,33 +45,32 @@ void setup() {
   serialInit();
   // test _test;
 
-  globalBaseVariables.scheduler.init();
+  thisControllerBox.globBaseVars.scheduler.init();
 
-  // TRUE IS READONLY and FALSE IS RW!!!
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.loadPrefsWrapper();
 
-  // The ESP was restarted with an OTA request saved in mySavedPrefs
+  // If the ESP was restarted with an OTA request saved in mySavedPrefs
   if (globalBaseVariables.gi8OTAReboot) {
     myOta::OTAConfig();
     return;
   }
 
-  globalBaseVariables.scheduler.addTask(thisControllerBox.tReboot);
-  globalBaseVariables.scheduler.addTask(myMeshStarter::tRestart);
+  thisControllerBox.globBaseVars.scheduler.addTask(thisControllerBox.tReboot);
+  thisControllerBox.globBaseVars.scheduler.addTask(myMeshStarter::tRestart);
 
-  globalBaseVariables.scheduler.addTask(myMesh::tChangedConnection);
-  globalBaseVariables.scheduler.addTask(myMesh::tIamAloneTimeOut);
-  globalBaseVariables.scheduler.addTask(myMesh::tPrintMeshTopo);
-  globalBaseVariables.scheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
-  globalBaseVariables.scheduler.addTask(myMesh::tSaveNodeMap);
+  thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tChangedConnection);
+  thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tIamAloneTimeOut);
+  thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tPrintMeshTopo);
+  thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
+  thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tSaveNodeMap);
 
-  if (globalBaseVariables.isInterface) {
-    globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
-    globalBaseVariables.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
+  if (thisControllerBox.globBaseVars.isInterface) {
+    thisControllerBox.globBaseVars.scheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
+    thisControllerBox.globBaseVars.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
 
-  thisControllerBox.thisCtrlerBox.sBoxDefaultState = globalBaseVariables.gi16BoxDefaultState;
+  thisControllerBox.thisCtrlerBox.sBoxDefaultState = thisControllerBox.globBaseVars.gi16BoxDefaultState;
 
   myMesh::start();
 
@@ -85,7 +84,7 @@ void setup() {
   __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisControllerBox.thisCtrlerBox.ui16NodeName);
   Serial.println("\n");
 
-  if (globalBaseVariables.isInterface) {
+  if (thisControllerBox.globBaseVars.isInterface) {
     _myWebServer.begin();
   }
 
@@ -93,9 +92,9 @@ void setup() {
 
   enableTasks();
 
-  // Serial.printf("setup. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
-  Serial.printf("Box number: %i\n", globalBaseVariables.gui16NodeName);
-  Serial.printf("Version: %i\n", globalBaseVariables.VERSION);
+  // Serial.printf("setup. thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson() = %s\n",thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson().c_str());
+  Serial.printf("Box number: %i\n", thisControllerBox.globBaseVars.gui16NodeName);
+  Serial.printf("Version: %i\n", thisControllerBox.globBaseVars.VERSION);
   Serial.print("-----------------------------------------------\n-------- SETUP DONE ---------------------------\n-----------------------------------------------\n");
   __mySpiffs.listDir("/", 0);
 }
@@ -107,14 +106,14 @@ void setup() {
 
 
 void loop() {
-  if (globalBaseVariables.gi8OTAReboot) {
+  if (thisControllerBox.globBaseVars.gi8OTAReboot) {
     ArduinoOTA.handle();
     return;
   }
 
-  globalBaseVariables.scheduler.execute();
-  globalBaseVariables.laserControllerMesh.update();
-  if ((globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false)) {
+  thisControllerBox.globBaseVars.scheduler.execute();
+  thisControllerBox.globBaseVars.laserControllerMesh.update();
+  if ((thisControllerBox.globBaseVars.isInterface == false) || (thisControllerBox.globBaseVars.isRoot == false)) {
     thisControllerBox.thisPirController.check();
   }
 }
@@ -138,7 +137,7 @@ void serialInit() {
 
 
 void enableTasks() {
-  if ( (globalBaseVariables.isInterface == false) || (globalBaseVariables.isRoot == false) ) {
+  if ( (thisControllerBox.globBaseVars.isInterface == false) || (thisControllerBox.globBaseVars.isRoot == false) ) {
     thisControllerBox.thisSignalHandler.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();
