@@ -22,6 +22,10 @@ class myWebServerBase : public AsyncWebServer
 
   private:
 
+    void _setWebSocketHandler();
+    void _setGetRequestHandlers();
+    void _setDefaultHandlers();
+
     void _onRequest(AsyncWebServerRequest *request);
     void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 };

@@ -13,46 +13,10 @@ myWebServerBase::myWebServerBase(uint16_t port):
 {
   /** if this box has a web interface */
   if (globalBaseVariables.hasInterface) {
-    /** set _myWSServer.onEvent as the "onEvent callback" 
-     *  of the AsyncWebSocket instance _webSocketServer*.
-     *  (i.e. setting _myWSServer.onEvent() as the callback that will handle 
-     *  websocket calls from the browsers) 
-     * 
-     *  * _webSocketServer is contained inside _myWSServer, the myWSServer instance.
-     * 
-     *  TODO: The following line should probably be externalized into the constructor of 
-     *  class myWSServer.
-     *  */
-    // myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
-    _myWSServer.getWSServer().onEvent(_myWSServer.onEvent);
 
-    /** add the AsyncWebSocket instance _webSocketServer as handler to the webserver */
-    // addHandler(&myWebServerWS::ws);
-    addHandler(&_myWSServer.getWSServer());
-
-    // respond to GET requests by sending index.htm to the browser
-    on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      // Send a response (i.e. display a web page)
-      request->send(SPIFFS, "/index.htm", String(), false);
-    });
-
-    // respond to GET requests requesting index.css by sending index.css to the browser
-    on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
-      request->send(SPIFFS, "/index.css", "text/css");
-    });
-
-    // respond to GET requests requesting index.js by sending index.js to the browser
-    on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(SPIFFS, "/index.js", "text/javascript");
-      });
-
-    onNotFound([](AsyncWebServerRequest *request) {
-      request->send(404);
-    });
-
-    onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-      this->_onBody(request, data, len, index, total);
-    });
+    _setWebSocketHandler();
+    _setGetRequestHandlers();
+    _setDefaultHandlers();
   }
 }
 
@@ -63,6 +27,61 @@ uint8_t myWebServerBase::getStatus() {
   return _server.status();
 }  
 
+
+
+
+void myWebServerBase::_setWebSocketHandler() {
+  /** set _myWSServer.onEvent as the "onEvent callback" 
+   *  of the AsyncWebSocket instance _webSocketServer*.
+   *  (i.e. setting _myWSServer.onEvent() as the callback that will handle 
+   *  websocket calls from the browsers) 
+   * 
+   *  * _webSocketServer is contained inside _myWSServer, the myWSServer instance.
+   * 
+   *  TODO: The following line should probably be externalized into the constructor of 
+   *  class myWSServer.
+   *  */
+  // myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
+  _myWSServer.getWSServer().onEvent(_myWSServer.onEvent);
+
+  /** add the AsyncWebSocket instance _webSocketServer as handler to the webserver */
+  // addHandler(&myWebServerWS::ws);
+  addHandler(&_myWSServer.getWSServer());
+}
+
+
+
+
+void myWebServerBase::_setGetRequestHandlers() {
+  // respond to GET requests by sending index.htm to the browser
+  on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    // Send a response (i.e. display a web page)
+    request->send(SPIFFS, "/index.htm", String(), false);
+  });
+
+  // respond to GET requests requesting index.css by sending index.css to the browser
+  on("/index.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.css", "text/css");
+  });
+
+  // respond to GET requests requesting index.js by sending index.js to the browser
+  on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/index.js", "text/javascript");
+    });
+}
+
+
+
+
+void myWebServerBase::_setDefaultHandlers() {
+  onNotFound([](AsyncWebServerRequest *request) {
+    request->send(404);
+  });
+
+  onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+    this->_onBody(request, data, len, index, total);
+  });
+}  
 
 
 
