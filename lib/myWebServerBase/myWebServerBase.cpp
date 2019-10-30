@@ -10,7 +10,7 @@
 myWebServerBase::myWebServerBase(uint16_t port):
   AsyncWebServer(port)
 {
-  if (globalBaseVariables.isInterface) {
+  if (globalBaseVariables.hasInterface) {
     // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
     // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
     // attach AsyncWebSocket

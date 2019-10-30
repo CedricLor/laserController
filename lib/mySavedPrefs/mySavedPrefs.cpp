@@ -46,7 +46,7 @@ mySavedPrefs::mySavedPrefs() :
   *  globalBaseVariables.gi16BoxDefaultState
   *  globalBaseVariables.gui16NodeName
   *  gui8DefaultMasterNodeName;
-  *  globalBaseVariables.isInterface
+  *  globalBaseVariables.hasInterface
   */
 
 
@@ -258,9 +258,9 @@ void mySavedPrefs::saveFromNetRequest(JsonObject& _obj) {
 
     uint16_t _ui16receivedIFName = _obj["dataset"]["IFNNA"];
     if (_ui16receivedIFName == globalBaseVariables.gui16NodeName) {
-      globalBaseVariables.isInterface = true;
+      globalBaseVariables.hasInterface = true;
       mySavedPrefs _myPrefsRef;
-      _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveIsInterface, _myPrefsRef);
+      _myPrefsRef.actOnPrefsThroughCallback(&mySavedPrefs::_saveHasInterface, _myPrefsRef);
       return;
     }
   }
@@ -484,14 +484,14 @@ void mySavedPrefs::_resetOTASuccess() {
 
 /*
   globalBaseVariables.gui16NodeName
-  globalBaseVariables.isInterface
+  globalBaseVariables.hasInterface
   globalBaseVariables.isRoot
 */
 // Needs a reboot
 void mySavedPrefs::_saveBoxEssentialPreferences() {
   /** save value of gui16NodeName (global int8_t nodeName) */
   _saveUi16ToUCharTypePrefs("ui8NdeName", "gui16NodeName", globalBaseVariables.gui16NodeName);
-  _saveIsInterface();
+  _saveHasInterface();
   _saveIsRoot();
 }
 
@@ -499,16 +499,16 @@ void mySavedPrefs::_saveBoxEssentialPreferences() {
 
 
 
-/** _saveIsInterface: 
+/** _saveHasInterface: 
  *  
  *  dynamic reload: need restarting the mesh */
-void mySavedPrefs::_saveIsInterface() {
+void mySavedPrefs::_saveHasInterface() {
   /*
-    Save value of globalBaseVariables.isInterface
+    Save value of globalBaseVariables.hasInterface
     -> runtime change possible; would require a restart of painlessMesh
     See below for possible implications with globalBaseVariables.isRoot
   */
-  _saveBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
+  _saveBoolTypePrefs("isIF", "hasInterface", globalBaseVariables.hasInterface);
 }
 
 
@@ -818,7 +818,7 @@ void mySavedPrefs::_loadUselessPreferences(){
 
 /* _loadBoxEssentialPreferences()
   globalBaseVariables.gui16NodeName
-  globalBaseVariables.isInterface
+  globalBaseVariables.hasInterface
   globalBaseVariables.isRoot
 */
 void mySavedPrefs::_loadBoxEssentialPreferences(){
@@ -827,7 +827,7 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
   // gui16NodeName
   _loadUCharToUi16TypePrefs("ui8NdeName", "gui16NodeName", globalBaseVariables.gui16NodeName);
 
-  _loadIsInterface();
+  _loadHasInterface();
   _loadIsRoot();
 
   Serial.println(String(debugLoadMsgStart) + " --- End Node Essential Preferences");
@@ -838,14 +838,14 @@ void mySavedPrefs::_loadBoxEssentialPreferences(){
 
 
 
-/** _loadIsInterface() */
-void mySavedPrefs::_loadIsInterface(){
-  Serial.println(String(debugLoadMsgStart) + " --- Loading isInterface Preferences");
+/** _loadHasInterface() */
+void mySavedPrefs::_loadHasInterface(){
+  Serial.println(String(debugLoadMsgStart) + " --- Loading hasInterface Preferences");
 
-  // globalBaseVariables.isInterface
-  _loadBoolTypePrefs("isIF", "isInterface", globalBaseVariables.isInterface);
+  // globalBaseVariables.hasInterface
+  _loadBoolTypePrefs("isIF", "hasInterface", globalBaseVariables.hasInterface);
 
-  Serial.println(String(debugLoadMsgStart) + " --- End isInterface Preferences");
+  Serial.println(String(debugLoadMsgStart) + " --- End hasInterface Preferences");
 }
 
 

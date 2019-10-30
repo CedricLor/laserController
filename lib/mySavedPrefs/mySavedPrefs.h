@@ -62,7 +62,7 @@ class mySavedPrefs
     void _saveBoxBehaviorPreferences();
 
     // Subs of _saveBoxEssentialPreferences()
-    void _saveIsInterface();
+    void _saveHasInterface();
     void _saveIsRoot();
 
     // Save Abstract
@@ -91,7 +91,7 @@ class mySavedPrefs
     void _loadBoxBehaviorPreferences();
 
     // Subs of _loadBoxEssentialPreferences()
-    void _loadIsInterface();
+    void _loadHasInterface();
     void _loadIsRoot();
 
     // Load Abstract

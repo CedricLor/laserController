@@ -65,7 +65,7 @@ void setup() {
   thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tUpdateCBArrayOnChangedConnections);
   thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tSaveNodeMap);
 
-  if (thisControllerBox.globBaseVars.isInterface) {
+  if (thisControllerBox.globBaseVars.hasInterface) {
     thisControllerBox.globBaseVars.scheduler.addTask(myWSSender::tSendWSDataIfChangeStationIp);
     thisControllerBox.globBaseVars.scheduler.addTask(myWSSender::tSendWSDataIfChangeBoxState);
   }
@@ -80,13 +80,13 @@ void setup() {
     return;
   }
 
+  mySpiffs __mySpiffs;
   // IMPORTANT: Uncomment the following lines if a new uploadfs was made on the device
-  // mySpiffs __mySpiffs;
   // __mySpiffs.listDir("/", 0);
   // __mySpiffs.convertJsonFilePrettyToUgly("/pretty-sessions.json", thisControllerBox.thisCtrlerBox.ui16NodeName);
   // Serial.println("\n");
 
-  if (thisControllerBox.globBaseVars.isInterface) {
+  if (thisControllerBox.globBaseVars.hasInterface) {
     _myWebServer.begin();
   }
 
@@ -115,7 +115,7 @@ void loop() {
 
   thisControllerBox.globBaseVars.scheduler.execute();
   thisControllerBox.globBaseVars.laserControllerMesh.update();
-  if ((thisControllerBox.globBaseVars.isInterface == false) || (thisControllerBox.globBaseVars.isRoot == false)) {
+  if ((thisControllerBox.globBaseVars.hasInterface == false) || (thisControllerBox.globBaseVars.isRoot == false)) {
     thisControllerBox.thisPirController.check();
   }
 }
@@ -139,7 +139,7 @@ void serialInit() {
 
 
 void enableTasks() {
-  if ( (thisControllerBox.globBaseVars.isInterface == false) || (thisControllerBox.globBaseVars.isRoot == false) ) {
+  if ( (thisControllerBox.globBaseVars.hasInterface == false) || (thisControllerBox.globBaseVars.isRoot == false) ) {
     thisControllerBox.thisSignalHandler.startup();
   } else {
     myWSSender::tSendWSDataIfChangeBoxState.enable();

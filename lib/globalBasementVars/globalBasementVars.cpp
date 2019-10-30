@@ -12,19 +12,19 @@ globalBasementVars::globalBasementVars():
   scheduler{},
 
   // UI8_NODE_NAME{201},
-  // IS_INTERFACE{false},
+  // HAS_INTERFACE{false},
   // IS_ROOT{false},
 
   // UI8_NODE_NAME{202},
-  // IS_INTERFACE{false},
+  // HAS_INTERFACE{false},
   // IS_ROOT{false},
 
   UI8_NODE_NAME{200},
-  IS_INTERFACE{true},
+  HAS_INTERFACE{true},
   IS_ROOT{true},
   
   gui16NodeName{UI8_NODE_NAME},
-  isInterface{IS_INTERFACE},
+  hasInterface{HAS_INTERFACE},
   isRoot{IS_ROOT},
 
   gcHostnamePrefix{"LaserBox_"},
