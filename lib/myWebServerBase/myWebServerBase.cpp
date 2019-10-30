@@ -11,13 +11,24 @@ myWebServerBase::myWebServerBase(uint16_t port):
   AsyncWebServer(port),
   _myWSServer()
 {
+  /** if this box has a web interface */
   if (globalBaseVariables.hasInterface) {
-    // starts the AsyncServer and sets a couple of callbacks, which will respond to requests
-    // same as myMesh::meshSetup(), but respectively for the mesh server and the web server.
-    // attach AsyncWebSocket
-    myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
-    addHandler(&myWebServerWS::ws);
-    // __asyncServer.addHandler(&_ws);
+    /** set _myWSServer.onEvent as the "onEvent callback" 
+     *  of the AsyncWebSocket instance _webSocketServer*.
+     *  (i.e. setting _myWSServer.onEvent() as the callback that will handle 
+     *  websocket calls from the browsers) 
+     * 
+     *  * _webSocketServer is contained inside _myWSServer, the myWSServer instance.
+     * 
+     *  TODO: The following line should probably be externalized into the constructor of 
+     *  class myWSServer.
+     *  */
+    // myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
+    _myWSServer.getWSServer().onEvent(_myWSServer.onEvent);
+
+    /** add the AsyncWebSocket instance _webSocketServer as handler to the webserver */
+    // addHandler(&myWebServerWS::ws);
+    addHandler(&_myWSServer.getWSServer());
 
     // respond to GET requests by sending index.htm to the browser
     on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
