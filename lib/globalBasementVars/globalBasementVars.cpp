@@ -10,17 +10,18 @@ globalBasementVars                globalBaseVariables;
 
 globalBasementVars::globalBasementVars():
   scheduler{},
-  UI8_NODE_NAME{201},
-  IS_INTERFACE{false},
-  IS_ROOT{false},
+
+  // UI8_NODE_NAME{201},
+  // IS_INTERFACE{false},
+  // IS_ROOT{false},
 
   // UI8_NODE_NAME{202},
   // IS_INTERFACE{false},
   // IS_ROOT{false},
 
-  // UI8_NODE_NAME{200},
-  // IS_INTERFACE{true},
-  // IS_ROOT{true},
+  UI8_NODE_NAME{200},
+  IS_INTERFACE{true},
+  IS_ROOT{true},
   
   gui16NodeName{UI8_NODE_NAME},
   isInterface{IS_INTERFACE},
@@ -52,5 +53,6 @@ globalBasementVars::globalBasementVars():
   MY_DEEP_DG_MESH{false},
   VERSION{2},
   laserControllerMesh{}
-{  }
+{  
+}
 

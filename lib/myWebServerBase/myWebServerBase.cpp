@@ -41,8 +41,6 @@ myWebServerBase::myWebServerBase(uint16_t port):
     onRequestBody([this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       this->_onBody(request, data, len, index, total);
     });
-
-    begin();
   }
 }
 
