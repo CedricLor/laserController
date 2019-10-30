@@ -36,4 +36,25 @@ class myWSSender
     static void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
 };
 
+
+
+
+class myWSSenderTasks
+{
+  public:
+    myWSSenderTasks(AsyncWebSocket * __server=nullptr);
+
+    Task tSendWSDataIfChangeStationIp;
+    Task tSendWSDataIfChangeBoxState;
+
+  private:
+    AsyncWebSocket * _server=nullptr;
+
+    void _tcbSendWSDataIfChangeStationIp();
+    void _tcbSendWSDataIfChangeBoxState(AsyncWebSocket * __server);
+    void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
+};
+
+
+
 #endif
