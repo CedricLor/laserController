@@ -30,4 +30,6 @@ class myWebServerBase : public AsyncWebServer
     void _onBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
 };
 
+extern myWebServerBase _myWebServer;
+
 #endif

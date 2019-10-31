@@ -10,27 +10,17 @@
 #include <myWSSender.h>
 #include <myWSReceiver.h>
 
-class myWebServerWS
-{
-  public:
-    myWebServerWS();
-
-    static AsyncWebSocket ws; // access at ws://[esp ip]/ws
-
-    static void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
-};
-
-
 class myWSServer
 {
+  private:
+    AsyncWebSocket _webSocketServer;
+
   public:
     myWSServer();
 
     void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
     AsyncWebSocket & getWSServer();
-
-  private:
-    AsyncWebSocket _webSocketServer;
+    myWSResponder thisWSResponder;
 };
 
 #endif

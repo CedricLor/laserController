@@ -9,7 +9,9 @@
 
 
 
-myWSReceiver::myWSReceiver(uint8_t *_data)
+myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __server, myWSSenderTasks & __thisWSSenderTasks):
+  _server(__server),
+  _thisWSSenderTasks(__thisWSSenderTasks)
 {
 
   if (globalBaseVariables.MY_DG_WS) {
@@ -55,7 +57,9 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
       _obj, 
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
       thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
-      thisControllerBox.globBaseVars.gui16BoxesCount
+      thisControllerBox.globBaseVars.gui16BoxesCount,
+      _server,
+      _thisWSSenderTasks.tSendWSDataIfChangeStationIp
     );
     return;
   }
@@ -68,7 +72,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
       Serial.println("myWSReceiver::_actionSwitch(): tSendWSDataIfChangeStationIp.disable()");
     }
     // disable the task sending the station IP
-    myWSSender::tSendWSDataIfChangeStationIp.disable();
+    _thisWSSenderTasks.tSendWSDataIfChangeStationIp.disable();
     return;
   }
 
@@ -219,7 +223,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   // send a response to the browser telling the instruction is in course of being executed
-  myWSSender _myWSSender;
+  myWSSender _myWSSender(_server, _thisWSSenderTasks.tSendWSDataIfChangeStationIp);
   _myWSSender.sendWSData(_obj);
 }
 

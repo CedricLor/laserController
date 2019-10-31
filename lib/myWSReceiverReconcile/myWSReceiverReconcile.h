@@ -18,13 +18,15 @@
 class myWSReceiverReconcile
 {
   public:
-    myWSReceiverReconcile(JsonObject& _obj, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount);
+    myWSReceiverReconcile(JsonObject& _obj, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount, AsyncWebSocket & __server, Task & __tSendWSDataIfChangeStationIp);
 
   private:
     JsonObject& _joMsg;
     std::array<ControlerBox, 10U> & _controllerBoxesArray;
     uint16_t _ui16connectedBoxesCount;
     uint16_t _ui16PotentialBoxesCount;
+    AsyncWebSocket & _server;
+    Task & _tSendWSDataIfChangeStationIp;
     
 
     uint16_t _onHandshakeCheckWhetherDOMNeedsUpdate();

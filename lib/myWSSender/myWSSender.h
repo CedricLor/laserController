@@ -17,20 +17,14 @@
 class myWSSender
 {
   public:
-    myWSSender();
+    myWSSender(AsyncWebSocket & __server, Task & __tSendWSDataIfChangeStationIp);
 
     void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
     void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 
-    static Task tSendWSDataIfChangeStationIp;
-    static Task tSendWSDataIfChangeBoxState;
-
-    static AsyncWebSocket * server;
-    
   private:
-    static void _tcbSendWSDataIfChangeStationIp();
-    static void _tcbSendWSDataIfChangeBoxState();
-    static void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
+    AsyncWebSocket & _server;
+    Task & _tSendWSDataIfChangeStationIp;
 };
 
 
@@ -39,18 +33,43 @@ class myWSSender
 class myWSSenderTasks
 {
   public:
-    myWSSenderTasks(AsyncWebSocket * __server=nullptr);
+    myWSSenderTasks(AsyncWebSocket & __server);
 
     Task tSendWSDataIfChangeStationIp;
     Task tSendWSDataIfChangeBoxState;
 
   private:
-    AsyncWebSocket * _server=nullptr;
+    AsyncWebSocket & _server;
 
     void _tcbSendWSDataIfChangeStationIp();
-    void _tcbSendWSDataIfChangeBoxState(AsyncWebSocket * __server);
+    void _tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __server);
     void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
 };
+
+
+
+
+class myWSResponder
+{
+  private:
+    AsyncWebSocket & _server;
+
+  public:
+    myWSResponder(AsyncWebSocket & __server);
+
+    void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
+    void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
+    
+    myWSSenderTasks _thisWSSenderTasks;
+};
+
+
+
+
+
+
+
+
 
 
 

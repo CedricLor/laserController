@@ -9,7 +9,6 @@
 #include "Arduino.h"
 #include <painlessMesh.h>
 #include <myMeshController.h> // => includes myMeshStarter and myMeshViews
-#include <myWebServerWS.h>
 
 class myMesh
 {
