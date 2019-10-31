@@ -38,6 +38,15 @@ AsyncWebSocket & myWSServer::getAsyncWebSocketInstance() {
 
 
 
+myWSResponder & myWSServer::getMyWSResponder() {
+  return _myWSResponder;
+}
+
+
+
+
+
+
 /** myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsEventType type, void * __arg, uint8_t *__data, size_t __len)
  * 
  *  Callback on websocket events (i.e. on messages from the browser).
