@@ -95,36 +95,44 @@ void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
 
 
 
+void myWSSender::_sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketClient * _client) {
+  /** 5. If the message is addressed to any connected client, send it to all the clients */
+  if (_client == nullptr) {
+    _server.textAll(_buffer);
+    Serial.println("myWSSender::_sendMsg. The message was sent to all the clients.\n");
+    return;
+  }
+
+  /** 6. If the message is addressed to a specific client, send it to the target client */
+  _client->text(_buffer);
+}
+
+
+
+
+
 void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
     if (globalBaseVariables.MY_DG_WS) {
       Serial.println("myWSSender::sendWSData. starting");
     }
 
-    // If no client is registered with the WebSocket, just return
+    /** 1. If no client is registered with the WebSocket, just return */
     if (!(_server.count())) {
       Serial.println("myWSSender::sendWSData. No clients connected. Not sending anything.");
       return;
     }
+    /** The message is addressed to a specific client or to any client */
 
-    // The message is addressed to a specific client or to any client
-    // Measure the size of the message
+    /** 2. Measure the size of the message */
     size_t _len = measureJson(_joMsg);
-    // Make a buffer to hold it
+    /** 3. Create a buffer to hold the message */
     AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); //  creates a buffer (len + 1) for you.
-    // Serialize the message into the buffer
+    /** 4. Serialize the message into the buffer */
     serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
-    // Display the serialized message to the console
     Serial.print("myWSSender::sendWSData. Serialized message: ");serializeJson(_joMsg, Serial);Serial.println();
 
-    // If the message is addressed to any connected client, send it to all the clients
-    if (_client == nullptr) {
-      _server.textAll(_buffer);
-      Serial.println("myWSSender::sendWSData. The message was sent to all the clients.\n");
-      return;
-    }
-
-    // The message is addressed to a specific client, send it to the targeted client
-    _client->text(_buffer);
+    /** 5. Send the buffered message */
+    _sendMsg(_buffer, _client);
 
     if (globalBaseVariables.MY_DG_WS) {
       Serial.println(F("myWSSender::sendWSData. over"));
