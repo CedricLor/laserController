@@ -13,7 +13,7 @@
 class myWSServer
 {
   private:
-    AsyncWebSocket _webSocketServer;
+    AsyncWebSocket _asyncWebSocketInstance;
 
   public:
     myWSServer();
