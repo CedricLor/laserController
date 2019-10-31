@@ -17,11 +17,11 @@
 class myWSReceiver
 {
   public:
-    myWSReceiver(uint8_t *_data, AsyncWebSocket & __server, myWSSenderTasks & __thisWSSenderTasks);
+    myWSReceiver(uint8_t *_data, AsyncWebSocket & __server, myWSSenderTasks & __myWSSenderTasks);
 
   private:
     AsyncWebSocket & _server;
-    myWSSenderTasks & _thisWSSenderTasks;
+    myWSSenderTasks & _myWSSenderTasks;
 
     void _actionSwitch(JsonObject& _obj);
 
