@@ -13,12 +13,12 @@
 
 
 
-myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount, AsyncWebSocket & __server, Task & __tSendWSDataIfChangeStationIp):
+myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount, AsyncWebSocket & __asyncWebSocketInstance, Task & __tSendWSDataIfChangeStationIp):
   _joMsg(_obj),
   _controllerBoxesArray(__controllerBoxesArray),
   _ui16connectedBoxesCount(__ui16connectedBoxesCount),
   _ui16PotentialBoxesCount(__ui16PotentialBoxesCount),
-  _server(__server),
+  _asyncWebSocketInstance(__asyncWebSocketInstance),
   _tSendWSDataIfChangeStationIp(__tSendWSDataIfChangeStationIp)
 {
   _onHandshakeCheckWhetherDOMNeedsUpdate();
@@ -112,7 +112,7 @@ void myWSReceiverReconcile::_handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject&
   __joBoxesStatesInDOM.clear();
   __joBoxesStatesInDOM["action"] = "deleteBox";
   __joBoxesStatesInDOM["lb"] = "a";
-  myWSSender _myWSSender(_server, _tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance, _tSendWSDataIfChangeStationIp);
   _myWSSender.sendWSData(__joBoxesStatesInDOM);
   // __joBoxesStatesInDOM = {action: "deleteBox"; lb: "a"}
 }
