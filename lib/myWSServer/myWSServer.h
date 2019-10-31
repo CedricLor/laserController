@@ -20,6 +20,7 @@ class myWSServer
     void _handleEventTypeDisconnected(AsyncWebSocket * __server, AsyncWebSocketClient * __client);
     void _handleEventTypeError(AsyncWebSocket * __server, AsyncWebSocketClient * __client, void * __arg, uint8_t *__data);
     void _handleEventTypePong(AsyncWebSocket * __server, AsyncWebSocketClient * __client, uint8_t *__data, size_t __len);
+    void _handleEventTypeData(AsyncWebSocket * __server, AsyncWebSocketClient * __client, void * __arg, uint8_t *__data, size_t __len);
 
   public:
     myWSServer();
@@ -27,7 +28,7 @@ class myWSServer
     AsyncWebSocket & getAsyncWebSocketInstance();
     myWSResponder & getMyWSResponder();
 
-    void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
+    void onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsEventType __type, void * __arg, uint8_t *__data, size_t __len);
 };
 
 #endif
