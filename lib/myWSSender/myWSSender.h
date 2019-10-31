@@ -36,10 +36,12 @@ class myWSResponder
   private:
     AsyncWebSocket & _asyncWebSocketInstance;
 
+    bool _checkWhetherUnsignaledNewBox(ControlerBox & _controlerBox, JsonObject & _obj);
     void _checkBoxStateAndSendMsgATMB(uint16_t _ui16BoxIndex, controllerBoxesCollection & _ctlBxColl, myWSSender & _myWSSender);
     void _tcbSendWSDataIfChangeStationIp();
     void _tcbSendWSDataIfChangeBoxState();
-    void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
+    void _resetAllControlerBoxBoolsToTrueByIdNumber(const uint16_t _ui8BoxIndex);
+    void _resetAllControlerBoxBoolsToTrueByCB(ControlerBox & _controlerBox);
 
   public:
     myWSResponder(AsyncWebSocket & __asyncWebSocketInstance);
