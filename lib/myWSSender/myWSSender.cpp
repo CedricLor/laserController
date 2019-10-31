@@ -339,11 +339,11 @@ void myWSResponder::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _clien
 // myWSSenderTasks class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-myWSSenderTasks::myWSSenderTasks(AsyncWebSocket & __server) :
-  _server(__server)
+myWSSenderTasks::myWSSenderTasks(AsyncWebSocket & __asyncWebSocketInstance) :
+  _asyncWebSocketInstance(__asyncWebSocketInstance)
 {
   tSendWSDataIfChangeStationIp.set(10000, TASK_FOREVER, [&](){ return _tcbSendWSDataIfChangeStationIp();});
-  tSendWSDataIfChangeBoxState.set(500, TASK_FOREVER, [&](){ return _tcbSendWSDataIfChangeBoxState(_server);});
+  tSendWSDataIfChangeBoxState.set(500, TASK_FOREVER, [&](){ return _tcbSendWSDataIfChangeBoxState(_asyncWebSocketInstance);});
 }
 
 
@@ -366,7 +366,7 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() {
   //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
   // }
 
-  myWSSender _myWSSender(_server, tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance, tSendWSDataIfChangeStationIp);
   if (globalBaseVariables.MY_DG_WS) {
     Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
   }
@@ -406,20 +406,20 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() {
  *  (i) boxState changes;
  *  (ii) appearance or (iii) disappearance of a new box
 */
-void myWSSenderTasks::_tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __server) {
+void myWSSenderTasks::_tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __asyncWebSocketInstance) {
   // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): starting");
 
   /** 1. check wether any client is currently connected
    * 
    *     If no client is currently connected, just return, basta. */
-  if (!(__server.count())) { return; }
+  if (!(__asyncWebSocketInstance.count())) { return; }
   // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): WS has some client connected.");
 
   /** 2. else: there is at least one client currently connected:
    * 
    *      a. instantiate a myWSSender instance;
    *      b. iterate over the controller boxes array and look for any relevant change. */
-  myWSSender _myWSSender(_server, tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(__asyncWebSocketInstance, tSendWSDataIfChangeStationIp);
   for (uint16_t _ui16BoxIndex = 0; _ui16BoxIndex < globalBaseVariables.gui16BoxesCount; _ui16BoxIndex++) {
     // prepare a JSON document
     StaticJsonDocument<256> _doc;
