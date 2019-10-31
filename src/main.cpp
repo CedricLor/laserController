@@ -66,8 +66,8 @@ void setup() {
   thisControllerBox.globBaseVars.scheduler.addTask(myMesh::tSaveNodeMap);
 
   if (thisControllerBox.globBaseVars.hasInterface) {
-    thisControllerBox.globBaseVars.scheduler.addTask(_myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
-    thisControllerBox.globBaseVars.scheduler.addTask(_myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeBoxState);
+    thisControllerBox.globBaseVars.scheduler.addTask(_myWebServer.getTSendWSDataIfChangeStationIp());
+    thisControllerBox.globBaseVars.scheduler.addTask(_myWebServer.getTSendWSDataIfChangeBoxState());
   }
 
   thisControllerBox.thisCtrlerBox.sBoxDefaultState = thisControllerBox.globBaseVars.gi16BoxDefaultState;
@@ -142,7 +142,7 @@ void enableTasks() {
   if ( (thisControllerBox.globBaseVars.hasInterface == false) || (thisControllerBox.globBaseVars.isRoot == false) ) {
     thisControllerBox.thisSignalHandler.startup();
   } else {
-    _myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeBoxState.enable();
+    _myWebServer.getTSendWSDataIfChangeBoxState().enable();
   }
 }
 

@@ -23,6 +23,27 @@ myWebServerBase::myWebServerBase(uint16_t port):
 
 
 
+AsyncWebSocket & myWebServerBase::getAsyncWebSocketInstance() {
+  return _myWSServer.getAsyncWebSocketInstance();
+}
+
+
+
+
+Task & myWebServerBase::getTSendWSDataIfChangeStationIp() {
+  return _myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp;
+}
+
+
+
+
+Task & myWebServerBase::getTSendWSDataIfChangeBoxState() {
+  return _myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeBoxState;
+}
+
+
+
+
 uint8_t myWebServerBase::getStatus() {
   return _server.status();
 }  
@@ -30,10 +51,14 @@ uint8_t myWebServerBase::getStatus() {
 
 
 
+/** void myWebServerBase::_setWebSocketHandler()
+ * 
+ *  add the AsyncWebSocket instance _webSocketServer as handler 
+ *  to the webserver.
+ * */
 void myWebServerBase::_setWebSocketHandler() {
-  /** add the AsyncWebSocket instance _webSocketServer as handler to the webserver */
   // addHandler(&myWebServerWS::ws);
-  addHandler(&_myWSServer.getWSServer());
+  addHandler(&_myWSServer.getAsyncWebSocketInstance());
 }
 
 

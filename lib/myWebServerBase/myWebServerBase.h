@@ -17,10 +17,12 @@ class myWebServerBase : public AsyncWebServer
     myWebServerBase(uint16_t port=80);
 
     uint8_t getStatus();
-
-    myWSServer _myWSServer;
+    AsyncWebSocket & getAsyncWebSocketInstance();
+    Task & getTSendWSDataIfChangeStationIp();
+    Task & getTSendWSDataIfChangeBoxState();
 
   private:
+    myWSServer _myWSServer;
 
     void _setWebSocketHandler();
     void _setGetRequestHandlers();

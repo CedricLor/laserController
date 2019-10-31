@@ -29,7 +29,7 @@ myWSServer::myWSServer():
 
 
 
-AsyncWebSocket & myWSServer::getWSServer() {
+AsyncWebSocket & myWSServer::getAsyncWebSocketInstance() {
   return _webSocketServer;
 }
 

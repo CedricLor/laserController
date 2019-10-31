@@ -259,7 +259,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if (_nsobj["key"] == "save") {
     // Serial.println("----------------- THIS A SAVE CONFIRMATION ---------------");
-    myWSSender _myWSSender(_myWebServer._myWSServer.getWSServer(), _myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
+    myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance(), _myWebServer.getTSendWSDataIfChangeStationIp());
     _myWSSender.sendWSData(_nsobj);
     return;
   }

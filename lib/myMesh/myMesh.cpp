@@ -72,8 +72,8 @@ void myMesh::start() {
         tPrintMeshTopo.disable();
         tUpdateCBArrayOnChangedConnections.disable();
         tSaveNodeMap.disable();
-        _myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp.disable();
-        _myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeBoxState.disable();
+        _myWebServer.getTSendWSDataIfChangeStationIp().disable();
+        _myWebServer.getTSendWSDataIfChangeBoxState().disable();
 
         // end the MDNS server
         MDNS.end();
@@ -88,7 +88,7 @@ void myMesh::start() {
 
         // enable the Task which signals to connected browsers the changes in ControlerBoxes' states
         if (globalBaseVariables.hasInterface) {
-          _myWebServer._myWSServer.thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeBoxState.disable();
+          _myWebServer.getTSendWSDataIfChangeBoxState().enable();
         }
       }
       Serial.println("myMeshStarter::tRestart: mainCallback: ending");
