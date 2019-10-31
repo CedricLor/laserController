@@ -28,24 +28,6 @@ myWSSender::myWSSender(AsyncWebSocket & __server):
 
 
 
-myWSSenderTasks & myWSResponder::getMyWSSenderTasks() {
-  return _myWSSenderTasks;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
   Serial.printf("myWSSender::prepareAllIFDataMessage. starting.\n");
 
@@ -272,6 +254,16 @@ void myWSResponder::prepareWSData(const int8_t _i8messageType, AsyncWebSocketCli
     Serial.println("- myWSResponder::prepareWSData. over");
   }
 }
+
+
+
+
+
+myWSSenderTasks & myWSResponder::getMyWSSenderTasks() {
+  return _myWSSenderTasks;
+}
+
+
 
 
 
