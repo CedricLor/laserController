@@ -42,7 +42,7 @@ class myWSSenderTasks
     AsyncWebSocket & _asyncWebSocketInstance;
 
     void _tcbSendWSDataIfChangeStationIp();
-    void _tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __asyncWebSocketInstance);
+    void _tcbSendWSDataIfChangeBoxState();
     void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
 };
 
