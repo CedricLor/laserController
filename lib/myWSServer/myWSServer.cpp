@@ -108,28 +108,17 @@ void myWSServer::_handleSingleFrameMessage(AsyncWebSocket * __server, AsyncWebSo
   if (globalBaseVariables.MY_DG_WS) {
     Serial.printf("- myWSServer::onEvent: ws[%s][%u] %s-message length[%llu]: \n", __server->url(), __client->id(), (__info->opcode == WS_TEXT)?"text":"binary", __info->len);
   }
-  if(__info->opcode == WS_TEXT) {
-
-      // myWSSender _myWSSender(_webSocketServer, _myWSResponder._myWSSenderTasks.tSendWSDataIfChangeStationIp);
-      // Serial.print("- myWSServer::onEvent: WS_EVT_DATA: about to call prepareWSData(1)\n");
-      // _myWSSender.prepareWSData(1, __client); // text message confirmation
-
-  }
-  else {
-    __client->binary("I got your WS binary message");
-  }
   if(__info->opcode == WS_TEXT){
     // message is a text message
-      __data[__len] = 0;
-      // Serial.println("----------------------- TEXT ------------------");
-      // Serial.printf("%s\n", (char*)__data);
-      // Serial.println(__len);
-      if (__len == 1) { // this is a ping
-        __client->text((char*)__data);
-        return;
-      }
-      myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks());
-
+    __data[__len] = 0;
+    // Serial.println("----------------------- TEXT ------------------");
+    // Serial.printf("%s\n", (char*)__data);
+    // Serial.println(__len);
+    if (__len == 1) { // this is a ping
+      __client->text((char*)__data);
+      return;
+    }
+    myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks());
   } else {
     // message is a binary message
     if (globalBaseVariables.MY_DG_WS) {
@@ -158,26 +147,26 @@ void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWeb
         Serial.printf("- myWSServer::onEvent: ws[%s][%u] %s-message start\n", __server->url(), __client->id(), (__info->message_opcode == WS_TEXT)?"text":"binary");
       Serial.printf("- myWSServer::onEvent: ws[%s][%u] frame[%u] start[%llu]\n", __server->url(), __client->id(), __info->num, __info->len);
     }
-
-        Serial.printf("- myWSServer::onEvent: ws[%s][%u] frame[%u] %s[%llu - %llu]: ", __server->url(), __client->id(), __info->num, (__info->message_opcode == WS_TEXT)?"text":"binary", __info->index, __info->index + __len);
+    Serial.printf("- myWSServer::onEvent: ws[%s][%u] frame[%u] %s[%llu - %llu]: ", __server->url(), __client->id(), __info->num, (__info->message_opcode == WS_TEXT)?"text":"binary", __info->index, __info->index + __len);
   }
-    if(__info->message_opcode == WS_TEXT){
-      // message is a text message
-      __data[__len] = 0;
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSServer::onEvent: this is a multiple frames text message\n");
-        Serial.printf("%s\n", (char*)__data);
-      }
-    } else {
-      // message is a binary message
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSServer::onEvent: this is a multiple frames text message\n");
-        for(size_t i=0; i < __len; i++){
-          Serial.printf("%02x ", __data[i]);
-        }
-        Serial.printf("\n");
-      }
+  
+  if(__info->message_opcode == WS_TEXT){
+    // message is a text message
+    __data[__len] = 0;
+    if (globalBaseVariables.MY_DG_WS) {
+      Serial.printf("- myWSServer::onEvent: this is a multiple frames text message\n");
+      Serial.printf("%s\n", (char*)__data);
     }
+  } else {
+    // message is a binary message
+    if (globalBaseVariables.MY_DG_WS) {
+      Serial.printf("- myWSServer::onEvent: this is a multiple frames text message\n");
+      for(size_t i=0; i < __len; i++){
+        Serial.printf("%02x ", __data[i]);
+      }
+      Serial.printf("\n");
+    }
+  }
 
   if((__info->index + __len) == __info->len){
     // received the final frame or packet
