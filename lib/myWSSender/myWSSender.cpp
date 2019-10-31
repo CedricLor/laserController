@@ -29,6 +29,16 @@ myWSSender::myWSSender(AsyncWebSocket & __server, Task & __tSendWSDataIfChangeSt
 
 
 
+myWSSenderTasks & myWSResponder::getMyWSSenderTasks() {
+  return _myWSSenderTasks;
+}
+
+
+
+
+
+
+
 void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client) {
   Serial.printf("- myWSSender::prepareWSData. starting. Message type [%i]\n", _i8messageType);
   StaticJsonDocument<900> __doc;

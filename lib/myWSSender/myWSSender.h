@@ -53,14 +53,15 @@ class myWSResponder
 {
   private:
     AsyncWebSocket & _asyncWebSocketInstance;
+    myWSSenderTasks _myWSSenderTasks;
 
   public:
     myWSResponder(AsyncWebSocket & __asyncWebSocketInstance);
 
+    myWSSenderTasks & getMyWSSenderTasks();
+
     void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
-    void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
-    
-    myWSSenderTasks _myWSSenderTasks;
+    void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);    
 };
 
 

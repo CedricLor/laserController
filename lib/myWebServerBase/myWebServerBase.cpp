@@ -31,14 +31,14 @@ AsyncWebSocket & myWebServerBase::getAsyncWebSocketInstance() {
 
 
 Task & myWebServerBase::getTSendWSDataIfChangeStationIp() {
-  return _myWSServer.getMyWSResponder()._myWSSenderTasks.tSendWSDataIfChangeStationIp;
+  return _myWSServer.getMyWSResponder().getMyWSSenderTasks().tSendWSDataIfChangeStationIp;
 }
 
 
 
 
 Task & myWebServerBase::getTSendWSDataIfChangeBoxState() {
-  return _myWSServer.getMyWSResponder()._myWSSenderTasks.tSendWSDataIfChangeBoxState;
+  return _myWSServer.getMyWSResponder().getMyWSSenderTasks().tSendWSDataIfChangeBoxState;
 }
 
 
