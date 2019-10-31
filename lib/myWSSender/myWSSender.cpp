@@ -182,9 +182,9 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
 // myWSResponder class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-myWSResponder::myWSResponder(AsyncWebSocket & __server) :
-  _server(__server),
-  _thisWSSenderTasks(__server)
+myWSResponder::myWSResponder(AsyncWebSocket & __asyncWebSocketInstance) :
+  _asyncWebSocketInstance(__asyncWebSocketInstance),
+  _thisWSSenderTasks({__asyncWebSocketInstance})
 {
 }
 
@@ -297,7 +297,7 @@ void myWSResponder::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _clien
     }
 
     // If no client is registered with the WebSocket, just return
-    if (!(_server.count())) {
+    if (!(_asyncWebSocketInstance.count())) {
       Serial.println("- myWSResponder::sendWSData. No clients connected. Not sending anything.");
       return;
     }
@@ -306,7 +306,7 @@ void myWSResponder::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _clien
     // Measure the size of the message
     size_t _len = measureJson(_joMsg);
     // Make a buffer to hold it
-    AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); //  creates a buffer (len + 1) for you.
+    AsyncWebSocketMessageBuffer * _buffer = _asyncWebSocketInstance.makeBuffer(_len); //  creates a buffer (len + 1) for you.
     // Serialize the message into the buffer
     serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
     // Display the serialized message to the console
@@ -314,7 +314,7 @@ void myWSResponder::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _clien
 
     // If the message is addressed to any connected client, send it to all the clients
     if (_client == nullptr) {
-      _server.textAll(_buffer);
+      _asyncWebSocketInstance.textAll(_buffer);
       Serial.println("- myWSResponder::sendWSData. The message was sent to all the clients.\n");
       return;
     }
