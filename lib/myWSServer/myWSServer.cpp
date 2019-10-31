@@ -207,14 +207,14 @@ void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWeb
 
 void myWSServer::_handleEventTypeData(AsyncWebSocket * __server, AsyncWebSocketClient * __client, void * __arg, uint8_t *__data, size_t __len) {
   //data packet
-  AwsFrameInfo * __info = (AwsFrameInfo*)__arg;
+  AwsFrameInfo * _info = (AwsFrameInfo*)__arg;
 
-  if(__info->final && __info->index == 0 && __info->len == __len){
-    _handleSingleFrameMessage(__server, __client, __info, __data, __len);
+  if(_info->final && _info->index == 0 && _info->len == __len){
+    _handleSingleFrameMessage(__server, __client, _info, __data, __len);
   }
 
   else {
-    _handleMultipleFrameMessage(__server, __client, __info, __data, __len);
+    _handleMultipleFrameMessage(__server, __client, _info, __data, __len);
   }
 }
 
