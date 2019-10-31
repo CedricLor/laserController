@@ -59,8 +59,6 @@ class myWSResponder
 
     myWSSenderTasks & getMyWSSenderTasks();
 
-    void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
-    void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);    
 };
 
 
