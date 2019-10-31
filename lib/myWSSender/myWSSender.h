@@ -29,35 +29,20 @@ class myWSSender
 
 
 
-class myWSSenderTasks
+class myWSResponder
 {
-  public:
-    myWSSenderTasks(AsyncWebSocket & __asyncWebSocketInstance);
-
-    Task tSendWSDataIfChangeStationIp;
-    Task tSendWSDataIfChangeBoxState;
-
   private:
     AsyncWebSocket & _asyncWebSocketInstance;
 
     void _tcbSendWSDataIfChangeStationIp();
     void _tcbSendWSDataIfChangeBoxState();
     void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
-};
-
-
-
-
-class myWSResponder
-{
-  private:
-    AsyncWebSocket & _asyncWebSocketInstance;
-    myWSSenderTasks _myWSSenderTasks;
 
   public:
     myWSResponder(AsyncWebSocket & __asyncWebSocketInstance);
 
-    myWSSenderTasks & getMyWSSenderTasks();
+    Task tSendWSDataIfChangeStationIp;
+    Task tSendWSDataIfChangeBoxState;
 
 };
 

@@ -151,32 +151,6 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 myWSResponder::myWSResponder(AsyncWebSocket & __asyncWebSocketInstance) :
-  _asyncWebSocketInstance(__asyncWebSocketInstance),
-  _myWSSenderTasks({__asyncWebSocketInstance})
-{
-}
-
-
-
-
-
-
-myWSSenderTasks & myWSResponder::getMyWSSenderTasks() {
-  return _myWSSenderTasks;
-}
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-// myWSSenderTasks class
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-myWSSenderTasks::myWSSenderTasks(AsyncWebSocket & __asyncWebSocketInstance) :
   _asyncWebSocketInstance(__asyncWebSocketInstance)
 {
   tSendWSDataIfChangeStationIp.set(10000, TASK_FOREVER, [&](){ return _tcbSendWSDataIfChangeStationIp();});
@@ -188,7 +162,8 @@ myWSSenderTasks::myWSSenderTasks(AsyncWebSocket & __asyncWebSocketInstance) :
 
 
 
-/** myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() 
+
+/** myWSResponder::_tcbSendWSDataIfChangeStationIp() 
  * 
  *  Callback for Task tSendWSDataIfChangeStationIp.
  *  
@@ -196,15 +171,15 @@ myWSSenderTasks::myWSSenderTasks(AsyncWebSocket & __asyncWebSocketInstance) :
  *  (Task tSendWSDataIfChangeStationIp iterates every 10 seconds and
  *  checks whether a change in station IP has occured). 
  * */
-void myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() {
-  Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). starting");
+void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
+  Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp(). starting");
   // if (globalBaseVariables.MY_DG_WS) {
-  //   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-  //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
+  //   Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
+  //   Serial.printf("myWSResponder::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
   // }
 
   if (globalBaseVariables.MY_DG_WS) {
-    Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
+    Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp. about to call _myWSSender.prepareAllIFDataMessage with parameter (nullptr).");
   }
   /** TODO: treat the nullptr issue:
     * This Task shall be enabled:
@@ -232,7 +207,7 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() {
 
 
 
-/** myWSSenderTasks::_tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __server)
+/** myWSResponder::_tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __server)
  * 
  *  _tcbSendWSDataIfChangeBoxState() iterates indefinitely every second,
  *  to check any changes in the controller boxes array.
@@ -243,7 +218,7 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() {
  *  (i) boxState changes;
  *  (ii) appearance or (iii) disappearance of a new box
 */
-void myWSSenderTasks::_tcbSendWSDataIfChangeBoxState() {
+void myWSResponder::_tcbSendWSDataIfChangeBoxState() {
   // Serial.println("myWSSender::_tcbSendWSDataIfChangeBoxState(): starting");
 
   /** 1. check wether any client is currently connected
@@ -331,7 +306,7 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeBoxState() {
 
 
 
-void myWSSenderTasks::_resetAllControlerBoxBoolsToTrue(const uint16_t _ui16BoxIndex) {
+void myWSResponder::_resetAllControlerBoxBoolsToTrue(const uint16_t _ui16BoxIndex) {
   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled = true;
   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;

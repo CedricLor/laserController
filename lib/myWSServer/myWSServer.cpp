@@ -52,7 +52,7 @@ void myWSServer::_handleEventTypeConnect(AsyncWebSocket * __server, AsyncWebSock
     Serial.printf("- myWSServer::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], __client->id(): [%i] connect\n", __server->url(), __client->id());
     Serial.println("- myWSServer::onEvent: type == WS_EVT_CONNECT; About to call myWSResponder::prepareWSData");
   }
-  _myWSResponder.getMyWSSenderTasks().tSendWSDataIfChangeStationIp.enable();
+  _myWSResponder.tSendWSDataIfChangeStationIp.enable();
   __client->ping();
 }
 
@@ -116,7 +116,7 @@ void myWSServer::_handleSingleFrameMessage(AsyncWebSocket * __server, AsyncWebSo
       __client->text((char*)__data);
       return;
     }
-    myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks());
+    myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, _myWSResponder);
   } else {
     // message is a binary message
     if (globalBaseVariables.MY_DG_WS) {

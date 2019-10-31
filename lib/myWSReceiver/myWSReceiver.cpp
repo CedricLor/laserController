@@ -9,9 +9,9 @@
 
 
 
-myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInstance, myWSSenderTasks & __myWSSenderTasks):
+myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInstance, myWSResponder & __myWSResponder):
   _asyncWebSocketInstance(__asyncWebSocketInstance),
-  _myWSSenderTasks(__myWSSenderTasks)
+  _myWSResponder(__myWSResponder)
 {
 
   if (globalBaseVariables.MY_DG_WS) {
@@ -59,7 +59,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
       thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
       thisControllerBox.globBaseVars.gui16BoxesCount,
       _asyncWebSocketInstance,
-      _myWSSenderTasks.tSendWSDataIfChangeStationIp
+      _myWSResponder.tSendWSDataIfChangeStationIp
     );
     return;
   }
@@ -72,7 +72,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
       Serial.println("myWSReceiver::_actionSwitch(): tSendWSDataIfChangeStationIp.disable()");
     }
     // disable the task sending the station IP
-    _myWSSenderTasks.tSendWSDataIfChangeStationIp.disable();
+    _myWSResponder.tSendWSDataIfChangeStationIp.disable();
     return;
   }
 
