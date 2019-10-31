@@ -37,7 +37,11 @@ class myWSResponder
     AsyncWebSocket & _asyncWebSocketInstance;
 
     bool _checkWhetherUnsignaledNewBox(ControlerBox & _controlerBox, JsonObject & _obj);
-    void _checkBoxStateAndSendMsgATMB(uint16_t _ui16BoxIndex, controllerBoxesCollection & _ctlBxColl, myWSSender & _myWSSender);
+    bool _checkWhetherUnsignaledDefaultStateChange(ControlerBox & _controlerBox, JsonObject & _obj);
+    bool _checkWhetherUnsignaledBoxStateChange(ControlerBox & _controlerBox, JsonObject & _obj);
+    bool _checkWhetherUnsignaledDeletedBox(ControlerBox & _controlerBox, JsonObject & _obj);
+
+    void _checkBoxStateAndSendMsgATCMB(uint16_t _ui16BoxIndex, controllerBoxesCollection & _ctlBxColl, myWSSender & _myWSSender);
     void _tcbSendWSDataIfChangeStationIp();
     void _tcbSendWSDataIfChangeBoxState();
     void _resetAllControlerBoxBoolsToTrueByIdNumber(const uint16_t _ui8BoxIndex);
