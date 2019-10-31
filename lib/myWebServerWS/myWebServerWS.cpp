@@ -9,7 +9,7 @@
 
 myWSServer::myWSServer():
   _asyncWebSocketInstance("/"), // access at ws://[esp ip]/
-  thisWSResponder(_asyncWebSocketInstance)
+  _myWSResponder(_asyncWebSocketInstance)
 { 
   /** set _myWSServer.onEvent as the "onEvent callback" 
    *  of the AsyncWebSocket instance _webSocketServer*.
@@ -50,7 +50,7 @@ void myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __cli
           Serial.printf("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], __client->id(): [%i] connect\n", __server->url(), __client->id());
           Serial.println("- myWebServerWS::onEvent: type == WS_EVT_CONNECT; About to call myWSResponder::prepareWSData");
         }
-        myWSSender _myWSSender(_asyncWebSocketInstance, thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
+        myWSSender _myWSSender(_asyncWebSocketInstance, _myWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
         _myWSSender.prepareWSData(0, __client); // 0 for messageType "handshake"
 
         __client->ping();
@@ -81,7 +81,7 @@ void myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __cli
             }
             if(info->opcode == WS_TEXT) {
 
-                // myWSSender _myWSSender(_webSocketServer, thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
+                // myWSSender _myWSSender(_webSocketServer, _myWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
                 // Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA: about to call prepareWSData(1)\n");
                 // _myWSSender.prepareWSData(1, __client); // text message confirmation
 
@@ -99,7 +99,7 @@ void myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __cli
                   __client->text((char*)__data);
                   return;
                 }
-                myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, thisWSResponder._thisWSSenderTasks);
+                myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, _myWSResponder._thisWSSenderTasks);
 
             } else {
               // message is a binary message
@@ -160,7 +160,7 @@ void myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __cli
                       Serial.printf("- myWebServerWS::onEvent: this is the final frames of a multiple frames text message\n");
                       Serial.print("- myWebServerWS::onEvent: WS_EVT_DATA (2nd): about to call prepareWSData(1)\n");
                     }
-                      myWSSender _myWSSender(_asyncWebSocketInstance, thisWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
+                      myWSSender _myWSSender(_asyncWebSocketInstance, _myWSResponder._thisWSSenderTasks.tSendWSDataIfChangeStationIp);
                       _myWSSender.prepareWSData(1, __client); // text message confirmation
 
                       // __client->text("I got your WS text message");
