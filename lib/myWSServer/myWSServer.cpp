@@ -46,6 +46,63 @@ myWSResponder & myWSServer::getMyWSResponder() {
 
 
 
+void myWSServer::_handleEventTypeConnect(AsyncWebSocket * __server, AsyncWebSocketClient * __client) {
+  //client connected
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSServer::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], __client->id(): [%i] connect\n", __server->url(), __client->id());
+    Serial.println("- myWSServer::onEvent: type == WS_EVT_CONNECT; About to call myWSResponder::prepareWSData");
+  }
+  myWSSender _myWSSender(_asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks().tSendWSDataIfChangeStationIp);
+  _myWSSender.prepareWSData(0, __client); // 0 for messageType "handshake"
+
+  __client->ping();
+}
+
+
+
+
+
+
+
+void myWSServer::_handleEventTypeDisconnected(AsyncWebSocket * __server, AsyncWebSocketClient * __client) {
+  //client disconnected
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSServer::onEvent: ws[%s] disconnect %i\n", __server->url(), __client->id());
+  }
+}
+
+
+
+
+
+
+
+void myWSServer::_handleEventTypeError(AsyncWebSocket * __server, AsyncWebSocketClient * __client, void * __arg, uint8_t *__data) {
+  //error was received from the other end
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSServer::onEvent: ws[%s][%u] error(%u): %s\n", __server->url(), __client->id(), *((uint16_t*)__arg), (char*)__data);
+  }
+}
+
+
+
+
+
+
+
+void myWSServer::_handleEventTypePong(AsyncWebSocket * __server, AsyncWebSocketClient * __client, uint8_t *__data, size_t __len) {
+  //pong message was received (in response to a ping request maybe)
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSServer::onEvent: ws[%s][%u] pong[%u]: %s\n", __server->url(), __client->id(), __len, (__len)?(char*)__data:"");
+  }
+}
+
+
+
+
+
+
+
 /** myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsEventType type, void * __arg, uint8_t *__data, size_t __len)
  * 
  *  Callback on websocket events (i.e. on messages from the browser).
@@ -53,30 +110,13 @@ myWSResponder & myWSServer::getMyWSResponder() {
 void myWSServer::onEvent(AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsEventType type, void * __arg, uint8_t *__data, size_t __len){
     //Handle WebSocket event
     if(type == WS_EVT_CONNECT){
-        //client connected
-        if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWSServer::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], __client->id(): [%i] connect\n", __server->url(), __client->id());
-          Serial.println("- myWSServer::onEvent: type == WS_EVT_CONNECT; About to call myWSResponder::prepareWSData");
-        }
-        myWSSender _myWSSender(_asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks().tSendWSDataIfChangeStationIp);
-        _myWSSender.prepareWSData(0, __client); // 0 for messageType "handshake"
-
-        __client->ping();
+      _handleEventTypeConnect(__server, __client);
     } else if(type == WS_EVT_DISCONNECT){
-        //client disconnected
-        if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWSServer::onEvent: ws[%s] disconnect %i\n", __server->url(), __client->id());
-        }
+      _handleEventTypeDisconnected(__server, __client);
     } else if(type == WS_EVT_ERROR){
-        //error was received from the other end
-        if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWSServer::onEvent: ws[%s][%u] error(%u): %s\n", __server->url(), __client->id(), *((uint16_t*)__arg), (char*)__data);
-        }
+      _handleEventTypeError(__server, __client, __arg, __data);
     } else if(type == WS_EVT_PONG){
-        //pong message was received (in response to a ping request maybe)
-        if (globalBaseVariables.MY_DG_WS) {
-          Serial.printf("- myWSServer::onEvent: ws[%s][%u] pong[%u]: %s\n", __server->url(), __client->id(), __len, (__len)?(char*)__data:"");
-        }
+      _handleEventTypePong(__server, __client, __data, __len);
     // receiving __data from __client
     } else if(type == WS_EVT_DATA){
         //data packet

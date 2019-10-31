@@ -16,6 +16,11 @@ class myWSServer
     AsyncWebSocket _asyncWebSocketInstance;
     myWSResponder _myWSResponder;
 
+    void _handleEventTypeConnect(AsyncWebSocket * __server, AsyncWebSocketClient * __client);
+    void _handleEventTypeDisconnected(AsyncWebSocket * __server, AsyncWebSocketClient * __client);
+    void _handleEventTypeError(AsyncWebSocket * __server, AsyncWebSocketClient * __client, void * __arg, uint8_t *__data);
+    void _handleEventTypePong(AsyncWebSocket * __server, AsyncWebSocketClient * __client, uint8_t *__data, size_t __len);
+
   public:
     myWSServer();
 
