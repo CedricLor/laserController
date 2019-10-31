@@ -36,7 +36,7 @@ controllerBoxNetworkData::controllerBoxNetworkData():
  *  Called from ControlerBox exclusively
 */
 void controllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
-  const char * _subName = "ControlerBox::update():";
+  const char * _subName = "controllerBoxNetworkData::update():";
   Serial.printf("%s starting\n", _subName);
 
   nodeId = _ui32SenderNodeId;
@@ -50,5 +50,5 @@ void controllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _o
     stationIP = IPAddress(_obj["StIP"][0], _obj["StIP"][1], _obj["StIP"][2], _obj["StIP"][3]);
   }
 
-  Serial.println("%s over");
+  Serial.printf("%s over\n", _subName);
 }

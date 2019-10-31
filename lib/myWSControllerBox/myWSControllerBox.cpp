@@ -90,7 +90,7 @@ void myWSControllerBox::updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObje
   const char * _subName = "myWSControllerBox::updateOtherBoxProperties():";
   Serial.printf("%s starting\n", _subName);
   _controllerBox._updateBoxProperties(_ui32SenderNodeId, _obj, __ui16BoxIndex);
-  Serial.println("%s over");
+  Serial.printf("%s over\n", _subName);
 }
 
 

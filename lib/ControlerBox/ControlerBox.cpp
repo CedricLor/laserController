@@ -169,7 +169,7 @@ void ControlerBox::_updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& 
     Serial.printf("%s Updated box index %u. Calling printProperties().\n", _subName, __ui16BoxIndex);
     _printProperties(__ui16BoxIndex);
   }
-  Serial.println("%s over");
+  Serial.printf("%s over\n", _subName);
 }
 
 
