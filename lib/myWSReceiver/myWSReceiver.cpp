@@ -9,8 +9,8 @@
 
 
 
-myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __server, myWSSenderTasks & __myWSSenderTasks):
-  _server(__server),
+myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInstance, myWSSenderTasks & __myWSSenderTasks):
+  _asyncWebSocketInstance(__asyncWebSocketInstance),
   _myWSSenderTasks(__myWSSenderTasks)
 {
 
@@ -58,7 +58,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
       thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
       thisControllerBox.globBaseVars.gui16BoxesCount,
-      _server,
+      _asyncWebSocketInstance,
       _myWSSenderTasks.tSendWSDataIfChangeStationIp
     );
     return;
@@ -223,7 +223,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   // send a response to the browser telling the instruction is in course of being executed
-  myWSSender _myWSSender(_server, _myWSSenderTasks.tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance, _myWSSenderTasks.tSendWSDataIfChangeStationIp);
   _myWSSender.sendWSData(_obj);
 }
 
