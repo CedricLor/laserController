@@ -184,7 +184,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
 ///////////////////////////////////////////////////////
 myWSResponder::myWSResponder(AsyncWebSocket & __asyncWebSocketInstance) :
   _asyncWebSocketInstance(__asyncWebSocketInstance),
-  _thisWSSenderTasks({__asyncWebSocketInstance})
+  _myWSSenderTasks({__asyncWebSocketInstance})
 {
 }
 
@@ -205,7 +205,7 @@ void myWSResponder::prepareWSData(const int8_t _i8messageType, AsyncWebSocketCli
       Serial.printf("- myWSResponder::prepareWSData. Message type [%i]\n", _i8messageType);
       Serial.printf("- myWSResponder::prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _i8messageType);
     }
-    _thisWSSenderTasks.tSendWSDataIfChangeStationIp.enable();
+    _myWSSenderTasks.tSendWSDataIfChangeStationIp.enable();
     if (globalBaseVariables.MY_DG_WS) {
       Serial.printf("- myWSResponder::prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
     }
