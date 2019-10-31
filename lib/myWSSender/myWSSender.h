@@ -19,14 +19,11 @@ class myWSSender
   public:
     myWSSender(AsyncWebSocket & __server);
 
-    void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
+    void prepareAllIFDataMessage(AsyncWebSocketClient * _client=nullptr);
     void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 
   private:
     AsyncWebSocket & _server;
-
-    void _prepareSmallMessage(JsonObject& _joMsg, const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
-    void _prepareAllIFDataMessage(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 };
 
 

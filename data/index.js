@@ -1484,7 +1484,7 @@ var connectionObj = {
     }
   },
 
-  sendReceivedIP: function() {
+  sendRecServIPConfirmation: function() {
     connectionObj.ws.send(JSON.stringify({
       action: "ReceivedIP"
     }));
@@ -1503,7 +1503,7 @@ var connectionObj = {
     if (_data.action === 3) {
       // console.log("WS JSON message: " + _data.ServerIP);
       // Fill in the data in the DOM and add some eventHandlers
-      connectionObj.sendReceivedIP();
+      connectionObj.sendRecvdServIPConfirmation();
       updateGlobalInformation(_data);
       return;
     }
