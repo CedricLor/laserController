@@ -1360,8 +1360,8 @@ var connectionObj = {
   connect:          function() {
     console.log("connect() starting.");
     // let wsServerIp = self.location.host;
-    let wsServerIp = '192.168.43.50';
-    // let wsServerIp = '192.168.1.50';
+    // let wsServerIp = '192.168.43.50';
+    let wsServerIp = '192.168.1.50';
     connectionObj.ws =            new WebSocket('ws://'+ wsServerIp +'/');
   
     /** ws: onopen
@@ -1484,7 +1484,7 @@ var connectionObj = {
     }
   },
 
-  sendRecServIPConfirmation: function() {
+  sendRecvdServIPConfirmation: function() {
     connectionObj.ws.send(JSON.stringify({
       action: "ReceivedIP"
     }));
