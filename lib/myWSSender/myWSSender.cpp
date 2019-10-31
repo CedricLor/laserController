@@ -99,11 +99,10 @@ AsyncWebSocketMessageBuffer * myWSSender::_loadBuffer(JsonObject& _joMsg) {
   /** 1. Measure the size of the message */
   size_t _len = measureJson(_joMsg);
   /** 2. Create a buffer to hold the message */
-  AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); //  creates a buffer (len + 1) for you.
+  AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); // makeBuffer creates a buffer of length == len + 1
   /** 3. Serialize the message into the buffer */
   serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
-  Serial.printf("myWSSender::_loadBuffer. Serialized message - buffer: %s\n", (char *)_buffer->get());
-  Serial.print("myWSSender::_loadBuffer. Serialized message - serializeJson: ");serializeJson(_joMsg, Serial);Serial.println();
+  Serial.printf("myWSSender::_loadBuffer. Serialized message: %s\n", (char *)_buffer->get());
   return _buffer;
 }
 
