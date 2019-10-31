@@ -225,6 +225,80 @@ void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
 
 
 
+void myWSResponder::_checkBoxStateAndSendMsgATMB(uint16_t _ui16BoxIndex, controllerBoxesCollection & _ctlBxColl, myWSSender & _myWSSender) {
+    // prepare a JSON document
+    StaticJsonDocument<256> _doc;
+    JsonObject _obj = _doc.to<JsonObject>();
+
+    // populate the JSON object
+    _obj["lb"] = _ui16BoxIndex;
+    _obj["action"] = "-1";
+    // expected _obj = {lb:1; action:-1}
+
+    // if the box is an unsignaled new box
+    if (_ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled == false) {
+      if (globalBaseVariables.MY_DG_WS) {
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%u] has joined.\n", _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+      }
+      _obj["action"]      = "addBox";
+      _obj["boxState"]    = _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
+      _obj["boxDefstate"] = _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
+      // expected _obj = {lb:1; action:"addBox"; boxState: 3; boxDefstate: 6}
+      // reset all the booleans to true
+      _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
+    }
+
+    // if the box has an unsignaled change of default state
+    if (_ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled == false) {
+      if (globalBaseVariables.MY_DG_WS) {
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Default state of box [%u] has changed\n", _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+      }
+      _obj["action"] = "changeBox";
+      _obj["key"] = "boxDefstate";
+      _obj["val"] = _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
+      _obj["st"] = 2;
+      // expected _obj = {lb:1; action:"changeBox"; key: "boxDefstate"; val: 4; st: 2}
+      _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
+    }
+
+    // if the box has an unsignaled change of state
+    if (_ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled == false) {
+      if (globalBaseVariables.MY_DG_WS) {
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. State of box [%u] has changed\n", _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+      }
+      _obj["action"] = "changeBox";
+      _obj["key"] = "boxState";
+      _obj["val"] = _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
+      _obj["st"] = 2;
+      // expected _obj = {lb:1; action:"changeBox"; key: "boxState"; val: 6; st: 2}
+      _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
+    }
+
+    // if the box is an unsignaled deleted box
+    if (_ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled == false) {
+      if (globalBaseVariables.MY_DG_WS) {
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", _ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
+      }
+      _obj["action"] = "deleteBox";
+      _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
+      // expected _obj = {lb:1; action:"deleteBox"}
+    }
+
+    // in each of the above cases, send a message to the clients
+    if (_obj["action"] != "-1") {
+      if (globalBaseVariables.MY_DG_WS) {
+        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
+      }
+      _myWSSender.sendWSData(_obj);
+    }
+
+}
+
+
+
+
+
+
 /** myWSResponder::_tcbSendWSDataIfChangeBoxState(AsyncWebSocket & __server)
  * 
  *  _tcbSendWSDataIfChangeBoxState() iterates indefinitely every second,
@@ -232,7 +306,7 @@ void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
  * 
  *  If it detects a change, it sends a websocket message to the browser with the relevant info.
  * 
- *  Changes supervised:
+ *  Tracked changes:
  *  (i) boxState changes;
  *  (ii) appearance or (iii) disappearance of a new box
 */
@@ -247,75 +321,11 @@ void myWSResponder::_tcbSendWSDataIfChangeBoxState() {
 
   /** 2. else: there is at least one client currently connected:
    * 
-   *      a. instantiate a myWSSender instance;
+   *      a. instantiate an myWSSender instance;
    *      b. iterate over the controller boxes array and look for any relevant change. */
   myWSSender _myWSSender(_asyncWebSocketInstance);
   for (uint16_t _ui16BoxIndex = 0; _ui16BoxIndex < globalBaseVariables.gui16BoxesCount; _ui16BoxIndex++) {
-    // prepare a JSON document
-    StaticJsonDocument<256> _doc;
-    JsonObject _obj = _doc.to<JsonObject>();
-
-    // populate the JSON object
-    _obj["lb"] = _ui16BoxIndex;
-    _obj["action"] = "-1";
-    // expected _obj = {lb:1; action:-1}
-
-    // if the box is an unsignaled new box
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).isNewBoxHasBeenSignaled == false) {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. In fact, a new box [%u] has joined.\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
-      }
-      _obj["action"]      = "addBox";
-      _obj["boxState"]    = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
-      _obj["boxDefstate"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
-      // expected _obj = {lb:1; action:"addBox"; boxState: 3; boxDefstate: 6}
-      // reset all the booleans to true
-      _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
-    }
-
-    // if the box has an unsignaled change of default state
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled == false) {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. Default state of box [%u] has changed\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
-      }
-      _obj["action"] = "changeBox";
-      _obj["key"] = "boxDefstate";
-      _obj["val"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultState;
-      _obj["st"] = 2;
-      // expected _obj = {lb:1; action:"changeBox"; key: "boxDefstate"; val: 4; st: 2}
-      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).sBoxDefaultStateChangeHasBeenSignaled = true;
-    }
-
-    // if the box has an unsignaled change of state
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled == false) {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. State of box [%u] has changed\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
-      }
-      _obj["action"] = "changeBox";
-      _obj["key"] = "boxState";
-      _obj["val"] = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).i16BoxActiveState;
-      _obj["st"] = 2;
-      // expected _obj = {lb:1; action:"changeBox"; key: "boxState"; val: 6; st: 2}
-      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxActiveStateHasBeenSignaled = true;
-    }
-
-    // if the box is an unsignaled deleted box
-    if (thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).boxDeletionHasBeenSignaled == false) {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. A box [%i] has disconnected\n", thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).ui16NodeName);
-      }
-      _obj["action"] = "deleteBox";
-      _resetAllControlerBoxBoolsToTrue(_ui16BoxIndex);
-      // expected _obj = {lb:1; action:"deleteBox"}
-    }
-
-    // in each of the above cases, send a message to the clients
-    if (_obj["action"] != "-1") {
-      if (globalBaseVariables.MY_DG_WS) {
-        Serial.printf("- myWSSender::_tcbSendWSDataIfChangeBoxState. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
-      }
-      _myWSSender.sendWSData(_obj);
-    }
+    _checkBoxStateAndSendMsgATMB(_ui16BoxIndex, thisControllerBox.thisSignalHandler.ctlBxColl, _myWSSender);
   }
 }
 

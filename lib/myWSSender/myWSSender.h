@@ -36,6 +36,7 @@ class myWSResponder
   private:
     AsyncWebSocket & _asyncWebSocketInstance;
 
+    void _checkBoxStateAndSendMsgATMB(uint16_t _ui16BoxIndex, controllerBoxesCollection & _ctlBxColl, myWSSender & _myWSSender);
     void _tcbSendWSDataIfChangeStationIp();
     void _tcbSendWSDataIfChangeBoxState();
     void _resetAllControlerBoxBoolsToTrue(const uint16_t _ui8BoxIndex);
