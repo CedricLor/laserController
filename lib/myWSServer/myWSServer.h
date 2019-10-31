@@ -1,10 +1,10 @@
 /*
-  myWebServerWS.h - Library web socket related functions.
+  myWSServer.h - Library web socket related functions.
   Created by Cedric Lor, July 9, 2019.
 */
 
-#ifndef myWebServerWS_h
-#define myWebServerWS_h
+#ifndef myWSServer_h
+#define myWSServer_h
 
 #include "Arduino.h"
 #include <myWSSender.h>

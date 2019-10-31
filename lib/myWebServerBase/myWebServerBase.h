@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <myWebServerWS.h>
+#include <myWSServer.h>
 
 class myWebServerBase : public AsyncWebServer
 {

@@ -57,7 +57,7 @@ uint8_t myWebServerBase::getStatus() {
  *  to the webserver.
  * */
 void myWebServerBase::_setWebSocketHandler() {
-  // addHandler(&myWebServerWS::ws);
+  // addHandler(&myWSServer::ws);
   addHandler(&_myWSServer.getAsyncWebSocketInstance());
 }
 
