@@ -58,8 +58,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
       thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
       thisControllerBox.globBaseVars.gui16BoxesCount,
-      _asyncWebSocketInstance,
-      _myWSResponder.tSendWSDataIfChangeStationIp
+      _asyncWebSocketInstance
     );
     return;
   }

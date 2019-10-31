@@ -13,13 +13,12 @@
 
 
 
-myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount, AsyncWebSocket & __asyncWebSocketInstance, Task & __tSendWSDataIfChangeStationIp):
+myWSReceiverReconcile::myWSReceiverReconcile(JsonObject& _obj /*_obj = {action:0, message:{1:4;2:3}}*/, std::array<ControlerBox, 10U> & __controllerBoxesArray, uint16_t __ui16connectedBoxesCount, uint16_t __ui16PotentialBoxesCount, AsyncWebSocket & __asyncWebSocketInstance):
   _joMsg(_obj),
   _controllerBoxesArray(__controllerBoxesArray),
   _ui16connectedBoxesCount(__ui16connectedBoxesCount),
   _ui16PotentialBoxesCount(__ui16PotentialBoxesCount),
-  _asyncWebSocketInstance(__asyncWebSocketInstance),
-  _tSendWSDataIfChangeStationIp(__tSendWSDataIfChangeStationIp)
+  _asyncWebSocketInstance(__asyncWebSocketInstance)
 {
   _onHandshakeCheckWhetherDOMNeedsUpdate();
 }
