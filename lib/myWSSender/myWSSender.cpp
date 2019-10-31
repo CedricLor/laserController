@@ -95,6 +95,22 @@ void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
 
 
 
+AsyncWebSocketMessageBuffer * myWSSender::_loadBuffer(JsonObject& _joMsg) {
+  /** 1. Measure the size of the message */
+  size_t _len = measureJson(_joMsg);
+  /** 2. Create a buffer to hold the message */
+  AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); //  creates a buffer (len + 1) for you.
+  /** 3. Serialize the message into the buffer */
+  serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
+  Serial.printf("myWSSender::_loadBuffer. Serialized message - buffer: %s\n", (char *)_buffer->get());
+  Serial.print("myWSSender::_loadBuffer. Serialized message - serializeJson: ");serializeJson(_joMsg, Serial);Serial.println();
+  return _buffer;
+}
+
+
+
+
+
 void myWSSender::_sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketClient * _client) {
   /** 5. If the message is addressed to any connected client, send it to all the clients */
   if (_client == nullptr) {
@@ -123,15 +139,10 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
     }
     /** The message is addressed to a specific client or to any client */
 
-    /** 2. Measure the size of the message */
-    size_t _len = measureJson(_joMsg);
-    /** 3. Create a buffer to hold the message */
-    AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); //  creates a buffer (len + 1) for you.
-    /** 4. Serialize the message into the buffer */
-    serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
-    Serial.print("myWSSender::sendWSData. Serialized message: ");serializeJson(_joMsg, Serial);Serial.println();
+    /** 1. Serialize the JSON message into a buffer */
+    AsyncWebSocketMessageBuffer * _buffer = _loadBuffer(_joMsg);
 
-    /** 5. Send the buffered message */
+    /** 2. Send the buffered message */
     _sendMsg(_buffer, _client);
 
     if (globalBaseVariables.MY_DG_WS) {

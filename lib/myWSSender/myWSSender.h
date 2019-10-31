@@ -23,6 +23,7 @@ class myWSSender
     void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 
   private:
+    AsyncWebSocketMessageBuffer * _loadBuffer(JsonObject& _joMsg);
     void _sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketClient * _client);
     AsyncWebSocket & _server;
 };
