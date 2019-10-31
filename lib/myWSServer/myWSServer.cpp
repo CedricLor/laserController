@@ -52,9 +52,7 @@ void myWSServer::_handleEventTypeConnect(AsyncWebSocket * __server, AsyncWebSock
     Serial.printf("- myWSServer::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], __client->id(): [%i] connect\n", __server->url(), __client->id());
     Serial.println("- myWSServer::onEvent: type == WS_EVT_CONNECT; About to call myWSResponder::prepareWSData");
   }
-  myWSSender _myWSSender(_asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks().tSendWSDataIfChangeStationIp);
-  _myWSSender.prepareWSData(0, __client); // 0 for messageType "handshake"
-
+  _myWSResponder.getMyWSSenderTasks().tSendWSDataIfChangeStationIp.enable();
   __client->ping();
 }
 
@@ -184,7 +182,7 @@ void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWeb
   //         Serial.printf("- myWSServer::onEvent: this is the final frames of a multiple frames text message\n");
   //         Serial.print("- myWSServer::onEvent: WS_EVT_DATA (2nd): about to call prepareWSData(1)\n");
   //       }
-  //         myWSSender _myWSSender(_asyncWebSocketInstance, _myWSResponder.getMyWSSenderTasks().tSendWSDataIfChangeStationIp);
+  //         myWSSender _myWSSender(_asyncWebSocketInstance);
   //         _myWSSender.prepareWSData(1, __client); // text message confirmation
 
   //         // __client->text("I got your WS text message");

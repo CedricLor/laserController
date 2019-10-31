@@ -18,9 +18,8 @@
 // myWSSender class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-myWSSender::myWSSender(AsyncWebSocket & __server, Task & __tSendWSDataIfChangeStationIp):
-  _server(__server),
-  _tSendWSDataIfChangeStationIp(__tSendWSDataIfChangeStationIp)
+myWSSender::myWSSender(AsyncWebSocket & __server):
+  _server(__server)
 { }
 
 
@@ -31,23 +30,6 @@ myWSSender::myWSSender(AsyncWebSocket & __server, Task & __tSendWSDataIfChangeSt
 
 myWSSenderTasks & myWSResponder::getMyWSSenderTasks() {
   return _myWSSenderTasks;
-}
-
-
-
-
-
-
-
-void myWSSender::_enableTSendWSDataIfChangeStationIp() {
-  if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("- myWSSender::_enableTSendWSDataIfChangeStationIp. About to enable _tSendWSDataIfChangeStationIp\n");
-  }
-  _tSendWSDataIfChangeStationIp.enable();
-  if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("- myWSSender::_enableTSendWSDataIfChangeStationIp.  _tSendWSDataIfChangeStationIp enabled.\n");
-  }
-  // expected JSON obj: {"action":0}
 }
 
 
@@ -145,11 +127,6 @@ void myWSSender::_prepareAllIFDataMessage(JsonObject& _joMsg, AsyncWebSocketClie
 
 void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client) {
   Serial.printf("- myWSSender::prepareWSData. starting. Message type [%i]\n", _i8messageType);
-  // message 0 on handshake: activate the exchange of station IP, ssid and pass
-  if (_i8messageType == 0) {
-    _enableTSendWSDataIfChangeStationIp();
-    return;
-  }
 
   StaticJsonDocument<900> __doc;
   JsonObject __newObj = __doc.to<JsonObject>();
@@ -411,7 +388,7 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeStationIp() {
   //   Serial.printf("myWSSender::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
   // }
 
-  myWSSender _myWSSender(_asyncWebSocketInstance, tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance);
   if (globalBaseVariables.MY_DG_WS) {
     Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp. about to call prepareWSData with parameter (3).");
   }
@@ -464,7 +441,7 @@ void myWSSenderTasks::_tcbSendWSDataIfChangeBoxState() {
    * 
    *      a. instantiate a myWSSender instance;
    *      b. iterate over the controller boxes array and look for any relevant change. */
-  myWSSender _myWSSender(_asyncWebSocketInstance, tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance);
   for (uint16_t _ui16BoxIndex = 0; _ui16BoxIndex < globalBaseVariables.gui16BoxesCount; _ui16BoxIndex++) {
     // prepare a JSON document
     StaticJsonDocument<256> _doc;

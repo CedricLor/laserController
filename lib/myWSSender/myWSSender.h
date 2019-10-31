@@ -17,16 +17,14 @@
 class myWSSender
 {
   public:
-    myWSSender(AsyncWebSocket & __server, Task & __tSendWSDataIfChangeStationIp);
+    myWSSender(AsyncWebSocket & __server);
 
     void prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
     void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 
   private:
     AsyncWebSocket & _server;
-    Task & _tSendWSDataIfChangeStationIp;
 
-    void _enableTSendWSDataIfChangeStationIp();
     void _prepareSmallMessage(JsonObject& _joMsg, const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
     void _prepareAllIFDataMessage(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 };

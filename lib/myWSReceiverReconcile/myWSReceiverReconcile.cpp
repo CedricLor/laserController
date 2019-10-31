@@ -112,7 +112,7 @@ void myWSReceiverReconcile::_handleCaseBoxesInDomAndNoBoxesInCBArray(JsonObject&
   __joBoxesStatesInDOM.clear();
   __joBoxesStatesInDOM["action"] = "deleteBox";
   __joBoxesStatesInDOM["lb"] = "a";
-  myWSSender _myWSSender(_asyncWebSocketInstance, _tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance);
   _myWSSender.sendWSData(__joBoxesStatesInDOM);
   // __joBoxesStatesInDOM = {action: "deleteBox"; lb: "a"}
 }

@@ -223,7 +223,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
   // _obj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
 
   // send a response to the browser telling the instruction is in course of being executed
-  myWSSender _myWSSender(_asyncWebSocketInstance, _myWSSenderTasks.tSendWSDataIfChangeStationIp);
+  myWSSender _myWSSender(_asyncWebSocketInstance);
   _myWSSender.sendWSData(_obj);
 }
 
