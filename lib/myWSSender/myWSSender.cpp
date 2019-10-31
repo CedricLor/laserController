@@ -39,39 +39,48 @@ myWSSenderTasks & myWSResponder::getMyWSSenderTasks() {
 
 
 
-void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client) {
-  Serial.printf("- myWSSender::prepareWSData. starting. Message type [%i]\n", _i8messageType);
-  StaticJsonDocument<900> __doc;
-  JsonObject __newObj = __doc.to<JsonObject>();
-  __newObj["action"] = _i8messageType;
-
-  // message 0 on handshake: activate the exchange of station IP, ssid and pass
-  if (_i8messageType == 0) {
-    if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("- myWSSender::prepareWSData. Message type [%i]\n", _i8messageType);
-      Serial.printf("- myWSSender::prepareWSData. Message type %i received. About to enable _tSendWSDataIfChangeStationIp\n", _i8messageType);
-    }
-    _tSendWSDataIfChangeStationIp.enable();
-    if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("- myWSSender::prepareWSData.  _tSendWSDataIfChangeStationIp enabled.\n");
-    }
-    // expected JSON obj: {"action":0}
+void myWSSender::_enableTSendWSDataIfChangeStationIp() {
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSSender::_enableTSendWSDataIfChangeStationIp. About to enable _tSendWSDataIfChangeStationIp\n");
   }
-
-  // small confirmation messages (type 0 to 2)
-  if (_i8messageType == 0 /*|| _i8messageType == 1*/ || _i8messageType == 2) {
-    const char _messages_array[][30] = {"Hello WS Client","I got your WS text message","I got your WS binary message"};
-    __newObj["message"] = _messages_array[_i8messageType];
-    if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("- myWSSender::prepareWSData. _messages_array[%i] = %s\n", _i8messageType, _messages_array[_i8messageType]);
-    }
-    // expected JSON obj: {"action":0;"message":"Hello WS Client"}
-    // expected JSON obj: {"action":1;"message":"I got your WS text message"}
-    // expected JSON obj: {"action":2;"message":"I got your WS binary message"}
+  _tSendWSDataIfChangeStationIp.enable();
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSSender::_enableTSendWSDataIfChangeStationIp.  _tSendWSDataIfChangeStationIp enabled.\n");
   }
+  // expected JSON obj: {"action":0}
+}
 
-  // message type 3: change in station IP
-  if (_i8messageType == 3) {
+
+
+
+
+
+
+void myWSSender::_prepareSmallMessage(JsonObject& _joMsg, const int8_t _i8messageType, AsyncWebSocketClient * _client) {
+  const char _messages_array[][30] = {
+    "Hello WS Client",
+    "I got your WS text message",
+    "I got your WS binary message"
+  };
+  _joMsg["message"] = _messages_array[_i8messageType];
+  if (globalBaseVariables.MY_DG_WS) {
+    Serial.printf("- myWSSender::prepareWSData. _messages_array[%i] = %s\n", _i8messageType, _messages_array[_i8messageType]);
+  }
+  // expected JSON obj: {"action":0;"message":"Hello WS Client"}
+  // expected JSON obj: {"action":1;"message":"I got your WS text message"}
+  // expected JSON obj: {"action":2;"message":"I got your WS binary message"}
+
+  // send the message
+  sendWSData(_joMsg, _client);
+}
+
+
+
+
+
+
+
+void myWSSender::_prepareAllIFDataMessage(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
     /** {"action":3,
      * "serverIP":[192,168,43,50],
      * "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
@@ -79,15 +88,15 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
      * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
      * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
     if (globalBaseVariables.MY_DG_WS) {
-      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. About to allot __newObj[\"serverIP\"] = (globalBaseVariables.laserControllerMesh.getStationIP()).toString()\n", _i8messageType);
-      Serial.printf("- myWSSender::prepareWSData. Message type [%i]. server IP ", _i8messageType);Serial.println((globalBaseVariables.laserControllerMesh.getStationIP()).toString());
+      Serial.printf("myWSSender::_prepareAllIFDataMessage. About to allot _joMsg[\"serverIP\"] = (globalBaseVariables.laserControllerMesh.getStationIP()).toString()\n");
+      Serial.printf("myWSSender::_prepareAllIFDataMessage. server IP: ");Serial.println((globalBaseVariables.laserControllerMesh.getStationIP()).toString());
     }
 
     // Real IP of the Interface
-    __newObj["serverIP"]        = ( globalBaseVariables.isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
+    _joMsg["serverIP"]        = ( globalBaseVariables.isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
     
     // Wifi Settings of External Network (in case the IF is served on the station interface of the ESP)
-    JsonObject __wifiSettings   = __newObj.createNestedObject("wifi");
+    JsonObject __wifiSettings   = _joMsg.createNestedObject("wifi");
     __wifiSettings["wssid"]     = ssid;
     __wifiSettings["wpass"]     = pass;
     __wifiSettings["wgw"]       = gatewayIP.toString();
@@ -97,7 +106,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     __wifiSettings["wnm"]       = fixedNetmaskIP.toString();
 
     // Root and Interface Nodes Params
-    JsonObject __rootIFSettings = __newObj.createNestedObject("rootIF");
+    JsonObject __rootIFSettings = _joMsg.createNestedObject("rootIF");
     if (globalBaseVariables.isRoot) {
       __rootIFSettings["roNNa"] = thisControllerBox.thisCtrlerBox.ui16NodeName;
     } else {
@@ -107,7 +116,7 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     __rootIFSettings["IFNNA"]   = thisControllerBox.thisCtrlerBox.ui16NodeName;
 
     // Soft AP Settings (in case the IF is served on the softAP of the ESP)
-    JsonObject __softAPSettings = __newObj.createNestedObject("softAP");
+    JsonObject __softAPSettings = _joMsg.createNestedObject("softAP");
     __softAPSettings["sssid"]   = softApSsid;
     __softAPSettings["spass"]   = softApPassword;
     __softAPSettings["sIP"]     = softApMyIp.toString();
@@ -117,20 +126,46 @@ void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient
     __softAPSettings["smc"]     = softApMaxConnection;
 
     // Mesh settings
-    JsonObject __meshSettings   = __newObj.createNestedObject("mesh");
+    JsonObject __meshSettings   = _joMsg.createNestedObject("mesh");
     __meshSettings["mssid"]     = meshPrefix;
     __meshSettings["mpass"]     = meshPass;
     __meshSettings["mport"]     = meshPort;
     __meshSettings["mhi"]       = meshHidden;
     __meshSettings["mmc"]       = meshMaxConnection;
+
+    // send the message
+    sendWSData(_joMsg, _client);
+}
+
+
+
+
+
+
+
+void myWSSender::prepareWSData(const int8_t _i8messageType, AsyncWebSocketClient * _client) {
+  Serial.printf("- myWSSender::prepareWSData. starting. Message type [%i]\n", _i8messageType);
+  // message 0 on handshake: activate the exchange of station IP, ssid and pass
+  if (_i8messageType == 0) {
+    _enableTSendWSDataIfChangeStationIp();
+    return;
   }
 
-  // Send a message to the newly connected client
-  sendWSData(__newObj, _client);
+  StaticJsonDocument<900> __doc;
+  JsonObject __newObj = __doc.to<JsonObject>();
+  __newObj["action"] = _i8messageType;
 
-  if (globalBaseVariables.MY_DG_WS) {
-    Serial.println("- myWSSender::prepareWSData. over");
+  // small confirmation messages (type 0 to 2)
+  if (_i8messageType == 0 /*|| _i8messageType == 1*/ || _i8messageType == 2) {
+    _prepareSmallMessage(__newObj, _i8messageType, _client);
+    return;
   }
+
+  // message type 3: change in station IP
+  if (_i8messageType == 3) {
+    _prepareAllIFDataMessage(__newObj, _client);
+    return;
+  } // end if (_i8messageType == 3) 
 }
 
 

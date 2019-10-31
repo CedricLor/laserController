@@ -25,6 +25,10 @@ class myWSSender
   private:
     AsyncWebSocket & _server;
     Task & _tSendWSDataIfChangeStationIp;
+
+    void _enableTSendWSDataIfChangeStationIp();
+    void _prepareSmallMessage(JsonObject& _joMsg, const int8_t _i8messageType, AsyncWebSocketClient * _client=nullptr);
+    void _prepareAllIFDataMessage(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
 };
 
 
