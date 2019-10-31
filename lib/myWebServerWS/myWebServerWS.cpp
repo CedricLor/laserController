@@ -12,13 +12,12 @@ myWSServer::myWSServer():
   _myWSResponder(_asyncWebSocketInstance)
 { 
   /** set _myWSServer.onEvent as the "onEvent callback" 
-   *  of the AsyncWebSocket instance _webSocketServer*.
+   *  of the _asyncWebSocketInstance*.
    *  (i.e. setting _myWSServer.onEvent() as the callback that will handle 
    *  websocket calls from the browsers) 
    * 
-   *  * _webSocketServer is contained inside _myWSServer, the myWSServer instance.
+   *  * _asyncWebSocketInstance is a member of _myWSServer, the myWSServer instance.
    *  */
-  // myWebServerWS::ws.onEvent(myWebServerWS::onEvent);
   _asyncWebSocketInstance.onEvent([&](AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsEventType __type, void * __arg, uint8_t *__data, size_t __len){
     onEvent(__server, __client, __type, __arg, __data, __len);
   });
