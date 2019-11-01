@@ -37,7 +37,7 @@ void ControlerBox::_printProperties(const uint16_t __ui16BoxIndex) {
   Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(networkData.APIP.toString());
   Serial.printf("%s[%u] -> ui16NodeName: %u\n", _methodName, __ui16BoxIndex, ui16NodeName);
 
-  Serial.printf("%s[%u] -> i16BoxActiveState: %u\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
+  Serial.printf("%s[%u] -> i16BoxActiveState: %i\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
   Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _methodName, __ui16BoxIndex, ui32BoxActiveStateStartTime);
   Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
 
