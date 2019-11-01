@@ -1,5 +1,5 @@
 /*
-  controllerBoxThis.h - controllerBoxThis integrates laserSignal 
+  controllerBoxThis.cpp - controllerBoxThis integrates laserSignal 
   (controllerBoxesCollection + boxState) with pirController.
   Created by Cedric Lor, Octobre 23, 2019.
 */
