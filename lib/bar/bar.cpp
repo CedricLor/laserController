@@ -190,7 +190,7 @@ bars::bars(
   // sendCurrentBar(_sendCurrentBar),
   ui16IxNumbOfBarToPreload(0),  // <-- TODO: review setters method here; maybe need to cast barIndex as an int16, to initialize at -1
   nextBar(),
-  barFileName("/bars.json"),
+  barFileName("/laserBars.json"),
   tPlayBar(),
   _thisMeshViews(__thisMeshViews),
   _laserNotes(_thisMeshViews),
