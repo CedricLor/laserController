@@ -20,8 +20,13 @@ controllerBoxThis::controllerBoxThis():
 
 
 
-
-void controllerBoxThis::updateThisBoxNetWorkProperties() {
+/** void controllerBoxThis::updateThisBoxNetWorkProperties()
+ * 
+ *  actualizes the box network properties (i.e. its nodeId, its station IP and 
+ *  its APIP).
+ * 
+ *  thisCtrlerBox is the ControlerBox instance representing this box. */
+void controllerBoxThis::_updateThisBoxNetWorkProperties() {
   thisCtrlerBox.networkData.nodeId = globalBaseVariables.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
   thisCtrlerBox.networkData.stationIP = globalBaseVariables.laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
   thisCtrlerBox.networkData.APIP = globalBaseVariables.laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
@@ -31,7 +36,12 @@ void controllerBoxThis::updateThisBoxNetWorkProperties() {
 
 
 
-void controllerBoxThis::updateThisBoxNodeName() {
+/** void controllerBoxThis::updateThisBoxNodeName()
+ * 
+ *  actualizes this box nodeName (i.e. the nodeName is set box by box in globalBaseVariables).
+ * 
+ *  thisCtrlerBox is the ControlerBox instance representing this box. */
+void controllerBoxThis::_updateThisBoxNodeName() {
   thisCtrlerBox.ui16NodeName = globalBaseVariables.gui16NodeName;
 }
 
@@ -40,8 +50,8 @@ void controllerBoxThis::updateThisBoxNodeName() {
 
 
 void controllerBoxThis::updateThisBoxProperties() {
-  updateThisBoxNetWorkProperties();
-  updateThisBoxNodeName();
+  _updateThisBoxNetWorkProperties();
+  _updateThisBoxNodeName();
   // For this box, i16BoxActiveState, boxActiveStateHasBeenSignaled and ui32BoxActiveStateStartTime are updated
   // by calls to setBoxActiveState from boxState
   if (globalBaseVariables.MY_DEBUG == true) {

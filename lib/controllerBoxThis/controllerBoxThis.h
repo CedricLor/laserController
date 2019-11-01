@@ -26,8 +26,6 @@ class controllerBoxThis
     pirController               thisPirController;
 
     /** properties updaters */
-    void updateThisBoxNetWorkProperties();
-    void updateThisBoxNodeName();
     void updateThisBoxProperties();
 
     void addLaserTasks();
@@ -41,6 +39,8 @@ class controllerBoxThis
 
   private:
     void _reboot();
+    void _updateThisBoxNetWorkProperties();
+    void _updateThisBoxNodeName();
 };
 
 extern controllerBoxThis             thisControllerBox;;
