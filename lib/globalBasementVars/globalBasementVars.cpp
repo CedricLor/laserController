@@ -11,17 +11,17 @@ globalBasementVars                globalBaseVariables;
 globalBasementVars::globalBasementVars():
   scheduler{},
 
-  // UI8_NODE_NAME{201},
-  // HAS_INTERFACE{false},
-  // IS_ROOT{false},
+  UI8_NODE_NAME{201},
+  HAS_INTERFACE{false},
+  IS_ROOT{false},
 
   // UI8_NODE_NAME{202},
   // HAS_INTERFACE{false},
   // IS_ROOT{false},
 
-  UI8_NODE_NAME{200},
-  HAS_INTERFACE{true},
-  IS_ROOT{true},
+  // UI8_NODE_NAME{200},
+  // HAS_INTERFACE{true},
+  // IS_ROOT{true},
   
   gui16NodeName{UI8_NODE_NAME},
   hasInterface{HAS_INTERFACE},
