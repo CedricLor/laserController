@@ -26,7 +26,7 @@ class myMeshController
     JsonObject _nsobj;
     uint32_t _ui32SenderNodeId;
 
-    void _main();
+    void _actionSwitch();
 
     void _statusMessage();
 

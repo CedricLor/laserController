@@ -20,15 +20,15 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, v
 {
   if (thisControllerBox.globBaseVars.MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
 
-  // Convert the document to an object
+  /** 1. Convert the member JsonDocument _nsdoc to the member JsonObject _nsobj */
   _nsobj = _nsdoc.to<JsonObject>();
   
-  // deserialize the message _msg received from the mesh into the StaticJsonDocument _nsdoc
+  /** 2. deserialize the passed-in _msg into the StaticJsonDocument _nsdoc */
   DeserializationError _err = deserializeJson(_nsdoc, _msg);
   if (thisControllerBox.globBaseVars.MY_DG_MESH) Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
   
-  // parse and act
-  _main();
+  /** 3. parse and act */
+  _actionSwitch();
 }
 
 
@@ -37,10 +37,10 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, v
 
 
 
-void myMeshController::_main()
+void myMeshController::_actionSwitch()
 {
   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
-    Serial.print("myMeshController::_main: starting\n");
+    Serial.print("myMeshController::_actionSwitch: starting\n");
   }
   
   // read the action field
@@ -48,7 +48,7 @@ void myMeshController::_main()
 
   // if debug, serial print the action field
   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
-    Serial.printf("myMeshController::_main: _action = %s\n", _action);
+    Serial.printf("myMeshController::_actionSwitch: _action = %s\n", _action);
   }
 
 
