@@ -78,17 +78,34 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
 
 
 
-
-/** Called from: 
- *  - this class, upon receiving an IR high message from the other boxes;
- *  - the pirController, upon IR high. */
+/** const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex)
+ * 
+ *  This methods does not directly checks the impact of an upstream information 
+ *  on this box. It sets and restarts the Task tSetBoxState that will carry out
+ *  this test.
+ * 
+ *  For the moment, tSetBoxState is limited to checking IR upstream information.
+ * 
+ *  Called from from myMeshController only, upon receiving "usi" messages from
+ *  other boxes.
+ * 
+ *  TODO: 1. for the moment, it is designed to check the impact of "usi" messages 
+ *           of type "IR High" only (it is calling _tcbIfIRTriggered()).
+ *        2. for the moment, even if it detects that another box has sent an 
+ *           "IR High" message, nothing will happen (because the relevant 
+ *           "i16onMasterIRTrigger" or similar have not been implemented
+ *           in the step and boxState classes).
+ *        
+ *        Regarding point 2., in the future, I might add an i16onMasterIRTrigger property to boxState
+ *        to handle the masterBox(es) IR signals.
+ *        
+ *        Regarding point 1., in the future, I might add an i16onMasterSequenceTrigger property to boxState
+ *        to handle the masterBox(es) sequence signals.
+ *  */
 const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex) {
   /** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it. 
-   *  
-   *  TODO: for the moment, restricted to my own IR signal; 
-   *        in the future, add an i16onMasterIRTrigger property to boxState
-   *        to handle the masterBox(es) IR signals. */
+   * */
   tSetBoxState.setInterval(0);
   tSetBoxState.setIterations(1);
   tSetBoxState.setCallback([&, __ui16BoxIndex](){
@@ -101,6 +118,13 @@ const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __u
 
 
 
+/** const bool signal::checkImpactOfThisBoxsIRHigh()
+ * 
+ *  Checks the impact on the boxState of this box of a IR High signal
+ *  coming from the IR of this box.
+ * 
+ *  Called from PIR Controller only.
+*/
 const bool signal::checkImpactOfThisBoxsIRHigh() {
   checkImpactOfUpstreamInformationOfOtherBox(0);
   return true;
