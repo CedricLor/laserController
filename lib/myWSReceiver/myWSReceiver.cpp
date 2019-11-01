@@ -18,22 +18,16 @@ myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInst
     Serial.println("myWSReceiver::myWSReceiver. starting");
   }
 
-  // create a StaticJsonDocument entitled _doc
+  /** 1. create a StaticJsonDocument entitled _doc */
   constexpr int _iCapacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<_iCapacity> _doc;
-  if (thisControllerBox.globBaseVars.MY_DG_WS) {
-    Serial.print("myWSReceiver::myWSReceiver(): jsonDocument created\n");
-  }
-  // Convert the JSON document to a JSON object
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {Serial.print("myWSReceiver::myWSReceiver(): jsonDocument created\n");}
+  /** 2. Convert the JSON document to a JSON object */
   JsonObject _obj = _doc.to<JsonObject>();
 
-  // deserialize the message msg received from the mesh into the StaticJsonDocument _doc
+  /** 3. deserialize the message msg received from the browser into the StaticJsonDocument _doc */
   DeserializationError err = deserializeJson(_doc, _data);
-  if (thisControllerBox.globBaseVars.MY_DG_WS) {
-    Serial.print("myWSReceiver::myWSReceiver(): message msg deserialized into JsonDocument _doc\n");
-    Serial.print("myWSReceiver::myWSReceiver(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
-    serializeJson(_doc, Serial);Serial.println();
-  }
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {Serial.print("myWSReceiver::myWSReceiver(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");serializeJson(_doc, Serial);Serial.println();}
   
   // choose the type of reaction depending on the message action type
   _actionSwitch(_obj);
@@ -49,7 +43,10 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     Serial.printf("myWSReceiver::_actionSwitch. starting\n");
   }
 
-  // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
+  /** 1. Handshake: 
+   * 
+   *  if action type handshake -> compare the number of boxRow in DOM vs the number of connected boxes 
+   * */
   // Received JSON: {action:"handshake", boxStateInDOM:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message
     if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n"); }
@@ -63,8 +60,11 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
-  // 3 for confirmation that change IP adress has been received
-  // disable the task sending the IP by WS to the browser
+  /** 2. ReceivedIP: 
+   * 
+   *  confirmation that the IP adress has been received
+   *  disable the task sending the IP by WS to the browser
+   * */
   if (_obj["action"] == "ReceivedIP") {
     if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_actionSwitch(): Ending on ReceivedIP (confirmation that new station IP has been received).");
@@ -75,6 +75,8 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
+  /** 3. "changeBox" && ["lb"] == 0: instruction to change sthg in this box
+   * */
   if ((_obj["action"] == "changeBox")  && (_obj["lb"] == 0)) {
     if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_actionSwitch(): Received a message for the IF.");
@@ -83,8 +85,8 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
-  // Former 4 (change boxState) and 9 (change default state)
-  // added also key "reboot" and "save"
+  /** 4. "changeBox": instruction to change sthg in another box
+   * */
   if (_obj["action"] == "changeBox") {
     // send a mesh request to the relevant laser box
     // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3} // boxState // ancient 4
@@ -96,7 +98,8 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     return;
   }
 
-  // reboot all or part of the laser boxes
+  /** 5. "changeNet": rebooting or telling all or part of the laser boxes to save their params
+   * */
   if (_obj["action"] == "changeNet") {
     // send a mesh request to the existing laser boxes
     // {action: "changeNet", key: "reboot", save: 0, lb: "LBs"}

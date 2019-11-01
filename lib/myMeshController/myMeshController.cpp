@@ -18,14 +18,14 @@ Created by Cedric Lor, January 22, 2019.
 myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, void (*meshInit)()*/)
 : /*_meshInit(meshInit),*/ _ui32SenderNodeId(_ui32SenderNodeId)
 {
-  if (thisControllerBox.globBaseVars.MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());}
 
   /** 1. Convert the member JsonDocument _nsdoc to the member JsonObject _nsobj */
   _nsobj = _nsdoc.to<JsonObject>();
   
   /** 2. deserialize the passed-in _msg into the StaticJsonDocument _nsdoc */
   DeserializationError _err = deserializeJson(_nsdoc, _msg);
-  if (thisControllerBox.globBaseVars.MY_DG_MESH) Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");serializeJson(_nsdoc, Serial);Serial.println();}
   
   /** 3. parse and act */
   _actionSwitch();
@@ -39,17 +39,13 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, v
 
 void myMeshController::_actionSwitch()
 {
-  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
-    Serial.print("myMeshController::_actionSwitch: starting\n");
-  }
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) { Serial.print("myMeshController::_actionSwitch: starting\n");}
   
   // read the action field
   const char* _action = _nsobj["action"];
 
   // if debug, serial print the action field
-  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
-    Serial.printf("myMeshController::_actionSwitch: _action = %s\n", _action);
-  }
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) { Serial.printf("myMeshController::_actionSwitch: _action = %s\n", _action);}
 
 
 
