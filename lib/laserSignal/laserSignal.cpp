@@ -1,13 +1,14 @@
 /*
-  signal.cpp - Library to handle the signals received from whichever source
+  laserSignal.cpp - Library to handle the impact of signals read from the mesh 
+  on the boxStates of this box
   Created by Cedric Lor, August 28, 2019.
 */
 
 #include "Arduino.h"
-#include "signal.h"
+#include "laserSignal.h"
 
 
-signal::signal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews):
+laserSignal::laserSignal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews):
   _thisCtrlerBox(__thisCtrlerBox),
   ctlBxColl{},
   thisBxStateColl(_thisCtrlerBox, __thisMeshViews)
@@ -18,7 +19,7 @@ signal::signal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews):
 
 
 
-void signal::startup() {
+void laserSignal::startup() {
   thisBxStateColl._setBoxTargetState(2); 
   /** 2 for pir Startup; at startUp, put the box in pirStartup state 
    *  TODO for next implementation: 
@@ -31,13 +32,13 @@ void signal::startup() {
 
 
 
-/** signal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb)
+/** laserSignal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb)
  * 
  * Setter for i16boxStateRequestedFromWeb
  * 
  *  Called from: 
  *  - myMeshController, upon receiving a changeBox request from the web. */
-void signal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
+void laserSignal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it. */
@@ -46,19 +47,23 @@ void signal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb
 }
 
 
-/** signal::_tcbSetBoxStateFromWeb() set the target boxState from
+/** laserSignal::_tcbSetBoxStateFromWeb() set the target boxState from
  *  a changeBox request. */
-void signal::_tcbSetBoxStateFromWeb() {
+void laserSignal::_tcbSetBoxStateFromWeb() {
   thisBxStateColl._setBoxTargetState(i16boxStateRequestedFromWeb);
 }
 
 
 
-
-// Called only from this class (for the other boxes) and by
-// boxState (when an effective update has been made).
-const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __ui16BoxIndex) {
-  // Serial.println("signal::checkImpactOfChangeInActiveStateOfOtherBox(): starting");
+/** const bool laserSignal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __ui16BoxIndex)
+ * 
+ *  Checks the impact of change in active boxState of another controller box
+ *  in the mesh on this boxState.
+ * 
+ *  Called only from this class (for the other boxes) and by boxState 
+ *  (when an effective update has been made). */
+const bool laserSignal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __ui16BoxIndex) {
+  // Serial.println("laserSignal::checkImpactOfChangeInActiveStateOfOtherBox(): starting");
 
   /** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it testing
@@ -74,7 +79,7 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
 
 
 
-/** const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex)
+/** const bool laserSignal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex)
  * 
  *  This methods does not directly checks the impact of an upstream information 
  *  on this box. It sets and restarts the Task tSetBoxState that will carry out
@@ -98,7 +103,7 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
  *        Regarding point 1., in the future, I might add an i16onMasterSequenceTrigger property to boxState
  *        to handle the masterBox(es) sequence signals.
  *  */
-const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex) {
+const bool laserSignal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex) {
 /** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it. 
    * */
@@ -112,14 +117,14 @@ const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __u
 
 
 
-/** const bool signal::checkImpactOfThisBoxsIRHigh()
+/** const bool laserSignal::checkImpactOfThisBoxsIRHigh()
  * 
  *  Checks the impact on the boxState of this box of a IR High signal
  *  coming from the IR of this box.
  * 
  *  Called from PIR Controller only.
 */
-const bool signal::checkImpactOfThisBoxsIRHigh() {
+const bool laserSignal::checkImpactOfThisBoxsIRHigh() {
   tSetBoxState.setCallback([&](){
     _tcbIfIRTriggered(_thisCtrlerBox);
   });
@@ -131,7 +136,7 @@ const bool signal::checkImpactOfThisBoxsIRHigh() {
 
 
 /***/
-void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
+void laserSignal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
   const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(_thisCtrlerBox.i16BoxActiveState);
   // 1. check whether the current boxState is mesh sensitive
   if (_currentBoxState.i16onMeshTrigger == -1) {
@@ -146,12 +151,12 @@ void signal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
 
 
 
-/** signal::_testIfMeshisHigh: tests, in the following order, whether:
+/** laserSignal::_testIfMeshisHigh: tests, in the following order, whether:
  *  1. the caller is among the monitored masters;
  *  2. the masterBox new active state corresponds to one of the states
  *     monitored by this box in its currentState;
  *  3. if the masterBox new active state has been set more recently than the currentState of this box.*/
-bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
+bool laserSignal::_testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox) {
   // is calling box being monitored by this box in its current state?
   if ( !(_isCallerInMonitoredArray(_callingBox, _currentBoxState.ui16monitoredMasterBoxesNodeNames)) ) {
     return false;
@@ -161,7 +166,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
 }
 
 
-/** signal::_tcbIfIRTriggered() tests whether:
+/** laserSignal::_tcbIfIRTriggered() tests whether:
  *  1. the current boxState is IR sensitive;
  *  2. IR shall be considered as high;
  *  and if both conditions are fullfilled, it resets/changes
@@ -169,7 +174,7 @@ bool signal::_testIfMeshisHigh(const boxState & _currentBoxState, const Controle
  * 
  *  TODO:
  *  1. add an i16onMasterIRTrigger property to boxState to handle the masterBox(es) IR signals; */
-void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
+void laserSignal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
   const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(_thisCtrlerBox.i16BoxActiveState);
   // 1. check whether the current boxState is IR sensitive
@@ -185,7 +190,7 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
 
 
 
-/** signal::_testIfIRisHigh() tests, in the following order, whether:
+/** laserSignal::_testIfIRisHigh() tests, in the following order, whether:
  *  1. the calling box is this box;
  *  2. the signal is more recent than the last registered box state time stamp;
  * 
@@ -196,14 +201,14 @@ void signal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *  TODO in future implementation:
  *  1. activate 3 and 4 re. _testIfIRHighIsAmongMasters;
  *     timestamp of this box's current state. */
-bool signal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+bool laserSignal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
   return _testIfIRisHighIsMine(_callingBox);
   // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState.ui16monitoredMasterBoxesNodeNames);
 }
 
 
 
-bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
+bool laserSignal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
   if ( _isCallerThisBox(_callingBox) ) {
     return (_isSignalFresherThanBoxStateStamp(_thisCtrlerBox.ui32lastRecPirHighTime));
   }
@@ -213,13 +218,13 @@ bool signal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
 
 
 
-bool signal::_isCallerThisBox(const ControlerBox & _callingBox) {
+bool laserSignal::_isCallerThisBox(const ControlerBox & _callingBox) {
   return (std::addressof(_callingBox) == std::addressof((_thisCtrlerBox)));
 }
 
 
 
-bool signal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
+bool laserSignal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
   if (_isCallerInMonitoredArray(_callingBox, __ui16monitoredMasterBoxesNodeNames)) {
     return (_isSignalFresherThanBoxStateStamp(_callingBox.ui32lastRecPirHighTime));
   }
@@ -229,14 +234,14 @@ bool signal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const
 
 
 
-bool signal::_isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName) {
+bool laserSignal::_isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName) {
   return (_callingBox.ui16NodeName == _ui16MonitoredNodeName);
   }
 
 
 
 
-bool signal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
+bool laserSignal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
   return (std::find(
     std::begin(__ui16monitoredMasterBoxesNodeNames), 
     std::end(__ui16monitoredMasterBoxesNodeNames),
@@ -248,7 +253,7 @@ bool signal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const s
 
 
 
-bool signal::_isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+bool laserSignal::_isCallerStateInMonitoredStates(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
   return (
     std::find(
      std::begin(_currentBoxState.i16monitoredMasterStates), 
@@ -261,6 +266,6 @@ bool signal::_isCallerStateInMonitoredStates(const ControlerBox & _callingBox, c
 
 
 
-bool signal::_isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime) {
+bool laserSignal::_isSignalFresherThanBoxStateStamp(const uint32_t _ui32SignalTime) {
   return (_ui32SignalTime > _thisCtrlerBox.ui32BoxActiveStateStartTime);
 }

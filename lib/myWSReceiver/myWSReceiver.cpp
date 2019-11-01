@@ -52,8 +52,8 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
     if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n"); }
     myWSReceiverReconcile _myWSReceiverReconcile(
       _obj, 
-      thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
-      thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
+      thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray, 
+      thisControllerBox.thisLaserSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
       thisControllerBox.globBaseVars.gui16BoxesCount,
       _asyncWebSocketInstance
     );
@@ -221,7 +221,7 @@ void myWSReceiver::_requestBoxChange(JsonObject& _obj, bool _bBroadcast) {
     thisControllerBox.thisMeshViews._sendMsg(_obj);
   } else {
     // get the destination nodeId
-    uint32_t _destNodeId = thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).networkData.nodeId;
+    uint32_t _destNodeId = thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(_obj["lb"].as<uint8_t>()).networkData.nodeId;
     thisControllerBox.thisMeshViews._sendMsg(_obj, _destNodeId);
   }
   // _obj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4

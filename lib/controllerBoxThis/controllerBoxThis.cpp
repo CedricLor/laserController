@@ -1,6 +1,6 @@
 /*
-  controllerBoxThis.h - controllerBoxThis integrates signal (controllerBoxesCollection + boxState) with
-  pirController.
+  controllerBoxThis.h - controllerBoxThis integrates laserSignal 
+  (controllerBoxesCollection + boxState) with pirController.
   Created by Cedric Lor, Octobre 23, 2019.
 */
 
@@ -11,8 +11,8 @@ controllerBoxThis::controllerBoxThis():
   globBaseVars(globalBaseVariables),
   thisCtrlerBox(globBaseVars.gui16NodeName),
   thisMeshViews(thisCtrlerBox),
-  thisSignalHandler(thisCtrlerBox, thisMeshViews),
-  thisPirController(thisCtrlerBox, thisSignalHandler, tSetPirTimeStampAndBrdcstMsg, tPirSpeedBumper, thisMeshViews, 12)
+  thisLaserSignalHandler(thisCtrlerBox, thisMeshViews),
+  thisPirController(thisCtrlerBox, thisLaserSignalHandler, tSetPirTimeStampAndBrdcstMsg, tPirSpeedBumper, thisMeshViews, 12)
 {
   tReboot.set(3000, TASK_ONCE, NULL, NULL, [&](){_reboot();});
 }
@@ -67,19 +67,19 @@ void controllerBoxThis::updateThisBoxProperties() {
 void controllerBoxThis::addLaserTasks() {
 
   // conditional?
-  globBaseVars.scheduler.addTask(thisSignalHandler.tSetBoxState);
+  globBaseVars.scheduler.addTask(thisLaserSignalHandler.tSetBoxState);
   if (globBaseVars.hasLasers == true) {
     globBaseVars.scheduler.addTask(tSetPirTimeStampAndBrdcstMsg);
     globBaseVars.scheduler.addTask(tPirSpeedBumper);
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._stepColl.tPreloadNextStep);
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl.tPlayBoxState);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl._stepColl.tPreloadNextStep);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl.tPlayBoxState);
 
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.tPreloadNextLaserSequence);
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().tPreloadNextBar);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl._laserSequences.tPreloadNextLaserSequence);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl._laserSequences.getBars().tPreloadNextBar);
 
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.tPlayLaserSequence);
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().tPlayBar);
-    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().getNotes().tPlayNote);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl._laserSequences.tPlayLaserSequence);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl._laserSequences.getBars().tPlayBar);
+    globBaseVars.scheduler.addTask(thisLaserSignalHandler.thisBxStateColl._laserSequences.getBars().getNotes().tPlayNote);
   }
 
 }

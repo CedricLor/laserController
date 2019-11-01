@@ -64,8 +64,8 @@ void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
   if (thisControllerBox.globBaseVars.isRoot) {
     __rootIFSettings["roNNa"] = thisControllerBox.thisCtrlerBox.ui16NodeName;
   } else {
-    uint16_t _bxIndex           = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(thisControllerBox.globBaseVars.ui32RootNodeId);
-    __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_bxIndex).ui16NodeName );
+    uint16_t _bxIndex           = thisControllerBox.thisLaserSignalHandler.ctlBxColl.findIndexByNodeId(thisControllerBox.globBaseVars.ui32RootNodeId);
+    __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(_bxIndex).ui16NodeName );
   }
   __rootIFSettings["IFNNA"]   = thisControllerBox.thisCtrlerBox.ui16NodeName;
 
@@ -371,7 +371,7 @@ void myWSResponder::_tcbSendWSDataIfChangeBoxState() {
    *      b. iterate over the controller boxes array and look for any relevant change. */
   myWSSender _myWSSender(_asyncWebSocketInstance);
   for (uint16_t _ui16BoxIndex = 0; _ui16BoxIndex < thisControllerBox.globBaseVars.gui16BoxesCount; _ui16BoxIndex++) {
-    _checkBoxStateAndSendMsgATCMB(_ui16BoxIndex, thisControllerBox.thisSignalHandler.ctlBxColl, _myWSSender);
+    _checkBoxStateAndSendMsgATCMB(_ui16BoxIndex, thisControllerBox.thisLaserSignalHandler.ctlBxColl, _myWSSender);
   }
 }
 
@@ -381,7 +381,7 @@ void myWSResponder::_tcbSendWSDataIfChangeBoxState() {
 
 
 void myWSResponder::_resetAllControlerBoxBoolsToTrueByIdNumber(const uint16_t _ui16BoxIndex) {
-  _resetAllControlerBoxBoolsToTrueByCB(thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex));
+  _resetAllControlerBoxBoolsToTrueByCB(thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex));
 }
 
 

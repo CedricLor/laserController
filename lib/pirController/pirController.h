@@ -7,19 +7,19 @@
 #define pirController_h
 
 #include "Arduino.h"
-#include <signal.h>
+#include <laserSignal.h>
 #include <myMeshViews.h>
 
 class pirController
 {
   public:
-    pirController(ControlerBox & __thisCtrlerBox, signal & __signal, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, myMeshViews & __thisMeshView, const uint8_t _INPUT_PIN=12);
+    pirController(ControlerBox & __thisCtrlerBox, laserSignal & __thisLaserSignalHandler, Task & __tSetPirTimeStampAndBrdcstMsg, Task & __tPirSpeedBumper, myMeshViews & __thisMeshView, const uint8_t _INPUT_PIN=12);
     
     void check();
 
   private:
     ControlerBox & _thisCtrlerBox;
-    signal & _signal;
+    laserSignal & _thisLaserSignalHandler;
     const uint8_t _inputPin;
 
     Task & _tSetPirTimeStampAndBrdcstMsg;

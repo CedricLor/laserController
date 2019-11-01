@@ -1,25 +1,26 @@
 /*
-  signal.h - Library to handle the signals received from whichever source
+  laserSignal.h - Library to handle the impact of signals read from the mesh 
+  on the boxStates of this box
   Created by Cedric Lor, August 28, 2019.
 */
 
-#ifndef signal_h
-#define signal_h
+#ifndef laserSignal_h
+#define laserSignal_h
 
 #include "Arduino.h"
 #include "controllerBoxesCollection.h"
 #include "boxState.h"
 
-class signal
+class laserSignal
 {
   friend class myMeshController;
   friend class controllerBoxThis;
   public:
-    signal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews);
+    laserSignal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews);
 
     void startup();
 
-    /** USER MANUAL SIGNAL (from web) */
+    /** USER MANUAL SIGNAL (from web through mesh) */
     int16_t i16boxStateRequestedFromWeb;    
     void setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb); /** --> _tcbSetBoxStateFromWeb() as main callback*/
 

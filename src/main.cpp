@@ -14,7 +14,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <mySavedPrefs.h>
 #include <myOta.h>
 #include <controllerBoxThis.h>
-#include <signal.h>
+#include <laserSignal.h>
 #include <myMesh.h>
 #include <myMeshStarter.h>
 #include <myWebServerBase.h>
@@ -140,7 +140,7 @@ void serialInit() {
 
 void enableTasks() {
   if (thisControllerBox.globBaseVars.hasLasers == true) {
-    thisControllerBox.thisSignalHandler.startup();
+    thisControllerBox.thisLaserSignalHandler.startup();
   } else {
     _myWebServer.getTSendWSDataIfChangeBoxState().enable();
   }

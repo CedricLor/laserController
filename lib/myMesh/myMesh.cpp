@@ -385,9 +385,9 @@ void myMesh::_printNodeListAndTopology() {
  *  We know that the dropper has dropped. However, the subnodes are not immediatelly 
  *  marked as also dropped, even though they will not be available until the mesh reforms.
  * 
- *  Such subnodes may be controller boxes marked in the controller boxes' array. If the master
- *  of this box is such a subnode, this box may be waiting for ever a signal coming from 
- *  such master.
+ *  Such subnodes may be one of controller boxes pertaining to the controller boxes' array.
+ *  If the master of this box is such a subnode, this box may be waiting for ever a signal 
+ *  coming from such master.
  * 
  *  Upon a dropped connection, after a delay of 10 seconds, this Task will compare the 
  *  new node list returned by painlessMesh with the _nodeMap of myMesh.
@@ -489,7 +489,7 @@ void myMesh::_deleteBoxesFromCBArray(std::map<uint32_t, uint16_t> &_nodeMap) {
 
 uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   // 1. check if the box is listed in the controller boxes' array
-  uint16_t _ui16droppedIndex = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(nodeId);
+  uint16_t _ui16droppedIndex = thisControllerBox.thisLaserSignalHandler.ctlBxColl.findIndexByNodeId(nodeId);
 
   // 2. if the box index is different than 254, it exists
   if (_ui16droppedIndex == 254) {
@@ -499,7 +499,7 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
   }
 
   // 3. delete the box from the controller boxes' array
-  thisControllerBox.thisSignalHandler.ctlBxColl.deleteBoxByBoxIndex(_ui16droppedIndex);
+  thisControllerBox.thisLaserSignalHandler.ctlBxColl.deleteBoxByBoxIndex(_ui16droppedIndex);
 
   return _ui16droppedIndex;
 }

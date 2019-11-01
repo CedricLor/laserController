@@ -15,7 +15,7 @@ extern constexpr short    UI8_BOXES_COUNT                     = 10;
 #include <mySavedPrefs.h>
 #include <myOta.h>
 #include <controllerBoxThis.h>
-#include <signal.h>
+#include <laserSignal.h>
 #include <myMesh.h>
 #include <myMeshStarter.h>
 #include <myWebServerBase.h>
@@ -50,8 +50,8 @@ void test_instantiate_WSReceiverReconcile(void) {
   JsonObject _jobj = _jdoc.as<JsonObject>();
   myWSReceiverReconcile _myWSReceiverReconcile(
     _jobj, 
-    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
-    thisControllerBox.thisSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
+    thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray, 
+    thisControllerBox.thisLaserSignalHandler.ctlBxColl.ui16connectedBoxesCount, 
     thisControllerBox.globBaseVars.gui16BoxesCount
   );
 }

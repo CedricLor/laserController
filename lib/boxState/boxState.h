@@ -107,7 +107,7 @@ class boxState
 class boxStateCollection
 {
   friend class controllerBoxThis;
-  friend class signal;
+  friend class laserSignal;
   friend class stepCollection;
 
   public:

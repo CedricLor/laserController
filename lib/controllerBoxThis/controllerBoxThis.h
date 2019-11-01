@@ -1,13 +1,13 @@
 /*
-  controllerBoxThis.h - controllerBoxThis integrates signal (controllerBoxesCollection + boxState) with
-  pirController
+  controllerBoxThis.h - controllerBoxThis integrates laserSignal 
+  (controllerBoxesCollection + boxState) with pirController.
   Created by Cedric Lor, Octobre 23, 2019.
 */
 
 #ifndef controllerBoxThis_h
 
 #include "Arduino.h"
-#include <signal.h>
+#include <laserSignal.h>
 #include <pirController.h>
 
 #define controllerBoxThis_h
@@ -22,7 +22,7 @@ class controllerBoxThis
     globalBasementVars &        globBaseVars;
     ControlerBox                thisCtrlerBox;
     myMeshViews                 thisMeshViews;
-    signal                      thisSignalHandler;
+    laserSignal                 thisLaserSignalHandler;
     pirController               thisPirController;
 
     /** properties updaters */

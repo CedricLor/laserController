@@ -14,9 +14,9 @@
       - signal from IR
       - signal from Mesh
       - expiration
-  - The signal class provides an interface to the boxState class for events registered in
+  - The laserSignal class provides an interface to the boxState class for events registered in
     the ControlerBox class.
-  - bxStateColl._setBoxTargetState() is the only contact point for the signal class.
+  - bxStateColl._setBoxTargetState() is the only contact point for the laserSignal class.
   - bxStateColl.tPlayBoxState starts and stops the boxState and underlying laserSequence, depending
     on the settings (duration, associated laserSequence number) of the currently active
     boxState, and upon request from _setBoxTargetState().

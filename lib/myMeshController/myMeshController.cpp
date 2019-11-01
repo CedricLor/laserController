@@ -66,9 +66,9 @@ void myMeshController::_actionSwitch()
    *  read and save the relevant information (on the other
    *  box) in my controller boxes' array. */
   if (_nsobj["action"] == "s") {
-    const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
+    const uint16_t __ui16BoxIndex = thisControllerBox.thisLaserSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
     if (thisControllerBox.globBaseVars.hasLasers) {
-      thisControllerBox.thisSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
+      thisControllerBox.thisLaserSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
     }
     return;
   }
@@ -88,9 +88,9 @@ void myMeshController::_actionSwitch()
    *  read and save the relevant information (on the other
    *  box) in my controller boxes' array. */
   if (_nsobj["action"] == "usi") {
-    const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
+    const uint16_t __ui16BoxIndex = thisControllerBox.thisLaserSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
     if (thisControllerBox.globBaseVars.hasLasers) {
-      thisControllerBox.thisSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
+      thisControllerBox.thisLaserSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
     }
     return;
   }
@@ -253,7 +253,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
   if (_nsobj["key"] == "boxDefstate") {
     // Serial.println("----------------- THIS A DEFAULT STATE CONFIRMATION ---------------");
-    thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex)._setBoxDefaultState(_nsobj["val"].as<uint16_t>());
+    thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex)._setBoxDefaultState(_nsobj["val"].as<uint16_t>());
     return;
   }
 
@@ -261,7 +261,7 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if ((_nsobj["key"] == "reboot") || (_nsobj["key"] == "dropped")) {
     // Serial.println("----------------- THIS A REBOOT CONFIRMATION ---------------");
-    thisControllerBox.thisSignalHandler.ctlBxColl.deleteBoxByBoxIndex(__ui16BoxIndex);
+    thisControllerBox.thisLaserSignalHandler.ctlBxColl.deleteBoxByBoxIndex(__ui16BoxIndex);
     // only decrease the MeshSize by one if it is a dropped connection message
     // note: dropped connection message are sent by the box which first detected
     // the dropped box. Such box has already updated its thisControllerBox.globBaseVars.uiMeshSize in the
@@ -302,7 +302,7 @@ void myMeshController::_changedBoxConfirmation() {
 
 /** void myMeshController::_updateMyValFromWeb():
  * 
- *  Calls the signalHandler to set the box active state from web.
+ *  Calls the laserSignalHandler to set the box active state from web.
  * 
  *  This method is not sending any confirmation as boxState will send an automatic
  *  status message
@@ -311,9 +311,9 @@ void myMeshController::_updateMyValFromWeb() {
 // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
   if (thisControllerBox.globBaseVars.MY_DG_MESH) { Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%i]\n", (_nsobj["val"].as<int16_t>()));}
 
-  // update variable i16boxStateRequestedFromWeb in the signal class
+  // update variable i16boxStateRequestedFromWeb in the laserSignal class
   if (thisControllerBox.globBaseVars.hasLasers) {
-    thisControllerBox.thisSignalHandler.setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
+    thisControllerBox.thisLaserSignalHandler.setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
   }
 }
 
@@ -425,7 +425,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 //   thisControllerBox.thisMeshViews._changedBoxConfirmation(_nsobj);
 //
 //   // mark the change as signaled
-//   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex)._cPropertyKey = true;
+//   thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex)._cPropertyKey = true;
 // }
 
 
@@ -442,11 +442,11 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 //   // 2. set the bool announcing that the change has not been signaled,
 //   // to have it caught by the webServerTask (on the interface).
 //   // TODO:
-//   // a. thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty needs to be drafted
-//   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty(_cPropertyKey, __i8PropertyValue);
+//   // a. thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty needs to be drafted
+//   thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty(_cPropertyKey, __i8PropertyValue);
 //
 //   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
-//     Serial.printf("myMeshController::_updateSenderProperty: thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%u), property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
+//     Serial.printf("myMeshController::_updateSenderProperty: thisControllerBox.thisLaserSignalHandler.ctlBxColl.controllerBoxesArray.at(%u), property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
 //   }
 // }
 
