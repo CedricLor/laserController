@@ -18,11 +18,15 @@ class globalBasementVars
     /** I. In all the configurations: Scheduler and mesh parameters */
     Scheduler               scheduler;
     const uint8_t           UI8_NODE_NAME; //   = 201;                          // BOX BY BOX
-    const bool              HAS_INTERFACE;  //   = false;                        // BOX BY BOX
+    const bool              HAS_INTERFACE;  //   = false;                       // BOX BY BOX
     const bool              IS_ROOT;       //   = false;                        // BOX BY BOX
+    const bool              HAS_LASERS;    // = true;                           // BOX BY BOX
+    const bool              HAS_IR_SENSOR; // = true;                           // BOX BY BOX
     uint16_t                gui16NodeName;
     bool                    hasInterface;
     bool                    isRoot;
+    bool                    hasLasers;
+    bool                    hasIRSensor;
 
     // Used in myOta and myMesh for the mDNS service.
     // Rebooting twice may be usefull if you have to first upload a 

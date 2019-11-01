@@ -11,21 +11,29 @@ globalBasementVars                globalBaseVariables;
 globalBasementVars::globalBasementVars():
   scheduler{},
 
-  UI8_NODE_NAME{201},
-  HAS_INTERFACE{false},
-  IS_ROOT{false},
+  // UI8_NODE_NAME{201},
+  // HAS_INTERFACE{false},
+  // IS_ROOT{false},
+  // HAS_LASERS{true},
+  // HAS_IR_SENSOR{true},
 
   // UI8_NODE_NAME{202},
   // HAS_INTERFACE{false},
   // IS_ROOT{false},
+  // HAS_LASERS{true},
+  // HAS_IR_SENSOR{true},
 
-  // UI8_NODE_NAME{200},
-  // HAS_INTERFACE{true},
-  // IS_ROOT{true},
+  UI8_NODE_NAME{200},
+  HAS_INTERFACE{true},
+  IS_ROOT{true},
+  HAS_LASERS{false},
+  HAS_IR_SENSOR{false},
   
   gui16NodeName{UI8_NODE_NAME},
   hasInterface{HAS_INTERFACE},
   isRoot{IS_ROOT},
+  hasLasers{HAS_LASERS},
+  hasIRSensor{HAS_IR_SENSOR},
 
   gcHostnamePrefix{"LaserBox_"},
   uiMeshSize{0},
