@@ -755,7 +755,7 @@ void boxStateCollection::_restartTaskPlayBoxState() {
   // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration: "); Serial.println(bxStateColl.boxStatesArray.at(_)oxTargetState].i16Duration);
   tPlayBoxState.setInterval(_ulCalcInterval(boxStatesArray.at(_boxTargetState).i16Duration));
   // Serial.print("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState.getInterval(): "); Serial.println(tPlayBoxState.getInterval());
-
+  
   // 2. Set the i16BoxActiveState of _thisCtrlerBox (ControllerBox) to the _boxTargetState
   _thisCtrlerBox._setBoxActiveState(_boxTargetState, globalBaseVariables.laserControllerMesh.getNodeTime());
   // Serial.println("void boxStateCollection::_restartTaskPlayBoxState() tPlayBoxState about to be enabled");

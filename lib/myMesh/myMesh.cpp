@@ -23,12 +23,12 @@ void myMesh::init() {
   tPrintMeshTopo.enable();
   tSaveNodeMap.restart();
 
-  globalBaseVariables.laserControllerMesh.onReceive(&receivedCallback);
-  globalBaseVariables.laserControllerMesh.onNewConnection(&newConnectionCallback);
-  globalBaseVariables.laserControllerMesh.onChangedConnections(&changedConnectionCallback);
-  // globalBaseVariables.laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-  // globalBaseVariables.laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
-  globalBaseVariables.laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
+  thisControllerBox.globBaseVars.laserControllerMesh.onReceive(&receivedCallback);
+  thisControllerBox.globBaseVars.laserControllerMesh.onNewConnection(&newConnectionCallback);
+  thisControllerBox.globBaseVars.laserControllerMesh.onChangedConnections(&changedConnectionCallback);
+  // thisControllerBox.globBaseVars.laserControllerMesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  // thisControllerBox.globBaseVars.laserControllerMesh.onNodeDelayReceived(&delayReceivedCallback);
+  thisControllerBox.globBaseVars.laserControllerMesh.onDroppedConnection(&droppedConnectionCallback);
 
   myMeshStarter::hasBeenStarted = true;
 }
@@ -79,7 +79,7 @@ void myMesh::start() {
         MDNS.end();
 
         // restart the mesh
-        globalBaseVariables.laserControllerMesh.stop();
+        thisControllerBox.globBaseVars.laserControllerMesh.stop();
         myMesh::init();
 
         // reset the node map and the controller boxes array
@@ -87,7 +87,7 @@ void myMesh::start() {
         _tcbUpdateCBOnChangedConnections();
 
         // enable the Task which signals to connected browsers the changes in ControlerBoxes' states
-        if (globalBaseVariables.hasInterface) {
+        if (thisControllerBox.globBaseVars.hasInterface) {
           _myWebServer.getTSendWSDataIfChangeBoxState().enable();
         }
       }
@@ -101,7 +101,7 @@ void myMesh::start() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mesh Network Callbacks
 void myMesh::receivedCallback(uint32_t from, String &msg ) {
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("\nmyMesh::receivedCallback(): Received from %u msg=%s\n", from, msg.c_str());
   }
 
@@ -134,7 +134,7 @@ void myMesh::_tcbSendStatusOnNewConnection() {
 }
 
 void myMesh::newConnectionCallback(uint32_t nodeId) {
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("myMesh::newConnectionCallback(): New Connection, nodeId = %u\n", nodeId);
     _printNodeListAndTopology();
     Serial.println(F("++++++++++++++++++++++++ NEW CONNECTION +++++++++++++++++++++++++++"));
@@ -156,7 +156,7 @@ void myMesh::_tcbSendNotifOnDroppedConnection(uint32_t nodeId) {
 
   // 2. send a dropped box notification
   if (IamAlone()) { 
-    if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): I am alone. ending."));
+    if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) Serial.println(F("myMesh::_tcbSendNotifOnDroppedConnection(): I am alone. ending."));
     return; 
   }
   thisControllerBox.thisMeshViews._droppedNodeNotif(_ui16droppedIndex);
@@ -165,7 +165,7 @@ void myMesh::_tcbSendNotifOnDroppedConnection(uint32_t nodeId) {
 
 
 void myMesh::droppedConnectionCallback(uint32_t nodeId) {
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("myMesh::droppedConnectionCallback(): Dropped connection for nodeId: %u\n", nodeId);
     _printNodeListAndTopology();
     Serial.println(F("--------------------- DROPPED CONNECTION --------------------------"));
@@ -177,7 +177,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 
   // 2. If nodeId < UINT16_MAX, this is a false signal, just return.
   if (nodeId < UINT16_MAX) {
-    if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. False signal. About to return.\n", nodeId);
+    if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. False signal. About to return.\n", nodeId);
     tChangedConnection.setCallback(NULL);
     return;
   }
@@ -185,14 +185,14 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
   // 3. Else, the previously detected changeConnection was indeed a dropper.
   // Accordingly, reset Task tChangedConnection to send a dropped notification
   // to the other mesh nodes to which this node is connected.
-  if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) Serial.printf("myMesh::droppedConnectionCallback(): nodeId == %u. Setting tChangedConnection to notify the mesh and delete the box in ControlerBox[].\n", nodeId);
   tChangedConnection.setCallback( [nodeId]() { _tcbSendNotifOnDroppedConnection(nodeId); } );
 
   // 4. Restart the Task tChangedConnection, for execution without delay
-  if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println(F("myMesh::droppedConnectionCallback(): restarting tChangedConnection."));
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) Serial.println(F("myMesh::droppedConnectionCallback(): restarting tChangedConnection."));
   tChangedConnection.restart();
 
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.println(F("myMesh::droppedConnectionCallback(): over"));
   }
 }
@@ -215,7 +215,7 @@ void myMesh::droppedConnectionCallback(uint32_t nodeId) {
 Task myMesh::tChangedConnection(0, 1, NULL, NULL, false, NULL, &_odtcbChangedConnection);
 
 void myMesh::_odtcbChangedConnection() {
-    if (globalBaseVariables.MY_DEEP_DG_MESH) Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
+    if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) Serial.println("--------------------- CHANGED CONNECTION TASK DISABLE --------------------------");
 }
 
 void myMesh::changedConnectionCallback() {
@@ -223,7 +223,7 @@ void myMesh::changedConnectionCallback() {
   tUpdateCBArrayOnChangedConnections.enable();
 
   // 2. Printing the mesh topology
-  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) {
     Serial.println("myMesh::changedConnectionCallback(): printing the current nodeList (no update):");
     _printNodeListAndTopology();
   }
@@ -239,22 +239,22 @@ void myMesh::changedConnectionCallback() {
   // in case a new comer is joining or be interrupted by the droppedConnection callback
   // if the changedConnectionCallback was triggered by a direct dropper for this box.
   Serial.printf("myMesh::changedConnectionCallback(): I am not alone. Sending my status.\n");
-  tChangedConnection.setInterval(2900 + globalBaseVariables.gui16NodeName);
+  tChangedConnection.setInterval(2900 + thisControllerBox.thisCtrlerBox.ui16NodeName);
   tChangedConnection.setCallback(_tcbSendStatusOnNewConnection);
   tChangedConnection.restartDelayed();
 
   // 5. If I do not know the number of the root node, try and figure out whether the mesh knows it
-  if (!(globalBaseVariables.ui32RootNodeId)) {
+  if (!(thisControllerBox.globBaseVars.ui32RootNodeId)) {
     // {"nodeId":2760139053,"root":true}
-    char* _ptr = strstr(globalBaseVariables.laserControllerMesh.subConnectionJson().c_str(), ",\"root\":true");
+    char* _ptr = strstr(thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson().c_str(), ",\"root\":true");
     char _cRootNodeId[12];
     if (_ptr != nullptr) {
       strncpy(_cRootNodeId, _ptr - 10, 11);
-      globalBaseVariables.ui32RootNodeId = strtoul(_cRootNodeId, NULL, 10);
+      thisControllerBox.globBaseVars.ui32RootNodeId = strtoul(_cRootNodeId, NULL, 10);
     }
   }
 
-  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) {
     Serial.printf("myMesh::changedConnectionCallback(): task enabled? %i\n", tChangedConnection.isEnabled());
     Serial.printf("myMesh::changedConnectionCallback(): task interval: %lu\n", tChangedConnection.getInterval());
     Serial.print("myMesh::changedConnectionCallback(): task iterations: ");Serial.println(tChangedConnection.getIterations());
@@ -268,8 +268,8 @@ void myMesh::changedConnectionCallback() {
 
 
 // void myMesh::nodeTimeAdjustedCallback(int32_t offset) {
-//   if (globalBaseVariables.MY_DG_MESH) {
-//     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", globalBaseVariables.laserControllerMesh.laserControllerMesh.getNodeTime(), offset);
+//   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
+//     Serial.printf("myMesh::nodeTimeAdjustedCallback(): Adjusted time %u. Offset = %d\n", thisControllerBox.globBaseVars.laserControllerMesh.laserControllerMesh.getNodeTime(), offset);
 //   }
 // }
 
@@ -278,7 +278,7 @@ void myMesh::changedConnectionCallback() {
 
 
 // void myMesh::delayReceivedCallback(uint32_t from, int32_t delay) {
-//   if (globalBaseVariables.MY_DG_MESH) {
+//   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
 //     Serial.printf("Delay to node %u is %d ms\n", from, delay);
 //   }
 // }
@@ -305,8 +305,8 @@ bool myMesh::IamAlone() {
    *  (i) is the size of the nodeList < 2 (=> equal to 1 or 0)?
    *  (ii) is the last item of the nodeList equal to 0? <-- this second test is suspect. */
   if (
-    globalBaseVariables.laserControllerMesh.getNodeList().size() < 2 && 
-    0 == *globalBaseVariables.laserControllerMesh.getNodeList().rbegin()
+    thisControllerBox.globBaseVars.laserControllerMesh.getNodeList().size() < 2 && 
+    0 == *thisControllerBox.globBaseVars.laserControllerMesh.getNodeList().rbegin()
     ) {
     Serial.printf("myMesh::IamAlone(): Yes\n");
     /** Tests:
@@ -317,7 +317,7 @@ bool myMesh::IamAlone() {
      *  question "Am I alone?" but to the question "When I am alone, have I already 
      *  planned steps to find other nodes?"
      *  */
-    if ((!(globalBaseVariables.hasInterface)) && (!(tIamAloneTimeOut.isEnabled()))) {
+    if ((!(thisControllerBox.globBaseVars.hasInterface)) && (!(tIamAloneTimeOut.isEnabled()))) {
       Serial.println("\nmyMesh::IamAlone(): Enabling tIamAloneTimeOut.\n");
     }
     return true;
@@ -362,10 +362,10 @@ Task myMesh::tPrintMeshTopo(60*TASK_SECOND, TASK_FOREVER, &_printNodeListAndTopo
    iterates over the nodeList to print their values.
 */
 void myMesh::_printNodeListAndTopology() {
-  Serial.printf("myMesh::_printNodeListAndTopology(): Mesh topology: %s\n", globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
-  Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", globalBaseVariables.laserControllerMesh.getNodeList().size());
+  Serial.printf("myMesh::_printNodeListAndTopology(): Mesh topology: %s\n", thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson().c_str());
+  Serial.printf("myMesh::_printNodeListAndTopology(): Node list size: %i\n", thisControllerBox.globBaseVars.laserControllerMesh.getNodeList().size());
   int16_t _i = 0;
-  for (int n : globalBaseVariables.laserControllerMesh.getNodeList()) {
+  for (int n : thisControllerBox.globBaseVars.laserControllerMesh.getNodeList()) {
     Serial.printf("myMesh::_printNodeListAndTopology(): node [%i] id: %u\n", _i++, n);
   }
   Serial.printf("myMesh::_printNodeListAndTopology(): ending -------\n");
@@ -399,7 +399,7 @@ Task myMesh::tUpdateCBArrayOnChangedConnections(10*TASK_SECOND, 1, &_tcbUpdateCB
 
 bool myMesh::_oetcbUpdateCBOnChangedConnections() {
   // Disable the Task tSaveNodeMap (just in case)
-  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) {
     Serial.println("\nmyMesh::_oetcbUpdateCBOnChangedConnections(): tSaveNodeMap disabled.\n");
   }
   tSaveNodeMap.disable();
@@ -409,7 +409,7 @@ bool myMesh::_oetcbUpdateCBOnChangedConnections() {
 
 void myMesh::_odtcbUpdateCBOnChangedConnections() {
   // Enable the Task tSaveNodeMap
-  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) {
     Serial.println("\nmyMesh::_odtcbUpdateCBOnChangedConnections(): tSaveNodeMap restarted.\n");
   }
   tSaveNodeMap.restart();
@@ -417,7 +417,7 @@ void myMesh::_odtcbUpdateCBOnChangedConnections() {
 
 
 void myMesh::_tcbUpdateCBOnChangedConnections() {
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.println("\nmyMesh::_tcbUpdateCBOnChangedConnections(): starting. Time: " + String(millis()));
   }
   // 1. Disable the Task tSaveNodeMap (just in case)
@@ -463,7 +463,7 @@ void myMesh::_tcbUpdateCBOnChangedConnections() {
    *     marked as 0 => for deletion. 
    * */
   // Serial.println("myMesh::_tcbUpdateCBOnChangedConnections(): Before iteration over the list. Time: " + String(millis()));
-  for (uint32_t _newNode : globalBaseVariables.laserControllerMesh.getNodeList()) {
+  for (uint32_t _newNode : thisControllerBox.globBaseVars.laserControllerMesh.getNodeList()) {
     if (_newNode == (uint32_t)0) continue;
     std::map<uint32_t, uint16_t>::iterator _nodeInMap = _nodeMap.find(_newNode);
     if (_nodeInMap != _nodeMap.end()) {
@@ -493,7 +493,7 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
 
   // 2. if the box index is different than 254, it exists
   if (_ui16droppedIndex == 254) {
-    if (globalBaseVariables.MY_DEEP_DG_MESH) 
+    if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) 
       Serial.println(F("myMesh::_deleteBoxFromCBArray(): ending (box not found in the controller boxes' array)."));
     return 0;
   }
@@ -517,18 +517,18 @@ uint16_t myMesh::_deleteBoxFromCBArray(uint32_t nodeId) {
 Task myMesh::tSaveNodeMap(10 * TASK_SECOND, 2, &_tcbSaveNodeMap, NULL, false, NULL, NULL);
 
 void myMesh::_tcbSaveNodeMap() {
-  if (globalBaseVariables.MY_DEEP_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) {
     Serial.println("\nmyMesh::_tcbSaveNodeMap(): remaining iterations: " + String(tSaveNodeMap.getIterations()));
   }
   if (tUpdateCBArrayOnChangedConnections.isEnabled()) {
-    if (globalBaseVariables.MY_DEEP_DG_MESH) {
+    if (thisControllerBox.globBaseVars.MY_DEEP_DG_MESH) {
       Serial.println("myMesh::_tcbSaveNodeMap(): tUpdateCBArrayOnChangedConnections is enabled. Passing this iteration.");
     }
     tSaveNodeMap.setIterations(tSaveNodeMap.getIterations() + 1);
     return;
   }
   tSaveNodeMap.setInterval(20 * TASK_SECOND);
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.println("myMesh::_tcbSaveNodeMap(): tUpdateCBArrayOnChangedConnections is not enabled. Updating mesh topo map.");
   }
   _saveNodeMap();
@@ -540,7 +540,7 @@ void myMesh::_saveNodeMap() {
   // Serial.println("myMesh::_saveNodeMap(): starting. Time: " + String(millis()));
   _nodeMap.clear();
   // Serial.println("myMesh::_saveNodeMap(): Before iteration. Time: " + String(millis()));
-  for (uint32_t _nodeFromList : globalBaseVariables.laserControllerMesh.getNodeList()) {
+  for (uint32_t _nodeFromList : thisControllerBox.globBaseVars.laserControllerMesh.getNodeList()) {
     if (_nodeFromList == (uint32_t)0) continue;
     _nodeMap.emplace(_nodeFromList, 1);
   }

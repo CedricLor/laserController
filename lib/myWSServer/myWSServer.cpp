@@ -48,7 +48,7 @@ myWSResponder & myWSServer::getMyWSResponder() {
 
 void myWSServer::_handleEventTypeConnect(AsyncWebSocket * __server, AsyncWebSocketClient * __client) {
   //client connected
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.printf("- myWSServer::onEvent: type == WS_EVT_CONNECT; __server->url(): [%s], __client->id(): [%i] connect\n", __server->url(), __client->id());
     Serial.println("- myWSServer::onEvent: type == WS_EVT_CONNECT; About to call myWSResponder::prepareWSData");
   }
@@ -64,7 +64,7 @@ void myWSServer::_handleEventTypeConnect(AsyncWebSocket * __server, AsyncWebSock
 
 void myWSServer::_handleEventTypeDisconnected(AsyncWebSocket * __server, AsyncWebSocketClient * __client) {
   //client disconnected
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.printf("- myWSServer::onEvent: ws[%s] disconnect %i\n", __server->url(), __client->id());
   }
 }
@@ -77,7 +77,7 @@ void myWSServer::_handleEventTypeDisconnected(AsyncWebSocket * __server, AsyncWe
 
 void myWSServer::_handleEventTypeError(AsyncWebSocket * __server, AsyncWebSocketClient * __client, void * __arg, uint8_t *__data) {
   //error was received from the other end
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.printf("- myWSServer::onEvent: ws[%s][%u] error(%u): %s\n", __server->url(), __client->id(), *((uint16_t*)__arg), (char*)__data);
   }
 }
@@ -90,7 +90,7 @@ void myWSServer::_handleEventTypeError(AsyncWebSocket * __server, AsyncWebSocket
 
 void myWSServer::_handleEventTypePong(AsyncWebSocket * __server, AsyncWebSocketClient * __client, uint8_t *__data, size_t __len) {
   //pong message was received (in response to a ping request maybe)
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.printf("- myWSServer::onEvent: ws[%s][%u] pong[%u]: %s\n", __server->url(), __client->id(), __len, (__len)?(char*)__data:"");
   }
 }
@@ -103,7 +103,7 @@ void myWSServer::_handleEventTypePong(AsyncWebSocket * __server, AsyncWebSocketC
 
 void myWSServer::_handleSingleFrameMessage(AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsFrameInfo * __info, uint8_t *__data, size_t __len) {
   //the whole message is in a single frame and we got all of it's data
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.printf("- myWSServer::onEvent: ws[%s][%u] %s-message length[%llu]: \n", __server->url(), __client->id(), (__info->opcode == WS_TEXT)?"text":"binary", __info->len);
   }
   if(__info->opcode == WS_TEXT){
@@ -119,7 +119,7 @@ void myWSServer::_handleSingleFrameMessage(AsyncWebSocket * __server, AsyncWebSo
     myWSReceiver _myWSReceiver(__data, _asyncWebSocketInstance, _myWSResponder);
   } else {
     // message is a binary message
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
         // Serial.println("----------------------- BINARY ------------------");
         // Serial.printf("- myWSServer::onEvent: this is a binary message (single frame)\n");
       for(size_t i=0; i < __info->len; i++){
@@ -138,7 +138,7 @@ void myWSServer::_handleSingleFrameMessage(AsyncWebSocket * __server, AsyncWebSo
 
 void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWebSocketClient * __client, AwsFrameInfo * __info, uint8_t *__data, size_t __len) {
   //   //message is comprised of multiple frames or the frame is split into multiple packets
-  // if (globalBaseVariables.MY_DG_WS) {
+  // if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //   Serial.printf("- myWSServer::onEvent: this is a multiple frames message\n");
   //   if(__info->index == 0){
   //     if(__info->num == 0)
@@ -151,13 +151,13 @@ void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWeb
   // if(__info->message_opcode == WS_TEXT){
   //   // message is a text message
   //   __data[__len] = 0;
-  //   if (globalBaseVariables.MY_DG_WS) {
+  //   if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //     Serial.printf("- myWSServer::onEvent: this is a multiple frames text message\n");
   //     Serial.printf("%s\n", (char*)__data);
   //   }
   // } else {
   //   // message is a binary message
-  //   if (globalBaseVariables.MY_DG_WS) {
+  //   if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //     Serial.printf("- myWSServer::onEvent: this is a multiple frames text message\n");
   //     for(size_t i=0; i < __len; i++){
   //       Serial.printf("%02x ", __data[i]);
@@ -168,17 +168,17 @@ void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWeb
 
   // if((__info->index + __len) == __info->len){
   //   // received the final frame or packet
-  //   if (globalBaseVariables.MY_DG_WS) {
+  //   if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //     Serial.printf("- myWSServer::onEvent: this is the final frames of a multiple frames message\n");
   //     Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", __server->url(), __client->id(), __info->num, __info->len);
   //   }
   //   if(__info->final){
-  //     if (globalBaseVariables.MY_DG_WS) {
+  //     if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //       Serial.printf("- myWSServer::onEvent: this is the final frames of a multiple frames message\n");
   //       Serial.printf("ws[%s][%u] %s-message end\n", __server->url(), __client->id(), (__info->message_opcode == WS_TEXT)?"text":"binary");
   //     }
   //     if(__info->message_opcode == WS_TEXT) {
-  //       if (globalBaseVariables.MY_DG_WS) {
+  //       if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //         Serial.printf("- myWSServer::onEvent: this is the final frames of a multiple frames text message\n");
   //         Serial.print("- myWSServer::onEvent: WS_EVT_DATA (2nd): about to call prepareWSData(1)\n");
   //       }
@@ -188,7 +188,7 @@ void myWSServer::_handleMultipleFrameMessage(AsyncWebSocket * __server, AsyncWeb
   //         // __client->text("I got your WS text message");
   //     }
   //     else {
-  //       if (globalBaseVariables.MY_DG_WS) {
+  //       if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //         Serial.printf("- myWSServer::onEvent: this is the final frames of a multiple frames binary message\n");
   //       }
   //       __client->binary("I got your WS binary message");

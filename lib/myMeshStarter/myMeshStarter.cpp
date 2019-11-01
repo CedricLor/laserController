@@ -14,9 +14,9 @@ myMeshStarter::myMeshStarter() {};
 
 
 void myMeshStarter::myMeshSetup() {
-  if ( globalBaseVariables.MY_DEBUG == true ) {
-    // globalBaseVariables.laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
-    globalBaseVariables.laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
+  if ( thisControllerBox.globBaseVars.MY_DEBUG == true ) {
+    // thisControllerBox.globBaseVars.laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP |/*MESH_STATUS |*/ CONNECTION |/* SYNC |*/ COMMUNICATION /* | GENERAL | MSG_TYPES | REMOTE */);
+    thisControllerBox.globBaseVars.laserControllerMesh.setDebugMsgTypes( ERROR | STARTUP | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION /* | GENERAL */ | MSG_TYPES | REMOTE );
   }
 
   _initAndConfigureMesh();
@@ -56,7 +56,7 @@ void myMeshStarter::_initMesh() {
   /** If this ESP is defined as IF and is NOT Root node:
    *  - it shall connect to the mesh using its "station" interface;
    *  - it shall serve the web IF on its softAP. */
-  if (globalBaseVariables.hasInterface && !(globalBaseVariables.isRoot)) {
+  if (thisControllerBox.globBaseVars.hasInterface && !(thisControllerBox.globBaseVars.isRoot)) {
     // Special init for case of physically mobile interface (web interface served on AP)
     _interfaceOnAPInit();
   } 
@@ -67,21 +67,21 @@ void myMeshStarter::_initMesh() {
    * - if it is root and IF, it will connect to the mesh using its "softAP" interface;
    * - if it is not root, both SoftAP and Station will connect to the mesh. */  
   else {
-    globalBaseVariables.laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_AP_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
+    thisControllerBox.globBaseVars.laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_AP_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
   }
 }
 
 /** _initStationManual()
- *   If globalBaseVariables.hasInterface and globalBaseVariables.isRoot, this box's STATION 
- *   will try to connect to an external network and the web users will have access 
+ *   If thisControllerBox.globBaseVars.hasInterface and thisControllerBox.globBaseVars.isRoot,
+ *   this box's STATION will try to connect to an external network and the web users will have access 
  *   to the STATION through their browser.
  *   The other mesh nodes will connect on the AP of this one. (This is the recommended use case
  *   by the devs of painlessMesh.)
 */
 void myMeshStarter::_initStationManual() {
-  if (globalBaseVariables.hasInterface && globalBaseVariables.isRoot) {
-    globalBaseVariables.laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, fixedIP, fixedNetmaskIP);
-    // globalBaseVariables.laserControllerMesh.stationManual(ssid, pass);
+  if (thisControllerBox.globBaseVars.hasInterface && thisControllerBox.globBaseVars.isRoot) {
+    thisControllerBox.globBaseVars.laserControllerMesh.stationManual(ssid, pass, ui16GatewayPort, gatewayIP, fixedIP, fixedNetmaskIP);
+    // thisControllerBox.globBaseVars.laserControllerMesh.stationManual(ssid, pass);
   }
 }
 
@@ -90,11 +90,11 @@ void myMeshStarter::_initStationManual() {
   it and all other mesh member should know that the mesh contains a root.
 */
 void myMeshStarter::_rootTheMesh() {
-  if (globalBaseVariables.isRoot) {
-    globalBaseVariables.laserControllerMesh.setRoot(true);
-    globalBaseVariables.ui32RootNodeId = globalBaseVariables.laserControllerMesh.getNodeId();
+  if (thisControllerBox.globBaseVars.isRoot) {
+    thisControllerBox.globBaseVars.laserControllerMesh.setRoot(true);
+    thisControllerBox.globBaseVars.ui32RootNodeId = thisControllerBox.globBaseVars.laserControllerMesh.getNodeId();
   }
-  globalBaseVariables.laserControllerMesh.setContainsRoot(true);
+  thisControllerBox.globBaseVars.laserControllerMesh.setContainsRoot(true);
 }
 
 /* _interfaceOnAPInit()
@@ -107,7 +107,7 @@ void myMeshStarter::_rootTheMesh() {
 */
 void myMeshStarter::_interfaceOnAPInit() {
   // 1. init the mesh in station only
-  globalBaseVariables.laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
+  thisControllerBox.globBaseVars.laserControllerMesh.init(meshPrefix, meshPass, meshPort, WIFI_STA, ui8WifiChannel, meshHidden, meshMaxConnection);
   // 2. configure the soft AP
   if(!WiFi.softAPConfig(softApMyIp, softApMeAsGatewayIp, softApNetmask)){
     Serial.println("\nAP Config Failed\n");
@@ -124,11 +124,11 @@ void myMeshStarter::_interfaceOnAPInit() {
 }
 
 void myMeshStarter::_setupMdns() {
-  snprintf(globalBaseVariables.gcHostnamePrefix, 10, "%s%u", globalBaseVariables.gcHostnamePrefix, (uint32_t)(globalBaseVariables.gui16NodeName));
-  // globalBaseVariables.laserControllerMesh.setHostname(globalBaseVariables.gcHostnamePrefix);
+  snprintf(thisControllerBox.globBaseVars.gcHostnamePrefix, 10, "%s%u", thisControllerBox.globBaseVars.gcHostnamePrefix, (uint32_t)(thisControllerBox.globBaseVars.gui16NodeName));
+  // thisControllerBox.globBaseVars.laserControllerMesh.setHostname(thisControllerBox.globBaseVars.gcHostnamePrefix);
   // begin mDNS responder: argument is the name to broadcast. In this example
   // "ESP32_200". It will be broadcasted as ESP32_200.local.
-  if (!MDNS.begin(globalBaseVariables.gcHostnamePrefix)) {
+  if (!MDNS.begin(thisControllerBox.globBaseVars.gcHostnamePrefix)) {
       Serial.println("Error setting up MDNS responder!");
       while(1) {
           delay(1000);

@@ -41,13 +41,13 @@ void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
    * "rootIF":{"roNNa":200,"IFNNA":200},
    * "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
    * "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
-  if (globalBaseVariables.MY_DG_WS) {
-    Serial.printf("myWSSender::_prepareAllIFDataMessage. About to allot _joMsg[\"serverIP\"] = (globalBaseVariables.laserControllerMesh.getStationIP()).toString()\n");
-    Serial.printf("myWSSender::_prepareAllIFDataMessage. server IP: ");Serial.println((globalBaseVariables.laserControllerMesh.getStationIP()).toString());
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
+    Serial.printf("myWSSender::_prepareAllIFDataMessage. About to allot _joMsg[\"serverIP\"] = (thisControllerBox.globBaseVars.laserControllerMesh.getStationIP()).toString()\n");
+    Serial.printf("myWSSender::_prepareAllIFDataMessage. server IP: ");Serial.println((thisControllerBox.globBaseVars.laserControllerMesh.getStationIP()).toString());
   }
 
   // Real IP of the Interface
-  _joMsg["serverIP"]        = ( globalBaseVariables.isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
+  _joMsg["serverIP"]        = ( thisControllerBox.globBaseVars.isRoot ? WiFi.localIP().toString() : WiFi.softAPIP().toString() );
   
   // Wifi Settings of External Network (in case the IF is served on the station interface of the ESP)
   JsonObject __wifiSettings   = _joMsg.createNestedObject("wifi");
@@ -61,10 +61,10 @@ void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
 
   // Root and Interface Nodes Params
   JsonObject __rootIFSettings = _joMsg.createNestedObject("rootIF");
-  if (globalBaseVariables.isRoot) {
+  if (thisControllerBox.globBaseVars.isRoot) {
     __rootIFSettings["roNNa"] = thisControllerBox.thisCtrlerBox.ui16NodeName;
   } else {
-    uint16_t _bxIndex           = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(globalBaseVariables.ui32RootNodeId);
+    uint16_t _bxIndex           = thisControllerBox.thisSignalHandler.ctlBxColl.findIndexByNodeId(thisControllerBox.globBaseVars.ui32RootNodeId);
     __rootIFSettings["roNNa"]   = ( (_bxIndex == 254) ? _bxIndex : thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_bxIndex).ui16NodeName );
   }
   __rootIFSettings["IFNNA"]   = thisControllerBox.thisCtrlerBox.ui16NodeName;
@@ -127,7 +127,7 @@ void myWSSender::_sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketC
 
 
 void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSSender::sendWSData. starting");
     }
 
@@ -144,7 +144,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
     /** 2. Send the buffered message */
     _sendMsg(_buffer, _client);
 
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println(F("myWSSender::sendWSData. over"));
     }
 }
@@ -191,12 +191,12 @@ myWSResponder::myWSResponder(AsyncWebSocket & __asyncWebSocketInstance) :
  * */
 void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
   Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp(). starting");
-  // if (globalBaseVariables.MY_DG_WS) {
+  // if (thisControllerBox.globBaseVars.MY_DG_WS) {
   //   Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-  //   Serial.printf("myWSResponder::_tcbSendWSDataIfChangeStationIp. globalBaseVariables.laserControllerMesh.subConnectionJson() = %s\n",globalBaseVariables.laserControllerMesh.subConnectionJson().c_str());
+  //   Serial.printf("myWSResponder::_tcbSendWSDataIfChangeStationIp. thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson() = %s\n",thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson().c_str());
   // }
 
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp. about to call _myWSSender.prepareAllIFDataMessage with parameter (nullptr).");
   }
   /** TODO: treat the nullptr issue:
@@ -227,7 +227,7 @@ void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
 
 bool myWSResponder::_checkWhetherUnsignaledNewBox(ControlerBox & _controlerBox, JsonObject & _obj) {
   if (_controlerBox.isNewBoxHasBeenSignaled == false) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.printf("myWSSender::_checkWhetherUnsignaledNewBox. In fact, a new box [%u] has joined.\n", _controlerBox.ui16NodeName);
     }
     _obj["action"]      = "addBox";
@@ -248,7 +248,7 @@ bool myWSResponder::_checkWhetherUnsignaledNewBox(ControlerBox & _controlerBox, 
 
 bool myWSResponder::_checkWhetherUnsignaledDefaultStateChange(ControlerBox & _controlerBox, JsonObject & _obj) {
   if (_controlerBox.sBoxDefaultStateChangeHasBeenSignaled == false) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.printf("myWSSender::_checkWhetherUnsignaledDefaultStateChange. Default state of box [%u] has changed\n", _controlerBox.ui16NodeName);
     }
     _obj["action"] = "changeBox";
@@ -269,7 +269,7 @@ bool myWSResponder::_checkWhetherUnsignaledDefaultStateChange(ControlerBox & _co
 
 bool myWSResponder::_checkWhetherUnsignaledBoxStateChange(ControlerBox & _controlerBox, JsonObject & _obj) {
   if (_controlerBox.boxActiveStateHasBeenSignaled == false) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.printf("myWSSender::_checkWhetherUnsignaledBoxStateChange. State of box [%u] has changed\n", _controlerBox.ui16NodeName);
     }
     _obj["action"] = "changeBox";
@@ -290,7 +290,7 @@ bool myWSResponder::_checkWhetherUnsignaledBoxStateChange(ControlerBox & _contro
 
 bool myWSResponder::_checkWhetherUnsignaledDeletedBox(ControlerBox & _controlerBox, JsonObject & _obj) {
   if (_controlerBox.boxDeletionHasBeenSignaled == false) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.printf("myWSSender::_checkWhetherUnsignaledDeletedBox. A box [%i] has disconnected\n", _controlerBox.ui16NodeName);
     }
     _obj["action"] = "deleteBox";
@@ -330,7 +330,7 @@ void myWSResponder::_checkBoxStateAndSendMsgATCMB(uint16_t _ui16BoxIndex, contro
 
     // in each of the above cases, send a message to the clients
     if (_obj["action"] != "-1") {
-      if (globalBaseVariables.MY_DG_WS) {
+      if (thisControllerBox.globBaseVars.MY_DG_WS) {
         Serial.printf("myWSSender::_checkBoxStateAndSendMsgATCMB. About to call sendWSData with a message [\"action\"] = %s\n", _obj["action"].as<const char*>());
       }
       _myWSSender.sendWSData(_obj);
@@ -370,7 +370,7 @@ void myWSResponder::_tcbSendWSDataIfChangeBoxState() {
    *      a. instantiate an myWSSender instance;
    *      b. iterate over the controller boxes array and look for any relevant change. */
   myWSSender _myWSSender(_asyncWebSocketInstance);
-  for (uint16_t _ui16BoxIndex = 0; _ui16BoxIndex < globalBaseVariables.gui16BoxesCount; _ui16BoxIndex++) {
+  for (uint16_t _ui16BoxIndex = 0; _ui16BoxIndex < thisControllerBox.globBaseVars.gui16BoxesCount; _ui16BoxIndex++) {
     _checkBoxStateAndSendMsgATCMB(_ui16BoxIndex, thisControllerBox.thisSignalHandler.ctlBxColl, _myWSSender);
   }
 }

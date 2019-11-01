@@ -27,9 +27,9 @@ controllerBoxThis::controllerBoxThis():
  * 
  *  thisCtrlerBox is the ControlerBox instance representing this box. */
 void controllerBoxThis::_updateThisBoxNetWorkProperties() {
-  thisCtrlerBox.networkData.nodeId = globalBaseVariables.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
-  thisCtrlerBox.networkData.stationIP = globalBaseVariables.laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
-  thisCtrlerBox.networkData.APIP = globalBaseVariables.laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
+  thisCtrlerBox.networkData.nodeId = globBaseVars.laserControllerMesh.getNodeId();       // store this boxes nodeId in the array of boxes pertaining to the mesh
+  thisCtrlerBox.networkData.stationIP = globBaseVars.laserControllerMesh.getStationIP(); // store this boxes StationIP in the array of boxes pertaining to the mesh
+  thisCtrlerBox.networkData.APIP = globBaseVars.laserControllerMesh.getAPIP();           // store this boxes APIP in the array of boxes pertaining to the mesh
 }
 
 
@@ -38,11 +38,11 @@ void controllerBoxThis::_updateThisBoxNetWorkProperties() {
 
 /** void controllerBoxThis::updateThisBoxNodeName()
  * 
- *  actualizes this box nodeName (i.e. the nodeName is set box by box in globalBaseVariables).
+ *  actualizes this box nodeName (i.e. the nodeName is set box by box in globBaseVars).
  * 
  *  thisCtrlerBox is the ControlerBox instance representing this box. */
 void controllerBoxThis::_updateThisBoxNodeName() {
-  thisCtrlerBox.ui16NodeName = globalBaseVariables.gui16NodeName;
+  thisCtrlerBox.ui16NodeName = globBaseVars.gui16NodeName;
 }
 
 
@@ -54,7 +54,7 @@ void controllerBoxThis::updateThisBoxProperties() {
   _updateThisBoxNodeName();
   // For this box, i16BoxActiveState, boxActiveStateHasBeenSignaled and ui32BoxActiveStateStartTime are updated
   // by calls to setBoxActiveState from boxState
-  if (globalBaseVariables.MY_DEBUG == true) {
+  if (globBaseVars.MY_DEBUG == true) {
     Serial.println("controllerBoxThis::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");
     thisCtrlerBox._printProperties(0);
   };
@@ -67,19 +67,19 @@ void controllerBoxThis::updateThisBoxProperties() {
 void controllerBoxThis::addLaserTasks() {
 
   // conditional?
-  globalBaseVariables.scheduler.addTask(thisSignalHandler.tSetBoxState);
-  if (globalBaseVariables.hasLasers == true) {
-    globalBaseVariables.scheduler.addTask(tSetPirTimeStampAndBrdcstMsg);
-    globalBaseVariables.scheduler.addTask(tPirSpeedBumper);
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._stepColl.tPreloadNextStep);
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl.tPlayBoxState);
+  globBaseVars.scheduler.addTask(thisSignalHandler.tSetBoxState);
+  if (globBaseVars.hasLasers == true) {
+    globBaseVars.scheduler.addTask(tSetPirTimeStampAndBrdcstMsg);
+    globBaseVars.scheduler.addTask(tPirSpeedBumper);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._stepColl.tPreloadNextStep);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl.tPlayBoxState);
 
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.tPreloadNextLaserSequence);
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().tPreloadNextBar);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.tPreloadNextLaserSequence);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().tPreloadNextBar);
 
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.tPlayLaserSequence);
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().tPlayBar);
-    globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().getNotes().tPlayNote);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.tPlayLaserSequence);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().tPlayBar);
+    globBaseVars.scheduler.addTask(thisSignalHandler.thisBxStateColl._laserSequences.getBars().getNotes().tPlayNote);
   }
 
 }
@@ -89,6 +89,6 @@ void controllerBoxThis::addLaserTasks() {
 
 
 void controllerBoxThis::_reboot() {
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
+  if (globBaseVars.MY_DG_WS) { Serial.printf("ControlerBox::tReboot(): About to reboot.\n"); }
   ESP.restart();
 }

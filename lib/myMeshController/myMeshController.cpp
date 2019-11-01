@@ -18,14 +18,14 @@ Created by Cedric Lor, January 22, 2019.
 myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, void (*meshInit)()*/)
 : /*_meshInit(meshInit),*/ _ui32SenderNodeId(_ui32SenderNodeId)
 {
-  if (globalBaseVariables.MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) Serial.printf("myMeshController::myMeshController(): starting. &_msg == %s \n", _msg.c_str());
 
   // Convert the document to an object
   _nsobj = _nsdoc.to<JsonObject>();
   
   // deserialize the message _msg received from the mesh into the StaticJsonDocument _nsdoc
   DeserializationError _err = deserializeJson(_nsdoc, _msg);
-  if (globalBaseVariables.MY_DG_MESH) Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) Serial.print("myMeshController::myMeshController(): DeserializationError = ");Serial.print(_err.c_str());Serial.print("\n");
   
   // parse and act
   _main();
@@ -39,7 +39,7 @@ myMeshController::myMeshController(uint32_t _ui32SenderNodeId, String &_msg/*, v
 
 void myMeshController::_main()
 {
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.print("myMeshController::_main: starting\n");
   }
   
@@ -47,7 +47,7 @@ void myMeshController::_main()
   const char* _action = _nsobj["action"];
 
   // if debug, serial print the action field
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("myMeshController::_main: _action = %s\n", _action);
   }
 
@@ -251,10 +251,10 @@ void myMeshController::_changedBoxConfirmation() {
     thisControllerBox.thisSignalHandler.ctlBxColl.deleteBoxByBoxIndex(__ui16BoxIndex);
     // only decrease the MeshSize by one if it is a dropped connection message
     // note: dropped connection message are sent by the box which first detected
-    // the dropped box. Such box has already updated its globalBaseVariables.uiMeshSize in the
+    // the dropped box. Such box has already updated its thisControllerBox.globBaseVars.uiMeshSize in the
     // dropped connection callback, in myMesh class
     if (_nsobj["key"] == "dropped"){
-      globalBaseVariables.uiMeshSize = globalBaseVariables.uiMeshSize - 1;
+      thisControllerBox.globBaseVars.uiMeshSize = thisControllerBox.globBaseVars.uiMeshSize - 1;
     }
     return;
   }
@@ -293,7 +293,7 @@ void myMeshController::_changedBoxConfirmation() {
  *  _savegi8RequestedOTAReboots(); */
 void myMeshController::_updateMyValFromWeb() {
 // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyValFromWeb: will change my target state to [%i]\n", (_nsobj["val"].as<int16_t>()));
   }
 
@@ -309,7 +309,7 @@ void myMeshController::_updateMyValFromWeb() {
 
 void myMeshController::_updateMyDefaultState() {
   // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("myMeshController::_updateMyDefaultState: will change my default state to [%u]\n", _nsobj["val"].as<uint16_t>());
   }
 
@@ -327,7 +327,7 @@ void myMeshController::_updateMyDefaultState() {
 void myMeshController::_rebootEsp() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1, save: 0, st: 1} // reboot without saving
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1, save: 1, st: 1} // reboot and save
-  if (globalBaseVariables.MY_DG_MESH) {
+  if (thisControllerBox.globBaseVars.MY_DG_MESH) {
     Serial.printf("myMeshController::_rebootEsp: about to reboot\n");
   }
 
@@ -403,7 +403,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 
 // PROTOTYPE FOR A MORE ABSTRACT CHANGE PROPERTY HANDLER
 // void myMeshController::_updateMyProperty(char& _cPropertyKey, JsonObject& _nsobj) {
-//   if (globalBaseVariables.MY_DG_MESH) {
+//   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
 //     Serial.printf("myMeshController::_updateMyProperty: will change my property %s to %u\n", _nsobj[_cPropertyKey].as<uint8_t>());
 //   }
 //
@@ -422,7 +422,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 // void myMeshController::_updatePropertyForBox(char& _cPropertyKey, uint8_t _ui16BoxIndex, JsonObject& _nsobj) {
 //   // get the new property from the JSON
 //   int8_t __i8PropertyValue = _nsobj[_cPropertyKey].as<uint8_t>();
-//   if (globalBaseVariables.MY_DG_MESH) {
+//   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
 //     Serial.printf("myMeshController::_updateSenderProperty: %s = %i\n", _cPropertyKey, __i8PropertyValue);
 //   }
 //
@@ -434,7 +434,7 @@ void myMeshController::_savegi8RequestedOTAReboots() {
 //   // a. thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty needs to be drafted
 //   thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(_ui16BoxIndex).updateProperty(_cPropertyKey, __i8PropertyValue);
 //
-//   if (globalBaseVariables.MY_DG_MESH) {
+//   if (thisControllerBox.globBaseVars.MY_DG_MESH) {
 //     Serial.printf("myMeshController::_updateSenderProperty: thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray.at(%u), property %s has been updated to %i\n", _ui16BoxIndex, _cPropertyKey, __i8PropertyValue);
 //   }
 // }

@@ -14,14 +14,14 @@ myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInst
   _myWSResponder(__myWSResponder)
 {
 
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.println("myWSReceiver::myWSReceiver. starting");
   }
 
   // create a StaticJsonDocument entitled _doc
   constexpr int _iCapacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
   StaticJsonDocument<_iCapacity> _doc;
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.print("myWSReceiver::myWSReceiver(): jsonDocument created\n");
   }
   // Convert the JSON document to a JSON object
@@ -29,7 +29,7 @@ myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInst
 
   // deserialize the message msg received from the mesh into the StaticJsonDocument _doc
   DeserializationError err = deserializeJson(_doc, _data);
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.print("myWSReceiver::myWSReceiver(): message msg deserialized into JsonDocument _doc\n");
     Serial.print("myWSReceiver::myWSReceiver(): DeserializationError = ");Serial.print(err.c_str());Serial.print("\n");
     serializeJson(_doc, Serial);Serial.println();
@@ -45,14 +45,14 @@ myWSReceiver::myWSReceiver(uint8_t *_data, AsyncWebSocket & __asyncWebSocketInst
 
 
 void myWSReceiver::_actionSwitch(JsonObject& _obj) {
-  if (globalBaseVariables.MY_DG_WS) {
+  if (thisControllerBox.globBaseVars.MY_DG_WS) {
     Serial.printf("myWSReceiver::_actionSwitch. starting\n");
   }
 
   // if action type 0, handshake -> compare the number of boxRow in DOM vs the number of connected boxes
   // Received JSON: {action:"handshake", boxStateInDOM:{1:4;2:3}}
   if (_obj["action"] == "handshake") {           // 0 for hand shake message
-    if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n"); }
+    if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_actionSwitch(): new WS: checking whether the DOM needs update. \n"); }
     myWSReceiverReconcile _myWSReceiverReconcile(
       _obj, 
       thisControllerBox.thisSignalHandler.ctlBxColl.controllerBoxesArray, 
@@ -66,7 +66,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   // 3 for confirmation that change IP adress has been received
   // disable the task sending the IP by WS to the browser
   if (_obj["action"] == "ReceivedIP") {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_actionSwitch(): Ending on ReceivedIP (confirmation that new station IP has been received).");
       Serial.println("myWSReceiver::_actionSwitch(): tSendWSDataIfChangeStationIp.disable()");
     }
@@ -76,7 +76,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
   }
 
   if ((_obj["action"] == "changeBox")  && (_obj["lb"] == 0)) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_actionSwitch(): Received a message for the IF.");
     }
     _requestIFChange(_obj);
@@ -117,7 +117,7 @@ void myWSReceiver::_actionSwitch(JsonObject& _obj) {
 void myWSReceiver::_requestIFChange(JsonObject& _obj) {
   // reboot and/or save the IF
   if (_obj["key"] == "reboot") {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_requestIFChange(): This is a REBOOT message.");
     }
     // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
@@ -128,7 +128,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
 
   // save the IF
   if ((_obj["key"] == "save") && (_obj["val"] == "all")) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE everything message.");
     }
     // {action:"changeBox", key:"save", val: "all", lb:0} // reboot and save
@@ -141,7 +141,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
    *  parameters.
    * */
   if (( (_obj["key"] == "save") || (_obj["key"] == "apply") ) && ((_obj["val"] == "wifi") || (_obj["val"] == "softAP") || (_obj["val"] == "mesh") || (_obj["val"] == "RoSet") || (_obj["val"] == "IFSet") )) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.printf("myWSReceiver::_requestIFChange(): This is a SAVE %s settings message.\n", _obj["val"].as<const char*>());
     }
     // {"action":"changeBox","key":"save","val":"wifi","dataset":{"ssid":"LTVu_dG9ydG9y","pass":"totototo","gatewayIP":"192.168.43.1","ui16GatewayPort":"0","fixedIP":"192.168.43.50","fixedNetmaskIP":"255.255.255.0","ui8WifiChannel":"6"},"lb":0}
@@ -155,7 +155,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
 
   // save gi8RequestedOTAReboots for next reboot
   if ((_obj["key"] == "save") && (_obj["val"] == "gi8RequestedOTAReboots")) {
-    if (globalBaseVariables.MY_DG_WS) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
       Serial.println("myWSReceiver::_requestIFChange(): This is a SAVE gi8RequestedOTAReboots message.");
     }
     // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
@@ -170,7 +170,7 @@ void myWSReceiver::_requestIFChange(JsonObject& _obj) {
 void myWSReceiver::_rebootIF(JsonObject& _obj) {
   // {action:"changeBox", key:"reboot", save: 0, lb:0} // reboot without saving
   // {action:"changeBox", key:"reboot", save: 1, lb:0} // reboot and save
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
+  if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_rebootIF(): About to reboot.\n"); }
 
   // inform the browser and the other boxes that IF is going to reboot
   _requestBoxChange(_obj, true /*_bBroadcast*/);
@@ -184,7 +184,7 @@ void myWSReceiver::_rebootIF(JsonObject& _obj) {
 
 
 void myWSReceiver::_saveIF(JsonObject& _obj) {
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
+  if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_saveIF(): About to save IF preferences.\n"); }
   // save preferences
   mySavedPrefs _myPrefsRef;
   _myPrefsRef.savePrefsWrapper();
@@ -196,7 +196,7 @@ void myWSReceiver::_saveIF(JsonObject& _obj) {
 
 void myWSReceiver::_savegi8RequestedOTAReboots(JsonObject& _obj) {
   // {action: "changeBox", key: "save", val: "gi8RequestedOTAReboots", lb: 0}
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_savegi8RequestedOTAReboots(): About to save gi8RequestedOTAReboots in mySavedPrefs on IF.\n"); }
+  if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_savegi8RequestedOTAReboots(): About to save gi8RequestedOTAReboots in mySavedPrefs on IF.\n"); }
   // save preferences
   mySavedPrefs::saveFromNetRequest(_obj);
   // reboot
@@ -237,7 +237,7 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   // {"action":"changeNet","key":"save","dataset":{"mssid":"laser_boxes","mpass":"somethingSneaky","mch":"6","mport":"5555","mhi":"0","mmc":"10"},"lb":"all","val":"mesh"}
   // {"action":"changeNet","key":"save","dataset":{"sIP":"192.168.5.1","sssid":"ESP32-Access-Point","spass":"123456789","sgw":"192.168.5.1","snm":"255.255.255.0","shi":"0","smc":"10"},"lb":"all","val":"softAP"}
   // {"action":"changeNet","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): starting\n"); }
+  if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): starting\n"); }
 
   // If this is a reboot message
   if (_obj["key"] == "reboot") {
@@ -276,5 +276,5 @@ void myWSReceiver::_requestNetChange(JsonObject& _obj) {
   // broadcast the _obj (including its "reboot" or "save" key)
   _requestBoxChange(_obj, true /*_bBroadcast*/);
 
-  if (globalBaseVariables.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): over\n"); }
+  if (thisControllerBox.globBaseVars.MY_DG_WS) { Serial.printf("myWSReceiver::_requestNetChange(): over\n"); }
 }

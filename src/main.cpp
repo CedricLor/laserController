@@ -51,7 +51,7 @@ void setup() {
   _myPrefsRef.loadPrefsWrapper();
 
   // If the ESP was restarted with an OTA request saved in mySavedPrefs
-  if (globalBaseVariables.gi8OTAReboot) {
+  if (thisControllerBox.globBaseVars.gi8OTAReboot) {
     myOta::OTAConfig();
     return;
   }
