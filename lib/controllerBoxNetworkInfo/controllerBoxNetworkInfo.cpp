@@ -1,17 +1,17 @@
 /*
-  controllerBoxNetworkData.cpp - Library to handle the ControlerBox network data attributes.
+  controllerBoxNetworkInfo.cpp - Library to handle the ControlerBox network data attributes.
   Created by Cedric Lor, October 26, 2019. 
 */
 
 #include "Arduino.h"
-#include "controllerBoxNetworkData.h"
+#include "controllerBoxNetworkInfo.h"
 
 
 // PUBLIC
 // Instance Methods
 
 // Constructor
-controllerBoxNetworkData::controllerBoxNetworkData():
+controllerBoxNetworkInfo::controllerBoxNetworkInfo():
   nodeId(0),
   stationIP{0,0,0,0},
   APIP{0,0,0,0}  
@@ -20,8 +20,8 @@ controllerBoxNetworkData::controllerBoxNetworkData():
 
 
 
-// void controllerBoxNetworkData::printProperties(const uint16_t __ui16BoxIndex) {
-//   const char * _methodName = "controllerBoxNetworkData::printProperties(): Box n. ";
+// void controllerBoxNetworkInfo::printProperties(const uint16_t __ui16BoxIndex) {
+//   const char * _methodName = "controllerBoxNetworkInfo::printProperties(): Box n. ";
 //   Serial.printf("%s[%u] -> nodeId: %u\n", _methodName, __ui16BoxIndex, nodeId);
 //   Serial.printf("%s[%u] -> APIP: ", _methodName, __ui16BoxIndex);Serial.println(APIP.toString());
 //   Serial.printf("%s[%u] -> stationIP: ", _methodName, __ui16BoxIndex);Serial.println(stationIP.toString());
@@ -29,14 +29,14 @@ controllerBoxNetworkData::controllerBoxNetworkData():
 
 
 
-/**void controllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj)
+/**void controllerBoxNetworkInfo::update(uint32_t _ui32SenderNodeId, JsonObject& _obj)
  * 
  *  Updater of the network properties of the (other) controller boxes in the mesh.
  *  
  *  Called from ControlerBox exclusively
 */
-void controllerBoxNetworkData::update(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
-  const char * _subName = "controllerBoxNetworkData::update():";
+void controllerBoxNetworkInfo::update(uint32_t _ui32SenderNodeId, JsonObject& _obj) {
+  const char * _subName = "controllerBoxNetworkInfo::update():";
   Serial.printf("%s starting\n", _subName);
 
   nodeId = _ui32SenderNodeId;

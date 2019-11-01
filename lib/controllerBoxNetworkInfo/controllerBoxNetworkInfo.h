@@ -1,20 +1,20 @@
 /*
-  controllerBoxNetworkData.h - Library to handle the ControlerBox network data attributes.
+  controllerBoxNetworkInfo.h - Library to handle the ControlerBox network data attributes.
   Created by Cedric Lor, October 26, 2019. 
 */
-#ifndef controllerBoxNetworkData_h
-#define controllerBoxNetworkData_h
+#ifndef controllerBoxNetworkInfo_h
+#define controllerBoxNetworkInfo_h
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
 
-class controllerBoxNetworkData
+class controllerBoxNetworkInfo
 {
   friend class ControlerBox;
 
   public:
     /** -------- constructors -------- */
-    controllerBoxNetworkData();
+    controllerBoxNetworkInfo();
 
 
     uint32_t nodeId;

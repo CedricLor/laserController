@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 #include <globalBasementVars.h>
-#include <controllerBoxNetworkData.h>
+#include <controllerBoxNetworkInfo.h>
 
 class ControlerBox
 {
@@ -25,7 +25,7 @@ class ControlerBox
 
     /** -------- Public Instance Variables -----------------
      * */
-    controllerBoxNetworkData networkData;
+    controllerBoxNetworkInfo networkData;
 
     /** uint16_t ui16NodeName:
      * 
