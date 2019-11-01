@@ -126,7 +126,12 @@ const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __u
  *  Called from PIR Controller only.
 */
 const bool signal::checkImpactOfThisBoxsIRHigh() {
-  checkImpactOfUpstreamInformationOfOtherBox(0);
+  tSetBoxState.setInterval(0);
+  tSetBoxState.setIterations(1);
+  tSetBoxState.setCallback([&](){
+    _tcbIfIRTriggered(_thisCtrlerBox);
+  });
+  tSetBoxState.restart();
   return true;
 }
 
