@@ -17,11 +17,13 @@ class globalBasementVars
     /*****************************************************************/
     /** I. In all the configurations: Scheduler and mesh parameters */
     Scheduler               scheduler;
+  private:
     const uint8_t           UI8_NODE_NAME; //   = 201;                          // BOX BY BOX
     const bool              HAS_INTERFACE;  //   = false;                       // BOX BY BOX
     const bool              IS_ROOT;       //   = false;                        // BOX BY BOX
     const bool              HAS_LASERS;    // = true;                           // BOX BY BOX
     const bool              HAS_IR_SENSOR; // = true;                           // BOX BY BOX
+  public:
     uint16_t                gui16NodeName;
     bool                    hasInterface;
     bool                    isRoot;
