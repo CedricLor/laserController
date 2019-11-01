@@ -1,5 +1,5 @@
 /*
-  myWSSender.h - Library web socket related functions.
+  myWSSender.h - Library to handle web socket responder and sender related functions.
   Created by Cedric Lor, July 9, 2019.
 */
 
@@ -17,7 +17,7 @@
 class myWSSender
 {
   public:
-    myWSSender(AsyncWebSocket & __server);
+    myWSSender(AsyncWebSocket & __asyncWebSocketInstance);
 
     void prepareAllIFDataMessage(AsyncWebSocketClient * _client=nullptr);
     void sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client=nullptr);
@@ -25,7 +25,7 @@ class myWSSender
   private:
     AsyncWebSocketMessageBuffer * _loadBuffer(JsonObject& _joMsg);
     void _sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketClient * _client);
-    AsyncWebSocket & _server;
+    AsyncWebSocket & _asyncWebSocketInstance;
 };
 
 

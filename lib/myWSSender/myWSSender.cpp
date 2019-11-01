@@ -1,5 +1,5 @@
 /*
-  myWSSender.cpp - Library web socket related functions.
+  myWSSender.cpp - Library to handle web socket responder and sender related functions.
   Created by Cedric Lor, July 9, 2019.
 */
 
@@ -18,8 +18,8 @@
 // myWSSender class
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
-myWSSender::myWSSender(AsyncWebSocket & __server):
-  _server(__server)
+myWSSender::myWSSender(AsyncWebSocket & __asyncWebSocketInstance):
+  _asyncWebSocketInstance(__asyncWebSocketInstance)
 { }
 
 
@@ -30,6 +30,8 @@ myWSSender::myWSSender(AsyncWebSocket & __server):
 
 void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
   Serial.printf("myWSSender::prepareAllIFDataMessage. starting.\n");
+
+  thisControllerBox.updateThisBoxProperties();
 
   StaticJsonDocument<900> __doc;
   JsonObject _joMsg = __doc.to<JsonObject>();
@@ -99,7 +101,7 @@ AsyncWebSocketMessageBuffer * myWSSender::_loadBuffer(JsonObject& _joMsg) {
   /** 1. Measure the size of the message */
   size_t _len = measureJson(_joMsg);
   /** 2. Create a buffer to hold the message */
-  AsyncWebSocketMessageBuffer * _buffer = _server.makeBuffer(_len); // makeBuffer creates a buffer of length == len + 1
+  AsyncWebSocketMessageBuffer * _buffer = _asyncWebSocketInstance.makeBuffer(_len); // makeBuffer creates a buffer of length == len + 1
   /** 3. Serialize the message into the buffer */
   serializeJson(_joMsg, (char *)_buffer->get(), _len + 1);
   Serial.printf("myWSSender::_loadBuffer. Serialized message: %s\n", (char *)_buffer->get());
@@ -113,7 +115,7 @@ AsyncWebSocketMessageBuffer * myWSSender::_loadBuffer(JsonObject& _joMsg) {
 void myWSSender::_sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketClient * _client) {
   /** 5. If the message is addressed to any connected client, send it to all the clients */
   if (_client == nullptr) {
-    _server.textAll(_buffer);
+    _asyncWebSocketInstance.textAll(_buffer);
     Serial.println("myWSSender::_sendMsg. The message was sent to all the clients.\n");
     return;
   }
@@ -132,7 +134,7 @@ void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) 
     }
 
     /** 1. If no client is registered with the WebSocket, just return */
-    if (!(_server.count())) {
+    if (!(_asyncWebSocketInstance.count())) {
       Serial.println("myWSSender::sendWSData. No clients connected. Not sending anything.");
       return;
     }
@@ -191,24 +193,18 @@ myWSResponder::myWSResponder(AsyncWebSocket & __asyncWebSocketInstance) :
  * */
 void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
   Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp(). starting");
-  // if (thisControllerBox.globBaseVars.MY_DG_WS) {
-  //   Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp. interface station IP has changed.");
-  //   Serial.printf("myWSResponder::_tcbSendWSDataIfChangeStationIp. thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson() = %s\n",thisControllerBox.globBaseVars.laserControllerMesh.subConnectionJson().c_str());
-  // }
 
-  if (thisControllerBox.globBaseVars.MY_DG_WS) {
-    Serial.println("myWSResponder::_tcbSendWSDataIfChangeStationIp. about to call _myWSSender.prepareAllIFDataMessage with parameter (nullptr).");
-  }
   /** TODO: treat the nullptr issue:
     * This Task shall be enabled:
-    * (i) if one of the network parameter has changed, an array of all the clients shall be constructed,
-    *  the new data shall be broadcasted to all the clients, the clients shall be removed from the array
-    *  when their "received IP" message has been received and when the array is empty, the Task shall 
-    *  be disabled; 
-    * (ii) if a new client has connected and it shall send to the specific new client (make an 
-    *  array of new clients, send the data to the new clients only, and the received IP message
-    *  sent by the clients shall serve to remove clients from this array). Once all the clients have
-    *  received the data, the Task shall be disabled.
+    * (i) if one of the IFData (see in prepareAllIFDataMessage) has changed:
+    *     - an array of all the clients shall be constructed,
+    *     - the new data shall be broadcasted to all the clients, 
+    *     - the clients shall be removed from the array when their "received IP" message has been received.
+    *     - once the array is empty, the Task shall be disabled; 
+    * (ii) if a new client has connected to the websocket:
+    *     - it shall work more or less as it currently works (i.e. send the data to the new client;
+    *       once the data has been received ("received IP" message), the Task is disabled), except 
+    *       that "nullptr" shall be replaced by the relevant client instance.
     *  
     *  Currently, the Task is enabled upon connection of a new client and it is disabled upon reception
     *  of "Received IP" message from any client.
@@ -216,7 +212,6 @@ void myWSResponder::_tcbSendWSDataIfChangeStationIp() {
   myWSSender _myWSSender(_asyncWebSocketInstance);
   _myWSSender.prepareAllIFDataMessage(nullptr); // 3 for message sent in case of change in station IP
 
-  thisControllerBox.updateThisBoxProperties();
   Serial.println("myWSSender::_tcbSendWSDataIfChangeStationIp(). ending");
 }
 
