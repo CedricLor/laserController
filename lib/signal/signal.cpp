@@ -69,7 +69,7 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
    *  signals; it sends mesh high signals). */
   tSetBoxState.setInterval(0);
   tSetBoxState.setIterations(1);
-  tSetBoxState.setCallback([&](){
+  tSetBoxState.setCallback([&, __ui16BoxIndex](){
     _tcbIfMeshTriggered(ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex));
   });
   tSetBoxState.restart();
@@ -91,7 +91,7 @@ const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __u
    *        to handle the masterBox(es) IR signals. */
   tSetBoxState.setInterval(0);
   tSetBoxState.setIterations(1);
-  tSetBoxState.setCallback([&](){
+  tSetBoxState.setCallback([&, __ui16BoxIndex](){
     _tcbIfIRTriggered(ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex));
   });
   tSetBoxState.restart();
