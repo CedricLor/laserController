@@ -12,8 +12,7 @@ myWebServerBase::myWebServerBase(uint16_t port):
   _myWSServer()
 {
   /** if this box has a web interface */
-  if (globalBaseVariables.hasInterface) {
-
+  if (thisControllerBox.globBaseVars.hasInterface) {
     _setWebSocketHandler();
     _setGetRequestHandlers();
     _setDefaultHandlers();

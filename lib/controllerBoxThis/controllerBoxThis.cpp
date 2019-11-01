@@ -68,7 +68,7 @@ void controllerBoxThis::addLaserTasks() {
 
   // conditional?
   globalBaseVariables.scheduler.addTask(thisSignalHandler.tSetBoxState);
-  if ((globalBaseVariables.hasInterface == false) || (globalBaseVariables.isRoot == false)) {
+  if (globalBaseVariables.hasLasers == true) {
     globalBaseVariables.scheduler.addTask(tSetPirTimeStampAndBrdcstMsg);
     globalBaseVariables.scheduler.addTask(tPirSpeedBumper);
     globalBaseVariables.scheduler.addTask(thisSignalHandler.thisBxStateColl._stepColl.tPreloadNextStep);

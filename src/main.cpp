@@ -115,7 +115,7 @@ void loop() {
 
   thisControllerBox.globBaseVars.scheduler.execute();
   thisControllerBox.globBaseVars.laserControllerMesh.update();
-  if ((thisControllerBox.globBaseVars.hasInterface == false) || (thisControllerBox.globBaseVars.isRoot == false)) {
+  if (thisControllerBox.globBaseVars.hasIRSensor) {
     thisControllerBox.thisPirController.check();
   }
 }
@@ -139,7 +139,7 @@ void serialInit() {
 
 
 void enableTasks() {
-  if ( (thisControllerBox.globBaseVars.hasInterface == false) || (thisControllerBox.globBaseVars.isRoot == false) ) {
+  if (thisControllerBox.globBaseVars.hasLasers == true) {
     thisControllerBox.thisSignalHandler.startup();
   } else {
     _myWebServer.getTSendWSDataIfChangeBoxState().enable();

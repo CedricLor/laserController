@@ -71,11 +71,12 @@ void myMeshStarter::_initMesh() {
   }
 }
 
-/* _initStationManual()
-  If globalBaseVariables.hasInterface and globalBaseVariables.isRoot, the STATION shall try to connect to an external 
-  network and the web users will have access to the STATION through their browser. 
-  The other mesh nodes will connect on the AP. (This is the recommended use case
-  by the devs of painlessMesh.)
+/** _initStationManual()
+ *   If globalBaseVariables.hasInterface and globalBaseVariables.isRoot, this box's STATION 
+ *   will try to connect to an external network and the web users will have access 
+ *   to the STATION through their browser.
+ *   The other mesh nodes will connect on the AP of this one. (This is the recommended use case
+ *   by the devs of painlessMesh.)
 */
 void myMeshStarter::_initStationManual() {
   if (globalBaseVariables.hasInterface && globalBaseVariables.isRoot) {
