@@ -41,8 +41,6 @@ void signal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb
   i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it. */
-  tSetBoxState.setInterval(0);
-  tSetBoxState.setIterations(1);
   tSetBoxState.setCallback([&](){_tcbSetBoxStateFromWeb();});
   tSetBoxState.restart();
 }
@@ -67,8 +65,6 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
    *  whether the callback _tcbIfMeshTriggered has been set and that 
    *  the ControlerBox is not this box (this box does not read its own mesh high
    *  signals; it sends mesh high signals). */
-  tSetBoxState.setInterval(0);
-  tSetBoxState.setIterations(1);
   tSetBoxState.setCallback([&, __ui16BoxIndex](){
     _tcbIfMeshTriggered(ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex));
   });
@@ -103,11 +99,9 @@ const bool signal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_t __u
  *        to handle the masterBox(es) sequence signals.
  *  */
 const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __ui16BoxIndex) {
-  /** Set the Task that will check whether this change shall have an impact
+/** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it. 
    * */
-  tSetBoxState.setInterval(0);
-  tSetBoxState.setIterations(1);
   tSetBoxState.setCallback([&, __ui16BoxIndex](){
     _tcbIfIRTriggered(ctlBxColl.controllerBoxesArray.at(__ui16BoxIndex));
   });
@@ -126,8 +120,6 @@ const bool signal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_t __u
  *  Called from PIR Controller only.
 */
 const bool signal::checkImpactOfThisBoxsIRHigh() {
-  tSetBoxState.setInterval(0);
-  tSetBoxState.setIterations(1);
   tSetBoxState.setCallback([&](){
     _tcbIfIRTriggered(_thisCtrlerBox);
   });
