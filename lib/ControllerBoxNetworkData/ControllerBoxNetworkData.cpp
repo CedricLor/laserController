@@ -1,6 +1,6 @@
 /*
   controllerBoxNetworkData.cpp - Library to handle the ControlerBox network data attributes.
-  Created by Cedric Lor, October 26, 2019.
+  Created by Cedric Lor, October 26, 2019. 
 */
 
 #include "Arduino.h"

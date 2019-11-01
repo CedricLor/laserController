@@ -1,6 +1,6 @@
 /*
   controllerBoxNetworkData.h - Library to handle the ControlerBox network data attributes.
-  Created by Cedric Lor, October 26, 2019.
+  Created by Cedric Lor, October 26, 2019. 
 */
 #ifndef controllerBoxNetworkData_h
 #define controllerBoxNetworkData_h
