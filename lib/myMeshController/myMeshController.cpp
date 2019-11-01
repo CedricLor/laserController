@@ -63,7 +63,9 @@ void myMeshController::_main()
    *  box) in my controller boxes' array. */
   if (_nsobj["action"] == "s") {
     const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
-    thisControllerBox.thisSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
+    if (thisControllerBox.globBaseVars.hasLasers) {
+      thisControllerBox.thisSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
+    }
     return;
   }
 
@@ -82,7 +84,9 @@ void myMeshController::_main()
    *  box) in my controller boxes' array. */
   if (_nsobj["action"] == "usi") {
     const uint16_t __ui16BoxIndex = thisControllerBox.thisSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
-    thisControllerBox.thisSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
+    if (thisControllerBox.globBaseVars.hasLasers) {
+      thisControllerBox.thisSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
+    }
     return;
   }
 
@@ -294,7 +298,9 @@ void myMeshController::_updateMyValFromWeb() {
   }
 
   // update variable i16boxStateRequestedFromWeb in the signal class
-  thisControllerBox.thisSignalHandler.setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
+  if (thisControllerBox.globBaseVars.hasLasers) {
+    thisControllerBox.thisSignalHandler.setBoxActiveStateFromWeb(_nsobj["val"].as<int8_t>());
+  }
   /** not sending any confirmation, as boxState will send an automatic
    *  status message. */
 }
