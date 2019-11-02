@@ -8,6 +8,11 @@
 #include "laserSignal.h"
 
 
+
+
+
+/** class constructor
+ * */
 laserSignal::laserSignal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMeshViews):
   _thisCtrlerBox(__thisCtrlerBox),
   ctlBxColl{},
@@ -19,39 +24,46 @@ laserSignal::laserSignal(ControlerBox & __thisCtrlerBox, myMeshViews & __thisMes
 
 
 
+
+/** void laserSignal::startup()
+ * 
+ *  Set this box boxState to 2: "pir Startup"
+ *  
+ *  Called from main::setup()::enableTasks() (??? yes...), if 
+ *  thisControllerBox.globBaseVars.hasLasers == true.
+ *  => not called if this box is an interface without lasers.
+ *  
+ *  TODO for next implementation: block box in "pir Startup" for 
+ *  60 seconds, time for (i) the PIR to warmup and (ii) connect to the mesh
+ *  and synchronize time.
+ * */
 void laserSignal::startup() {
   thisBxStateColl._setBoxTargetState(2); 
-  /** 2 for pir Startup; at startUp, put the box in pirStartup state 
-   *  TODO for next implementation: 
-   *  - define a isIr bool in global;
-   *  - define a isLaser bool in global;
-   *  - if isIr and isLaser, block this box -> setPir for 60 seconds at startup */
 }
 
 
 
 
+/*******************************************/
+/** TASK STARTERS **************************/
+/*******************************************/
 
 /** laserSignal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb)
  * 
  * Setter for i16boxStateRequestedFromWeb
  * 
  *  Called from: 
- *  - myMeshController, upon receiving a changeBox request from the web. */
+ *  - myMeshController, upon receiving a changeBox request from the web.
+ * */
 void laserSignal::setBoxActiveStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
-  i16boxStateRequestedFromWeb = _i16boxStateRequestedFromWeb;
   /** Set the Task that will check whether this change shall have an impact
    *  on this box's boxState, add it to the Scheduler and restart it. */
-  tSetBoxState.setCallback([&](){_tcbSetBoxStateFromWeb();});
+  tSetBoxState.setCallback([&, _i16boxStateRequestedFromWeb](){
+    _tcbSetBoxStateFromWeb(_i16boxStateRequestedFromWeb);
+  });
   tSetBoxState.restart();
 }
 
-
-/** laserSignal::_tcbSetBoxStateFromWeb() set the target boxState from
- *  a changeBox request. */
-void laserSignal::_tcbSetBoxStateFromWeb() {
-  thisBxStateColl._setBoxTargetState(i16boxStateRequestedFromWeb);
-}
 
 
 
@@ -76,6 +88,25 @@ const bool laserSignal::checkImpactOfChangeInActiveStateOfOtherBox(const uint16_
   tSetBoxState.restart();
   return true;
 }
+
+
+
+
+/** const bool laserSignal::checkImpactOfThisBoxsIRHigh()
+ * 
+ *  Checks the impact on the boxState of this box of a IR High signal
+ *  coming from the IR of this box.
+ * 
+ *  Called from PIR Controller only.
+*/
+const bool laserSignal::checkImpactOfThisBoxsIRHigh() {
+  tSetBoxState.setCallback([&](){
+    _tcbIfIRTriggered(_thisCtrlerBox);
+  });
+  tSetBoxState.restart();
+  return true;
+}
+
 
 
 
@@ -117,25 +148,39 @@ const bool laserSignal::checkImpactOfUpstreamInformationOfOtherBox(const uint16_
 
 
 
-/** const bool laserSignal::checkImpactOfThisBoxsIRHigh()
+
+
+
+/*******************************************/
+/** TASK CALLBACKS *************************/
+/*******************************************/
+
+/*************************************/
+/** FOR WEB SIGNAL *******************/
+/*************************************/
+
+/** laserSignal::_tcbSetBoxStateFromWeb(const int16_t _i16boxStateRequestedFromWeb):
  * 
- *  Checks the impact on the boxState of this box of a IR High signal
- *  coming from the IR of this box.
- * 
- *  Called from PIR Controller only.
-*/
-const bool laserSignal::checkImpactOfThisBoxsIRHigh() {
-  tSetBoxState.setCallback([&](){
-    _tcbIfIRTriggered(_thisCtrlerBox);
-  });
-  tSetBoxState.restart();
-  return true;
+ *  set the target boxState from a changeBox request.
+ * */
+void laserSignal::_tcbSetBoxStateFromWeb(const int16_t _i16boxStateRequestedFromWeb) {
+  thisBxStateColl._setBoxTargetState(_i16boxStateRequestedFromWeb);
 }
 
 
 
 
-/***/
+
+/*************************************/
+/** FOR CHANGES IN BOX STATE *********/
+/*************************************/
+
+/** void laserSignal::_tcbIfMeshTriggered(const ControlerBox & _callingBox)
+ * 
+ *  Reads the boxState of the calling box in the controller boxes array.
+ *  Tests whether this signal shall trigger a change in boxState of this box.
+ *  Orders the change in boxState, as the case may be.
+*/
 void laserSignal::_tcbIfMeshTriggered(const ControlerBox & _callingBox) {
   const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(_thisCtrlerBox.i16BoxActiveState);
   // 1. check whether the current boxState is mesh sensitive
@@ -166,6 +211,13 @@ bool laserSignal::_testIfMeshisHigh(const boxState & _currentBoxState, const Con
 }
 
 
+
+
+
+/*************************************/
+/** FOR IR HIGH SIGNALS **************/
+/*************************************/
+
 /** laserSignal::_tcbIfIRTriggered() tests whether:
  *  1. the current boxState is IR sensitive;
  *  2. IR shall be considered as high;
@@ -191,35 +243,12 @@ void laserSignal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
 
 
 /** laserSignal::_testIfIRisHigh() tests, in the following order, whether:
- *  1. the calling box is this box;
- *  2. the signal is more recent than the last registered box state time stamp;
  * 
- * No longer testing:
- *  3. the callingBox is a masterBox;
- *  4. the masterBox has sent an IR high signal more recent than the boxState time stamp.
- *  
- *  TODO in future implementation:
- *  1. activate 3 and 4 re. _testIfIRHighIsAmongMasters;
- *     timestamp of this box's current state. */
+ *  1. the callingBox is a masterBox;
+ *  2. the masterBox has sent an IR high signal more recent than the boxState time stamp.
+ * */
 bool laserSignal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
-  return _testIfIRisHighIsMine(_callingBox);
   // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState.ui16monitoredMasterBoxesNodeNames);
-}
-
-
-
-bool laserSignal::_testIfIRisHighIsMine(const ControlerBox & _callingBox) {
-  if ( _isCallerThisBox(_callingBox) ) {
-    return (_isSignalFresherThanBoxStateStamp(_thisCtrlerBox.ui32lastRecPirHighTime));
-  }
-  return false;
-}
-
-
-
-
-bool laserSignal::_isCallerThisBox(const ControlerBox & _callingBox) {
-  return (std::addressof(_callingBox) == std::addressof((_thisCtrlerBox)));
 }
 
 
@@ -234,12 +263,10 @@ bool laserSignal::_testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, 
 
 
 
-bool laserSignal::_isCallerMonitored(const ControlerBox & _callingBox, const uint16_t _ui16MonitoredNodeName) {
-  return (_callingBox.ui16NodeName == _ui16MonitoredNodeName);
-  }
 
-
-
+/*************************************/
+/** COMMON SUBS **********************/
+/*************************************/
 
 bool laserSignal::_isCallerInMonitoredArray(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames) {
   return (std::find(
