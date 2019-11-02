@@ -97,6 +97,31 @@ void myWSSender::prepareAllIFDataMessage(AsyncWebSocketClient * _client) {
 
 
 
+void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {
+      Serial.println("myWSSender::sendWSData. starting");
+    }
+
+    /** 0. If no client is registered with the WebSocket, just return */
+    if (!(_asyncWebSocketInstance.count())) {
+      Serial.println("myWSSender::sendWSData. No clients connected. Not sending anything.");
+      return;
+    }
+    /** The message is addressed to a specific client or to any client */
+
+    /** 1. Serialize the JSON message into a buffer */
+    AsyncWebSocketMessageBuffer * _buffer = _loadBuffer(_joMsg);
+
+    /** 2. Send the buffered message */
+    _sendMsg(_buffer, _client);
+
+    if (thisControllerBox.globBaseVars.MY_DG_WS) {Serial.println(F("myWSSender::sendWSData. over"));}
+}
+
+
+
+
+
 AsyncWebSocketMessageBuffer * myWSSender::_loadBuffer(JsonObject& _joMsg) {
   /** 1. Measure the size of the message */
   size_t _len = measureJson(_joMsg);
@@ -124,32 +149,6 @@ void myWSSender::_sendMsg(AsyncWebSocketMessageBuffer * _buffer, AsyncWebSocketC
   _client->text(_buffer);
 }
 
-
-
-
-
-void myWSSender::sendWSData(JsonObject& _joMsg, AsyncWebSocketClient * _client) {
-    if (thisControllerBox.globBaseVars.MY_DG_WS) {
-      Serial.println("myWSSender::sendWSData. starting");
-    }
-
-    /** 1. If no client is registered with the WebSocket, just return */
-    if (!(_asyncWebSocketInstance.count())) {
-      Serial.println("myWSSender::sendWSData. No clients connected. Not sending anything.");
-      return;
-    }
-    /** The message is addressed to a specific client or to any client */
-
-    /** 1. Serialize the JSON message into a buffer */
-    AsyncWebSocketMessageBuffer * _buffer = _loadBuffer(_joMsg);
-
-    /** 2. Send the buffered message */
-    _sendMsg(_buffer, _client);
-
-    if (thisControllerBox.globBaseVars.MY_DG_WS) {
-      Serial.println(F("myWSSender::sendWSData. over"));
-    }
-}
 
 
 
