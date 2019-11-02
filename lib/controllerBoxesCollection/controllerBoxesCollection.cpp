@@ -35,6 +35,7 @@ controllerBoxesCollection::controllerBoxesCollection():
  *  Otherwise, it will save such data in the controller boxes array in the first empty slot it finds. */
 uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj) {
   Serial.printf("controllerBoxesCollection::_updateOrCreate(): starting with _ui32nodeId = %u\n", _ui32nodeId);
+
   /** 1. look for the relevant box by nodeId.
    * 
    *  Why looking by NodeID rather than by NodeName?
@@ -43,22 +44,12 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
    *  If my nodeId has changed for the same nodeName, it means that I have unplugged an ESP
    *  and physically changed the device. In such a case, the nodeName will probably have been
    *  deleted anyway. */
-  uint16_t __ui16BoxIndex = 254;
+  uint16_t __ui16BoxIndex = findIndexByNodeIdOrReturnFirstEmptySlot(_ui32nodeId);
 
-  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
-    if ((controllerBoxesArray.at(_i).networkData.nodeId == 0) && (__ui16BoxIndex == 254)) { 
-      __ui16BoxIndex = _i;
-      continue;
-    }
-    if (controllerBoxesArray.at(_i).networkData.nodeId == _ui32nodeId) {
-      printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
-      __ui16BoxIndex = _i;
-      break;
-    }
-  }
-
-  /** If we found an existing box or if we have a slot where to save the data from the JSON object 
-   *  => save the data */
+  /** 2. If we found an existing box or an empty slot:
+   *     1. increment the box counter
+   *     2. save the data from the JSON object;
+   *  */
   if (__ui16BoxIndex != 254) {
     if (controllerBoxesArray.at(__ui16BoxIndex).networkData.nodeId == 0) {
       ui16updateConnectedBoxCount(ui16connectedBoxesCount + 1);
@@ -76,8 +67,9 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
 
 
 uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
-  Serial.printf("controllerBoxesCollection::findIndexByNodeId(): looking for ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-  uint16_t __ui16BoxIndex = 254;
+  const char * _subName = "controllerBoxesCollection::findIndexByNodeId():";
+  Serial.printf("%s looking for ControlerBox with _ui32nodeId = %u\n", _subName, _ui32nodeId);
+  uint16_t __ui16BoxIndex;
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if (controllerBoxesArray.at(_i).networkData.nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
@@ -85,8 +77,8 @@ uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
       break;
     }
   }
-  Serial.printf("controllerBoxesCollection::findIndexByNodeId(): did not find ControlerBox with _ui32nodeId = %u\n", _ui32nodeId);
-  return __ui16BoxIndex;
+  Serial.printf("%s did not find ControlerBox with _ui32nodeId = %u\n", _subName, _ui32nodeId);
+  return 254;
 }
 
 
@@ -101,6 +93,51 @@ uint16_t controllerBoxesCollection::findIndexByNodeName(uint16_t _ui16NodeName) 
     }
   }
   Serial.printf("%s did not find ControlerBox with _ui16NodeName == %u\n", _subName, _ui16NodeName);
+  return 254;
+}
+
+
+
+uint16_t controllerBoxesCollection::findIndexOfFirstEmptySlot() {
+  const char * _subName = "controllerBoxesCollection::findIndexOfFirstEmptySlot():";
+  Serial.printf("%s starting\n", _subName);
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+    if (controllerBoxesArray.at(_i).networkData.nodeId == 0) {
+      return _i;
+    }
+  }
+  Serial.printf("%s did not find any empty slot\n", _subName);
+  return 254;
+}
+
+
+
+uint16_t controllerBoxesCollection::findIndexByNodeIdOrReturnFirstEmptySlot(uint32_t _ui32nodeId) {
+  const char * _subName = "controllerBoxesCollection::findIndexOfFirstEmptySlot():";
+  Serial.printf("%s starting\n", _subName);
+  uint16_t __ui16BoxIndex = 254;
+
+  for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
+    /** if __ui16BoxIndex is still equal to 254, no empty slot has been found so far.
+     *  => test if the current box is an empty slot or the sought for node id. */
+    if (__ui16BoxIndex == 254) {
+      if (controllerBoxesArray.at(_i).networkData.nodeId == 0) {
+        /** found an empty slot => save this box index in __ui16BoxIndex */
+        __ui16BoxIndex = _i;
+        /** continue looking for the box with nodeId == _ui32nodeId which may be further 
+         *  away in the array. */
+        continue;
+      }
+      if (controllerBoxesArray.at(_i).networkData.nodeId == _ui32nodeId) {
+        /** found relevant box => save this box index in _ui16BoxIndex */
+        printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
+        __ui16BoxIndex = _i;
+        break;
+      }
+    }
+  }
+  
+  Serial.printf("%s did not find any empty slot\n", _subName);
   return 254;
 }
 

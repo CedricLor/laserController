@@ -19,6 +19,8 @@ class controllerBoxesCollection
     // Class utilities (finders, etc.)
     uint16_t findIndexByNodeId(uint32_t _ui32nodeId);
     uint16_t findIndexByNodeName(uint16_t _ui16NodeName);
+    uint16_t findIndexOfFirstEmptySlot();
+    uint16_t findIndexByNodeIdOrReturnFirstEmptySlot(uint32_t _ui32nodeId);
     void deleteBoxByNodeId(uint32_t _ui32nodeId);
     void deleteBoxByBoxIndex(uint16_t _ui16index);
 
