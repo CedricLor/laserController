@@ -60,6 +60,8 @@ void myMeshViews::sendBoxState(const int16_t _i16BoxStateIdNbr) {
   _joMsg["key"] = "bs";
   _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
   _joMsg["bs"] = _i16BoxStateIdNbr;
+
+  _sendMsg(_joMsg);
 }
 
 
@@ -71,7 +73,9 @@ void myMeshViews::sendSequence(const int16_t _i16SequenceIdNbr) {
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "sq";
   _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
-  _joMsg["bs"] = _i16SequenceIdNbr;
+  _joMsg["sq"] = _i16SequenceIdNbr;
+
+  _sendMsg(_joMsg);
 }
 
 
@@ -83,7 +87,9 @@ void myMeshViews::sendBar(const int16_t _i16BarIdNbr) {
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "ba";
   _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
-  _joMsg["bs"] = _i16BarIdNbr;
+  _joMsg["ba"] = _i16BarIdNbr;
+
+  _sendMsg(_joMsg);
 }
 
 
@@ -97,6 +103,8 @@ void myMeshViews::sendNote(const uint16_t _ui16LaserToneIdNbr, const uint16_t _u
   _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
   _joMsg["tn"] = _ui16LaserToneIdNbr;
   _joMsg["nt"] = _ui16LaserNote;
+
+  _sendMsg(_joMsg);
 }
 
 
@@ -108,7 +116,9 @@ void myMeshViews::sendTone(const uint16_t _ui16LaserToneIdNbr) {
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "tn";
   _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
-  _joMsg["bs"] = _ui16LaserToneIdNbr;
+  _joMsg["tn"] = _ui16LaserToneIdNbr;
+
+  _sendMsg(_joMsg);
 }
 
 
