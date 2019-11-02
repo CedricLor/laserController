@@ -64,11 +64,18 @@ void myMeshController::_actionSwitch()
    *  
    *  Upon receiving a status message from another box,
    *  read and save the relevant information (on the other
-   *  box) in my controller boxes' array. */
+   *  box) in my controller boxes' array. 
+   * 
+   *  expected _nsobj: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201"}
+   * */
   if (_nsobj["action"] == "s") {
     const uint16_t __ui16BoxIndex = thisControllerBox.thisLaserSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
     if (thisControllerBox.globBaseVars.hasLasers) {
       thisControllerBox.thisLaserSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
+    }
+    if (thisControllerBox.globBaseVars.hasInterface) {
+      myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance());
+      _myWSSender.sendWSData(_nsobj);
     }
     return;
   }
