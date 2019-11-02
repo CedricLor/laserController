@@ -14,7 +14,6 @@ constexpr int      _capacity = JSON_OBJECT_SIZE(MESH_REQUEST_CAPACITY);
 
 class myMeshViews
 {
-  friend class pirController;
   friend class myWSReceiver;
   friend class myMeshController;
   friend class myMesh;
@@ -24,11 +23,13 @@ class myMeshViews
     // Views
     void statusMsg(uint32_t destNodeId=0);
 
+    void sendStatus(uint32_t destNodeId=0);
     void sendBoxState(const int16_t _i16BoxStateIdNbr);
     void sendSequence(const int16_t _i16SequenceIdNbr);
     void sendBar(const int16_t _i16BarIdNbr);
     void sendNote(const uint16_t _ui16LaserToneIdNbr, const uint16_t _ui16LaserNote);
     void sendTone(const uint16_t _ui16LaserToneIdNbr);
+    void sendIRHigh(uint32_t _ui32IRHighTime);
 
   private:
     ControlerBox & _thisCtrlerBox;
@@ -38,7 +39,6 @@ class myMeshViews
 
     void _changedBoxConfirmation(JsonObject& obj);
     void _droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB);
-    void _IRHighMsg(uint32_t _ui32IRHighTime);
 
     // Helpers
     void _sendMsg(JsonObject& msg, uint32_t destNodeId=0);

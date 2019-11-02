@@ -96,7 +96,7 @@ void pirController::_tcbSetPirTimeStampAndBrdcstMsg() {
   uint32_t _ui32thisIRHighTime = globalBaseVariables.laserControllerMesh.getNodeTime();
   _thisCtrlerBox._setBoxIRTimes(_ui32thisIRHighTime);
   _thisLaserSignalHandler.checkImpactOfThisBoxsIRHigh();
-  _thisMeshView._IRHighMsg(_ui32thisIRHighTime);
+  _thisMeshView.sendIRHigh(_ui32thisIRHighTime);
 }
 
 

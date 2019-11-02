@@ -26,6 +26,9 @@ myMeshViews::myMeshViews(ControlerBox & __thisCtrlerBox):
 
 
 
+///////////////////////////////////////////////////////////////////////////////////
+/** ["action"] = "s" -- statusMsg **************/
+/////////////////////////////////////////////////////////////////////////////////// 
 void myMeshViews::statusMsg(uint32_t destNodeId) {
   Serial.println("myMeshViews::statusMsg(): starting");
   
@@ -53,12 +56,39 @@ void myMeshViews::statusMsg(uint32_t destNodeId) {
 
 
 
+///////////////////////////////////////////////////////////////////////////////////
+/** ["action"] = "usi" -- upstream information ***********************************/
+/////////////////////////////////////////////////////////////////////////////////// 
+/** void myMeshViews::sendStatus(uint32_t destNodeId)
+ * 
+ *  Sends the current active boxState, the time at which it was set and the time at which such boxState
+ *  was started.
+ * 
+ *  Method meant to replace void myMeshViews::statusMsg(uint32_t destNodeId)
+ *  -> message structured in coherence with other "usi" messages.
+*/
+void myMeshViews::sendStatus(uint32_t destNodeId) {
+  _jDoc.clear();
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "status";
+  _joMsg["bs"] = _thisCtrlerBox.i16BoxActiveState;
+  _joMsg["time"] = _thisCtrlerBox.ui32BoxActiveStateStartTime; // gets the recorded mesh time
+  // _joMsg["dur"] = TO BE COMPLETED
+  _joMsg["bds"] = _thisCtrlerBox.sBoxDefaultState;
+
+  _sendMsg(_joMsg, destNodeId);
+}
+
+
+
+
 
 void myMeshViews::sendBoxState(const int16_t _i16BoxStateIdNbr) {
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "bs";
-  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["time"] = _thisCtrlerBox.ui32BoxActiveStateStartTime;
+  // _joMsg["dur"] = TO BE COMPLETED
   _joMsg["bs"] = _i16BoxStateIdNbr;
 
   _sendMsg(_joMsg);
@@ -72,7 +102,16 @@ void myMeshViews::sendSequence(const int16_t _i16SequenceIdNbr) {
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "sq";
-  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  /** to set "time", we need to save the time at which the sequence started 
+   *  and pass it as an argument to this sendSequence() method. */
+  _joMsg["time"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  /** to set "dur" (duration), we need to pass this function the duration of the sequence calculated
+   *  in the sequence class. */
+  // _joMsg["dur"] = TO BE COMPLETED;
+  /** to set _joBeat, we need to pass this function the beat at which the sequence is being played. */
+  JsonObject _joBeat = _joMsg["beat"].createNestedObject();
+  // _joBeat["bpm"] = TO BE COMPLETED;
+  // _joBeat["bnb"] = TO BE COMPLETED;
   _joMsg["sq"] = _i16SequenceIdNbr;
 
   _sendMsg(_joMsg);
@@ -86,7 +125,16 @@ void myMeshViews::sendBar(const int16_t _i16BarIdNbr) {
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "ba";
-  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  /** to set "time", we need to save the time at which the bar started 
+   *  and pass it as an argument to this sendBar() method. */
+  _joMsg["time"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  /** to set "dur" (duration), we need to pass this function the duration of the bar calculated
+   *  in the bar class. */
+  // _joMsg["dur"] = TO BE COMPLETED;
+  /** to set _joBeat, we need to pass this function the beat at which the bar is being played. */
+  JsonObject _joBeat = _joMsg["beat"].createNestedObject();
+  // _joBeat["bpm"] = TO BE COMPLETED;
+  // _joBeat["bnb"] = TO BE COMPLETED;
   _joMsg["ba"] = _i16BarIdNbr;
 
   _sendMsg(_joMsg);
@@ -100,7 +148,16 @@ void myMeshViews::sendNote(const uint16_t _ui16LaserToneIdNbr, const uint16_t _u
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "nt";
-  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  /** to set "time", we need to save the time at which the bar started 
+   *  and pass it as an argument to this sendBar() method. */
+  _joMsg["time"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  /** to set "dur" (duration), we need to pass this function the duration of the bar calculated
+   *  in the bar class. */
+  // _joMsg["dur"] = TO BE COMPLETED;
+  /** to set _joBeat, we need to pass this function the beat at which the bar is being played. */
+  JsonObject _joBeat = _joMsg["beat"].createNestedObject();
+  // _joBeat["bpm"] = TO BE COMPLETED;
+  // _joBeat["bnb"] = TO BE COMPLETED;
   _joMsg["tn"] = _ui16LaserToneIdNbr;
   _joMsg["nt"] = _ui16LaserNote;
 
@@ -115,7 +172,7 @@ void myMeshViews::sendTone(const uint16_t _ui16LaserToneIdNbr) {
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "tn";
-  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
+  _joMsg["time"] = globalBaseVariables.laserControllerMesh.getNodeTime();
   _joMsg["tn"] = _ui16LaserToneIdNbr;
 
   _sendMsg(_joMsg);
@@ -125,6 +182,25 @@ void myMeshViews::sendTone(const uint16_t _ui16LaserToneIdNbr) {
 
 
 
+void myMeshViews::sendIRHigh(uint32_t _ui32IRHighTime) {
+  _jDoc.clear();
+
+  // load the JSON document with values
+  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
+  _joMsg["key"] = "IR";
+  _joMsg["time"] = _ui32IRHighTime;
+
+  // broadcast IR high message
+  _sendMsg(_joMsg);
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+/** ["action"] = "changeBox" -- upstream information *****************************/
+/////////////////////////////////////////////////////////////////////////////////// 
 void myMeshViews::_droppedNodeNotif(uint16_t _ui16droppedNodeIndexInCB) {
   _jDoc.clear();
 
@@ -172,23 +248,6 @@ void myMeshViews::_changedBoxConfirmation(JsonObject& __obj) {
   _sendMsg(__obj);
 
   Serial.println("myMeshViews::_changedBoxConfirmation(): over");
-}
-
-
-
-
-
-void myMeshViews::_IRHighMsg(uint32_t _ui32IRHighTime) {
-  _jDoc.clear();
-
-  // load the JSON document with values
-  _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
-  _joMsg["key"] = "IR";
-  _joMsg["time"] = _ui32IRHighTime;
-  _joMsg["now"] = globalBaseVariables.laserControllerMesh.getNodeTime();
-
-  // broadcast IR high message
-  _sendMsg(_joMsg);
 }
 
 
