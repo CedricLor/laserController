@@ -10,14 +10,17 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////
-/** myMeshViews::myMeshViews(): message sender for controller boxes
+/** myMeshViews::myMeshViews(): 
  * 
- * Upon instantiation, the constructor updates the properties of this ControlerBox
- * in the array of ControlerBoxes (APIP, StationIP, NodeName).
- * After having instantiating it, you have to call a message builder, that will:
- * 2. create a structured String with the params you passed it on;
- * 3. passe this String to the sendBroadcast or sendSingle methods of painlessMesh.
- * painlessMesh takes care of the broadcast/sending.
+ *  message sender for controller boxes
+ * 
+ *  myMeshViews needs to be instantiated by the method that will use it.
+ * 
+ *  Once instantiated it, the user has to call one of the provided message builders, that will:
+ *  2. populate the JsonDocument/JsonObject with the passed-on parameters;
+ *  3. passe this JsonObject to the _sendMsg method, which will call the send methods of painlessMesh.
+ * 
+ *  painlessMesh takes care of the broadcast/sending.
  * */
 myMeshViews::myMeshViews(ControlerBox & __thisCtrlerBox):
   _thisCtrlerBox(__thisCtrlerBox)
@@ -33,10 +36,7 @@ myMeshViews::myMeshViews(ControlerBox & __thisCtrlerBox):
  * 
  *  Sends the current active boxState, the time at which it was set and the time at which such boxState
  *  was started.
- * 
- *  Method meant to replace void myMeshViews::statusMsg(uint32_t destNodeId)
- *  -> message structured in coherence with other "usi" messages.
-*/
+ * */
 void myMeshViews::sendStatus(uint32_t destNodeId) {
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
@@ -53,13 +53,13 @@ void myMeshViews::sendStatus(uint32_t destNodeId) {
 
 
 
-void myMeshViews::sendBoxState(const int16_t _i16BoxStateIdNbr) {
+void myMeshViews::sendBoxState(const int16_t _i16BoxStateId) {
   _jDoc.clear();
   _joMsg["action"] = "usi"; // "usi" for upstream information (from the ControlerBox to the Mesh)
   _joMsg["key"] = "bs";
+  _joMsg["bs"] = _i16BoxStateId;
   _joMsg["time"] = _thisCtrlerBox.ui32BoxActiveStateStartTime;
   // _joMsg["dur"] = TO BE COMPLETED
-  _joMsg["bs"] = _i16BoxStateIdNbr;
 
   _sendMsg(_joMsg);
 }

@@ -23,7 +23,6 @@ ControlerBox::ControlerBox(uint16_t __ui16NodeName):
 
   isNewBoxHasBeenSignaled(true),
   boxDeletionHasBeenSignaled(true),
-  boxActiveStateHasBeenSignaled(true), // has it been signaled to the browser by the interface?
   sBoxDefaultStateChangeHasBeenSignaled(true)
 { }
 
@@ -39,7 +38,6 @@ void ControlerBox::_printProperties(const uint16_t __ui16BoxIndex) {
 
   Serial.printf("%s[%u] -> i16BoxActiveState: %i\n", _methodName, __ui16BoxIndex, i16BoxActiveState);
   Serial.printf("%s[%u] -> ui32BoxActiveStateStartTime: %u\n", _methodName, __ui16BoxIndex, ui32BoxActiveStateStartTime);
-  Serial.printf("%s[%u] -> boxActiveStateHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, boxActiveStateHasBeenSignaled);
 
   Serial.printf("%s[%u] -> ui32lastRecPirHighTime: %u\n", _methodName, __ui16BoxIndex, ui32lastRecPirHighTime);
 
@@ -48,13 +46,6 @@ void ControlerBox::_printProperties(const uint16_t __ui16BoxIndex) {
 
   Serial.printf("%s[%u] -> sBoxDefaultState: %u\n", _methodName, __ui16BoxIndex, sBoxDefaultState);
   Serial.printf("%s[%u] -> sBoxDefaultStateChangeHasBeenSignaled: %i\n", _methodName, __ui16BoxIndex, sBoxDefaultStateChangeHasBeenSignaled);
-}
-
-
-
-
-const bool ControlerBox::_isBoxActiveStateGoingToChange(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) const {
-  return ((i16BoxActiveState != _i16boxActiveState) || (ui32BoxActiveStateStartTime != _ui32BoxActiveStateStartTime));
 }
 
 
@@ -70,24 +61,9 @@ const bool ControlerBox::_isBoxActiveStateGoingToChange(const int16_t _i16boxAct
  *    change from the mesh.
 */
 const bool ControlerBox::_setBoxActiveState(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) {
-  // Serial.println("ControlerBox::setBoxActiveState(): starting");
-
-  if ( _isBoxActiveStateGoingToChange(_i16boxActiveState, _ui32BoxActiveStateStartTime) ) {
-    i16BoxActiveState = _i16boxActiveState;
-    ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
-
-    boxActiveStateHasBeenSignaled = false;
-    /** boxActiveStateHasBeenSignaled setters:
-     *  - by default to true upon init (controlerBox constructor);
-     *  - to false here;
-     *  - to false in myWSReceiver and to true in myWSSender, in the IF: to track change request
-     *    coming from the web and whether the states of other boxes have been received;
-     *  - to true in myMeshViews (for this box only, upon sending a statusMsg);
-     * */
-    return true;
-  }
-  // Serial.println("ControlerBox::setBoxActiveState(): over");
-  return false;
+  i16BoxActiveState = _i16boxActiveState;
+  ui32BoxActiveStateStartTime = _ui32BoxActiveStateStartTime;
+  return true;
 }
 
 

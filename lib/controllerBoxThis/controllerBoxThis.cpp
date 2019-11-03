@@ -52,7 +52,7 @@ void controllerBoxThis::_updateThisBoxNodeName() {
 void controllerBoxThis::updateThisBoxProperties() {
   _updateThisBoxNetWorkProperties();
   _updateThisBoxNodeName();
-  // For this box, i16BoxActiveState, boxActiveStateHasBeenSignaled and ui32BoxActiveStateStartTime are updated
+  // For this box, i16BoxActiveState and ui32BoxActiveStateStartTime are updated
   // by calls to setBoxActiveState from boxState
   if (globBaseVars.MY_DEBUG == true) {
     Serial.println("controllerBoxThis::updateThisBoxProperties(): Updated myself. Calling printProperties().\n");

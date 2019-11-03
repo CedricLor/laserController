@@ -35,10 +35,13 @@ class myWSResponder
   private:
     AsyncWebSocket & _asyncWebSocketInstance;
 
-    bool _checkWhetherUnsignaledNewBox(ControlerBox & _controlerBox, JsonObject & _obj);
-    bool _checkWhetherUnsignaledDefaultStateChange(ControlerBox & _controlerBox, JsonObject & _obj);
-    bool _checkWhetherUnsignaledBoxStateChange(ControlerBox & _controlerBox, JsonObject & _obj);
-    bool _checkWhetherUnsignaledDeletedBox(ControlerBox & _controlerBox, JsonObject & _obj);
+    StaticJsonDocument<256> _jDoc;
+    JsonObject _joMsg = _jDoc.to<JsonObject>();
+
+    bool _checkWhetherUnsignaledNewBox(ControlerBox & _controlerBox);
+    bool _checkWhetherUnsignaledDefaultStateChange(ControlerBox & _controlerBox);
+    bool _checkWhetherUnsignaledBoxStateChange(ControlerBox & _controlerBox);
+    bool _checkWhetherUnsignaledDeletedBox(ControlerBox & _controlerBox);
 
     void _checkBoxStateAndSendMsgATCMB(uint16_t _ui16BoxIndex, controllerBoxesCollection & _ctlBxColl, myWSSender & _myWSSender);
     void _tcbSendWSDataIfChangeStationIp();
@@ -52,16 +55,7 @@ class myWSResponder
     Task tSendWSDataIfChangeStationIp;
     Task tSendWSDataIfChangeBoxState;
 
+    void signalNewBox(ControlerBox & _controlerBox);
 };
-
-
-
-
-
-
-
-
-
-
 
 #endif

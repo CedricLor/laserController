@@ -55,17 +55,6 @@ class ControlerBox
      * of ControlerBoxes and inform the user by sending a WS message to the
      * browser. */
     bool boxDeletionHasBeenSignaled;
-    /** bool boxActiveStateHasBeenSignaled:
-     * 
-     * - set by the ControlerBox itself upon a changes of i16BoxActiveState 
-     * triggered by the mesh, boxState events, steps or WS requests.
-     * 
-     * - read by myWSSender, myWSReceiver, myMeshViews and boxState.
-     * 
-     * Usefull on the IF: allows the myWSSender to know of changes of boxStates
-     * of the ControlerBoxes and inform the user by sending a WS message to the
-     * browser. */
-    bool boxActiveStateHasBeenSignaled;
     /** bool isNewBoxHasBeenSignaled: allows myWSSender to detect new boxes and
      *  inform the user by sending a WS message to the browser.
      * 
@@ -79,7 +68,6 @@ class ControlerBox
     void _setBoxDefaultState(const short _sBoxDefaultState);
     void _setBoxIRTimes(const uint32_t _ui32lastRecPirHighTime);
     void _updateBoxProperties(uint32_t _ui32SenderNodeId, JsonObject& _obj, uint16_t __ui16BoxIndex);
-    const bool _isBoxActiveStateGoingToChange(const int16_t _i16boxActiveState, const uint32_t _ui32BoxActiveStateStartTime) const;
     void _deleteBox(const uint16_t _ui16BoxIndex);
 };
 

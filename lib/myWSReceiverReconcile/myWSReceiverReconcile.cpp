@@ -166,7 +166,8 @@ void myWSReceiverReconcile::_checkBoxStateConsistancy(JsonPair& _p) {
   // check if it has the correct boxState; if not, ask for an update
   if (_controllerBoxesArray.at(_iBoxIndex).i16BoxActiveState != (int)(_p.value().as<char*>())) {
     // this line will trigger in the callback of task _tSendWSDataIfChangeBoxState
-    _controllerBoxesArray.at(_iBoxIndex).boxActiveStateHasBeenSignaled = false;
+    myWSResponder _myWSResponder(_asyncWebSocketInstance);
+    _myWSResponder.signalNewBox(_controllerBoxesArray.at(_iBoxIndex));
   } // end if
 }
 
