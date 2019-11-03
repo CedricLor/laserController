@@ -1108,7 +1108,7 @@ const grpStrs = {
   softAP:         new grpSetter({selector: 'div.mesh_softap_setters'}),
   dlgtdBtnEvent:  undefined,
 
-  /** grpStrs.setDelegatedBtnClickedEvent() sets an event listener on the settersGrp, listening to the
+  /** grpStrs.addEvtListner() sets an event listener on the settersGrp, listening to the
    *  events bubbling from its buttons. */
   addEvtListner: () => {
     grpStrs.dlgtdBtnEvent = new dlgtdBtnEvt({parent: grpStrs});
