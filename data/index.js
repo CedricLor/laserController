@@ -996,7 +996,8 @@ class bxCont {
 
 
 /** class inpt: <input> holder and setter
- *  TODO: could also be carrying out validations on user inputs
+ *  
+ * TODO: could also be carrying out validations on user inputs
  */
 class inpt {
   // props {parent: this, name: _input.id, vElt: node, value: props[_input.id]}
@@ -1088,6 +1089,203 @@ class grpSetter {
     });
     // console.log("wifiSetter: update: this.inputsMap.size = " + this.inputsMap.size);
     // add an event handler for clicks on grp buttons
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+/** class grpSetterCont: template class for a grpStrs object, 
+ *  holding the logic above grpSetter.
+ * 
+ *   A grpSetter has:
+ *   - a wifi group setter;
+ *   - a rootIF group setter;
+ *   - a mesh group setter;
+ *   - a softAP group setter;
+ *   - an instance of dlgtdBtnEvt (an event listener on 
+ *     the various buttons of the various group setters).
+ *  */
+class grpSetterCont {
+  // props: {selector: 'div.wifi_setters', ssid: "blabla", pass: "blabla", gatewayIP: "192.168.43.1", ui16GatewayPort: 0, ui8WifiChannel: 6, fixedIP: "192.168.43.1", fixedNetmaskIP: "255.255.255.0"}
+  constructor(props={}) {
+    // if no selector has been provided, just return
+    if (!(props.selector)) {
+      return;
+    }
+
+    this.wifi           = new grpSetter({selector: 'div.wifi_setters'});
+    this.rootIF         = new grpSetter({selector: 'div.mesh_spec_nodes_setters'});
+    this.mesh           = new grpSetter({selector: 'div.mesh_gp_setters'});
+    this.softAP         = new grpSetter({selector: 'div.mesh_softap_setters'});
+
+    this.dlgtdBtnEvent  = undefined;
+    this.addEvtListner();
+  }
+
+  /** grpSetterCont.addEvtListner():
+   * 
+   *  sets an event listener on the document, listening to the
+   *  events bubbling from the buttons of the grpSetter embedded in the grpSetterCont. */
+  addEvtListner() {
+    this.dlgtdBtnEvent = new dlgtdBtnEvt({parent: this});
+    document.addEventListener('click', this.dlgtdBtnEvent.onClick.bind(this.dlgtdBtnEvent), false);
+  }
+  
+  /** grpSetterCont.update(_data):
+   *  
+   *  Update function, that updates the embedded grpSetter members from the data
+   *  passed in _data.
+   * 
+   *  @param {*}: _data: 
+   *  {"action":3,
+   *  "serverIP":[192,168,43,50],
+   *  "wifi":{"wssid":"LTVu_dG9ydG9y","wpass":"totototo","wgw":[192,168,43,50],"wgwp":5555,"wch":6,"wfip":[192,168,43,50],"wnm":[192,168,43,50]},
+   *  "rootIF":{"roNNa":200,"IFNNA":200},
+   *  "softAP":{"sssid":"ESP32-Access-Point","spass":"123456789","sIP":[192,168,43,50],"sgw":[192,168,43,50],"snm":[192,168,43,50]},
+   *  "mesh":{"mssid":"laser_boxes","mpass":"somethingSneaky","mport":5555}} */
+  update(_data) {
+    this.wifi.update(Object.assign(_data.wifi, _data.serverIP));
+    this.rootIF.update(_data.rootIF);
+    this.softAP.update(_data.softAP);
+    this.mesh.update(Object.assign(_data.mesh, {mch: _data.wifi.wch}));  
+  }
+
+  /** grpSetterCont._eventTargetSwitch(_targt, _obj):
+   * 
+   *  checks whether the event.target HTML element (passed in _targt) 
+   *  matches with one of the selectors of the various embedded grpSetter members.
+   *  
+   *  Each selector is composed of:
+   *  - the corresponding grpSetter (wifi, mesh, softAP, etc.) button group selector; and 
+   *  - the corresponding button id.
+   * 
+   *  - If so, it: 
+   *      - sets the Json _obj fields (_obj.lb, _obj.action and the common fields);
+   *      - returns an array containing (i) the Json _obj and (ii) the relevant btnGrp to the dlgtdBtnEvt.
+   * 
+   * - Else, it returns a [false, false] to the dlgtdBtnEvt.
+   * 
+   *  @param: _targt: event.target HTMLElt
+   *  @param: _obj: a basic Json _obj
+   * 
+   *  @return: [the Json _obj ready to be sent, the relevant btnGrp] or [false, false]
+   *  
+   *  Gets called from a dlgtdBtnEvent instance.
+   * */
+  _eventTargetSwitch(_targt, _obj) {
+    console.log("grpSetterCont._eventTargetSwitch(_targt, _obj): starting");
+
+    /**  1. Special node setters: checks whether the event.target HTML element matches with the selector 
+     * "button#saveRootNodeNumb" */
+    if (_targt.matches(grpSetterCont.rootIF.btnGrp.btnGpSelectorProto + "#saveRootNodeNumb")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.rootIF.inputsMap);
+      _obj.val    = "RoSet";
+      return [_obj, grpSetterCont.rootIF.btnGrp];
+    // {"action":"changeNet","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
+    }
+    /**  2. Special node setters: checks whether the event.target HTML element matches with the selector 
+     * "button#applyRootNodeNumb" */
+    if (_targt.matches(grpSetterCont.rootIF.btnGrp.btnGpSelectorProto + "#applyRootNodeNumb")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.rootIF.inputsMap, "apply");
+      _obj.val    = "RoSet";
+      return [_obj, grpSetterCont.rootIF.btnGrp];
+    // {"action":"changeNet","key":"apply","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"RoSet"}
+    }
+    /**  3. Special node setters: checks whether the event.target HTML element matches with the selector 
+     * "button#saveIFNodeNumb" */
+    if (_targt.matches(grpSetterCont.rootIF.btnGrp.btnGpSelectorProto + "#saveIFNodeNumb")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.rootIF.inputsMap);
+      _obj.val    = "IFSet";
+      _obj.action = "changeBox";
+      _obj.lb     = parseInt((grpSetterCont.rootIF.inputsMap.get("IFNNA")).getValue(), 10) - 200;
+      return [_obj, grpSetterCont.rootIF.btnGrp];
+    // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":0,"val":"IFSet"}
+    }
+    /**  4. Special node setters: checks whether the event.target HTML element matches with the selector 
+     * "button#applyIFNodeNumb" */
+    if (_targt.matches(grpSetterCont.rootIF.btnGrp.btnGpSelectorProto + "#applyIFNodeNumb")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.rootIF.inputsMap, "apply");
+      _obj.val    = "IFSet";
+      _obj.action = "changeBox";
+      _obj.lb     = parseInt((grpSetterCont.rootIF.inputsMap.get("IFNNA")).getValue(), 10) - 200;
+      return [_obj, grpSetterCont.rootIF.btnGrp];
+    // {"action":"changeBox","key":"save","dataset":{"roNNa":"200","IFNNA":"200"},"lb":"all","val":"IFSet"}
+    }
+
+    /**  5. SoftAP setters: checks whether the event.target HTML element matches with the selector 
+     * "button#saveSoftAPSettings" */
+    if (_targt.matches(grpSetterCont.softAP.btnGrp.btnGpSelectorProto + "#saveSoftAPSettings")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.softAP.inputsMap);
+      _obj.val    = "softAP";
+      return [_obj, grpSetterCont.softAP.btnGrp];
+    }
+    /**  6. SoftAP setters: checks whether the event.target HTML element matches with the selector 
+     * "button#applySoftAPSettings" */
+    if (_targt.matches(grpSetterCont.softAP.btnGrp.btnGpSelectorProto + "#applySoftAPSettings")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.softAP.nputsMap, "apply");
+      _obj.val    = "softAP";
+      return [_obj, grpSetterCont.softAP.btnGrp];
+    }
+
+    /**  7. Mesh setters: checks whether the event.target HTML element matches with the selector 
+     * "button#saveMeshSettings" */
+    if (_targt.matches(grpSetterCont.mesh.btnGrp.btnGpSelectorProto + "#saveMeshSettings")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.mesh.inputsMap);
+      _obj.val    = "mesh";
+      return [_obj, grpSetterCont.mesh.btnGrp];
+    }
+    // /**  ___. Mesh setters: checks whether the event.target HTML element matches with the selector 
+    //  * "button#applyMeshSettings" */
+    // if (_targt.matches(grpSetterCont.mesh.btnGrp.btnGpSelectorProto + "#applyMeshSettings")) {
+    //   _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.mesh.inputsMap, "apply");
+    //   _obj.val    = "mesh";
+    //   return [_obj, grpSetterCont.mesh.btnGrp];
+    // }
+
+    /**  8. Wifi setters: checks whether the event.target HTML element matches with the selector 
+     * "button#saveWifiSettingsIF" */
+    if (_targt.matches(grpSetterCont.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsIF")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.wifi.inputsMap);
+      _obj.val    = "wifi";
+      _obj.lb     = 0;
+      _obj.action = "changeBox";
+        return [_obj, grpSetterCont.wifi.btnGrp];
+    }
+    /**  9. Wifi setters : checks whether the event.target HTML element matches with the selector 
+     * "button#saveWifiSettingsAll" */
+    if (_targt.matches(grpSetterCont.wifi.btnGrp.btnGpSelectorProto + "#saveWifiSettingsAll")) {
+      _obj        = grpSetterCont._baseObj(_obj, grpSetterCont.wifi.inputsMap);
+      _obj.val    = "wifi";
+      return [_obj, grpSetterCont.wifi.btnGrp];
+    }
+    return [false, false];
+  }
+
+  /** grpSetterCont._baseObj(_obj, inputsMap)
+   * 
+   * @param {*} _obj: JSON object received from the dlgtdBtnEvt handler
+   * @param {*} inputsMap: map of inputs from where new data shall be read
+   */
+  _baseObj(_obj, inputsMap, key="save") {
+    _obj.key      = key;
+    _obj.dataset  = Object.create(null);
+    // console.log("grpSetterCont._baseObj: inputsMap.size(): " + inputsMap.size);
+    inputsMap.forEach((_inpt, _k) => {
+      // console.log("grpSetterCont._baseObj: _obj.dataset[_k] = _inpt.getValue(): _obj.dataset[" + _k + "] = " + _inpt.getValue());
+      _obj.dataset[_k] = _inpt.getValue();
+    });
+    _obj.lb     = "all";
+    _obj.action = "changeNet";
+  // console.log("grpSetterCont._baseObj: _obj.dataset: " + JSON.stringify(_obj.dataset));
+    return _obj;
   }
 }
 
@@ -1505,6 +1703,18 @@ var connectionObj = {
       // Fill in the data in the DOM and add some eventHandlers
       connectionObj.sendRecvdServIPConfirmation();
       updateGlobalInformation(_data);
+      return;
+    }
+
+    if (_data.action === "usi" && (_data.key === "bs")||(_data.key === "status")) {
+      /** Metaprogramming:
+       *  1. check whether the box exists in the boxes map;
+       *  2. if it does not exist: 
+       *     a. create it and populate its boxState (and eventually, default boxState)
+       *        with the corresponding values;
+       *     b. run through the group controls stack (onReboot object)
+       *  3. if it exist: update the corresponding values.
+       */
       return;
     }
 
