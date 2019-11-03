@@ -99,6 +99,10 @@ void myMeshController::_actionSwitch()
     if (thisControllerBox.globBaseVars.hasLasers) {
       thisControllerBox.thisLaserSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
     }
+    if (thisControllerBox.globBaseVars.hasInterface) {
+      myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance());
+      _myWSSender.sendWSData(_nsobj);
+    }
     return;
   }
 
@@ -141,21 +145,24 @@ void myMeshController::_actionSwitch()
 
 
 
-/** CHANGEBOX REQUEST AND CONFIRMATION */
-/* myMeshController::_changeBox(): called upon receiving a message marked with _nsobj["action"] == "changeBox".
+/** myMeshController::_changeBox(): 
  * 
- * Switches between changeBox requests and changeBox confirmations.
+ *  Switches between changeBox requests and changeBox confirmations.
  * 
- * "changeBox requests" are sent by the IF to the laser controllers ONLY.
- * "changeBox confirmations" are sent by the laser controllers and are received (and acted upon) by 
- *  BOTH the IF and the laser controllers. */
+ *  called upon receiving a message marked with _nsobj["action"] == "changeBox".
+ * 
+ *  - "changeBox requests" are sent by the IF to the laser controllers ONLY.
+ *  - "changeBox confirmations" are sent by the laser controllers and are received
+ *     (and acted upon) by BOTH the IF and the laser controllers.
+ * 
+ *  {@params}:
+ *  - on "changeBox requests":
+ *      _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
+ *      _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
+ *  - on "changeBox confirmations":
+ *      _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
+ *  */
 void myMeshController::_changeBox() {
-  // ON REQUEST:
-  // _nsobj = {action: "changeBox"; key: "boxState"; lb: 1; val: 3, st: 1} // boxState // ancient 4
-  // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 1} // boxDefstate // ancient 9
-  // ON CONFIRMATION:
-  // _nsobj = {action: "changeBox"; key: "boxDefstate"; lb: 1; val: 3, st: 2} // boxDefstate // ancient 9
-
   // if this is a change request
   if (_nsobj["st"].as<uint8_t>() == 1) {
       // Serial.println("------------------------------ THIS IS A CHANGE REQUEST ---------------------------");
@@ -163,7 +170,6 @@ void myMeshController::_changeBox() {
 
     return;
   }
-
   // if this is a change confirmation
   if (_nsobj["st"].as<uint8_t>() == 2) {
       // Serial.println("------------------------------ THIS IS A CHANGE CONFIRMATION ---------------------------");
@@ -283,9 +289,10 @@ void myMeshController::_changedBoxConfirmation() {
   // _nsobj = {action: "changeBox"; key: "reboot"; lb: 1; save: 1, st: 2} // boxDefstate // ancient 9
   if (_nsobj["key"] == "save") {
     // Serial.println("----------------- THIS A SAVE CONFIRMATION ---------------");
-    myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance());
-    _myWSSender.sendWSData(_nsobj);
-    return;
+    if (thisControllerBox.globBaseVars.hasInterface) {
+      myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance());
+      _myWSSender.sendWSData(_nsobj);
+    }
   }
 }
 
