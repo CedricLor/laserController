@@ -46,6 +46,7 @@ class laserSignal
     void _tcbIfMeshTriggered(const ControlerBox & _callingBox);
     bool _testIfMeshisHigh(const boxState & _currentBoxState, const ControlerBox & _callingBox);
 
+    void _tcbIfIRTriggeredIsMyIR();
     void _tcbIfIRTriggered(const ControlerBox & _callingBox);
     bool _testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState);
     bool _testIfIRHighIsAmongMasters(const ControlerBox & _callingBox, const std::array<uint16_t, 4U> & __ui16monitoredMasterBoxesNodeNames);

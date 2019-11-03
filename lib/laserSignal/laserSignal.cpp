@@ -218,10 +218,32 @@ bool laserSignal::_testIfMeshisHigh(const boxState & _currentBoxState, const Con
 /** FOR IR HIGH SIGNALS **************/
 /*************************************/
 
-/** laserSignal::_tcbIfIRTriggered() tests whether:
- *  1. the current boxState is IR sensitive;
- *  2. IR shall be considered as high;
- *  and if both conditions are fullfilled, it resets/changes
+/** void laserSignal::_tcbIfIRTriggeredIsMyIR():
+ * 
+ *  tests whether the current boxState is IR sensitive. If so,
+ *  it resets/changes thisBox targetState in the boxState class.
+*/
+void laserSignal::_tcbIfIRTriggeredIsMyIR() {
+  Serial.println("+++++++++++++++++++++++++ _tcbIfIRTriggered +++++++++++++++++++++++++");
+  const boxState & _currentBoxState = thisBxStateColl.boxStatesArray.at(_thisCtrlerBox.i16BoxActiveState);
+  // 1. check whether the current boxState is IR sensitive
+  if (_currentBoxState.i16onIRTrigger == -1) {
+    return;
+  }
+  thisBxStateColl._setBoxTargetState(_currentBoxState.i16onIRTrigger);
+}
+
+
+
+
+
+/** laserSignal::_tcbIfIRTriggered():
+ * 
+ *  tests whether:
+ *    1. the current boxState is IR sensitive;
+ *    2. IR shall be considered as high;
+ * 
+ *  If both conditions are fullfilled, it resets/changes
  *  thisBox targetState in boxState. 
  * 
  *  TODO:
@@ -233,7 +255,7 @@ void laserSignal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
   if (_currentBoxState.i16onIRTrigger == -1) {
     return;
   }
-  // 2. if so, check whether IR has been triggered
+  // 2. if so, check whether IR has been triggered and if so, set the target set accordingly
   if (_testIfIRisHigh(_callingBox, _currentBoxState)) {
     thisBxStateColl._setBoxTargetState(_currentBoxState.i16onIRTrigger);
   }
@@ -248,6 +270,7 @@ void laserSignal::_tcbIfIRTriggered(const ControlerBox & _callingBox) {
  *  2. the masterBox has sent an IR high signal more recent than the boxState time stamp.
  * */
 bool laserSignal::_testIfIRisHigh(const ControlerBox & _callingBox, const boxState & _currentBoxState) {
+  return true;
   // _testIfIRHighIsAmongMasters(_callingBox, _currentBoxState.ui16monitoredMasterBoxesNodeNames);
 }
 

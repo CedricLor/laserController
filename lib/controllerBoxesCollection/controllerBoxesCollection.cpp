@@ -69,7 +69,7 @@ uint16_t controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonOb
 uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
   const char * _subName = "controllerBoxesCollection::findIndexByNodeId():";
   Serial.printf("%s looking for ControlerBox with _ui32nodeId = %u\n", _subName, _ui32nodeId);
-  uint16_t __ui16BoxIndex;
+  uint16_t __ui16BoxIndex = 254;
   for (uint16_t _i = 0; _i < globalBaseVariables.gui16BoxesCount; _i++) {
     if (controllerBoxesArray.at(_i).networkData.nodeId == _ui32nodeId) {
       printSearchResults(_i, _ui32nodeId, "_ui32nodeId");
@@ -78,7 +78,7 @@ uint16_t controllerBoxesCollection::findIndexByNodeId(uint32_t _ui32nodeId) {
     }
   }
   Serial.printf("%s did not find ControlerBox with _ui32nodeId = %u\n", _subName, _ui32nodeId);
-  return 254;
+  return __ui16BoxIndex;
 }
 
 
