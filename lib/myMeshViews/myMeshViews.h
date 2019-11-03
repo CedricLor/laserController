@@ -21,7 +21,6 @@ class myMeshViews
   public:
     myMeshViews(ControlerBox & __thisCtrlerBox);
     // Views
-    void statusMsg(uint32_t destNodeId=0);
 
     void sendStatus(uint32_t destNodeId=0);
     void sendBoxState(const int16_t _i16BoxStateIdNbr);

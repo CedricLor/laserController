@@ -54,50 +54,28 @@ void myMeshController::_actionSwitch()
   // if debug, serial print the action field
   if (thisControllerBox.globBaseVars.MY_DG_MESH) { Serial.printf("myMeshController::_actionSwitch: _action = %s\n", _action);}
 
-
-
-
-  /** 1. STATUS MESSAGE (received by all, sent by LBs only).
-   * 
-   *  The boxState of another box has changed and is being
-   *  signalled to the mesh.
-   *  
-   *  Upon receiving a status message from another box,
-   *  read and save the relevant information (on the other
-   *  box) in my controller boxes' array. 
-   * 
-   *  expected _nsobj: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201"}
-   * */
-  if (_nsobj["action"] == "s") {
-    const uint16_t __ui16BoxIndex = thisControllerBox.thisLaserSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
-    if (thisControllerBox.globBaseVars.hasLasers) {
-      thisControllerBox.thisLaserSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
-    }
-    if (thisControllerBox.globBaseVars.hasInterface) {
-      myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance());
-      _myWSSender.sendWSData(_nsobj);
-    }
-    return;
-  }
-
-
-
-
-  /** 2. USI MESSAGE (received by all, sent by LBs only).
+  /** 1. USI MESSAGE (received by all, sent by LBs only).
    * 
    *  Another box is broadcasting "usi" (i.e. upstream 
    *  information) to the mesh.
    * 
-   *  For the moment, "usi" are limited to IR High 
-   *  information.
-   *  
    *  Upon receiving a "usi" message from another box,
    *  read and save the relevant information (on the other
-   *  box) in my controller boxes' array. */
+   *  box) in my controller boxes' array. 
+   * 
+   *  expected _nsobj: {"action":"usi";"key":"IR";"time":6059117;"NNa":"201"}
+   *  expected _nsobj: {"action":"usi";"key":"status";"bs":8;"time":6059117;"bds":5;"NNa":"201"}
+   *  expected _nsobj: {"action":"usi";"key":"bs";"bs":8;"time":6059117;"NNa":"201"}
+   * */
   if (_nsobj["action"] == "usi") {
     const uint16_t __ui16BoxIndex = thisControllerBox.thisLaserSignalHandler.ctlBxColl._updateOrCreate(_ui32SenderNodeId, _nsobj);
     if (thisControllerBox.globBaseVars.hasLasers) {
-      thisControllerBox.thisLaserSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
+      if ((_nsobj["key"] == "status") || _nsobj["key"] == "bs") {
+        thisControllerBox.thisLaserSignalHandler.checkImpactOfChangeInActiveStateOfOtherBox(__ui16BoxIndex);
+      }
+      if (_nsobj["key"] == "IR") {
+        thisControllerBox.thisLaserSignalHandler.checkImpactOfUpstreamInformationOfOtherBox(__ui16BoxIndex);
+      }
     }
     if (thisControllerBox.globBaseVars.hasInterface) {
       myWSSender _myWSSender(_myWebServer.getAsyncWebSocketInstance());
@@ -106,10 +84,7 @@ void myMeshController::_actionSwitch()
     return;
   }
 
-
-
-
-  /** 3. CHANGEBOX REQUEST AND CONFIRMATION:
+  /** 2. CHANGEBOX REQUEST AND CONFIRMATION:
    *  
    *  Two scenarii: 
    *  (i) changebox requests:

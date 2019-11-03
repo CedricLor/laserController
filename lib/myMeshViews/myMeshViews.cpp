@@ -27,36 +27,6 @@ myMeshViews::myMeshViews(ControlerBox & __thisCtrlerBox):
 
 
 ///////////////////////////////////////////////////////////////////////////////////
-/** ["action"] = "s" -- statusMsg **************/
-/////////////////////////////////////////////////////////////////////////////////// 
-void myMeshViews::statusMsg(uint32_t destNodeId) {
-  Serial.println("myMeshViews::statusMsg(): starting");
-  
-  // prepare the JSON string to be sent via the mesh
-  // expected JSON string: {"actSt":3;"action":"s";"actStStartT":6059117;"boxDefstate":5;"NNa":"201";"APIP":"...";"StIP":"..."}
-
-  _jDoc.clear();
-
-  // load the JSON document with values
-  _joMsg["actSt"] = _thisCtrlerBox.i16BoxActiveState;
-  _joMsg["actStStartT"] = _thisCtrlerBox.ui32BoxActiveStateStartTime; // gets the recorded mesh time
-  _joMsg["boxDefstate"] = _thisCtrlerBox.sBoxDefaultState;
-  _joMsg["action"] = "s";
-
-  // send to the sender
-  _sendMsg(_joMsg, destNodeId);
-
-  // I signaled my boxState change.
-  // => set my own boxActiveStateHasBeenSignaled to true
-  _thisCtrlerBox.boxActiveStateHasBeenSignaled = true;
-
-  Serial.println("myMeshViews::statusMsg(): over");
-}
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////
 /** ["action"] = "usi" -- upstream information ***********************************/
 /////////////////////////////////////////////////////////////////////////////////// 
 /** void myMeshViews::sendStatus(uint32_t destNodeId)

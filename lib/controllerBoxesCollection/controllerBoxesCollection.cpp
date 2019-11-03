@@ -24,7 +24,7 @@ controllerBoxesCollection::controllerBoxesCollection():
 
 /** controllerBoxesCollection::_updateOrCreate(uint32_t _ui32nodeId, JsonObject &_obj)
  * 
- *  Upon receiving a statusMsg or an upstream information message from another controller box
+ *  Upon receiving an upstream information message ("usi") from another controller box
  *  (the calling box), this method will try to find, by node id, an entry corresponding to such
  *  calling box in the controller boxes array.
  * 

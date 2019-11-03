@@ -129,7 +129,7 @@ void myMesh::_tcbSendStatusOnNewConnection() {
     return; 
     Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): I am alone. ending."));
   }
-  thisControllerBox.thisMeshViews.statusMsg();
+  thisControllerBox.thisMeshViews.sendStatus();
   Serial.println(F("myMesh::_tcbSendStatusOnNewConnection(): sent status message. ending."));
 }
 

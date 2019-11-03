@@ -40,7 +40,7 @@ class myMesh
     /** _tcbSendStatusOnNewConnection() is the default callback
      *  of tChangedConnection().
      * 
-     *  It sends a statusMsg upon detecting a new connection. */
+     *  It sends the status of this box upon detecting a new connection. */
     static void _tcbSendStatusOnNewConnection();
     /** --> painlessMesh newConnectionCallback */
     static void newConnectionCallback(uint32_t nodeId);
